@@ -5,6 +5,7 @@
 Draft v 0.1
 
 January-February 2017, Bali
+Note: Updated according to cyberminds mindmap
 
 [Simplified](https://docs.google.com/presentation/d/1nsPwHLBu5UArQ4zbN1yaGUj8LBgEpCEFqVe6iKP5XLg/pub?start=false&loop=false&delayms=3000&slide=id.g20ef74535d_0_33)
 
@@ -260,7 +261,7 @@ The most obvious use cases for Lazy Oracles
 - Token valuation
 - Token rating
 - Token description
-- Crowdsale tracking
+- ICOs tracking
 - Weather measuring
 - Traffic measuring
 - Business performance reporting
@@ -391,28 +392,9 @@ A conventional advertiser is also has a tool to participate. Any link can be pro
 
 Virtual loop of the business models for our decentralized autonomous organization is pretty simple: `More indexing => More people search => More developers build => More people earn, rank and promote => Better infrastructure => More indexing`.
 
-A network starts from 100 000 000 tokens
-
-- Crowdsale - 70%
-- cyber•Fund reward - 10%
-- Founders reward - 10%
-- Sharedrop & License - 5%
-- Development reserve - 5%
-
 Since inception, a network prints 3 CYBER every block. Every 1 million blocks it reduces print rate on 1%. Thus starting from ~35% print rate per year inflation begin to reduce gradually until it reaches 1%.
 
 There is one problem with proposed incentive structure. We call it _language incentivization bias_. In the core of cyber•chain is quadratic voting. The system needs it to effectively incentivize participants for quality ranking. But that natively leads to weak incentives across different language groups. E.g blockchain Golos was deployed as Russian alternative to Steem because Russian posts acquired only 0.2% of rewards though providing 10% of the content. The idea of deploying cyber•Chain is great if it can be truly global from the start. The only way to overcome this bias is a global deployment from day 0, because otherwise we need significantly increase the complexity of the reward system. We offer good incentives for translation of this white paper to 50 languages worldwide as well as call for action to all blockchain communities across the globe.
-
-Crowdsale will start after 30 days of network launch and will go 30 days. Crowdsale will be capped with 10000 bitcoins without limit in the first day - rush day. During crowd sale, the following discounts will be applied.
-
-- 30% in the first rush day
-- 20% from 2 until 15 day
-- 15% from 16 until 18 day
-- 10% from 19 until 21 day
-- 5% from 22 until 24 day
-- 0% from 25 until the end
-
-All participant will receive CP proportionally to invested bitcoins after discounts.
 
 ## Extensibility and Governance
 
@@ -484,8 +466,7 @@ The purpose of seed stage is to implement the blockchain and prepare it for tech
 2. Validation Phase
 - Blockchain launched
 - cyber•Fund basic application release
-- Crowdsale starts.
-- Crowdsale ends. Token distribution
+- Token distribution
 
 The purpose of validation phase is to verify the feasibility of an idea and prospects of technological design across blockchain community. Successful deployment of MVP in the form of basic technical infrastructure in a decentralized fashion and quality of support from the blockchain community and investors around idea will be enough to understand what kind of future the blockchain has. Objective metric is an amount of bitcoins raised during crowd sale for already working blockchain design.
 
