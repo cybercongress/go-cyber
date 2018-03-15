@@ -5,7 +5,8 @@
 Draft v 0.1
 
 January-February 2017, Bali
-Note: Updated according to cyberminds mindmap
+
+Note: Not updated according to cyberminds mindmap
 
 [Simplified](https://docs.google.com/presentation/d/1nsPwHLBu5UArQ4zbN1yaGUj8LBgEpCEFqVe6iKP5XLg/pub?start=false&loop=false&delayms=3000&slide=id.g20ef74535d_0_33)
 
