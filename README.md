@@ -1,2 +1,4 @@
 # cyberd
-Motivated Search and Evaluation Engine for Permanent Web
+
+- [Working paper]()
+- [Mind map](https://mm.tt/1056891167?t=MSrea6elhF)
