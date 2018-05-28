@@ -7,7 +7,7 @@ let app = lotion({
     initialState:{ },
     logTendermint: true,
     keys: 'privkey0.json',
-    peers: ['192.168.0.130:30093']
+    peers: ['192.168.0.130:30093', '192.168.0.103:30094']
 })
 
 app.use(require('./core'));
