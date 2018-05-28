@@ -1,0 +1,23 @@
+{
+    "genesis_time": "0001-01-01T00:00:00Z",
+    "chain_id": "name",
+    "validators": [
+        {
+            "pub_key": {
+                "type": "ed25519",
+                "data": "9460B5B2D197CEECEDFF0C6D5045A4A3D9686307EF4A8FA9BC7B1E640F9895DB"
+            },
+            "power": 10,
+            "name": "Alice"
+        },
+        {
+            "pub_key": {
+                "type": "ed25519",
+                "data": "6BB2AF006551BCE7FD1248B1348B7A91915E4D29A19752AF3A4E09B4F8D2B175"
+            },
+            "power": 10,
+            "name": "Bob"
+        }
+    ],
+    "app_hash": ""
+}

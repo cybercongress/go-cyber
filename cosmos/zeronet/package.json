@@ -1,16 +1,19 @@
 {
-  "name": "cuberd",
+  "name": "lotion-shea-starter",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "prestart": "npm install",
-    "start": "node server"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node app.js",
+    "validator": "PRODUCTION=true node app.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "lotion": "0.1.18"
+    "dotenv": "^5.0.1",
+    "lotion": "^0.1.17",
+    "shea": "0.0.13"
   }
 }
