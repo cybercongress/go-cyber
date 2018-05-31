@@ -5,7 +5,7 @@
         {
             "pub_key": {
                 "type": "ed25519",
-                "data": "9460B5B2D197CEECEDFF0C6D5045A4A3D9686307EF4A8FA9BC7B1E640F9895DB"
+                "data": "81DABA9327E08913CFE76FE1865DEFE4A05DE324F7FA3D154D3917DD35C197D8"
             },
             "power": 10,
             "name": "Valery"

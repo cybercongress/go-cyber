@@ -1,19 +1,22 @@
 {
-  "name": "lotion-shea-starter",
+  "name": "cyberd-zeronet",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "node app.js",
-    "validator": "PRODUCTION=true node app.js"
+    "start": "node server"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "dotenv": "^5.0.1",
-    "lotion": "^0.1.17",
+    "body-parser": "1.18.3",
+    "cors": "2.8.4",
+    "express": "4.16.3",
+    "express-http-proxy": "1.2.0",
+    "lotion": "0.1.17",
+    "request": "2.87.0",
     "shea": "0.0.13"
   }
 }
