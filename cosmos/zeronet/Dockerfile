@@ -6,9 +6,9 @@ COPY package.json .
 COPY server.js .
 
 COPY genesis.json .
-COPY privkey0.json .
-COPY privkey1.json .
-COPY privkey2.json .
+COPY cyberd-0.json .
+COPY cyberd-1.json .
+COPY cyberd-2.json .
 COPY core.js .
 
 RUN npm install

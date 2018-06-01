@@ -1,0 +1,60 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: cyberd-world
+spec:
+  type: LoadBalancer
+  ports:
+  - name: "proxy"
+    port: 80
+    targetPort: 5000
+  - name: "peers"
+    port: 30303
+    targetPort: 30303
+  selector:
+    app: cyberd
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: cyberd
+spec:
+  clusterIP: None
+  ports:
+  - port: 30303
+  selector:
+    app: cyberd
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: cyberd
+spec:
+  serviceName: cyberd
+  replicas: 3
+  selector:
+    matchLabels:
+      app: cyberd
+  template:
+    metadata:
+      labels:
+        app: cyberd
+    spec:
+      containers:
+        - name: cyberd
+          env:
+            - name: PEERS
+              value: "cyberd-0.cyberd.default.svc.cluster.local:30303"
+            - name: P2P_PORT
+              value: "30303"
+            - name: KEY_INDEX
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          ports:
+            - containerPort: 5000
+            - containerPort: 30303
+          image: cybernode/cyberd:master
+          imagePullPolicy: Always

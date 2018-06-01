@@ -1,6 +1,6 @@
 var path = require('path');
 
-var express = require('express'); 
+var express = require('express');
 var expressapp = express();
 
 var proxy = require('express-http-proxy');
@@ -12,7 +12,7 @@ expressapp.listen(5000, function () {
 
 var p2p_port = process.env.P2P_PORT || 30091;
 var initialPeers = process.env.PEERS ? process.env.PEERS.split(',') : [];
-var key = process.env.KEY;
+var key = process.env.KEY_INDEX + '.json';
 
 console.log('KEY: ', key);
 console.log('PEERS: ', initialPeers);
@@ -21,7 +21,7 @@ console.log('P2P_PORT: ', p2p_port);
 let app = require('lotion')({
  	genesis: './genesis.json',
  	initialState: { },
- 	
+
  	tendermintPort:30090,
  	p2pPort: p2p_port,
 

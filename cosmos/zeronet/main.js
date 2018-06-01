@@ -4,7 +4,7 @@ let lotion = require ('lotion');
 var http_port = process.env.HTTP_PORT || 3001;
 var p2p_port = process.env.P2P_PORT || 30091;
 var initialPeers = process.env.PEERS ? process.env.PEERS.split(',') : [];
-var key = process.env.KEY;
+var key = process.env.KEY_INDEX + '.json';
 
 console.log('HTTP_PORT: ', http_port);
 console.log('P2P_PORT: ', p2p_port);

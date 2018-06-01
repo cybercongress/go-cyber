@@ -5,7 +5,7 @@ services:
   node1:
     build: .
     environment:
-      - KEY=privkey0.json
+      - KEY=cyberd-0.json
       - PEERS=node2:30092,node3:30092
       - P2P_PORT=30091
     ports:
@@ -14,7 +14,7 @@ services:
   node2:
     build: .
     environment:
-      - KEY=privkey1.json
+      - KEY=cyberd-1.json
       - PEERS=node1:30092,node3:30092
       - P2P_PORT=30092
     ports:
@@ -23,7 +23,7 @@ services:
   node3:
     build: .
     environment:
-      - KEY=privkey2.json
+      - KEY=cyberd-2.json
       - PEERS=node2:30092,node1:30092
       - P2P_PORT=30092
     ports:
