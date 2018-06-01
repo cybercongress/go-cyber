@@ -1,5 +1,5 @@
 ---
-name: Gitcoin issue template
+name: Add Issue to Gitcoin
 about: This is recommended issue template for gitcoin
 
 ---
