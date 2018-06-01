@@ -3,7 +3,7 @@ version: 2
 jobs:
 
   build_and_deploy_images_to_dockerhub:
-    working_directory: /cyberd
+    working_directory: ~/cyberd
     docker:
        - image: circleci/node:latest-browsers
     steps:
@@ -27,7 +27,7 @@ jobs:
         name: Restart Cyberd Seed Cluster
         command: |
           echo $GCLOUD_SERVICE_KEY > gcloud-service-key.json
-          gcloud auth activate-service-account --key-file=cyberd/gcloud-service-key.json
+          gcloud auth activate-service-account --key-file=${CIRCLE_WORKING_DIRECTORY}/gcloud-service-key.json
           gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
           gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
           gcloud --quiet container clusters get-credentials ${GOOGLE_CLUSTER_NAME}
