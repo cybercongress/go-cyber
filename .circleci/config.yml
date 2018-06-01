@@ -38,4 +38,3 @@ workflows:
   search_build:
     jobs:
       - build_and_deploy_images_to_dockerhub
-      - restart_gcloud_seed_cluster:
