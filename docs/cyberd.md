@@ -14,6 +14,17 @@ Note: Not updated according to cyberminds mindmap
 
 Existing general purpose search engines are restrictive centralized databases everybody forced to trust. These search engines were designed primarily for client-server architecture based on DNS, HTTP, and IP protocols. The emergence of content-addressable storage and distributed ledger technology creates an opportunity for the Internet to acquire new features such as more efficient computing, storing and broadband consumption, more resilient, secure and private access, no middleman for digital property. This can shift existing web's ubiquitously used client-server architecture to truly peer-to-peer interactions based on stateless IPFS and variety of stateful consensus computers such as Ethereum. This creates a challenge and opportunity for a search engine based on emerging technologies and specifically designed for them. Surprisingly the blockchain architecture itself allows organizing general purpose search engine in a way inaccessible for previous architectures. In this paper, we discuss opportunities behind blockchain based search engine, challenges of crawling, indexing and evaluation for the next generation web and propose a blockchain based experimental set of smart contracts to address discussed issues.
 
+Problem of ranking inside consensus computers (complexity of computation for networks with more than 1B edges)
+A consensus computer with CPU, RAM, storage, bandwidth for optimization of special purpose computing: linking registration and rank computing
+Why we are doing this? Form global knowledge graph in which relevance is incentivized by inflation.
+
+## The protocol
+- Users has tokens and can submit link a according to broadband share
+- Search engine returns link predictions
+- Every block the rank is computed (decay of links with time ?)
+- Tokens emitted based on amount of rank objects appeared (nft logic)
+- Manipulating the rank: Sybil Attack: Quadratic voting. Rank squared. Decay from linear in the beginning.
+
 ## Introduction
 
 Let us start a discussion from disadvantages of conventional general purpose search engines:
@@ -31,7 +42,7 @@ Let us start a discussion from disadvantages of conventional general purpose sea
 
 A pretty huge amount of problems to fix. It would be naive to bootstrap a search engine from a scope where Google, Baidu, and Yandex exist. We need to find a special area where general purpose search engines sucks. A variety of distributed ledgers such as blockchains and tangles can be primary content-addressable data suppliers and this is a scope where current search engines are not the best at work. Moreover, blockchain technology evolves very rapidly and has a lot of promises so it is a sure bet.
 
-The idea is to initially deploy a blockchain based search engine for the purpose of searching against other blockchains so that can be useful from the first day. At the same time, we design the cyber•Fund _application_ [CFUND] based on cyber•Chain to solve a problem of trustless realtime blockchain asset valuation which adds some useful capabilities to the search. But we need to design cyber•Chain in a way to be scalable for a more broad definition of a general purpose _search and valuation engine_, so more applications can emerge. Currently, about 15 trusted (and thousands of not so trusted) and globally available distributed ledgers exist, totaling about 1 billion transactions accumulated. Last year (2016) amount of accumulated blockchain transactions increased tenfold. Not all of them were financial transactions in some sense. E.g. Steem [STM] blockchain and it's Russian sister Golos [GLS] primarily store user generated text such as posts and votes (? votes are text? confusing...). As transactions are the only way of changing states in databases currently used by any web application we foresee distributed ledgers to become the primary source of public information in the 21st century due to tremendous benefits of the technology [ENIGMA, ....].
+The idea is to initially deploy a blockchain based search engine for the purpose of searching against other blockchains so that can be useful from the first day. At the same time, we design the browser to solve a problem of interactions with web3 which is tightly integrated with search computer. Currently, about 10 the most trusted totaling about 10 billion transactions accumulated. Two last year (2016) amount of accumulated blockchain transactions increased tenfold. Not all of them were financial transactions in some sense. E.g. Steem [STM] blockchain and it's Russian sister Golos [GLS] primarily store user generated text such as posts. As transactions are the only way of changing states in databases currently used by any web application we foresee distributed ledgers to become the primary source of public information in the 21st century due to tremendous benefits of the technology.
 
 Thus we are to declare the _principles_ of a general purpose decentralized and distributed search engine for the upcoming age:
 
@@ -50,13 +61,13 @@ Thus we are to declare the _principles_ of a general purpose decentralized and d
 
 Alongside these principles, there are _requirements_ such as performance, usability, and scalability. Keep reading. We discuss everything step by step.
 
-## Design Rationale
+## Design Rationale (switch from CID to domain registries)
 
 The idea of a permanent web behind IPFS is beautiful in its simplicity. Every unique _piece of data_ has the unique address:
 
 >
 
-Using this address this piece of data can be found in a global data structure called MerkleDAG [DAG] (logical representation of data storage) across peer-to-peer IPFS network using bulletproof DHT. Nodes are weakly incentivized for fair data exchange using BitSwap protocol. This link can point to _any_ piece of data such as GIT object, BitTorent link, Bitcoin block, JSON document, picture, video, plain binary data or even a small piece of text:
+Using this address this piece of data can be found in a global data structure called MerkleDAG [DAG] (logical representation of data storage) across peer-to-peer IPFS network using DHT. Nodes are weakly incentivized for fair data exchange using BitSwap protocol. This link can point to _any_ piece of data such as GIT object, BitTorent link, Bitcoin block, JSON document, picture, video, plain binary data or even a small piece of text:
 
 >
 
@@ -91,7 +102,7 @@ But now IPFS and IPLD is a perfect design choice with huge momentum across acade
 
 What we need is to find a way to incentivize extraction from this data fog a meaning that is _relevant to users queries_.
 
-## Search Workflow
+## Search Workflow (rewrite to the only method)
 
 Our proposed design of a search engine is based on advanced blockchain technology and enables everybody to participate and be rewarded. Everybody with an account can search. To execute queries user should sign a `search` transaction with CIDv1 as payload and broadcast it.
 
@@ -133,7 +144,7 @@ Information about indexed CIDv1 as well as about its rankings is available for e
 
 <search cidv1=""> to <answer cidv1=""> as payload and broadcast it:</answer></search>
 
-> answer {search CIDv1} {answer CIDv1} hipster true
+> link {search CIDv1} {answer CIDv1} hipster sig
 
 A document should be a valid CIDv1 and unique outbound link from an answer. So for any given question, the only unique answer is possible. Then cyber•Chain verify the correctness of signature and either of two things happens:
 
@@ -160,7 +171,7 @@ We equate terms `document` / `query` and `link` / `answer` as for our use case t
 
 Hence if a user searches a document `CID 3` (query) search engine will return links (answers) to `CID 1`, `CID 4`, `CID 5` documents (queries) sorted by cyber•rank. Let us discuss it in details.
 
-## cyber•rank
+## cyber•Rank (rewrite everything based on Spring rank + QV)
 
 The idea is to combine two simple yet powerful algorithms: Google's PageRank and Steem's reward mechanism: ![cyber•rank](https://docs.google.com/drawings/d/1yvkyeOpVZoiyUOv0Gqu-kywsaWF16A9NTw8GgJq-rX8/pub?w=1521&h=777)
 
@@ -180,7 +191,7 @@ The semantic core is open. Click-through information is stored on-chain. Every t
 
 Both algorithms have strong proof in form of Google's $550 B capitalizations in 18 years and Steem $40 M capitalization in 9 months. Combining both it is possible to empower the world with a new kind of search quality that has been (1) designed to index relevant document fast and (2) has inherent Sybil protection.
 
-## Self Indexing Dilemma
+## Self Indexing Dilemma (do we need it?)
 
 Proposed approach has very unexpected limitation. What if we want to index cyber•chain using cyber•chain itself? Let us say that we have an awesome transaction that happens inside the chain and everybody are talking about it. It is popular thus we should display it in our search results. Adding it to an index spawn another transaction which (surprise) also should be indexed. This entanglement creates an infinite loop that bloat cyber•chain. This can not be a problem either. Consensus computer capacity and power are limited by the market forces. So we have two possible decisions:
 
@@ -209,7 +220,7 @@ _Probabilistic Settlement_. Blockchain designs, especially Proof-of-Work based, 
 
 So solve of discussed issued of probabilistic indexing we propose a flexible approach we call lazy oracles.
 
-## Lazy Oracles
+## Lazy Oracles (instead explain the concept of link chains)
 
 One specific ability is crucial for the next generation search engine. Application developers should have a motivation to provide structured arbitrary data feeds. Thus search engine can answer natural questions aggregating data from _highly structured and defined_ feeds. This makes possible a user get high-quality _calculated_ answers in real-time about the state of reality expressed not only in links (which intelligent agent don't know how to parse) but in actionable numbers based on which it's possible to make independent economic decisions. It is hard to find a tool to agree on publicly available and continuously evolving facts. We propose an approach to solving this.
 
