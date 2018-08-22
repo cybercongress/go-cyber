@@ -37,6 +37,10 @@ Existing general purpose search engines are restrictive centralized databases ev
 
 A useful property of a system is that it must know nothing about objects except when, who and where some prediction was asked. If we assume that a consensus computer must have some information about linked objects the complexity of such model growth unpredictably. That is. Deduction of a meaning inside consensus computer is expensive thus
 
+## Link chains
+
+Explain the concept of link chains and demonstrate a case of semantic linking based on interpretation of an ERC-20 transfer transaction or something similar
+
 ## Bad behavior
 
 We design a system under assumption that in terms of search such a thing as bad behavior does not exist as nothing bad can be in the intention of finding answers. Ranks is computed on the only fact that something has been searched, thus linked and as result affected predictive model. Good analogy is observing in quantum mechanics. So no negative voting is implemented. Doing this we remove subjectivity out of the protocol and can define one possible method for proof of relevance. Also this approach significantly reduce attack surface.
@@ -74,6 +78,8 @@ Every N blocks cybernodes prune blockchain/history and calculate IPFS hash for t
 ~ vs direct IPFS DAG
 
 ## Motivation on request's processing problem
+
+Explain an economic difference and censorship impact between read search queries and write search queries
 
 Idea:
 All nodes run payment channels to serve request for their users and take tokens for request processing. Because this is heavy computation (only cybernodes will serve this) nodes will serve this only with payments for them. Cybernodes run protocol and earn tokens for read requests.
@@ -203,27 +209,4 @@ Possible scalability improvements include:
 
 We describe and implement a motivated blockchain based search engine for the permanent web. A search engine is based on the content-addressable peer-to-peer paradigm and uses IPFS as a foundation. IPFS provide significant benefits in terms of resources consumption. IPFS addresses as a primary objects are robust in its simplicity. For every IPFS hash cyber•rank is computed by a consensus computer with no single point of failure. Cyber•rank is a spring rank enchased with economic based sybil protection. Embedded smart contracts offer fair compensations for those who is able to predict popularity of hashes. The primary goal is indexing of peer-to-peer systems with self-authenticated data either stateless, such as IFSS, DAT, GIT, BitTorent, or stateful such as Bitcoin, Ethereum and other blockchains and tangles. Proposed market of linking offers necessary incentives for outsourcing computing part responsible for finding meaningful relations between objects. A source code of a search engine is open source. Every bit of data accumulated by a consensus computer is available for everybody for free. The performance of proposed software implementation is sufficient for seamless user interactions. Scalability of proposed implementation is enough to index all self-authenticated data that exist today. The blockchain is managed by a decentralized autonomous organization which functions under Tendermint consensus algorithm. Thought a system provide necessary utility to offer an alternative for conventional search engines it is not limited to this use case either. The system is extendable for numerous applications and e.g. makes possible to design economically rational self-owned robots that are able to autonomously understand objects around them.
 
-## References - not ready yet
-
-[QGTC] <https://www.quora.com/How-many-pages-is-Google-crawling-every-day> PR [] RALF <http://merkle.com/papers/DAOdemocracyDraft.pdf>
-
-ENIGMA <https://www2.deloitte.com/content/dam/Deloitte/uk/Documents/Innovation/deloitte-uk-blockchain-full-report.pdf>
-
-RTB <https://en.wikipedia.org/wiki/Real-time_bidding>
-
-
-# Todo
-
-- Explain the concept of link chains and demonstrate a case of semantic linking based on interpretation of an ERC-20 transfer transaction or something similar
-- Discuss an idea: User has tokens (power of linking) and reputation which equal sum of link's weights created/connected to their Q/A.
-- Ideas:
-- Discuss an idea: reputation vesting ~ inflation <- function *
-- Discuss an idea: link weight ~ reputation <- function *
-- Discuss an idea: broadband ~ reputation <- function *
-- Discuss an idea: link weight applying with quadratic voting
-- Retire CID in favor for DURI user defined domain registries
-- Discussion on anonimity, complexity of a protocol and expensiveness of computation
-- Explain an economic difference and censorship impact between read search queries and write search queries
-- Discuss decay of links with time
-- Create an presentation on a new version
-- language incentivization bias_. In the core of cyberd is quadratic voting. The system needs it to effectively incentivize participants for quality ranking. But that natively leads to weak incentives across different language groups. E.g blockchain Golos was deployed as Russian alternative to Steem because Russian posts acquired only 0.2% of rewards though providing 10% of the content. The idea of deploying cyber•Chain is great if it can be truly global from the start. The only way to overcome this bias is a global deployment from day 0, because otherwise we need significantly increase the complexity of the reward system. We offer good incentives for translation of this white paper to 50 languages worldwide as well as call for action to all blockchain communities across the globe.
+## References
