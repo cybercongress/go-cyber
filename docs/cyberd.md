@@ -31,7 +31,7 @@ Existing general purpose search engines are restrictive centralized databases ev
 
 ~ every N nodes consensus around prunned state history via ipfs hash of state blob
 
-## Search as predication market on links
+## Search as prediction market on the relevance of links
 
 ## Inductive reasoning
 
@@ -98,44 +98,20 @@ Probably proof-of-history
 
 ## Spam protection
 
-In the center of spam protection system is an assumption that write operations can be executed only by those who have vested interest in the success of the search engine. Every 1% of stake in search engine gives the ability to use 1% of possible network broadband. As nobody uses all possessed broadband we use fractional reserves while limiting broadband like ISPs do. Details of an approach can be found in a Steem white paper.
+In the center of spam protection system is an assumption that write operations can be executed only by those who have vested interest in the success of the search engine. Every 1% of stake in consensus computer gives the ability to use 1% of possible network broadband and computing capabilities. As nobody uses all possessed broadband we use fractional reserves while limiting broadband like ISPs do. Details of an approach can be found in a Steem white paper.
 
 Auditing and curation are based on Steem reward mechanism. It is Sybil-resistant approach as votes are quadratic based on principle 1 token in system = 1 vote. In order to vote one should vest in shares for at least for 20 weeks. That solve a problem entirely because those who have a right to vote are strongly incentivized in a growth of his wealth. In order to prevent abuse of auditing and curation voting power decay implemented exactly as in Steem.
 
 ## Incentive Structure and Distribution Mechanism
 
-To make cyber•rank economically resistant to Sybil attack and to incentivize all participant for rational behavior a system uses 3 types of tokens: CYBER (or cybers), CP (or cyber•power) and CD (cyber•dollar)
-
-CYBER is a transferable equity token which is analog of STEEM. The intrinsic value of CYBER came from the ability to convert it to CP.
-
-CP is a non-transferrable equity token which is analog of SP in Steem. CP can be converted to CYBER in 20 weeks using proportional weekly payments. The intrinsic value of CP came from the right to (1) write to an index according to a bandwidth limit, (2) rank objects, (3) promote objects (4) make consensus decisions. CP can be converted to CYBER in one year.
-
-CD is a debt token with a relatively stable value which came from an ability to convert it into CYBER within 3 days by the price submitted by witnesses and calculated according to cyber•rating methodology [] (don't confuse). 1 CD tracks 1/10^12 of _provable_ blockchain economy.
-
-Reward Pool is defined as 100% of emission and split among the following groups:
-
-Infrastructure Reward Pool
-
-- Witnesses - 5%
-- Investors - 10%
-
-Indexing Reward Pool - 30%
-
-- Reporters - 10%
-- Auditors - 20%
-
-Linking Reward Pool - 65%
-
-- Responders ~ 20%
-- Trainers ~ 40%
-
-Our implementation also offers an incentive for CD holders. They receive APR on holding according to rate defined by witnesses.
-
-As our primary focus is developers of decentralized and distributed applications we offer a convenient way of revenue generation in addition to possible revenue on dynamic snippets development. Every search and answer transaction can define a smart contract with up to 6 beneficiaries with a distribution of potential reward from this particular action. This creates a solid foundation for bootstrapping application ecosystem across a conventional web, mobile app stores and upcoming VR platforms.
-
-A conventional advertiser is also has a tool to participate. Any link can be promoted thus increasing cyber•rank. Revenue from the promotion is burning thus decreasing the supply of CYBER and bringing value to all shareholders of a system. We do believe that this approach is fair and don't harm user experience but open opportunity to compete with conventional search ad a bit.
+To make cyber•rank economically resistant to Sybil attack and to incentivize all participant for rational behavior a system uses CYBER token.
 
 Since inception, a network prints 42 CYBER every block.
+
+Reward pool is defined as 100% of emission and split among the contracts according to (?):
+
+- Validators
+- Linkers
 
 ## Applications
 
