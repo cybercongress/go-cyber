@@ -1,33 +1,286 @@
-# Motivated Search and Evaluation Engine for Permanent Web
+# cyberd: A proof-of-relevance consensus computer
 
-[Dima Starodubcev](https://steemit.com/@hipster)
-
-Draft v 0.1
-
-January-February 2017, Bali
-
-Note: Not updated according to cyberminds mindmap
-
-[Simplified](https://docs.google.com/presentation/d/1nsPwHLBu5UArQ4zbN1yaGUj8LBgEpCEFqVe6iKP5XLg/pub?start=false&loop=false&delayms=3000&slide=id.g20ef74535d_0_33)
+@xhipster, @litvintech
+v 0.2
+August 2018, Iceland and Tolyatti
 
 ## Abstract
 
-Existing general purpose search engines are restrictive centralized databases everybody forced to trust. These search engines were designed primarily for client-server architecture based on DNS, HTTP, and IP protocols. The emergence of content-addressable storage and distributed ledger technology creates an opportunity for the Internet to acquire new features such as more efficient computing, storing and broadband consumption, more resilient, secure and private access, no middleman for digital property. This can shift existing web's ubiquitously used client-server architecture to truly peer-to-peer interactions based on stateless IPFS and variety of stateful consensus computers such as Ethereum. This creates a challenge and opportunity for a search engine based on emerging technologies and specifically designed for them. Surprisingly the blockchain architecture itself allows organizing general purpose search engine in a way inaccessible for previous architectures. In this paper, we discuss opportunities behind blockchain based search engine, challenges of crawling, indexing and evaluation for the next generation web and propose a blockchain based experimental set of smart contracts to address discussed issues.
-
-Problem of ranking inside consensus computers (complexity of computation for networks with more than 1B edges)
-A consensus computer with CPU, RAM, storage, bandwidth for optimization of special purpose computing: linking registration and rank computing
-Why we are doing this? Form global knowledge graph in which relevance is incentivized by inflation.
-
-## The protocol
-- Users has tokens and can submit link a according to broadband share
-- Search engine returns link predictions
-- Every block the rank is computed (decay of links with time ?)
-- Tokens emitted based on amount of rank objects appeared (nft logic)
-- Manipulating the rank: Sybil Attack: Quadratic voting. Rank squared. Decay from linear in the beginning.
+An incentivized consensus computer would allow to compute provable and relevant answers without any blackbox intermediaries such as Google. Stateless content-addressable peer-to-peer delivery networks such as IPFS and stateful distributed ledger technology such as Ethereum provide part of the solution but the problem is that ...
+without  In this paper we define a protocol for provable consensus computing of relevance between IPFS objects, solve some problems of implementation using consensus computing, propose it's incentivization scheme for (1) maximization of knowledge graph, aligned with computational, storage and computational bound and (2) optimization of predictability. Also we define an initial distribution scheme ...
 
 ## Introduction
 
-Let us start a discussion from disadvantages of conventional general purpose search engines:
+Existing general purpose search engines are restrictive centralized databases everybody forced to trust. These search engines were designed primarily for client-server architecture based on DNS, HTTP, and IP protocols. The emergence of  paradigm, distributed ledger technology and consensus computing creates an opportunity for a new kind of Internet. We call it web3. Protocols such as Ethereum create a challenge and opportunity for a search engine based on developing technologies and specifically designed for them. Surprisingly the permission-less blockchain architecture itself allows organizing general purpose search engine in a way inaccessible for previous architectures.
+
+## The protocol
+
+- Users has tokens and can submit link a according to broadband share
+- Consensus computer returns link predictions
+- Every N block Spring rank is computed
+- Tokens emitted based on amount of rank objects appeared (nft logic)
+- Manipulating the rank: Sybil Attack: Quadratic voting. Rank squared. Decay from linear in the beginning.
+
+- def state transition
+- take txs
+- calculate rank
+- distributed inflation via objects's current/history/changes ranks score
+    each object - Q(inner, question) and A(outer) and U(user) takes tokens via their ranks
+    Q/A - number of objects inner and outer edges define proportions of emission to token
+    U - vests reputations to their balances
+
+~ every N nodes consensus around prunned state history via ipfs hash of state blob
+
+## Search as predication market on links
+
+## Inductive reasoning
+
+A useful property of a system is that it must know nothing about objects except when, who and where some prediction was asked. If we assume that a consensus computer must have some information about linked objects the complexity of such model growth unpredictably. That is. Deduction of a meaning inside consensus computer is expensive thus
+
+## Bad behavior
+
+We design a system under assumption that in terms of search such a thing as bad behavior does not exist as nothing bad can be in the intention of finding answers. Ranks is computed on the only fact that something has been searched, thus linked and as result affected predictive model. Good analogy is observing in quantum mechanics. So no negative voting is implemented. Doing this we remove subjectivity out of the protocol and can define one possible method for proof of relevance. Also this approach significantly reduce attack surface.
+
+## Problem of ranking inside consensus computers
+
+Consensus computers bring serious resource bounds
+
+It's possible to compute a ranks for the whole MerkleDAG. But there are two problems with it:
+
+- An amount of links in MerkleDAG grows `O(n^2)`. That is not either conventional web pages with 20-100 links per page. For 1 Mb file can be thousands of links. Once the network starts to take off, complexity inevitably increases.
+- Even if we address some algorithm to extract relevances from these links we should address even more algorithms to extract a meaning.
+
+What we need is to find a way to incentivize extraction from this data fog a meaning that is _relevant to users queries_.
+
+We can represent our data structure as directed acyclic graph where vertices are indexed documents and edges are directed links between them.
+
+![](https://docs.google.com/drawings/d/1--Uj85OiU-uwj0gxUFWZDbjPuby3IEMBBVFSmHTNkDc/pub?w=785&h=436)
+
+We equate terms `document` / `query` and `link` / `answer` as for our use case these are practically the same. We will stick to `query` and `answer` terms in order to avoid confusion.
+
+Hence if a user searches a document `CID 3` (query) search engine will return links (answers) to `CID 1`, `CID 4`, `CID 5` documents (queries) sorted by cyber•rank. Let us discuss it in details.
+
+Our model is recursive and requires the enormous amount of calculations which are limited within blockchain design. Model recalculation does not happen on a periodic basis rather it continuous. We consider introducing consensus variable, in addition to a block size, in order to target processing capacity of the network. Let's call it a _computing target of documents per block_ or CTD. Any witness will be able to set a number of documents the network should recompute every block. The blockchain takes as input computing target of legitimate witnesses and computes CTD as daily moving average. Based on CTD blockchain can schedule the range of CIDs that should be recomputed by every witness per round.
+
+## cyber•Rank
+
+No rank computed inside consensus computing => no possibility to incentivize network participants to form predictions on relevance. A problem here is that computational complexity of conventional ranks grow sublineary with the growth of the network. So we need to find deterministic algorithm that allow to compute a rank for continuously appended network to scale the consensus computer to orders of magnitude that of Google. Also an algorithm must have good prediction capability for existence of relevant to an object links.
+
+Spring ranks cons: linear & better ranking (original work, case proof with Steem)
+
+## State grow history problem
+Idea:
+Every N blocks cybernodes prune blockchain/history and calculate IPFS hash for them/publish to IPFS, add hash to block and validate them with consensus. This state/blob economicaly finalized and new node start from them. Cybernodes motivated to store/provide this blob cause this cause network grow. Dynamically recalculate N with economy, newtork size, rank score...
+~ vs direct IPFS DAG
+
+## Motivation on request's processing problem
+
+Idea:
+All nodes run payment channels to serve request for their users and take tokens for request processing. Because this is heavy computation (only cybernodes will serve this) nodes will serve this only with payments for them. Cybernodes run protocol and earn tokens for read requests.
+
+Solution is payment channels based on HLTC and proof verification which unlocks amount earned for already served request (new signatures post via requester/user to cybernode wia whisper/ipfs-pub-sub)
+
+## About where
+
+Proof of location
+
+## Consensus
+
+Probably proof-of-history
+
+## Selfish linking
+
+## Spam protection
+
+In the center of spam protection system is an assumption that write operations can be executed only by those who have vested interest in the success of the search engine. Every 1% of stake in search engine gives the ability to use 1% of possible network broadband. As nobody uses all possessed broadband we use fractional reserves while limiting broadband like ISPs do. Details of an approach can be found in a Steem white paper.
+
+Auditing and curation are based on Steem reward mechanism. It is Sybil-resistant approach as votes are quadratic based on principle 1 token in system = 1 vote. In order to vote one should vest in shares for at least for 20 weeks. That solve a problem entirely because those who have a right to vote are strongly incentivized in a growth of his wealth. In order to prevent abuse of auditing and curation voting power decay implemented exactly as in Steem.
+
+## Incentive Structure and Distribution Mechanism
+
+To make cyber•rank economically resistant to Sybil attack and to incentivize all participant for rational behavior a system uses 3 types of tokens: CYBER (or cybers), CP (or cyber•power) and CD (cyber•dollar)
+
+CYBER is a transferable equity token which is analog of STEEM. The intrinsic value of CYBER came from the ability to convert it to CP.
+
+CP is a non-transferrable equity token which is analog of SP in Steem. CP can be converted to CYBER in 20 weeks using proportional weekly payments. The intrinsic value of CP came from the right to (1) write to an index according to a bandwidth limit, (2) rank objects, (3) promote objects (4) make consensus decisions. CP can be converted to CYBER in one year.
+
+CD is a debt token with a relatively stable value which came from an ability to convert it into CYBER within 3 days by the price submitted by witnesses and calculated according to cyber•rating methodology [] (don't confuse). 1 CD tracks 1/10^12 of _provable_ blockchain economy.
+
+Reward Pool is defined as 100% of emission and split among the following groups:
+
+Infrastructure Reward Pool
+
+- Witnesses - 5%
+- Investors - 10%
+
+Indexing Reward Pool - 30%
+
+- Reporters - 10%
+- Auditors - 20%
+
+Linking Reward Pool - 65%
+
+- Responders ~ 20%
+- Trainers ~ 40%
+
+Our implementation also offers an incentive for CD holders. They receive APR on holding according to rate defined by witnesses.
+
+As our primary focus is developers of decentralized and distributed applications we offer a convenient way of revenue generation in addition to possible revenue on dynamic snippets development. Every search and answer transaction can define a smart contract with up to 6 beneficiaries with a distribution of potential reward from this particular action. This creates a solid foundation for bootstrapping application ecosystem across a conventional web, mobile app stores and upcoming VR platforms.
+
+A conventional advertiser is also has a tool to participate. Any link can be promoted thus increasing cyber•rank. Revenue from the promotion is burning thus decreasing the supply of CYBER and bringing value to all shareholders of a system. We do believe that this approach is fair and don't harm user experience but open opportunity to compete with conventional search ad a bit.
+
+Since inception, a network prints 42 CYBER every block.
+
+## Applications
+
+_Web3 browsers_. It easy to imagine the emergence of a full-blown blockchain browser. Currently, there are several efforts for developing browsers around blockchains and distributed tech. Among them are Beaker, Mist and Brave .. All of them suffer from very limited functionality. Our developments can be useful for teams who are developing such tools.
+
+_Programmable semantic cores_. Relevance everywhere means that on any given user input string in any application relevant answer can be computed either globally, in the context of an app or in the context of a user.
+
+_Actions in search_. Proposed design enable native support for blockchain asset related activity. It is trivial to design an applications which are (1) owned by creators, (2) appear right in search results and (3) allow a transact-able call to actions with (4) provable attribution of a conversion to search query. e-Commerce has never been so easy for everybody.
+
+_Shared mempools_.
+
+_Offline search_. IPFS make possible easy retrieval of documents from surroundings without the internet connection. cyber•Chain itself can be distributed using IPFS. That create a possibility for ubiquitous offline search.
+
+_Smart Command Tools_. Command line tools can rely on relevant and structured answers from a search engine. That practically means that the following CLI tool is possible to implement
+
+```
+>  cyberd earn using 100 gb hdd
+
+Enjoy the following predictions:
+- apt install siad /// 0.0001 btc per month per GB
+- apt install storjd /// 0.00008 btc per month per GB
+- apt install filecoind /// 0.00006 btc per month
+
+According to the best prediction I made a decision try `apt install siad`
+
+Git clone ...
+Building siad
+Starting siad
+Creating wallet using your standard seed
+You address is ....
+Placing bids ...
+Waiting for incoming storage requests ...
+
+```
+Search from CLI tools will inevitably create a highly competitive market of a dedicated semantic core for bots.
+
+_Autonomous robots_. Blockchain technology enables creation of devices which are able to earn, store, spend and invest digital assets by themselves.
+
+> If a robot can earn, store, spend and invest she can do everything you can do
+
+What is needed is simple yet powerful API about the state of reality evaluated in transact-able assets. Our solution offers minimalistic but continuously self-improving API that provides necessary tools for programming economically rational robots.
+
+_Language convergence_. A programmer should not care about what language do the user use. We don't need to have knowledge of what language user is searching in. Entire UTF-8 spectrum is at work. A semantic core is open so competition for answering can become distributed across different domain-specific areas, including semantic cores of different languages. The unified approach creates an opportunity for cyber•Bahasa. Since the Internet, we observe a process of rapid language convergence. We use more truly global words across the entire planet independently of our nationality, language and race, Name the Internet. The dream of truly global language is hard to deploy because it is hard to agree on what mean what. But we have tools to make that dream come true. It is not hard to predict that the shorter a word the more it's cyber•rank will be. Global publicly available list of symbols, words and phrases sorted by cyber•rank with corresponding links provided by cyberd can be the foundation for the emergence of truly global language everybody can accept. Recent scientific advances in machine translation [GNMT] are breathtaking but meaningless for those who wish to apply them without Google scale trained model. Proposed cyber•rank offers exactly this.
+
+This is sure not the exhaustive list of possible applications but very exciting, though.
+
+## Extensibility, Upgradability and Governance
+
+That is a big question!
+
+## Performance
+
+Proposed blockchain design is based on tendermint consensus algorithm and has fast and predictable near seconds block confirmation time and very fast finality time. Average confirmation timeframe is less than second thus conformations can be asynchronous and nearly invisible for users. A good thing is that users don't need confirmations at all before getting search response as there is no risk associated with that.
+
+## Scalability
+
+Our node implementation theoretically can process about ? predictions per second. This theoretical bound is primarily limited with the possibility to replay a blockchain [https://steemit.com/blockchain/@dantheman/how-to-process-100m-transfers-second-on-a-single-blockchain]. As of now, all blockchains are about 1B immutable documents which size is about 200 GB with average tx 200 kb. We need to store all hashes which are on average 64 bytes long. We estimated that storing in the index all blockchain documents as CIDs and votes are roughly the same as storing all raw blockchain data. Linking 1B documents create significant overhead as blockchain index size can be up to 100 times more. Given this, we can assume that indexing all existing blockchains require about 4TB of SSD space. This is affordable for commodity hardware with 10x scaling capability without a necessity for sharding across several machines. We assume this is enough scalability margin for proof-of-concept.
+
+Initial indexing of 1B documents and 100B links will require a continuous load of the network at the upper bound of its capacity in the first year of its existence. If we assume that network will be able to process 10k transactions per second with 2MB block size we will be able to index all blockchains in 4 months. Further operations will require significantly less capacity as currently, not more than 1000 transactions per second happen among all blockchains.
+
+Based on the proposed search appliance we estimate that participants will require investing around $1M for dedicated hardware (21 witnesses) and the same amount for backup nodes. Thus overall costs of hardware network infrastructure can be around $2M. after full deployment.
+
+Worth to note that the network doesn't require ultimate configuration at the start and is able to optimize initial investments by the costs of time to index all blockchains. Thus costs at launch can be around $200k. Given that mining industry has been rapidly developed last years this can not be a showstopper for a project. We expect huge interest from miners as slots are limited with 21 fully paid nodes and ~20 of partially paid nodes (depend on the market).
+
+Possible scalability improvements include:
+- Hardware. This year Intel Optane [http://www.intel.com/content/www/us/en/architecture-and-technology/intel-optane-technology.html] That creates an opportunity to converge RAM and SSD. Our design has 3-year hardware margin for moving to cheaper and more dense next generation memory.
+- Software. The future of consensus computer optimization is in parallel processing. We are going to seriously invest in research of this field. Solving this issue will enable the network to scale nearly infinitely.
+- Caching/pin   ing of more scored objects in network (provides faster and in-place gateway to ipfs)
+
+## Conclusion
+
+We describe and implement a motivated blockchain based search engine for the permanent web. A search engine is based on the content-addressable peer-to-peer paradigm and uses IPFS as a foundation. IPFS provide significant benefits in terms of resources consumption. IPFS addresses as a primary objects are robust in its simplicity. For every IPFS hash cyber•rank is computed by a consensus computer with no single point of failure. Cyber•rank is a spring rank enchased with economic based sybil protection. Embedded smart contracts offer fair compensations for those who is able to predict popularity of hashes. The primary goal is indexing of peer-to-peer systems with self-authenticated data either stateless, such as IFSS, DAT, GIT, BitTorent, or stateful such as Bitcoin, Ethereum and other blockchains and tangles. Proposed market of linking offers necessary incentives for outsourcing computing part responsible for finding meaningful relations between objects. A source code of a search engine is open source. Every bit of data accumulated by a consensus computer is available for everybody for free. The performance of proposed software implementation is sufficient for seamless user interactions. Scalability of proposed implementation is enough to index all self-authenticated data that exist today. The blockchain is managed by a decentralized autonomous organization which functions under Tendermint consensus algorithm. Thought a system provide necessary utility to offer an alternative for conventional search engines it is not limited to this use case either. The system is extendable for numerous applications and e.g. makes possible to design economically rational self-owned robots that are able to autonomously understand objects around them.
+
+## References - not ready yet
+
+[QGTC] <https://www.quora.com/How-many-pages-is-Google-crawling-every-day> PR [] RALF <http://merkle.com/papers/DAOdemocracyDraft.pdf>
+
+ENIGMA <https://www2.deloitte.com/content/dam/Deloitte/uk/Documents/Innovation/deloitte-uk-blockchain-full-report.pdf>
+
+RTB <https://en.wikipedia.org/wiki/Real-time_bidding>
+
+
+# Todo
+
+- Explain the concept of link chains and demonstrate a case of semantic linking based on interpretation of an ERC-20 transfer transaction or something similar
+- Discuss an idea: User has tokens (power of linking) and reputation which equal sum of link's weights created/connected to their Q/A.
+- Ideas:
+- Discuss an idea: reputation vesting ~ inflation <- function *
+- Discuss an idea: link weight ~ reputation <- function *
+- Discuss an idea: broadband ~ reputation <- function *
+- Discuss an idea: link weight applying with quadratic voting
+- Retire CID in favor for DURI user defined domain registries
+- Discussion on anonimity, complexity of a protocol and expensiveness of computation
+- Explain an economic difference and censorship impact between read search queries and write search queries
+- Discuss decay of links with time
+- Create an presentation on a new version
+- There is one problem with proposed incentive structure. We call it _language incentivization bias_. In the core of cyber•chain is quadratic voting. The system needs it to effectively incentivize participants for quality ranking. But that natively leads to weak incentives across different language groups. E.g blockchain Golos was deployed as Russian alternative to Steem because Russian posts acquired only 0.2% of rewards though providing 10% of the content. The idea of deploying cyber•Chain is great if it can be truly global from the start. The only way to overcome this bias is a global deployment from day 0, because otherwise we need significantly increase the complexity of the reward system. We offer good incentives for translation of this white paper to 50 languages worldwide as well as call for action to all blockchain communities across the globe.
+
+
+# Leftoever
+
+## Discussion on the future
+This can shift existing web's ubiquitously used client-server architecture to truly peer-to-peer interactions based on stateless IPFS and variety of stateful consensus computers such as Ethereum.
+
+Discuss opportunities behind blockchain based search engine, challenges of crawling, indexing and evaluation for the next generation web and propose a blockchain based experimental set of smart contracts to address discussed issues.
+
+## Search and evaluation appliance
+
+For bootstrapping a network we are going to offer software configuration (Cybernode - Github) on top of well tested open source specs for hardware configuration of commodity computer (Enterprise - Github) which cost around $10k-$30k depending on RAM and SSD capacity and is able to participate and earn by itself executing different network tasks:
+- operate as witness node
+- operate as indexer and auditor
+- operate as answering node
+- operate as fast and cheap backend for decentralized and distributed application
+
+We need a network of high performant computers in order to achieve our goals. Necessity comes from  the following assumptions:
+- all blockchain nodes and IPFS should live inside one machine to remove slow network communications from all middleware. Vast information for processing can be in memory.
+Communications inside one bus enable to execute required tasks significantly faster [[https://gist.github.com/jboner/2841832]]. Thus we can achieve nearly live indexing of reality from the very beginning.
+- extension with GPU. Currently, data centers cannot compete with commodity GPU. E.g. Amazon offers very expensing professional Nvidia Tesla cards. For our purposes, commodity cards such as GTX 1080 are much more cost effective.
+
+*Enterprise*. Currently, it is not hard to assemble a 2 CPU computer with 1 TB of RAM and 40 TB of SSD using commodity hardware. Such appliance can cost about $30k so we can think of it as affordable for those who are seriously want to be involved in a project. Also, we have an option to extend the capability of proposed search appliance based on 2 CPU motherboards built on Intel C612 chipset. Usually, it has 7 PCI-E slots for GPU which can be dedicated for cyber•rank calculation. Thus a price for an ultimate (2 CPU * Xeon E5 * 22 cores + 7 GPU * GTX 1080 * 2560 Cuda cores) search and evaluation appliance can be around $50k. Currently, such computer will be able to process, index, audit and linking all blockchains.
+
+*Cybernode*. We implementing the following software configuration that is based on docker containers.
+
+![](https://habrastorage.org/files/31c/e9c/05c/31ce9c05c71d44ddbda2e7abc3ac10d7.png)
+
+Cybernode allows everybody fast deployment of decentralized and distributed application powered with cyber•chain search capabilities.
+
+## Original idea of cyber•Rank
+
+Original idea was to combine two simple yet powerful algorithms: Google's PageRank and Steem's reward mechanism: ![cyber•rank](https://docs.google.com/drawings/d/1yvkyeOpVZoiyUOv0Gqu-kywsaWF16A9NTw8GgJq-rX8/pub?w=1521&h=777)
+
+Where `t_rank` = `n_rank` + `s_rank`
+
+`n_rank`, or natural rank is a rank based on Steem reward system. `s_rank`, or synthetic is a plain old PageRank used by Google and others.
+
+Natural rank is acquired in a process of auditing and curation. Based on this rank payout to those who involved (queries and answers submitting, auditing and curation) a made. Each piece of submitted data gets paid in 7 days. Each piece of data can be voted by cyber•power token holders. We use `auditing` term primary for verification of submitted data by automated scripts and `curation` term to denote manual curation. From a technical standpoint, those are primary the same as both utilize the same method for interactions. Implementation of natural rank is almost identical to Steem. Thus details of implementation can be found in our Github [] or Steem whitepaper.
+
+Synthetic rank is taken as initial natural rank expressed in `rshares`. This makes possible to start calculating PageRank before payouts have started. Conventional search engine work with nearly zero trust data. More than 200 factors used to calculate initial PageRank for a new document in the graph and find relevance to the search terms. Our novel approach allows assigning initial value based on Sybil-resistant voting. It is our belief that proposed approach can significantly simplify ranking and be more precise for information that nature is subjective. Though PageRank calculation is a trivial task we should estimate the feasibility of doing so in a consensus computer such as Steem where scalability is limited with a less performant node and parallel processing [Steem Roadmap] or sharding is yet to be discovered [Ethereum Mauve].
+
+A recent study [http://www.vldb.org/pvldb/vol8/p1804-ching.pdf] shows that Facebook scale PageRank computation is doable (using Java based Giraph) for 1 trillion edges and 1.4B vertices in 600 minutes per iteration. Hence consensus computer made of commodity hardware will be able to process 1 iteration per 2 days for a 10B unique document (SWAG for all blockchains + Git + BitTorrent (https://arxiv.org/pdf/1009.3681.pdf) + IPFS). Our implementation is based on C++ thus can be more performant though is not guaranteed. Also, we have an opportunity to use the most performant GPUs available operated by witnesses and not that is being used by cloud providers [http://www.hipc.org/hipc2011/studsym-papers/1569513051.pdf]. Anyway, our estimation proves that it is practically enough to use CPU for proof-of-concept stage. GPU implementation can multiply computation capacity up to 1000x. But further research in the field of parallel consensus computing is necessary to achieve Google scale (10000x more documents) realtime decentralized computation of cyber•rank.
+
+Both algorithms have strong proof in form of Google's $550 B capitalizations in 18 years and Steem $40 M capitalization in 9 months. Combining both it is possible to empower the world with a new kind of search quality that has been (1) designed to index relevant document fast and (2) has inherent Sybil protection.
+
+## Some strategy
+It would be naive to bootstrap a search engine from a scope where Google, Baidu, and Yandex exist. We need to find a special area where general purpose search engines sucks. A variety of distributed ledgers such as blockchains and tangles can be primary content-addressable data suppliers and this is a scope where current search engines are not the best at work. Moreover, blockchain technology evolves very rapidly and has a lot of promises so it is a sure bet.
+
+The idea is to initially deploy a blockchain based search engine for the purpose of searching against other blockchains so that can be useful from the first day. At the same time, we design the browser to solve a problem of interactions with web3 which is tightly integrated with search computer. Currently, about 10 the most trusted totaling about 10 billion transactions accumulated. Two last year (2016) amount of accumulated blockchain transactions increased tenfold. Not all of them were financial transactions in some sense. E.g. Steem [STM] blockchain and it's Russian sister Golos [GLS] primarily store user generated text such as posts. As transactions are the only way of changing states in databases currently used by any web application we foresee distributed ledgers to become the primary source of public information in the 21st century due to tremendous benefits of the technology.
+
+## On conventional search engines
+
+Let us start a discussion from disadvantages of general purpose search engines
 
 - No Transparency. Nobody outside of Google understands how the ranking really works. This creates a market for black and white SEO. The truth is that if e.g. Google discloses complete details of the ranking algorithm it would be easy for adversaries to game organic search results that kill the quality of results and ad revenue streams. Pagerank [PR] has no inherent trust mechanism resistant to Sybil attacks. This problem can be addressed adding transparent and accountable blockchain based ledger with properly designed economic incentives built into the system.
 - No Access. Currently, all search engines are centralized. Nobody is able to add to index as well as participate in improving the quality of search results. However, Google itself internally uses a workforce of _search evaluators_. It is our belief that user-generated search engine could have a higher quality of results as in a story with almost every website in existence.
@@ -40,11 +293,7 @@ Let us start a discussion from disadvantages of conventional general purpose sea
 - Online only. Worth to note that you cannot search offline even if necessary information is stored next door. If we are cut from the wire or backbone we powerless. Global offline search is not a feature which can be easily deployed even by a multibillion corporation. This goal is nearly impossible to achieve based on centralized architecture. Only accessible distributed systems can solve this fundamental problem for the next generation Internet. This future is not about gateway keepers in form of ISPs but about mesh networking and peer-to-peer communications.
 - Weak Security. What happens if tomorrow my Google account will be blocked? Do we have something to prevent this? Do we have the necessary level of assurance that _guarantee_ us our security based on math and not on the complicated legal tender? All technical solutions are here but to solve this important issue we need to do a lot of work because security is a foundation for life, liberty, and property.
 
-A pretty huge amount of problems to fix. It would be naive to bootstrap a search engine from a scope where Google, Baidu, and Yandex exist. We need to find a special area where general purpose search engines sucks. A variety of distributed ledgers such as blockchains and tangles can be primary content-addressable data suppliers and this is a scope where current search engines are not the best at work. Moreover, blockchain technology evolves very rapidly and has a lot of promises so it is a sure bet.
-
-The idea is to initially deploy a blockchain based search engine for the purpose of searching against other blockchains so that can be useful from the first day. At the same time, we design the browser to solve a problem of interactions with web3 which is tightly integrated with search computer. Currently, about 10 the most trusted totaling about 10 billion transactions accumulated. Two last year (2016) amount of accumulated blockchain transactions increased tenfold. Not all of them were financial transactions in some sense. E.g. Steem [STM] blockchain and it's Russian sister Golos [GLS] primarily store user generated text such as posts. As transactions are the only way of changing states in databases currently used by any web application we foresee distributed ledgers to become the primary source of public information in the 21st century due to tremendous benefits of the technology.
-
-Thus we are to declare the _principles_ of a general purpose decentralized and distributed search engine for the upcoming age:
+A pretty huge amount of problems to fix. Thus we are to declare the _principles_ of a general purpose decentralized and distributed search engine for the upcoming age:
 
 - Privacy and Security. Just it.
 - Ubiquitous Ownership and Access. Everybody should have a right to possess a piece of it.
@@ -59,10 +308,10 @@ Thus we are to declare the _principles_ of a general purpose decentralized and d
 - Sybil Attacks Resistant. This resistance should be derived from the properties of a free market but not from some single authority.
 - Intelligent. It should answer _natural_ questions with _easy to read_ and _provable_ answers no matter text, media or natural numbers should be involved in the answer.
 
-Alongside these principles, there are _requirements_ such as performance, usability, and scalability. Keep reading. We discuss everything step by step.
+## On open semantic core
+The semantic core is open. Click-through information is stored on-chain. Every time a user follow a link positive voting transaction is broadcasted e.g. with grade 1\. Voting on a protocol level is a number in a range from -100 to 100\. Thus application developers have a tool to implement different grades for different kind of interactions. Such design is crucial to train the model and acquire a data about search popularity of semantic core and its volume. Currently, search engines are very careful in revealing this information because this information is the most important part of the ranking. We want to change that. Every time a user click on a snippet developer earn a fair portion of emission and on chain model is trained. Application acquires the more rank the more rank acquired by its links. The more cyber•rank acquired - the more revenue streams for an application developer.
 
-## Design Rationale (switch from CID to domain registries)
-
+## Legacy design rationale
 The idea of a permanent web behind IPFS is beautiful in its simplicity. Every unique _piece of data_ has the unique address:
 
 >
@@ -95,42 +344,38 @@ Ok. Now we understand that we have a usable way to store, reach and mutate the d
 
 A nice property is that CID are based on well-known cryptography so we don't need to rely on IPFS if something better came. The same addresses can be used to exchange a piece of data in a different peer-to-peer network. Though this doesn't solve a problem of extensibility. CID itself contain version bits, thus if something better came we can switch to it.
 
-But now IPFS and IPLD is a perfect design choice with huge momentum across academia, open source engineering community and (the most important) blockchain engineering teams. It is our belief that it should lay as foundation for the next generation search engine. Everything is perfectly likable (MerkleDAG), fast (DHT), accessible (BitSwap) and comprehendible (IPLD) without a single point of failure. IPFS is a protocol and it can be more useful with a good search engine specifically designed to it. It's possible to compute a PageRank for the whole MerkleDAG. But there are two problems with it:
+But now IPFS and IPLD is a perfect design choice with huge momentum across academia, open source engineering community and (the most important) blockchain engineering teams. It is our belief that it should lay as foundation for the next generation search engine. Everything is perfectly likable (MerkleDAG), fast (DHT), accessible (BitSwap) and comprehendible (IPLD) without a single point of failure. IPFS is a protocol and it can be more useful with a good search engine specifically designed to it.
 
-- An amount of links in MerkleDAG grows `O(n^2)`. That is not either conventional web pages with 20-100 links per page. For 1 Mb file can be thousands of links. Once the network starts to take off, complexity inevitably increases.
-- Even if we address some algorithm to extract relevances from these links we should address even more algorithms to extract a meaning.
+## Original concept
 
-What we need is to find a way to incentivize extraction from this data fog a meaning that is _relevant to users queries_.
+[Simplified version of original concept](https://docs.google.com/presentation/d/1nsPwHLBu5UArQ4zbN1yaGUj8LBgEpCEFqVe6iKP5XLg/pub?start=false&loop=false&delayms=3000&slide=id.g20ef74535d_0_33)
 
-## Search Workflow (rewrite to the only method)
+## Self indexing dilemma left from original draft
 
-Our proposed design of a search engine is based on advanced blockchain technology and enables everybody to participate and be rewarded. Everybody with an account can search. To execute queries user should sign a `search` transaction with CIDv1 as payload and broadcast it.
+Proposed approach has very unexpected limitation. What if we want to index cyberd using cyberd itself? Let us say that we have an awesome transaction that happens inside the chain and everybody are talking about it. It is popular thus we should display it in our search results. Adding it to an index spawn another transaction which (surprise) also should be indexed. This entanglement creates an infinite loop that bloat cyberd. This can not be a problem either. Consensus computer capacity and power are limited by the market forces. So we have two possible decisions:
 
-> cyberd search {CIDv1} hipster true
-[where s the privacy declared before? with every search query signed with account name on a public blockchain? (tomarcafe)]
+1. Let it be. The market is a king. A bit of bloat can be a good piece of a knowledge about itself.
+2. Strictly forbid indexing of the blockchain itself. Fortunately, it is not so hard to implement on a consensus level. All we need is to check that CID has not been included in a cyberd before. That mean that cyberd transaction itself remain unindexed because in order to achieve this we (1) either should mutate data for hashed and timestamped transactions, (2) nor create a possibility for a self-bloat. None of the options is valid. Again, fortunately, direct search without ranking among internal cyberd transactions can be available inside search results with the help of CID magic.
 
-A document should be a valid CIDv1. Post headers are purposefully unique. The rationale is the following:
+## A concept of dynamic snippets for ux implementation
 
-- strongly encourage to bring valuable documents first and get a reward
-- simplify search execution and ranking calculation
-- make possible a high-performant flat data structure
+This can be thought as serverless micro javascript(is javascript futureproof? ;)) applications that can dynamically take input data from the following sources:
 
-Worth to note that search request "buy tesla x" is also can be represented as CIDv1. Thus search index store queries itself as documents. Hence search queries and target documents both will acquire cyber•rank.
+- a search query itself
+- asynchronously from background search query
+- from a browser APIs
+- from device sensory information
+- from information about a user stored on cyber•Chain
+- from other blockchains
+- from IPFS and IPNS
+- from conventional HTTPS or WebSocket APIs.
 
-Then cyber•chain verifies validity of CIDv1, the correctness of signature, broadband allowance and if all conditions are met either of two things happens:
+Every application is CID written to search index and answer index. Before developing an application developer should target it for a specific semantic core before defining it. Semantic core and its statistic are publicity available in a blockchain. Developer shall need to develop an application and submit links to an application using either immutable IPFS documents or mutable IPNS pointers for a targeted semantic core. Thus it is up to a developer to define what search queries are a better fit for a particular application. Keep in mind that dynamic snippets are naturally competing for a higher position in search results. Dynamic snippets can be sorted by cyber•rank, and as result become trustful. Worth to note that developers can significantly reduce spendings on app infrastructure as dynamic snippets can be delivered through content-addressable distributed network. Mutable IPNS pointers allow developing snippets for a targeted semantic core and not for every unique query. An implication of this approach is hard to overestimate. E.g. dynamic snippets combined with blockchain wallet make possible to shop right from search results.
 
-- if CIDv1 is not in search index => Write to search index
-- else broadcast a vote for existing CIDv1 and return sorted links of relevant CIDv1
+The only potential problem with proposed approach is the safety of third party javascript code. Sandboxed third party code is able to mitigate this risks. Web technologies such as [*web workers*](https://www.w3.org/TR/workers/) and [*web components*](https://developer.mozilla.org/en-US/docs/Web/Web_Components) are being actively developed. E.g. javascript library *jailed* [https://github.com/asvd/jailed] is able to do exactly what we need. Further adoption of web components is also one of a possible solution to do that safely.
 
-Based on this data client-side application can deliver documents by 3 ways:
-
-- using full javascript implementation of IPFS [JSIPFS] (fast, but requires initialization)
-- using REST API provided by IPFS HTTP gateway (depends on, can be fast or not)
-- using local IPFS node (the fastest)
-
-This approach is simple and powerful. A developer has enough choices to balance between usability and performance.
-
-CIDv1 can mean any piece of data. Different data types that can be returned to a user depending on the query:
+## Why building a rank based on IPFS hashes?
+IPFS hash can mean any piece of data. Different data types that can be returned to a user depending on the query:
 
 1. Plain text for autocomplete, e.g. ['apple', 'asos', 'amazon']
 2. A piece of media content which a user can play without necessity to go somewhere
@@ -138,89 +383,14 @@ CIDv1 can mean any piece of data. Different data types that can be returned to a
 4. Static formatted snippet with a text answer.
 5. IPNS link pointing to javascript that can return dynamic snippet.
 
-It depends on developers (mainly submitting answers) and users (mainly ranking answers) what kind of things they want to answer questions. Possibilities are limited with imagination. Thus we propose a free market for answers on search queries everybody is encouraged to participate. How does it work?
+It depends on developers (mainly submitting answers) and users (mainly ranking answers) what kind of things they want to answer questions. Possibilities are limited with imagination.
 
-Information about indexed CIDv1 as well as about its rankings is available for everybody. Thus those interested in rewards can monitor the blockchain for semantic core updates and submit links nearly instantly. Everybody can sign `answer` transaction with a link from
 
-<search cidv1=""> to <answer cidv1=""> as payload and broadcast it:</answer></search>
+## Dead concept of Lazy Oracles
 
-> link {search CIDv1} {answer CIDv1} hipster sig
-
-A document should be a valid CIDv1 and unique outbound link from an answer. So for any given question, the only unique answer is possible. Then cyber•Chain verify the correctness of signature and either of two things happens:
-
-- if CIDv1 is not in search index => Write to search index
-- if answer CIDv1 has no link to question CIDv1 => Write to answer index
-- else broadcast a vote for existing answer CIDv1
-
-> We follow black box rule. In order to answer a question right, you need a full comprehension neither the question nor the answer. You just need to match a query with the most relevant links.
-
-In order to increase the rank, everybody can promote either link or query.
-
-> promote_search {CIDv1} hipster 20 true
-> promote_answer {search CIDv1} {answer CIDv1} hipster 20 true
-
-Every sent token for promoting is destroyed thus creating value for every token holder.
-
-That is a core API for the entire blockchain. Other methods accomplish support role for the thing. Such compact design opens huge opportunity for performance optimizations. Also, a clean and comprehensible experience is very important for those who want to be involved. That is. The entire graph of the semantic core with weights is open for everybody and available for data mining or any kind of weird AI stuff. But to make it work we need to find a way to calculate relevance.
-
-We can represent our data structure as directed acyclic graph where vertices are indexed documents and edges are directed links between them.
-
-![](https://docs.google.com/drawings/d/1--Uj85OiU-uwj0gxUFWZDbjPuby3IEMBBVFSmHTNkDc/pub?w=785&h=436)
-
-We equate terms `document` / `query` and `link` / `answer` as for our use case these are practically the same. We will stick to `query` and `answer` terms in order to avoid confusion.
-
-Hence if a user searches a document `CID 3` (query) search engine will return links (answers) to `CID 1`, `CID 4`, `CID 5` documents (queries) sorted by cyber•rank. Let us discuss it in details.
-
-## cyber•Rank (rewrite everything based on Spring rank + QV)
-
-The idea is to combine two simple yet powerful algorithms: Google's PageRank and Steem's reward mechanism: ![cyber•rank](https://docs.google.com/drawings/d/1yvkyeOpVZoiyUOv0Gqu-kywsaWF16A9NTw8GgJq-rX8/pub?w=1521&h=777)
-
-Where `t_rank` = `n_rank` + `s_rank`
-
-`n_rank`, or natural rank is a rank based on Steem reward system. `s_rank`, or synthetic is a plain old PageRank used by Google and others.
-
-Natural rank is acquired in a process of auditing and curation. Based on this rank payout to those who involved (queries and answers submitting, auditing and curation) a made. Each piece of submitted data gets paid in 7 days. Each piece of data can be voted by cyber•power token holders. We use `auditing` term primary for verification of submitted data by automated scripts and `curation` term to denote manual curation. From a technical standpoint, those are primary the same as both utilize the same method for interactions. Implementation of natural rank is almost identical to Steem. Thus details of implementation can be found in our Github [] or Steem whitepaper.
-
-Synthetic rank is taken as initial natural rank expressed in `rshares`. This makes possible to start calculating PageRank before payouts have started. Conventional search engine work with nearly zero trust data. More than 200 factors used to calculate initial PageRank for a new document in the graph and find relevance to the search terms. Our novel approach allows assigning initial value based on Sybil-resistant voting. It is our belief that proposed approach can significantly simplify ranking and be more precise for information that nature is subjective. Though PageRank calculation is a trivial task we should estimate the feasibility of doing so in a consensus computer such as Steem where scalability is limited with a less performant node and parallel processing [Steem Roadmap] or sharding is yet to be discovered [Ethereum Mauve].
-
-A recent study [http://www.vldb.org/pvldb/vol8/p1804-ching.pdf] shows that Facebook scale PageRank computation is doable (using Java based Giraph) for 1 trillion edges and 1.4B vertices in 600 minutes per iteration. Hence consensus computer made of commodity hardware will be able to process 1 iteration per 2 days for a 10B unique document (SWAG for all blockchains + Git + BitTorrent (https://arxiv.org/pdf/1009.3681.pdf) + IPFS). Our implementation is based on C++ thus can be more performant though is not guaranteed. Also, we have an opportunity to use the most performant GPUs available operated by witnesses and not that is being used by cloud providers [http://www.hipc.org/hipc2011/studsym-papers/1569513051.pdf]. Anyway, our estimation proves that it is practically enough to use CPU for proof-of-concept stage. GPU implementation can multiply computation capacity up to 1000x. But further research in the field of parallel consensus computing is necessary to achieve Google scale (10000x more documents) realtime decentralized computation of cyber•rank.
-
-Our model is recursive and requires the enormous amount of calculations which are limited within blockchain design. Model recalculation does not happen on a periodic basis rather it continuous. We consider introducing consensus variable, in addition to a block size, in order to target processing capacity of the network. Let's call it a _computing target of documents per block_ or CTD. Any witness will be able to set a number of documents the network should recompute every block. The blockchain takes as input computing target of legitimate witnesses and computes CTD as daily moving average. Based on CTD blockchain can schedule the range of CIDs that should be recomputed by every witness per round.
-
-The semantic core is open. Click-through information is stored on-chain. Every time a user follow a link positive voting transaction is broadcasted e.g. with grade 1\. Voting on a protocol level is a number in a range from -100 to 100\. Thus application developers have a tool to implement different grades for different kind of interactions. Such design is crucial to train the model and acquire a data about search popularity of semantic core and its volume. Currently, search engines are very careful in revealing this information because this information is the most important part of the ranking. We want to change that. Every time a user click on a snippet developer earn a fair portion of emission and on chain model is trained. Application acquires the more rank the more rank acquired by its links. The more cyber•rank acquired - the more revenue streams for an application developer.
-
-Both algorithms have strong proof in form of Google's $550 B capitalizations in 18 years and Steem $40 M capitalization in 9 months. Combining both it is possible to empower the world with a new kind of search quality that has been (1) designed to index relevant document fast and (2) has inherent Sybil protection.
-
-## Self Indexing Dilemma (do we need it?)
-
-Proposed approach has very unexpected limitation. What if we want to index cyber•chain using cyber•chain itself? Let us say that we have an awesome transaction that happens inside the chain and everybody are talking about it. It is popular thus we should display it in our search results. Adding it to an index spawn another transaction which (surprise) also should be indexed. This entanglement creates an infinite loop that bloat cyber•chain. This can not be a problem either. Consensus computer capacity and power are limited by the market forces. So we have two possible decisions:
-
-1. Let it be. The market is a king. A bit of bloat can be a good piece of a knowledge about itself.
-2. Strictly forbid indexing of the blockchain itself. Fortunately, it is not so hard to implement on a consensus level. All we need is to check that CID has not been included in a cyber•chain before. That mean that cyber•chain transaction itself remain unindexed because in order to achieve this we (1) either should mutate data for hashed and timestamped transactions, (2) nor create a possibility for a self-bloat. None of the options is valid. Again, fortunately, direct search without ranking among internal cyber•chain transactions can be available inside search results with the help of CID magic.
-
-It is our belief it is better to stick to restrictive policy without further research.
-
-## Challenges and Advantages of Indexing Distributed Ledgers
-
-Conventional general purpose search engines were built on the _last mile assumption_ of stateless HTTP(S) protocol. Indeed the last mile approach worked well on the Internet where information emerges inside stateful private databases and only after become publicly available using HTTP. The emergence of content-addressable systems such as Git and BitTorrent didn't change much as those can not be compared with stateful private databases in any sense even though these protocols are represented origin of a content. But with an emergence of distributed ledger technology become possible to get know about public content in the moment than it actually has been born. In this sense, blockchains and tangles can be viewed as a real alternative to conventional private databases. That breakthrough create enormous opportunity for better and faster indexing but at the same time has inherent problems solving of which create advantages:
-
-_Chain Validation_. Protocol diversity is the hardest part of solving an issue of chain validation using another chain because solving this requires full implementation of one consensus computer inside another consensus computer. There are two efforts exist that try to solve issues of validating one chain using another. Among them are [Polkadot](https://github.com/polkadot-io/polkadotpaper/blob/master/PolkaDotPaper.pdf) and [Cosmos](https://cosmos.network/whitepaper). Both projects aim to solve a problem of trestles inter blockchain communications. Polkadot aims to design a system which doesn't require a trust to parachains (or interconnected chains). The design of Polkadot is very complex and has inherent scalability limitation. The design of Cosmos is much more simple, but require a trust to zones (interconnected chains). Our design doesn't try to solve a problem of inter blockchain communications rather try to implement probabilistic search across blockchains. Thus it is significantly more simple. Instead of recording information that has been verified from point of view of exogenous protocol we let this information come to index letting market forces and relevance algorithm determine which chains are correct and which are not.
-
-_Meaning Extraction_. Practically there are no common fields that are used by all blockchains and tangles. The only common pattern is `tx_id`. There is no way to extract any meaningful information from `tx_id`. That is practically mean that there is no easy solution exist. For every protocol can be a large number of different approaches to extract useful information. Using advanced machine learning is infeasible for consensus computers at the moment. We offer set of smart contracts that create a free market for extraction of the meaning.
-
-The huge advantage of blockchains that they are implicitly told what happens. Blockchains are highly optimized databases. Every transaction cost money so they are neutrally protected from spam and contain only data that really matter. That reduce noise filtering to nearly zero level. Structured raw data about blocks and transaction is available for everybody. This fact also reduces consumption of resources and make extraction of better meaning possible.
-
-![Google vs Blockchain](https://docs.google.com/drawings/d/1AkdiCTalgqKqkOKgeJCtD4CCwt68buP1rDN2J95FGSY/pub?w=1440&h=743)
-
-Blockchains provide real-time high-quality structured data which don't require *crawling* in a traditional sense. One node of any given blockchain is enough to provide verified data about transactions within one ledger without the necessity to continuously revisit resources significantly reducing costs.
-
-All these factors create a free market opportunity for emergence the diverse set of highly specialized (on a very limited set of a semantic core) but highly efficient *broadcasters*.
-
-_Probabilistic Settlement_. Blockchain designs, especially Proof-of-Work based, implies that finality of a transaction is probabilistic. A moment than a given fact can be considered as truth is blurred. [Previous researches](https://medium.com/@lopp/the-challenges-of-block-chain-indexing-30527cf4bfbd) show that it is expensive to achieve real-time blockchain indexing due to reorganization issues. The intention of discussed in the article design is to answer the question deterministically. Our architecture based on the principle that indexing a system with probabilistic settlement require probabilistic answering. Instead of deciding whether or not this particular block has been included in the canonical chain we can index all of them calculating the probability of finalization using cyber•Rank.
-
-So solve of discussed issued of probabilistic indexing we propose a flexible approach we call lazy oracles.
-
-## Lazy Oracles (instead explain the concept of link chains)
+```
+migrated to link chains
+```
 
 One specific ability is crucial for the next generation search engine. Application developers should have a motivation to provide structured arbitrary data feeds. Thus search engine can answer natural questions aggregating data from _highly structured and defined_ feeds. This makes possible a user get high-quality _calculated_ answers in real-time about the state of reality expressed not only in links (which intelligent agent don't know how to parse) but in actionable numbers based on which it's possible to make independent economic decisions. It is hard to find a tool to agree on publicly available and continuously evolving facts. We propose an approach to solving this.
 
@@ -280,190 +450,103 @@ The most obvious use cases for Lazy Oracles
 
 Worth to note that use cases are not limited to mentioned above. Data structure and validation rules are arbitrary. So we can think of it as general purpose tool for _popular structured public data_ auditing and curation. Now we can bootstrap and index with amounts of useful information. But what about meaningful search results?
 
-## Dynamic Snippets
+## The power of cyberd
 
-This can be thought as serverless micro javascript(is javascript futureproof? ;)) applications that can dynamically take input data from the following sources:
+The key purpose of our proposed design is not just replicate abilities of existing search engines which return only links but enable answering new class of question:
 
-- a search query itself
-- asynchronously from background search query
-- from a browser APIs
-- from device sensory information
-- from information about a user stored on cyber•Chain
-- from other blockchains
-- from IPFS and IPNS
-- from conventional HTTPS or WebSocket APIs.
+- How much value of X do I possess now?
+- What probability of event Y?
+- What packages do I need to install in order to improve ROI on available resources?
 
-Every application is CID written to search index and answer index. Before developing an application developer should target it for a specific semantic core before defining it. Semantic core and its statistic are publicity available in a blockchain. Developer shall need to develop an application and submit links to an application using either immutable IPFS documents or mutable IPNS pointers for a targeted semantic core. Thus it is up to a developer to define what search queries are a better fit for a particular application. Keep in mind that dynamic snippets are naturally competing for a higher position in search results. Dynamic snippets can be sorted by cyber•rank, and as result become trustful. Worth to note that developers can significantly reduce spendings on app infrastructure as dynamic snippets can be delivered through content-addressable distributed network. Mutable IPNS pointers allow developing snippets for a targeted semantic core and not for every unique query. An implication of this approach is hard to overestimate. E.g. dynamic snippets combined with blockchain wallet make possible to shop right from search results.
+Our proposed design has all necessary components to bootstrap a market for a new generation of answer applications.
 
-The only potential problem with proposed approach is the safety of third party javascript code. Sandboxed third party code is able to mitigate this risks. Web technologies such as [*web workers*](https://www.w3.org/TR/workers/) and [*web components*](https://developer.mozilla.org/en-US/docs/Web/Web_Components) are being actively developed. E.g. javascript library *jailed* [https://github.com/asvd/jailed] is able to do exactly what we need. Further adoption of web components is also one of a possible solution to do that safely.
+Proposed economics model disintermediate conventional ad model there users are sold to an advertiser and enable any business or people or robot benefit from pure peer-to-peer interactions which bring value for every involved participant.
 
-## Dealing with Long Tail
+_Free Market of Indexing and Auditing_. Everybody can connect any blockchain or content-addressable protocol. A decentralized approach to indexing and auditing create an opportunity for those who want to earn on the contributions to cyber•Chain. Proposed solution is not more than a way to _outsource_ these complicated and unstructured efforts for the entire community.
 
-It is well-known fact that every day Google receive up to 20% of new search queries never seen before. Thus we need to find a way to deal with it. Here are 3 popular use cases with simple solutions (surely non-exhaustive):
-- _Misspellings_. These queries contribute fair half to ever-growing unique query set. But it is not a rocket science to stem such queries client side without any indexed knowledge. After a user clicks on client side suggestion correct link can be submitted to cyber•chain thus improving the global model.
-- _Phrases_. E.g. `forest gump imdb`. These queries can be a combination of well-known terms and contribute another half to ever-growing unique query set. Even if we get relevant links from indexed `forest`, `gump` and `imdb` separately we would not able to combine answer to return meaningful movie rating to a user. But we can find _the closest documents_ between `imdb`, `forest` and `gump` and sort them by relevance. Those likely be the most relevant answers. This simple method can significantly increase efficiency for long tail queries without rocket science. As API is open for everybody there is no limits on using advanced technics.
-- _Unique queries_. These are about 10% of never-seen-before queries. We expect that the market of linking will create a segment for on-demand answers. We remember that any query can be seen in memory pool by every network participant. Thus opportunity to earn can create a healthy and competitive market for an on-demand answer in an environment without technical limitations.
+_Free Market of Answering. After all, we have recent advances in machine learning enable to reason about a piece of data quite well. All these algorithms require enormous highly distributed computation which as nearly impossible to achieve in a trestles consensus computer. With the current state of blockchain technology implementing these algorithms using decentralized computational network seems unfeasible. We find a way to _outsource_ this computation for the entire community.
 
-## Spam Protection
+_Self Hosted Search API_. Everybody can deploy self-hosted API. In comparison with what Google offer ($5 per 1000 answers). Our solution can be much more cost effective for high performant applications. One node can process at least 10k queries per second in a read-only mode. That is about 1B requests per month. That is about 100 times cheaper ($0,05 per 1000 answers) even if payback period of search and evaluation appliance ($50k) will be one month. In reality, the affordable payback period is about 10 months. Thus self-hosted search, in theory, can be 1000x more cost effective than Google offering.
 
-In the center of spam protection system is an assumption that write operations can be executed only by those who have vested interest in the success of the search engine. Every 1% of stake in search engine gives the ability to use 1% of possible network broadband. As nobody uses all possessed broadband we use fractional reserves while limiting broadband like ISPs do. Details of an approach can be found in a Steem white paper.
+## From search workflow
 
-Auditing and curation are based on Steem reward mechanism. It is Sybil-resistant approach as votes are quadratic based on principle 1 token in system = 1 vote. In order to vote one should vest in shares for at least for 20 weeks. That solve a problem entirely because those who have a right to vote are strongly incentivized in a growth of his wealth. In order to prevent abuse of auditing and curation voting power decay implemented exactly as in Steem.
+- strongly encourage to bring valuable documents first and get a reward
+- simplify search execution and ranking calculation
+- make possible a high-performant flat data structure
 
-## Applications
+Worth to note that search request "buy tesla x" is also can be represented as a sequence of ipfs hashes. Thus search index store queries itself as documents. Hence search queries and target documents both will acquire cyber•rank.
 
-It is hard to imagine what kind of applications can be built on top of proposed foundation. I'd like to mention some outstanding opportunities which can be build using cyber•Chain and IPFS:
+## Search Workflow (rewrite to the only method)
 
-- Relevance everywhere
-- Blockchain browser
-_ Multi-protocol wallets
-- Offline search
-- Smart command tools
-- Autonomous robots
-- Language convergence
+Our proposed design of a search engine is based on advanced blockchain technology and enables everybody to participate and be rewarded for prediction on links relevance. Everybody with an account can search. To execute queries user should sign a transaction with CIDv1 as payload and broadcast it.
 
-_Relevance Everywhere_. Proposed approach enable social, geo, money or anything aware search inside any application. It is trivial to implement a search relevant to a particular identity using proposed algorithm. The more a user train a model the more behavioral data can be associated with her. This personalized information can be stored locally for (1) faster retrieval and (2) offline access.
+> cyberd search {CIDv1} hipster true
+[where s the privacy declared before? with every search query signed with account name on a public blockchain? (tomarcafe)]
 
-_Blockchain browser_. It easy to imagine the emergence of a full-blown blockchain browser. Currently, there are several efforts for developing browsers around blockchains and distributed tech. Among them are Beaker, Mist and Brave .. All of them suffer from very limited functionality. Our developments can be useful for teams who are developing such tools.
+A document should be a valid IPFS hash. Post headers are purposefully unique. Some considerations are the following:
 
-_Multi-protocol wallets_. Currently, there are several efforts for developing easy to use the universal wallet for blockchain assets. Jaxx and Exodus are among them. Developers of such applications suffer from a diversity of protocols around blockchain tech. There is no fully functional multi-asset wallet yet. Our developments can help teams who are developing such tools.
+Then cyberd verifies validity of CIDv1, the correctness of signature, broadband allowance and if all conditions are met either of two things happens:
 
-_Actions in search_. Proposed design enable native support for blockchain asset related activity. It is possible to design applications which are (1) owned by creators, (2) appear right in search results and (3) allow a transact-able call to actions with (4) provable attribution of a conversion to search query. e-Commerce has never been so easy for everybody.
+- if CIDv1 is not in search index => Write to search index
+- else broadcast a vote for existing CIDv1 and return sorted links of relevant CIDv1
 
-_Offline search_. IPFS make possible easy retrieval of documents from surroundings without the internet connection. cyber•Chain itself can be distributed using IPFS. That create a possibility for ubiquitous offline search.
+Based on this data client-side application can deliver documents by 3 ways:
 
-_Smart Command Tools_. Command line tools can rely on relevant and structured answers from a search engine. That practically means that the following CLI tool is possible to implement
+- using full javascript implementation of IPFS [JSIPFS] (fast, but requires initialization)
+- using REST API provided by IPFS HTTP gateway (depends on, can be fast or not)
+- using local IPFS node (the fastest)
 
-```
->  mylovelybot earn using hdd -100GB
+This approach is simple and powerful. A developer has enough choices to balance between usability and performance.
 
-searching for opportunities:
-cyberd search <earn using hdd>
+Thus we propose a free market for answers on search queries everybody is encouraged to participate. How does it work?
 
-The following answers received:
-- apt install siad /// 0.0001 btc per month per GB
-- apt install storjd /// 0.00008 btc per month per GB
-- apt install filecoind /// 0.00006 btc per month
-...
+Information about indexed CIDv1 as well as about its rankings is available for everybody. Thus those interested in rewards can monitor the blockchain for semantic core updates and submit links nearly instantly. Everybody can sign `answer` transaction with a link from
 
-Made a decision try `apt install siad`
-Git clone ...
-Building siad
-Starting siad
-Creating wallet using your standard seed
-You address is ....
-Placing bids ...
-Waiting for incoming storage requests ...
+<search cidv1=""> to <answer cidv1=""> as payload and broadcast it:</answer></search>
 
-```
-Search from CLI tools will inevitably create a highly competitive market of a dedicated semantic core for bots.
+> link {search CIDv1} {answer CIDv1} hipster sig
 
-_Autonomous robots_.
-Blockchain technology enables creation of devices which are able to earn, store, spend and invest digital assets by themselves.
+A document should be a valid CIDv1 and unique outbound link from an answer. So for any given question, the only unique answer is possible. Then cyberd verify the correctness of signature and either of two things happens:
 
-> If a robot can earn, store, spend and invest she can do everything you can do
+- if CIDv1 is not in search index => Write to search index
+- if answer CIDv1 has no link to question CIDv1 => Write to answer index
+- else broadcast a vote for existing answer CIDv1
 
-What is needed is simple yet powerful API about the state of reality evaluated in transact-able assets. Our solution offers minimalistic but continuously self-improving API that provides necessary tools for programming economically rational robots.
+> We follow black box rule. In order to answer a question right, you need a full comprehension neither the question nor the answer. You just need to match a query with the most relevant links.
 
-_Language convergence_. A programmer should not care about what language do the user use. We don't need to have knowledge of what language user is searching in. Entire UTF-8 spectrum is at work. A semantic core is open so competition for answering can become distributed across different domain-specific areas, including semantic cores of different languages. The unified approach creates an opportunity for cyber•Bahasa. Since the Internet, we observe a process of rapid language convergence. We use more truly global words across the entire planet independently of our nationality, language and race, Name the Internet. The dream of truly global language is hard to deploy because it is hard to agree on what mean what. But we have tools to make that dream come true. It is not hard to predict that the shorter a word the more it's cyber•rank will be. Global publicly available list of symbols, words and phrases sorted by cyber•rank with corresponding links provided by cyber•chain can be the foundation for the emergence of truly global language everybody can accept. Recent scientific advances in machine translation [GNMT] are breathtaking but meaningless for those who wish to apply them without Google scale trained model. Proposed cyber•rank semantic core offers exactly this.
+In order to increase the rank, everybody can promote either link or query.
 
-This is sure not the exhaustive list of possible applications but very exciting, though.
+> promote_search {CIDv1} hipster 20 true
+> promote_answer {search CIDv1} {answer CIDv1} hipster 20 true
 
-## Incentive Structure and Distribution Mechanism
+Every sent token for promoting is destroyed thus creating value for every token holder.
 
-To make cyber•rank economically resistant to Sybil attack and to incentivize all participant for rational behavior a system uses 3 types of tokens: CYBER (or cybers), CP (or cyber•power) and CD (cyber•dollar)
+That is a core API for the entire blockchain. Other methods accomplish support role for the thing. Such compact design opens huge opportunity for performance optimizations. Also, a clean and comprehensible experience is very important for those who want to be involved. That is. The entire graph of the semantic core with weights is open for everybody and available for data mining or any kind of weird AI stuff. But to make it work we need to find a way to calculate relevance.
 
-CYBER is a transferable equity token which is analog of STEEM. The intrinsic value of CYBER came from the ability to convert it to CP.
+## Purpose
 
-CP is a non-transferrable equity token which is analog of SP in Steem. CP can be converted to CYBER in 20 weeks using proportional weekly payments. The intrinsic value of CP came from the right to (1) write to an index according to a bandwidth limit, (2) rank objects, (3) promote objects (4) make consensus decisions. CP can be converted to CYBER in one year.
+A consensus computer with CPU, RAM, storage, bandwidth for optimization of special purpose computing: linking registration and rank computing
+Why we are doing this? Form global knowledge graph in which relevance is incentivized by inflation.
 
-CD is a debt token with a relatively stable value which came from an ability to convert it into CYBER within 3 days by the price submitted by witnesses and calculated according to cyber•rating methodology [] (don't confuse). 1 CD tracks 1/10^12 of _provable_ blockchain economy.
+## On indexing blockchains using cyberd
 
-Reward Pool is defined as 100% of emission and split among the following groups:
+Conventional general purpose search engines were built on the _last mile assumption_ of stateless HTTP(S) protocol. Indeed the last mile approach worked well on the Internet where information emerges inside stateful private databases and only after become publicly available using HTTP. The emergence of content-addressable systems such as Git and BitTorrent didn't change much as those can not be compared with stateful private databases in any sense even though these protocols are represented origin of a content. But with an emergence of distributed ledger technology become possible to get know about public content in the moment than it acquire proof of existence timestamp and signature of creator. From this moment a piece of content can be treated as actually has been publicly born. In this sense, blockchains and tangles can be viewed as a real alternative to conventional private databases. That breakthrough create enormous opportunity for better and faster indexing but at the same time has inherent problems solving of which create advantages:
 
-Infrastructure Reward Pool
+_Chain Validation_. Protocol diversity is the hardest part of solving an issue of chain validation using another chain because solving this requires full implementation of one consensus computer inside another consensus computer. There are two efforts exist that try to solve issues of validating one chain using another. Among them are [Polkadot](https://github.com/polkadot-io/polkadotpaper/blob/master/PolkaDotPaper.pdf) and [Cosmos](https://cosmos.network/whitepaper). Both projects aim to solve a problem of trustless inter blockchain communications. Polkadot aims to design a system which doesn't require a trust to parachains (or interconnected chains). The design of Polkadot is very complex and has inherent scalability limitation. The design of Cosmos is much more simple, but require a trust to zones (interconnected chains). Our design doesn't try to solve a problem of inter blockchain communications rather try to implement probabilistic search across blockchains. Thus it is significantly more simple. Instead of recording information that has been verified from point of view of exogenous protocol we let this information come to index letting market forces and relevance algorithm determine which chains are correct and which are not.
 
-- Witnesses - 5%
-- Investors - 10%
+_Meaning Extraction_. Practically there are no common fields that are used by all blockchains and tangles. The only common pattern is `tx_id`. There is no way to extract any meaningful information from `tx_id`. That is practically mean that there is no easy solution exist. For every protocol can be a large number of different approaches to extract useful information. Using advanced machine learning is infeasible for consensus computers at the moment. We offer set of smart contracts that create a free market for extraction of the meaning.
 
-Indexing Reward Pool - 30%
+The huge advantage of blockchains that they are implicitly told what happens. Blockchains are highly optimized databases. Every transaction cost money so they are neutrally protected from spam and contain only data that really matter. That reduce noise filtering to nearly zero level. Structured raw data about blocks and transaction is available for everybody. This fact also reduces consumption of resources and make extraction of better meaning possible.
 
-- Reporters - 10%
-- Auditors - 20%
+![Google vs Blockchain](https://docs.google.com/drawings/d/1AkdiCTalgqKqkOKgeJCtD4CCwt68buP1rDN2J95FGSY/pub?w=1440&h=743)
 
-Linking Reward Pool - 65%
+Blockchains provide real-time high-quality structured data which don't require *crawling* in a traditional sense. One node of any given blockchain is enough to provide verified data about transactions within one ledger without the necessity to continuously revisit resources significantly reducing costs.
 
-- Responders ~ 20%
-- Trainers ~ 40%
+All these factors create a free market opportunity for emergence the diverse set of highly specialized (on a very limited set of a semantic core) but highly efficient *broadcasters*.
 
-Our implementation also offers an incentive for CD holders. They receive APR on holding according to rate defined by witnesses.
+_Probabilistic Settlement_. Blockchain designs, especially Proof-of-Work based, implies that finality of a transaction is probabilistic. A moment than a given fact can be considered as truth is blurred. [Previous researches](https://medium.com/@lopp/the-challenges-of-block-chain-indexing-30527cf4bfbd) show that it is expensive to achieve real-time blockchain indexing due to reorganization issues. The intention of discussed in the article design is to answer the question deterministically. Our architecture based on the principle that indexing a system with probabilistic settlement require probabilistic answering. Instead of deciding whether or not this particular block has been included in the canonical chain we can index all of them calculating the probability of finalization using cyber•Rank.
 
-As our primary focus is developers of decentralized and distributed applications we offer a convenient way of revenue generation in addition to possible revenue on dynamic snippets development. Every search and answer transaction can define a smart contract with up to 6 beneficiaries with a distribution of potential reward from this particular action. This creates a solid foundation for bootstrapping application ecosystem across a conventional web, mobile app stores and upcoming VR platforms.
-
-A conventional advertiser is also has a tool to participate. Any link can be promoted thus increasing cyber•rank. Revenue from the promotion is burning thus decreasing the supply of CYBER and bringing value to all shareholders of a system. We do believe that this approach is fair and don't harm user experience but open opportunity to compete with conventional search ad a bit.
-
-Virtual loop of the business models for our decentralized autonomous organization is pretty simple: `More indexing => More people search => More developers build => More people earn, rank and promote => Better infrastructure => More indexing`.
-
-Since inception, a network prints 3 CYBER every block. Every 1 million blocks it reduces print rate on 1%. Thus starting from ~35% print rate per year inflation begin to reduce gradually until it reaches 1%.
-
-There is one problem with proposed incentive structure. We call it _language incentivization bias_. In the core of cyber•chain is quadratic voting. The system needs it to effectively incentivize participants for quality ranking. But that natively leads to weak incentives across different language groups. E.g blockchain Golos was deployed as Russian alternative to Steem because Russian posts acquired only 0.2% of rewards though providing 10% of the content. The idea of deploying cyber•Chain is great if it can be truly global from the start. The only way to overcome this bias is a global deployment from day 0, because otherwise we need significantly increase the complexity of the reward system. We offer good incentives for translation of this white paper to 50 languages worldwide as well as call for action to all blockchain communities across the globe.
-
-## Extensibility and Governance
-
-Currently, our implementation has the following functionality available for application developers.
-
-- Custom Operations. Better alternative for OP-RETURN
-- Plugins. Allow implementing API based on custom operations.
-- Escrow. The core smart-contract enables 3d party arbitrage for arbitrary transactions.
-- Private Messaging. Enable private communications between accounts.
-- Dynamic Account Permissions. You can think about it as better multi-sig.
-
-The following possibilities can be available in a distant future:
-
-- Sidechains
-- State channels
-- Permissionless smart contracts
-
-Consensus can be changed in case of 17 of 21 elected delegates accept a hard fork.
-
-## Search and Evaluation Appliance
-
-For bootstrapping a network we are going to offer software configuration (Cybernode - Github) on top of well tested open source specs for hardware configuration of commodity computer (Enterprise - Github) which cost around $10k-$30k depending on RAM and SSD capacity and is able to participate and earn by itself executing different network tasks:
-- operate as witness node
-- operate as indexer and auditor
-- operate as answering node
-- operate as fast and cheap backend for decentralized and distributed application
-
-We need a network of high performant computers in order to achieve our goals. Necessity comes from  the following assumptions:
-- all blockchain nodes and IPFS should live inside one machine to remove slow network communications from all middleware. Vast information for processing can be in memory.
-Communications inside one bus enable to execute required tasks significantly faster [[https://gist.github.com/jboner/2841832]]. Thus we can achieve nearly live indexing of reality from the very beginning.
-- extension with GPU. Currently, data centers cannot compete with commodity GPU. E.g. Amazon offers very expensing professional Nvidia Tesla cards. For our purposes, commodity cards such as GTX 1080 are much more cost effective.
-
-*Enterprise*. Currently, it is not hard to assemble a 2 CPU computer with 1 TB of RAM and 40 TB of SSD using commodity hardware. Such appliance can cost about $30k so we can think of it as affordable for those who are seriously want to be involved in a project. Also, we have an option to extend the capability of proposed search appliance based on 2 CPU motherboards built on Intel C612 chipset. Usually, it has 7 PCI-E slots for GPU which can be dedicated for cyber•rank calculation. Thus a price for an ultimate (2 CPU * Xeon E5 * 22 cores + 7 GPU * GTX 1080 * 2560 Cuda cores) search and evaluation appliance can be around $50k. Currently, such computer will be able to process, index, audit and linking all blockchains.
-
-*Cybernode*. We implementing the following software configuration that is based on docker containers.
-
-![](https://habrastorage.org/files/31c/e9c/05c/31ce9c05c71d44ddbda2e7abc3ac10d7.png)
-
-Cybernode allows everybody fast deployment of decentralized and distributed application powered with cyber•chain search capabilities.
-
-## Performance and Scalability
-
-Proposed blockchain design is based on DPOS consensus algorithm and has fast and predictable 3 seconds block confirmation time and 1 minute finality time. Average confirmation timeframe is 1,5 seconds thus conformations can be asynchronous and nearly invisible for users. A good thing is that users don't need confirmations at all before getting search response as there is no risk associated with that.
-
-Current node implementation theoretically [https://bitshares.org/blog/2015/06/08/measuring-performance/] can process about 100k transactions per second. This theoretical bound is primarily limited with the possibility to replay a blockchain [https://steemit.com/blockchain/@dantheman/how-to-process-100m-transfers-second-on-a-single-blockchain]. As of now, all blockchains are about 1B immutable documents which size is about 200 GB with average tx 200 kb. We need to store all hashes which are on average 64 bytes long. We estimated that storing in the index all blockchain documents as CIDs and votes are roughly the same as storing all raw blockchain data. Linking 1B documents create significant overhead as blockchain index size can be up to 100 times more. Given this, we can assume that indexing all existing blockchains require about 4TB of SSD space. This is affordable for commodity hardware with 10x scaling capability without a necessity for sharding across several machines. We assume this is enough scalability margin for proof-of-concept.
-
-Initial indexing of 1B documents and 100B links will require a continuous load of the network at the upper bound of its capacity in the first year of its existence. If we assume that network will be able to process 10k transactions per second with 2MB block size we will be able to index all blockchains in 4 months. Further operations will require significantly less capacity as currently, not more than 1000 transactions per second happen among all blockchains.
-
-Based on the proposed search appliance we estimate that participants will require investing around $1M for dedicated hardware (21 witnesses) and the same amount for backup nodes. Thus overall costs of hardware network infrastructure can be around $2M. after full deployment.
-
-Worth to note that the network doesn't require ultimate configuration at the start and is able to optimize initial investments by the costs of time to index all blockchains. Thus costs at launch can be around $200k. Given that mining industry has been rapidly developed last years this can not be a showstopper for a project. We expect huge interest from miners as slots are limited with 21 fully paid nodes and ~20 of partially paid nodes (depend on the market).
-
-Possible scalability improvements include:
-- Hardware. This year Intel Optane [http://www.intel.com/content/www/us/en/architecture-and-technology/intel-optane-technology.html] That creates an opportunity to converge RAM and SSD. Our design has 3-year hardware margin for moving to cheaper and more dense next generation memory.
-- Software. The future of consensus computer optimization is in parallel processing. We are going to seriously invest in research of this field. Solving this issue will enable the network to scale nearly infinitely.
-
-## Deployment
+## Old deployment roadmap
 
 We split a process of network deployment into the following milestones which are not bounded to any timeframe at the moment:
 
@@ -500,42 +583,15 @@ The purpose of build phase is to reach a very *basic* product/market fit around 
 - Autocomplete is fully functional
 - Top 1 mln. search queries return useful answers
 
-This is an infinite phase in which the network start continuously grow indexing more and more relevant and meaningful data and the most important answering questions better and for the better. A key scope of work during this stage is to continuously improve developers experience:
+This is an infinite phase in which the network start continuously grow indexing more and more relevant and meaningful data and the most important answering questions better and for the better. A key scope of work during this stage is to continuously improve developers experience
 
-> `More indexing => More people search => *More developers build* => More people earn, rank and promote => Better infrastructure => More indexing`.
+## Dealing with Long Tail
 
-## The power of cyber•Chain
+It is well-known fact that every day Google receive up to 20% of new search queries never seen before. Thus we need to find a way to deal with it. Here are 3 popular use cases with simple solutions (surely non-exhaustive):
+- _Misspellings_. These queries contribute fair half to ever-growing unique query set. But it is not a rocket science to stem such queries client side without any indexed knowledge. After a user clicks on client side suggestion correct link can be submitted to cyber•chain thus improving the global model.
+- _Phrases_. E.g. `forest gump imdb`. These queries can be a combination of well-known terms and contribute another half to ever-growing unique query set. Even if we get relevant links from indexed `forest`, `gump` and `imdb` separately we would not able to combine answer to return meaningful movie rating to a user. But we can find _the closest documents_ between `imdb`, `forest` and `gump` and sort them by relevance. Those likely be the most relevant answers. This simple method can significantly increase efficiency for long tail queries without rocket science. As API is open for everybody there is no limits on using advanced technics.
+- _Unique queries_. These are about 10% of never-seen-before queries. We expect that the market of linking will create a segment for on-demand answers. We remember that any query can be seen in memory pool by every network participant. Thus opportunity to earn can create a healthy and competitive market for an on-demand answer in an environment without technical limitations.
 
-The key purpose of our proposed design is not just replicate abilities of existing search engines which return only links but enable answering new class of question:
+## Virtual loop
 
-- How much value of X do I possess now?
-- What probability of event Y?
-- What packages do I need to install in order to improve ROI on available resources?
-
-Our proposed design has all necessary components to bootstrap a market for a new generation of answer applications.
-
-Proposed economics model disintermediate conventional ad model there users are sold to an advertiser and enable any business or people or robot benefit from pure peer-to-peer interactions which bring value for every involved participant.
-
-_Free Market of Indexing and Auditing_. Everybody can connect any blockchain or content-addressable protocol. A decentralized approach to indexing and auditing create an opportunity for those who want to earn on the contributions to cyber•Chain. Proposed solution is not more than a way to _outsource_ these complicated and unstructured efforts for the entire community.
-
-_Free Market of Answering. After all, we have recent advances in machine learning enable to reason about a piece of data quite well. All these algorithms require enormous highly distributed computation which as nearly impossible to achieve in a trestles consensus computer. With the current state of blockchain technology implementing these algorithms using decentralized computational network seems unfeasible. We find a way to _outsource_ this computation for the entire community.
-
-_Self Hosted Search API_. Everybody can deploy self-hosted API. In comparison with what Google offer ($5 per 1000 answers). Our solution can be much more cost effective for high performant applications. One node can process at least 10k queries per second in a read-only mode. That is about 1B requests per month. That is about 100 times cheaper ($0,05 per 1000 answers) even if payback period of search and evaluation appliance ($50k) will be one month. In reality, the affordable payback period is about 10 months. Thus self-hosted search, in theory, can be 1000x more cost effective than Google offering.
-
-## Conclusion
-
-We describe and implement a motivated blockchain based search engine for the permanent web. A search engine is based on the content-addressable peer-to-peer paradigm and uses IPFS as a foundation. IPFS provide significant benefits in terms of resources consumption. CIDs as a primary object is robust in its simplicity. For every CID cyber•rank is computed by a consensus computer with no single point of failure. cyber•rank is a combination of Google's PageRank and Steem's rewards system. cyber•Rank is resistant to Sybil attacks and is computed based on interactions with a graph of CIDs and it's internal relations. Embedded smart contracts offer fair compensations for those who participate in indexing, linking, auditing and curation process. The primary goal is indexing of peer-to-peer systems with self-authenticated data either stateless, such as IFSS, DAT, GIT, BitTorent, or stateful such as Bitcoin, Ethereum and other blockchains and tangles. Proposed market of linking offers necessary incentives for outsourcing computing part responsible for finding meaningful relations between objects. The proposed market of curation and auditing creates essential incentives for ranking high-quality links and objects. Dynamic snippets in search results make possible functionality necessary for the next generation search. Lazy oracles enable indexing of structured publicly verifiable data feeds in a highly competitive environment. A source code of a search engine is open source. Every bit of data accumulated by a blockchain is available for everybody for free. The performance of proposed software-hardware implementation is sufficient for seamless user interactions. Scalability of proposed implementation is enough to index all self-authenticated data that exist today. The blockchain is managed by a decentralized autonomous organization which functions under DPOS consensus algorithm. Thought a system provide necessary utility to offer an alternative for conventional search engines it is not limited to this use case either. The system is extendable for numerous applications and makes possible to design economically rational self-owned robots to spawn a market for AI outsourcing.
-
-## References - not ready yet
-
-[QGTC] <https://www.quora.com/How-many-pages-is-Google-crawling-every-day> PR [] RALF <http://merkle.com/papers/DAOdemocracyDraft.pdf>
-
-ENIGMA <https://www2.deloitte.com/content/dam/Deloitte/uk/Documents/Innovation/deloitte-uk-blockchain-full-report.pdf>
-
-RTB <https://en.wikipedia.org/wiki/Real-time_bidding>
-
-## TODO
-
-_Auditing and Curation_. Probably need more details
-
-_Anonymity_. Explain an economic difference between read search queries and write search queries.
+> `More links => Better ranking => => More people search => More developers build => Better infrastructure => More people search => More links`.
