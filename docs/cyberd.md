@@ -31,11 +31,25 @@ Existing general purpose search engines are restrictive centralized databases ev
 
 ~ every N nodes consensus around prunned state history via ipfs hash of state blob
 
+
+
 ## Search as prediction market on the relevance of links
 
 ## Inductive reasoning
 
-A useful property of a system is that it must know nothing about objects except when, who and where some prediction was asked. If we assume that a consensus computer must have some information about linked objects the complexity of such model growth unpredictably. That is. Deduction of a meaning inside consensus computer is expensive thus
+A useful property of a system is that it must know nothing about objects except when, who and where some prediction was asked. If we assume that a consensus computer must have some information about linked objects the complexity of such model growth unpredictably. That is. Deduction of a meaning inside consensus computer is expensive thus our design hardly depend on this assumption.
+
+## About when
+
+Proof-of-history + Tendermint
+
+## About who
+
+Digital signatures and zero knoeldge proofs
+
+## About where
+
+Proof of location
 
 ## Link chains
 
@@ -60,20 +74,16 @@ We can represent our data structure as directed acyclic graph where vertices are
 
 ![](https://docs.google.com/drawings/d/1--Uj85OiU-uwj0gxUFWZDbjPuby3IEMBBVFSmHTNkDc/pub?w=785&h=436)
 
-We equate terms `document` / `query` and `link` / `answer` as for our use case these are practically the same. We will stick to `query` and `answer` terms in order to avoid confusion.
-
-Hence if a user searches a document `CID 3` (query) search engine will return links (answers) to `CID 1`, `CID 4`, `CID 5` documents (queries) sorted by cyber•rank. Let us discuss it in details.
-
-Our model is recursive and requires the enormous amount of calculations which are limited within blockchain design. Model recalculation does not happen on a periodic basis rather it continuous. We consider introducing consensus variable, in addition to a block size, in order to target processing capacity of the network. Let's call it a _computing target of documents per block_ or CTD. Any witness will be able to set a number of documents the network should recompute every block. The blockchain takes as input computing target of legitimate witnesses and computes CTD as daily moving average. Based on CTD blockchain can schedule the range of CIDs that should be recomputed by every witness per round.
+Our model is recursive (check SpringRank) and requires the enormous amount of calculations which are limited within blockchain design. Model recalculation does not happen on a periodic basis rather it continuous. We consider introducing consensus variable, in addition to a block size, in order to target processing capacity of the network. Let's call it a _computing target of documents per block_ or CTD. Any witness will be able to set a number of documents the network should recompute every block. The blockchain takes as input computing target of legitimate witnesses and computes CTD as daily moving average. Based on CTD blockchain can schedule the range of CIDs that should be recomputed by every witness per round.
 
 ## cyber•Rank
-
+Nebulas fail.
 No rank computed inside consensus computing => no possibility to incentivize network participants to form predictions on relevance. A problem here is that computational complexity of conventional ranks grow sublineary with the growth of the network. So we need to find deterministic algorithm that allow to compute a rank for continuously appended network to scale the consensus computer to orders of magnitude that of Google. Also an algorithm must have good prediction capability for existence of relevant to an object links.
 
 Spring ranks cons: linear & better ranking (original work, case proof with Steem)
 
 ## State grow history problem
-Idea:
+
 Every N blocks cybernodes prune blockchain/history and calculate IPFS hash for them/publish to IPFS, add hash to block and validate them with consensus. This state/blob economicaly finalized and new node start from them. Cybernodes motivated to store/provide this blob cause this cause network grow. Dynamically recalculate N with economy, newtork size, rank score...
 ~ vs direct IPFS DAG
 
@@ -86,13 +96,7 @@ All nodes run payment channels to serve request for their users and take tokens 
 
 Solution is payment channels based on HLTC and proof verification which unlocks amount earned for already served request (new signatures post via requester/user to cybernode wia whisper/ipfs-pub-sub)
 
-## About where
 
-Proof of location
-
-## Consensus
-
-Probably proof-of-history
 
 ## Selfish linking
 
@@ -102,7 +106,11 @@ In the center of spam protection system is an assumption that write operations c
 
 Auditing and curation are based on Steem reward mechanism. It is Sybil-resistant approach as votes are quadratic based on principle 1 token in system = 1 vote. In order to vote one should vest in shares for at least for 20 weeks. That solve a problem entirely because those who have a right to vote are strongly incentivized in a growth of his wealth. In order to prevent abuse of auditing and curation voting power decay implemented exactly as in Steem.
 
-## Incentive Structure and Distribution Mechanism
+## Distribution Mechanism
+
+Describe drops and other built in incentives
+
+## Incentive Structure
 
 To make cyber•rank economically resistant to Sybil attack and to incentivize all participant for rational behavior a system uses CYBER token.
 
