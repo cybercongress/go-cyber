@@ -186,18 +186,7 @@ Proposed blockchain design is based on tendermint consensus algorithm and has fa
 
 ## Scalability
 
-Our node implementation theoretically can process about ? predictions per second. This theoretical bound is primarily limited with the possibility to replay a blockchain [https://steemit.com/blockchain/@dantheman/how-to-process-100m-transfers-second-on-a-single-blockchain]. As of now, all blockchains are about 1B immutable documents which size is about 200 GB with average tx 200 kb. We need to store all hashes which are on average 64 bytes long. We estimated that storing in the index all blockchain documents as IPFS hashes and votes are roughly the same as storing all raw blockchain data. Linking 1B documents create significant overhead as blockchain index size can be up to 100 times more. Given this, we can assume that indexing all existing blockchains require about 4TB of SSD space. This is affordable for commodity hardware with 10x scaling capability without a necessity for sharding across several machines. We assume this is enough scalability margin for proof-of-concept.
-
-Initial indexing of 1B documents and 100B links will require a continuous load of the network at the upper bound of its capacity in the first year of its existence. If we assume that network will be able to process 10k transactions per second with 2MB block size we will be able to index all blockchains in 4 months. Further operations will require significantly less capacity as currently, not more than 1000 transactions per second happen among all blockchains.
-
-Based on the proposed search appliance we estimate that participants will require investing around $1M for dedicated hardware (21 witnesses) and the same amount for backup nodes. Thus overall costs of hardware network infrastructure can be around $2M. after full deployment.
-
-Worth to note that the network doesn't require ultimate configuration at the start and is able to optimize initial investments by the costs of time to index all blockchains. Thus costs at launch can be around $200k. Given that mining industry has been rapidly developed last years this can not be a showstopper for a project. We expect huge interest from miners as slots are limited with 21 fully paid nodes and ~20 of partially paid nodes (depend on the market).
-
-Possible scalability improvements include:
-- Hardware. This year Intel Optane [http://www.intel.com/content/www/us/en/architecture-and-technology/intel-optane-technology.html] That creates an opportunity to converge RAM and SSD. Our design has 3-year hardware margin for moving to cheaper and more dense next generation memory.
-- Software. The future of consensus computer optimization is in parallel processing. We are going to seriously invest in research of this field. Solving this issue will enable the network to scale nearly infinitely.
-- Caching/pin   ing of more scored objects in network (provides faster and in-place gateway to ipfs)
+Our node implementation theoretically can process about ? predictions per second. This theoretical bound is primarily limited with the possibility to replay a blockchain [https://steemit.com/blockchain/@dantheman/how-to-process-100m-transfers-second-on-a-single-blockchain]. As of now, all blockchains are about 1B immutable documents which size is about 200 GB with average tx 200 kb. We need to store all hashes which are on average 64 bytes long. We estimated that storing in the index all blockchain documents as IPFS hashes and votes are roughly the same as storing all raw blockchain data.
 
 ## Conclusion
 
