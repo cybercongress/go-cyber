@@ -68,7 +68,7 @@ We can represent our data structure as directed acyclic graph where vertices are
 
 ![](https://docs.google.com/drawings/d/1--Uj85OiU-uwj0gxUFWZDbjPuby3IEMBBVFSmHTNkDc/pub?w=785&h=436)
 
-Our model is recursive (check SpringRank) and requires the enormous amount of calculations which are limited within blockchain design. Model recalculation does not happen on a periodic basis rather it continuous. We consider introducing consensus variable, in addition to a block size, in order to target processing capacity of the network. Let's call it a _computing target of documents per block_ or CTD. Any witness will be able to set a number of documents the network should recompute every block. The blockchain takes as input computing target of legitimate witnesses and computes CTD as daily moving average. Based on CTD blockchain can schedule the range of CIDs that should be recomputed by every witness per round.
+Our model is recursive (check SpringRank) and requires the enormous amount of calculations which are limited within blockchain design. Model recalculation does not happen on a periodic basis rather it continuous. We consider introducing consensus variable, in addition to a block size, in order to target processing capacity of the network. Let's call it a _computing target of documents per block_ or CTD. Any witness will be able to set a number of documents the network should recompute every block. The blockchain takes as input computing target of legitimate witnesses and computes CTD as daily moving average. Based on CTD blockchain can schedule the range of IPFS hashes that should be recomputed by every witness per round.
 
 ## cyber•Rank
 Nebulas fail.
@@ -129,7 +129,7 @@ _Actions in search_. Proposed design enable native support for blockchain asset 
 
 _Shared mempools_.
 
-_Offline search_. IPFS make possible easy retrieval of documents from surroundings without the internet connection. cyber•Chain itself can be distributed using IPFS. That create a possibility for ubiquitous offline search.
+_Offline search_. IPFS make possible easy retrieval of documents from surroundings without the internet connection. cyberd itself can be distributed using IPFS. That create a possibility for ubiquitous offline search.
 
 _Smart Command Tools_. Command line tools can rely on relevant and structured answers from a search engine. That practically means that the following CLI tool is possible to implement
 
@@ -174,7 +174,7 @@ Proposed blockchain design is based on tendermint consensus algorithm and has fa
 
 ## Scalability
 
-Our node implementation theoretically can process about ? predictions per second. This theoretical bound is primarily limited with the possibility to replay a blockchain [https://steemit.com/blockchain/@dantheman/how-to-process-100m-transfers-second-on-a-single-blockchain]. As of now, all blockchains are about 1B immutable documents which size is about 200 GB with average tx 200 kb. We need to store all hashes which are on average 64 bytes long. We estimated that storing in the index all blockchain documents as CIDs and votes are roughly the same as storing all raw blockchain data. Linking 1B documents create significant overhead as blockchain index size can be up to 100 times more. Given this, we can assume that indexing all existing blockchains require about 4TB of SSD space. This is affordable for commodity hardware with 10x scaling capability without a necessity for sharding across several machines. We assume this is enough scalability margin for proof-of-concept.
+Our node implementation theoretically can process about ? predictions per second. This theoretical bound is primarily limited with the possibility to replay a blockchain [https://steemit.com/blockchain/@dantheman/how-to-process-100m-transfers-second-on-a-single-blockchain]. As of now, all blockchains are about 1B immutable documents which size is about 200 GB with average tx 200 kb. We need to store all hashes which are on average 64 bytes long. We estimated that storing in the index all blockchain documents as IPFS hashes and votes are roughly the same as storing all raw blockchain data. Linking 1B documents create significant overhead as blockchain index size can be up to 100 times more. Given this, we can assume that indexing all existing blockchains require about 4TB of SSD space. This is affordable for commodity hardware with 10x scaling capability without a necessity for sharding across several machines. We assume this is enough scalability margin for proof-of-concept.
 
 Initial indexing of 1B documents and 100B links will require a continuous load of the network at the upper bound of its capacity in the first year of its existence. If we assume that network will be able to process 10k transactions per second with 2MB block size we will be able to index all blockchains in 4 months. Further operations will require significantly less capacity as currently, not more than 1000 transactions per second happen among all blockchains.
 
