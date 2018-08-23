@@ -79,11 +79,9 @@ It's possible to compute a ranks for the whole MerkleDAG. But there are two prob
 
 What we need is to find a way to incentivize extraction from this data fog a meaning that is _relevant to users queries_.
 
-We can represent our data structure as directed acyclic graph where vertices are indexed documents and edges are directed links between them.
+We can represent ther knowledge graph as directed acyclic graph where vertices are ipfs hashes and edges are directed links between them. Our knowledge graph include users
 
-![](https://docs.google.com/drawings/d/1--Uj85OiU-uwj0gxUFWZDbjPuby3IEMBBVFSmHTNkDc/pub?w=785&h=436)
-
-Our model is recursive (check SpringRank) and requires the enormous amount of calculations which are limited within blockchain design. Model recalculation does not happen on a periodic basis rather it continuous. We consider introducing consensus variable, in addition to a block size, in order to target processing capacity of the network. Let's call it a _computing target of documents per block_ or CTD. Any witness will be able to set a number of documents the network should recompute every block. The blockchain takes as input computing target of legitimate witnesses and computes CTD as daily moving average. Based on CTD blockchain can schedule the range of IPFS hashes that should be recomputed by every witness per round.
+Need verification: We consider introducing consensus variable, in addition to a block size, in order to target processing capacity of the network. Let's call it a _computing target of documents per block_ or CTD. Any witness will be able to set a number of documents the network should recompute every block. The blockchain takes as input computing target of legitimate witnesses and computes CTD as daily moving average. Based on CTD blockchain can schedule the range of IPFS hashes that should be recomputed by every witness per round.
 
 ## cyber•Rank
 Nebulas fail.
