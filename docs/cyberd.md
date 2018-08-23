@@ -1,12 +1,14 @@
 # cyberd: A search consensus computer
 
 @xhipster, @litvintech
+
 v 0.2
+
 August 2018, Iceland and Tolyatti
 
 ## Abstract
 
-An incentivized consensus computer would allow to compute provably relevant answers without opinionated blackbox intermediaries such as Google. Stateless content-addressable peer-to-peer communication networks such as IPFS and stateful consensus computers such as Ethereum provide part of the solution but there are at least three problems associated with implementation. Of course, the first problem is subjective nature of relevance. The second problem is that it is hard to scale consensus computer of knowledge graph due to non linear nature of provably working solutions for web search such as PageRank and more than exponentially growing size of a knowledge graph including history of its formation. The third problem is that the quality of such knowledge graph will suffer from different attack surfaces such as sybil and selfish behavior of interacting agents. In this paper we (1) define a protocol for provable consensus computing of relevance between IPFS objects based on some offline observation and theory behind prediction markets, (2) solve a problem of implementation inside consensus computer based on linear SpringRank and propose workaround for pruning historical state and (3) design distribution and incentive scheme based on our experience and known attacks. Also we discuss some considerations on minimalistic architecture of the protocol as we believe that is critical to formation of a network of domain specific search consensus computers. As result of our work some applications never existed before emerge.
+An incentivized consensus computer would allow to compute provably relevant answers without opinionated blackbox intermediaries such as Google. Stateless content-addressable peer-to-peer communication networks such as IPFS and stateful consensus computers such as Ethereum provide part of the solution but there are at least three problems associated with implementation. Of course, the first problem is subjective nature of relevance. The second problem is that it is hard to scale consensus computer of knowledge graph due to non linear nature of provably working solutions for web search such as PageRank and more than exponentially growing size of a knowledge graph including history of its formation. The third problem is that the quality of such knowledge graph will suffer from different attack surfaces such as sybil and selfish behavior of interacting agents. In this paper we (1) define a protocol for provable consensus computing of relevance between IPFS objects based on some offline observation and theory behind prediction markets, (2) solve a problem of implementation inside consensus computer based on linear SpringRank and propose workaround for pruning historical state and (3) design distribution and incentive scheme based on our experience and known attacks. Also we discuss some considerations on minimalistic architecture of the protocol as we believe that is critical for formation of a network of domain specific search consensus computers. As result of our work some applications never existed before emerge.
 
 ## Introduction
 
@@ -18,23 +20,31 @@ Existing general purpose search engines are restrictive centralized databases ev
 - take txs
 - a tx format is <peer id> <up to 7 ipfs hashes of links> <signature>
 - <signature> must valid from <peer id>
-- emit predictions of relevant objects for every valid tx
-- every block calculate spring rank.
-- as input for every edge value get
-  <CYBER aka non transferable spring rank> + <CYB aka transferable tokens> of signers account
+- emit prediction of relevant objects for every valid tx
+- every block calculate spring rank for the whole graph
+- as input for every edge value get signer account's:
+    <CYBER aka non transferable spring rank>
+    plus
+    <CYB aka transferable tokens>
 - every block distribute 42 CYB based on objects's CYBERs
-- there are objects with keys and objects without keys
-- for object with keys distribute payouts based on CYBER weight
-- for objects without keys distribute payouts according to CYBER weight of incoming links with keys
+- there are objects with keys and objects without keys:
+    for object with keys distribute payouts based on CYBER weight
+    for objects without keys distribute payouts according to CYBER weight of incoming links with keys
+- every block apply predictions for links signed with computers threshold
+- every block write data to key/value store according to storage bound based on size and rank
 - every N blocks nodes reach consensus around pruned state history via ipfs hash of state blob
 
-## Search as prediction market on the relevance of links
+## Ranking as prediction market on links relevance
 
-(1) maximization of knowledge graph based , aligned with computational, storage and broadband bound and (2) reduction for attack surfaces such as sybil and selfish behavior
+(1) maximization of knowledge graph based, aligned with computational, storage and broadband bound and (2) reduction for attack surfaces such as sybil and selfish behavior
 
 ## Inductive reasoning
 
 A useful property of a computer is that it must know nothing about objects except when, who and where some prediction was asked. If we assume that a consensus computer must have some information about linked objects the complexity of such model growth unpredictably, hence a requirements for a computer for memory and computations. That is, deduction of a meaning inside consensus computer is expensive thus our design hardly depend on the blind assumption. Instead of we design incentives around meaning extractions
+
+## Bad behavior
+
+We design a system under assumption that in terms of search such a thing as bad behavior does not exist as nothing bad can be in the intention of finding answers. Ranks is computed on the only fact that something has been searched, thus linked and as result affected predictive model. Good analogy is observing in quantum mechanics. So no negative voting is implemented. Doing this we remove subjectivity out of the protocol and can define one possible method for proof of relevance. Also this approach significantly reduce attack surface.
 
 ## About when
 
@@ -52,11 +62,7 @@ Mining triangulations and attaching proof of location for every search query can
 
 Explain the concept of link chains and demonstrate a case of semantic linking based on interpretation of an ERC-20 transfer transaction or something similar
 
-## Bad behavior
-
-We design a system under assumption that in terms of search such a thing as bad behavior does not exist as nothing bad can be in the intention of finding answers. Ranks is computed on the only fact that something has been searched, thus linked and as result affected predictive model. Good analogy is observing in quantum mechanics. So no negative voting is implemented. Doing this we remove subjectivity out of the protocol and can define one possible method for proof of relevance. Also this approach significantly reduce attack surface.
-
-## Problem of ranking inside consensus computers
+## Problem of ranking using consensus computer
 
 Consensus computers bring serious resource bounds
 
@@ -91,11 +97,16 @@ Explain an economic difference and censorship impact between read search queries
 Idea:
 All nodes run payment channels to serve request for their users and take tokens for request processing. Because this is heavy computation (only cybernodes will serve this) nodes will serve this only with payments for them. Cybernodes run protocol and earn tokens for read requests.
 
-Solution is payment channels based on HLTC and proof verification which unlocks amount earned for already served request (new signatures post via requester/user to cybernode wia whisper/ipfs-pub-sub)
+Solution is payment channels based on HLTC and proof verification which unlocks amount earned for already served request (new signatures post via requester/user to cybernode via whisper/ipfs-pub-sub)
 
 ## Prediction by a consensus computer
 
-## Smart contracts for predictions
+A consensus computer is able to continuously build a knowledge graph by itself predicting existence of links and applying this predictions to a state of itself. Idea: Everything that has been earned by a consensus computer can form a validators budget.
+
+## Universal oracle
+A consensus computer is able to store the most relevant data in key value store. She is doing it by making a decision every block about what record he want to prune and what he want to apply. This key-value store can be ...
+
+## Smart contracts
 
 ## Selfish linking
 
