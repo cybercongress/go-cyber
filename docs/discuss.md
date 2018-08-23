@@ -26,3 +26,7 @@ A conventional advertiser is also has a tool to participate. Any link can be pro
 - incentivization of developers. As our primary focus is developers of decentralized and distributed applications we offer a convenient way of revenue generation in addition to possible revenue on dynamic snippets development. Every search and answer transaction can define a smart contract with up to 6 beneficiaries with a distribution of potential reward from this particular action. This creates a solid foundation for bootstrapping application ecosystem across a conventional web, mobile app stores and upcoming VR platforms.
 
 - idea: split reward pool in accordance to relevance of terms.
+
+- Priorities for learning the beast: Arxiv, Chains, Wiki, Github, Bittorent, IPFS
+
+- we cannot make distributions based on the history of ranking object because we decide to reject an idea of storing the historical state due to tremendous costs.

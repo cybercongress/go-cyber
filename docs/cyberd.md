@@ -1,4 +1,4 @@
-# cyberd: A proof-of-relevance consensus computer
+# cyberd: A search consensus computer
 
 @xhipster, @litvintech
 v 0.2
@@ -6,38 +6,32 @@ August 2018, Iceland and Tolyatti
 
 ## Abstract
 
-An incentivized consensus computer would allow to compute provable and relevant answers without any blackbox intermediaries such as Google. Stateless content-addressable peer-to-peer delivery networks such as IPFS and stateful distributed ledger technology such as Ethereum provide part of the solution but the problem is that ...
-without  In this paper we define a protocol for provable consensus computing of relevance between IPFS objects, solve some problems of implementation using consensus computing, propose it's incentivization scheme for (1) maximization of knowledge graph, aligned with computational, storage and computational bound and (2) optimization of predictability. Also we define an initial distribution scheme ...
+An incentivized consensus computer would allow to compute provably relevant answers without opinionated blackbox intermediaries such as Google. Stateless content-addressable peer-to-peer communication networks such as IPFS and stateful consensus computers such as Ethereum provide part of the solution but there are at least three problems associated with implementation. Of course, the first problem is subjective nature of relevance. The second problem is that it is hard to scale consensus computer of knowledge graph due to non linear nature of provably working solutions for web search such as PageRank and more than exponentially growing size of a knowledge graph including its history. The third problem is that the quality of such knowledge graph will suffer from different attack surfaces such as sybil and selfish behavior of interacting agents. In this paper we (1) define a protocol for provable consensus computing of relevance between IPFS objects based on some offline observation and theory behind prediction markets, (2) solve a problem of implementation inside consensus computer based on linear SpringRank and propose workaround for pruning historical state and (3) design distribution and incentive scheme based on known attacks. Also we discuss some considerations on minimalistic architecture of the protocol as we believe that is critical to formation of a network of domain specific search consensus computers. As result of our work some exciting applications emerge.
 
 ## Introduction
 
-Existing general purpose search engines are restrictive centralized databases everybody forced to trust. These search engines were designed primarily for client-server architecture based on DNS, HTTP, and IP protocols. The emergence of  paradigm, distributed ledger technology and consensus computing creates an opportunity for a new kind of Internet. We call it web3. Protocols such as Ethereum create a challenge and opportunity for a search engine based on developing technologies and specifically designed for them. Surprisingly the permission-less blockchain architecture itself allows organizing general purpose search engine in a way inaccessible for previous architectures.
+Existing general purpose search engines are restrictive centralized databases everybody forced to trust. These search engines were designed primarily for client-server architecture based on DNS, HTTP, and IP protocols. The emergence of a distributed protocol stack creates an opportunity for a new kind of Internet. We call it web3. Protocols such as Ethereum create a challenge and opportunity for a search engine based on developing technologies and specifically designed for them. Surprisingly the permission-less blockchain architecture itself allows organizing general purpose search engine in a way inaccessible for previous architectures.
 
 ## The protocol
 
-- Users has tokens and can submit link a according to broadband share
-- Consensus computer returns link predictions
-- Every N block Spring rank is computed
-- Tokens emitted based on amount of rank objects appeared (nft logic)
-- Manipulating the rank: Sybil Attack: Quadratic voting. Rank squared. Decay from linear in the beginning.
-
 - def state transition
 - take txs
-- calculate rank
-- distributed inflation via objects's current/history/changes ranks score
-    each object - Q(inner, question) and A(outer) and U(user) takes tokens via their ranks
-    Q/A - number of objects inner and outer edges define proportions of emission to token
-    U - vests reputations to their balances
-
-~ every N nodes consensus around prunned state history via ipfs hash of state blob
-
-
+- validate signatures and timestamps
+- emit predictions of relevant objects for every valid tx
+- every N block calculate spring rank
+- distribute inflation via objects's ranks score
+- each object - Q(inner, question) and A(outer) and U(user) takes tokens via their ranks
+- Q/A - number of objects inner and outer edges define proportions of emission to token
+- U - vests reputations to their balances
+- every N blocks nodes reach consensus around prunned state history via ipfs hash of state blob
 
 ## Search as prediction market on the relevance of links
 
+(1) maximization of knowledge graph based , aligned with computational, storage and broadband bound and (2) reduction for attack surfaces such as sybil and selfish behavior
+
 ## Inductive reasoning
 
-A useful property of a system is that it must know nothing about objects except when, who and where some prediction was asked. If we assume that a consensus computer must have some information about linked objects the complexity of such model growth unpredictably. That is. Deduction of a meaning inside consensus computer is expensive thus our design hardly depend on this assumption.
+A useful property of a computer is that it must know nothing about objects except when, who and where some prediction was asked. If we assume that a consensus computer must have some information about linked objects the complexity of such model growth unpredictably, hence a requirements for a computer for memory and computations. That is, deduction of a meaning inside consensus computer is expensive thus our design hardly depend on the blind assumption. Instead of we design incentives around meaning extractions
 
 ## About when
 
@@ -45,11 +39,11 @@ Proof-of-history + Tendermint
 
 ## About who
 
-Digital signatures and zero knoeldge proofs
+Digital signatures and zero knowledge proofs
 
 ## About where
 
-Proof of location
+Mining triangulations and attaching proof of location for every search query can significantly
 
 ## Link chains
 
@@ -96,9 +90,13 @@ All nodes run payment channels to serve request for their users and take tokens 
 
 Solution is payment channels based on HLTC and proof verification which unlocks amount earned for already served request (new signatures post via requester/user to cybernode wia whisper/ipfs-pub-sub)
 
+## Prediction by a consensus computer
 
+## Smart contracts for predictions
 
 ## Selfish linking
+
+Manipulating the rank: Sybil Attack: Quadratic voting. Rank squared. Decay from linear in the beginning.
 
 ## Spam protection
 
