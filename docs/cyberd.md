@@ -6,7 +6,7 @@ August 2018, Iceland and Tolyatti
 
 ## Abstract
 
-An incentivized consensus computer would allow to compute provably relevant answers without opinionated blackbox intermediaries such as Google. Stateless content-addressable peer-to-peer communication networks such as IPFS and stateful consensus computers such as Ethereum provide part of the solution but there are at least three problems associated with implementation. Of course, the first problem is subjective nature of relevance. The second problem is that it is hard to scale consensus computer of knowledge graph due to non linear nature of provably working solutions for web search such as PageRank and more than exponentially growing size of a knowledge graph including its history. The third problem is that the quality of such knowledge graph will suffer from different attack surfaces such as sybil and selfish behavior of interacting agents. In this paper we (1) define a protocol for provable consensus computing of relevance between IPFS objects based on some offline observation and theory behind prediction markets, (2) solve a problem of implementation inside consensus computer based on linear SpringRank and propose workaround for pruning historical state and (3) design distribution and incentive scheme based on known attacks. Also we discuss some considerations on minimalistic architecture of the protocol as we believe that is critical to formation of a network of domain specific search consensus computers. As result of our work some exciting applications emerge.
+An incentivized consensus computer would allow to compute provably relevant answers without opinionated blackbox intermediaries such as Google. Stateless content-addressable peer-to-peer communication networks such as IPFS and stateful consensus computers such as Ethereum provide part of the solution but there are at least three problems associated with implementation. Of course, the first problem is subjective nature of relevance. The second problem is that it is hard to scale consensus computer of knowledge graph due to non linear nature of provably working solutions for web search such as PageRank and more than exponentially growing size of a knowledge graph including history of its formation. The third problem is that the quality of such knowledge graph will suffer from different attack surfaces such as sybil and selfish behavior of interacting agents. In this paper we (1) define a protocol for provable consensus computing of relevance between IPFS objects based on some offline observation and theory behind prediction markets, (2) solve a problem of implementation inside consensus computer based on linear SpringRank and propose workaround for pruning historical state and (3) design distribution and incentive scheme based on our experience and known attacks. Also we discuss some considerations on minimalistic architecture of the protocol as we believe that is critical to formation of a network of domain specific search consensus computers. As result of our work some applications never existed before emerge.
 
 ## Introduction
 
@@ -16,14 +16,17 @@ Existing general purpose search engines are restrictive centralized databases ev
 
 - def state transition
 - take txs
-- validate signatures and timestamps
+- a tx format is <peer id> <up to 7 ipfs hashes of links> <signature>
+- <signature> must valid from <peer id>
 - emit predictions of relevant objects for every valid tx
-- every N block calculate spring rank
-- distribute inflation via objects's ranks score
-- each object - Q(inner, question) and A(outer) and U(user) takes tokens via their ranks
-- Q/A - number of objects inner and outer edges define proportions of emission to token
-- U - vests reputations to their balances
-- every N blocks nodes reach consensus around prunned state history via ipfs hash of state blob
+- every block calculate spring rank.
+- as input for every edge value get
+  <CYBER aka non transferable spring rank> + <CYB aka transferable tokens> of signers account
+- every block distribute 42 CYB based on objects's CYBERs
+- there are objects with keys and objects without keys
+- for object with keys distribute payouts based on CYBER weight
+- for objects without keys distribute payouts according to CYBER weight of incoming links with keys
+- every N blocks nodes reach consensus around pruned state history via ipfs hash of state blob
 
 ## Search as prediction market on the relevance of links
 
