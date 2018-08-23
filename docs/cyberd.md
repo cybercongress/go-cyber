@@ -20,6 +20,7 @@ Existing general purpose search engines are restrictive centralized databases ev
 - take txs
 - a tx format is `<peer id>` `<up to 7 ipfs hashes of links>` `<signature>`
 - `<signature>` must be valid from `<peer id>`
+- check that resource consumption of a signer is not exceed limits
 - emit prediction of relevant objects for every valid tx
 - every block calculate spring rank for the whole graph
 - as input for every edge value get signer account's:
