@@ -18,17 +18,22 @@ Existing general purpose search engines are restrictive centralized databases ev
 
 - def state transition
 - take txs
-- a tx format is <peer id> <up to 7 ipfs hashes of links> <signature>
-- <signature> must valid from <peer id>
+- a tx format is `<peer id>` `<up to 7 ipfs hashes of links>` `<signature>`
+- `<signature>` must be valid from `<peer id>`
 - emit prediction of relevant objects for every valid tx
 - every block calculate spring rank for the whole graph
 - as input for every edge value get signer account's:
-    <CYBER aka non transferable spring rank>
+
+    `<CYBER aka non transferable spring rank>`
+
     plus
-    <CYB aka transferable tokens>
+
+    `<CYB aka transferable tokens>`
 - every block distribute 42 CYB based on objects's CYBERs
 - there are objects with keys and objects without keys:
+
     for object with keys distribute payouts based on CYBER weight
+
     for objects without keys distribute payouts according to CYBER weight of incoming links with keys
 - every block apply predictions for links signed with computers threshold
 - every block write data to key/value store according to storage bound based on size and rank
