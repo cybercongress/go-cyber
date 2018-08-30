@@ -8,6 +8,8 @@ python_version = "3.6"
 
 [packages]
 requests = "*"
-web3 = "==4.6.0"
-
-
+web3 = "*"
+networkx = "*"
+scipy = "*"
+numpy = "*"
+humanize = "*"
