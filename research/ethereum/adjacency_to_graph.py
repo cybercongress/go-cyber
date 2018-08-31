@@ -39,6 +39,9 @@ def load_edges(dataFile, edges):
         edge = (cells[0], cells[1])
         weight = cells[2]
 
+#  control, how much edges to read
+#       if len(edges) > 20000: break  
+
         if edge not in edges:
             edges[edge] = weight
         else:
