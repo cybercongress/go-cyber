@@ -13,3 +13,16 @@ Nodes - Ethereum Addresses. Links from addresses txes. Link direction: for tx A 
 ## Current values
 
 As for 29.08.18 Ethereum network  consists of 300.851 millions transaction and 63.225 millions addresses. //todo add link for cybernode.live
+
+
+## Current Research. 
+- Algorithms to solve LSE
+- Way to store matrix, best suited for LSE solving algorithm
+
+
+## Generate random matrix and calculate SpringRank
+```
+A = scipy.sparse.rand(100000, 100000, density=0.0015, format="csr", random_state=42)
+print(A.todense())
+calculate_SpringRank(A)
+```
