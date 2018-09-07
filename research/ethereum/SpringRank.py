@@ -1,137 +1,59 @@
-import networkx as nx
+import humanize
 import numpy as np
 import scipy.sparse
 import scipy.sparse.linalg
 
+from tools import record_execution_time, print_with_time
 
-def SpringRank(A, alpha=0., l0=1.0, l1=1.0, solver='bicgstab', verbose=True):
+
+# noinspection PyPep8Naming
+@record_execution_time(
+    before_message="Calculating SpringRank",
+    after_message="Rank calculated in {}"
+)
+def calculate_SpringRank(A):
     """
-    Main routine to calculate SpringRank by solving linear system
-    Default parameters are initialized as in the standard SpringRank model
+    Main routine to calculate SpringRank by solving linear system.
+    Default parameters are initialized as in the standard SpringRank model.
 
-    INPUT:
+    Matrix equation to solve: Bx=b --> [Dout+Din−A_o]x=[Dout−Din]*1+(doutN−dinN)*1
+    where B = [Dout+Din−A_o]=[Dout+Din−A-A.T-Anj-Ajn]
+    where b = [Dout−Din]*1+(doutN−dinN)*1
 
-        A=network adjacency matrix (can be weighted)
-        alpha: controls the impact of the regularization term
-        l0: regularization spring's rest length
-        l1: interaction springs' rest length
-        solver: linear system solver. Options: 'spsolve'(direct, slower) or 'bicgstab' (iterative, faster)
-        verbose: if True, then outputs some info about the numerical solvers
-
-    OUTPUT:
-
-        rank: N-dim array, indeces represent the nodes' indices used in ordering the matrix A
-
+    :param A: network adjacency matrix (can be weighted)
+    :return: N-dim array, indices represent the nodes' indices used in ordering the matrix A
     """
-    N = A.shape[0]
-    k_in = np.sum(A, 0)
-    k_out = np.sum(A, 1)
-    One = np.ones(N)
 
-    C = A+A.T
-    D1 = np.zeros(A.shape)
-    D2 = np.zeros(A.shape)
+    N = A.shape[0]  # N is matrix size - NxN. shape is [N,N] array
+    One = np.ones(N)  # [1,1,1..., 1]
 
-    for i in range(A.shape[0]):
-        D1[i, i] = k_out[i, 0]+k_in[0, i]
-        D2[i, i] = l1*(k_out[i, 0]-k_in[0, i])
+    d_in_matrix = A.sum(axis=0)  # returns 2-array [[sum(col_1), sum(col_2), ..., sum(col_N)]]
+    d_out_matrix = A.sum(axis=1)  # returns 2-array [[sum(row_1)], [sum(row_2)], ...., [sum(row_N)]]
 
-    if alpha != 0.:
-        if verbose == True:
-            print('Using alpha!=0: matrix is invertible')
+    d_in = [d_in_matrix[0, j] for j in range(N)]  # [sum(col_1), sum(col_2), ..., sum(col_N)]
+    d_out = [d_out_matrix[i, 0] for i in range(N)]  # [sum(row_1), sum(row_2), ..., sum(row_N)]
 
-        B = One*alpha*l0+np.dot(D2, One)
-        A = alpha*np.eye(N)+D1-C
-        A = scipy.sparse.csr_matrix(np.matrix(A))
+    D_int = scipy.sparse.diags(d_in)  # NxN matrix, where elements of d_in array located on diagonals and other are 0
+    D_out = scipy.sparse.diags(d_out)  # NxN matrix, where elements of d_out array located on diagonals and other are 0
 
-        if solver == 'spsolve':
-            if verbose == True:
-                print('Using scipy.sparse.linalg.spsolve(A,B)')
-            rank = scipy.sparse.linalg.spsolve(A, B)
-            # rank=np.linalg.solve(A,B)  # cannot use it with sparse matrices
-            return np.transpose(rank)
-        elif solver == 'bicgstab':
-            if verbose == True:
-                print('Using scipy.sparse.linalg.bicgstab(A,B)')
-            rank = scipy.sparse.linalg.bicgstab(A, B)[0]
-            return np.transpose(rank)
-        else:
-            print('Using scipy.sparse.linalg.bicgstab(A,B)')
-            rank = scipy.sparse.linalg.bicgstab(A, B)[0]
+    # get last row of A and create new matrix NxN matrix, where each row is last row of A
+    print_with_time("Calculating Anj ....")
+    A_N_j = scipy.sparse.vstack([A.getrow(N - 1)] * N)
 
-    else:
-        if verbose == True:
-            print('alpha=0, using faster computation: fixing a rank degree of freedom')
+    # get last column of A and create new matrix NxN matrix, where each column is last column of A
+    print_with_time("Calculating Ajn ....")
+    A_j_N = scipy.sparse.hstack([A.getcol(N - 1).tocsc()] * N, format="csc")
 
-        C = C+np.repeat(A[N-1, :][None], N, axis=0)+np.repeat(A[:, N-1].T[None], N, axis=0)
-        D3 = np.zeros(A.shape)
-        for i in range(A.shape[0]):
-            D3[i, i] = l1*(k_out[N-1, 0]-k_in[0, N-1])
+    print_with_time("Calculating A_o ....")
+    A_o = A + A.transpose() + A_N_j + A_j_N
 
-        B = np.dot(D2, One)+np.dot(D3, One)
-        # A=D1-C
-        A = scipy.sparse.csr_matrix(np.matrix(D1-C))
-        if solver == 'spsolve':
-            if verbose == True:
-                print('Using scipy.sparse.linalg.spsolve(A,B)')
-            rank = scipy.sparse.linalg.spsolve(A, B)
-        elif solver == 'bicgstab':
-            if verbose == True:
-                print('Using scipy.sparse.linalg.bicgstab(A,B)')
-            rank = scipy.sparse.linalg.bicgstab(A, B)[0]
-        else:
-            print('Using scipy.sparse.linalg.bicgstab(A,B)')
-            rank = scipy.sparse.linalg.bicgstab(A, B)[0]
-        return np.transpose(rank)
+    print_with_time("Calculating B ....")
+    B = D_out + D_int - A_o
+    size_of_B = humanize.naturalsize(B.data.nbytes + B.indptr.nbytes + B.indices.nbytes)
+    print_with_time("Matrix B takes {} RAM".format(size_of_B))
 
+    print_with_time("Calculating b ....")
+    b = (D_out - D_int) * One + (d_out[N - 1] - d_in[N - 1]) * One
 
-def SpringRank_planted_network(N, beta, alpha, K, prng, l0=0.5, l1=1.):
-    '''
-
-    Uses the SpringRank generative model to build a directed, possibly weigthed and having self-loops, network.
-    Can be used to generate benchmarks for hierarchical networks
-
-    Steps:
-        1. Generates the scores (default is factorized Gaussian)
-        2. Extracts A_ij entries (network edges) from Poisson distribution with average related to SpringRank energy
-
-    INPUT:
-
-        N=# of nodes
-        beta= inverse temperature, controls noise
-        alpha=controls prior's variance
-        K=E/N  --> average degree, controls sparsity
-        l0=prior spring's rest length 
-        l1=interaction spring's rest lenght
-
-    OUTPUT:
-        G: nx.DiGraph()         Directed (possibly weighted graph, there can be self-loops)
-
-    '''
-    G = nx.DiGraph()
-
-    scores = prng.normal(l0, 1./np.sqrt(alpha*beta), N)  # planted scores ---> uses factorized Gaussian
-    for i in range(N):
-        G.add_node(i, score=scores[i])
-
-    #  ---- Fixing sparsity i.e. the average degree  ----
-    Z = 0.
-    for i in range(N):
-        for j in range(N):
-            Z += np.exp(-0.5*beta*np.power(scores[i]-scores[j]-l1, 2))
-    c = float(K*N)/Z
-    #  --------------------------------------------------
-
-    # ----  Building the graph   ------------------------
-    for i in range(N):
-        for j in range(N):
-
-            H_ij = 0.5*np.power((scores[i]-scores[j]-l1), 2)
-            lambda_ij = c*np.exp(-beta*H_ij)
-
-            A_ij = prng.poisson(lambda_ij, 1)[0]
-
-            if A_ij > 0:
-                G.add_edge(i, j, weight=A_ij)
-
-    return G
+    print_with_time("Solving Bx=b equation using 'bicgstab' iterative method")
+    return scipy.sparse.linalg.bicgstab(B, b)[0]
