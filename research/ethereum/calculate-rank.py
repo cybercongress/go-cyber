@@ -22,5 +22,6 @@ print("-----------------------------------------------")
 A = build_matrix(graph, nodes)
 print("-----------------------------------------------")
 
-rank = calculate_SpringRank(A)
+iterations, raw_rank = calculate_SpringRank(A)  # raw rank is array with values, where indices is nodes list indices
+print(f"Spring Rank calculated in {iterations} iterations")
 print("-----------------------------------------------")

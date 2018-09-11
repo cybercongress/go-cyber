@@ -55,5 +55,18 @@ def calculate_SpringRank(A):
     print_with_time("Calculating b ....")
     b = (D_out - D_int) * One + (d_out[N - 1] - d_in[N - 1]) * One
 
+    # ----------------------------------------------------------------------------
+    iterations = 0
+
+    def bicgstab_callback(x):
+        nonlocal iterations
+        iterations += 1
+
     print_with_time("Solving Bx=b equation using 'bicgstab' iterative method")
-    return scipy.sparse.linalg.bicgstab(B, b)[0]
+    result = scipy.sparse.linalg.bicgstab(B, b, callback=bicgstab_callback)
+
+    if result[1] != 0:
+        print_with_time("Can't solve Bx=b")
+        raise ArithmeticError("Can't solve Bx=b")
+
+    return iterations, result[0]
