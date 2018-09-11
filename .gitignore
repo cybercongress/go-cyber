@@ -3,3 +3,7 @@ node_modules/
 .lotion_node*/
 
 *_blocks_data*
+
+.idea/
+
+*.pyc
