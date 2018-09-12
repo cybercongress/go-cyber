@@ -37,10 +37,13 @@ for node, node_rank in rank.items():
 initial_rank_file.close()
 print("-----------------------------------------------")
 
+initial_count = 100
+final_count = 1_000
+step = 100
 print("Going to recalculate rank")
-recalculate_rank_file = open("recalculating-rank-info-100", "w")
-recalculate_rank_file.write(f"-1 {iterations} 0 0")
-for new_edges_count in range(0, 1_000, 100):
+recalculate_rank_file = open(f"recalculating-rank-info-{step}", "w")
+recalculate_rank_file.write(f"0 {iterations} 0 0")
+for new_edges_count in range(initial_count, final_count, step):
     iterations, new_rank = update_rank(copy.deepcopy(graph), copy.deepcopy(rank), new_edges_count)
     mean_rank_diff, average_rank_diff = ranks_diff(rank, new_rank)
     recalculate_rank_file.write(f"{new_edges_count} {iterations} {mean_rank_diff} {average_rank_diff}\r\n")

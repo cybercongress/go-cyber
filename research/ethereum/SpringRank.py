@@ -64,7 +64,7 @@ def calculate_SpringRank(A, initial_x=None):
         iterations += 1
 
     print_with_time("Solving Bx=b equation using 'bicgstab' iterative method")
-    result = scipy.sparse.linalg.bicgstab(B, b, x0=initial_x, callback=bicgstab_callback, tol=1e-4)
+    result = scipy.sparse.linalg.bicgstab(B, b, x0=initial_x, callback=bicgstab_callback)
 
     if result[1] != 0:
         print_with_time("Can't solve Bx=b")
