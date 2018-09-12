@@ -11,7 +11,7 @@ from tools import record_execution_time, print_with_time
     before_message="Calculating SpringRank",
     after_message="Rank calculated in {}"
 )
-def calculate_SpringRank(A):
+def calculate_SpringRank(A, initial_x=None):
     """
     Main routine to calculate SpringRank by solving linear system.
     Default parameters are initialized as in the standard SpringRank model.
@@ -20,6 +20,7 @@ def calculate_SpringRank(A):
     where B = [Dout+Din−A_o]=[Dout+Din−A-A.T-Anj-Ajn]
     where b = [Dout−Din]*1+(doutN−dinN)*1
 
+    :param initial_x: initial solution guess (solution start point)
     :param A: network adjacency matrix (can be weighted)
     :return: N-dim array, indices represent the nodes' indices used in ordering the matrix A
     """
@@ -63,7 +64,7 @@ def calculate_SpringRank(A):
         iterations += 1
 
     print_with_time("Solving Bx=b equation using 'bicgstab' iterative method")
-    result = scipy.sparse.linalg.bicgstab(B, b, callback=bicgstab_callback)
+    result = scipy.sparse.linalg.bicgstab(B, b, x0=initial_x, callback=bicgstab_callback, tol=1e-4)
 
     if result[1] != 0:
         print_with_time("Can't solve Bx=b")
