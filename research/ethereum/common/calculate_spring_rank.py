@@ -1,17 +1,18 @@
+from typing import List
+
 import humanize
 import numpy as np
 import scipy.sparse
 import scipy.sparse.linalg
+from networkx import DiGraph
 
-from tools import record_execution_time, print_with_time
+from common.adjacency_list_to_graph import print_graph_info, Edge
+from common.graph_to_matrix import build_matrix
+from common.tools import Rank
+from common.tools import print_with_time
 
 
-# noinspection PyPep8Naming
-@record_execution_time(
-    before_message="Calculating SpringRank",
-    after_message="Rank calculated in {}"
-)
-def calculate_SpringRank(A, initial_x=None):
+def calculate_spring_rank(A, initial_x=None):
     """
     Main routine to calculate SpringRank by solving linear system.
     Default parameters are initialized as in the standard SpringRank model.
@@ -71,3 +72,33 @@ def calculate_SpringRank(A, initial_x=None):
         raise ArithmeticError("Can't solve Bx=b")
 
     return iterations, result[0]
+
+
+def update_rank(graph: DiGraph, rank: Rank, new_edges: List[Edge]) -> (int, Rank):
+    """
+     Updates graph rank for n new links.
+
+    :param graph: graph to add new links
+    :param rank: graph current ranks
+    :param n: number of new links to add
+    :return: (number of iterations, new rank)
+    """
+    for edge, weight in new_edges:
+        if graph.has_edge(edge[0], edge[1]):
+            graph[edge[0]][edge[1]]['weight'] += weight
+        else:
+            graph.add_edge(edge[0], edge[1], weight=weight)
+
+    nodes = list(graph)
+    print_graph_info(graph)
+
+    A = build_matrix(graph, nodes)
+
+    initial_x = []
+    for node in nodes:
+        initial_x.append(rank.get(node, 0))
+
+    iterations, raw_rank = calculate_spring_rank(A, initial_x)
+    rank = dict(zip(nodes, raw_rank))
+
+    return iterations, rank

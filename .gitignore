@@ -7,3 +7,6 @@ node_modules/
 .idea/
 
 *.pyc
+
+initial-rank
+initial_guess_impact_results

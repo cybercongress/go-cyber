@@ -1,4 +1,3 @@
-
 import sys
 
 from web3.auto import w3
@@ -21,32 +20,32 @@ str str int
 Usage:
 1) Start local Parity full node
 2) Run Script with two params: start block  and end blocknumbers ex:
-python ethereum-chain-to-adjacency-list.py 6235000 6235009
+python ethereum_chain_to_adjacency_list.py 6235000 6235009
 """
 
-firstBlockToDownload = int(sys.argv[1])
-lastBlockToDownload = int(sys.argv[2])
-fileName = "{}-{}_blocks_data".format(firstBlockToDownload, lastBlockToDownload)
+first_block_to_download = int(sys.argv[1])
+last_block_to_download = int(sys.argv[2])
+
+file_name = "../data/{}-{}_blocks_data".format(first_block_to_download, last_block_to_download)
 
 print("")
 print("-----------------------------------------------")
-print("About to download {}-{} blocks".format(firstBlockToDownload, lastBlockToDownload))
+print("About to download {}-{} blocks".format(first_block_to_download, last_block_to_download))
 print("")
-resultDataFile = open(fileName, "w")
+result_data_file = open(file_name, "w")
 
+for block_number in range(first_block_to_download, last_block_to_download + 1):
 
-for blockNumber in range(firstBlockToDownload, lastBlockToDownload + 1):
-
-    print("Downloading {} block".format(blockNumber))
-    block = w3.eth.getBlock(blockNumber, True)
+    print("Downloading {} block".format(block_number))
+    block = w3.eth.getBlock(block_number, True)
 
     for tx in block.transactions:
         if tx.to is not None:
-            resultDataFile.write("{} {} {}\r\n".format(tx.to, getattr(tx, 'from'), tx.value))
+            result_data_file.write("{} {} {}\r\n".format(tx.to, getattr(tx, 'from'), tx.value))
         else:
-            resultDataFile.write("{} {} {}\r\n".format(tx.creates, getattr(tx, 'from'), tx.value))
+            result_data_file.write("{} {} {}\r\n".format(tx.creates, getattr(tx, 'from'), tx.value))
 
-resultDataFile.close()
-print("Finished to download data into {}".format(fileName))
+result_data_file.close()
+print("Finished to download data into {}".format(file_name))
 print("-----------------------------------------------")
 print("")
