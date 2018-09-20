@@ -2,13 +2,7 @@ import humanize
 from networkx import DiGraph, nx
 from scipy.sparse import csr_matrix
 
-from tools import record_execution_time
 
-
-@record_execution_time(
-    before_message="Building matrix A",
-    after_message="Matrix build in {}"
-)
 def build_matrix(graph: DiGraph, nodes: [str]) -> csr_matrix:
     estimated_size_of_A = humanize.naturalsize(
         graph.number_of_edges() * 8 + graph.number_of_edges() * 4 + graph.number_of_nodes() * 4
