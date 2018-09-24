@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"github.com/cybercongress/cyberd/cosmos/poc/app"
+	"github.com/spf13/pflag"
 	"io"
 	"os"
 
@@ -18,6 +19,10 @@ import (
 	tmtypes "github.com/tendermint/tendermint/types"
 )
 
+var (
+	FlagAccsCount = "accs-count"
+)
+
 func main() {
 	cdc := app.MakeCodec()
 	ctx := server.NewDefaultContext()
@@ -28,7 +33,16 @@ func main() {
 		PersistentPreRunE: server.PersistentPreRunEFn(ctx),
 	}
 
-	server.AddCommands(ctx, cdc, rootCmd, server.DefaultAppInit,
+	cyberdFlagSet := pflag.NewFlagSet("cyberd-init", pflag.ExitOnError)
+	cyberdFlagSet.Int(FlagAccsCount, 1, "Count of initial accounts")
+
+	cyberdAppInit := server.AppInit{
+		FlagsAppGenState: cyberdFlagSet,
+		AppGenState:      CyberdAppGenState,
+		AppGenTx:         CyberdAppGenTx,
+	}
+
+	server.AddCommands(ctx, cdc, rootCmd, cyberdAppInit,
 		server.ConstructAppCreator(newApp, "cyberd"),
 		server.ConstructAppExporter(exportAppStateAndTMValidators, "cyberd"))
 

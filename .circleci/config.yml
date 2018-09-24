@@ -13,7 +13,7 @@ jobs:
       - run:
           name: Build Cyberd Image
           command: |
-            cd cosmos/zeronet
+            cd cosmos/poc
             docker build -t build/cyberd ./
             docker login -u $DOCKER_USER -p $DOCKER_PASS
             docker tag build/cyberd cybernode/cyberd:$CIRCLE_BRANCH
