@@ -1,4 +1,4 @@
-# Release Notes
+# Change Log
 
 ## [Unreleased](https://github.com/cybercongress/cyberd/tree/HEAD)
 
