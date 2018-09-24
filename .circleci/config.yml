@@ -1,5 +1,12 @@
 version: 2
 
+
+aliases:
+  - &defaults
+    working_directory: ~/build
+    docker:
+      - image: circleci/openjdk:8-jdk
+
 jobs:
 
   build_and_deploy_images_to_dockerhub:
@@ -19,22 +26,64 @@ jobs:
             docker tag build/cyberd cybernode/cyberd:$CIRCLE_BRANCH
             docker push cybernode/cyberd:$CIRCLE_BRANCH
 
-  restart_gcloud_seed_cluster-job:
-    docker:
-      - image: google/cloud-sdk:latest
+  update_changelog:
+    <<: *defaults
     steps:
+      - setup_remote_docker:
+          version: 17.11.0-ce
+      - checkout
       - run:
-        name: Restart Cyberd Seed Cluster
-        command: |
-          echo $GCLOUD_SERVICE_KEY > gcloud-service-key.json
-          gcloud auth activate-service-account --key-file=${CIRCLE_WORKING_DIRECTORY}/gcloud-service-key.json
-          gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
-          gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
-          gcloud --quiet container clusters get-credentials ${GOOGLE_CLUSTER_NAME}
+          name: Build And Test Project
+          command: |
+            cid=$(docker run -d -it ferrarimarco/github-changelog-generator:1.14.3 -u cybercongress -p cyberd --exclude-tags-regex .*[.].*[.].*[.].* --token $CHANGELOG_GITHUB_TOKEN )
+            docker attach $cid
+            docker cp $cid:/usr/local/src/your-app/CHANGELOG.md ./CHANGELOG.md
+            diff=$(git diff CHANGELOG.md)
+            if [[  -n  "$diff" ]]; then
+              git config --global user.email "cybercongress42@gmail.com"
+              git config --global user.name "Cyber Admin"
+              git add CHANGELOG.md
+              git commit -m "Circle CI: Update Changelog"
+              git push --set-upstream origin master
+            fi
 
+
+  update_docs:
+    <<: *defaults
+    steps:
+    - checkout
+    - run:
+        name: Clone congress repo
+        working_directory: ~/workdir
+        command: |
+          git clone -q --depth 1 https://${DOCS_GITHUB_TOKEN}@github.com/cybercongress/congress.git
+    - deploy:
+        name: Update docs from cyber search repo
+        working_directory: ~/workdir/congress
+        command: |
+          # We need to remove current files in folder to avoid duplicating renamed files
+          rm -rf ./knowledge/docs/cyberd/*
+          cp -r ~/build/docs/. ./knowledge/docs/cyberd/
+          git add -N knowledge/docs/cyberd
+          diff=$(git diff knowledge/docs/cyberd/)
+          if [[  -n  "$diff" ]]; then
+            git config user.email "cybercongress42@gmail.com"
+            git config user.name "Cyber Admin"
+            git add knowledge/docs/cyberd/
+            git commit -m "Circle CI: Update Docs"
+            # Push quietly to prevent showing the token in log
+            git push -q https://${DOCS_GITHUB_TOKEN}@github.com/cybercongress/congress.git master
+          fi
 
 workflows:
   version: 2
   search_build:
     jobs:
-      - build_and_deploy_images_to_dockerhub
+      - update_changelog:
+          filters:
+            branches:
+              only: master
+      - update_docs:
+          filters:
+            branches:
+              only: master
