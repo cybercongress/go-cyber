@@ -6,6 +6,7 @@
 
 **Closed issues:**
 
+- Make cyberd docs to be included into common wiki. [\#32](https://github.com/cybercongress/cyberd/issues/32)
 - Write LT/NLT logic to Losion Zeronet [\#19](https://github.com/cybercongress/cyberd/issues/19)
 - Research basic technologies [\#14](https://github.com/cybercongress/cyberd/issues/14)
 - Research basic papers [\#13](https://github.com/cybercongress/cyberd/issues/13)
