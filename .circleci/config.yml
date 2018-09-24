@@ -64,6 +64,9 @@ jobs:
           # We need to remove current files in folder to avoid duplicating renamed files
           rm -rf ./knowledge/docs/cyberd/*
           cp -r ~/build/docs/. ./knowledge/docs/cyberd/
+          cp ~/build/CHANGELOG.md ./knowledge/docs/cyberd/Release_notes.md
+          cp ~/build/CONTRIBUTING.md ./knowledge/docs/cyberd/Contributing.md
+          cp ~/build/ROADMAP.md ./knowledge/docs/cyberd/Roadmap.md
           git add -N knowledge/docs/cyberd
           diff=$(git diff knowledge/docs/cyberd/)
           if [[  -n  "$diff" ]]; then
