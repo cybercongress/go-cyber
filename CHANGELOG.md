@@ -18,6 +18,7 @@
 
 **Merged pull requests:**
 
+- Genesis zeronet: Cosmos SDK [\#33](https://github.com/cybercongress/cyberd/pull/33) ([arturalbov](https://github.com/arturalbov))
 - \[WIP\] 21 calculate spring rank for ethereum [\#23](https://github.com/cybercongress/cyberd/pull/23) ([hleb-albau](https://github.com/hleb-albau))
 - Fixing typo [\#2](https://github.com/cybercongress/cyberd/pull/2) ([trummax](https://github.com/trummax))
 
