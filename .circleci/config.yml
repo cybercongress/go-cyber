@@ -101,7 +101,6 @@ jobs:
         command: |
           cd cosmos/poc
           sudo apt-get update && sudo apt-get install -y rpm
-          dep ensure -vendor-only
           curl -sL https://git.io/goreleaser | bash
 
 workflows:
