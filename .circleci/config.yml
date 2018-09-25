@@ -100,6 +100,7 @@ jobs:
         name: Release Cyberd Binaries
         command: |
           cd cosmos/poc
+          go build ./...
           sudo apt-get update && sudo apt-get install -y rpm
           curl -sL https://git.io/goreleaser | bash
 
