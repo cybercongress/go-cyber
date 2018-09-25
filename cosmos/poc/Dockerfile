@@ -6,6 +6,7 @@ COPY . .
 RUN apk add --no-cache git
 
 RUN GO111MODULE=on CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -ldflags="-w -s" -o /go/bin/cyberd ./cyberd
+RUN GO111MODULE=on CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -ldflags="-w -s" -o /go/bin/cyberdcli ./cyberdcli
 
 FROM alpine:edge
 
@@ -13,7 +14,15 @@ RUN apk add --update ca-certificates
 WORKDIR /root
 
 COPY --from=builder /go/bin/cyberd /usr/bin/cyberd
+COPY --from=builder /go/bin/cyberdcli /usr/bin/cyberdcli
+
+COPY genesis.json /genesis.json
+COPY config.toml /config.toml
 
 EXPOSE 26656 26657
 
-ENTRYPOINT ["cyberd", "start"]
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["cyberd", "start"]

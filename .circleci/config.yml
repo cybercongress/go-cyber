@@ -1,11 +1,25 @@
 version: 2
 
+aliases:
+
+# Common configuration for all jobs
+  - &release_filter
+    filters:
+      tags:
+        only: /.*/
+      branches:
+        ignore: /.*/
+  - &master_filter
+    filters:
+      branches:
+        only: master
+
 jobs:
 
   build_and_deploy_images_to_dockerhub:
     working_directory: ~/cyberd
     docker:
-       - image: circleci/node:latest-browsers
+       - image: circleci/golang:1.11
     steps:
       - checkout
       - setup_remote_docker:
@@ -32,9 +46,27 @@ jobs:
           gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
           gcloud --quiet container clusters get-credentials ${GOOGLE_CLUSTER_NAME}
 
+  release_cyberd_and_cyberdcli_binaries:
+      docker:
+        - image: circleci/golang:1.11
+      working_directory: /go/src/github.com/cybercongress/cyberd
+      steps:
+        - checkout
+        - run:
+            name: Release Cyberd Binaries
+            command: |
+              cd cosmos/poc
+              sudo apt-get update && sudo apt-get install -y rpm
+              dep ensure -vendor-only
+              curl -sL https://git.io/goreleaser | bash
 
 workflows:
   version: 2
-  search_build:
+  cyberd_build:
     jobs:
       - build_and_deploy_images_to_dockerhub
+#          filters:
+#            branches:
+#              only: master
+      - release_cyberd_and_cyberdcli_binaries:
+          <<: *release_filter
