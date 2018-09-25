@@ -1,6 +1,6 @@
 builds:
   -
-    main: ./cyberd/main.go
+    main: ./cyberd
     binary: cyberd
     env:
       - CGO_ENABLED=0
@@ -12,7 +12,7 @@ builds:
     goarch:
       - amd64
   -
-    main: ./cyberdcli/main.go
+    main: ./cyberdcli
     binary: cyberdcli
     env:
       - CGO_ENABLED=0
