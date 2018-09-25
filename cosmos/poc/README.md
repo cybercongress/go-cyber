@@ -1,6 +1,44 @@
 # Cyberd Usage Guide
 
-You will need to have GO 1.11+ installed on your computer.
+## Installing Cyberd Node
+
+### Use docker
+
+In order to start cyberd node locally using docker run following command (replace ${YOUR_DATA_LOCAL_FOLDER} and ${YOUR_CONFIG_LOCAL_FOLDER} with your local folders where you want to store cyberd data and configuration):
+```bash
+docker run -d --restart always --name=cyberd -p 26656:26656 -p 26657:26657 -v ${YOUR_DATA_LOCAL_FOLDER}:/root/.cyberd/data -v ${YOUR_CONFIG_LOCAL_FOLDER}:/root/.cyberd/config cybernode/cyberd:master
+```
+It will run NON-VALIDATOR local node and connect it to our seed node called "earth".
+
+You could check that node is running by executing:
+```bash
+docker logs cyberd
+```
+
+### Use compiled binary
+
+You could find latest binaries in our [releases](https://github.com/cybercongress/cyberd/releases).
+Choose appropriate binary for your system, download them and add to $PATH.
+
+To connect to our network you should copy `genesis.json` and `config.toml` files from [here](https://github.com/cybercongress/cyberd/tree/master/cosmos/poc)
+and put them into `$HOME/.cyberd/config/` folder
+
+After everything is set run:
+```bash
+cyberd init
+```
+to initialize your node.
+
+To start node use following command:
+```bash
+cyberd start
+```
+
+Node is started! You should see logs with generated blocks.
+
+### Build binaries manually
+
+You need to have GO 1.11+ installed on your computer.
 
 Install GO by following the [official docs](https://golang.org/doc/install). Remember to set your `$GOPATH`, `$GOBIN`, and `$PATH` environment variables, for example:
 
@@ -33,61 +71,70 @@ go install ./cyberdcli
 
 This will create binaries for `cyberd` and `cyberdcli`
 
-## Using cyberd and cyberdcli
+After you built binaries follow [this](#use-compiled-binary) instructions to run node.
 
-Let's start by initializing the cyberd daemon. Run the command
-```bash
-cyberd init
-```
-And you should see something like this:
-```json
-{
-  "chain_id": "test-chain-rBoHlB",
-  "node_id": "1afb0a84c9b33eb87a6ee9d7da8b0cf14245c1f6",
-  "app_message": {
-    "secret": "enough gate sock devote move lumber weekend gesture illness lucky that story memory ocean mad horse allow easily tunnel room sand unlock honey onion"
-  }
-}
-```
+## Using cyberdcli
 
-This creates the `~/.cyberd` folder, which has config.toml, genesis.json, node_key.json, priv_validator.json. Take some time to review what is contained in these files if you want to understand what is going on at a deeper level.
+You could find latest cli in our [releases section](https://github.com/cybercongress/cyberd/releases)
+or build it by yourself using [this](#build-binaries-manually) guide.
 
 ### Generating keys
 
-The next thing we'll need to do is add the key from priv_validator.json to the gaiacli key manager. For this we need the 16 word seed that represents the private key, and a password. You can also get the 16 word seed from the output seen above, under `"secret"`. Then run the command:
+After you have cyberdcli binary installed you probably want to generate personal keys to sign and broadcast transactions.
 
+To generate keys simply run:
 ```
-cyberdcli keys add alice --recover
+cyberdcli keys add ${your-key-name}
 ```
 
-Which will give you three prompts:
+Enter and confirm a passphrase:
 
 ```
 Enter a passphrase for your key:
 Repeat the passphrase:
-Enter your recovery seed phrase:
 ```
 
-You just created your first locally stored key, under the name alice, and this account is linked to the private key that is running the cyberd validator node. Once you do this, the  ~/.cyberdcli folder is created, which will hold the alice key and any other keys you make. Now that you have the key for alice, you can start up the blockchain by running
-
-```
-cyberd start
-```
-
-You should see blocks being created at a fast rate, with a lot of output in the terminal.
+You just created your first locally stored key, under the given name. 
+Once you do this, the  `~/.cyberdcli` folder is created, which will hold the this key and any other keys you make.
+Now that you have the key for alice, you can start broadcasting transactions.
 
 ### Link transaction
 
-The following command will link cid1 with cid2
-
+The following command will link cid1 with cid2.
 ```
-cyberdcli link --from=alice --cid1=42 --cid2=cyberd --sequence=0 --chain-id=test-chain-rBoHlB
+cyberdcli link --from=${your_key_name} --cid1=42 --cid2=cyberd --sequence=0 --chain-id=test-chain-fbqPMq
+```
+You could find chain id in `$HOME/.cyberd/config/genesis.json`. For our zeronet chain id is `test-chain-fbqPMq`.
+Every new transaction should have incremented `--sequence` parameter.
+
+If everything went fine you should see similar message:
+```
+Committed at block 107 (tx hash: BE458B956646F8B3F25F071A958A5FD7E908791F)
 ```
 
-### See links
+### Search transaction by hash
 
-The following command will show links of cid
-
+To find transaction run:
+```bash
+cyberdcli tx BE458B956646F8B3F25F071A958A5FD7E908791F
 ```
-cyberdcli links <cid-here>
+
+### Help
+
+```bash
+cyberdcli --help
+```
+Please note that currently not all functions are available.
+
+## RPC client
+
+RPC client is available on `localhost:26657`. You could find URLs list [here](https://tendermint.github.io/slate/)
+
+### Our public endpoint
+
+```http://earth.cybernode.ai:34657```
+
+Example
+```
+http://earth.cybernode.ai:34657/block?height=42
 ```
