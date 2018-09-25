@@ -1,6 +1,7 @@
 # Change Log
 
-## [0.0.1](https://github.com/cybercongress/cyberd/tree/0.0.1) (2018-09-25)
+## [Unreleased](https://github.com/cybercongress/cyberd/tree/HEAD)
+
 **Closed issues:**
 
 - Make cyberd docs to be included into common wiki. [\#32](https://github.com/cybercongress/cyberd/issues/32)
