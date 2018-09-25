@@ -6,13 +6,23 @@ aliases:
     working_directory: ~/build
     docker:
       - image: circleci/openjdk:8-jdk
+  - &release_filter
+    filters:
+      tags:
+        only: /.*/
+      branches:
+        ignore: /.*/
+  - &master_filter
+    filters:
+      branches:
+        only: master
 
 jobs:
 
   build_and_deploy_images_to_dockerhub:
     working_directory: ~/cyberd
     docker:
-       - image: circleci/node:latest-browsers
+       - image: circleci/golang:1.11
     steps:
       - checkout
       - setup_remote_docker:
@@ -20,7 +30,7 @@ jobs:
       - run:
           name: Build Cyberd Image
           command: |
-            cd cosmos/zeronet
+            cd cosmos/poc
             docker build -t build/cyberd ./
             docker login -u $DOCKER_USER -p $DOCKER_PASS
             docker tag build/cyberd cybernode/cyberd:$CIRCLE_BRANCH
@@ -78,15 +88,31 @@ jobs:
             git push -q https://${DOCS_GITHUB_TOKEN}@github.com/cybercongress/congress.git master
           fi
 
+
+
+  release_cyberd_and_cyberdcli_binaries:
+    docker:
+    - image: circleci/golang:1.11
+    working_directory: /go/src/github.com/cybercongress/cyberd
+    steps:
+    - checkout
+    - run:
+        name: Release Cyberd Binaries
+        command: |
+          cd cosmos/poc
+          sudo apt-get update && sudo apt-get install -y rpm
+          dep ensure -vendor-only
+          curl -sL https://git.io/goreleaser | bash
+
 workflows:
   version: 2
-  search_build:
+  cyberd_build:
     jobs:
       - update_changelog:
-          filters:
-            branches:
-              only: master
+          <<: *master_filter
       - update_docs:
-          filters:
-            branches:
-              only: master
+          <<: *master_filter
+      - build_and_deploy_images_to_dockerhub:
+          <<: *master_filter
+      - release_cyberd_and_cyberdcli_binaries:
+          <<: *release_filter

@@ -1,0 +1,81 @@
+{
+  "genesis_time": "2018-09-25T10:31:23.372427Z",
+  "chain_id": "test-chain-fbqPMq",
+  "consensus_params": {
+    "block_size_params": {
+      "max_bytes": "22020096",
+      "max_txs": "10000",
+      "max_gas": "-1"
+    },
+    "tx_size_params": {
+      "max_bytes": "10240",
+      "max_gas": "-1"
+    },
+    "block_gossip_params": {
+      "block_part_size_bytes": "65536"
+    },
+    "evidence_params": {
+      "max_age": "100000"
+    }
+  },
+  "validators": [
+    {
+      "pub_key": {
+        "type": "tendermint/PubKeyEd25519",
+        "value": "U8bjR/t+leZVRn8pGa9/IAMiMuwENcljSEfdqrh3Pqs="
+      },
+      "power": "10",
+      "name": ""
+    }
+  ],
+  "app_hash": "",
+  "app_state": {
+    "accounts": [
+      {
+        "address": "cosmosaccaddr1ea4np8f8vlrpuzfdu2rjs5ncq9vkjapmheekq8",
+        "coins": [
+          {
+            "denom": "CBD",
+            "amount": "9007199254740992"
+          }
+        ]
+      },
+      {
+        "address": "cosmosaccaddr19fmpm9c9y2cycqux9zqn3n275f3klx5djzu74x",
+        "coins": [
+          {
+            "denom": "CBD",
+            "amount": "9007199254740992"
+          }
+        ]
+      },
+      {
+        "address": "cosmosaccaddr1a9v6jgv9y29qfkg4gksphf9mq2f3rr4f72k8z0",
+        "coins": [
+          {
+            "denom": "CBD",
+            "amount": "9007199254740992"
+          }
+        ]
+      },
+      {
+        "address": "cosmosaccaddr1mkvg9tpaslgchjuuwck5s6etl8l8nhhy6csn7t",
+        "coins": [
+          {
+            "denom": "CBD",
+            "amount": "9007199254740992"
+          }
+        ]
+      },
+      {
+        "address": "cosmosaccaddr1yaza5rxc2tvvkuxdzm3u07g92x8qspqfprhkac",
+        "coins": [
+          {
+            "denom": "CBD",
+            "amount": "9007199254740992"
+          }
+        ]
+      }
+    ]
+  }
+}

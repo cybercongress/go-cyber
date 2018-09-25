@@ -6,6 +6,7 @@ node_modules/
 
 .idea/
 
+*.iml
 *.pyc
 
 initial-rank
