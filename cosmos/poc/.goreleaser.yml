@@ -40,7 +40,7 @@ changelog:
 
 
 nfpm:
-  name_template: '{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}_{{ .Version }}'
+  name_template: '{{ .Binary }}_{{ .Os }}_{{ .Arch }}_{{ .Version }}'
   replacements:
     darwin: macOS
     386: i386
@@ -60,7 +60,7 @@ nfpm:
 
 
 archive:
-  name_template: '{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}_{{ .Version }}'
+  name_template: '{{ .Binary }}_{{ .Os }}_{{ .Arch }}_{{ .Version }}'
   replacements:
     darwin: MacOS
     linux: Linux
