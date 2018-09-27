@@ -11,7 +11,7 @@ import (
 
 // GetAccountCmd returns a query account that will display the state of the
 // account at a given address.
-func GetLinksCmd(cdc *wire.Codec) *cobra.Command {
+func GetLinksCmd(storeName string, cdc *wire.Codec) *cobra.Command {
 	return &cobra.Command{
 		Use:   "links [cid]",
 		Short: "Query cid links",
@@ -27,7 +27,7 @@ func GetLinksCmd(cdc *wire.Codec) *cobra.Command {
 
 			cliCtx := context.NewCLIContext().WithCodec(cdc)
 
-			res, err := cliCtx.QueryStore(key, "link")
+			res, err := cliCtx.QueryStore(key, storeName)
 			if err != nil || len(res) == 0 {
 				return err
 			}

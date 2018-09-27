@@ -13,6 +13,7 @@ github.com/client9/misspell v0.3.4/go.mod h1:qj6jICC3Q7zFZvVWo7KLAzC3yx5G7kyvSDk
 github.com/cosmos/cosmos-sdk v0.24.2 h1:4NbgiXVPKjBpJRkZ1LnMxaz6EV+OCguFXy9Y+rT5ItY=
 github.com/cosmos/cosmos-sdk v0.24.2/go.mod h1:JrX/JpJunJQXBI5PEX2zELHMFzQr/159jDjIhesOh2c=
 github.com/cybercongress/cyberd v0.0.0-20180924154316-73930bbeebb1 h1:q4NHkuD56j5pUzyvjVWo1qELi6gKyB7cts7wb2bwxL0=
+github.com/cybercongress/cyberd v0.0.0-20180925174400-fc51a4a10dbc h1:Jf8Skbd5z0NPwTGKYcZRHJot3DCwKhKhxvKElDsO7oA=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/ebuchman/fail-test v0.0.0-20170303061230-95f809107225 h1:7TXT8REobzZUI9GzsRtAD29efTY/HgKRU2xYnV1zlaM=
