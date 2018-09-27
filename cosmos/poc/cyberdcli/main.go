@@ -8,22 +8,20 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/lcd"
 	"github.com/cosmos/cosmos-sdk/client/rpc"
 	"github.com/cosmos/cosmos-sdk/client/tx"
-	"github.com/cybercongress/cyberd/cosmos/poc/app"
 	"github.com/cosmos/cosmos-sdk/version"
 	authcmd "github.com/cosmos/cosmos-sdk/x/auth/client/cli"
 	bankcmd "github.com/cosmos/cosmos-sdk/x/bank/client/cli"
+	"github.com/cybercongress/cyberd/cosmos/poc/app"
 	cyberdcmd "github.com/cybercongress/cyberd/cosmos/poc/commands"
-	ibccmd "github.com/cosmos/cosmos-sdk/x/ibc/client/cli"
-	stakecmd "github.com/cosmos/cosmos-sdk/x/stake/client/cli"
 	"github.com/spf13/cobra"
 	"github.com/tendermint/tendermint/libs/cli"
 )
 
-// rootCmd is the entry point for this binary
+// cyberdcli is the entry point for this binary
 var (
-	rootCmd = &cobra.Command{
+	cyberdcli = &cobra.Command{
 		Use:   "cyberdcli",
-		Short: "Cyberd light-client",
+		Short: "Cyberd node client",
 	}
 )
 
@@ -38,46 +36,34 @@ func main() {
 	// the below functions and eliminate global vars, like we do
 	// with the cdc.
 
-	// add standard rpc, and tx commands
-	rpc.AddCommands(rootCmd)
-	rootCmd.AddCommand(client.LineBreak)
-	tx.AddCommands(rootCmd, cdc)
-	rootCmd.AddCommand(client.LineBreak)
+	rpc.AddCommands(cyberdcli) // Node management commands
+	cyberdcli.AddCommand(client.LineBreak)
+	tx.AddCommands(cyberdcli, cdc) // Txs info commands
+	cyberdcli.AddCommand(client.LineBreak)
+	cyberdcli.AddCommand(rpc.BlockCommand()) // Block info command
+	cyberdcli.AddCommand(client.LineBreak)
 
-	// add query/post commands (custom to binary)
-	rootCmd.AddCommand(
+	cyberdcli.AddCommand(
 		client.GetCommands(
-			stakecmd.GetCmdQueryValidator("stake", cdc),
-			stakecmd.GetCmdQueryValidators("stake", cdc),
-			stakecmd.GetCmdQueryDelegation("stake", cdc),
-			stakecmd.GetCmdQueryDelegations("stake", cdc),
 			authcmd.GetAccountCmd("acc", cdc, app.GetAccountDecoder(cdc)),
-			cyberdcmd.GetLinksCmd(cdc),
+			cyberdcmd.GetLinksCmd("link", cdc),
 		)...)
 
-	rootCmd.AddCommand(
+	cyberdcli.AddCommand(
 		client.PostCommands(
 			cyberdcmd.LinkTxCmd(cdc),
 			bankcmd.SendTxCmd(cdc),
-			ibccmd.IBCTransferCmd(cdc),
-			ibccmd.IBCRelayCmd(cdc),
-			stakecmd.GetCmdCreateValidator(cdc),
-			stakecmd.GetCmdEditValidator(cdc),
-			stakecmd.GetCmdDelegate(cdc),
-			stakecmd.GetCmdUnbond("stake", cdc),
 		)...)
 
-	// add proxy, version and key info
-	rootCmd.AddCommand(
+	cyberdcli.AddCommand(
 		client.LineBreak,
-		lcd.ServeCommand(cdc),
-		keys.Commands(),
+		lcd.ServeCommand(cdc), // Commands to start local rpc proxy to node
+		keys.Commands(), // Commands to generate and handle keys
 		client.LineBreak,
 		version.VersionCmd,
 	)
 
-	// prepare and add flags
-	executor := cli.PrepareMainCmd(rootCmd, "CBD", os.ExpandEnv("$HOME/.cyberdcli"))
+	executor := cli.PrepareMainCmd(cyberdcli, "CBD", os.ExpandEnv("$HOME/.cyberdcli"))
 	err := executor.Execute()
 	if err != nil {
 		// Note: Handle with #870
