@@ -1,9 +1,7 @@
 package app
 
 import (
-	"encoding/json"
-
-	bam "github.com/cosmos/cosmos-sdk/baseapp"
+	"github.com/cosmos/cosmos-sdk/baseapp"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/wire"
 	"github.com/cosmos/cosmos-sdk/x/auth"
@@ -13,69 +11,80 @@ import (
 	cmn "github.com/tendermint/tendermint/libs/common"
 	dbm "github.com/tendermint/tendermint/libs/db"
 	"github.com/tendermint/tendermint/libs/log"
-	tmtypes "github.com/tendermint/tendermint/types"
 )
 
 const (
+	APP     = "cyberd"
 	appName = "CyberdApp"
 )
 
+type CyberdAppDbKeys struct {
+	main     *sdk.KVStoreKey
+	acc      *sdk.KVStoreKey
+	cidIndex *sdk.KVStoreKey
+	cidIns   *sdk.KVStoreKey
+	cidOuts  *sdk.KVStoreKey
+	rank     *sdk.KVStoreKey
+}
+
 // CyberdApp implements an extended ABCI application. It contains a BaseApp,
-// a codec for serialization, KVStore keys for multistore state management, and
+// a codec for serialization, KVStore dbKeys for multistore state management, and
 // various mappers and keepers to manage getting, setting, and serializing the
 // integral app types.
 type CyberdApp struct {
-	*bam.BaseApp
+	*baseapp.BaseApp
 	cdc *wire.Codec
 
 	// keys to access the multistore
-	keyMain    *sdk.KVStoreKey
-	keyAccount *sdk.KVStoreKey
-	keyIBC     *sdk.KVStoreKey
-	keyLink    *sdk.KVStoreKey
+	dbKeys CyberdAppDbKeys
 
 	// manage getting and setting accounts
 	accountMapper       auth.AccountMapper
+	cidIndexMapper      CidIndexStorage
+	inCidsMapper        LinksStorage
+	outCidsMapper       LinksStorage
 	feeCollectionKeeper auth.FeeCollectionKeeper
 	coinKeeper          bank.Keeper
 	ibcMapper           ibc.Mapper
 }
 
-// NewBasecoinApp returns a reference to a new CyberdApp given a logger and
-// database. Internally, a codec is created along with all the necessary keys.
+// NewBasecoinApp returns a reference to a new CyberdApp given a
+// logger and
+// database. Internally, a codec is created along with all the necessary dbKeys.
 // In addition, all necessary mappers and keepers are created, routes
 // registered, and finally the stores being mounted along with any necessary
 // chain initialization.
-func NewCyberdApp(logger log.Logger, db dbm.DB, baseAppOptions ...func(*bam.BaseApp)) *CyberdApp {
+func NewCyberdApp(logger log.Logger, db dbm.DB, baseAppOptions ...func(*baseapp.BaseApp)) *CyberdApp {
 	// create and register app-level codec for TXs and accounts
 	cdc := MakeCodec()
 
+	dbKeys := CyberdAppDbKeys{
+		main:     sdk.NewKVStoreKey("main"),
+		acc:      sdk.NewKVStoreKey("acc"),
+		cidIndex: sdk.NewKVStoreKey("cid_index"),
+		cidIns:   sdk.NewKVStoreKey("cid_ins"),
+		cidOuts:  sdk.NewKVStoreKey("cid_outs"),
+		rank:     sdk.NewKVStoreKey("rank"),
+	}
+
 	// create your application type
 	var app = &CyberdApp{
-		cdc:        cdc,
-		BaseApp:    bam.NewBaseApp(appName, logger, db, auth.DefaultTxDecoder(cdc), baseAppOptions...),
-		keyMain:    sdk.NewKVStoreKey("main"),
-		keyAccount: sdk.NewKVStoreKey("acc"),
-		keyIBC:     sdk.NewKVStoreKey("ibc"),
-		keyLink:    sdk.NewKVStoreKey("link"),
+		cdc:     cdc,
+		BaseApp: baseapp.NewBaseApp(appName, logger, db, auth.DefaultTxDecoder(cdc), baseAppOptions...),
+		dbKeys:  dbKeys,
 	}
 
 	// define and attach the mappers and keepers
-	app.accountMapper = auth.NewAccountMapper(
-		cdc,
-		app.keyAccount, // target store
-		func() auth.Account {
-			return &auth.BaseAccount{}
-		},
-	)
+	app.accountMapper = auth.NewAccountMapper(cdc, dbKeys.acc, NewAccount)
 	app.coinKeeper = bank.NewKeeper(app.accountMapper)
-	app.ibcMapper = ibc.NewMapper(app.cdc, app.keyIBC, app.RegisterCodespace(ibc.DefaultCodespace))
+	app.cidIndexMapper = CidIndexStorage{mainStoreKey: dbKeys.main, indexKey: dbKeys.cidIndex, cdc: cdc}
+	app.inCidsMapper = LinksStorage{key: dbKeys.cidIns, cdc: cdc}
+	app.outCidsMapper = LinksStorage{key: dbKeys.cidOuts, cdc: cdc}
 
 	// register message routes
 	app.Router().
 		AddRoute("bank", bank.NewHandler(app.coinKeeper)).
-		AddRoute("ibc", ibc.NewHandler(app.ibcMapper, app.coinKeeper)).
-		AddRoute("link", NewHandler(app.keyLink))
+		AddRoute("link", NewLinksHandler(app.cidIndexMapper, app.inCidsMapper, app.outCidsMapper))
 
 	// perform initialization logic
 	app.SetInitChainer(app.initChainer)
@@ -84,8 +93,8 @@ func NewCyberdApp(logger log.Logger, db dbm.DB, baseAppOptions ...func(*bam.Base
 	app.SetAnteHandler(auth.NewAnteHandler(app.accountMapper, app.feeCollectionKeeper))
 
 	// mount the multistore and load the latest state
-	app.MountStoresIAVL(app.keyMain, app.keyAccount, app.keyIBC, app.keyLink)
-	err := app.LoadLatestVersion(app.keyMain)
+	app.MountStoresIAVL(dbKeys.main, dbKeys.acc, dbKeys.cidIndex, dbKeys.cidIns, dbKeys.cidOuts, dbKeys.rank)
+	err := app.LoadLatestVersion(dbKeys.main)
 	if err != nil {
 		cmn.Exit(err.Error())
 	}
@@ -95,88 +104,15 @@ func NewCyberdApp(logger log.Logger, db dbm.DB, baseAppOptions ...func(*bam.Base
 	return app
 }
 
-// MakeCodec creates a new wire codec and registers all the necessary types
-// with the codec.
-func MakeCodec() *wire.Codec {
-	cdc := wire.NewCodec()
-
-	wire.RegisterCrypto(cdc)
-	sdk.RegisterWire(cdc)
-	bank.RegisterWire(cdc)
-	ibc.RegisterWire(cdc)
-	auth.RegisterWire(cdc)
-	RegisterWire(cdc)
-
-	cdc.Seal()
-
-	return cdc
-}
-
 // BeginBlocker reflects logic to run before any TXs application are processed
 // by the application.
 func (app *CyberdApp) BeginBlocker(_ sdk.Context, _ abci.RequestBeginBlock) abci.ResponseBeginBlock {
 	return abci.ResponseBeginBlock{}
 }
 
-// EndBlocker reflects logic to run after all TXs are processed by the
-// application.
-func (app *CyberdApp) EndBlocker(_ sdk.Context, _ abci.RequestEndBlock) abci.ResponseEndBlock {
+// Calculates cyber.Rank for block N, and returns Hash of result as app state.
+// Calculated app state will be included in N+1 block header, thus influence on block hash.
+// App state is consensus driven state.
+func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.ResponseEndBlock {
 	return abci.ResponseEndBlock{}
-}
-
-// initChainer implements the custom application logic that the BaseApp will
-// invoke upon initialization. In this case, it will take the application's
-// state provided by 'req' and attempt to deserialize said state. The state
-// should contain all the genesis accounts. These accounts will be added to the
-// application's account mapper.
-func (app *CyberdApp) initChainer(ctx sdk.Context, req abci.RequestInitChain) abci.ResponseInitChain {
-	stateJSON := req.AppStateBytes
-
-	genesisState := new(GenesisState)
-	err := app.cdc.UnmarshalJSON(stateJSON, genesisState)
-	if err != nil {
-		// TODO: https://github.com/cosmos/cosmos-sdk/issues/468
-		panic(err)
-	}
-
-	for _, gacc := range genesisState.Accounts {
-		acc, err := gacc.ToBaseAccount()
-		if err != nil {
-			// TODO: https://github.com/cosmos/cosmos-sdk/issues/468
-			panic(err)
-		}
-
-		acc.AccountNumber = app.accountMapper.GetNextAccountNumber(ctx)
-		app.accountMapper.SetAccount(ctx, acc)
-	}
-
-	return abci.ResponseInitChain{}
-}
-
-// ExportAppStateAndValidators implements custom application logic that exposes
-// various parts of the application's state and set of validators. An error is
-// returned if any step getting the state or set of validators fails.
-func (app *CyberdApp) ExportAppStateAndValidators() (appState json.RawMessage, validators []tmtypes.GenesisValidator, err error) {
-	ctx := app.NewContext(true, abci.Header{})
-	accounts := []*GenesisAccount{}
-
-	appendAccountsFn := func(acc auth.Account) bool {
-		account := &GenesisAccount{
-			Address: acc.GetAddress(),
-			Coins:   acc.GetCoins(),
-		}
-
-		accounts = append(accounts, account)
-		return false
-	}
-
-	app.accountMapper.IterateAccounts(ctx, appendAccountsFn)
-
-	genState := GenesisState{Accounts: accounts}
-	appState, err = wire.MarshalJSONIndent(app.cdc, genState)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	return appState, validators, err
 }
