@@ -24,6 +24,7 @@ var (
 )
 
 func main() {
+
 	cdc := app.MakeCodec()
 	ctx := server.NewDefaultContext()
 

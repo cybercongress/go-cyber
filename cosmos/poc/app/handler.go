@@ -1,7 +1,6 @@
 package app
 
 import (
-	"encoding/json"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -11,39 +10,19 @@ type ContentIdLinks struct {
 }
 
 // NewHandler returns a handler for "link" type messages.
-func NewHandler(keyLink *sdk.KVStoreKey) sdk.Handler {
+// cis - cids index storage
+// ils - incoming links storage
+// ols - outgoing links storage
+func NewLinksHandler(cis CidIndexStorage, ils LinksStorage, ols LinksStorage) sdk.Handler {
 	return func(ctx sdk.Context, msg sdk.Msg) sdk.Result {
-		store := ctx.KVStore(keyLink)
 
-		msgLink := msg.(MsgLink)
+		link := msg.(MsgLink)
 
-		cid1Bytes, err := json.Marshal(msgLink.ContentID1)
+		cis.GetOrPutCidIndex(ctx, link.ContentID1)
+		cis.GetOrPutCidIndex(ctx, link.ContentID2)
 
-		if err != nil {
-			return sdk.ErrInternal("Error serializing cid1").Result()
-		}
-
-		linksBytes := store.Get(cid1Bytes)
-		var links ContentIdLinks
-
-		if linksBytes == nil {
-			links = ContentIdLinks{ContentID: msgLink.ContentID1, LinkedCIDS: map[string]int{}}
-		} else {
-			err := json.Unmarshal(linksBytes, &links)
-			if err != nil {
-				return sdk.ErrInternal("Error when deserializing links").Result()
-			}
-		}
-
-		link := links.LinkedCIDS[msgLink.ContentID2]
-		links.LinkedCIDS[msgLink.ContentID2] = link + 1
-
-		linksBytes, err = json.Marshal(links)
-		if err != nil {
-			return sdk.ErrInternal("Links encoding error").Result()
-		}
-
-		store.Set(cid1Bytes, linksBytes)
+		ils.AddLink(ctx, link.Address, link.ContentID2, link.ContentID1)
+		ols.AddLink(ctx, link.Address, link.ContentID1, link.ContentID2)
 		return sdk.Result{}
 	}
 }
