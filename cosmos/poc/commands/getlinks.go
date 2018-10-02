@@ -9,6 +9,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
+type ContentIdLinks struct {
+	ContentID  string         `json:"cid"`
+	LinkedCIDS map[string]int `json:"linkedCids"`
+}
+
 // GetAccountCmd returns a query account that will display the state of the
 // account at a given address.
 func GetLinksCmd(storeName string, cdc *wire.Codec) *cobra.Command {

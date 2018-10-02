@@ -8,7 +8,7 @@ import (
 const (
 	DefaultCodespace sdk.CodespaceType = 2
 
-	CodeInvalidCid  sdk.CodeType = 4201
+	CodeInvalidCid sdk.CodeType = 4201
 )
 
 // NOTE: Don't stringer this, we'll put better messages in later.
@@ -41,4 +41,3 @@ func newError(codespace sdk.CodespaceType, code sdk.CodeType, msg string) sdk.Er
 	msg = msgOrDefaultMsg(msg, code)
 	return sdk.NewError(codespace, code, msg)
 }
-

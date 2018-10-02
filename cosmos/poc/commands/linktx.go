@@ -16,8 +16,8 @@ import (
 )
 
 const (
-	flagCid1 = "cid1"
-	flagCid2 = "cid2"
+	flagCid1 = "cid-from"
+	flagCid2 = "cid-to"
 )
 
 // LinkTxCmd will create a link tx and sign it with the given key.

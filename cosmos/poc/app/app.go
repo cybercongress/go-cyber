@@ -7,6 +7,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/bank"
 	"github.com/cosmos/cosmos-sdk/x/ibc"
+	. "github.com/cybercongress/cyberd/cosmos/poc/app/bank"
+	. "github.com/cybercongress/cyberd/cosmos/poc/app/storage"
 	abci "github.com/tendermint/tendermint/abci/types"
 	cmn "github.com/tendermint/tendermint/libs/common"
 	dbm "github.com/tendermint/tendermint/libs/db"
@@ -21,6 +23,7 @@ const (
 type CyberdAppDbKeys struct {
 	main     *sdk.KVStoreKey
 	acc      *sdk.KVStoreKey
+	accIndex *sdk.KVStoreKey
 	cidIndex *sdk.KVStoreKey
 	cidIns   *sdk.KVStoreKey
 	cidOuts  *sdk.KVStoreKey
@@ -39,13 +42,15 @@ type CyberdApp struct {
 	dbKeys CyberdAppDbKeys
 
 	// manage getting and setting accounts
-	accountMapper       auth.AccountMapper
+	accStorage          auth.AccountMapper
 	cidIndexMapper      CidIndexStorage
 	inCidsMapper        LinksStorage
 	outCidsMapper       LinksStorage
 	feeCollectionKeeper auth.FeeCollectionKeeper
 	coinKeeper          bank.Keeper
 	ibcMapper           ibc.Mapper
+
+	memStorage *InMemoryStorage
 }
 
 // NewBasecoinApp returns a reference to a new CyberdApp given a
@@ -75,22 +80,24 @@ func NewCyberdApp(logger log.Logger, db dbm.DB, baseAppOptions ...func(*baseapp.
 	}
 
 	// define and attach the mappers and keepers
-	app.accountMapper = auth.NewAccountMapper(cdc, dbKeys.acc, NewAccount)
-	app.coinKeeper = bank.NewKeeper(app.accountMapper)
-	app.cidIndexMapper = CidIndexStorage{mainStoreKey: dbKeys.main, indexKey: dbKeys.cidIndex, cdc: cdc}
-	app.inCidsMapper = LinksStorage{key: dbKeys.cidIns, cdc: cdc}
-	app.outCidsMapper = LinksStorage{key: dbKeys.cidOuts, cdc: cdc}
+	app.accStorage = auth.NewAccountMapper(app.cdc, dbKeys.acc, NewAccount)
+	app.coinKeeper = bank.NewKeeper(app.accStorage)
+	app.cidIndexMapper = NewCidIndexStorage(dbKeys.main, dbKeys.cidIndex)
+	app.inCidsMapper = NewLinksStorage(dbKeys.cidIns, app.cdc)
+	app.outCidsMapper = NewLinksStorage(dbKeys.cidOuts, app.cdc)
+
+	app.memStorage = NewInMemoryStorage(app.cidIndexMapper, app.inCidsMapper, app.outCidsMapper, app.accStorage)
 
 	// register message routes
 	app.Router().
-		AddRoute("bank", bank.NewHandler(app.coinKeeper)).
-		AddRoute("link", NewLinksHandler(app.cidIndexMapper, app.inCidsMapper, app.outCidsMapper))
+		AddRoute("bank", NewBankHandler(app.coinKeeper, app.memStorage)).
+		AddRoute("link", NewLinksHandler(app.cidIndexMapper, app.inCidsMapper, app.outCidsMapper, app.memStorage))
 
 	// perform initialization logic
-	app.SetInitChainer(app.initChainer)
+	app.SetInitChainer(NewGenesisApplier(app.memStorage, app.cdc, app.accStorage))
 	app.SetBeginBlocker(app.BeginBlocker)
 	app.SetEndBlocker(app.EndBlocker)
-	app.SetAnteHandler(auth.NewAnteHandler(app.accountMapper, app.feeCollectionKeeper))
+	app.SetAnteHandler(auth.NewAnteHandler(app.accStorage, app.feeCollectionKeeper))
 
 	// mount the multistore and load the latest state
 	app.MountStoresIAVL(dbKeys.main, dbKeys.acc, dbKeys.cidIndex, dbKeys.cidIns, dbKeys.cidOuts, dbKeys.rank)
@@ -98,9 +105,9 @@ func NewCyberdApp(logger log.Logger, db dbm.DB, baseAppOptions ...func(*baseapp.
 	if err != nil {
 		cmn.Exit(err.Error())
 	}
+	app.memStorage.Load(app.BaseApp.NewContext(true, abci.Header{}))
 
 	app.Seal()
-
 	return app
 }
 

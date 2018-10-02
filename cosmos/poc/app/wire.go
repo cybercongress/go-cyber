@@ -23,7 +23,6 @@ func init() {
 // with the codec.
 func MakeCodec() *wire.Codec {
 	cdc := wire.NewCodec()
-
 	wire.RegisterCrypto(cdc)
 	sdk.RegisterWire(cdc)
 	bank.RegisterWire(cdc)
@@ -32,6 +31,23 @@ func MakeCodec() *wire.Codec {
 	RegisterWire(cdc)
 
 	cdc.Seal()
-
 	return cdc
+}
+
+// GetAccountDecoder returns the AccountDecoder function for the custom
+// AppAccount.
+func GetAccountDecoder(cdc *wire.Codec) auth.AccountDecoder {
+	return func(accBytes []byte) (auth.Account, error) {
+		if len(accBytes) == 0 {
+			return nil, sdk.ErrTxDecode("accBytes are empty")
+		}
+
+		acct := new(auth.BaseAccount)
+		err := cdc.UnmarshalBinaryBare(accBytes, &acct)
+		if err != nil {
+			panic(err)
+		}
+
+		return acct, err
+	}
 }

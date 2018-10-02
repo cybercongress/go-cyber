@@ -2,18 +2,19 @@ package app
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cybercongress/cyberd/cosmos/poc/app/storage"
 )
 
 type MsgLink struct {
 	Address sdk.AccAddress `json:"address"`
-	ContentID1 string `json:"cid1"`
-	ContentID2 string `json:"cid2"`
+	CidFrom storage.Cid    `json:"cid1"`
+	CidTo   storage.Cid    `json:"cid2"`
 }
 
 var _ sdk.Msg = MsgLink{}
 
-func NewMsgLink(address sdk.AccAddress, cid1 string, cid2 string) MsgLink {
-	return MsgLink{Address: address, ContentID1: cid1, ContentID2: cid2}
+func NewMsgLink(address sdk.AccAddress, cid1 storage.Cid, cid2 storage.Cid) MsgLink {
+	return MsgLink{Address: address, CidFrom: cid1, CidTo: cid2}
 }
 
 func (MsgLink) Type() string { return "link" }
@@ -24,7 +25,7 @@ func (msg MsgLink) ValidateBasic() sdk.Error {
 		return sdk.ErrInvalidAddress(msg.Address.String())
 	}
 
-	if len(msg.ContentID1) == 0 || len(msg.ContentID2) == 0 {
+	if len(msg.CidFrom) == 0 || len(msg.CidTo) == 0 {
 		return ErrInvalidCid(DefaultCodespace).TraceSDK("")
 	}
 

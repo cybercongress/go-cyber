@@ -26,7 +26,7 @@ func (app *CyberdApp) ExportAppStateAndValidators() (appState json.RawMessage, v
 		return false
 	}
 
-	app.accountMapper.IterateAccounts(ctx, appendAccountsFn)
+	app.accStorage.IterateAccounts(ctx, appendAccountsFn)
 
 	genState := GenesisState{Accounts: accounts}
 	appState, err = wire.MarshalJSONIndent(app.cdc, genState)

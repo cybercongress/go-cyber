@@ -2,27 +2,38 @@ package app
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	. "github.com/cybercongress/cyberd/cosmos/poc/app/storage"
 )
 
-type ContentIdLinks struct {
-	ContentID  string         `json:"cid"`
-	LinkedCIDS map[string]int `json:"linkedCids"`
-}
-
 // NewHandler returns a handler for "link" type messages.
-// cis - cids index storage
-// ils - incoming links storage
-// ols - outgoing links storage
-func NewLinksHandler(cis CidIndexStorage, ils LinksStorage, ols LinksStorage) sdk.Handler {
+// cis  - cids index storage
+// ils  - incoming links storage
+// ols  - outgoing links storage
+// imms - in-memory storage
+func NewLinksHandler(cis CidIndexStorage, ils LinksStorage, ols LinksStorage, imms *InMemoryStorage) sdk.Handler {
+
+	getCidIndex := func(ctx sdk.Context, cid Cid) CidNumber {
+
+		index, exist := imms.GetCidIndex(cid)
+		if !exist { // new cid
+			index = cis.GetOrPutCidIndex(ctx, cid)
+		}
+		return index
+	}
+
 	return func(ctx sdk.Context, msg sdk.Msg) sdk.Result {
 
 		link := msg.(MsgLink)
 
-		cis.GetOrPutCidIndex(ctx, link.ContentID1)
-		cis.GetOrPutCidIndex(ctx, link.ContentID2)
+		linkedCids := LinkedCids{
+			FromCid: getCidIndex(ctx, link.CidFrom),
+			ToCid:   getCidIndex(ctx, link.CidTo),
+			Creator: AccountNumber(link.Address.String()),
+		}
 
-		ils.AddLink(ctx, link.Address, link.ContentID2, link.ContentID1)
-		ols.AddLink(ctx, link.Address, link.ContentID1, link.ContentID2)
+		ils.AddLink(ctx, linkedCids)
+		imms.AddLink(linkedCids)
 		return sdk.Result{}
 	}
+
 }
