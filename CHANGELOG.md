@@ -4,8 +4,16 @@
 
 [Full Changelog](https://github.com/cybercongress/cyberd/compare/0.0.1...HEAD)
 
+**Closed issues:**
+
+- Implement persistent storage for links. [\#40](https://github.com/cybercongress/cyberd/issues/40)
+- run extra node for cyberd [\#20](https://github.com/cybercongress/cyberd/issues/20)
+
 **Merged pull requests:**
 
+- \#40 introduce in-memory store [\#41](https://github.com/cybercongress/cyberd/pull/41) ([hleb-albau](https://github.com/hleb-albau))
+- \#37 redesign db, app refactor [\#38](https://github.com/cybercongress/cyberd/pull/38) ([hleb-albau](https://github.com/hleb-albau))
+- Cosmos POC: Clean up CLI [\#35](https://github.com/cybercongress/cyberd/pull/35) ([arturalbov](https://github.com/arturalbov))
 - Update cyberd/cosmos README [\#34](https://github.com/cybercongress/cyberd/pull/34) ([arturalbov](https://github.com/arturalbov))
 
 ## [0.0.1](https://github.com/cybercongress/cyberd/tree/0.0.1) (2018-09-25)
