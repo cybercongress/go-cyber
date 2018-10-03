@@ -5,7 +5,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-var cidsCount = []byte("cids_count")
+var lastCidNumber = []byte("cids_count")
 
 type CidIndexStorage struct {
 	mainStoreKey *sdk.KVStoreKey
@@ -38,7 +38,7 @@ func (cis CidIndexStorage) GetOrPutCidIndex(ctx sdk.Context, cid Cid) CidNumber 
 
 		mainStore := ctx.KVStore(cis.mainStoreKey)
 		cidsIndex.Set(cidAsBytes, lastIndexAsBytes)
-		mainStore.Set(cidsCount, lastIndexAsBytes)
+		mainStore.Set(lastCidNumber, lastIndexAsBytes)
 		return CidNumber(lastIndex)
 	}
 
@@ -49,7 +49,7 @@ func (cis CidIndexStorage) GetOrPutCidIndex(ctx sdk.Context, cid Cid) CidNumber 
 func (cis CidIndexStorage) GetCidsCount(ctx sdk.Context) uint64 {
 
 	mainStore := ctx.KVStore(cis.mainStoreKey)
-	lastIndexAsBytes := mainStore.Get(cidsCount)
+	lastIndexAsBytes := mainStore.Get(lastCidNumber)
 
 	if lastIndexAsBytes == nil {
 		return 0

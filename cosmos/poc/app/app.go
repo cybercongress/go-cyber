@@ -24,8 +24,7 @@ type CyberdAppDbKeys struct {
 	acc      *sdk.KVStoreKey
 	accIndex *sdk.KVStoreKey
 	cidIndex *sdk.KVStoreKey
-	inLinks  *sdk.KVStoreKey
-	outLinks *sdk.KVStoreKey
+	links    *sdk.KVStoreKey
 	rank     *sdk.KVStoreKey
 }
 
@@ -64,16 +63,14 @@ func NewCyberdApp(logger log.Logger, db dbm.DB, baseAppOptions ...func(*baseapp.
 		main:     sdk.NewKVStoreKey("main"),
 		acc:      sdk.NewKVStoreKey("acc"),
 		cidIndex: sdk.NewKVStoreKey("cid_index"),
-		inLinks:  sdk.NewKVStoreKey("in_links"),
-		outLinks: sdk.NewKVStoreKey("out_links"),
+		links:    sdk.NewKVStoreKey("links"),
 		rank:     sdk.NewKVStoreKey("rank"),
 	}
 
 	cis := NewCidIndexStorage(dbKeys.main, dbKeys.cidIndex)
 	storages := CyberdPersistentStorages{
 		CidIndex: cis,
-		InLinks:  NewLinksStorage(dbKeys.inLinks, cdc),
-		OutLinks: NewLinksStorage(dbKeys.outLinks, cdc),
+		Links:    NewLinksStorage(dbKeys.links, cdc),
 		Rank:     NewRankStorage(cis, dbKeys.rank),
 	}
 
@@ -88,12 +85,12 @@ func NewCyberdApp(logger log.Logger, db dbm.DB, baseAppOptions ...func(*baseapp.
 	// define and attach the mappers and keepers
 	app.accStorage = auth.NewAccountMapper(app.cdc, dbKeys.acc, NewAccount)
 	app.coinKeeper = bank.NewKeeper(app.accStorage)
-	app.memStorage = NewInMemoryStorage(storages, app.accStorage)
+	app.memStorage = &InMemoryStorage{}
 
 	// register message routes
 	app.Router().
 		AddRoute("bank", NewBankHandler(app.coinKeeper, app.memStorage)).
-		AddRoute("link", NewLinksHandler(storages.CidIndex, storages.InLinks, storages.OutLinks, app.memStorage))
+		AddRoute("link", NewLinksHandler(storages.CidIndex, storages.Links, app.memStorage))
 
 	// perform initialization logic
 	app.SetInitChainer(NewGenesisApplier(app.memStorage, app.cdc, app.accStorage))
@@ -102,12 +99,12 @@ func NewCyberdApp(logger log.Logger, db dbm.DB, baseAppOptions ...func(*baseapp.
 	app.SetAnteHandler(auth.NewAnteHandler(app.accStorage, app.feeCollectionKeeper))
 
 	// mount the multistore and load the latest state
-	app.MountStoresIAVL(dbKeys.main, dbKeys.acc, dbKeys.cidIndex, dbKeys.inLinks, dbKeys.outLinks, dbKeys.rank)
+	app.MountStoresIAVL(dbKeys.main, dbKeys.acc, dbKeys.cidIndex, dbKeys.links, dbKeys.rank)
 	err := app.LoadLatestVersion(dbKeys.main)
 	if err != nil {
 		cmn.Exit(err.Error())
 	}
-	app.memStorage.Load(app.BaseApp.NewContext(true, abci.Header{}))
+	app.memStorage.Load(app.BaseApp.NewContext(true, abci.Header{}), storages, app.accStorage)
 
 	app.Seal()
 	return app

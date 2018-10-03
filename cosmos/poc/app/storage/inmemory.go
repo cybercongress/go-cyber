@@ -15,37 +15,25 @@ type InMemoryStorage struct {
 	cidRank     []float64
 
 	userStake map[AccountNumber]int64
-
-	// persistent storages
-	persistentStorage CyberdPersistentStorages
-	am                auth.AccountMapper
-}
-
-func NewInMemoryStorage(persistentStorage CyberdPersistentStorages, am auth.AccountMapper) *InMemoryStorage {
-
-	return &InMemoryStorage{
-		persistentStorage: persistentStorage,
-		am:                am,
-	}
 }
 
 // Load from underlying persistent storage
 // Heavy operation
-func (s *InMemoryStorage) Load(ctx sdk.Context) {
+func (s *InMemoryStorage) Load(ctx sdk.Context, ps CyberdPersistentStorages, am auth.AccountMapper) {
 
-	inLinks, outLinks, err := s.persistentStorage.InLinks.GetAllLinks(ctx)
+	inLinks, outLinks, err := ps.Links.GetAllLinks(ctx)
 	if err != nil {
 		cmn.Exit(err.Error())
 	}
 
-	cidsIndexes := s.persistentStorage.CidIndex.GetFullCidsIndex(ctx)
+	cidsIndexes := ps.CidIndex.GetFullCidsIndex(ctx)
 
 	s.inLinks = inLinks
 	s.outLinks = outLinks
 	s.cidsIndexes = cidsIndexes
 	s.cidsCount = uint64(len(cidsIndexes))
-	s.userStake = GetAllAccountsStakes(ctx, s.am)
-	s.cidRank = s.persistentStorage.Rank.GetFullRank(ctx)
+	s.userStake = GetAllAccountsStakes(ctx, am)
+	s.cidRank = ps.Rank.GetFullRank(ctx)
 }
 
 // Also returns bool flag, whether index exists
@@ -62,31 +50,7 @@ func (s *InMemoryStorage) UpdateStake(acc sdk.AccAddress, stake int64) {
 }
 
 func (s *InMemoryStorage) AddLink(link LinkedCids) {
-	//
-	// out links
-	cidLinks := s.outLinks[link.FromCid]
-	if cidLinks == nil {
-		cidLinks = make(CidLinks)
-	}
-	users := cidLinks[link.ToCid]
-	if users == nil {
-		users = make(map[AccountNumber]struct{})
-	}
-	users[link.Creator] = struct{}{}
-	cidLinks[link.ToCid] = users
-	s.outLinks[link.FromCid] = cidLinks
 
-	//
-	// in links
-	cidLinks = s.inLinks[link.ToCid]
-	if cidLinks == nil {
-		cidLinks = make(CidLinks)
-	}
-	users = cidLinks[link.FromCid]
-	if users == nil {
-		users = make(map[AccountNumber]struct{})
-	}
-	users[link.Creator] = struct{}{}
-	cidLinks[link.FromCid] = users
-	s.inLinks[link.ToCid] = cidLinks
+	CidsLinks(s.outLinks).Put(link.FromCid, link.ToCid, link.Creator)
+	CidsLinks(s.inLinks).Put(link.ToCid, link.FromCid, link.Creator)
 }

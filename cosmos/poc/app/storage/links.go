@@ -47,34 +47,8 @@ func (ls LinksStorage) GetAllLinks(ctx sdk.Context) (map[CidNumber]CidLinks, map
 			return nil, nil, err
 		}
 
-		//
-		// out links
-		cidLinks := outLinks[link.FromCid]
-		if cidLinks == nil {
-			cidLinks = make(CidLinks)
-		}
-		users := cidLinks[link.ToCid]
-		if users == nil {
-			users = make(map[AccountNumber]struct{})
-		}
-		users[link.Creator] = struct{}{}
-		cidLinks[link.ToCid] = users
-		outLinks[link.FromCid] = cidLinks
-
-		//
-		// in links
-		cidLinks = inLinks[link.ToCid]
-		if cidLinks == nil {
-			cidLinks = make(CidLinks)
-		}
-		users = cidLinks[link.FromCid]
-		if users == nil {
-			users = make(map[AccountNumber]struct{})
-		}
-		users[link.Creator] = struct{}{}
-		cidLinks[link.FromCid] = users
-		inLinks[link.ToCid] = cidLinks
-
+		CidsLinks(outLinks).Put(link.FromCid, link.ToCid, link.Creator)
+		CidsLinks(inLinks).Put(link.ToCid, link.FromCid, link.Creator)
 		iterator.Next()
 	}
 	iterator.Close()
