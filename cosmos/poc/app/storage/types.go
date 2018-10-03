@@ -16,3 +16,11 @@ type LinkedCids struct {
 	ToCid   CidNumber
 	Creator AccountNumber
 }
+
+// All addition storages introduced by cyberd
+type CyberdPersistentStorages struct {
+	CidIndex CidIndexStorage
+	InLinks  LinksStorage //incoming links storage
+	OutLinks LinksStorage //outgoing links storage
+	Rank     RankStorage
+}

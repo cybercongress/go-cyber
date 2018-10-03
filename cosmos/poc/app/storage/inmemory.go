@@ -17,21 +17,15 @@ type InMemoryStorage struct {
 	userStake map[AccountNumber]int64
 
 	// persistent storages
-	cis CidIndexStorage
-	ils LinksStorage
-	ols LinksStorage
-	am  auth.AccountMapper
+	persistentStorage CyberdPersistentStorages
+	am                auth.AccountMapper
 }
 
-func NewInMemoryStorage(
-	cis CidIndexStorage, ils LinksStorage, ols LinksStorage, am auth.AccountMapper,
-) *InMemoryStorage {
+func NewInMemoryStorage(persistentStorage CyberdPersistentStorages, am auth.AccountMapper) *InMemoryStorage {
 
 	return &InMemoryStorage{
-		cis: cis,
-		ils: ils,
-		ols: ols,
-		am:  am,
+		persistentStorage: persistentStorage,
+		am:                am,
 	}
 }
 
@@ -39,18 +33,19 @@ func NewInMemoryStorage(
 // Heavy operation
 func (s *InMemoryStorage) Load(ctx sdk.Context) {
 
-	inLinks, outLinks, err := s.ils.GetAllLinks(ctx)
+	inLinks, outLinks, err := s.persistentStorage.InLinks.GetAllLinks(ctx)
 	if err != nil {
 		cmn.Exit(err.Error())
 	}
 
-	cidsIndexes := s.cis.GetFullCidsIndex(ctx)
+	cidsIndexes := s.persistentStorage.CidIndex.GetFullCidsIndex(ctx)
 
 	s.inLinks = inLinks
 	s.outLinks = outLinks
 	s.cidsIndexes = cidsIndexes
 	s.cidsCount = uint64(len(cidsIndexes))
 	s.userStake = GetAllAccountsStakes(ctx, s.am)
+	s.cidRank = s.persistentStorage.Rank.GetFullRank(ctx)
 }
 
 // Also returns bool flag, whether index exists
