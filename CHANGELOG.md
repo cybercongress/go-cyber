@@ -11,6 +11,7 @@
 
 **Merged pull requests:**
 
+- \#43 Simplest Rank [\#44](https://github.com/cybercongress/cyberd/pull/44) ([hleb-albau](https://github.com/hleb-albau))
 - \#40 introduce in-memory store [\#41](https://github.com/cybercongress/cyberd/pull/41) ([hleb-albau](https://github.com/hleb-albau))
 - \#37 redesign db, app refactor [\#38](https://github.com/cybercongress/cyberd/pull/38) ([hleb-albau](https://github.com/hleb-albau))
 - Cosmos POC: Clean up CLI [\#35](https://github.com/cybercongress/cyberd/pull/35) ([arturalbov](https://github.com/arturalbov))
