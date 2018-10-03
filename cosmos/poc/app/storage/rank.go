@@ -7,13 +7,13 @@ import (
 )
 
 type RankStorage struct {
-	cis CidIndexStorage
+	ms  MainStorage
 	key *sdk.KVStoreKey
 }
 
-func NewRankStorage(cis CidIndexStorage, key *sdk.KVStoreKey) RankStorage {
+func NewRankStorage(ms MainStorage, key *sdk.KVStoreKey) RankStorage {
 	return RankStorage{
-		cis: cis,
+		ms:  ms,
 		key: key,
 	}
 }
@@ -37,7 +37,7 @@ func (rs RankStorage) StoreFullRank(ctx sdk.Context, ranks []float64) {
 // returns all added cids
 func (rs RankStorage) GetFullRank(ctx sdk.Context) []float64 {
 
-	cidsCount := rs.cis.GetCidsCount(ctx)
+	cidsCount := rs.ms.GetCidsCount(ctx)
 	ranks := make([]float64, cidsCount)
 
 	store := ctx.KVStore(rs.key)
