@@ -38,6 +38,7 @@ func GetCidNumberFunc(cis CidIndexStorage, imms *InMemoryStorage) func(sdk.Conte
 		index, exist := imms.GetCidIndex(cid)
 		if !exist { // new cid
 			index = cis.GetOrPutCidIndex(ctx, cid)
+			imms.AddCid(cid, index)
 		}
 		return index
 	}

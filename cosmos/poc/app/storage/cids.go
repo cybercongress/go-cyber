@@ -5,17 +5,15 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-var lastCidNumber = []byte("cids_count")
-
 type CidIndexStorage struct {
-	mainStoreKey *sdk.KVStoreKey
-	indexKey     *sdk.KVStoreKey
+	ms       MainStorage
+	indexKey *sdk.KVStoreKey
 }
 
-func NewCidIndexStorage(mainStoreKey *sdk.KVStoreKey, indexKey *sdk.KVStoreKey) CidIndexStorage {
+func NewCidIndexStorage(ms MainStorage, indexKey *sdk.KVStoreKey) CidIndexStorage {
 	return CidIndexStorage{
-		mainStoreKey: mainStoreKey,
-		indexKey:     indexKey,
+		ms:       ms,
+		indexKey: indexKey,
 	}
 }
 
@@ -32,30 +30,16 @@ func (cis CidIndexStorage) GetOrPutCidIndex(ctx sdk.Context, cid Cid) CidNumber 
 	// new cid, get new index
 	if cidIndexAsBytes == nil {
 
-		lastIndex := cis.GetCidsCount(ctx)
+		lastIndex := cis.ms.GetCidsCount(ctx)
 		lastIndexAsBytes := make([]byte, 8)
 		binary.LittleEndian.PutUint64(lastIndexAsBytes, lastIndex)
 
-		mainStore := ctx.KVStore(cis.mainStoreKey)
 		cidsIndex.Set(cidAsBytes, lastIndexAsBytes)
-		mainStore.Set(lastCidNumber, lastIndexAsBytes)
+		cis.ms.SetLastCidIndex(ctx, lastIndexAsBytes)
 		return CidNumber(lastIndex)
 	}
 
 	return CidNumber(binary.LittleEndian.Uint64(cidIndexAsBytes))
-}
-
-// returns overall added cids count
-func (cis CidIndexStorage) GetCidsCount(ctx sdk.Context) uint64 {
-
-	mainStore := ctx.KVStore(cis.mainStoreKey)
-	lastIndexAsBytes := mainStore.Get(lastCidNumber)
-
-	if lastIndexAsBytes == nil {
-		return 0
-	}
-
-	return binary.LittleEndian.Uint64(lastIndexAsBytes) + 1
 }
 
 // returns all added cids
