@@ -25,12 +25,12 @@ func (rs RankStorage) StoreFullRank(ctx sdk.Context, ranks []float64) {
 
 	store := ctx.KVStore(rs.key)
 
-	var indexAsBytes [8]byte
-	var rankAsBytes [8]byte
 	for i, rank := range ranks {
-		b.LittleEndian.PutUint64(indexAsBytes[:], uint64(i))
-		b.LittleEndian.PutUint64(rankAsBytes[:], math.Float64bits(rank))
-		store.Set(indexAsBytes[:], rankAsBytes[:])
+		indexAsBytes := make([]byte, 8)
+		rankAsBytes := make([]byte, 8)
+		b.LittleEndian.PutUint64(indexAsBytes, uint64(i))
+		b.LittleEndian.PutUint64(rankAsBytes, math.Float64bits(rank))
+		store.Set(indexAsBytes, rankAsBytes)
 	}
 }
 
@@ -44,7 +44,13 @@ func (rs RankStorage) GetFullRank(ctx sdk.Context) []float64 {
 	iterator := store.Iterator(nil, nil)
 
 	for iterator.Valid() {
-		ranks[b.LittleEndian.Uint64(iterator.Key())] = math.Float64frombits(b.LittleEndian.Uint64(iterator.Value()))
+		itVal := iterator.Value()
+		itKey := iterator.Key()
+		rankBits := b.LittleEndian.Uint64(itVal)
+		rank := math.Float64frombits(rankBits)
+		key := b.LittleEndian.Uint64(itKey)
+
+		ranks[key] = rank
 		iterator.Next()
 	}
 	iterator.Close()

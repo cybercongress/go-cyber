@@ -140,6 +140,7 @@ func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.R
 	hash := sha256.Sum256(rankAsBytes)
 	app.latestRankHash = hash[:]
 	app.memStorage.UpdateRank(newRank)
+	app.persistStorages.Rank.StoreFullRank(ctx, newRank)
 	app.mainStorage.StoreAppHash(ctx, hash[:])
 	return abci.ResponseEndBlock{}
 }
@@ -166,4 +167,19 @@ func (app *CyberdApp) Info(req abci.RequestInfo) abci.ResponseInfo {
 		LastBlockHeight:  app.LastBlockHeight(),
 		LastBlockAppHash: app.latestRankHash,
 	}
+}
+
+func (app *CyberdApp) Search(cid string, page, perPage int) ([]RankedCid, int, error) {
+	if perPage == 0 {
+		perPage = 100
+	}
+	result, totalSize, err := app.memStorage.GetCidRankedLinks(Cid(cid), page, perPage)
+	if err != nil {
+		return nil, totalSize, err
+	}
+	return result, totalSize, nil
+}
+
+func (app *CyberdApp) Account(address sdk.AccAddress) auth.Account {
+	return app.accStorage.GetAccount(app.NewContext(true, abci.Header{}), address)
 }

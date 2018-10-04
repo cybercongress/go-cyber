@@ -1,7 +1,8 @@
 package commands
 
 import (
-	client2 "github.com/cybercongress/cyberd/cosmos/poc/client"
+	"github.com/cybercongress/cyberd/cosmos/poc/app/storage"
+	. "github.com/cybercongress/cyberd/cosmos/poc/cyberdcli/util"
 	"os"
 
 	"github.com/cosmos/cosmos-sdk/client/context"
@@ -16,8 +17,8 @@ import (
 )
 
 const (
-	flagCid1 = "cid-from"
-	flagCid2 = "cid-to"
+	flagCidFrom = "cid-from"
+	flagCidTo   = "cid-to"
 )
 
 // LinkTxCmd will create a link tx and sign it with the given key.
@@ -26,6 +27,7 @@ func LinkTxCmd(cdc *wire.Codec) *cobra.Command {
 		Use:   "link",
 		Short: "Create and sign a link tx",
 		RunE: func(cmd *cobra.Command, args []string) error {
+
 			txCtx := authctx.NewTxContextFromCLI().WithCodec(cdc)
 			cliCtx := context.NewCLIContext().
 				WithCodec(cdc).
@@ -36,28 +38,29 @@ func LinkTxCmd(cdc *wire.Codec) *cobra.Command {
 				return err
 			}
 
-			cid1 := viper.GetString(flagCid1)
-			cid2 := viper.GetString(flagCid2)
+			cidFrom := storage.Cid(viper.GetString(flagCidFrom))
+			cidTo := storage.Cid(viper.GetString(flagCidTo))
 
 			from, err := cliCtx.GetFromAddress()
 			if err != nil {
 				return err
 			}
 
+			// ensure that account exists in chain
 			_, err = cliCtx.GetAccount(from)
 			if err != nil {
 				return err
 			}
 
 			// build and sign the transaction, then broadcast to Tendermint
-			msg := client2.BuildMsg(from, cid1, cid2)
+			msg := BuildMsg(from, cidFrom, cidTo)
 
 			return utils.SendTx(txCtx, cliCtx, []sdk.Msg{msg})
 		},
 	}
 
-	cmd.Flags().String(flagCid1, "", "Content id to link from")
-	cmd.Flags().String(flagCid2, "", "Content id to link to")
+	cmd.Flags().String(flagCidFrom, "", "Content id to link from")
+	cmd.Flags().String(flagCidTo, "", "Content id to link to")
 
 	return cmd
 }

@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"github.com/cybercongress/cyberd/cosmos/poc/app"
+	"github.com/cybercongress/cyberd/cosmos/poc/cyberd/rpc"
 	"github.com/spf13/pflag"
 	"io"
 	"os"
@@ -59,7 +60,9 @@ func main() {
 }
 
 func newApp(logger log.Logger, db dbm.DB, storeTracer io.Writer) abci.Application {
-	return app.NewCyberdApp(logger, db, baseapp.SetPruning(viper.GetString("pruning")))
+	cyberdApp := app.NewCyberdApp(logger, db, baseapp.SetPruning(viper.GetString("pruning")))
+	rpc.SetCyberdApp(cyberdApp)
+	return cyberdApp
 }
 
 func exportAppStateAndTMValidators(logger log.Logger, db dbm.DB, storeTracer io.Writer) (json.RawMessage, []tmtypes.GenesisValidator, error) {
