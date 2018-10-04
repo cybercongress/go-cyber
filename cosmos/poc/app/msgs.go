@@ -13,8 +13,8 @@ type MsgLink struct {
 
 var _ sdk.Msg = MsgLink{}
 
-func NewMsgLink(address sdk.AccAddress, cid1 storage.Cid, cid2 storage.Cid) MsgLink {
-	return MsgLink{Address: address, CidFrom: cid1, CidTo: cid2}
+func NewMsgLink(address sdk.AccAddress, fromCid storage.Cid, toCid storage.Cid) MsgLink {
+	return MsgLink{Address: address, CidFrom: fromCid, CidTo: toCid}
 }
 
 func (MsgLink) Type() string { return "link" }

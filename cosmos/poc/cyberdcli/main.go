@@ -12,7 +12,7 @@ import (
 	authcmd "github.com/cosmos/cosmos-sdk/x/auth/client/cli"
 	bankcmd "github.com/cosmos/cosmos-sdk/x/bank/client/cli"
 	"github.com/cybercongress/cyberd/cosmos/poc/app"
-	cyberdcmd "github.com/cybercongress/cyberd/cosmos/poc/commands"
+	cyberdcmd "github.com/cybercongress/cyberd/cosmos/poc/cyberdcli/commands"
 	"github.com/spf13/cobra"
 	"github.com/tendermint/tendermint/libs/cli"
 )
@@ -46,7 +46,6 @@ func main() {
 	cyberdcli.AddCommand(
 		client.GetCommands(
 			authcmd.GetAccountCmd("acc", cdc, app.GetAccountDecoder(cdc)),
-			cyberdcmd.GetLinksCmd("link", cdc),
 		)...)
 
 	cyberdcli.AddCommand(
