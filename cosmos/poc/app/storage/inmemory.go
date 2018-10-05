@@ -111,34 +111,28 @@ func (s *InMemoryStorage) GetOverallOutLinksStake(from CidNumber) int64 {
 
 func (s *InMemoryStorage) GetCidRankedLinks(cid Cid, page, perPage int) ([]RankedCid, int, error) {
 
-	cidNumber := s.cidsNumbersIndexes[cid]
-
-	cidRankedLinks := s.cidRankedLinksIndex[cidNumber]
-
-	if cidRankedLinks == nil {
+	cidNumber, exists := s.cidsNumbersIndexes[cid]
+	if !exists {
 		return nil, 0, errors.New("Searched cid not found")
 	}
 
+	cidRankedLinks := s.cidRankedLinksIndex[cidNumber]
 	if len(cidRankedLinks) == 0 {
 		return nil, 0, errors.New("No links for this cid")
 	}
 
 	totalSize := len(cidRankedLinks)
-
 	startIndex := page * perPage
-
 	if startIndex >= totalSize {
 		return nil, totalSize, errors.New("Page not found")
 	}
 
 	endIndex := startIndex + perPage
-
 	if endIndex > totalSize {
 		endIndex = startIndex + (totalSize % perPage)
 	}
 
 	resultSet := cidRankedLinks[startIndex:endIndex]
-
 	response := make([]RankedCid, 0, len(resultSet))
 	for _, result := range resultSet {
 		response = append(response, RankedCid{s.cidsByNumberIndex[result.cidNumber], result.rank})
