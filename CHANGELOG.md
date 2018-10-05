@@ -4,6 +4,11 @@
 
 [Full Changelog](https://github.com/cybercongress/cyberd/compare/0.0.1...HEAD)
 
+**Implemented enhancements:**
+
+- Cosmos PoC: Integrate Rank Calculation [\#43](https://github.com/cybercongress/cyberd/issues/43)
+- Cosmos PoC: Extenend Standart Tendermint RPC API  [\#42](https://github.com/cybercongress/cyberd/issues/42)
+
 **Closed issues:**
 
 - Implement persistent storage for links. [\#40](https://github.com/cybercongress/cyberd/issues/40)
