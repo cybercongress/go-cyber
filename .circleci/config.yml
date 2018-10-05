@@ -19,6 +19,22 @@ aliases:
 
 jobs:
 
+  build_daemon_and_cli:
+    working_directory: ~/cyberd
+    docker:
+    - image: circleci/golang:1.11
+    steps:
+    - checkout
+    - setup_remote_docker:
+        version: 17.11.0-ce
+    - run:
+        name: Build Cyberd Image
+        command: |
+          cd cosmos/poc
+          export GO111MODULE=on
+          go build ./cyberd
+          go build ./cyberdcli
+
   build_and_deploy_images_to_dockerhub:
     working_directory: ~/cyberd
     docker:
@@ -109,11 +125,23 @@ workflows:
   version: 2
   cyberd_build:
     jobs:
+      - build_daemon_and_cli:
+          filters:
+            tags:
+              only: /.*/
       - update_changelog:
           <<: *master_filter
+          requires:
+            - build_daemon_and_cli
       - update_docs:
           <<: *master_filter
+          requires:
+            - build_daemon_and_cli
       - build_and_deploy_images_to_dockerhub:
           <<: *master_filter
+          requires:
+            - build_daemon_and_cli
       - release_cyberd_and_cyberdcli_binaries:
           <<: *release_filter
+          requires:
+            - build_daemon_and_cli
