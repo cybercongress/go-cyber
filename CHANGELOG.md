@@ -11,6 +11,7 @@
 
 **Merged pull requests:**
 
+- Add Circle CI build job [\#46](https://github.com/cybercongress/cyberd/pull/46) ([arturalbov](https://github.com/arturalbov))
 - Extenend Standart Tendermint RPC API [\#45](https://github.com/cybercongress/cyberd/pull/45) ([arturalbov](https://github.com/arturalbov))
 - \#43 Simplest Rank [\#44](https://github.com/cybercongress/cyberd/pull/44) ([hleb-albau](https://github.com/hleb-albau))
 - \#40 introduce in-memory store [\#41](https://github.com/cybercongress/cyberd/pull/41) ([hleb-albau](https://github.com/hleb-albau))
