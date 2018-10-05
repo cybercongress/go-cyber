@@ -2,7 +2,14 @@
 
 ## [Unreleased](https://github.com/cybercongress/cyberd/tree/HEAD)
 
-[Full Changelog](https://github.com/cybercongress/cyberd/compare/0.0.1...HEAD)
+[Full Changelog](https://github.com/cybercongress/cyberd/compare/0.0.2...HEAD)
+
+**Merged pull requests:**
+
+- Fix search on non existing cid [\#49](https://github.com/cybercongress/cyberd/pull/49) ([arturalbov](https://github.com/arturalbov))
+
+## [0.0.2](https://github.com/cybercongress/cyberd/tree/0.0.2) (2018-10-05)
+[Full Changelog](https://github.com/cybercongress/cyberd/compare/0.0.1...0.0.2)
 
 **Implemented enhancements:**
 
