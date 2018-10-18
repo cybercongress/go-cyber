@@ -1,13 +1,14 @@
 import os
 import sys
 
+from common.calculate_significance import test_ranks_significance
+
 sys.path.append(os.path.join(os.path.dirname(__file__), '../'))
 
 import glob
 from collections import OrderedDict
 
 from common.adjacency_list_to_graph import load_edges, build_graph
-from common.calculate_spring_rank import calculate_spring_rank
 from common.graph_to_matrix import build_matrix
 
 """
@@ -34,14 +35,11 @@ print("-----------------------------------------------")
 A = build_matrix(graph, nodes)
 print("-----------------------------------------------")
 
-iterations, raw_rank = calculate_spring_rank(A)  # raw rank is array with values, where indices is nodes list indices
-rank = dict(zip(nodes, raw_rank))
-print(f"Spring Rank calculated in {iterations} iterations")
-print("-----------------------------------------------")
-
-print("Storing results")
-initial_rank_file = open("../result/calculated-rank", "w")
-for node, node_rank in rank.items():
-    initial_rank_file.write(f"{node} {node_rank}\r\n")
-initial_rank_file.close()
+print("Calculating Rank Significance")
+p_val, H_array = test_ranks_significance(A, plot_file_name='../result/significance.png')
+significance_file = open("../result/significance", "w")
+significance_file.write(f"p-value: {p_val}\r\n")
+for H in H_array:
+    significance_file.write(f"{H}\r\n")
+significance_file.close()
 print("-----------------------------------------------")

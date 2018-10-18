@@ -36,7 +36,7 @@ def estimate_beta(A: csr_matrix, rank: [float]) -> float:
     return op.fsolve(f, beta_0, args=(A, normed_rank))[0]
 
 
-def test_ranks_significance(A: csr_matrix, n_repetitions=100, plot=True):
+def test_ranks_significance(A: csr_matrix, n_repetitions=100, plot_file_name=None):
     """
     Given an adjacency matrix, test if the hierarchical structure is statitically significant compared to null model
     The null model contains randomized directions of edges while preserving total degree between each pair of nodes
@@ -54,17 +54,21 @@ def test_ranks_significance(A: csr_matrix, n_repetitions=100, plot=True):
     H0 = calculate_Hamiltonion(A, calculate_spring_rank(A)[1])
 
     # generate null models
-    for i in range(n_repetitions):
-        B = randomize_edge_direction(A)
-        H[i] = calculate_Hamiltonion(B, calculate_spring_rank(B)[1])
-
+    i = 0
+    while i < n_repetitions:
+        try:
+            B = randomize_edge_direction(A)
+            H[i] = calculate_Hamiltonion(B, calculate_spring_rank(B)[1])
+            i += 1
+        except:
+            print("Filed to calculate Spring Rank")
     p_val = np.sum(H < H0) / n_repetitions
 
     # Plot
-    if plot:
+    if plot_file_name:
         plt.hist(H)
         plt.axvline(x=H0, color='r', linestyle='dashed')
-        plt.show()
+        plt.savefig(plot_file_name)
 
     return (p_val, H)
 

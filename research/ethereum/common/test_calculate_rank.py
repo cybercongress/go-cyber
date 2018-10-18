@@ -30,5 +30,5 @@ class GenerateGraphTest(unittest.TestCase):
 
     def test_graph_significance(self):
         A, origin_raw_rank = generate_graph(N=50, beta=0.05, c=5)
-        test_ranks_significance(A)
+        test_ranks_significance(A, plot_file_name='test.png')
         self.assertEqual(True, True)
