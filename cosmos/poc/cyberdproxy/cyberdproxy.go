@@ -12,6 +12,8 @@ func main() {
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/link", core.LinkHandlerFn(ctx))
+	mux.HandleFunc("/search", core.SearchHandlerFn(ctx))
+	mux.HandleFunc("/account", core.AccountHandlerFn(ctx))
 
 	c := cors.New(cors.Options{
 		AllowedOrigins: []string{"*"},
