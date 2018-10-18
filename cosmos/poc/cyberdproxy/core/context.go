@@ -6,13 +6,15 @@ import (
 )
 
 type ProxyContext struct {
-	Codec *wire.Codec
-	Node  client.Client
+	Codec   *wire.Codec
+	Node    client.Client
+	NodeUrl string
 }
 
 func NewProxyContext(endpoint string) ProxyContext {
 	return ProxyContext{
-		Codec: MakeCodec(),
-		Node:  client.NewHTTP(endpoint, "/websocket"),
+		Codec:   MakeCodec(),
+		Node:    client.NewHTTP(endpoint, "/websocket"),
+		NodeUrl: endpoint,
 	}
 }

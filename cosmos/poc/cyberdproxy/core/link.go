@@ -2,7 +2,6 @@ package core
 
 import (
 	"encoding/json"
-	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cybercongress/cyberd/cosmos/poc/app"
@@ -22,6 +21,7 @@ func LinkHandlerFn(ctx ProxyContext) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		w.Header().Set("Content-Type", "application/json")
+
 		requestBytes, _ := ioutil.ReadAll(r.Body)
 		var request LinkRequest
 		json.Unmarshal(requestBytes, &request)
@@ -29,7 +29,9 @@ func LinkHandlerFn(ctx ProxyContext) func(http.ResponseWriter, *http.Request) {
 		// BUILDING COSMOS SDK TX
 		signatures := make([]auth.StdSignature, 0, len(request.Signatures))
 		for _, sig := range request.Signatures {
-			stdSig := auth.StdSignature{PubKey: sig.PubKey, Signature: sig.Signature, AccountNumber: sig.AccountNumber, Sequence: sig.Sequence}
+			stdSig := auth.StdSignature{
+				PubKey: sig.PubKey, Signature: sig.Signature, AccountNumber: sig.AccountNumber, Sequence: sig.Sequence,
+			}
 			signatures = append(signatures, stdSig)
 		}
 
@@ -43,6 +45,8 @@ func LinkHandlerFn(ctx ProxyContext) func(http.ResponseWriter, *http.Request) {
 		stdTxBytes, _ := ctx.Codec.MarshalBinary(stdTx)
 
 		resp, _ := ctx.Node.BroadcastTxCommit(stdTxBytes)
-		fmt.Println(resp)
+
+		respBytes, _ := json.Marshal(resp)
+		w.Write(respBytes)
 	}
 }
