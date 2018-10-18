@@ -1,3 +1,4 @@
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy.optimize as op
@@ -66,6 +67,7 @@ def test_ranks_significance(A: csr_matrix, n_repetitions=100, plot_file_name=Non
 
     # Plot
     if plot_file_name:
+        matplotlib.use("TkAgg")
         plt.hist(H)
         plt.axvline(x=H0, color='r', linestyle='dashed')
         plt.savefig(plot_file_name)
