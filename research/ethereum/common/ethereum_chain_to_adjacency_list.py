@@ -35,21 +35,23 @@ print("")
 result_data_file = open(file_name, "w")
 
 for block_number in range(first_block_to_download, last_block_to_download + 1):
+    try:
+        print(f"Downloading {block_number} block")
+        traces = w3.parity.traceBlock(block_number)
 
-    print("Downloading {} block".format(block_number))
-    traces = w3.parity.traceBlock(block_number)
-
-    "Looking only for succeed call traces"
-    for trace in traces:
-        if 'error' in trace:
-            continue
-        action = trace['action']
-        if 'callType' not in action:
-            continue
-        value = int(action['value'], 0)
-        if value == 0:
-            continue
-        result_data_file.write("{} {} {}\r\n".format(action['from'], action['to'], value))
+        "Looking only for succeed call traces"
+        for trace in traces:
+            if 'error' in trace:
+                continue
+            action = trace['action']
+            if 'callType' not in action:
+                continue
+            value = int(action['value'], 0)
+            if value == 0:
+                continue
+            result_data_file.write("{} {} {}\r\n".format(action['from'], action['to'], value))
+    except:
+        print(f"Failed to download {block_number}")
 
 result_data_file.close()
 print("Finished to download data into {}".format(file_name))
