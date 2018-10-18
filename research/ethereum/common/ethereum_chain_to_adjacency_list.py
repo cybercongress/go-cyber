@@ -1,6 +1,6 @@
 import sys
 
-from web3 import HTTPProvider, Web3
+from web3 import IPCProvider, Web3
 
 """
 Collects ethereum transactions as adjacency list.
@@ -21,7 +21,7 @@ Usage:
 2) Run Script with two params: start block  and end blocknumbers ex:
 python ethereum_chain_to_adjacency_list.py 6235000 6235009
 """
-w3 = Web3(HTTPProvider(endpoint_uri='http://localhost:34545'))
+w3 = Web3(IPCProvider(timeout=180))
 
 first_block_to_download = int(sys.argv[1])
 last_block_to_download = int(sys.argv[2])
