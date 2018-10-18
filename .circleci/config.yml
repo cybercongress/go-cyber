@@ -34,6 +34,7 @@ jobs:
           export GO111MODULE=on
           go build -o daemon ./cyberd
           go build -o cli ./cyberdcli
+          go build -o proxy ./cyberdproxy
 
   build_and_deploy_images_to_dockerhub:
     working_directory: ~/cyberd

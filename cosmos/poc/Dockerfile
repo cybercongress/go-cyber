@@ -7,6 +7,7 @@ RUN apk add --no-cache git
 
 RUN GO111MODULE=on CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -ldflags="-w -s" -o /go/bin/cyberd ./cyberd
 RUN GO111MODULE=on CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -ldflags="-w -s" -o /go/bin/cyberdcli ./cyberdcli
+RUN GO111MODULE=on CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -ldflags="-w -s" -o /go/bin/cyberdproxy ./cyberdproxy
 
 FROM alpine:edge
 
@@ -15,6 +16,7 @@ WORKDIR /root
 
 COPY --from=builder /go/bin/cyberd /usr/bin/cyberd
 COPY --from=builder /go/bin/cyberdcli /usr/bin/cyberdcli
+COPY --from=builder /go/bin/cyberdproxy /usr/bin/cyberdproxy
 
 COPY genesis.json /genesis.json
 COPY config.toml /config.toml

@@ -23,6 +23,18 @@ builds:
       - windows
     goarch:
       - amd64
+  -
+    main: ./cyberdproxy
+    binary: cyberdproxy
+    env:
+      - CGO_ENABLED=0
+      - GO111MODULE=on
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
 
 
 checksum:
