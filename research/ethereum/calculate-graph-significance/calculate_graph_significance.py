@@ -1,9 +1,8 @@
 import os
 import sys
 
-from common.calculate_significance import test_ranks_significance
-
 sys.path.append(os.path.join(os.path.dirname(__file__), '../'))
+from common.calculate_significance import test_ranks_significance
 
 import glob
 from collections import OrderedDict
