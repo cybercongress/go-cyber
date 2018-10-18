@@ -22,9 +22,18 @@ func LinkHandlerFn(ctx ProxyContext) func(http.ResponseWriter, *http.Request) {
 
 		w.Header().Set("Content-Type", "application/json")
 
-		requestBytes, _ := ioutil.ReadAll(r.Body)
+		requestBytes, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			HandleError(err, w)
+			return
+		}
+
 		var request LinkRequest
-		json.Unmarshal(requestBytes, &request)
+		err = json.Unmarshal(requestBytes, &request)
+		if err != nil {
+			HandleError(err, w)
+			return
+		}
 
 		// BUILDING COSMOS SDK TX
 		signatures := make([]auth.StdSignature, 0, len(request.Signatures))
@@ -42,11 +51,23 @@ func LinkHandlerFn(ctx ProxyContext) func(http.ResponseWriter, *http.Request) {
 
 		stdTx := auth.StdTx{Msgs: msgs, Fee: request.Fee, Signatures: signatures, Memo: request.Memo}
 
-		stdTxBytes, _ := ctx.Codec.MarshalBinary(stdTx)
+		stdTxBytes, err := ctx.Codec.MarshalBinary(stdTx)
+		if err != nil {
+			HandleError(err, w)
+			return
+		}
 
-		resp, _ := ctx.Node.BroadcastTxCommit(stdTxBytes)
+		resp, err := ctx.Node.BroadcastTxCommit(stdTxBytes)
+		if err != nil {
+			HandleError(err, w)
+			return
+		}
 
-		respBytes, _ := json.Marshal(resp)
+		respBytes, err := json.Marshal(resp)
+		if err != nil {
+			HandleError(err, w)
+			return
+		}
 		w.Write(respBytes)
 	}
 }

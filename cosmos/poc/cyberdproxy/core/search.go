@@ -10,17 +10,24 @@ func SearchHandlerFn(ctx ProxyContext) func(http.ResponseWriter, *http.Request) 
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		w.Header().Set("Content-Type", "application/json")
-		cids, ok := r.URL.Query()["cid"]
 
-		if !ok || len(cids[0]) < 1 {
-			w.WriteHeader(404)
+		cid, err := getSingleParamValue("cid", r)
+		if err != nil {
+			HandleError(err, w)
+			return
 		}
 
-		cid := cids[0]
+		resp, err := ctx.HttpClient.Get(ctx.NodeUrl + "/search?cid=\"" + cid + "\"")
+		if err != nil {
+			HandleError(err, w)
+			return
+		}
 
-		resp, _ := http.Get(ctx.NodeUrl + "/search?cid=\"" + cid + "\"")
-
-		respBytes, _ := ioutil.ReadAll(resp.Body)
+		respBytes, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			HandleError(err, w)
+			return
+		}
 
 		w.Write(respBytes)
 

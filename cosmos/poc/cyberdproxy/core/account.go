@@ -10,17 +10,24 @@ func AccountHandlerFn(ctx ProxyContext) func(http.ResponseWriter, *http.Request)
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		w.Header().Set("Content-Type", "application/json")
-		addresses, ok := r.URL.Query()["address"]
 
-		if !ok || len(addresses[0]) < 1 {
-			w.WriteHeader(404)
+		address, err := getSingleParamValue("address", r)
+		if err != nil {
+			HandleError(err, w)
+			return
 		}
 
-		address := addresses[0]
+		resp, err := ctx.HttpClient.Get(ctx.NodeUrl + "/account?address=\"" + address + "\"")
+		if err != nil {
+			HandleError(err, w)
+			return
+		}
 
-		resp, _ := http.Get(ctx.NodeUrl + "/account?address=\"" + address + "\"")
-
-		respBytes, _ := ioutil.ReadAll(resp.Body)
+		respBytes, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			HandleError(err, w)
+			return
+		}
 
 		w.Write(respBytes)
 
