@@ -18,13 +18,16 @@ COPY --from=builder /go/bin/cyberd /usr/bin/cyberd
 COPY --from=builder /go/bin/cyberdcli /usr/bin/cyberdcli
 COPY --from=builder /go/bin/cyberdproxy /usr/bin/cyberdproxy
 
+COPY start_script.sh start_script.sh
+RUN chmod +x start_script.sh
+
 COPY genesis.json /genesis.json
 COPY config.toml /config.toml
 
-EXPOSE 26656 26657
+EXPOSE 26656 26657 26660
 
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["cyberd", "start"]
+CMD ["./start_script.sh"]

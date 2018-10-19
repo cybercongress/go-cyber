@@ -46,9 +46,10 @@ func StartCmd() *cobra.Command {
 
 			mux := http.NewServeMux()
 			mux.HandleFunc("/link", proxy.LinkHandlerFn(ctx))
-			mux.HandleFunc("/search", proxy.SearchHandlerFn(ctx))
-			mux.HandleFunc("/account", proxy.AccountHandlerFn(ctx))
-			mux.HandleFunc("/health", proxy.HealthHandlerFn(ctx))
+			mux.HandleFunc("/search", proxy.GetWithParamHandlerFn(ctx, "/search", "cid"))
+			mux.HandleFunc("/account", proxy.GetWithParamHandlerFn(ctx, "/account", "address"))
+			mux.HandleFunc("/health", proxy.GetHandlerFn(ctx, "/health"))
+			mux.HandleFunc("/status", proxy.GetHandlerFn(ctx, "/status"))
 
 			c := cors.New(cors.Options{
 				AllowedOrigins: []string{"*"},
