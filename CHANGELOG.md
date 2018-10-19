@@ -4,9 +4,23 @@
 
 [Full Changelog](https://github.com/cybercongress/cyberd/compare/0.0.2...HEAD)
 
+**Implemented enhancements:**
+
+- CLI: Add "wait\_for\_confirmation" Flag [\#47](https://github.com/cybercongress/cyberd/issues/47)
+
+**Fixed bugs:**
+
+- RPC Client: /search on non existing cid return first added cid [\#48](https://github.com/cybercongress/cyberd/issues/48)
+
+**Closed issues:**
+
+- Write validation logic of IPFS hash for Losion Zeronet [\#18](https://github.com/cybercongress/cyberd/issues/18)
+- Genesis Zeronet [\#17](https://github.com/cybercongress/cyberd/issues/17)
+- Performance testing of Zeronet [\#4](https://github.com/cybercongress/cyberd/issues/4)
+
 **Merged pull requests:**
 
-- Fix search on non existing cid [\#49](https://github.com/cybercongress/cyberd/pull/49) ([arturalbov](https://github.com/arturalbov))
+- Proxy rpc [\#54](https://github.com/cybercongress/cyberd/pull/54) ([arturalbov](https://github.com/arturalbov))
 
 ## [0.0.2](https://github.com/cybercongress/cyberd/tree/0.0.2) (2018-10-05)
 [Full Changelog](https://github.com/cybercongress/cyberd/compare/0.0.1...0.0.2)
@@ -23,6 +37,7 @@
 
 **Merged pull requests:**
 
+- Fix search on non existing cid [\#49](https://github.com/cybercongress/cyberd/pull/49) ([arturalbov](https://github.com/arturalbov))
 - Add Circle CI build job [\#46](https://github.com/cybercongress/cyberd/pull/46) ([arturalbov](https://github.com/arturalbov))
 - Extenend Standart Tendermint RPC API [\#45](https://github.com/cybercongress/cyberd/pull/45) ([arturalbov](https://github.com/arturalbov))
 - \#43 Simplest Rank [\#44](https://github.com/cybercongress/cyberd/pull/44) ([hleb-albau](https://github.com/hleb-albau))
