@@ -1,24 +1,79 @@
 package main
 
 import (
-	"github.com/cybercongress/cyberd/cosmos/poc/cyberdproxy/core"
+	"fmt"
+	"github.com/cybercongress/cyberd/cosmos/poc/cyberdproxy/proxy"
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"net/http"
+	"os"
 
+	"github.com/TV4/graceful"
 	"github.com/rs/cors"
 )
 
+var (
+	cyberdproxy = &cobra.Command{
+		Use:   "cyberdproxy",
+		Short: "Http proxy to cyberd node",
+	}
+)
+
 func main() {
-	ctx := core.NewProxyContext("http://localhost:26657")
 
-	mux := http.NewServeMux()
-	mux.HandleFunc("/link", core.LinkHandlerFn(ctx))
-	mux.HandleFunc("/search", core.SearchHandlerFn(ctx))
-	mux.HandleFunc("/account", core.AccountHandlerFn(ctx))
+	cyberdproxy.AddCommand(StartCmd())
 
-	c := cors.New(cors.Options{
-		AllowedOrigins: []string{"*"},
-	})
+	if err := cyberdproxy.Execute(); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+}
 
-	handler := c.Handler(mux)
-	http.ListenAndServe(":8081", handler)
+const (
+	flagNode = "node"
+	flagPort = "port"
+)
+
+func StartCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "start",
+		Short: "Start proxy",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			node := viper.GetString(flagNode)
+			port := viper.GetString(flagPort)
+
+			ctx := proxy.NewProxyContext(node)
+
+			mux := http.NewServeMux()
+			mux.HandleFunc("/link", proxy.LinkHandlerFn(ctx))
+			mux.HandleFunc("/search", proxy.SearchHandlerFn(ctx))
+			mux.HandleFunc("/account", proxy.AccountHandlerFn(ctx))
+			mux.HandleFunc("/health", proxy.HealthHandlerFn(ctx))
+
+			c := cors.New(cors.Options{
+				AllowedOrigins: []string{"*"},
+			})
+
+			handler := c.Handler(mux)
+
+			fmt.Println("Connecting to node " + node)
+			fmt.Println("Running on port " + port)
+
+			graceful.ListenAndServe(&http.Server{
+				Addr:    ":" + port,
+				Handler: handler,
+			})
+
+			return nil
+		},
+	}
+
+	cmd.Flags().String(flagNode, "http://localhost:26657", "Node url")
+	cmd.Flags().String(flagPort, "26660", "Port to run on")
+
+	viper.BindPFlag(flagNode, cmd.Flags().Lookup(flagNode))
+	viper.BindPFlag(flagPort, cmd.Flags().Lookup(flagPort))
+
+	return cmd
+
 }

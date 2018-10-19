@@ -2,6 +2,7 @@ module github.com/cybercongress/cyberd/cosmos/poc
 
 require (
 	github.com/BurntSushi/toml v0.3.1 // indirect
+	github.com/TV4/graceful v0.3.3
 	github.com/VividCortex/gohistogram v1.0.0 // indirect
 	github.com/ZondaX/hid-go v0.0.0-20180905224704-48b08affede2 // indirect
 	github.com/agl/ed25519 v0.0.0-20170116200512-5312a6153412 // indirect

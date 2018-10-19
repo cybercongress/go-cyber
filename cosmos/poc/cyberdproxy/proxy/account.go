@@ -1,7 +1,6 @@
-package core
+package proxy
 
 import (
-	"io/ioutil"
 	"net/http"
 )
 
@@ -17,19 +16,13 @@ func AccountHandlerFn(ctx ProxyContext) func(http.ResponseWriter, *http.Request)
 			return
 		}
 
-		resp, err := ctx.HttpClient.Get(ctx.NodeUrl + "/account?address=\"" + address + "\"")
+		resp, err := ctx.Get("/account?address=\"" + address + "\"")
 		if err != nil {
 			HandleError(err, w)
 			return
 		}
 
-		respBytes, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			HandleError(err, w)
-			return
-		}
-
-		w.Write(respBytes)
+		w.Write(resp)
 
 	}
 }

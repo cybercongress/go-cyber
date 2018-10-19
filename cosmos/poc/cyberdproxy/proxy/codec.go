@@ -1,4 +1,4 @@
-package core
+package proxy
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
