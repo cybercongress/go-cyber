@@ -1,6 +1,9 @@
 package proxy
 
-import "net/http"
+import (
+	"errors"
+	"net/http"
+)
 
 func GetHandlerFn(ctx ProxyContext, endpoint string) func(http.ResponseWriter, *http.Request) {
 
@@ -24,10 +27,16 @@ func GetWithParamHandlerFn(ctx ProxyContext, endpoint string, param string) func
 
 		w.Header().Set("Content-Type", "application/json")
 
-		paramValue, err := getSingleParamValue(param, r)
-		if err != nil {
-			HandleError(err, w)
+		addresses, ok := r.URL.Query()[param]
+
+		if !ok || addresses == nil {
+			HandleError(errors.New("Cannot find param "+param), w)
 			return
+		}
+
+		paramValue := ""
+		if addresses != nil && len(addresses[0]) == 1 {
+			paramValue = addresses[0]
 		}
 
 		resp, err := ctx.Get(endpoint + "?" + param + "=\"" + paramValue + "\"")
