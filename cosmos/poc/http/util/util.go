@@ -1,4 +1,4 @@
-package proxy
+package util
 
 import (
 	"encoding/json"
@@ -16,7 +16,7 @@ func HandleError(err error, w http.ResponseWriter) {
 	w.Write(errBytes)
 }
 
-func getSingleParamValue(paramName string, r *http.Request) (string, error) {
+func GetSingleParamValue(paramName string, r *http.Request) (string, error) {
 	addresses, ok := r.URL.Query()[paramName]
 
 	if !ok || len(addresses[0]) < 1 {

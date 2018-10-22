@@ -1,6 +1,9 @@
 package proxy
 
-import "net/http"
+import (
+	"github.com/cybercongress/cyberd/cosmos/poc/http/util"
+	"net/http"
+)
 
 func GetHandlerFn(ctx ProxyContext, endpoint string) func(http.ResponseWriter, *http.Request) {
 
@@ -10,7 +13,7 @@ func GetHandlerFn(ctx ProxyContext, endpoint string) func(http.ResponseWriter, *
 
 		resp, err := ctx.Get(endpoint)
 		if err != nil {
-			HandleError(err, w)
+			util.HandleError(err, w)
 			return
 		}
 
@@ -24,15 +27,15 @@ func GetWithParamHandlerFn(ctx ProxyContext, endpoint string, param string) func
 
 		w.Header().Set("Content-Type", "application/json")
 
-		paramValue, err := getSingleParamValue(param, r)
+		paramValue, err := util.GetSingleParamValue(param, r)
 		if err != nil {
-			HandleError(err, w)
+			util.HandleError(err, w)
 			return
 		}
 
 		resp, err := ctx.Get(endpoint + "?" + param + "=\"" + paramValue + "\"")
 		if err != nil {
-			HandleError(err, w)
+			util.HandleError(err, w)
 			return
 		}
 

@@ -5,6 +5,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cybercongress/cyberd/cosmos/poc/app"
+	"github.com/cybercongress/cyberd/cosmos/poc/http/util"
 	"io/ioutil"
 	"net/http"
 )
@@ -24,14 +25,14 @@ func LinkHandlerFn(ctx ProxyContext) func(http.ResponseWriter, *http.Request) {
 
 		requestBytes, err := ioutil.ReadAll(r.Body)
 		if err != nil {
-			HandleError(err, w)
+			util.HandleError(err, w)
 			return
 		}
 
 		var request LinkRequest
 		err = json.Unmarshal(requestBytes, &request)
 		if err != nil {
-			HandleError(err, w)
+			util.HandleError(err, w)
 			return
 		}
 
@@ -53,19 +54,19 @@ func LinkHandlerFn(ctx ProxyContext) func(http.ResponseWriter, *http.Request) {
 
 		stdTxBytes, err := ctx.Codec.MarshalBinary(stdTx)
 		if err != nil {
-			HandleError(err, w)
+			util.HandleError(err, w)
 			return
 		}
 
 		resp, err := ctx.Node.BroadcastTxCommit(stdTxBytes)
 		if err != nil {
-			HandleError(err, w)
+			util.HandleError(err, w)
 			return
 		}
 
 		respBytes, err := json.Marshal(resp)
 		if err != nil {
-			HandleError(err, w)
+			util.HandleError(err, w)
 			return
 		}
 		w.Write(respBytes)

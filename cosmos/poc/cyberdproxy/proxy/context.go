@@ -2,6 +2,7 @@ package proxy
 
 import (
 	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/cybercongress/cyberd/cosmos/poc/app"
 	"github.com/tendermint/tendermint/rpc/client"
 	"io/ioutil"
 	"net/http"
@@ -17,7 +18,7 @@ type ProxyContext struct {
 
 func NewProxyContext(endpoint string) ProxyContext {
 	return ProxyContext{
-		Codec:   MakeCodec(),
+		Codec:   app.MakeCodec(),
 		Node:    client.NewHTTP(endpoint, "/websocket"),
 		NodeUrl: endpoint,
 		HttpClient: &http.Client{
