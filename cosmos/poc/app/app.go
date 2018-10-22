@@ -147,7 +147,6 @@ func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.R
 	hash := sha256.Sum256(rankAsBytes)
 	app.latestRankHash = hash[:]
 	app.memStorage.UpdateRank(newRank)
-	app.persistStorages.Rank.StoreFullRank(ctx, newRank)
 	app.mainStorage.StoreAppHash(ctx, hash[:])
 	return abci.ResponseEndBlock{}
 }
