@@ -62,7 +62,6 @@ func (s *InMemoryStorage) Load(ctx sdk.Context, ps CyberdPersistentStorages, am 
 	s.cidsByNumberIndex = cidsByNumber
 	s.cidsCount = uint64(len(cidsIndexes))
 	s.userStake = GetAllAccountsStakes(ctx, am)
-	s.UpdateRank(ps.Rank.GetFullRank(ctx))
 }
 
 // Also returns bool flag, whether index exists

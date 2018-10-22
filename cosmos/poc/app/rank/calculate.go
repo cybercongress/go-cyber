@@ -3,6 +3,7 @@ package rank
 import (
 	. "github.com/cybercongress/cyberd/cosmos/poc/app/storage"
 	"math"
+	"sync"
 )
 
 const (
@@ -10,18 +11,16 @@ const (
 	tolerance = 0.1
 )
 
-func CalculateRank(data *InMemoryStorage) []float64 {
+func CalculateRank(data *InMemoryStorage) ([]float64, int) {
 
 	size := data.GetCidsCount()
 
 	if size == 0 {
-		return []float64{}
+		return []float64{}, 0
 	}
 	inverseOfSize := 1.0 / float64(size)
 
-	prevrank := data.GetRank()
-	zeros := make([]float64, size-len(prevrank))
-	prevrank = append(prevrank, zeros...)
+	prevrank := make([]float64, size)
 
 	tOverSize := (1.0 - d) / float64(size)
 	danglingNodes := calculateDanglingNodes(data)
@@ -32,14 +31,16 @@ func CalculateRank(data *InMemoryStorage) []float64 {
 
 	change := 2.0
 
+	steps := 0
 	var rank []float64
 	for change > tolerance {
 		rank = step(tOverSize, prevrank, danglingNodes, data)
 		change = calculateChange(prevrank, rank)
 		prevrank = rank
+		steps++
 	}
 
-	return rank
+	return rank, steps
 }
 
 func calculateDanglingNodes(data *InMemoryStorage) []int64 {
@@ -66,17 +67,25 @@ func step(tOverSize float64, prevrank []float64, danglingNodes []int64, data *In
 	innerProductOverSize := innerProduct / float64(len(prevrank))
 	rank := make([]float64, len(prevrank))
 
+	var wg sync.WaitGroup
+	wg.Add(len(data.GetInLinks()))
+
 	for i, inLinksForI := range data.GetInLinks() {
-		ksum := 0.0
 
-		for j := range inLinksForI {
-			linkStake := float64(data.GetOverallLinkStake(CidNumber(j), CidNumber(i)))
-			jCidOutStake := float64(data.GetOverallOutLinksStake(CidNumber(j)))
-			ksum += prevrank[j] * (linkStake / jCidOutStake)
-		}
+		go func(cid CidNumber, inLinks CidLinks) {
+			defer wg.Done()
+			ksum := 0.0
 
-		rank[i] = d*(ksum+innerProductOverSize) + tOverSize
+			for j := range inLinks {
+				linkStake := float64(data.GetOverallLinkStake(CidNumber(j), CidNumber(cid)))
+				jCidOutStake := float64(data.GetOverallOutLinksStake(CidNumber(j)))
+				ksum += prevrank[j] * (linkStake / jCidOutStake)
+			}
+
+			rank[cid] = d*(ksum+innerProductOverSize) + tOverSize
+		}(i, inLinksForI)
 	}
+	wg.Wait()
 	return rank
 }
 
