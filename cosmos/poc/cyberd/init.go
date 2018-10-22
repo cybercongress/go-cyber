@@ -2,10 +2,10 @@ package main
 
 import (
 	"encoding/json"
+	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/server"
 	serverconfig "github.com/cosmos/cosmos-sdk/server/config"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/wire"
 	"github.com/pkg/errors"
 	"github.com/spf13/viper"
 	"github.com/tendermint/tendermint/crypto"
@@ -30,7 +30,7 @@ type CyberdGenTx struct {
 	Addresses []sdk.AccAddress `json:"addresses"`
 }
 
-func CyberdAppGenTx(cdc *wire.Codec, pk crypto.PubKey, genTxConfig serverconfig.GenTx) (
+func CyberdAppGenTx(cdc *codec.Codec, pk crypto.PubKey, genTxConfig serverconfig.GenTx) (
 	appGenTx, cliPrint json.RawMessage, validator tmtypes.GenesisValidator, err error) {
 
 	accsCount := viper.GetInt(FlagAccsCount)
@@ -70,7 +70,7 @@ func CyberdAppGenTx(cdc *wire.Codec, pk crypto.PubKey, genTxConfig serverconfig.
 }
 
 // create the genesis app state
-func CyberdAppGenState(cdc *wire.Codec, appGenTxs []json.RawMessage) (appState json.RawMessage, err error) {
+func CyberdAppGenState(cdc *codec.Codec, appGenTxs []json.RawMessage) (appState json.RawMessage, err error) {
 
 	if len(appGenTxs) != 1 {
 		err = errors.New("must provide a single genesis transaction")

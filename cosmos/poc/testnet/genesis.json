@@ -1,18 +1,10 @@
 {
-  "genesis_time": "2018-09-25T10:31:23.372427Z",
-  "chain_id": "test-chain-fbqPMq",
+  "genesis_time": "2018-10-19T11:27:05.085742326Z",
+  "chain_id": "test-chain-gRXWCL",
   "consensus_params": {
     "block_size_params": {
       "max_bytes": "22020096",
-      "max_txs": "10000",
       "max_gas": "-1"
-    },
-    "tx_size_params": {
-      "max_bytes": "10240",
-      "max_gas": "-1"
-    },
-    "block_gossip_params": {
-      "block_part_size_bytes": "65536"
     },
     "evidence_params": {
       "max_age": "100000"
@@ -20,9 +12,10 @@
   },
   "validators": [
     {
+      "address": "A41C2ED742E47A9BDC4E71BE4B879F949045EC97",
       "pub_key": {
         "type": "tendermint/PubKeyEd25519",
-        "value": "U8bjR/t+leZVRn8pGa9/IAMiMuwENcljSEfdqrh3Pqs="
+        "value": "zD50oo++vRQomhli5A3yeZUcAnbNTdIoG1BBgP1CtME="
       },
       "power": "10",
       "name": ""
@@ -32,7 +25,7 @@
   "app_state": {
     "accounts": [
       {
-        "address": "cosmosaccaddr1ea4np8f8vlrpuzfdu2rjs5ncq9vkjapmheekq8",
+        "address": "cosmos1ag06vuv3wk78ruv3mu9rdl0xa50jsg0u6nn3zm",
         "coins": [
           {
             "denom": "CBD",
@@ -41,7 +34,7 @@
         ]
       },
       {
-        "address": "cosmosaccaddr19fmpm9c9y2cycqux9zqn3n275f3klx5djzu74x",
+        "address": "cosmos1en0qpgayykcas2l3c7mn3x0lrh7lcra3uryqfv",
         "coins": [
           {
             "denom": "CBD",
@@ -50,7 +43,7 @@
         ]
       },
       {
-        "address": "cosmosaccaddr1a9v6jgv9y29qfkg4gksphf9mq2f3rr4f72k8z0",
+        "address": "cosmos1gx5r8z74ksh3ehr88h3kfznt8pv3vp44hj244j",
         "coins": [
           {
             "denom": "CBD",
@@ -59,7 +52,7 @@
         ]
       },
       {
-        "address": "cosmosaccaddr1mkvg9tpaslgchjuuwck5s6etl8l8nhhy6csn7t",
+        "address": "cosmos1967y7cxhpz2d4gk6v8l32m58pty8kcmg766zpf",
         "coins": [
           {
             "denom": "CBD",
@@ -68,7 +61,25 @@
         ]
       },
       {
-        "address": "cosmosaccaddr1yaza5rxc2tvvkuxdzm3u07g92x8qspqfprhkac",
+        "address": "cosmos14l2r8g68nx9w3tta0vm7dxz95uw7tplwm5g5ng",
+        "coins": [
+          {
+            "denom": "CBD",
+            "amount": "9007199254740992"
+          }
+        ]
+      },
+      {
+        "address": "cosmos1x23dqumfwlmhll8slqreq0m4kajn8z7d4ruxk8",
+        "coins": [
+          {
+            "denom": "CBD",
+            "amount": "9007199254740992"
+          }
+        ]
+      },
+      {
+        "address": "cosmos150qa72dvmmn2fdj6m5qah29fx548lkkgzyr9hg",
         "coins": [
           {
             "denom": "CBD",

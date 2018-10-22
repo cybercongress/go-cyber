@@ -18,6 +18,8 @@ import (
 	dbm "github.com/tendermint/tendermint/libs/db"
 	"github.com/tendermint/tendermint/libs/log"
 	tmtypes "github.com/tendermint/tendermint/types"
+
+	gaiaInit "github.com/cosmos/cosmos-sdk/cmd/gaia/init"
 )
 
 var (
@@ -44,9 +46,8 @@ func main() {
 		AppGenTx:         CyberdAppGenTx,
 	}
 
-	server.AddCommands(ctx, cdc, rootCmd, cyberdAppInit,
-		server.ConstructAppCreator(newApp, "cyberd"),
-		server.ConstructAppExporter(exportAppStateAndTMValidators, "cyberd"))
+	rootCmd.AddCommand(gaiaInit.InitCmd(ctx, cdc, cyberdAppInit))
+	server.AddCommands(ctx, cdc, rootCmd, cyberdAppInit, newApp, exportAppStateAndTMValidators)
 
 	// prepare and add flags
 	rootDir := os.ExpandEnv("$HOME/.cyberd")

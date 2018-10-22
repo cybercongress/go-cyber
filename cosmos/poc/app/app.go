@@ -4,8 +4,8 @@ import (
 	"crypto/sha256"
 	"encoding/binary"
 	"github.com/cosmos/cosmos-sdk/baseapp"
+	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/wire"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/bank"
 	. "github.com/cybercongress/cyberd/cosmos/poc/app/bank"
@@ -16,6 +16,7 @@ import (
 	dbm "github.com/tendermint/tendermint/libs/db"
 	"github.com/tendermint/tendermint/libs/log"
 	"math"
+	"time"
 )
 
 const (
@@ -38,7 +39,7 @@ type CyberdAppDbKeys struct {
 // integral app types.
 type CyberdApp struct {
 	*baseapp.BaseApp
-	cdc *wire.Codec
+	cdc *codec.Codec
 
 	// keys to access the multistore
 	dbKeys CyberdAppDbKeys
@@ -92,7 +93,7 @@ func NewCyberdApp(logger log.Logger, db dbm.DB, baseAppOptions ...func(*baseapp.
 
 	// define and attach the mappers and keepers
 	app.accStorage = auth.NewAccountMapper(app.cdc, dbKeys.acc, NewAccount)
-	app.coinKeeper = bank.NewKeeper(app.accStorage)
+	app.coinKeeper = bank.NewBaseKeeper(app.accStorage)
 	app.memStorage = &InMemoryStorage{}
 
 	// register message routes
@@ -113,7 +114,10 @@ func NewCyberdApp(logger log.Logger, db dbm.DB, baseAppOptions ...func(*baseapp.
 		cmn.Exit(err.Error())
 	}
 	ctx := app.BaseApp.NewContext(true, abci.Header{})
+	start := time.Now()
+	app.BaseApp.Logger.Info("Loading mem state")
 	app.memStorage.Load(ctx, storages, app.accStorage)
+	app.BaseApp.Logger.Info("App loaded", "time", time.Since(start))
 	app.latestRankHash = ms.GetAppHash(ctx)
 
 	app.Seal()
@@ -131,7 +135,10 @@ func (app *CyberdApp) BeginBlocker(_ sdk.Context, _ abci.RequestBeginBlock) abci
 // App state is consensus driven state.
 func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.ResponseEndBlock {
 
-	newRank := rank.CalculateRank(app.memStorage)
+	start := time.Now()
+	app.BaseApp.Logger.Info("Calculating rank")
+	newRank, steps := rank.CalculateRank(app.memStorage)
+	app.BaseApp.Logger.Info("Rank calculated", "steps", steps, "time", time.Since(start))
 	rankAsBytes := make([]byte, 8*len(newRank))
 	for i, f64 := range newRank {
 		binary.LittleEndian.PutUint64(rankAsBytes[i*8:i*8+8], math.Float64bits(f64))
@@ -154,19 +161,19 @@ func (app *CyberdApp) Commit() (res abci.ResponseCommit) {
 // Implements ABCI
 func (app *CyberdApp) Info(req abci.RequestInfo) abci.ResponseInfo {
 
-	if app.LastBlockHeight() == 0 {
-		return abci.ResponseInfo{
-			Data:             app.BaseApp.Name(),
-			LastBlockHeight:  app.LastBlockHeight(),
-			LastBlockAppHash: make([]byte, 0),
-		}
-	}
-
 	return abci.ResponseInfo{
 		Data:             app.BaseApp.Name(),
 		LastBlockHeight:  app.LastBlockHeight(),
-		LastBlockAppHash: app.latestRankHash,
+		LastBlockAppHash: app.appHash(),
 	}
+}
+
+func (app *CyberdApp) appHash() []byte {
+
+	if app.LastBlockHeight() == 0 {
+		return make([]byte, 0)
+	}
+	return app.latestRankHash
 }
 
 func (app *CyberdApp) Search(cid string, page, perPage int) ([]RankedCid, int, error) {
