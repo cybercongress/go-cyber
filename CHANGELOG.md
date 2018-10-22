@@ -2,7 +2,19 @@
 
 ## [Unreleased](https://github.com/cybercongress/cyberd/tree/HEAD)
 
-[Full Changelog](https://github.com/cybercongress/cyberd/compare/0.0.2...HEAD)
+[Full Changelog](https://github.com/cybercongress/cyberd/compare/0.0.3...HEAD)
+
+**Closed issues:**
+
+- Update cosmos-sdk to latest dev branch version  [\#56](https://github.com/cybercongress/cyberd/issues/56)
+- Perfomance Degradation: Heavy Disk Usage [\#50](https://github.com/cybercongress/cyberd/issues/50)
+
+**Merged pull requests:**
+
+- Update cosmos-sdk to latest dev branch version [\#53](https://github.com/cybercongress/cyberd/pull/53) ([hleb-albau](https://github.com/hleb-albau))
+
+## [0.0.3](https://github.com/cybercongress/cyberd/tree/0.0.3) (2018-10-19)
+[Full Changelog](https://github.com/cybercongress/cyberd/compare/0.0.2...0.0.3)
 
 **Implemented enhancements:**
 
