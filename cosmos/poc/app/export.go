@@ -2,7 +2,7 @@ package app
 
 import (
 	"encoding/json"
-	"github.com/cosmos/cosmos-sdk/wire"
+	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	abci "github.com/tendermint/tendermint/abci/types"
 	tmtypes "github.com/tendermint/tendermint/types"
@@ -29,7 +29,7 @@ func (app *CyberdApp) ExportAppStateAndValidators() (appState json.RawMessage, v
 	app.accStorage.IterateAccounts(ctx, appendAccountsFn)
 
 	genState := GenesisState{Accounts: accounts}
-	appState, err = wire.MarshalJSONIndent(app.cdc, genState)
+	appState, err = codec.MarshalJSONIndent(app.cdc, genState)
 	if err != nil {
 		return nil, nil, err
 	}

@@ -1,7 +1,7 @@
 package proxy
 
 import (
-	"github.com/cosmos/cosmos-sdk/wire"
+	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/tendermint/tendermint/rpc/client"
 	"io/ioutil"
 	"net/http"
@@ -9,7 +9,7 @@ import (
 )
 
 type ProxyContext struct {
-	Codec      *wire.Codec
+	Codec      *codec.Codec
 	Node       client.Client
 	NodeUrl    string
 	HttpClient *http.Client
