@@ -24,7 +24,7 @@ func GetSingleParamValue(paramName string, r *http.Request) (string, error) {
 	}
 
 	paramValue := ""
-	if len(addresses[0]) == 1 {
+	if len(addresses) == 1 {
 		paramValue = addresses[0]
 	}
 

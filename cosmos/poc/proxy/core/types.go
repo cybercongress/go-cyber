@@ -1,4 +1,4 @@
-package proxy
+package core
 
 import "github.com/tendermint/tendermint/crypto/secp256k1"
 

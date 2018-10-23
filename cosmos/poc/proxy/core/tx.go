@@ -1,56 +1,41 @@
-package proxy
+package core
 
 import (
 	"encoding/json"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
-	"github.com/cybercongress/cyberd/cosmos/poc/app"
 	"github.com/cybercongress/cyberd/cosmos/poc/http/util"
 	"io/ioutil"
 	"net/http"
 )
 
-type LinkRequest struct {
-	Fee        auth.StdFee   `json:"fee"`
-	Msgs       []app.MsgLink `json:"msgs"`
-	Signatures []Signature   `json:"signatures"`
-	Memo       string        `json:"memo"`
-}
-
-func LinkHandlerFn(ctx ProxyContext) func(http.ResponseWriter, *http.Request) {
+func TxHandlerFn(ctx ProxyContext, unmarshal UnmarshalTxRequest) func(http.ResponseWriter, *http.Request) {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		w.Header().Set("Content-Type", "application/json")
 
-		requestBytes, err := ioutil.ReadAll(r.Body)
+		txRequestBytes, err := ioutil.ReadAll(r.Body)
 		if err != nil {
 			util.HandleError(err, w)
 			return
 		}
 
-		var request LinkRequest
-		err = json.Unmarshal(requestBytes, &request)
+		txReq, err := unmarshal(txRequestBytes)
 		if err != nil {
 			util.HandleError(err, w)
 			return
 		}
 
 		// BUILDING COSMOS SDK TX
-		signatures := make([]auth.StdSignature, 0, len(request.Signatures))
-		for _, sig := range request.Signatures {
+		signatures := make([]auth.StdSignature, 0, len(txReq.GetSignatures()))
+		for _, sig := range txReq.GetSignatures() {
 			stdSig := auth.StdSignature{
 				PubKey: sig.PubKey, Signature: sig.Signature, AccountNumber: sig.AccountNumber, Sequence: sig.Sequence,
 			}
 			signatures = append(signatures, stdSig)
 		}
 
-		msgs := make([]sdk.Msg, 0, len(request.Msgs))
-		for _, msg := range request.Msgs {
-			msgs = append(msgs, msg)
-		}
-
-		stdTx := auth.StdTx{Msgs: msgs, Fee: request.Fee, Signatures: signatures, Memo: request.Memo}
+		stdTx := auth.StdTx{Msgs: txReq.GetMsgs(), Fee: txReq.GetFee(), Signatures: signatures, Memo: txReq.GetMemo()}
 
 		stdTxBytes, err := ctx.Codec.MarshalBinary(stdTx)
 		if err != nil {
