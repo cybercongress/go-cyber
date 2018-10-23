@@ -58,7 +58,7 @@ func LinkHandlerFn(ctx ProxyContext) func(http.ResponseWriter, *http.Request) {
 			return
 		}
 
-		resp, err := ctx.Node.BroadcastTxCommit(stdTxBytes)
+		resp, err := ctx.Node.BroadcastTxSync(stdTxBytes)
 		if err != nil {
 			util.HandleError(err, w)
 			return
