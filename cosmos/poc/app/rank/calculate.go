@@ -8,7 +8,7 @@ import (
 
 const (
 	d         = 0.85
-	tolerance = 0.1
+	tolerance = 0.01
 )
 
 func CalculateRank(data *InMemoryStorage) ([]float64, int) {
@@ -18,7 +18,6 @@ func CalculateRank(data *InMemoryStorage) ([]float64, int) {
 	if size == 0 {
 		return []float64{}, 0
 	}
-	inverseOfSize := 1.0 / float64(size)
 
 	prevrank := make([]float64, size)
 
@@ -26,7 +25,7 @@ func CalculateRank(data *InMemoryStorage) ([]float64, int) {
 	danglingNodes := calculateDanglingNodes(data)
 
 	for i := range danglingNodes {
-		prevrank[i] = inverseOfSize
+		prevrank[i] = tOverSize
 	}
 
 	change := 2.0
@@ -45,13 +44,16 @@ func CalculateRank(data *InMemoryStorage) ([]float64, int) {
 
 func calculateDanglingNodes(data *InMemoryStorage) []int64 {
 
-	outLinks := data.GetOutLinks()
-	danglingNodes := make([]int64, 0, len(outLinks))
+	cidsCount := data.GetCidsCount()
+	outLinks := data.GetInLinks()
+	danglingNodes := make([]int64, 0)
 
-	for i, cidLinks := range outLinks {
-		if len(cidLinks) == 0 {
+	i := 0
+	for i < cidsCount {
+		if len(outLinks[CidNumber(i)]) == 0 {
 			danglingNodes = append(danglingNodes, int64(i))
 		}
+		i++
 	}
 
 	return danglingNodes
@@ -65,7 +67,7 @@ func step(tOverSize float64, prevrank []float64, danglingNodes []int64, data *In
 	}
 
 	innerProductOverSize := innerProduct / float64(len(prevrank))
-	rank := make([]float64, len(prevrank))
+	rank := append(make([]float64, 0, len(prevrank)), prevrank...)
 
 	var wg sync.WaitGroup
 	wg.Add(len(data.GetInLinks()))
