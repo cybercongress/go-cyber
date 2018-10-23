@@ -19,9 +19,14 @@ func HandleError(err error, w http.ResponseWriter) {
 func GetSingleParamValue(paramName string, r *http.Request) (string, error) {
 	addresses, ok := r.URL.Query()[paramName]
 
-	if !ok || len(addresses[0]) < 1 {
+	if !ok || addresses == nil {
 		return "", errors.New("Cannot find param " + paramName)
 	}
 
-	return addresses[0], nil
+	paramValue := ""
+	if len(addresses[0]) == 1 {
+		paramValue = addresses[0]
+	}
+
+	return paramValue, nil
 }
