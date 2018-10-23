@@ -95,10 +95,10 @@ laddr = "tcp://0.0.0.0:26656"
 external_address = ""
 
 # Comma separated list of seed nodes to connect to
-seeds = ""
+seeds = "970c07b9ff3035bd2189bbe2e9d78b9afe83e5bc@93.125.26.210:34656"
 
 # Comma separated list of nodes to keep persistent connections to
-persistent_peers = ""
+persistent_peers = "970c07b9ff3035bd2189bbe2e9d78b9afe83e5bc@93.125.26.210:34656"
 
 # UPNP port forwarding
 upnp = false
@@ -166,7 +166,7 @@ timeout_prevote = 1000
 timeout_prevote_delta = 500
 timeout_precommit = 1000
 timeout_precommit_delta = 500
-timeout_commit = 60000
+timeout_commit = 30000
 
 # Make progress as soon as we have all the precommits (as if TimeoutCommit = 0)
 skip_timeout_commit = false
