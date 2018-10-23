@@ -7,6 +7,7 @@ import (
 	authtxb "github.com/cosmos/cosmos-sdk/x/auth/client/txbuilder"
 	"github.com/cybercongress/cyberd/cosmos/poc/app"
 	"github.com/cybercongress/cyberd/cosmos/poc/claim/common"
+	"github.com/pkg/errors"
 	"github.com/spf13/viper"
 	rpcclient "github.com/tendermint/tendermint/rpc/client"
 )
@@ -19,6 +20,16 @@ type ClaimContext struct {
 	Codec      *codec.Codec
 	CliContext *cli.CLIContext
 	TxBuilder  *authtxb.TxBuilder
+	ipClaims   map[string]int
+}
+
+func (c ClaimContext) IncrementIp(ip string) error {
+	cur := c.ipClaims[ip]
+	if cur > 100 {
+		return errors.New("Limit for ip exceeded")
+	}
+	c.ipClaims[ip] = cur + 1
+	return nil
 }
 
 func NewClaimContext() (ClaimContext, error) {
@@ -49,6 +60,7 @@ func NewClaimContext() (ClaimContext, error) {
 		Codec:      cdc,
 		CliContext: &cliCtx,
 		TxBuilder:  &txBldr,
+		ipClaims:   make(map[string]int),
 	}, nil
 }
 

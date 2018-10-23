@@ -7,7 +7,7 @@ import (
 	"github.com/cybercongress/cyberd/cosmos/poc/claim/context"
 	"github.com/cybercongress/cyberd/cosmos/poc/http/util"
 	"github.com/pkg/errors"
-	"github.com/spf13/viper"
+	"net"
 	"net/http"
 )
 
@@ -19,8 +19,6 @@ const (
 func ClaimHandlerFn(ctx context.ClaimContext) func(http.ResponseWriter, *http.Request) {
 
 	return func(w http.ResponseWriter, r *http.Request) {
-
-		viper.SetDefault("home", "/Users/aalbov/.cyberdcli")
 
 		w.Header().Set("Content-Type", "application/json")
 
@@ -44,6 +42,18 @@ func ClaimHandlerFn(ctx context.ClaimContext) func(http.ResponseWriter, *http.Re
 		// Claim if address doesn't exists, error otherwise
 		if err = ctx.CliContext.EnsureAccountExistsFromAddr(claimTo); err != nil {
 
+			ip, _, err := net.SplitHostPort(r.RemoteAddr)
+			if err != nil {
+				util.HandleError(err, w)
+				return
+			}
+
+			err = ctx.IncrementIp(ip)
+			if err != nil {
+				util.HandleError(err, w)
+				return
+			}
+
 			coins, _ := sdk.ParseCoins(amount + token)
 			msg := client.CreateMsg(ctx.ClaimFrom, claimTo, coins)
 
@@ -53,7 +63,6 @@ func ClaimHandlerFn(ctx context.ClaimContext) func(http.ResponseWriter, *http.Re
 			}
 
 			result, err := ctx.CliContext.BroadcastTxSync(txBytes)
-
 			if err != nil {
 				util.HandleError(err, w)
 				return
