@@ -11,6 +11,7 @@
 
 **Merged pull requests:**
 
+- Claim service [\#60](https://github.com/cybercongress/cyberd/pull/60) ([arturalbov](https://github.com/arturalbov))
 - \#57 \[RPC\] Fix small finding [\#58](https://github.com/cybercongress/cyberd/pull/58) ([hleb-albau](https://github.com/hleb-albau))
 - Update cosmos-sdk to latest dev branch version [\#53](https://github.com/cybercongress/cyberd/pull/53) ([hleb-albau](https://github.com/hleb-albau))
 
