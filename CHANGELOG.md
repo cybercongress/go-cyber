@@ -6,11 +6,13 @@
 
 **Closed issues:**
 
+- Service to claim cyberd zeronet tokens [\#61](https://github.com/cybercongress/cyberd/issues/61)
 - Update cosmos-sdk to latest dev branch version  [\#56](https://github.com/cybercongress/cyberd/issues/56)
 - Perfomance Degradation: Heavy Disk Usage [\#50](https://github.com/cybercongress/cyberd/issues/50)
 
 **Merged pull requests:**
 
+- Add send tokens endpoint to proxy [\#63](https://github.com/cybercongress/cyberd/pull/63) ([arturalbov](https://github.com/arturalbov))
 - Claim service [\#60](https://github.com/cybercongress/cyberd/pull/60) ([arturalbov](https://github.com/arturalbov))
 - \#57 \[RPC\] Fix small finding [\#58](https://github.com/cybercongress/cyberd/pull/58) ([hleb-albau](https://github.com/hleb-albau))
 - Update cosmos-sdk to latest dev branch version [\#53](https://github.com/cybercongress/cyberd/pull/53) ([hleb-albau](https://github.com/hleb-albau))
