@@ -1,4 +1,4 @@
-package proxy
+package core
 
 import (
 	"github.com/cosmos/cosmos-sdk/codec"

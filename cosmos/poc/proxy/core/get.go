@@ -1,4 +1,4 @@
-package proxy
+package core
 
 import (
 	"github.com/cybercongress/cyberd/cosmos/poc/http/util"
