@@ -2,7 +2,14 @@
 
 ## [Unreleased](https://github.com/cybercongress/cyberd/tree/HEAD)
 
-[Full Changelog](https://github.com/cybercongress/cyberd/compare/0.0.3...HEAD)
+[Full Changelog](https://github.com/cybercongress/cyberd/compare/0.0.4...HEAD)
+
+**Implemented enhancements:**
+
+- \[RPC\] Fix small finding  [\#57](https://github.com/cybercongress/cyberd/issues/57)
+
+## [0.0.4](https://github.com/cybercongress/cyberd/tree/0.0.4) (2018-10-23)
+[Full Changelog](https://github.com/cybercongress/cyberd/compare/0.0.3...0.0.4)
 
 **Closed issues:**
 
