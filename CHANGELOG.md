@@ -11,6 +11,7 @@
 
 **Merged pull requests:**
 
+- \#57 \[RPC\] Fix small finding [\#58](https://github.com/cybercongress/cyberd/pull/58) ([hleb-albau](https://github.com/hleb-albau))
 - Update cosmos-sdk to latest dev branch version [\#53](https://github.com/cybercongress/cyberd/pull/53) ([hleb-albau](https://github.com/hleb-albau))
 
 ## [0.0.3](https://github.com/cybercongress/cyberd/tree/0.0.3) (2018-10-19)
