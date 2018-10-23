@@ -174,18 +174,3 @@ func (app *CyberdApp) appHash() []byte {
 	}
 	return app.latestRankHash
 }
-
-func (app *CyberdApp) Search(cid string, page, perPage int) ([]RankedCid, int, error) {
-	if perPage == 0 {
-		perPage = 100
-	}
-	result, totalSize, err := app.memStorage.GetCidRankedLinks(Cid(cid), page, perPage)
-	if err != nil {
-		return nil, totalSize, err
-	}
-	return result, totalSize, nil
-}
-
-func (app *CyberdApp) Account(address sdk.AccAddress) auth.Account {
-	return app.accStorage.GetAccount(app.NewContext(true, abci.Header{}), address)
-}
