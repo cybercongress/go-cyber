@@ -19,17 +19,7 @@ type ClaimContext struct {
 	ClaimFrom  types.AccAddress
 	Codec      *codec.Codec
 	CliContext *cli.CLIContext
-	TxBuilder  *authtxb.TxBuilder
 	ipClaims   map[string]int
-}
-
-func (c ClaimContext) IncrementIp(ip string) error {
-	cur := c.ipClaims[ip]
-	if cur > 100 {
-		return errors.New("Limit for ip exceeded")
-	}
-	c.ipClaims[ip] = cur + 1
-	return nil
 }
 
 func NewClaimContext() (ClaimContext, error) {
@@ -47,11 +37,6 @@ func NewClaimContext() (ClaimContext, error) {
 		return ClaimContext{}, err
 	}
 
-	txBldr, err := newTxBuilder(cliCtx, cdc, address, chainId)
-	if err != nil {
-		return ClaimContext{}, err
-	}
-
 	return ClaimContext{
 		Name:       name,
 		ClaimFrom:  address,
@@ -59,29 +44,37 @@ func NewClaimContext() (ClaimContext, error) {
 		ChainId:    chainId,
 		Codec:      cdc,
 		CliContext: &cliCtx,
-		TxBuilder:  &txBldr,
 		ipClaims:   make(map[string]int),
 	}, nil
 }
 
-func newTxBuilder(cliCtx cli.CLIContext, cdc *codec.Codec, address types.AccAddress, chainId string) (authtxb.TxBuilder, error) {
-	accountNumber, err := cliCtx.GetAccountNumber(address)
+func (ctx ClaimContext) IncrementIp(ip string) error {
+	cur := ctx.ipClaims[ip]
+	if cur > 100 {
+		return errors.New("Limit for ip exceeded")
+	}
+	ctx.ipClaims[ip] = cur + 1
+	return nil
+}
+
+func (ctx ClaimContext) TxBuilder() (authtxb.TxBuilder, error) {
+	accountNumber, err := ctx.CliContext.GetAccountNumber(ctx.ClaimFrom)
 	if err != nil {
 		return authtxb.TxBuilder{}, err
 	}
-	seq, err := cliCtx.GetAccountSequence(address)
+	seq, err := ctx.CliContext.GetAccountSequence(ctx.ClaimFrom)
 	if err != nil {
 		return authtxb.TxBuilder{}, err
 	}
 
 	return authtxb.TxBuilder{
-		ChainID:       chainId,
+		ChainID:       ctx.ChainId,
 		Gas:           10000000,
 		AccountNumber: accountNumber,
 		Sequence:      seq,
 		Fee:           "",
 		Memo:          "",
-		Codec:         cdc,
+		Codec:         ctx.Codec,
 	}, nil
 }
 

@@ -57,9 +57,16 @@ func ClaimHandlerFn(ctx context.ClaimContext) func(http.ResponseWriter, *http.Re
 			coins, _ := sdk.ParseCoins(amount + token)
 			msg := client.CreateMsg(ctx.ClaimFrom, claimTo, coins)
 
-			txBytes, err := ctx.TxBuilder.BuildAndSign(ctx.Name, ctx.Passphrase, []sdk.Msg{msg})
+			txBldr, err := ctx.TxBuilder()
 			if err != nil {
-				panic(err)
+				util.HandleError(err, w)
+				return
+			}
+
+			txBytes, err := txBldr.BuildAndSign(ctx.Name, ctx.Passphrase, []sdk.Msg{msg})
+			if err != nil {
+				util.HandleError(err, w)
+				return
 			}
 
 			result, err := ctx.CliContext.BroadcastTxSync(txBytes)
