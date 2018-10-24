@@ -57,6 +57,9 @@ func ClaimHandlerFn(ctx context.ClaimContext) func(http.ResponseWriter, *http.Re
 			coins, _ := sdk.ParseCoins(amount + token)
 			msg := client.CreateMsg(ctx.ClaimFrom, claimTo, coins)
 
+			ctx.Mtx.Lock()
+			defer ctx.Mtx.Unlock()
+
 			txBldr, err := ctx.TxBuilder()
 			if err != nil {
 				util.HandleError(err, w)
@@ -80,6 +83,7 @@ func ClaimHandlerFn(ctx context.ClaimContext) func(http.ResponseWriter, *http.Re
 				util.HandleError(err, w)
 				return
 			}
+			*ctx.Sequence++
 			w.Write(resultJson)
 		} else {
 			util.HandleError(errors.New("Account already has tokens"), w)
