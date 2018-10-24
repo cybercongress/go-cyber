@@ -24,7 +24,7 @@ func CalculateRank(data *InMemoryStorage) ([]float64, int) {
 	tOverSize := (1.0 - d) / float64(size)
 	danglingNodes := calculateDanglingNodes(data)
 
-	for i := range danglingNodes {
+	for _, i := range danglingNodes {
 		prevrank[i] = tOverSize
 	}
 

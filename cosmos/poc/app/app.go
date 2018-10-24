@@ -3,6 +3,7 @@ package app
 import (
 	"crypto/sha256"
 	"encoding/binary"
+	"fmt"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -119,7 +120,7 @@ func NewCyberdApp(logger log.Logger, db dbm.DB, baseAppOptions ...func(*baseapp.
 	app.memStorage.Load(ctx, storages, app.accStorage)
 	app.BaseApp.Logger.Info("App loaded", "time", time.Since(start))
 	app.latestRankHash = ms.GetAppHash(ctx)
-
+	rank.CalculateRank(app.memStorage)
 	app.Seal()
 	return app
 }
@@ -135,10 +136,16 @@ func (app *CyberdApp) BeginBlocker(_ sdk.Context, _ abci.RequestBeginBlock) abci
 // App state is consensus driven state.
 func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.ResponseEndBlock {
 
+	app.memStorage.PrintCidsByNumberIndex()
 	start := time.Now()
 	app.BaseApp.Logger.Info("Calculating rank")
 	newRank, steps := rank.CalculateRank(app.memStorage)
 	app.BaseApp.Logger.Info("Rank calculated", "steps", steps, "time", time.Since(start))
+
+	for i, k := range newRank {
+		fmt.Println("Key:", i, "Value:", k)
+	}
+
 	rankAsBytes := make([]byte, 8*len(newRank))
 	for i, f64 := range newRank {
 		binary.LittleEndian.PutUint64(rankAsBytes[i*8:i*8+8], math.Float64bits(f64))
