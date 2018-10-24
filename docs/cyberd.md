@@ -1,100 +1,175 @@
-# cyberd: A search consensus computer
+# cyberd: A search consensus computer for web3
 
 @xhipster, @litvintech
 
-v 0.2
+v 0.3. Research notes
 
-August 2018, Iceland and Tolyatti
+Kenig and Minsk
+
+```
+cyb:
+- nick. a friendly software robot who helps you explore universes
+
+cyber:
+- noun. a superintelligent network computer for answers
+- verb. to do something intelligent, to be very smart
+
+CYB:
+- ticker. transferable token expressing will to become smarter
+
+CYBER:
+- ticker. non-transferable token expressing intelligence
+```
+
+## Content
+<!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
+<!-- code_chunk_output -->
+
+* [cyberd: A search consensus computer for web3](#cyberd-a-search-consensus-computer-for-web3)
+	* [Content](#content)
+	* [Abstract](#abstract)
+	* [Introduction to web3](#introduction-to-web3)
+	* [The protocol](#the-protocol)
+	* [Knowledge graph](#knowledge-graph)
+	* [Agents of knowledge](#agents-of-knowledge)
+	* [Link chains](#link-chains)
+	* [Notion of consensus computer](#notion-of-consensus-computer)
+	* [Relevance machine](#relevance-machine)
+	* [cyber•Rank](#cyberrank)
+	* [Proof of relevance](#proof-of-relevance)
+	* [State grow history problem](#state-grow-history-problem)
+	* [Motivation for read requests](#motivation-for-read-requests)
+	* [Self prediction](#self-prediction)
+	* [Universal oracle](#universal-oracle)
+	* [Smart contracts](#smart-contracts)
+	* [Selfish predictions](#selfish-predictions)
+	* [Spam protection](#spam-protection)
+	* [Distribution](#distribution)
+	* [Incentive structure](#incentive-structure)
+	* [Applications](#applications)
+	* [Evolvability](#evolvability)
+	* [Decentralization](#decentralization)
+	* [Performance](#performance)
+	* [Scalability](#scalability)
+	* [Conclusion](#conclusion)
+	* [References](#references)
+
+<!-- /code_chunk_output -->
 
 ## Abstract
 
-An incentivized consensus computer would allow to compute provably relevant answers without opinionated blackbox intermediaries such as Google. Stateless content-addressable peer-to-peer communication networks such as IPFS and stateful consensus computers such as Ethereum provide part of the solution but there are at least three problems associated with implementation. Of course, the first problem is subjective nature of relevance. The second problem is that it is hard to scale consensus computer of knowledge graph due to non linear nature of provably working solutions for web search such as PageRank and more than exponentially growing size of a knowledge graph including history of its formation. The third problem is that the quality of such knowledge graph will suffer from different attack surfaces such as sybil and selfish behavior of interacting agents. In this paper we (1) define a protocol for provable consensus computing of relevance between IPFS objects based on some offline observation and theory behind prediction markets, (2) solve a problem of implementation inside consensus computer based on linear SpringRank and propose workaround for pruning historical state and (3) design distribution and incentive scheme based on our experience and known attacks. Also we discuss some considerations on minimalistic architecture of the protocol as we believe that is critical for formation of a network of domain specific search consensus computers. As result of our work some applications never existed before emerge.
+An incentivized consensus computer would allow to compute provably relevant answers without opinionated blackbox intermediaries such as Google. Stateless content-addressable peer-to-peer communication networks such as IPFS and stateful consensus computers such as Ethereum provide part of the solution but there are at least three problems associated with implementation. Of course, the first problem is subjective nature of relevance. The second problem is that it is hard to scale consensus computer of huge knowledge graph. The third problem is that the quality of such knowledge graph will suffer from different attack surfaces such as sybil and selfish behavior of interacting agents. In this paper we (1) define a protocol for provable consensus computing of relevance between IPFS objects based on some offline observation and theory behind prediction markets, (2) solve a problem of implementation inside consensus computer based on SpringRank and propose workaround for pruning historical state and (3) design distribution and incentive scheme based on our experience and known attacks. Also we discuss some considerations on minimalistic architecture of the protocol as we believe that is critical for formation of a network of domain specific search consensus computers. As result of our work some applications never existed before emerge.
 
-## Introduction
+## Introduction to web3
 
-Existing general purpose search engines are restrictive centralized databases everybody forced to trust. These search engines were designed primarily for client-server architecture based on DNS, HTTP, and IP protocols. The emergence of a distributed protocol stack creates an opportunity for a new kind of Internet. We call it web3. Protocols such as Ethereum create a challenge and opportunity for a search engine based on developing technologies and specifically designed for them. Surprisingly the permission-less blockchain architecture itself allows organizing general purpose search engine in a way inaccessible for previous architectures.
+Original protocols of the Internet such as TCP/IP, DNS, URL and HTTPS brought a web into the point there it is now. Along with all benefits they has created they brought more problem into the table. Globality being a key property of the the web since inception is under real threat. Speed of connections degrade with network grow and from ubiquitous government interventions into privacy and security of web users. One property, not obvious in the beginning, become really important with everyday usage of the Internet: its ability to exchange permanent hyperlinks thus they would not break after time have pass. Reliance on one at a time internet service provider architecture allow governments censor packets is the last straw in conventional web stack for every engineer who is concerned about the future of our children. Other properties while being not so critical are very desirable: offline and real-time. Average internet user being offline must have ability to work with the state it has and after acquiring connection being able to sync with global state and continue verify state's validity in realtime while having connection. Now this properties offered on app level while such properties must be integrated into lower level protocols.
+
+The emergence of a distributed protocol stack [W3S] creates an opportunity for a new kind of Internet. We call it web3. It has a promise to remove problems of conventional protocol stack and add to the web better speed and more accessible connection. But as usually in a story with a new stack, new problems emerge. One of such problem is general purpose search. Existing general purpose search engines are restrictive centralized databases everybody forced to trust. These search engines were designed primarily for client-server architecture based on TCP/IP, DNS, URL and HTPPS protocols. Web3 create a challenge and opportunity for a search engine based on developing technologies and specifically designed for them. Surprisingly the permission-less blockchain architecture itself allows organizing general purpose search engine in a way inaccessible for previous architectures.
 
 ## The protocol
 
-- def state transition
-- take txs
-- a tx format is `<peer id>` `<up to 7 ipfs hashes of links>` `<signature>`
-- `<signature>` must be valid from `<peer id>`
-- check that resource consumption of a signer is not exceed limits
-- emit prediction of relevant objects for every valid tx
-- every block calculate spring rank for the whole graph
-- as input for every edge value get signer account's:
+- def knowledge graph state
+- take link chains
+- check that linkchain signatures are valid
+- check that resource consumption of a signer is not exceed 24 moving average
+- emit prediction of links for every valid link chain
+- every block calculate cyber•rank deltas for the knowledge graph
+- every block distribute 42 CYB based on links CYBERs
+- for links with proven keys distribute payouts based on CYBER
+- for links without proven keys distribute payouts according to CYBER weight of incoming links with proven keys
+- every block apply predictions of consensus computer according to prediction bound
+- every block write data to key/value store according to storage bound based on size and cyber•rank
+- every epoch nodes reach consensus around pruned state history via ipfs hash of state blob
 
-    `<CYBER aka non transferable spring rank>`
+## Knowledge graph
 
-    plus
+We represent a knowledge graph as weighted graph of directed links between content addresses.
 
-    `<CYB aka transferable tokens>`
-- every block distribute 42 CYB based on objects's CYBERs
-- there are objects with keys and objects without keys:
+> Illustration
 
-    for object with keys distribute payouts based on CYBER weight
 
-    for objects without keys distribute payouts according to CYBER weight of incoming links with keys
-- every block apply predictions for links signed with computers threshold
-- every block write data to key/value store according to storage bound based on size and rank
-- every N blocks nodes reach consensus around pruned state history via ipfs hash of state blob
+## Agents of knowledge
 
-## Ranking as prediction market on links relevance
-
-(1) maximization of knowledge graph based, aligned with computational, storage and broadband bound and (2) reduction for attack surfaces such as sybil and selfish behavior
-
-## Inductive reasoning
-
-A useful property of a computer is that it must know nothing about objects except when, who and where some prediction was asked. If we assume that a consensus computer must have some information about linked objects the complexity of such model growth unpredictably, hence a requirements for a computer for memory and computations. That is, deduction of a meaning inside consensus computer is expensive thus our design hardly depend on the blind assumption. Instead of we design incentives around meaning extractions
-
-## Bad behavior
-
-We design a system under assumption that in terms of search such a thing as bad behavior does not exist as nothing bad can be in the intention of finding answers. Ranks is computed on the only fact that something has been searched, thus linked and as result affected predictive model. Good analogy is observing in quantum mechanics. So no negative voting is implemented. Doing this we remove subjectivity out of the protocol and can define one possible method for proof of relevance. Also this approach significantly reduce attack surface.
-
-## About when
-
-Proof-of-history + Tendermint
-
-## About who
-
-Digital signatures and zero knowledge proofs
-
-## About where
-
-Mining triangulations and attaching proof of location for every search query can significantly
+Our knowledge graph include everything it can including agents themselves. This subset of content addresses with proven knowledge of private keys and cuckoo cycle pow ids is being used by incentive scheme of a consensus algorithm.
 
 ## Link chains
 
+A concept of linkchain is a convention around simple semantics of communication format with a consensus computer.
+
+- a tx format is `<peer id>` `<up to 7 ipfs hashes of links>` `<signature>`
+- `<signature>` must be valid from `<peer id>`
+
 Explain the concept of link chains and demonstrate a case of semantic linking based on interpretation of an ERC-20 transfer transaction or something similar
 
-## Problem of ranking using consensus computer
+> Illustration
 
-Consensus computers bring serious resource bounds
+Amount of content addresses ipfs-addresses: up to 7
+link-chain-proof: ...
+cyber-protocol-current: ...
 
-It's possible to compute a ranks for the whole MerkleDAG. But there are two problems with it:
+## Notion of consensus computer
 
-- An amount of links in MerkleDAG grows `O(n^2)`. That is not either conventional web pages with 20-100 links per page. For 1 Mb file can be thousands of links. Once the network starts to take off, complexity inevitably increases.
-- Even if we address some algorithm to extract relevances from these links we should address even more algorithms to extract a meaning.
+Consensus computer is an abstract machine that has capacity in terms of fundamental computing resources such as memory, processing and bandwidth.
 
-What we need is to find a way to incentivize extraction from this data fog a meaning that is _relevant to users queries_.
+///
+Ideal consensus computer is a computer in which sum of agents contribution as actual . Its like a perforamnce indicator resources simple part of memory, processing and bandwidth of all computers.
+///
 
-We can represent ther knowledge graph as directed acyclic graph where vertices are ipfs hashes and edges are directed links between them. Our knowledge graph include users
+(1) maximization of knowledge graph, aligned with computational, storage and broadband bound and (2) reduction for attack surfaces such as sybil and selfish behavior
 
-Need verification: We consider introducing consensus variable, in addition to a block size, in order to target processing capacity of the network. Let's call it a _computing target of documents per block_ or CTD. Any witness will be able to set a number of documents the network should recompute every block. The blockchain takes as input computing target of legitimate witnesses and computes CTD as daily moving average. Based on CTD blockchain can schedule the range of IPFS hashes that should be recomputed by every witness per round.
+> Illustration
+
+## Relevance machine
+
+Ranking of knowledge graph based on prediction market on links relevance.
+
+A useful property of a computer is that it must have inductive reasoning property. She must be able to interfere predictions without any knowledge about objects except when, who and where some prediction was asked. If we assume that a consensus computer must have some information about linked objects the complexity of such model growth unpredictably, hence a requirements for a computer for memory and computations. That is, deduction of a meaning inside consensus computer is expensive thus our design hardly depend on the blindness assumption. Instead we design incentives around meaning extractions
+
+Proof of who. Digital signatures and zero knowledge proofs. Privacy is foundational. The problem is to compute rank based on link of an agent based on its ranking without revealing identity. Zero knowledge proofs in general are very expensive. Privacy of search by design or as an option?
+
+Proof of when. Proof-of-history + Tendermint
+
+Proof of where. Mining triangulations and attaching proof of location for every link chain
 
 ## cyber•Rank
-Nebulas fail.
-No rank computed inside consensus computing => no possibility to incentivize network participants to form predictions on relevance. A problem here is that computational complexity of conventional ranks grow sublineary with the growth of the network. So we need to find deterministic algorithm that allow to compute a rank for continuously appended network to scale the consensus computer to orders of magnitude that of Google. Also an algorithm must have good prediction capability for existence of relevant to an object links.
 
-Spring ranks cons: linear & better ranking (original work, case proof with Steem)
+As input for every edge value get signer account's:
+
+    sums of `<CYBER>`
+
+    plus
+
+    (sum of square root from `<CYB>`) squared
+
+Ranking using consensus computer is hard because consensus computers bring serious resource bounds. e.g. Nebulas fail to deliver something useful onchain.
+
+> No rank computed inside consensus computer => no possibility to incentivize network participants to form predictions on relevance.
+
+A problem here is that computational complexity of conventional ranks grow sublineary with the growth of the network. So we need to find (1) deterministic algorithm that allow to compute a rank for continuously appended network to scale the consensus computer to orders of magnitude that of Google. Perfect algorithm (2) must have linear memory and computation complexity. The most importantly without having (3) good prediction capabilities for existence of relevant links it proves to be useless. One of recent algorithms: SpringRank.
+
+Original idea came from physics. Links represented as system of springs with some energy.
+
+> Illustration
+
+H(s) = 1/2 ...
+
+## Proof of relevance
+
+Payouts ...
+
+Based on linkchains its possible to know which content addresses proved that private keys are exist, and which do not.
+
+We design a system under assumption that in terms of search such thing as bad behavior does not exist as nothing bad can be in the intention of finding answers.
+
+> Ranks is computed on the only fact that something has been searched, thus linked and as result affected predictive model.
+
+Good analogy is observing in quantum mechanics. So no negative voting is implemented. Doing this we remove subjectivity out of the protocol and can define one possible method for proof of relevance. Also this approach significantly reduce attack surface. Implication of this assumption is that we must bind resource supply of relevance machine with demand of queries.
 
 ## State grow history problem
 
-Every N blocks cybernodes prune blockchain/history and calculate IPFS hash for them/publish to IPFS, add hash to block and validate them with consensus. This state/blob economicaly finalized and new node start from them. Cybernodes motivated to store/provide this blob cause this cause network grow. Dynamically recalculate N with economy, newtork size, rank score...
-~ vs direct IPFS DAG
+Every N blocks cybernodes prune blockchain/history and calculate IPFS hash for them/publish to IPFS, add hash to block and validate them with consensus. This state/blob economicaly finalized and new node start from them. Cybernodes motivated to store/provide this blob cause this cause network grow. Dynamically recalculate N with economy, network size, rank score...
 
-## Motivation on request's processing problem
+## Motivation for read requests
 
 Explain an economic difference and censorship impact between read search queries and write search queries
 
@@ -103,32 +178,47 @@ All nodes run payment channels to serve request for their users and take tokens 
 
 Solution is payment channels based on HLTC and proof verification which unlocks amount earned for already served request (new signatures post via requester/user to cybernode via whisper/ipfs-pub-sub)
 
-## Prediction by a consensus computer
+## Self prediction
 
-A consensus computer is able to continuously build a knowledge graph by itself predicting existence of links and applying this predictions to a state of itself. Idea: Everything that has been earned by a consensus computer can form a validators budget.
+A consensus computer is able to continuously build a knowledge graph by itself predicting existence of links and applying this predictions to a state of itself.
+
+Idea: Everything that has been earned by a consensus computer can form a validators budget.
+
+Forgetting links: Prune min possible rank / 2
 
 ## Universal oracle
+
 A consensus computer is able to store the most relevant data in key value store. She is doing it by making a decision every block about what record he want to prune and what he want to apply. This key-value store can be ...
 
 ## Smart contracts
 
-## Selfish linking
+Ability to programmatically extend state based on proven knowledge graph is of paramount importance. Thus we consider that WASM programs will be available for execution on top of knowledge graph.
 
-Manipulating the rank: Sybil Attack: Quadratic voting. Rank squared. Decay from linear in the beginning.
+## Selfish predictions
+
+Protection from selfish predictions: from linear in the beginning to sum of square roots being mature.
 
 ## Spam protection
 
-In the center of spam protection system is an assumption that write operations can be executed only by those who have vested interest in the success of a consensus computer. Every 1% of stake in consensus computer gives the ability to use 1% of possible network broadband and computing capabilities. As nobody uses all possessed broadband we use fractional reserves while limiting broadband like ISPs do.
+In the center of spam protection system is an assumption that write operations can be executed only by those who have vested interest in the evolutionary success of a consensus computer. Every 1% of stake in consensus computer gives the ability to use 1% of possible network broadband and computing capabilities. As nobody uses all possessed broadband we can use fractional reserves while limiting broadband like ISPs do, but we cant because it degrades value of rank. So we just compute 24 hours moving avarage and
 
-## Distribution Mechanism
+In order to automate governance process we will not add a feature of staking and unstaking, but instead implement s-curve type of automatic staking time depending on which all bandwith and computational limits will be accounted
 
-Describe drops and other built in incentives
+## Distribution
 
-## Incentive Structure
+No ERC-20.
+Reasons: expensive and non deterministic.
+
+- Compute SpringRank for Ethereum (Link is tx, weight is amount)
+- Create initial genesis for our network
+
+Every snapshot amount to be distributed is announced for the next snapshot. Every new PoC do distribution based on snapshot of previous chain merged with new Ethereum snapshot. For each new PoC amount of distribution which goes to Ethereum snapshot decreases.
+
+## Incentive structure
 
 To make cyber•rank economically resistant to Sybil attack and to incentivize all participant for rational behavior a system uses CYBER token.
 
-Since inception, a network prints 42 CYBER every block.
+Since inception, a network prints 42 CYB every block.
 
 Reward pool is defined as 100% of emission and split among the contracts according to (?):
 
@@ -143,25 +233,23 @@ _Programmable semantic cores_. Relevance everywhere means that on any given user
 
 _Actions in search_. Proposed design enable native support for blockchain asset related activity. It is trivial to design an applications which are (1) owned by creators, (2) appear right in search results and (3) allow a transact-able call to actions with (4) provable attribution of a conversion to search query. e-Commerce has never been so easy for everybody.
 
-_Shared mempools_.
+_Offline search_. IPFS make possible easy retrieval of documents from surroundings without global internet connection. cyberd itself can be distributed using IPFS. That create a possibility for ubiquitous offline search.
 
-_Offline search_. IPFS make possible easy retrieval of documents from surroundings without the internet connection. cyberd itself can be distributed using IPFS. That create a possibility for ubiquitous offline search.
-
-_Smart Command Tools_. Command line tools can rely on relevant and structured answers from a search engine. That practically means that the following CLI tool is possible to implement
+_Command tools_. Command line tools can rely on relevant and structured answers from a search engine. That practically means that the following CLI tool is possible to implement
 
 ```
 >  cyberd earn using 100 gb hdd
 
 Enjoy the following predictions:
+- apt install go-filecoin /// 0.001 btc per month
 - apt install siad /// 0.0001 btc per month per GB
 - apt install storjd /// 0.00008 btc per month per GB
-- apt install filecoind /// 0.00006 btc per month
 
-According to the best prediction I made a decision try `apt install siad`
+According to the best prediction I made a decision try `go get go-filecoin`
 
 Git clone ...
-Building siad
-Starting siad
+Building go-filecoin
+Starting go-filecoin
 Creating wallet using your standard seed
 You address is ....
 Placing bids ...
@@ -180,20 +268,32 @@ _Language convergence_. A programmer should not care about what language do the 
 
 This is sure not the exhaustive list of possible applications but very exciting, though.
 
-## Extensibility, Upgradability and Governance
+## Evolvability
 
-That is a big question!
+Following ideas from Tezos we can define the current state of a protocol as immutable content address. Thus she can adopt to a new environment changing content address of current protocol following the rules hidden behind previous protocol. We would love to check the hypothesis that it is possible to have a protocol which follows simple rule:
+
+> The more closer some content address to literally `cyber-protocol-current` ipfs address the more probability than it will become winning. The most close protocol `cyber-protocol-current` is the protocol which is the most relevant to users.
+
+Thus nodes must always signal connection with `cyber-protocol-current` by sending linkchains with semantics like `<{cyber-protocol-current}> <cid>`.
+
+## Decentralization
+
+Decentralization comes with costs and slowness. We want to find a good balance between those as we believe both are sensitive for widespread web3 adoption. That is the area of research for us now.
 
 ## Performance
 
-Proposed blockchain design is based on tendermint consensus algorithm and has fast and predictable near seconds block confirmation time and very fast finality time. Average confirmation timeframe is less than second thus conformations can be asynchronous and nearly invisible for users. A good thing is that users don't need confirmations at all before getting search response as there is no risk associated with that.
+We need very fast conformation times.
+
+Proposed blockchain design is based on Tendermint consensus algorithm and has fast and predictable before seconds block confirmation time and very fast finality time. Average confirmation timeframe is less than second thus conformations can be asynchronous and nearly invisible for users. A good thing is that users don't need confirmations at all before getting search response as there is no risk associated with that.
 
 ## Scalability
 
-Our node implementation theoretically can process about ? predictions per second. This theoretical bound is primarily limited with the possibility to replay a blockchain [https://steemit.com/blockchain/@dantheman/how-to-process-100m-transfers-second-on-a-single-blockchain]. As of now, all blockchains are about 1B immutable documents which size is about 200 GB with average tx 200 kb. We need to store all hashes which are on average 64 bytes long. We estimated that storing in the index all blockchain documents as IPFS hashes and votes are roughly the same as storing all raw blockchain data.
+Let us say that our node implementation based on Cosmos-SDK can process 10k transactions per second. Thus every day at least 8.64 million nodes can submit 100 predictions and get back search results simultaneously. That is enough to verify all assumptions in the wild. As blockchain technology evolve we want to check that every hypothesis work before scale it further.
 
 ## Conclusion
 
-We describe and implement a motivated blockchain based search engine for the permanent web. A search engine is based on the content-addressable peer-to-peer paradigm and uses IPFS as a foundation. IPFS provide significant benefits in terms of resources consumption. IPFS addresses as a primary objects are robust in its simplicity. For every IPFS hash cyber•rank is computed by a consensus computer with no single point of failure. Cyber•rank is a spring rank enchased with economic based sybil protection. Embedded smart contracts offer fair compensations for those who is able to predict popularity of hashes. The primary goal is indexing of peer-to-peer systems with self-authenticated data either stateless, such as IFSS, DAT, GIT, BitTorent, or stateful such as Bitcoin, Ethereum and other blockchains and tangles. Proposed market of linking offers necessary incentives for outsourcing computing part responsible for finding meaningful relations between objects. A source code of a search engine is open source. Every bit of data accumulated by a consensus computer is available for everybody for free. The performance of proposed software implementation is sufficient for seamless user interactions. Scalability of proposed implementation is enough to index all self-authenticated data that exist today. The blockchain is managed by a decentralized autonomous organization which functions under Tendermint consensus algorithm. Thought a system provide necessary utility to offer an alternative for conventional search engines it is not limited to this use case either. The system is extendable for numerous applications and e.g. makes possible to design economically rational self-owned robots that are able to autonomously understand objects around them.
+We describe a motivated blockchain based search engine for web3. A search engine is based on the content-addressable peer-to-peer paradigm and uses IPFS as a foundation. IPFS provide significant benefits in terms of resources consumption. IPFS addresses as a primary objects are robust in its simplicity. For every IPFS hash cyber•rank is computed by a consensus computer with no single point of failure. Cyber•rank is a spring rank with economic protection from selfish predictions. Sybil resistance is also implemented on two levels: during id generation and during bandwidth limiting. Embedded smart contracts offer fair compensations for those who is able to predict relevance of content addresses. The primary goal is indexing of peer-to-peer systems with self-authenticated data either stateless, such as IPFS, Swarm, DAT, Git, BitTorent, or stateful such as Bitcoin, Ethereum and other blockchains and tangles. Proposed semantics of  linking offers robust mechanism for predicting meaningful relations between objects. A source code of a relevance machine is open source. Every bit of data accumulated by a consensus computer is available for everybody if the one has resources to process it. The performance of proposed software implementation is sufficient for seamless user interactions. Scalability of proposed implementation is enough to index all self-authenticated data that exist today. The blockchain is managed by a decentralized autonomous organization which functions under Tendermint consensus algorithm. Thought a system provide necessary utility to offer an alternative for conventional search engines it is not limited to this use case either. The system is extendable for numerous applications and e.g. makes possible to design economically rational self-owned robots that are able to autonomously understand objects around them.
 
 ## References
+
+W3S: [Web3 stack](https://github.com/w3f/Web3-wiki/wiki)
