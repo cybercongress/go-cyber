@@ -1,5 +1,13 @@
 # Change Log
 
+## [Unreleased](https://github.com/cybercongress/cyberd/tree/HEAD)
+
+[Full Changelog](https://github.com/cybercongress/cyberd/compare/0.0.6...HEAD)
+
+**Merged pull requests:**
+
+- Claim service: increment tx sequence manually [\#65](https://github.com/cybercongress/cyberd/pull/65) ([arturalbov](https://github.com/arturalbov))
+
 ## [0.0.6](https://github.com/cybercongress/cyberd/tree/0.0.6) (2018-10-24)
 [Full Changelog](https://github.com/cybercongress/cyberd/compare/0.0.5...0.0.6)
 
