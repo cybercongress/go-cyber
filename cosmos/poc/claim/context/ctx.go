@@ -10,16 +10,20 @@ import (
 	"github.com/pkg/errors"
 	"github.com/spf13/viper"
 	rpcclient "github.com/tendermint/tendermint/rpc/client"
+	"sync"
 )
 
 type ClaimContext struct {
-	Name       string
-	Passphrase string
-	ChainId    string
-	ClaimFrom  types.AccAddress
-	Codec      *codec.Codec
-	CliContext *cli.CLIContext
-	ipClaims   map[string]int
+	Name          string
+	Passphrase    string
+	ChainId       string
+	ClaimFrom     types.AccAddress
+	Codec         *codec.Codec
+	CliContext    cli.CLIContext
+	ipClaims      map[string]int
+	Mtx           *sync.Mutex
+	Sequence      *int64
+	AccountNumber int64
 }
 
 func NewClaimContext() (ClaimContext, error) {
@@ -37,14 +41,26 @@ func NewClaimContext() (ClaimContext, error) {
 		return ClaimContext{}, err
 	}
 
+	accountNumber, err := cliCtx.GetAccountNumber(address)
+	if err != nil {
+		return ClaimContext{}, err
+	}
+	seq, err := cliCtx.GetAccountSequence(address)
+	if err != nil {
+		return ClaimContext{}, err
+	}
+
 	return ClaimContext{
-		Name:       name,
-		ClaimFrom:  address,
-		Passphrase: viper.GetString(common.FlagPassphrase),
-		ChainId:    chainId,
-		Codec:      cdc,
-		CliContext: &cliCtx,
-		ipClaims:   make(map[string]int),
+		Name:          name,
+		ClaimFrom:     address,
+		Passphrase:    viper.GetString(common.FlagPassphrase),
+		ChainId:       chainId,
+		Codec:         cdc,
+		CliContext:    cliCtx,
+		ipClaims:      make(map[string]int),
+		Mtx:           new(sync.Mutex),
+		Sequence:      &seq,
+		AccountNumber: accountNumber,
 	}, nil
 }
 
@@ -58,20 +74,12 @@ func (ctx ClaimContext) IncrementIp(ip string) error {
 }
 
 func (ctx ClaimContext) TxBuilder() (authtxb.TxBuilder, error) {
-	accountNumber, err := ctx.CliContext.GetAccountNumber(ctx.ClaimFrom)
-	if err != nil {
-		return authtxb.TxBuilder{}, err
-	}
-	seq, err := ctx.CliContext.GetAccountSequence(ctx.ClaimFrom)
-	if err != nil {
-		return authtxb.TxBuilder{}, err
-	}
 
 	return authtxb.TxBuilder{
 		ChainID:       ctx.ChainId,
 		Gas:           10000000,
-		AccountNumber: accountNumber,
-		Sequence:      seq,
+		AccountNumber: ctx.AccountNumber,
+		Sequence:      *ctx.Sequence,
 		Fee:           "",
 		Memo:          "",
 		Codec:         ctx.Codec,
