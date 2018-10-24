@@ -16,6 +16,10 @@ func NewLinksHandler(cis CidIndexStorage, ls LinksStorage, imms *InMemoryStorage
 
 	return func(ctx sdk.Context, msg sdk.Msg) sdk.Result {
 
+		if ctx.IsCheckTx() {
+			return sdk.Result{}
+		}
+
 		link := msg.(MsgLink)
 
 		linkedCids := LinkedCids{
