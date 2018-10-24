@@ -1,5 +1,8 @@
 # Change Log
 
+## [0.0.6](https://github.com/cybercongress/cyberd/tree/0.0.6) (2018-10-24)
+[Full Changelog](https://github.com/cybercongress/cyberd/compare/0.0.5...0.0.6)
+
 ## [0.0.5](https://github.com/cybercongress/cyberd/tree/0.0.5) (2018-10-23)
 [Full Changelog](https://github.com/cybercongress/cyberd/compare/0.0.4...0.0.5)
 
