@@ -3,7 +3,6 @@ package app
 import (
 	"crypto/sha256"
 	"encoding/binary"
-	"fmt"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -139,18 +138,12 @@ func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.R
 	newRank, steps := rank.CalculateRank(app.memStorage)
 	app.BaseApp.Logger.Info("Rank calculated", "steps", steps, "time", time.Since(start))
 
-	app.memStorage.PrintCidsByNumberIndex()
-	for i, k := range newRank {
-		fmt.Println("Key:", i, "Value:", k)
-	}
-
 	rankAsBytes := make([]byte, 8*len(newRank))
 	for i, ui64 := range newRank {
 		binary.LittleEndian.PutUint64(rankAsBytes[i*8:i*8+8], ui64)
 	}
 
 	hash := sha256.Sum256(rankAsBytes)
-	fmt.Println(fmt.Sprintf("%X", hash))
 	app.latestRankHash = hash[:]
 	app.memStorage.UpdateRank(newRank)
 	app.mainStorage.StoreAppHash(ctx, hash[:])

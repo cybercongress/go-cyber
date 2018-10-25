@@ -2,6 +2,7 @@ package rank
 
 import (
 	. "github.com/cybercongress/cyberd/cosmos/poc/app/storage"
+	"sync"
 )
 
 const (
@@ -68,13 +69,13 @@ func step(tOverSize uint64, prevrank []uint64, danglingNodes []int64, data *InMe
 	innerProductOverSize := innerProduct / uint64(len(prevrank))
 	rank := append(make([]uint64, 0, len(prevrank)), prevrank...)
 
-	//var wg sync.WaitGroup
-	//wg.Add(len(data.GetInLinks()))
+	var wg sync.WaitGroup
+	wg.Add(len(data.GetInLinks()))
 
 	for i, inLinksForI := range data.GetInLinks() {
 
-		func(cid CidNumber, inLinks CidLinks) {
-			//defer wg.Done()
+		go func(cid CidNumber, inLinks CidLinks) {
+			defer wg.Done()
 			ksum := uint64(0)
 
 			for j := range inLinks {
@@ -83,10 +84,11 @@ func step(tOverSize uint64, prevrank []uint64, danglingNodes []int64, data *InMe
 				ksum += prevrank[j] / (jCidOutStake / linkStake)
 			}
 
+			// 17/20 = 0.85 = d
 			rank[cid] = (ksum+innerProductOverSize)/20*17 + tOverSize
 		}(i, inLinksForI)
 	}
-	//wg.Wait()
+	wg.Wait()
 	return rank
 }
 

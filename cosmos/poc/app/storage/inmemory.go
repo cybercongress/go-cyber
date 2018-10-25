@@ -1,7 +1,6 @@
 package storage
 
 import (
-	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/pkg/errors"
@@ -189,15 +188,4 @@ func (s *InMemoryStorage) GetStakes() map[AccountNumber]uint64 {
 
 func (s *InMemoryStorage) GetCidsCount() uint64 {
 	return uint64(len(s.cidsNumbersIndexes))
-}
-
-func (s *InMemoryStorage) PrintCidsByNumberIndex() {
-	var keys []int
-	for k := range s.cidsByNumberIndex {
-		keys = append(keys, int(k))
-	}
-	sort.Ints(keys)
-	for _, k := range keys {
-		fmt.Println("Key:", k, "Value:", s.cidsByNumberIndex[CidNumber(k)])
-	}
 }

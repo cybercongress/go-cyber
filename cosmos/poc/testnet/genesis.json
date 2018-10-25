@@ -86,6 +86,15 @@
             "amount": "9007199254740992"
           }
         ]
+      },
+      {
+        "address": "cosmos1g7e74lxpwlcsza8v0nca2hwahluqcv4r4d3p8p",
+        "coins": [
+          {
+            "denom": "CBD",
+            "amount": "1000000000"
+          }
+        ]
       }
     ]
   }
