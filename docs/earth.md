@@ -5,7 +5,8 @@
 # Copy from earth
 scp -P 33224 earth@earth.cybernode.ai:/path/file /host/path/file
 # Copy to earth
-scp -P 33324 /host/path/file earth@earth.cybernode.ai:/path/file
+scp -P 33324 testnet/genesis.json earth@earth.cybernode.ai:/cyberdata/cyberd/config/genesis.json
+scp -P 33324 testnet/config.toml earth@earth.cybernode.ai:/cyberdata/cyberd/config/config.toml
 ```
 
 ## Reset cyberd
