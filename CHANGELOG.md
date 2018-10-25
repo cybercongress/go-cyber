@@ -4,9 +4,14 @@
 
 [Full Changelog](https://github.com/cybercongress/cyberd/compare/0.0.6...HEAD)
 
+**Implemented enhancements:**
+
+- Add send tokens endpoint to proxy [\#62](https://github.com/cybercongress/cyberd/issues/62)
+
 **Fixed bugs:**
 
 - Proxy service. Search request with "spaces" fails [\#67](https://github.com/cybercongress/cyberd/issues/67)
+- Non-deterministic rank calculation [\#66](https://github.com/cybercongress/cyberd/issues/66)
 
 **Closed issues:**
 
@@ -14,6 +19,7 @@
 
 **Merged pull requests:**
 
+- Proxy service. Add search pagination [\#70](https://github.com/cybercongress/cyberd/pull/70) ([arturalbov](https://github.com/arturalbov))
 - Proxy service. Search request with spaces fails [\#68](https://github.com/cybercongress/cyberd/pull/68) ([arturalbov](https://github.com/arturalbov))
 - Claim service: increment tx sequence manually [\#65](https://github.com/cybercongress/cyberd/pull/65) ([arturalbov](https://github.com/arturalbov))
 
