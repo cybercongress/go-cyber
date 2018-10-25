@@ -11,12 +11,12 @@ import (
 
 type RankedCidNumber struct {
 	cidNumber CidNumber
-	rank      float64
+	rank      uint64
 }
 
 type RankedCid struct {
 	Cid  Cid
-	Rank float64 `amino:"unsafe"`
+	Rank uint64
 }
 
 type CidRankedLinks []RankedCidNumber
@@ -35,11 +35,11 @@ type InMemoryStorage struct {
 	cidsCount          uint64
 	cidsNumbersIndexes map[Cid]CidNumber
 	cidsByNumberIndex  map[CidNumber]Cid
-	cidRank            []float64 // array index is cid number
+	cidRank            []uint64 // array index is cid number
 
 	cidRankedLinksIndex []CidRankedLinks
 
-	userStake map[AccountNumber]int64
+	userStake map[AccountNumber]uint64
 }
 
 // Load from underlying persistent storage
@@ -75,7 +75,7 @@ func (s *InMemoryStorage) GetCidIndex(cid Cid) (CidNumber, bool) {
 }
 
 func (s *InMemoryStorage) UpdateStake(acc sdk.AccAddress, stake int64) {
-	s.userStake[AccountNumber(acc.String())] += stake
+	s.userStake[AccountNumber(acc.String())] += uint64(stake)
 }
 
 func (s *InMemoryStorage) AddLink(link LinkedCids) {
@@ -90,9 +90,9 @@ func (s *InMemoryStorage) AddCid(cid Cid, number CidNumber) {
 }
 
 //
-func (s *InMemoryStorage) GetOverallLinkStake(from CidNumber, to CidNumber) int64 {
+func (s *InMemoryStorage) GetOverallLinkStake(from CidNumber, to CidNumber) uint64 {
 
-	stake := int64(0)
+	stake := uint64(0)
 	users := s.outLinks[from][to]
 	for user := range users {
 		stake += s.userStake[user]
@@ -100,9 +100,9 @@ func (s *InMemoryStorage) GetOverallLinkStake(from CidNumber, to CidNumber) int6
 	return stake
 }
 
-func (s *InMemoryStorage) GetOverallOutLinksStake(from CidNumber) int64 {
+func (s *InMemoryStorage) GetOverallOutLinksStake(from CidNumber) uint64 {
 
-	stake := int64(0)
+	stake := uint64(0)
 	for to := range s.outLinks[from] {
 		stake += s.GetOverallLinkStake(from, to)
 	}
@@ -141,7 +141,7 @@ func (s *InMemoryStorage) GetCidRankedLinks(cid Cid, page, perPage int) ([]Ranke
 	return response, totalSize, nil
 }
 
-func (s *InMemoryStorage) UpdateRank(newCidRank []float64) {
+func (s *InMemoryStorage) UpdateRank(newCidRank []uint64) {
 	s.cidRank = newCidRank
 	s.buildCidRankedLinksIndex()
 }
@@ -159,7 +159,7 @@ func (s *InMemoryStorage) buildCidRankedLinksIndex() {
 	s.cidRankedLinksIndex = newIndex
 }
 
-func getLinksSortedByRank(cidOutLinks CidLinks, cidRank []float64) CidRankedLinks {
+func getLinksSortedByRank(cidOutLinks CidLinks, cidRank []uint64) CidRankedLinks {
 	cidRankedLinks := make(CidRankedLinks, 0, len(cidOutLinks))
 	for linkedCidNumber := range cidOutLinks {
 		rankedCid := RankedCidNumber{cidNumber: linkedCidNumber, rank: cidRank[linkedCidNumber]}
@@ -171,7 +171,7 @@ func getLinksSortedByRank(cidOutLinks CidLinks, cidRank []float64) CidRankedLink
 
 //
 // GETTERS
-func (s *InMemoryStorage) GetRank() []float64 {
+func (s *InMemoryStorage) GetRank() []uint64 {
 	return s.cidRank
 }
 
@@ -183,12 +183,12 @@ func (s *InMemoryStorage) GetOutLinks() map[CidNumber]CidLinks {
 	return s.outLinks
 }
 
-func (s *InMemoryStorage) GetStakes() map[AccountNumber]int64 {
+func (s *InMemoryStorage) GetStakes() map[AccountNumber]uint64 {
 	return s.userStake
 }
 
-func (s *InMemoryStorage) GetCidsCount() int {
-	return len(s.cidsNumbersIndexes)
+func (s *InMemoryStorage) GetCidsCount() uint64 {
+	return uint64(len(s.cidsNumbersIndexes))
 }
 
 func (s *InMemoryStorage) PrintCidsByNumberIndex() {

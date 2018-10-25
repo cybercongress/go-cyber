@@ -7,13 +7,13 @@ import (
 )
 
 // returns all added cids
-func GetAllAccountsStakes(ctx sdk.Context, am auth.AccountMapper) map[AccountNumber]int64 {
+func GetAllAccountsStakes(ctx sdk.Context, am auth.AccountMapper) map[AccountNumber]uint64 {
 
-	stakes := make(map[AccountNumber]int64)
+	stakes := make(map[AccountNumber]uint64)
 
 	collect := func(acc auth.Account) bool {
 		balance := acc.GetCoins().AmountOf(coin.CBD).Int64()
-		stakes[AccountNumber(acc.GetAddress().String())] = balance
+		stakes[AccountNumber(acc.GetAddress().String())] = uint64(balance)
 		return false
 	}
 
