@@ -8,9 +8,6 @@ import (
 )
 
 func (app *CyberdApp) Search(cid string, page, perPage int) ([]RankedCid, int, error) {
-	if perPage == 0 {
-		perPage = 100
-	}
 	result, totalSize, err := app.memStorage.GetCidRankedLinks(Cid(cid), page, perPage)
 	if err != nil {
 		return nil, totalSize, err

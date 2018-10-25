@@ -28,8 +28,8 @@ func StartCmd() *cobra.Command {
 			mux := http.NewServeMux()
 			mux.HandleFunc("/link", core.TxHandlerFn(ctx, core.UnmarshalLinkRequest))
 			mux.HandleFunc("/send", core.TxHandlerFn(ctx, core.UnmarshalSendRequest))
-			mux.HandleFunc("/search", core.GetWithParamHandlerFn(ctx, "/search", "cid"))
-			mux.HandleFunc("/account", core.GetWithParamHandlerFn(ctx, "/account", "address"))
+			mux.HandleFunc("/search", core.GetWithParamsHandlerFn(ctx, "/search", []string{"cid", "page", "perPage"}))
+			mux.HandleFunc("/account", core.GetWithParamsHandlerFn(ctx, "/account", []string{"address"}))
 			mux.HandleFunc("/health", core.GetHandlerFn(ctx, "/health"))
 			mux.HandleFunc("/status", core.GetHandlerFn(ctx, "/status"))
 

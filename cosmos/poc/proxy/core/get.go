@@ -22,19 +22,21 @@ func GetHandlerFn(ctx ProxyContext, endpoint string) func(http.ResponseWriter, *
 	}
 }
 
-func GetWithParamHandlerFn(ctx ProxyContext, endpoint string, param string) func(http.ResponseWriter, *http.Request) {
+func GetWithParamsHandlerFn(ctx ProxyContext, endpoint string, params []string) func(http.ResponseWriter, *http.Request) {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		w.Header().Set("Content-Type", "application/json")
 
-		paramValue, err := util.GetSingleParamValue(param, r)
-		if err != nil {
-			util.HandleError(err, w)
-			return
+		paramValues := make(url.Values)
+		for _, param := range params {
+			value, err := util.GetSingleParamValue(param, r)
+			if err == nil {
+				paramValues[param] = []string{"\"" + value + "\""}
+			}
 		}
 
-		resp, err := ctx.Get(endpoint + "?" + param + "=\"" + url.QueryEscape(paramValue) + "\"")
+		resp, err := ctx.Get(endpoint + "?" + paramValues.Encode())
 		if err != nil {
 			util.HandleError(err, w)
 			return

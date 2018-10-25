@@ -32,15 +32,15 @@ func GetSingleParamValue(name string, r *http.Request) (string, error) {
 	return param, nil
 }
 
-func GetBooleanParamValue(name string, r *http.Request) (bool, error) {
+func GetBooleanParamValue(name string, defaultVal bool, r *http.Request) (bool, error) {
 	paramStr, err := GetSingleParamValue(name, r)
 	if err != nil {
-		return false, nil
+		return defaultVal, nil
 	}
 
 	param, err := strconv.ParseBool(paramStr)
 	if err != nil {
-		return false, err
+		return defaultVal, err
 	}
 
 	return param, nil

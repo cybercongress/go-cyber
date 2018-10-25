@@ -42,7 +42,7 @@ func TxHandlerFn(ctx ProxyContext, unmarshal UnmarshalTxRequest) func(http.Respo
 			return
 		}
 
-		commit, err := util.GetBooleanParamValue("commit", r)
+		commit, err := util.GetBooleanParamValue("commit", false, r)
 		if err != nil {
 			util.HandleError(err, w)
 			return
