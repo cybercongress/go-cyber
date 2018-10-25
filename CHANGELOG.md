@@ -4,6 +4,10 @@
 
 [Full Changelog](https://github.com/cybercongress/cyberd/compare/0.0.6...HEAD)
 
+**Closed issues:**
+
+- Claim service: increment tx sequence manually [\#64](https://github.com/cybercongress/cyberd/issues/64)
+
 **Merged pull requests:**
 
 - Claim service: increment tx sequence manually [\#65](https://github.com/cybercongress/cyberd/pull/65) ([arturalbov](https://github.com/arturalbov))
