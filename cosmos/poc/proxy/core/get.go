@@ -3,6 +3,7 @@ package core
 import (
 	"github.com/cybercongress/cyberd/cosmos/poc/http/util"
 	"net/http"
+	"net/url"
 )
 
 func GetHandlerFn(ctx ProxyContext, endpoint string) func(http.ResponseWriter, *http.Request) {
@@ -33,7 +34,7 @@ func GetWithParamHandlerFn(ctx ProxyContext, endpoint string, param string) func
 			return
 		}
 
-		resp, err := ctx.Get(endpoint + "?" + param + "=\"" + paramValue + "\"")
+		resp, err := ctx.Get(endpoint + "?" + param + "=\"" + url.QueryEscape(paramValue) + "\"")
 		if err != nil {
 			util.HandleError(err, w)
 			return
