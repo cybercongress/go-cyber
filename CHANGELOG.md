@@ -10,6 +10,7 @@
 
 **Merged pull requests:**
 
+- Proxy service. Search request with spaces fails [\#68](https://github.com/cybercongress/cyberd/pull/68) ([arturalbov](https://github.com/arturalbov))
 - Claim service: increment tx sequence manually [\#65](https://github.com/cybercongress/cyberd/pull/65) ([arturalbov](https://github.com/arturalbov))
 
 ## [0.0.6](https://github.com/cybercongress/cyberd/tree/0.0.6) (2018-10-24)
