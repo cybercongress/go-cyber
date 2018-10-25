@@ -120,7 +120,6 @@ func NewCyberdApp(logger log.Logger, db dbm.DB, baseAppOptions ...func(*baseapp.
 	app.memStorage.Load(ctx, storages, app.accStorage)
 	app.BaseApp.Logger.Info("App loaded", "time", time.Since(start))
 	app.latestRankHash = ms.GetAppHash(ctx)
-	rank.CalculateRank(app.memStorage)
 	app.Seal()
 	return app
 }
@@ -136,12 +135,12 @@ func (app *CyberdApp) BeginBlocker(_ sdk.Context, _ abci.RequestBeginBlock) abci
 // App state is consensus driven state.
 func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.ResponseEndBlock {
 
-	app.memStorage.PrintCidsByNumberIndex()
 	start := time.Now()
 	app.BaseApp.Logger.Info("Calculating rank")
 	newRank, steps := rank.CalculateRank(app.memStorage)
 	app.BaseApp.Logger.Info("Rank calculated", "steps", steps, "time", time.Since(start))
 
+	app.memStorage.PrintCidsByNumberIndex()
 	for i, k := range newRank {
 		fmt.Println("Key:", i, "Value:", k)
 	}
@@ -152,6 +151,7 @@ func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.R
 	}
 
 	hash := sha256.Sum256(rankAsBytes)
+	fmt.Println(fmt.Sprintf("%X", hash))
 	app.latestRankHash = hash[:]
 	app.memStorage.UpdateRank(newRank)
 	app.mainStorage.StoreAppHash(ctx, hash[:])
