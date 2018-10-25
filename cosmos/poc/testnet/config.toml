@@ -22,7 +22,7 @@ db_backend = "leveldb"
 db_dir = "data"
 
 # Output level for logging, including package level options
-log_level = "main:info,state:info,*:error,rpc-server:error,mempool:error"
+log_level = "main:info,state:info,*:error,rpc-server:error,mempool:error,p2p:error"
 
 ##### additional base config options #####
 
