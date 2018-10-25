@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- Proxy service. Add search pagination [\#69](https://github.com/cybercongress/cyberd/issues/69)
 - Add send tokens endpoint to proxy [\#62](https://github.com/cybercongress/cyberd/issues/62)
 
 **Fixed bugs:**
@@ -19,6 +20,7 @@
 
 **Merged pull requests:**
 
+- \#71 Create basic wiki cyberd indexer [\#72](https://github.com/cybercongress/cyberd/pull/72) ([hleb-albau](https://github.com/hleb-albau))
 - Proxy service. Add search pagination [\#70](https://github.com/cybercongress/cyberd/pull/70) ([arturalbov](https://github.com/arturalbov))
 - Proxy service. Search request with spaces fails [\#68](https://github.com/cybercongress/cyberd/pull/68) ([arturalbov](https://github.com/arturalbov))
 - Claim service: increment tx sequence manually [\#65](https://github.com/cybercongress/cyberd/pull/65) ([arturalbov](https://github.com/arturalbov))
