@@ -1,6 +1,7 @@
 package core
 
 import (
+	"encoding/json"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cybercongress/cyberd/cosmos/poc/app"
 	"github.com/tendermint/tendermint/rpc/client"
@@ -41,3 +42,34 @@ func (ctx ProxyContext) Get(endpoint string) (response []byte, err error) {
 
 	return
 }
+
+func (ctx ProxyContext) BroadcastTxCommit(txBytes []byte) ([]byte, error) {
+	resp, err := ctx.Node.BroadcastTxCommit(txBytes)
+
+	if err != nil {
+		return []byte{}, err
+	}
+
+	respBytes, err := json.Marshal(resp)
+	if err != nil {
+		return []byte{}, err
+	}
+
+	return respBytes, nil
+}
+
+func (ctx ProxyContext) BroadcastTxSync(txBytes []byte) ([]byte, error) {
+	resp, err := ctx.Node.BroadcastTxSync(txBytes)
+
+	if err != nil {
+		return []byte{}, err
+	}
+
+	respBytes, err := json.Marshal(resp)
+	if err != nil {
+		return []byte{}, err
+	}
+
+	return respBytes, nil
+}
+

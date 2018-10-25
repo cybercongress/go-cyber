@@ -1,7 +1,6 @@
 package core
 
 import (
-	"encoding/json"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cybercongress/cyberd/cosmos/poc/http/util"
 	"io/ioutil"
@@ -43,17 +42,25 @@ func TxHandlerFn(ctx ProxyContext, unmarshal UnmarshalTxRequest) func(http.Respo
 			return
 		}
 
-		resp, err := ctx.Node.BroadcastTxSync(stdTxBytes)
+		commit, err := util.GetBooleanParamValue("commit", r)
 		if err != nil {
 			util.HandleError(err, w)
 			return
 		}
 
-		respBytes, err := json.Marshal(resp)
+		var result []byte
+
+		if commit {
+			result, err = ctx.BroadcastTxCommit(stdTxBytes)
+		} else {
+			result, err = ctx.BroadcastTxSync(stdTxBytes)
+		}
+
 		if err != nil {
 			util.HandleError(err, w)
 			return
 		}
-		w.Write(respBytes)
+
+		w.Write(result)
 	}
 }
