@@ -4,6 +4,10 @@
 
 [Full Changelog](https://github.com/cybercongress/cyberd/compare/0.0.6...HEAD)
 
+**Fixed bugs:**
+
+- Proxy service. Search request with "spaces" fails [\#67](https://github.com/cybercongress/cyberd/issues/67)
+
 **Closed issues:**
 
 - Claim service: increment tx sequence manually [\#64](https://github.com/cybercongress/cyberd/issues/64)
