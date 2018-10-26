@@ -1,6 +1,7 @@
 import os
 import sys
 
+
 sys.path.append(os.path.join(os.path.dirname(__file__), '../'))
 
 import glob
@@ -9,6 +10,8 @@ from collections import OrderedDict
 from common.adjacency_list_to_graph import load_edges, build_graph
 from common.calculate_spring_rank import calculate_spring_rank
 from common.graph_to_matrix import build_matrix
+from common.tools import print_with_time
+
 
 """
 Calculate ethereum rank from `../data` folders data.
@@ -36,7 +39,7 @@ print("-----------------------------------------------")
 
 iterations, raw_rank = calculate_spring_rank(A)  # raw rank is array with values, where indices is nodes list indices
 rank = dict(zip(nodes, raw_rank))
-print(f"Spring Rank calculated in {iterations} iterations")
+print_with_time(f"Spring Rank calculated in {iterations} iterations")
 print("-----------------------------------------------")
 
 print("Storing results")

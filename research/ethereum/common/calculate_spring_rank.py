@@ -4,7 +4,6 @@ import humanize
 import numpy as np
 import scipy.sparse
 import scipy.sparse.linalg
-
 from networkx import DiGraph
 from scipy.sparse import csr_matrix
 
@@ -67,7 +66,7 @@ def calculate_spring_rank(A, initial_x=None):
         iterations += 1
 
     print_with_time("Solving Bx=b equation using 'bicgstab' iterative method")
-    result = scipy.sparse.linalg.bicgstab(B, b, x0=initial_x, callback=bicgstab_callback)
+    result = scipy.sparse.linalg.bicgstab(B, b, x0=initial_x, callback=bicgstab_callback, tol=1e-2, atol=0)
 
     if result[1] != 0:
         print_with_time("Can't solve Bx=b")
