@@ -5,6 +5,7 @@ from typing import Dict, Tuple
 
 import humanize
 import networkx as nx
+import math
 from networkx import DiGraph
 
 from common.tools import human_readable_interval
@@ -33,7 +34,7 @@ def load_edges(data_file: str) -> Edges:
         if cells[2] == "0":
             continue
         edge = (cells[0], cells[1])
-        weight = float(cells[2])
+        weight = math.sqrt(float(cells[2]))
 
         if edge not in edges:
             edges[edge] = weight
