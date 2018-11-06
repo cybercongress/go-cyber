@@ -2,7 +2,15 @@
 
 ## [Unreleased](https://github.com/cybercongress/cyberd/tree/HEAD)
 
-[Full Changelog](https://github.com/cybercongress/cyberd/compare/0.0.6...HEAD)
+[Full Changelog](https://github.com/cybercongress/cyberd/compare/0.0.7...HEAD)
+
+**Closed issues:**
+
+- Create basic wiki cyberd indexer [\#71](https://github.com/cybercongress/cyberd/issues/71)
+- Create cyberd PoC based on Cosmos SDK [\#37](https://github.com/cybercongress/cyberd/issues/37)
+
+## [0.0.7](https://github.com/cybercongress/cyberd/tree/0.0.7) (2018-10-25)
+[Full Changelog](https://github.com/cybercongress/cyberd/compare/0.0.6...0.0.7)
 
 **Implemented enhancements:**
 
