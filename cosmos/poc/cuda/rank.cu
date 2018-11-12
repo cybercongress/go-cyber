@@ -1,13 +1,18 @@
 #include <stdint.h>
 #include <stdio.h>
+#include <thrust/transform.h>
+#include <thrust/transform_reduce.h>
+#include <thrust/device_vector.h>
+#include <thrust/execution_policy.h>
+#include <thrust/functional.h>
 #include "types.h"
 
 const double DUMP_FACTOR = 0.85;
 const double TOLERANCE = 1e-3;
 
-/******************************************/
-/* CELL STRUCT LEADING TO ARRAY OF STRUCT */
-/******************************************/
+/*******************************************/
+/* REPRESENTS INCOMING LINK WITH IT WEIGHT */
+/*******************************************/
 typedef struct {
     /* Index of opposite cid in cids array */
     uint64_t fromIndex;
@@ -50,6 +55,39 @@ void run_rank_iteration(
 }
 
 
+/*****************************************************/
+/* KERNEL: DOUBLE ABS FUNCTOR                        */
+/*****************************************************/
+/* Return absolute value for double                  */
+/*****************************************************/
+struct absolute_value {
+  __device__ double operator()(const double &x) const {
+    return x < 0.0 ? -x : x;
+  }
+};
+
+
+/*****************************************************/
+/* KERNEL: FINDS MAXIMUM RANKS DIFFERENCE            */
+/*****************************************************/
+/* Finds maximum rank difference for single element  */
+/*                                                   */
+/*****************************************************/
+double find_max_ranks_diff(double *prevRank, double *newRank, uint64_t rankSize) {
+
+    thrust::device_vector<double> ranksDiff(rankSize);
+    thrust::device_ptr<double> newRankBegin(newRank);
+    thrust::device_ptr<double> prevRankBegin(prevRank);
+    thrust::device_ptr<double> prevRankEnd(prevRank + rankSize);
+    thrust::transform(thrust::device,
+        prevRankBegin, prevRankEnd, newRankBegin, ranksDiff.begin(), thrust::minus<double>()
+    );
+
+    return thrust::transform_reduce(thrust::device,
+        ranksDiff.begin(), ranksDiff.end(), absolute_value(), 0.0, thrust::maximum<double>()
+    );
+}
+
 extern "C" {
 
     void calculate_rank(
@@ -57,6 +95,8 @@ extern "C" {
         cid *cids, uint64_t cidsSize, /* Cids links */
         cid_link *inLinks, cid_link *outLinks /* Incoming and Outgoing cids links */
     ) {
+
+        printf("Cuda !!!!!!!!!!!!!!!!!!\n");
 
         double *prevRank, *rank;
         cudaMalloc(&rank, cidsSize*sizeof(double));
@@ -69,6 +109,7 @@ extern "C" {
         	//change = calculateChange(prevrank, rank)
         	//prevrank = rank
         	steps++;
+        	return;
         }
 
         cudaFree(rank);
