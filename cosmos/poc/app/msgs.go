@@ -21,6 +21,7 @@ func (msg MsgLink) Name() string {
 	return "link"
 }
 
+func (MsgLink) Route() string { return "link" }
 func (MsgLink) Type() string { return "link" }
 
 func (msg MsgLink) ValidateBasic() sdk.Error {

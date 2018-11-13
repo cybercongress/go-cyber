@@ -43,7 +43,7 @@ type InMemoryStorage struct {
 
 // Load from underlying persistent storage
 // Heavy operation
-func (s *InMemoryStorage) Load(ctx sdk.Context, ps CyberdPersistentStorages, am auth.AccountMapper) {
+func (s *InMemoryStorage) Load(ctx sdk.Context, ps CyberdPersistentStorages, am auth.AccountKeeper) {
 
 	inLinks, outLinks, err := ps.Links.GetAllLinks(ctx)
 	if err != nil {

@@ -7,7 +7,7 @@ import (
 )
 
 // returns all added cids
-func GetAllAccountsStakes(ctx sdk.Context, am auth.AccountMapper) map[AccountNumber]uint64 {
+func GetAllAccountsStakes(ctx sdk.Context, am auth.AccountKeeper) map[AccountNumber]uint64 {
 
 	stakes := make(map[AccountNumber]uint64)
 
