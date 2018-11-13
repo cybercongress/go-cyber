@@ -28,7 +28,7 @@ type GenesisAccount struct {
 // should contain all the genesis accounts. These accounts will be added to the
 // application's account mapper.
 
-func NewGenesisApplier(imms *storage.InMemoryStorage, cdc *codec.Codec, accStorage auth.AccountMapper) sdk.InitChainer {
+func NewGenesisApplier(imms *storage.InMemoryStorage, cdc *codec.Codec, accStorage auth.AccountKeeper) sdk.InitChainer {
 
 	return func(ctx sdk.Context, req abci.RequestInitChain) abci.ResponseInitChain {
 

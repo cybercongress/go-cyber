@@ -15,12 +15,19 @@ import (
 	cmn "github.com/tendermint/tendermint/libs/common"
 	dbm "github.com/tendermint/tendermint/libs/db"
 	"github.com/tendermint/tendermint/libs/log"
+	"os"
 	"time"
 )
 
 const (
 	APP     = "cyberd"
 	appName = "CyberdApp"
+)
+
+// default home directories for expected binaries
+var (
+	DefaultCLIHome  = os.ExpandEnv("$HOME/.cyberdcli")
+	DefaultNodeHome = os.ExpandEnv("$HOME/.cyberd")
 )
 
 type CyberdAppDbKeys struct {
@@ -45,7 +52,7 @@ type CyberdApp struct {
 
 	// manage getting and setting accounts
 	mainStorage         MainStorage
-	accStorage          auth.AccountMapper
+	accStorage          auth.AccountKeeper
 	feeCollectionKeeper auth.FeeCollectionKeeper
 	coinKeeper          bank.Keeper
 
@@ -91,7 +98,7 @@ func NewCyberdApp(logger log.Logger, db dbm.DB, baseAppOptions ...func(*baseapp.
 	}
 
 	// define and attach the mappers and keepers
-	app.accStorage = auth.NewAccountMapper(app.cdc, dbKeys.acc, NewAccount)
+	app.accStorage = auth.NewAccountKeeper(app.cdc, dbKeys.acc, NewAccount)
 	app.coinKeeper = bank.NewBaseKeeper(app.accStorage)
 	app.memStorage = &InMemoryStorage{}
 

@@ -36,7 +36,7 @@ func TxHandlerFn(ctx ProxyContext, unmarshal UnmarshalTxRequest) func(http.Respo
 
 		stdTx := auth.StdTx{Msgs: txReq.GetMsgs(), Fee: txReq.GetFee(), Signatures: signatures, Memo: txReq.GetMemo()}
 
-		stdTxBytes, err := ctx.Codec.MarshalBinary(stdTx)
+		stdTxBytes, err := ctx.Codec.MarshalBinaryLengthPrefixed(stdTx)
 		if err != nil {
 			util.HandleError(err, w)
 			return

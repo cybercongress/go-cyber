@@ -11,7 +11,7 @@ type NoopVerifier struct {
 	ChainId string
 }
 
-func (NoopVerifier) Certify(sheader types.SignedHeader) error {
+func (NoopVerifier) Verify(sheader types.SignedHeader) error {
 	return nil
 }
 
