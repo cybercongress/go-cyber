@@ -80,7 +80,7 @@ void calculateCidTotalOutStake(
     uint64_t cidsSize,
     uint64_t *stakes,                                        /*array index - user index*/
     uint64_t *outLinksStartIndex, uint32_t *outLinksCount,   /*array index - cid index*/
-    cid_link *allOutLinks,                                   /*all out links from all users*/
+    uint64_t *outLinksUsers,                                 /*all out links from all users*/
     /*returns*/ uint64_t *cidsTotalOutStakes                 /*array index - cid index*/
 ) {
 
@@ -88,9 +88,9 @@ void calculateCidTotalOutStake(
     uint64_t stride = blockDim.x * gridDim.x;
 
     for (uint64_t i = index; i < cidsSize; i += stride) {
-        double totalOutStake = 0.0;
+        uint64_t totalOutStake = 0;
         for (uint64_t j = outLinksStartIndex[i]; j < outLinksStartIndex[i] + outLinksCount[i]; j++) {
-           totalOutStake += stakes[allOutLinks[j].user_index];
+           totalOutStake += stakes[outLinksUsers[j]];
         }
         cidsTotalOutStakes[i] = totalOutStake;
     }
@@ -144,8 +144,8 @@ void getCompressedInLinks(
     uint64_t *inLinksStartIndex, uint32_t *inLinksCount, uint64_t *cidsTotalOutStakes,   /*array index - cid index*/
     uint64_t *inLinksOuts, uint64_t *inLinksUsers,                                       /*all incoming links from all users*/
     uint64_t *stakes,                                                                    /*array index - user index*/
-    /*returns*/ CompressedInLink *compressedInLinks,                                     /*all incoming compressed links*/
-    /*returns*/ uint64_t *compressedInLinksStartIndex, uint32_t *compressedInLinksCount  /*array index - cid index*/
+    uint64_t *compressedInLinksStartIndex, uint32_t *compressedInLinksCount,             /*array index - cid index*/
+    /*returns*/ CompressedInLink *compressedInLinks                                      /*all incoming compressed links*/
 ) {
 
 	int index = blockIdx.x * blockDim.x + threadIdx.x;
@@ -158,14 +158,26 @@ void getCompressedInLinks(
         }
 
         uint32_t compressedLinksIndex = compressedInLinksStartIndex[i];
-        uint64_t compressedLinkStake = stakes[inLinksUsers[inLinksStartIndex[i]]];
-        for(uint64_t j = inLinksStartIndex[i] + 1; j < inLinksStartIndex[i] + inLinksCount[i]; j++) {
 
-            if(inLinksOuts[j] != inLinksOuts[j-1]) {
+        if(inLinksCount[i] == 1) {
+            uint64_t oppositeCid = inLinksOuts[inLinksStartIndex[i]];
+            uint64_t compressedLinkStake = stakes[inLinksUsers[inLinksStartIndex[i]]];
+            double weight = ddiv_rz(&compressedLinkStake, &cidsTotalOutStakes[oppositeCid]);
+            compressedInLinks[compressedLinksIndex] = CompressedInLink {oppositeCid, weight};
+            continue;
+        }
+
+        uint64_t compressedLinkStake = 0;
+        uint64_t lastLinkIndex = inLinksStartIndex[i] + inLinksCount[i] - 1;
+        for(uint64_t j = inLinksStartIndex[i]; j < lastLinkIndex + 1; j++) {
+
+            compressedLinkStake += stakes[inLinksUsers[j]];
+            if(j == lastLinkIndex || inLinksOuts[j] != inLinksOuts[j+1]) {
                 uint64_t oppositeCid = inLinksOuts[j];
                 double weight = ddiv_rz(&compressedLinkStake, &cidsTotalOutStakes[oppositeCid]);
                 compressedInLinks[compressedLinksIndex] = CompressedInLink {oppositeCid, weight};
                 compressedLinksIndex++;
+                compressedLinkStake=0;
             }
         }
     }
