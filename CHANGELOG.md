@@ -4,6 +4,10 @@
 
 [Full Changelog](https://github.com/cybercongress/cyberd/compare/0.0.7...HEAD)
 
+**Implemented enhancements:**
+
+- Update to cosmos-sdk version 0.26.1 [\#79](https://github.com/cybercongress/cyberd/issues/79)
+
 **Closed issues:**
 
 - Create basic wiki cyberd indexer [\#71](https://github.com/cybercongress/cyberd/issues/71)
@@ -11,6 +15,7 @@
 
 **Merged pull requests:**
 
+- UPD docs\_upd job [\#81](https://github.com/cybercongress/cyberd/pull/81) ([SaveTheAles](https://github.com/SaveTheAles))
 - Update cosmos-sdk version to 0.26.1 [\#80](https://github.com/cybercongress/cyberd/pull/80) ([arturalbov](https://github.com/arturalbov))
 
 ## [0.0.7](https://github.com/cybercongress/cyberd/tree/0.0.7) (2018-10-25)
