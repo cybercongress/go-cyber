@@ -9,6 +9,10 @@
 - Create basic wiki cyberd indexer [\#71](https://github.com/cybercongress/cyberd/issues/71)
 - Create cyberd PoC based on Cosmos SDK [\#37](https://github.com/cybercongress/cyberd/issues/37)
 
+**Merged pull requests:**
+
+- Update cosmos-sdk version to 0.26.1 [\#80](https://github.com/cybercongress/cyberd/pull/80) ([arturalbov](https://github.com/arturalbov))
+
 ## [0.0.7](https://github.com/cybercongress/cyberd/tree/0.0.7) (2018-10-25)
 [Full Changelog](https://github.com/cybercongress/cyberd/compare/0.0.6...0.0.7)
 
