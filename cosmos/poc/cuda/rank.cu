@@ -112,6 +112,10 @@ void getCompressedInLinksCount(
 
     for (uint64_t i = index; i < cidsSize; i += stride) {
 
+        if(inLinksCount[i] == 0) {
+            continue;
+        }
+
         uint32_t compressedLinksCount = 0;
         for(uint64_t j = inLinksStartIndex[i]; j < inLinksStartIndex[i]+inLinksCount[i]; j++) {
             if(j == inLinksStartIndex[i] || inLinksOuts[j] != inLinksOuts[j-1]) {
@@ -122,6 +126,69 @@ void getCompressedInLinksCount(
     }
 }
 
+/*********************************************************/
+/* DEVICE: USER TO DIVIDE TWO uint64                     */
+/*********************************************************/
+__device__
+double ddiv_rz(uint64_t *a, uint64_t *b) {
+    return __ddiv_rz(__ull2double_rz(*a), __ull2double_rz(*b));
+}
+
+
+/*********************************************************/
+/* KERNEL: CALCULATE COMPRESSED IN LINKS                 */
+/*********************************************************/
+__global__
+void getCompressedInLinks(
+    uint64_t cidsSize,
+    uint64_t *inLinksStartIndex, uint32_t *inLinksCount, uint64_t *cidsTotalOutStakes,   /*array index - cid index*/
+    uint64_t *inLinksOuts, uint64_t *inLinksUsers,                                       /*all incoming links from all users*/
+    uint64_t *stakes,                                                                    /*array index - user index*/
+    /*returns*/ CompressedInLink *compressedInLinks,                                     /*all incoming compressed links*/
+    /*returns*/ uint64_t *compressedInLinksStartIndex, uint32_t *compressedInLinksCount  /*array index - cid index*/
+) {
+
+	int index = blockIdx.x * blockDim.x + threadIdx.x;
+    uint64_t stride = blockDim.x * gridDim.x;
+
+    for (uint64_t i = index; i < cidsSize; i += stride) {
+
+        if(inLinksCount[i] == 0) {
+            continue;
+        }
+
+        uint32_t compressedLinksIndex = compressedInLinksStartIndex[i];
+        uint64_t compressedLinkStake = stakes[inLinksUsers[inLinksStartIndex[i]]];
+        for(uint64_t j = inLinksStartIndex[i] + 1; j < inLinksStartIndex[i] + inLinksCount[i]; j++) {
+
+            if(inLinksOuts[j] != inLinksOuts[j-1]) {
+                uint64_t oppositeCid = inLinksOuts[j];
+                double weight = ddiv_rz(&compressedLinkStake, &cidsTotalOutStakes[oppositeCid]);
+                compressedInLinks[compressedLinksIndex] = CompressedInLink {oppositeCid, weight};
+                compressedLinksIndex++;
+            }
+        }
+    }
+}
+
+/************************************************************/
+/* HOST: CALCULATE COMPRESSED IN LINKS START INDEXES        */
+/************************************************************/
+/* SEQUENTIAL LOGIC -> CALCULATE ON CPU                     */
+/************************************************************/
+__host__
+void getCompressedInLinksStartIndex(
+    uint64_t cidsSize,
+    uint32_t *compressedInLinksCount,                   /*array index - cid index*/
+    /*returns*/ uint64_t *compressedInLinksStartIndex   /*array index - cid index*/
+) {
+
+    uint64_t index = 0;
+    for (uint64_t i = 0; i < cidsSize; i++) {
+        compressedInLinksStartIndex[i] = index;
+        index += compressedInLinksCount[i];
+    }
+}
 
 extern "C" {
 
