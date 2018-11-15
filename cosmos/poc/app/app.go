@@ -62,6 +62,8 @@ type CyberdApp struct {
 	memStorage      *InMemoryStorage
 
 	latestRankHash []byte
+
+	computeUnit rank.ComputeUnit
 }
 
 // NewBasecoinApp returns a reference to a new CyberdApp given a
@@ -70,7 +72,9 @@ type CyberdApp struct {
 // In addition, all necessary mappers and keepers are created, routes
 // registered, and finally the stores being mounted along with any necessary
 // chain initialization.
-func NewCyberdApp(logger log.Logger, db dbm.DB, baseAppOptions ...func(*baseapp.BaseApp)) *CyberdApp {
+func NewCyberdApp(
+	logger log.Logger, db dbm.DB, computeUnit rank.ComputeUnit, baseAppOptions ...func(*baseapp.BaseApp),
+) *CyberdApp {
 	// create and register app-level codec for TXs and accounts
 	cdc := MakeCodec()
 
@@ -96,6 +100,7 @@ func NewCyberdApp(logger log.Logger, db dbm.DB, baseAppOptions ...func(*baseapp.
 		dbKeys:          dbKeys,
 		persistStorages: storages,
 		mainStorage:     ms,
+		computeUnit:     computeUnit,
 	}
 
 	// define and attach the mappers and keepers
@@ -143,7 +148,7 @@ func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.R
 
 	start := time.Now()
 	app.BaseApp.Logger.Info("Calculating rank")
-	newRank, steps := rank.CalculateRank(app.memStorage)
+	newRank, steps := rank.CalculateRank(app.memStorage, app.computeUnit)
 	app.BaseApp.Logger.Info("Rank calculated", "steps", steps, "time", time.Since(start))
 
 	rankAsBytes := make([]byte, 8*len(newRank))

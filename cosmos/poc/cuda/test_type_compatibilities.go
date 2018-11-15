@@ -84,7 +84,7 @@ func main() {
 	m.AddLink(LinkedCids{FromCid: CidNumber(4), ToCid: CidNumber(3), Creator: AccountNumber("2")})
 	m.AddLink(LinkedCids{FromCid: CidNumber(5), ToCid: CidNumber(4), Creator: AccountNumber("1")})
 
-	crank, _ := cpurank.CalculateRank(&m)
+	crank, _ := cpurank.CalculateRank(&m, cpurank.CPU)
 
 	fmt.Printf("Rank calculated on cpu...\n")
 	for c, r := range crank {
