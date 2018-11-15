@@ -6,6 +6,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cybercongress/cyberd/cosmos/poc/app"
+	"github.com/cybercongress/cyberd/cosmos/poc/app/rank"
 	"github.com/cybercongress/cyberd/cosmos/poc/cyberd/rpc"
 	"github.com/tendermint/tendermint/libs/common"
 	"github.com/tendermint/tendermint/p2p"
@@ -29,6 +30,7 @@ import (
 const (
 	flagClientHome = "home-client"
 	flagAccsCount  = "accs-count"
+	flagGPUEnabled = "compute-rank-on-gpu"
 )
 
 func main() {
@@ -126,12 +128,17 @@ func InitCmd(ctx *server.Context, cdc *codec.Codec, appInit server.AppInit) *cob
 }
 
 func newApp(logger log.Logger, db dbm.DB, storeTracer io.Writer) abci.Application {
-	cyberdApp := app.NewCyberdApp(logger, db, baseapp.SetPruning(viper.GetString("pruning")))
+	pruning := baseapp.SetPruning(viper.GetString("pruning"))
+	computeUnit := rank.CPU
+	if !viper.GetBool(flagGPUEnabled) {
+		computeUnit = rank.GPU
+	}
+	cyberdApp := app.NewCyberdApp(logger, db, computeUnit, pruning)
 	rpc.SetCyberdApp(cyberdApp)
 	return cyberdApp
 }
 
 func exportAppStateAndTMValidators(logger log.Logger, db dbm.DB, storeTracer io.Writer) (json.RawMessage, []tmtypes.GenesisValidator, error) {
-	capp := app.NewCyberdApp(logger, db)
+	capp := app.NewCyberdApp(logger, db, rank.CPU)
 	return capp.ExportAppStateAndValidators()
 }
