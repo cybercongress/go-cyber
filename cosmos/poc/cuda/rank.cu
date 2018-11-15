@@ -10,6 +10,8 @@
 const double DUMP_FACTOR = 0.85;
 const double TOLERANCE = 1e-3;
 
+const int CUDA_THREAD_BLOCK_SIZE = 256;
+
 /*****************************************************/
 /* KERNEL: RUN SINGLE RANK ITERATION                 */
 /*****************************************************/
@@ -226,6 +228,9 @@ extern "C" {
         double *rank                                              /* array index - cid index*/
     ) {
 
+        int CUDA_BLOCKS_NUMBER = (cidsSize + CUDA_THREAD_BLOCK_SIZE - 1) / CUDA_THREAD_BLOCK_SIZE;
+
+
         // STEP1: Calculate for each cid total stake by out links
         /*-------------------------------------------------------------------*/
         uint64_t *d_outLinksStartIndex;
@@ -245,7 +250,7 @@ extern "C" {
         cudaMemcpy(d_outLinksUsers,      outLinksUsers,     linksSize*sizeof(uint64_t), cudaMemcpyHostToDevice);
         cudaMemcpy(d_stakes,             stakes,           stakesSize*sizeof(uint64_t), cudaMemcpyHostToDevice);
 
-        calculateCidTotalOutStake<<<1,1>>>(
+        calculateCidTotalOutStake<<<CUDA_BLOCKS_NUMBER,CUDA_THREAD_BLOCK_SIZE>>>(
             cidsSize, d_stakes, d_outLinksStartIndex,
             d_outLinksCount, d_outLinksUsers, d_cidsTotalOutStakes
         );
@@ -274,7 +279,7 @@ extern "C" {
         cudaMemcpy(d_inLinksCount,      inLinksCount,      cidsSize*sizeof(uint32_t), cudaMemcpyHostToDevice);
         cudaMemcpy(d_inLinksOuts,       inLinksOuts,      linksSize*sizeof(uint64_t), cudaMemcpyHostToDevice);
 
-        getCompressedInLinksCount<<<1,1>>>(
+        getCompressedInLinksCount<<<CUDA_BLOCKS_NUMBER,CUDA_THREAD_BLOCK_SIZE>>>(
             cidsSize, d_inLinksStartIndex, d_inLinksCount, d_inLinksOuts, d_compressedInLinksCount
         );
         /*-------------------------------------------------------------------*/
@@ -308,7 +313,7 @@ extern "C" {
         cudaMalloc(&d_compressedInLinks,  compressedInLinksSize*sizeof(CompressedInLink));
         cudaMemcpy(d_inLinksUsers, inLinksUsers,      linksSize*sizeof(uint64_t), cudaMemcpyHostToDevice);
 
-        getCompressedInLinks<<<1,1>>>(
+        getCompressedInLinks<<<CUDA_BLOCKS_NUMBER,CUDA_THREAD_BLOCK_SIZE>>>(
             cidsSize,
             d_inLinksStartIndex, d_inLinksCount, d_cidsTotalOutStakes,
             d_inLinksOuts, d_inLinksUsers, d_stakes,
@@ -359,7 +364,7 @@ extern "C" {
         while(change > TOLERANCE) {
             swap(d_rank, d_prevRank);
             steps++;
-        	run_rank_iteration<<<1,1>>>(
+        	run_rank_iteration<<<CUDA_BLOCKS_NUMBER,CUDA_THREAD_BLOCK_SIZE>>>(
                 d_compressedInLinks,
                 d_prevRank, d_rank, cidsSize,
                 d_compressedInLinksStartIndex, d_compressedInLinksCount,
