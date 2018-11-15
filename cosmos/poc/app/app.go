@@ -15,6 +15,7 @@ import (
 	cmn "github.com/tendermint/tendermint/libs/common"
 	dbm "github.com/tendermint/tendermint/libs/db"
 	"github.com/tendermint/tendermint/libs/log"
+	"math"
 	"os"
 	"time"
 )
@@ -146,8 +147,8 @@ func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.R
 	app.BaseApp.Logger.Info("Rank calculated", "steps", steps, "time", time.Since(start))
 
 	rankAsBytes := make([]byte, 8*len(newRank))
-	for i, ui64 := range newRank {
-		binary.LittleEndian.PutUint64(rankAsBytes[i*8:i*8+8], ui64)
+	for i, f64 := range newRank {
+		binary.LittleEndian.PutUint64(rankAsBytes[i*8:i*8+8], math.Float64bits(f64))
 	}
 
 	hash := sha256.Sum256(rankAsBytes)

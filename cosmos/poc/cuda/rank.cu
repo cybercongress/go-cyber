@@ -34,11 +34,11 @@ void run_rank_iteration(
 
         double ksum = 0;
         for (uint64_t j = inLinksStartIndex[i]; j < inLinksStartIndex[i] + inLinksCount[i]; j++) {
-           // ksum = prevRank[inLinks[j].fromIndex] * inLinks[j].weight + ksum
-           ksum = __fmaf_rn(prevRank[inLinks[j].fromIndex], inLinks[j].weight, ksum);
+           ksum = prevRank[inLinks[j].fromIndex] * inLinks[j].weight + ksum;
+           //ksum = __fmaf_rn(prevRank[inLinks[j].fromIndex], inLinks[j].weight, ksum);
         }
-        // rank[i] = ksum * DUMP_FACTOR + defaultRank
-        rank[i] = __fmaf_rn(ksum, DUMP_FACTOR, defaultRankWithCorrection); // ksum * DUMP_FACTOR + defaultRank
+        rank[i] = ksum * DUMP_FACTOR + defaultRankWithCorrection;
+        //rank[i] = __fmaf_rn(ksum, DUMP_FACTOR, defaultRankWithCorrection);
     }
 }
 
@@ -226,11 +226,8 @@ extern "C" {
         double *rank                                              /* array index - cid index*/
     ) {
 
-        printf("Cuda...\n");
-
         // STEP1: Calculate for each cid total stake by out links
         /*-------------------------------------------------------------------*/
-        printf("Cuda step 1.\n");
         uint64_t *d_outLinksStartIndex;
         uint32_t *d_outLinksCount;
         uint64_t *d_outLinksUsers;
@@ -262,7 +259,6 @@ extern "C" {
 
         // STEP2: Calculate compressed in links count
         /*-------------------------------------------------------------------*/
-        printf("Cuda step 2.\n");
         uint64_t *d_inLinksStartIndex;
         uint32_t *d_inLinksCount;
         uint64_t *d_inLinksOuts;
@@ -287,7 +283,6 @@ extern "C" {
 
         // STEP3: Calculate compressed in links start indexes
         /*-------------------------------------------------------------------*/
-        printf("Cuda step 3.\n");
         uint32_t *compressedInLinksCount = (uint32_t*) malloc(cidsSize*sizeof(uint32_t));
         uint64_t *compressedInLinksStartIndex = (uint64_t*) malloc(cidsSize*sizeof(uint64_t));
         cudaMemcpy(compressedInLinksCount, d_compressedInLinksCount, cidsSize * sizeof(uint32_t), cudaMemcpyDeviceToHost);
@@ -306,7 +301,6 @@ extern "C" {
 
         // STEP4: Calculate compressed in links
         /*-------------------------------------------------------------------*/
-        printf("Cuda step 4.\n");
         uint64_t *d_inLinksUsers;
         CompressedInLink *d_compressedInLinks; //calculated
 
@@ -334,7 +328,6 @@ extern "C" {
 
         // STEP5: Calculate dangling nodes rank, and default rank
         /*-------------------------------------------------------------------*/
-        printf("Cuda step 5.\n");
         double defaultRank = (1.0 - DUMP_FACTOR) / cidsSize;
         uint64_t danglingNodesSize = 0;
         for(uint64_t i=0; i< cidsSize; i++){
@@ -344,7 +337,7 @@ extern "C" {
             }
         }
 
-        double innerProductOverSize = defaultRank * ( danglingNodesSize / cidsSize);
+        double innerProductOverSize = defaultRank * ((double) danglingNodesSize / (double)cidsSize);
         double defaultRankWithCorrection = (DUMP_FACTOR * innerProductOverSize) + defaultRank; //fma point
         /*-------------------------------------------------------------------*/
 
@@ -353,8 +346,6 @@ extern "C" {
 
         // STEP6: Calculate rank
         /*-------------------------------------------------------------------*/
-        printf("Calculating rank\n");
-
         double *d_rank, *d_prevRank;
 
         cudaMalloc(&d_rank, cidsSize*sizeof(double));

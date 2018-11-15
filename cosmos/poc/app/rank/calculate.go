@@ -6,34 +6,40 @@ import (
 )
 
 const (
-	one       uint64 = 1000000000 // represents 1.000000000
-	d         uint64 = 850000000  // represents 0.850000000
-	tolerance uint64 = 10000000   // represents 0.010000000
+	d         float64 = 0.85
+	tolerance float64 = 1e-3
 )
 
-func CalculateRank(data *InMemoryStorage) ([]uint64, int) {
+func CalculateRank(data *InMemoryStorage) ([]float64, int) {
+
+	inLinks := data.GetInLinks()
 
 	size := data.GetCidsCount()
-
 	if size == 0 {
-		return []uint64{}, 0
+		return []float64{}, 0
 	}
 
-	prevrank := make([]uint64, size)
+	rank := make([]float64, size)
+	defaultRank := (1.0 - d) / float64(size)
+	danglingNodesSize := uint64(0)
 
-	tOverSize := (one - d) / size
-	danglingNodes := calculateDanglingNodes(data)
-
-	for _, i := range danglingNodes {
-		prevrank[i] = tOverSize
+	for i := range rank {
+		rank[i] = defaultRank
+		if len(inLinks[CidNumber(i)]) == 0 {
+			danglingNodesSize++
+		}
 	}
 
-	change := 2 * one
+	innerProductOverSize := defaultRank * (float64(danglingNodesSize) / float64(size))
+	defaultRankWithCorrection := float64(d*innerProductOverSize) + defaultRank
+
+	change := tolerance + 1
 
 	steps := 0
-	var rank []uint64
+	prevrank := make([]float64, 0)
+	prevrank = append(prevrank, rank...)
 	for change > tolerance {
-		rank = step(tOverSize, prevrank, danglingNodes, data)
+		rank = step(defaultRankWithCorrection, prevrank, data)
 		change = calculateChange(prevrank, rank)
 		prevrank = rank
 		steps++
@@ -42,32 +48,9 @@ func CalculateRank(data *InMemoryStorage) ([]uint64, int) {
 	return rank, steps
 }
 
-func calculateDanglingNodes(data *InMemoryStorage) []int64 {
+func step(defaultRankWithCorrection float64, prevrank []float64, data *InMemoryStorage) []float64 {
 
-	cidsCount := data.GetCidsCount()
-	outLinks := data.GetInLinks()
-	danglingNodes := make([]int64, 0)
-
-	i := uint64(0)
-	for i < cidsCount {
-		if len(outLinks[CidNumber(i)]) == 0 {
-			danglingNodes = append(danglingNodes, int64(i))
-		}
-		i++
-	}
-
-	return danglingNodes
-}
-
-func step(tOverSize uint64, prevrank []uint64, danglingNodes []int64, data *InMemoryStorage) []uint64 {
-
-	innerProduct := uint64(0)
-	for _, danglingNode := range danglingNodes {
-		innerProduct += prevrank[danglingNode]
-	}
-
-	innerProductOverSize := innerProduct / uint64(len(prevrank))
-	rank := append(make([]uint64, 0, len(prevrank)), prevrank...)
+	rank := append(make([]float64, 0, len(prevrank)), prevrank...)
 
 	var wg sync.WaitGroup
 	wg.Add(len(data.GetInLinks()))
@@ -76,32 +59,37 @@ func step(tOverSize uint64, prevrank []uint64, danglingNodes []int64, data *InMe
 
 		go func(cid CidNumber, inLinks CidLinks) {
 			defer wg.Done()
-			ksum := uint64(0)
+			ksum := float64(0)
 
+			//todo dependent on range iterator order, that non-deterministic
 			for j := range inLinks {
 				linkStake := data.GetOverallLinkStake(CidNumber(j), CidNumber(cid))
 				jCidOutStake := data.GetOverallOutLinksStake(CidNumber(j))
-				ksum += prevrank[j] / (jCidOutStake / linkStake)
+				weight := float64(linkStake) / float64(jCidOutStake)
+				ksum = float64(prevrank[j]*weight) + ksum //force no-fma here by explicit conversion
 			}
 
-			// 17/20 = 0.85 = d
-			rank[cid] = (ksum+innerProductOverSize)/20*17 + tOverSize
+			rank[cid] = float64(ksum*d) + defaultRankWithCorrection //force no-fma here by explicit conversion
 		}(i, inLinksForI)
 	}
 	wg.Wait()
 	return rank
 }
 
-func calculateChange(prevrank, rank []uint64) uint64 {
+func calculateChange(prevrank, rank []float64) float64 {
 
-	acc := uint64(0)
+	maxDiff := 0.0
+	diff := 0.0
 	for i, pForI := range prevrank {
 		if pForI > rank[i] {
-			acc += pForI - rank[i]
+			diff = pForI - rank[i]
 		} else {
-			acc += rank[i] - pForI
+			diff = rank[i] - pForI
+		}
+		if diff > maxDiff {
+			maxDiff = diff
 		}
 	}
 
-	return acc
+	return maxDiff
 }
