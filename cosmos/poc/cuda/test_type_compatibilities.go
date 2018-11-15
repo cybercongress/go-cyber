@@ -2,8 +2,6 @@ package main
 
 import (
 	"fmt"
-	"math/rand"
-	"unsafe"
 )
 
 /*
@@ -14,48 +12,51 @@ import (
 */
 import "C"
 
-type CidLink struct {
-	oppositeCidIndex uint64
-	userIndex        uint64
-}
-
-type Cid struct {
-	inLinksStartIndex  uint64
-	inLinksCount       uint64
-	outLinksStartIndex uint64
-	outLinksCount      uint64
-}
-
 func main() {
 
-	/* --- Stakes ------------------------------------ */
-	stakes := make([]uint64, 2)
+	/* --- Init network ------------------------------- */
+	stakes := []uint64{3, 1, 2}
 
-	for i := range stakes {
-		stakes[i] = uint64(rand.Intn(30))
-	}
+	inLinksCount := []uint32{0, 0, 1, 5, 4, 0, 1, 0}
+	inLinksStartIndex := []uint64{0, 0, 0, 1, 6, 10, 10, 11}
+	outLinksCount := []uint32{2, 2, 1, 1, 3, 1, 0, 1}
+	outLinksStartIndex := []uint64{0, 2, 4, 5, 6, 9, 10, 10}
+
+	inLinksOuts := []uint64{7, 1, 4, 4, 4, 2, 5, 0, 0, 1, 3}
+	inLinksUsers := []uint64{0, 2, 0, 1, 2, 0, 1, 1, 2, 1, 1}
+	outLinksUsers := []uint64{1, 2, 1, 2, 0, 1, 0, 1, 2, 1, 0}
+
+	/* --- Convert to C ------------------------------- */
+	cStakesSize := C.ulong(len(stakes))
+	cCidsSize := C.ulong(len(inLinksStartIndex))
+	cLinksSize := C.ulong(len(inLinksOuts))
 
 	cStakes := (*C.ulong)(&stakes[0])
-	cStakesLen := C.ulong(len(stakes))
 
-	/* --- Cids ------------------------------------   */
-	cids := make([]Cid, 10)
+	cInLinksStartIndex := (*C.ulong)(&inLinksStartIndex[0])
+	cInLinksCount := (*C.uint)(&inLinksCount[0])
 
-	cCids := (**C.cid)(unsafe.Pointer(&cids[0]))
-	cCidsLen := C.ulong(len(cids))
+	cOutLinksStartIndex := (*C.ulong)(&outLinksStartIndex[0])
+	cOutLinksCount := (*C.uint)(&outLinksCount[0])
 
-	/* --- Cids Links -------------------------------  */
-	inLinks := make([]CidLink, 100)
-	outLinks := make([]CidLink, 100)
+	cInLinksOuts := (*C.ulong)(&inLinksOuts[0])
+	cInLinksUsers := (*C.ulong)(&inLinksUsers[0])
+	cOutLinksUsers := (*C.ulong)(&outLinksUsers[0])
 
-	cInLinks := (**C.cid_link)(unsafe.Pointer(&inLinks[0]))
-	cOutLinks := (**C.cid_link)(unsafe.Pointer(&outLinks[0]))
-
-	/* --- Run Computation --------------------------  */
+	/* --- Init rank ---------------------------------- */
+	rank := make([]float64, len(inLinksStartIndex))
+	cRank := (*C.double)(&rank[0])
+	/* --- Run Computation ---------------------------- */
 	fmt.Printf("Invoking cuda library...\n")
 	C.calculate_rank(
-		cStakes, cStakesLen,
-		cCids, cCidsLen,
-		cInLinks, cOutLinks,
+		cStakes, cStakesSize, cCidsSize, cLinksSize,
+		cInLinksStartIndex, cInLinksCount,
+		cOutLinksStartIndex, cOutLinksCount,
+		cInLinksOuts, cInLinksUsers, cOutLinksUsers,
+		cRank,
 	)
+
+	for c, r := range rank {
+		fmt.Printf("%v -> %v\n", c, r)
+	}
 }
