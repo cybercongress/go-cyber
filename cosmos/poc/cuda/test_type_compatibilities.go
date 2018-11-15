@@ -2,10 +2,12 @@ package main
 
 import (
 	"fmt"
+	cpurank "github.com/cybercongress/cyberd/cosmos/poc/app/rank"
+	. "github.com/cybercongress/cyberd/cosmos/poc/app/storage"
 )
 
 /*
-#cgo CFLAGS: -I.
+#cgo CFLAGS: -I.3
 #cgo LDFLAGS: -L. -lrank
 #cgo LDFLAGS: -lcudart
 #include "rank.h"
@@ -56,7 +58,36 @@ func main() {
 		cRank,
 	)
 
+	fmt.Printf("Rank calculated on gpu...\n")
 	for c, r := range rank {
+		fmt.Printf("%v -> %v\n", c, r)
+	}
+
+	m := InMemoryStorage{}
+	m.Empty()
+	for i := 0; i < 8; i++ {
+		m.AddCid(Cid(i), CidNumber(i))
+	}
+	m.UpdateStakeByNumber(AccountNumber("0"), 3)
+	m.UpdateStakeByNumber(AccountNumber("1"), 1)
+	m.UpdateStakeByNumber(AccountNumber("2"), 2)
+
+	m.AddLink(LinkedCids{FromCid: CidNumber(0), ToCid: CidNumber(4), Creator: AccountNumber("1")})
+	m.AddLink(LinkedCids{FromCid: CidNumber(0), ToCid: CidNumber(4), Creator: AccountNumber("2")})
+	m.AddLink(LinkedCids{FromCid: CidNumber(4), ToCid: CidNumber(3), Creator: AccountNumber("1")})
+	m.AddLink(LinkedCids{FromCid: CidNumber(7), ToCid: CidNumber(2), Creator: AccountNumber("0")})
+	m.AddLink(LinkedCids{FromCid: CidNumber(1), ToCid: CidNumber(3), Creator: AccountNumber("2")})
+	m.AddLink(LinkedCids{FromCid: CidNumber(2), ToCid: CidNumber(3), Creator: AccountNumber("0")})
+	m.AddLink(LinkedCids{FromCid: CidNumber(3), ToCid: CidNumber(6), Creator: AccountNumber("1")})
+	m.AddLink(LinkedCids{FromCid: CidNumber(1), ToCid: CidNumber(4), Creator: AccountNumber("1")})
+	m.AddLink(LinkedCids{FromCid: CidNumber(4), ToCid: CidNumber(3), Creator: AccountNumber("0")})
+	m.AddLink(LinkedCids{FromCid: CidNumber(4), ToCid: CidNumber(3), Creator: AccountNumber("2")})
+	m.AddLink(LinkedCids{FromCid: CidNumber(5), ToCid: CidNumber(4), Creator: AccountNumber("1")})
+
+	crank, _ := cpurank.CalculateRank(&m)
+
+	fmt.Printf("Rank calculated on cpu...\n")
+	for c, r := range crank {
 		fmt.Printf("%v -> %v\n", c, r)
 	}
 }
