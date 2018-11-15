@@ -18,23 +18,27 @@ const double TOLERANCE = 1e-3;
 __global__
 void run_rank_iteration(
     CompressedInLink *inLinks,                            /* all compressed in links */
-    double *prevRank, double *rank,                       /* array index - cid index */
+    double *prevRank, double *rank, uint64_t rankSize,    /* array index - cid index */
     uint64_t *inLinksStartIndex, uint32_t *inLinksCount,  /* array index - cid index */
-    uint64_t rankSize,
-    double innerProductOverSize, double defaultRank
+    double defaultRankWithCorrection // default rank + inner product correction
 ) {
 
 	int index = blockIdx.x * blockDim.x + threadIdx.x;
     uint64_t stride = blockDim.x * gridDim.x;
 
     for (uint64_t i = index; i < rankSize; i += stride) {
-        double ksum = innerProductOverSize;
+
+        if(inLinksCount[i] == 0) {
+            continue;
+        }
+
+        double ksum = 0;
         for (uint64_t j = inLinksStartIndex[i]; j < inLinksStartIndex[i] + inLinksCount[i]; j++) {
            // ksum = prevRank[inLinks[j].fromIndex] * inLinks[j].weight + ksum
-           ksum = __fmaf_rz(prevRank[inLinks[j].fromIndex], inLinks[j].weight, ksum);
+           ksum = __fmaf_rn(prevRank[inLinks[j].fromIndex], inLinks[j].weight, ksum);
         }
         // rank[i] = ksum * DUMP_FACTOR + defaultRank
-        rank[i] = __fmaf_rz(ksum, DUMP_FACTOR, defaultRank); // ksum * DUMP_FACTOR + defaultRank
+        rank[i] = __fmaf_rn(ksum, DUMP_FACTOR, defaultRankWithCorrection); // ksum * DUMP_FACTOR + defaultRank
     }
 }
 
@@ -129,9 +133,9 @@ void getCompressedInLinksCount(
 /*********************************************************/
 /* DEVICE: USER TO DIVIDE TWO uint64                     */
 /*********************************************************/
-__device__
-double ddiv_rz(uint64_t *a, uint64_t *b) {
-    return __ddiv_rz(__ull2double_rz(*a), __ull2double_rz(*b));
+__device__ __forceinline__
+double ddiv_rn(uint64_t *a, uint64_t *b) {
+    return __ddiv_rn(__ull2double_rn(*a), __ull2double_rn(*b));
 }
 
 
@@ -162,7 +166,7 @@ void getCompressedInLinks(
         if(inLinksCount[i] == 1) {
             uint64_t oppositeCid = inLinksOuts[inLinksStartIndex[i]];
             uint64_t compressedLinkStake = stakes[inLinksUsers[inLinksStartIndex[i]]];
-            double weight = ddiv_rz(&compressedLinkStake, &cidsTotalOutStakes[oppositeCid]);
+            double weight = ddiv_rn(&compressedLinkStake, &cidsTotalOutStakes[oppositeCid]);
             compressedInLinks[compressedLinksIndex] = CompressedInLink {oppositeCid, weight};
             continue;
         }
@@ -174,7 +178,7 @@ void getCompressedInLinks(
             compressedLinkStake += stakes[inLinksUsers[j]];
             if(j == lastLinkIndex || inLinksOuts[j] != inLinksOuts[j+1]) {
                 uint64_t oppositeCid = inLinksOuts[j];
-                double weight = ddiv_rz(&compressedLinkStake, &cidsTotalOutStakes[oppositeCid]);
+                double weight = ddiv_rn(&compressedLinkStake, &cidsTotalOutStakes[oppositeCid]);
                 compressedInLinks[compressedLinksIndex] = CompressedInLink {oppositeCid, weight};
                 compressedLinksIndex++;
                 compressedLinkStake=0;
@@ -187,9 +191,10 @@ void getCompressedInLinks(
 /* HOST: CALCULATE COMPRESSED IN LINKS START INDEXES        */
 /************************************************************/
 /* SEQUENTIAL LOGIC -> CALCULATE ON CPU                     */
+/* RETURNS TOTAL COMPRESSED LINKS SIZE                      */
 /************************************************************/
 __host__
-void getCompressedInLinksStartIndex(
+uint64_t getCompressedInLinksStartIndex(
     uint64_t cidsSize,
     uint32_t *compressedInLinksCount,                   /*array index - cid index*/
     /*returns*/ uint64_t *compressedInLinksStartIndex   /*array index - cid index*/
@@ -200,48 +205,187 @@ void getCompressedInLinksStartIndex(
         compressedInLinksStartIndex[i] = index;
         index += compressedInLinksCount[i];
     }
+    return index;
+}
+
+void swap(double* &a, double* &b){
+  double *temp = a;
+  a = b;
+  b = temp;
 }
 
 extern "C" {
 
     void calculate_rank(
-        uint64_t *stakes, uint64_t stakesSize, /* User stakes and corresponding array size */
-        cid *cids, uint64_t cidsSize, /* Cids links */
-        cid_link *inLinks, cid_link *outLinks /* Incoming and Outgoing cids links */
+        uint64_t *stakes, uint64_t stakesSize,                    /* User stakes and corresponding array size */
+        uint64_t cidsSize, uint64_t linksSize,                    /* Cids count */
+        uint64_t *inLinksStartIndex, uint32_t *inLinksCount,      /* array index - cid index*/
+        uint64_t *outLinksStartIndex, uint32_t *outLinksCount,    /* array index - cid index*/
+        uint64_t *inLinksOuts, uint64_t *inLinksUsers,            /*all incoming links from all users*/
+        uint64_t *outLinksUsers,                                  /*all outgoing links from all users*/
+        double *rank                                              /* array index - cid index*/
     ) {
 
+        printf("Cuda...\n");
+
+        // STEP1: Calculate for each cid total stake by out links
         /*-------------------------------------------------------------------*/
-        printf("Cuda !!!!!!!!!!!!!!!!!!\n");
-        printf("Initializing device memory\n");
+        printf("Cuda step 1.\n");
+        uint64_t *d_outLinksStartIndex;
+        uint32_t *d_outLinksCount;
+        uint64_t *d_outLinksUsers;
+        uint64_t *d_stakes;  // will be used to calculated links weights, should be freed before rank iterations
+        uint64_t *d_cidsTotalOutStakes; // will be used to calculated links weights, should be freed before rank iterations
 
-        uint64_t *cidsTotalOutStakes; // for each cid sum of all out links stake
-        uint32_t *compressedInLinksCount; // for each cid count of compressed links
+        cudaMalloc(&d_outLinksStartIndex, cidsSize*sizeof(uint64_t));
+        cudaMalloc(&d_outLinksCount,      cidsSize*sizeof(uint32_t));
+        cudaMalloc(&d_outLinksUsers,     linksSize*sizeof(uint64_t));
+        cudaMalloc(&d_stakes,           stakesSize*sizeof(uint64_t));
+        cudaMalloc(&d_cidsTotalOutStakes, cidsSize*sizeof(uint64_t));   //calculated
 
-        cudaMalloc(&cidsTotalOutStakes, cidsSize*sizeof(uint64_t));
-        cudaMalloc(&compressedInLinksCount, cidsSize*sizeof(uint32_t));
-        //todo
+        cudaMemcpy(d_outLinksStartIndex, outLinksStartIndex, cidsSize*sizeof(uint64_t), cudaMemcpyHostToDevice);
+        cudaMemcpy(d_outLinksCount,      outLinksCount,      cidsSize*sizeof(uint32_t), cudaMemcpyHostToDevice);
+        cudaMemcpy(d_outLinksUsers,      outLinksUsers,     linksSize*sizeof(uint64_t), cudaMemcpyHostToDevice);
+        cudaMemcpy(d_stakes,             stakes,           stakesSize*sizeof(uint64_t), cudaMemcpyHostToDevice);
 
-        cudaFree(cidsTotalOutStakes);
-        cudaFree(compressedInLinksCount);
+        calculateCidTotalOutStake<<<1,1>>>(
+            cidsSize, d_stakes, d_outLinksStartIndex,
+            d_outLinksCount, d_outLinksUsers, d_cidsTotalOutStakes
+        );
 
+        cudaFree(d_outLinksStartIndex);
+        cudaFree(d_outLinksCount);
+        cudaFree(d_outLinksUsers);
+        /*-------------------------------------------------------------------*/
+
+
+
+        // STEP2: Calculate compressed in links count
+        /*-------------------------------------------------------------------*/
+        printf("Cuda step 2.\n");
+        uint64_t *d_inLinksStartIndex;
+        uint32_t *d_inLinksCount;
+        uint64_t *d_inLinksOuts;
+        uint32_t *d_compressedInLinksCount;
+
+        // free all before rank iterations
+        cudaMalloc(&d_inLinksStartIndex,      cidsSize*sizeof(uint64_t));
+        cudaMalloc(&d_inLinksCount,           cidsSize*sizeof(uint32_t));
+        cudaMalloc(&d_inLinksOuts,           linksSize*sizeof(uint64_t));
+        cudaMalloc(&d_compressedInLinksCount, cidsSize*sizeof(uint32_t));   //calculated
+
+        cudaMemcpy(d_inLinksStartIndex, inLinksStartIndex, cidsSize*sizeof(uint64_t), cudaMemcpyHostToDevice);
+        cudaMemcpy(d_inLinksCount,      inLinksCount,      cidsSize*sizeof(uint32_t), cudaMemcpyHostToDevice);
+        cudaMemcpy(d_inLinksOuts,       inLinksOuts,      linksSize*sizeof(uint64_t), cudaMemcpyHostToDevice);
+
+        getCompressedInLinksCount<<<1,1>>>(
+            cidsSize, d_inLinksStartIndex, d_inLinksCount, d_inLinksOuts, d_compressedInLinksCount
+        );
+        /*-------------------------------------------------------------------*/
+
+
+
+        // STEP3: Calculate compressed in links start indexes
+        /*-------------------------------------------------------------------*/
+        printf("Cuda step 3.\n");
+        uint32_t *compressedInLinksCount = (uint32_t*) malloc(cidsSize*sizeof(uint32_t));
+        uint64_t *compressedInLinksStartIndex = (uint64_t*) malloc(cidsSize*sizeof(uint64_t));
+        cudaMemcpy(compressedInLinksCount, d_compressedInLinksCount, cidsSize * sizeof(uint32_t), cudaMemcpyDeviceToHost);
+
+        // calculated on cpu
+        uint64_t compressedInLinksSize = getCompressedInLinksStartIndex(
+            cidsSize, compressedInLinksCount, compressedInLinksStartIndex
+        );
+
+        uint64_t *d_compressedInLinksStartIndex;
+        cudaMalloc(&d_compressedInLinksStartIndex, cidsSize*sizeof(uint64_t));
+        cudaMemcpy(d_compressedInLinksStartIndex, compressedInLinksStartIndex, cidsSize*sizeof(uint64_t), cudaMemcpyHostToDevice);
+        free(compressedInLinksStartIndex);
+        /*-------------------------------------------------------------------*/
+
+
+        // STEP4: Calculate compressed in links
+        /*-------------------------------------------------------------------*/
+        printf("Cuda step 4.\n");
+        uint64_t *d_inLinksUsers;
+        CompressedInLink *d_compressedInLinks; //calculated
+
+        cudaMalloc(&d_inLinksUsers,                   linksSize*sizeof(uint64_t));
+        cudaMalloc(&d_compressedInLinks,  compressedInLinksSize*sizeof(CompressedInLink));
+        cudaMemcpy(d_inLinksUsers, inLinksUsers,      linksSize*sizeof(uint64_t), cudaMemcpyHostToDevice);
+
+        getCompressedInLinks<<<1,1>>>(
+            cidsSize,
+            d_inLinksStartIndex, d_inLinksCount, d_cidsTotalOutStakes,
+            d_inLinksOuts, d_inLinksUsers, d_stakes,
+            d_compressedInLinksStartIndex, d_compressedInLinksCount,
+            d_compressedInLinks
+        );
+
+        cudaFree(d_inLinksUsers);
+        cudaFree(d_inLinksStartIndex);
+        cudaFree(d_inLinksCount);
+        cudaFree(d_inLinksOuts);
+        cudaFree(d_stakes);
+        cudaFree(d_cidsTotalOutStakes);
+        /*-------------------------------------------------------------------*/
+
+
+
+        // STEP5: Calculate dangling nodes rank, and default rank
+        /*-------------------------------------------------------------------*/
+        printf("Cuda step 5.\n");
+        double defaultRank = (1.0 - DUMP_FACTOR) / cidsSize;
+        uint64_t danglingNodesSize = 0;
+        for(uint64_t i=0; i< cidsSize; i++){
+            rank[i] = defaultRank;
+            if(inLinksCount[i] == 0) {
+                danglingNodesSize++;
+            }
+        }
+
+        double innerProductOverSize = defaultRank * ( danglingNodesSize / cidsSize);
+        double defaultRankWithCorrection = (DUMP_FACTOR * innerProductOverSize) + defaultRank; //fma point
+        /*-------------------------------------------------------------------*/
+
+
+
+
+        // STEP6: Calculate rank
         /*-------------------------------------------------------------------*/
         printf("Calculating rank\n");
 
-        double *prevRank, *rank;
-        cudaMalloc(&rank, cidsSize*sizeof(double));
-        cudaMalloc(&prevRank, cidsSize*sizeof(double));
+        double *d_rank, *d_prevRank;
+
+        cudaMalloc(&d_rank, cidsSize*sizeof(double));
+        cudaMalloc(&d_prevRank, cidsSize*sizeof(double));
+
+        cudaMemcpy(d_rank,     rank, cidsSize*sizeof(double), cudaMemcpyHostToDevice);
+        cudaMemcpy(d_prevRank, rank, cidsSize*sizeof(double), cudaMemcpyHostToDevice);
 
         int steps = 0;
-        double change = TOLERANCE + 1;
+        double change = TOLERANCE + 1.0;
         while(change > TOLERANCE) {
-        	//run_rank_iteration()
-        	//change = find_max_ranks_diff(prevrank, rank, cidsSize);
-        	//prevrank = rank
-        	steps++;
-        	return;
+            swap(d_rank, d_prevRank);
+            steps++;
+        	run_rank_iteration<<<1,1>>>(
+                d_compressedInLinks,
+                d_prevRank, d_rank, cidsSize,
+                d_compressedInLinksStartIndex, d_compressedInLinksCount,
+                defaultRankWithCorrection
+        	);
+        	change = find_max_ranks_diff(d_prevRank, d_rank, cidsSize);
+        	cudaDeviceSynchronize();
         }
 
-        cudaFree(rank);
-        cudaFree(prevRank);
+        cudaMemcpy(rank, d_rank, cidsSize * sizeof(double), cudaMemcpyDeviceToHost);
+        /*-------------------------------------------------------------------*/
+
+
+        cudaFree(d_rank);
+        cudaFree(d_prevRank);
+        cudaFree(d_compressedInLinksStartIndex);
+        cudaFree(d_compressedInLinksCount);
+        cudaFree(d_compressedInLinks);
     }
 };

@@ -7,7 +7,11 @@ void test_getCompressedInLinksStartIndex() {
 
     uint32_t compressedInLinksCount [6] = { 0, 2, 0, 40, 13, 0 };
     uint64_t compressedInLinksStartIndex [6] = { };
-    getCompressedInLinksStartIndex(6, compressedInLinksCount, compressedInLinksStartIndex);
+    uint64_t size = getCompressedInLinksStartIndex(6, compressedInLinksCount, compressedInLinksStartIndex);
+
+    if (size != 55) {
+        printf("getCompressedInLinksStartIndex() wrong composed in links size!\n");
+    }
 
     uint64_t expected [6] = {0,0,2,2,42,55};
     if (std::equal(std::begin(expected), std::end(expected), std::begin(compressedInLinksStartIndex)))
@@ -195,7 +199,7 @@ void test_getCompressedInLinks() {
         {7,1.0},{1,0.666667},{4,1},{2,1},{5,1},{0,1},{1,0.333333},{3,1}
     };
 
-    printf("calculateCidTotalOutStake() output :(\n");
+    printf("calculateCidTotalOutStake() output\n");
     for (int i = sizeof(actual) / sizeof(actual[0])-1; i >= 0; i--) {
        std::cout << actual[i].fromIndex <<'_'<< actual[i].weight << "   ";
        std::cout << expected[i].fromIndex <<'_'<< expected[i].weight << '\n';
