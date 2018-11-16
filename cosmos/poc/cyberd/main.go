@@ -130,7 +130,7 @@ func InitCmd(ctx *server.Context, cdc *codec.Codec, appInit server.AppInit) *cob
 func newApp(logger log.Logger, db dbm.DB, storeTracer io.Writer) abci.Application {
 	pruning := baseapp.SetPruning(viper.GetString("pruning"))
 	computeUnit := rank.CPU
-	if !viper.GetBool(flagGPUEnabled) {
+	if viper.GetBool(flagGPUEnabled) {
 		computeUnit = rank.GPU
 	}
 	cyberdApp := app.NewCyberdApp(logger, db, computeUnit, pruning)
