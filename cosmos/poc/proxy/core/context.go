@@ -18,6 +18,7 @@ type ProxyContext struct {
 }
 
 func NewProxyContext(endpoint string) ProxyContext {
+	app.SetPrefix()
 	return ProxyContext{
 		Codec:   app.MakeCodec(),
 		Node:    client.NewHTTP(endpoint, "/websocket"),
@@ -72,4 +73,3 @@ func (ctx ProxyContext) BroadcastTxSync(txBytes []byte) ([]byte, error) {
 
 	return respBytes, nil
 }
-

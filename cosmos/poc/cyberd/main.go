@@ -28,12 +28,13 @@ import (
 
 const (
 	flagClientHome = "home-client"
-	flagAccsCount = "accs-count"
+	flagAccsCount  = "accs-count"
 )
 
 func main() {
 
 	cdc := app.MakeCodec()
+	app.SetPrefix()
 	ctx := server.NewDefaultContext()
 
 	rootCmd := &cobra.Command{

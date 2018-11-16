@@ -31,6 +31,7 @@ func main() {
 
 	// get the codec
 	cdc := app.MakeCodec()
+	app.SetPrefix()
 
 	// TODO: Setup keybase, viper object, etc. to be passed into
 	// the below functions and eliminate global vars, like we do
@@ -57,7 +58,7 @@ func main() {
 	cyberdcli.AddCommand(
 		client.LineBreak,
 		lcd.ServeCommand(cdc), // Commands to start local rpc proxy to node
-		keys.Commands(), // Commands to generate and handle keys
+		keys.Commands(),       // Commands to generate and handle keys
 		client.LineBreak,
 		version.VersionCmd,
 	)

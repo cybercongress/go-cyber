@@ -31,6 +31,7 @@ func NewClaimContext() (ClaimContext, error) {
 	chainId := viper.GetString(common.FlagChainId)
 
 	cdc := app.MakeCodec()
+	app.SetPrefix()
 
 	cliCtx := newCLIContext(name, chainId, viper.GetString(common.FlagNode)).
 		WithCodec(cdc).
