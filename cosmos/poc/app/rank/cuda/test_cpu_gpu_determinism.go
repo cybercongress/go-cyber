@@ -7,10 +7,9 @@ import (
 )
 
 /*
-#cgo CFLAGS: -I.3
-#cgo LDFLAGS: -L. -lrank
-#cgo LDFLAGS: -lcudart
-#include "rank.h"
+#cgo CFLAGS: -I/usr/lib/
+#cgo LDFLAGS: -lcbdrank -lcudart
+#include "cbdrank.h"
 */
 import "C"
 
@@ -58,7 +57,7 @@ func main() {
 		cRank,
 	)
 
-	fmt.Printf("Rank calculated on gpu...\n")
+	fmt.Printf("Rank calculated on raw gpu...\n")
 	for c, r := range rank {
 		fmt.Printf("%v -> %v\n", c, r)
 	}
@@ -84,10 +83,17 @@ func main() {
 	m.AddLink(LinkedCids{FromCid: CidNumber(4), ToCid: CidNumber(3), Creator: AccountNumber("2")})
 	m.AddLink(LinkedCids{FromCid: CidNumber(5), ToCid: CidNumber(4), Creator: AccountNumber("1")})
 
-	crank, _ := cpurank.CalculateRank(&m, cpurank.CPU)
+	rank, _ = cpurank.CalculateRank(&m, cpurank.CPU)
 
 	fmt.Printf("Rank calculated on cpu...\n")
-	for c, r := range crank {
+	for c, r := range rank {
+		fmt.Printf("%v -> %v\n", c, r)
+	}
+
+	rank, _ = cpurank.CalculateRank(&m, cpurank.GPU)
+
+	fmt.Printf("Rank calculated on gpu via cyberd ...\n")
+	for c, r := range rank {
 		fmt.Printf("%v -> %v\n", c, r)
 	}
 }
