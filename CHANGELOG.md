@@ -15,6 +15,7 @@
 
 **Merged pull requests:**
 
+- Remove 'cosmosaccaddr' prefix from cyberd address [\#82](https://github.com/cybercongress/cyberd/pull/82) ([arturalbov](https://github.com/arturalbov))
 - UPD docs\_upd job [\#81](https://github.com/cybercongress/cyberd/pull/81) ([SaveTheAles](https://github.com/SaveTheAles))
 - Update cosmos-sdk version to 0.26.1 [\#80](https://github.com/cybercongress/cyberd/pull/80) ([arturalbov](https://github.com/arturalbov))
 
