@@ -7,6 +7,7 @@
 **Implemented enhancements:**
 
 - Update to cosmos-sdk version 0.26.1 [\#79](https://github.com/cybercongress/cyberd/issues/79)
+- Remove 'cosmosaccaddr' prefix from cyberd address [\#39](https://github.com/cybercongress/cyberd/issues/39)
 
 **Closed issues:**
 
@@ -15,6 +16,7 @@
 
 **Merged pull requests:**
 
+- 74 gpu rank calculation [\#83](https://github.com/cybercongress/cyberd/pull/83) ([hleb-albau](https://github.com/hleb-albau))
 - Remove 'cosmosaccaddr' prefix from cyberd address [\#82](https://github.com/cybercongress/cyberd/pull/82) ([arturalbov](https://github.com/arturalbov))
 - UPD docs\_upd job [\#81](https://github.com/cybercongress/cyberd/pull/81) ([SaveTheAles](https://github.com/SaveTheAles))
 - Update cosmos-sdk version to 0.26.1 [\#80](https://github.com/cybercongress/cyberd/pull/80) ([arturalbov](https://github.com/arturalbov))
