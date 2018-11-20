@@ -4,8 +4,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
-	"github.com/cybercongress/cyberd/cosmos/poc/app/coin"
-	"github.com/cybercongress/cyberd/cosmos/poc/app/storage"
 	abci "github.com/tendermint/tendermint/abci/types"
 )
 
@@ -28,7 +26,7 @@ type GenesisAccount struct {
 // should contain all the genesis accounts. These accounts will be added to the
 // application's account mapper.
 
-func NewGenesisApplier(imms *storage.InMemoryStorage, cdc *codec.Codec, accStorage auth.AccountKeeper) sdk.InitChainer {
+func NewGenesisApplier(cdc *codec.Codec, accStorage auth.AccountKeeper) sdk.InitChainer {
 
 	return func(ctx sdk.Context, req abci.RequestInitChain) abci.ResponseInitChain {
 
@@ -48,7 +46,6 @@ func NewGenesisApplier(imms *storage.InMemoryStorage, cdc *codec.Codec, accStora
 
 			acc.AccountNumber = accStorage.GetNextAccountNumber(ctx)
 			accStorage.SetAccount(ctx, acc)
-			imms.UpdateStake(acc.Address, acc.Coins.AmountOf(coin.CBD).Int64())
 		}
 
 		return abci.ResponseInitChain{}

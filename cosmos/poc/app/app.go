@@ -8,9 +8,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/bank"
-	. "github.com/cybercongress/cyberd/cosmos/poc/app/bank"
 	"github.com/cybercongress/cyberd/cosmos/poc/app/rank"
 	. "github.com/cybercongress/cyberd/cosmos/poc/app/storage"
+	cbd "github.com/cybercongress/cyberd/cosmos/poc/app/types"
 	abci "github.com/tendermint/tendermint/abci/types"
 	cmn "github.com/tendermint/tendermint/libs/common"
 	dbm "github.com/tendermint/tendermint/libs/db"
@@ -32,12 +32,13 @@ var (
 )
 
 type CyberdAppDbKeys struct {
-	main     *sdk.KVStoreKey
-	acc      *sdk.KVStoreKey
-	accIndex *sdk.KVStoreKey
-	cidIndex *sdk.KVStoreKey
-	links    *sdk.KVStoreKey
-	rank     *sdk.KVStoreKey
+	main            *sdk.KVStoreKey
+	acc             *sdk.KVStoreKey
+	accIndex        *sdk.KVStoreKey
+	cidIndex        *sdk.KVStoreKey
+	cidReverseIndex *sdk.KVStoreKey
+	links           *sdk.KVStoreKey
+	rank            *sdk.KVStoreKey
 }
 
 // CyberdApp implements an extended ABCI application. It contains a BaseApp,
@@ -60,6 +61,7 @@ type CyberdApp struct {
 	// cyberd storages
 	persistStorages CyberdPersistentStorages
 	memStorage      *InMemoryStorage
+	rank            *cbd.Rank
 
 	latestRankHash []byte
 
@@ -79,16 +81,17 @@ func NewCyberdApp(
 	cdc := MakeCodec()
 
 	dbKeys := CyberdAppDbKeys{
-		main:     sdk.NewKVStoreKey("main"),
-		acc:      sdk.NewKVStoreKey("acc"),
-		cidIndex: sdk.NewKVStoreKey("cid_index"),
-		links:    sdk.NewKVStoreKey("links"),
-		rank:     sdk.NewKVStoreKey("rank"),
+		main:            sdk.NewKVStoreKey("main"),
+		acc:             sdk.NewKVStoreKey("acc"),
+		cidIndex:        sdk.NewKVStoreKey("cid_index"),
+		cidReverseIndex: sdk.NewKVStoreKey("cid_reverse_index"),
+		links:           sdk.NewKVStoreKey("links"),
+		rank:            sdk.NewKVStoreKey("rank"),
 	}
 
 	ms := NewMainStorage(dbKeys.main)
 	storages := CyberdPersistentStorages{
-		CidIndex: NewCidIndexStorage(ms, dbKeys.cidIndex),
+		CidIndex: NewCidIndexStorage(ms, dbKeys.cidIndex, dbKeys.cidReverseIndex),
 		Links:    NewLinksStorage(dbKeys.links, cdc),
 		Rank:     NewRankStorage(ms, dbKeys.rank),
 	}
@@ -104,23 +107,23 @@ func NewCyberdApp(
 	}
 
 	// define and attach the mappers and keepers
-	app.accStorage = auth.NewAccountKeeper(app.cdc, dbKeys.acc, NewAccount)
+	app.accStorage = auth.NewAccountKeeper(app.cdc, dbKeys.acc, cbd.NewAccount)
 	app.coinKeeper = bank.NewBaseKeeper(app.accStorage)
 	app.memStorage = &InMemoryStorage{}
 
 	// register message routes
 	app.Router().
-		AddRoute("bank", NewBankHandler(app.coinKeeper, app.memStorage)).
-		AddRoute("link", NewLinksHandler(storages.CidIndex, storages.Links, app.memStorage))
+		AddRoute("bank", bank.NewHandler(app.coinKeeper)).
+		AddRoute("link", NewLinksHandler(storages.CidIndex, storages.Links, app.accStorage))
 
 	// perform initialization logic
-	app.SetInitChainer(NewGenesisApplier(app.memStorage, app.cdc, app.accStorage))
+	app.SetInitChainer(NewGenesisApplier(app.cdc, app.accStorage))
 	app.SetBeginBlocker(app.BeginBlocker)
 	app.SetEndBlocker(app.EndBlocker)
 	app.SetAnteHandler(auth.NewAnteHandler(app.accStorage, app.feeCollectionKeeper))
 
 	// mount the multistore and load the latest state
-	app.MountStoresIAVL(dbKeys.main, dbKeys.acc, dbKeys.cidIndex, dbKeys.links, dbKeys.rank)
+	app.MountStoresIAVL(dbKeys.main, dbKeys.acc, dbKeys.cidIndex, dbKeys.cidReverseIndex, dbKeys.links, dbKeys.rank)
 	err := app.LoadLatestVersion(dbKeys.main)
 	if err != nil {
 		cmn.Exit(err.Error())
@@ -158,7 +161,6 @@ func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.R
 
 	hash := sha256.Sum256(rankAsBytes)
 	app.latestRankHash = hash[:]
-	app.memStorage.UpdateRank(newRank)
 	app.mainStorage.StoreAppHash(ctx, hash[:])
 	return abci.ResponseEndBlock{}
 }

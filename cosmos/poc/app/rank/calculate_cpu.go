@@ -2,6 +2,7 @@ package rank
 
 import (
 	. "github.com/cybercongress/cyberd/cosmos/poc/app/storage"
+	cbd "github.com/cybercongress/cyberd/cosmos/poc/app/types"
 	"sync"
 )
 
@@ -25,7 +26,7 @@ func calculateRankCPU(data *InMemoryStorage) ([]float64, int) {
 
 	for i := range rank {
 		rank[i] = defaultRank
-		if len(inLinks[CidNumber(i)]) == 0 {
+		if len(inLinks[cbd.CidNumber(i)]) == 0 {
 			danglingNodesSize++
 		}
 	}
@@ -57,14 +58,14 @@ func step(defaultRankWithCorrection float64, prevrank []float64, data *InMemoryS
 
 	for i, inLinksForI := range data.GetInLinks() {
 
-		go func(cid CidNumber, inLinks CidLinks) {
+		go func(cid cbd.CidNumber, inLinks cbd.CidLinks) {
 			defer wg.Done()
 			ksum := float64(0)
 
 			//todo dependent on range iterator order, that non-deterministic
 			for j := range inLinks {
-				linkStake := data.GetOverallLinkStake(CidNumber(j), CidNumber(cid))
-				jCidOutStake := data.GetOverallOutLinksStake(CidNumber(j))
+				linkStake := data.GetOverallLinkStake(cbd.CidNumber(j), cbd.CidNumber(cid))
+				jCidOutStake := data.GetOverallOutLinksStake(cbd.CidNumber(j))
 				weight := float64(linkStake) / float64(jCidOutStake)
 				ksum = float64(prevrank[j]*weight) + ksum //force no-fma here by explicit conversion
 			}

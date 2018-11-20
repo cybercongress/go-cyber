@@ -2,27 +2,25 @@ package app
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cybercongress/cyberd/cosmos/poc/app/storage"
+	cbd "github.com/cybercongress/cyberd/cosmos/poc/app/types"
 )
 
 type MsgLink struct {
 	Address sdk.AccAddress `json:"address"`
-	CidFrom storage.Cid    `json:"cid1"`
-	CidTo   storage.Cid    `json:"cid2"`
+	From    cbd.Cid        `json:"cid1"`
+	To      cbd.Cid        `json:"cid2"`
 }
 
 var _ sdk.Msg = MsgLink{}
 
-func NewMsgLink(address sdk.AccAddress, fromCid storage.Cid, toCid storage.Cid) MsgLink {
-	return MsgLink{Address: address, CidFrom: fromCid, CidTo: toCid}
+func NewMsgLink(address sdk.AccAddress, fromCid cbd.Cid, toCid cbd.Cid) MsgLink {
+	return MsgLink{Address: address, From: fromCid, To: toCid}
 }
 
-func (msg MsgLink) Name() string {
-	return "link"
-}
+func (msg MsgLink) Name() string { return "link" }
 
 func (MsgLink) Route() string { return "link" }
-func (MsgLink) Type() string { return "link" }
+func (MsgLink) Type() string  { return "link" }
 
 func (msg MsgLink) ValidateBasic() sdk.Error {
 
@@ -30,8 +28,9 @@ func (msg MsgLink) ValidateBasic() sdk.Error {
 		return sdk.ErrInvalidAddress(msg.Address.String())
 	}
 
-	if len(msg.CidFrom) == 0 || len(msg.CidTo) == 0 {
-		return ErrInvalidCid(DefaultCodespace).TraceSDK("")
+	if len(msg.From) == 0 || len(msg.To) == 0 {
+		//todo add cid validation exception
+		return cbd.ErrInvalidCid()
 	}
 
 	return nil

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	cpurank "github.com/cybercongress/cyberd/cosmos/poc/app/rank"
 	. "github.com/cybercongress/cyberd/cosmos/poc/app/storage"
+	. "github.com/cybercongress/cyberd/cosmos/poc/app/types"
 )
 
 /*
@@ -67,21 +68,21 @@ func main() {
 	for i := 0; i < 8; i++ {
 		m.AddCid(Cid(i), CidNumber(i))
 	}
-	m.UpdateStakeByNumber(AccountNumber("0"), 3)
-	m.UpdateStakeByNumber(AccountNumber("1"), 1)
-	m.UpdateStakeByNumber(AccountNumber("2"), 2)
+	m.UpdateStakeByNumber(AccountNumber(0), 3)
+	m.UpdateStakeByNumber(AccountNumber(1), 1)
+	m.UpdateStakeByNumber(AccountNumber(2), 2)
 
-	m.AddLink(LinkedCids{FromCid: CidNumber(0), ToCid: CidNumber(4), Creator: AccountNumber("1")})
-	m.AddLink(LinkedCids{FromCid: CidNumber(0), ToCid: CidNumber(4), Creator: AccountNumber("2")})
-	m.AddLink(LinkedCids{FromCid: CidNumber(4), ToCid: CidNumber(3), Creator: AccountNumber("1")})
-	m.AddLink(LinkedCids{FromCid: CidNumber(7), ToCid: CidNumber(2), Creator: AccountNumber("0")})
-	m.AddLink(LinkedCids{FromCid: CidNumber(1), ToCid: CidNumber(3), Creator: AccountNumber("2")})
-	m.AddLink(LinkedCids{FromCid: CidNumber(2), ToCid: CidNumber(3), Creator: AccountNumber("0")})
-	m.AddLink(LinkedCids{FromCid: CidNumber(3), ToCid: CidNumber(6), Creator: AccountNumber("1")})
-	m.AddLink(LinkedCids{FromCid: CidNumber(1), ToCid: CidNumber(4), Creator: AccountNumber("1")})
-	m.AddLink(LinkedCids{FromCid: CidNumber(4), ToCid: CidNumber(3), Creator: AccountNumber("0")})
-	m.AddLink(LinkedCids{FromCid: CidNumber(4), ToCid: CidNumber(3), Creator: AccountNumber("2")})
-	m.AddLink(LinkedCids{FromCid: CidNumber(5), ToCid: CidNumber(4), Creator: AccountNumber("1")})
+	m.AddLink(NewLink(CidNumber(0), CidNumber(4), AccountNumber(1)))
+	m.AddLink(NewLink(CidNumber(0), CidNumber(4), AccountNumber(2)))
+	m.AddLink(NewLink(CidNumber(4), CidNumber(3), AccountNumber(1)))
+	m.AddLink(NewLink(CidNumber(7), CidNumber(2), AccountNumber(0)))
+	m.AddLink(NewLink(CidNumber(1), CidNumber(3), AccountNumber(2)))
+	m.AddLink(NewLink(CidNumber(2), CidNumber(3), AccountNumber(0)))
+	m.AddLink(NewLink(CidNumber(3), CidNumber(6), AccountNumber(1)))
+	m.AddLink(NewLink(CidNumber(1), CidNumber(4), AccountNumber(1)))
+	m.AddLink(NewLink(CidNumber(4), CidNumber(3), AccountNumber(0)))
+	m.AddLink(NewLink(CidNumber(4), CidNumber(3), AccountNumber(2)))
+	m.AddLink(NewLink(CidNumber(5), CidNumber(4), AccountNumber(1)))
 
 	rank, _ = cpurank.CalculateRank(&m, cpurank.CPU)
 
