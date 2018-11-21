@@ -55,22 +55,28 @@ func step(defaultRankWithCorrection float64, prevrank []float64, data *InMemoryS
 	var wg sync.WaitGroup
 	wg.Add(len(data.GetInLinks()))
 
-	for i, inLinksForI := range data.GetInLinks() {
+	for cid := range data.GetInLinks() {
 
-		go func(cid CidNumber, inLinks CidLinks) {
+		go func(i CidNumber) {
 			defer wg.Done()
-			ksum := float64(0)
+			_, sortedCids, ok := data.GetSortedInLinks(i)
 
-			//todo dependent on range iterator order, that non-deterministic
-			for j := range inLinks {
-				linkStake := data.GetOverallLinkStake(CidNumber(j), CidNumber(cid))
-				jCidOutStake := data.GetOverallOutLinksStake(CidNumber(j))
-				weight := float64(linkStake) / float64(jCidOutStake)
-				ksum = float64(prevrank[j]*weight) + ksum //force no-fma here by explicit conversion
+			if !ok {
+				rank[i] = defaultRankWithCorrection
+			} else {
+				ksum := float64(0)
+				for _, j := range sortedCids {
+					//todo add pre-calculation of overall stake for cid and links
+					linkStake := data.GetOverallLinkStake(j, i)
+					jCidOutStake := data.GetOverallOutLinksStake(j)
+					weight := float64(linkStake) / float64(jCidOutStake)
+					ksum = float64(prevrank[j]*weight) + ksum //force no-fma here by explicit conversion
+				}
+
+				rank[i] = float64(ksum*d) + defaultRankWithCorrection //force no-fma here by explicit conversion
 			}
 
-			rank[cid] = float64(ksum*d) + defaultRankWithCorrection //force no-fma here by explicit conversion
-		}(i, inLinksForI)
+		}(CidNumber(cid))
 	}
 	wg.Wait()
 	return rank

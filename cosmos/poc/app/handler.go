@@ -2,6 +2,7 @@ package app
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/x/auth"
 	. "github.com/cybercongress/cyberd/cosmos/poc/app/storage"
 )
 
@@ -10,7 +11,7 @@ import (
 // ils  - incoming links storage
 // ols  - outgoing links storage
 // imms - in-memory storage
-func NewLinksHandler(cis CidIndexStorage, ls LinksStorage, imms *InMemoryStorage) sdk.Handler {
+func NewLinksHandler(cis CidIndexStorage, ls LinksStorage, imms *InMemoryStorage, keeper auth.AccountKeeper) sdk.Handler {
 
 	getCidNumber := GetCidNumberFunc(cis, imms)
 
@@ -25,7 +26,7 @@ func NewLinksHandler(cis CidIndexStorage, ls LinksStorage, imms *InMemoryStorage
 		linkedCids := LinkedCids{
 			FromCid: getCidNumber(ctx, link.CidFrom),
 			ToCid:   getCidNumber(ctx, link.CidTo),
-			Creator: AccountNumber(link.Address.String()),
+			Creator: AccountNumber(keeper.GetAccount(ctx, link.Address).GetAccountNumber()),
 		}
 
 		ls.AddLink(ctx, linkedCids)

@@ -13,7 +13,7 @@ func GetAllAccountsStakes(ctx sdk.Context, am auth.AccountKeeper) map[AccountNum
 
 	collect := func(acc auth.Account) bool {
 		balance := acc.GetCoins().AmountOf(coin.CBD).Int64()
-		stakes[AccountNumber(acc.GetAddress().String())] = uint64(balance)
+		stakes[AccountNumber(acc.GetAccountNumber())] = uint64(balance)
 		return false
 	}
 

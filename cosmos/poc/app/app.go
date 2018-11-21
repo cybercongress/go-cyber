@@ -110,8 +110,8 @@ func NewCyberdApp(
 
 	// register message routes
 	app.Router().
-		AddRoute("bank", NewBankHandler(app.coinKeeper, app.memStorage)).
-		AddRoute("link", NewLinksHandler(storages.CidIndex, storages.Links, app.memStorage))
+		AddRoute("bank", NewBankHandler(app.coinKeeper, app.memStorage, app.accStorage)).
+		AddRoute("link", NewLinksHandler(storages.CidIndex, storages.Links, app.memStorage, app.accStorage))
 
 	// perform initialization logic
 	app.SetInitChainer(NewGenesisApplier(app.memStorage, app.cdc, app.accStorage))

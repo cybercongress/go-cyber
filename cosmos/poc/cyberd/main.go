@@ -52,6 +52,12 @@ func main() {
 	rootCmd.AddCommand(InitCmd(ctx, cdc, cyberdAppInit))
 	server.AddCommands(ctx, cdc, rootCmd, cyberdAppInit, newApp, exportAppStateAndTMValidators)
 
+	for _, c := range rootCmd.Commands() {
+		if c.Use == "start" {
+			c.Flags().Bool(flagGPUEnabled, false, "Run cyberd with cuda calculations")
+		}
+	}
+
 	// prepare and add flags
 	rootDir := os.ExpandEnv("$HOME/.cyberd")
 	executor := cli.PrepareBaseCmd(rootCmd, "CBD", rootDir)

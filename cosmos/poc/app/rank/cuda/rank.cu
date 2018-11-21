@@ -196,16 +196,16 @@ void getCompressedInLinks(
 /* RETURNS TOTAL COMPRESSED LINKS SIZE                      */
 /************************************************************/
 __host__
-uint64_t getCompressedInLinksStartIndex(
+uint64_t getLinksStartIndex(
     uint64_t cidsSize,
-    uint32_t *compressedInLinksCount,                   /*array index - cid index*/
-    /*returns*/ uint64_t *compressedInLinksStartIndex   /*array index - cid index*/
+    uint32_t *linksCount,                   /*array index - cid index*/
+    /*returns*/ uint64_t *linksStartIndex   /*array index - cid index*/
 ) {
 
     uint64_t index = 0;
     for (uint64_t i = 0; i < cidsSize; i++) {
-        compressedInLinksStartIndex[i] = index;
-        index += compressedInLinksCount[i];
+        linksStartIndex[i] = index;
+        index += linksCount[i];
     }
     return index;
 }
@@ -221,14 +221,22 @@ extern "C" {
     void calculate_rank(
         uint64_t *stakes, uint64_t stakesSize,                    /* User stakes and corresponding array size */
         uint64_t cidsSize, uint64_t linksSize,                    /* Cids count */
-        uint64_t *inLinksStartIndex, uint32_t *inLinksCount,      /* array index - cid index*/
-        uint64_t *outLinksStartIndex, uint32_t *outLinksCount,    /* array index - cid index*/
+        uint32_t *inLinksCount, uint32_t *outLinksCount,          /* array index - cid index*/
         uint64_t *inLinksOuts, uint64_t *inLinksUsers,            /*all incoming links from all users*/
         uint64_t *outLinksUsers,                                  /*all outgoing links from all users*/
         double *rank                                              /* array index - cid index*/
     ) {
 
         int CUDA_BLOCKS_NUMBER = (cidsSize + CUDA_THREAD_BLOCK_SIZE - 1) / CUDA_THREAD_BLOCK_SIZE;
+
+
+        // STEP0: Calculate compressed in links start indexes
+        /*-------------------------------------------------------------------*/
+        // calculated on cpu
+        uint64_t *inLinksStartIndex = (uint64_t*) malloc(cidsSize*sizeof(uint64_t));
+        uint64_t *outLinksStartIndex = (uint64_t*) malloc(cidsSize*sizeof(uint64_t));
+        getLinksStartIndex(cidsSize, inLinksCount, inLinksStartIndex);
+        getLinksStartIndex(cidsSize, outLinksCount, outLinksStartIndex);
 
 
         // STEP1: Calculate for each cid total stake by out links
@@ -293,7 +301,7 @@ extern "C" {
         cudaMemcpy(compressedInLinksCount, d_compressedInLinksCount, cidsSize * sizeof(uint32_t), cudaMemcpyDeviceToHost);
 
         // calculated on cpu
-        uint64_t compressedInLinksSize = getCompressedInLinksStartIndex(
+        uint64_t compressedInLinksSize = getLinksStartIndex(
             cidsSize, compressedInLinksCount, compressedInLinksStartIndex
         );
 

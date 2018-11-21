@@ -48,7 +48,7 @@ func NewGenesisApplier(imms *storage.InMemoryStorage, cdc *codec.Codec, accStora
 
 			acc.AccountNumber = accStorage.GetNextAccountNumber(ctx)
 			accStorage.SetAccount(ctx, acc)
-			imms.UpdateStake(acc.Address, acc.Coins.AmountOf(coin.CBD).Int64())
+			imms.UpdateStake(storage.AccountNumber(acc.AccountNumber), acc.Coins.AmountOf(coin.CBD).Int64())
 		}
 
 		return abci.ResponseInitChain{}

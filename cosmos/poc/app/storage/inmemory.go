@@ -81,8 +81,8 @@ func (s *InMemoryStorage) GetCidIndex(cid Cid) (CidNumber, bool) {
 	return 0, false
 }
 
-func (s *InMemoryStorage) UpdateStake(acc sdk.AccAddress, stake int64) {
-	s.userStake[AccountNumber(acc.String())] += uint64(stake)
+func (s *InMemoryStorage) UpdateStake(acc AccountNumber, stake int64) {
+	s.userStake[acc] += uint64(stake)
 }
 
 func (s *InMemoryStorage) UpdateStakeByNumber(acc AccountNumber, stake int64) {
@@ -188,6 +188,24 @@ func (s *InMemoryStorage) GetRank() []float64 {
 
 func (s *InMemoryStorage) GetInLinks() map[CidNumber]CidLinks {
 	return s.inLinks
+}
+
+// sorted by cid
+func (s *InMemoryStorage) GetSortedInLinks(cid CidNumber) (CidLinks, []CidNumber, bool) {
+	links := s.inLinks[cid]
+
+	if len(links) == 0 {
+		return nil, nil, false
+	}
+
+	var numbers []CidNumber
+	for num := range links {
+		numbers = append(numbers, num)
+	}
+
+	sort.Slice(numbers, func(i, j int) bool { return numbers[i] < numbers[j] })
+
+	return links, numbers, true
 }
 
 func (s *InMemoryStorage) GetOutLinks() map[CidNumber]CidLinks {

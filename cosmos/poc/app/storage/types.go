@@ -4,8 +4,7 @@ package storage
 // second map is used as set for fast contains check
 type CidLinks map[CidNumber]map[AccountNumber]struct{}
 
-//todo should be uint
-type AccountNumber string
+type AccountNumber uint64
 
 type Cid string
 

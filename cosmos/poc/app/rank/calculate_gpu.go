@@ -3,7 +3,7 @@
 package rank
 
 import (
-	storage "github.com/cybercongress/cyberd/cosmos/poc/app/storage"
+	. "github.com/cybercongress/cyberd/cosmos/poc/app/storage"
 )
 
 /*
@@ -13,47 +13,75 @@ import (
 */
 import "C"
 
-func calculateRankGPU(data *storage.InMemoryStorage) ([]float64, int) {
+func calculateRankGPU(data *InMemoryStorage) ([]float64, int) {
 
-	//todo implement
+	outLinks := data.GetOutLinks()
 
-	/*	stakes := []uint64{3, 1, 2}
+	cidsCount := data.GetCidsCount()
+	linksCount := uint64(0)
+	stakesCount := len(data.GetStakes())
 
-		inLinksCount := []uint32{0, 0, 1, 5, 4, 0, 1, 0}
-		inLinksStartIndex := []uint64{0, 0, 0, 1, 6, 10, 10, 11}
-		outLinksCount := []uint32{2, 2, 1, 1, 3, 1, 0, 1}
-		outLinksStartIndex := []uint64{0, 2, 4, 5, 6, 9, 10, 10}
+	rank := make([]float64, cidsCount)
+	inLinksCount := make([]uint32, cidsCount)
+	outLinksCount := make([]uint32, cidsCount)
 
-		inLinksOuts := []uint64{7, 1, 4, 4, 4, 2, 5, 0, 0, 1, 3}
-		inLinksUsers := []uint64{0, 2, 0, 1, 2, 0, 1, 1, 2, 1, 1}
-		outLinksUsers := []uint64{1, 2, 1, 2, 0, 1, 0, 1, 2, 1, 0}
+	inLinksOuts := make([]uint64, 0)
+	inLinksUsers := make([]uint64, 0)
+	outLinksUsers := make([]uint64, 0)
 
-		cStakesSize := C.ulong(len(stakes))
-		cCidsSize := C.ulong(len(inLinksStartIndex))
-		cLinksSize := C.ulong(len(inLinksOuts))
+	// todo reduce size of stake by passing only participating in linking stakes.
+	stakes := make([]uint64, stakesCount)
+	for acc, stake := range data.GetStakes() {
+		stakes[uint64(acc)] = stake
+	}
 
-		cStakes := (*C.ulong)(&stakes[0])
+	/* Fill values */
+	// todo parallel this
+	for i := uint64(0); i < cidsCount; i++ {
 
-		cInLinksStartIndex := (*C.ulong)(&inLinksStartIndex[0])
-		cInLinksCount := (*C.uint)(&inLinksCount[0])
+		if inLinks, sortedCids, ok := data.GetSortedInLinks(CidNumber(i)); ok {
+			for _, cid := range sortedCids {
+				inLinksCount[i] += uint32(len(inLinks[cid]))
+				for acc := range inLinks[cid] {
+					inLinksOuts = append(inLinksOuts, uint64(cid))
+					inLinksUsers = append(inLinksUsers, uint64(acc))
+				}
+			}
+			linksCount += uint64(inLinksCount[i])
+		}
 
-		cOutLinksStartIndex := (*C.ulong)(&outLinksStartIndex[0])
-		cOutLinksCount := (*C.uint)(&outLinksCount[0])
+		if outLinks, ok := outLinks[CidNumber(i)]; ok {
+			for _, accs := range outLinks {
+				outLinksCount[i] += uint32(len(accs))
+				for acc := range accs {
+					outLinksUsers = append(outLinksUsers, uint64(acc))
+				}
+			}
+		}
+	}
 
-		cInLinksOuts := (*C.ulong)(&inLinksOuts[0])
-		cInLinksUsers := (*C.ulong)(&inLinksUsers[0])
-		cOutLinksUsers := (*C.ulong)(&outLinksUsers[0])
+	/* Convert to C types */
 
-		rank := make([]float64, len(inLinksStartIndex))
-		cRank := (*C.double)(&rank[0])
-		fmt.Printf("Invoking cuda library...\n")
-		C.calculate_rank(
-			cStakes, cStakesSize, cCidsSize, cLinksSize,
-			cInLinksStartIndex, cInLinksCount,
-			cOutLinksStartIndex, cOutLinksCount,
-			cInLinksOuts, cInLinksUsers, cOutLinksUsers,
-			cRank,
-		)*/
-	rank := make([]float64, data.GetCidsCount())
+	cStakes := (*C.ulong)(&stakes[0])
+
+	cStakesSize := C.ulong(len(stakes))
+	cCidsSize := C.ulong(len(inLinksCount))
+	cLinksSize := C.ulong(len(inLinksOuts))
+
+	cInLinksCount := (*C.uint)(&inLinksCount[0])
+	cOutLinksCount := (*C.uint)(&outLinksCount[0])
+
+	cInLinksOuts := (*C.ulong)(&inLinksOuts[0])
+	cInLinksUsers := (*C.ulong)(&inLinksUsers[0])
+	cOutLinksUsers := (*C.ulong)(&outLinksUsers[0])
+
+	cRank := (*C.double)(&rank[0])
+	C.calculate_rank(
+		cStakes, cStakesSize, cCidsSize, cLinksSize,
+		cInLinksCount, cOutLinksCount,
+		cInLinksOuts, cInLinksUsers, cOutLinksUsers,
+		cRank,
+	)
+
 	return rank, 0
 }
