@@ -6,7 +6,7 @@
 
 In order to start cyberd node locally using docker run following command (replace ${YOUR_DATA_LOCAL_FOLDER} and ${YOUR_CONFIG_LOCAL_FOLDER} with your local folders where you want to store cyberd data and configuration):
 ```bash
-docker run -d --restart always --name=cyberd -p 26656:26656 -p 26657:26657 -v ${YOUR_DATA_LOCAL_FOLDER}:/root/.cyberd/data -v ${YOUR_CONFIG_LOCAL_FOLDER}:/root/.cyberd/config cybernode/cyberd:master
+docker run -d --restart always --name=cyberd -p 26656:26656 -p 26657:26657 -p 26660:26660 -v ${YOUR_DATA_LOCAL_FOLDER}:/root/.cyberd/data -v ${YOUR_CONFIG_LOCAL_FOLDER}:/root/.cyberd/config cybernode/cyberd:master
 ```
 It will run NON-VALIDATOR local node and connect it to our seed node called "earth".
 
@@ -49,20 +49,12 @@ echo "export GOBIN=$GOPATH/bin" >> ~/.bash_profile
 echo "export PATH=$PATH:$GOBIN" >> ~/.bash_profile
 ```
 
-Once you have GO installed, run the command:
+Once you have GO installed clone our repository:
 ```$bash
-go get github.com/cybercongress/cyberd
+git clone https://github.com/cybercongress/cyberd.git
 ```
 
-There will be an error stating `can't load package: package github.com/cosmos/cosmos-sdk: no Go files`,
-however you can ignore this error, it doesn't affect us.
-
-Now change directories to:
-```$bash
-cd $GOPATH/src/github.com/cybercongress/cyberd/cosmos/poc
-```
-
-And run:
+In project directory go into `/cosmos/poc/` and run:
 ```$bash
 export GO111MODULE=on
 go install ./cyberd
@@ -102,7 +94,7 @@ Now that you have the key for alice, you can start broadcasting transactions.
 
 The following command will link cid1 with cid2.
 ```
-cyberdcli link --from=${your_key_name} --cid1=42 --cid2=cyberd --sequence=0 --chain-id=test-chain-fbqPMq
+cyberdcli link --from=${your_key_name} --cid-from=42 --cid-to=cyberd --sequence=0 --chain-id=test-chain-fbqPMq
 ```
 You could find chain id in `$HOME/.cyberd/config/genesis.json`. For our zeronet chain id is `test-chain-fbqPMq`.
 Every new transaction should have incremented `--sequence` parameter.

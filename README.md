@@ -12,7 +12,7 @@ Project status: **zeronet**. We are at [research](https://github.com/cybercongre
 ## Getting Start Useful Links
 
 * [Work in progress paper](https://github.com/cybercongress/cyberd/blob/master/docs/cyberd.md)
-* [Zeronet for Cyb testing](https://github.com/cybercongress/cyberd/tree/master/cosmos/zeronet)
+* [Zeronet for Cyb testing](https://github.com/cybercongress/cyberd/tree/master/cosmos/poc)
 
 ## Quick Run Demo
 

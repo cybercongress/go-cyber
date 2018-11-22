@@ -1,17 +1,14 @@
 package commands
 
 import (
-	"github.com/cybercongress/cyberd/cosmos/poc/app/storage"
-	. "github.com/cybercongress/cyberd/cosmos/poc/cyberdcli/util"
-	"os"
-
 	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/client/utils"
+	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/wire"
 	authcmd "github.com/cosmos/cosmos-sdk/x/auth/client/cli"
-	authctx "github.com/cosmos/cosmos-sdk/x/auth/client/context"
-
+	authtxb "github.com/cosmos/cosmos-sdk/x/auth/client/txbuilder"
+	"github.com/cybercongress/cyberd/cosmos/poc/app/storage"
+	. "github.com/cybercongress/cyberd/cosmos/poc/cyberdcli/util"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -22,16 +19,15 @@ const (
 )
 
 // LinkTxCmd will create a link tx and sign it with the given key.
-func LinkTxCmd(cdc *wire.Codec) *cobra.Command {
+func LinkTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "link",
 		Short: "Create and sign a link tx",
 		RunE: func(cmd *cobra.Command, args []string) error {
 
-			txCtx := authctx.NewTxContextFromCLI().WithCodec(cdc)
+			txCtx := authtxb.NewTxBuilderFromCLI().WithCodec(cdc)
 			cliCtx := context.NewCLIContext().
 				WithCodec(cdc).
-				WithLogger(os.Stdout).
 				WithAccountDecoder(authcmd.GetAccountDecoder(cdc))
 
 			if err := cliCtx.EnsureAccountExists(); err != nil {
@@ -55,7 +51,7 @@ func LinkTxCmd(cdc *wire.Codec) *cobra.Command {
 			// build and sign the transaction, then broadcast to Tendermint
 			msg := BuildMsg(from, cidFrom, cidTo)
 
-			return utils.SendTx(txCtx, cliCtx, []sdk.Msg{msg})
+			return utils.CompleteAndBroadcastTxCli(txCtx, cliCtx, []sdk.Msg{msg})
 		},
 	}
 

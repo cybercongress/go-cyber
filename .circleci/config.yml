@@ -34,6 +34,8 @@ jobs:
           export GO111MODULE=on
           go build -o daemon ./cyberd
           go build -o cli ./cyberdcli
+          go build -o cyberdproxy ./proxy
+          go build -o cyberdclaim ./claim
 
   build_and_deploy_images_to_dockerhub:
     working_directory: ~/cyberd
@@ -48,9 +50,18 @@ jobs:
           command: |
             cd cosmos/poc
             docker build -t build/cyberd ./
-            docker login -u $DOCKER_USER -p $DOCKER_PASS
-            docker tag build/cyberd cybernode/cyberd:$CIRCLE_BRANCH
-            docker push cybernode/cyberd:$CIRCLE_BRANCH
+            if [[  -n  "$CIRCLE_TAG" ]]; then
+              docker login -u $DOCKER_USER -p $DOCKER_PASS
+              docker tag build/cyberd cybernode/cyberd:latest
+              docker push cybernode/cyberd:latest
+              docker tag build/cyberd cybernode/cyberd:$CIRCLE_TAG
+              docker push cybernode/cyberd:$CIRCLE_TAG
+            else
+              docker tag build/cyberd cybernode/cyberd:$CIRCLE_BRANCH
+              docker push cybernode/cyberd:$CIRCLE_BRANCH
+            fi
+
+
 
   update_changelog:
     <<: *defaults
@@ -79,13 +90,13 @@ jobs:
     steps:
     - checkout
     - run:
-        name: Clone congress repo
+        name: Clone library repo
         working_directory: ~/workdir
         command: |
-          git clone -q --depth 1 https://${DOCS_GITHUB_TOKEN}@github.com/cybercongress/congress.git
+          git clone -q --depth 1 https://${DOCS_GITHUB_TOKEN}@github.com/cybercongress/library.git
     - deploy:
-        name: Update docs from cyber search repo
-        working_directory: ~/workdir/congress
+        name: Update docs from cyberd repo
+        working_directory: ~/workdir/library
         command: |
           # We need to remove current files in folder to avoid duplicating renamed files
           rm -rf ./wiki/docs/cyberd/*
@@ -101,7 +112,7 @@ jobs:
             git add wiki/docs/cyberd/
             git commit -m "Circle CI: Update Docs"
             # Push quietly to prevent showing the token in log
-            git push -q https://${DOCS_GITHUB_TOKEN}@github.com/cybercongress/congress.git master
+            git push -q https://${DOCS_GITHUB_TOKEN}@github.com/cybercongress/library.git master
           fi
 
 
@@ -138,7 +149,11 @@ workflows:
           requires:
             - build_daemon_and_cli
       - build_and_deploy_images_to_dockerhub:
-          <<: *master_filter
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              only: master
           requires:
             - build_daemon_and_cli
       - release_cyberd_and_cyberdcli_binaries:

@@ -15,14 +15,14 @@ moniker = "anonymous"
 # and verifying their commits
 fast_sync = true
 
-# Database backend: leveldb | memdb
+# Database backend: leveldb | memdb | cleveldb
 db_backend = "leveldb"
 
 # Database directory
-db_path = "data"
+db_dir = "data"
 
 # Output level for logging, including package level options
-log_level = "main:info,state:info,*:error"
+log_level = "main:info,state:info,*:error,rpc-server:error,mempool:error,p2p:error"
 
 ##### additional base config options #####
 
@@ -31,6 +31,10 @@ genesis_file = "config/genesis.json"
 
 # Path to the JSON file containing the private key to use as a validator in the consensus protocol
 priv_validator_file = "config/priv_validator.json"
+
+# TCP or UNIX socket address for Tendermint to listen on for
+# connections from an external PrivValidator process
+priv_validator_laddr = ""
 
 # Path to the JSON file containing the private key to use for node authentication in the p2p protocol
 node_key_file = "config/node_key.json"
@@ -62,6 +66,8 @@ grpc_laddr = ""
 # If you want to accept more significant number than the default, make sure
 # you increase your OS limits.
 # 0 - unlimited.
+# Should be < {ulimit -Sn} - {MaxNumInboundPeers} - {MaxNumOutboundPeers} - {N of wal, db and other open files}
+# 1024 - 40 - 10 - 50 = 924 = ~900
 grpc_max_open_connections = 900
 
 # Activate unsafe RPC commands like /dial_seeds and /unsafe_flush_mempool
@@ -72,6 +78,8 @@ unsafe = false
 # If you want to accept more significant number than the default, make sure
 # you increase your OS limits.
 # 0 - unlimited.
+# Should be < {ulimit -Sn} - {MaxNumInboundPeers} - {MaxNumOutboundPeers} - {N of wal, db and other open files}
+# 1024 - 40 - 10 - 50 = 924 = ~900
 max_open_connections = 900
 
 ##### peer to peer configuration options #####
@@ -90,7 +98,7 @@ external_address = ""
 seeds = "970c07b9ff3035bd2189bbe2e9d78b9afe83e5bc@93.125.26.210:34656"
 
 # Comma separated list of nodes to keep persistent connections to
-persistent_peers = "970c07b9ff3035bd2189bbe2e9d78b9afe83e5bc@93.125.26.210:34656"
+persistent_peers = ""
 
 # UPNP port forwarding
 upnp = false
@@ -99,13 +107,17 @@ upnp = false
 addr_book_file = "config/addrbook.json"
 
 # Set true for strict address routability rules
+# Set false for private or local networks
 addr_book_strict = true
 
 # Time to wait before flushing messages out on the connection, in ms
 flush_throttle_timeout = 100
 
-# Maximum number of peers to connect to
-max_num_peers = 50
+# Maximum number of inbound peers
+max_num_inbound_peers = 40
+
+# Maximum number of outbound peers to connect to, excluding persistent peers
+max_num_outbound_peers = 10
 
 # Maximum size of a message packet payload, in bytes
 max_packet_msg_payload_size = 1024
@@ -137,10 +149,10 @@ broadcast = true
 wal_dir = "data/mempool.wal"
 
 # size of the mempool
-size = 100000
+size = 10000
 
 # size of the cache (used to filter transactions we saw earlier)
-cache_size = 100000
+cache_size = 50000
 
 ##### consensus configuration options #####
 [consensus]
@@ -154,7 +166,7 @@ timeout_prevote = 1000
 timeout_prevote_delta = 500
 timeout_precommit = 1000
 timeout_precommit_delta = 500
-timeout_commit = 60000
+timeout_commit = 30000
 
 # Make progress as soon as we have all the precommits (as if TimeoutCommit = 0)
 skip_timeout_commit = false
@@ -177,16 +189,21 @@ peer_query_maj23_sleep_duration = 2000
 #   2) "kv" - the simplest possible indexer, backed by key-value storage (defaults to levelDB; see DBBackend).
 indexer = "kv"
 
-# Comma-separated list of tags to index (by default the only tag is tx hash)
+# Comma-separated list of tags to index (by default the only tag is "tx.hash")
+#
+# You can also index transactions by height by adding "tx.height" tag here.
 #
 # It's recommended to index only a subset of tags due to possible memory
 # bloat. This is, of course, depends on the indexer's DB and the volume of
 # transactions.
 index_tags = ""
 
-# When set to true, tells indexer to index all tags. Note this may be not
-# desirable (see the comment above). IndexTags has a precedence over
-# IndexAllTags (i.e. when given both, IndexTags will be indexed).
+# When set to true, tells indexer to index all tags (predefined tags:
+# "tx.hash", "tx.height" and all tags from DeliverTx responses).
+#
+# Note this may be not desirable (see the comment above). IndexTags has a
+# precedence over IndexAllTags (i.e. when given both, IndexTags will be
+# indexed).
 index_all_tags = true
 
 ##### instrumentation configuration options #####

@@ -17,6 +17,11 @@ func NewMsgLink(address sdk.AccAddress, fromCid storage.Cid, toCid storage.Cid) 
 	return MsgLink{Address: address, CidFrom: fromCid, CidTo: toCid}
 }
 
+func (msg MsgLink) Name() string {
+	return "link"
+}
+
+func (MsgLink) Route() string { return "link" }
 func (MsgLink) Type() string { return "link" }
 
 func (msg MsgLink) ValidateBasic() sdk.Error {

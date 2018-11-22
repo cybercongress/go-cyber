@@ -2,15 +2,11 @@ package main
 
 import (
 	"encoding/json"
-	"github.com/cybercongress/cyberd/cosmos/poc/app"
-	"github.com/cybercongress/cyberd/cosmos/poc/cyberd/rpc"
-	"github.com/spf13/pflag"
-	"io"
-	"os"
-
 	"github.com/cosmos/cosmos-sdk/baseapp"
-
 	"github.com/cosmos/cosmos-sdk/server"
+	"github.com/cybercongress/cyberd/cosmos/poc/app"
+	"github.com/cybercongress/cyberd/cosmos/poc/app/rank"
+	"github.com/cybercongress/cyberd/cosmos/poc/cyberd/rpc"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	abci "github.com/tendermint/tendermint/abci/types"
@@ -18,15 +14,21 @@ import (
 	dbm "github.com/tendermint/tendermint/libs/db"
 	"github.com/tendermint/tendermint/libs/log"
 	tmtypes "github.com/tendermint/tendermint/types"
+	"io"
+	_ "net/http/pprof"
+	"os"
 )
 
-var (
-	FlagAccsCount = "accs-count"
+const (
+	flagClientHome = "home-client"
+	flagAccsCount  = "accs-count"
+	flagGpuEnabled = "compute-rank-on-gpu"
 )
 
 func main() {
 
 	cdc := app.MakeCodec()
+	app.SetPrefix()
 	ctx := server.NewDefaultContext()
 
 	rootCmd := &cobra.Command{
@@ -35,18 +37,18 @@ func main() {
 		PersistentPreRunE: server.PersistentPreRunEFn(ctx),
 	}
 
-	cyberdFlagSet := pflag.NewFlagSet("cyberd-init", pflag.ExitOnError)
-	cyberdFlagSet.Int(FlagAccsCount, 1, "Count of initial accounts")
-
 	cyberdAppInit := server.AppInit{
-		FlagsAppGenState: cyberdFlagSet,
-		AppGenState:      CyberdAppGenState,
-		AppGenTx:         CyberdAppGenTx,
+		AppGenState: CyberdAppGenState,
 	}
 
-	server.AddCommands(ctx, cdc, rootCmd, cyberdAppInit,
-		server.ConstructAppCreator(newApp, "cyberd"),
-		server.ConstructAppExporter(exportAppStateAndTMValidators, "cyberd"))
+	rootCmd.AddCommand(InitCmd(ctx, cdc, cyberdAppInit))
+	server.AddCommands(ctx, cdc, rootCmd, cyberdAppInit, newApp, exportAppStateAndTMValidators)
+
+	for _, c := range rootCmd.Commands() {
+		if c.Use == "start" {
+			c.Flags().Bool(flagGpuEnabled, true, "Run cyberd with cuda calculations")
+		}
+	}
 
 	// prepare and add flags
 	rootDir := os.ExpandEnv("$HOME/.cyberd")
@@ -60,12 +62,17 @@ func main() {
 }
 
 func newApp(logger log.Logger, db dbm.DB, storeTracer io.Writer) abci.Application {
-	cyberdApp := app.NewCyberdApp(logger, db, baseapp.SetPruning(viper.GetString("pruning")))
+	pruning := baseapp.SetPruning(viper.GetString("pruning"))
+	computeUnit := rank.CPU
+	if viper.GetBool(flagGpuEnabled) {
+		computeUnit = rank.GPU
+	}
+	cyberdApp := app.NewCyberdApp(logger, db, computeUnit, pruning)
 	rpc.SetCyberdApp(cyberdApp)
 	return cyberdApp
 }
 
 func exportAppStateAndTMValidators(logger log.Logger, db dbm.DB, storeTracer io.Writer) (json.RawMessage, []tmtypes.GenesisValidator, error) {
-	capp := app.NewCyberdApp(logger, db)
+	capp := app.NewCyberdApp(logger, db, rank.CPU)
 	return capp.ExportAppStateAndValidators()
 }

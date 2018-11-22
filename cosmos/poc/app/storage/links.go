@@ -1,16 +1,16 @@
 package storage
 
 import (
+	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/wire"
 )
 
 type LinksStorage struct {
-	cdc *wire.Codec
+	cdc *codec.Codec
 	key *sdk.KVStoreKey
 }
 
-func NewLinksStorage(key *sdk.KVStoreKey, cdc *wire.Codec) LinksStorage {
+func NewLinksStorage(key *sdk.KVStoreKey, cdc *codec.Codec) LinksStorage {
 	return LinksStorage{
 		key: key,
 		cdc: cdc,

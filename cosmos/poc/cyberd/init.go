@@ -2,14 +2,23 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
+	"github.com/cosmos/cosmos-sdk/client"
+	gaiaInit "github.com/cosmos/cosmos-sdk/cmd/gaia/init"
+	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/server"
-	serverconfig "github.com/cosmos/cosmos-sdk/server/config"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/wire"
+	"github.com/cybercongress/cyberd/cosmos/poc/app"
 	"github.com/pkg/errors"
+	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/tendermint/tendermint/crypto"
+	"github.com/tendermint/tendermint/libs/cli"
+	"github.com/tendermint/tendermint/libs/common"
+	"github.com/tendermint/tendermint/p2p"
 	tmtypes "github.com/tendermint/tendermint/types"
+
+	"os"
 )
 
 type CyberdAppState struct {
@@ -30,10 +39,10 @@ type CyberdGenTx struct {
 	Addresses []sdk.AccAddress `json:"addresses"`
 }
 
-func CyberdAppGenTx(cdc *wire.Codec, pk crypto.PubKey, genTxConfig serverconfig.GenTx) (
+func CyberdAppGenTx(cdc *codec.Codec, pk crypto.PubKey) (
 	appGenTx, cliPrint json.RawMessage, validator tmtypes.GenesisValidator, err error) {
 
-	accsCount := viper.GetInt(FlagAccsCount)
+	accsCount := viper.GetInt(flagAccsCount)
 
 	addresses := make([]sdk.AccAddress, 0, accsCount)
 	secrets := make(map[string]string)
@@ -70,7 +79,7 @@ func CyberdAppGenTx(cdc *wire.Codec, pk crypto.PubKey, genTxConfig serverconfig.
 }
 
 // create the genesis app state
-func CyberdAppGenState(cdc *wire.Codec, appGenTxs []json.RawMessage) (appState json.RawMessage, err error) {
+func CyberdAppGenState(cdc *codec.Codec, genDoc tmtypes.GenesisDoc, appGenTxs []json.RawMessage) (appState json.RawMessage, err error) {
 
 	if len(appGenTxs) != 1 {
 		err = errors.New("must provide a single genesis transaction")
@@ -90,4 +99,68 @@ func CyberdAppGenState(cdc *wire.Codec, appGenTxs []json.RawMessage) (appState j
 
 	appState, err = json.Marshal(CyberdAppState{accounts})
 	return
+}
+
+func InitCmd(ctx *server.Context, cdc *codec.Codec, appInit server.AppInit) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "init",
+		Short: "Initialize genesis config, priv-validator file, and p2p-node file",
+		Args:  cobra.NoArgs,
+		RunE: func(_ *cobra.Command, _ []string) error {
+
+			config := ctx.Config
+			config.SetRoot(viper.GetString(cli.HomeFlag))
+			chainID := viper.GetString(client.FlagChainID)
+			if chainID == "" {
+				chainID = fmt.Sprintf("test-chain-%v", common.RandStr(6))
+			}
+
+			nodeKey, err := p2p.LoadOrGenNodeKey(config.NodeKeyFile())
+			if err != nil {
+				return err
+			}
+			nodeID := string(nodeKey.ID())
+
+			pk := gaiaInit.ReadOrCreatePrivValidator(config.PrivValidatorFile())
+			genTx, appMessage, validator, err := CyberdAppGenTx(cdc, pk)
+			if err != nil {
+				return err
+			}
+
+			appState, err := appInit.AppGenState(
+				cdc, tmtypes.GenesisDoc{}, []json.RawMessage{genTx})
+			if err != nil {
+				return err
+			}
+			appStateJSON, err := cdc.MarshalJSON(appState)
+			if err != nil {
+				return err
+			}
+
+			toPrint := struct {
+				ChainID    string          `json:"chain_id"`
+				NodeID     string          `json:"node_id"`
+				AppMessage json.RawMessage `json:"app_message"`
+			}{
+				chainID,
+				nodeID,
+				appMessage,
+			}
+			out, err := codec.MarshalJSONIndent(cdc, toPrint)
+			if err != nil {
+				return err
+			}
+			fmt.Fprintf(os.Stderr, "%s\n", string(out))
+			return gaiaInit.ExportGenesisFile(config.GenesisFile(), chainID,
+				[]tmtypes.GenesisValidator{validator}, appStateJSON)
+		},
+	}
+
+	cmd.Flags().String(cli.HomeFlag, app.DefaultNodeHome, "node's home directory")
+	cmd.Flags().String(flagClientHome, app.DefaultCLIHome, "client's home directory")
+	cmd.Flags().String(client.FlagChainID, "",
+		"genesis file chain-id, if left blank will be randomly created")
+	cmd.Flags().String(client.FlagName, "", "validator's moniker")
+	cmd.Flags().Int(flagAccsCount, 1, "Count of initial accounts")
+	return cmd
 }

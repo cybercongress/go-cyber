@@ -4,8 +4,8 @@ import (
 	"crypto/sha256"
 	"encoding/binary"
 	"github.com/cosmos/cosmos-sdk/baseapp"
+	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/wire"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/bank"
 	. "github.com/cybercongress/cyberd/cosmos/poc/app/bank"
@@ -16,11 +16,19 @@ import (
 	dbm "github.com/tendermint/tendermint/libs/db"
 	"github.com/tendermint/tendermint/libs/log"
 	"math"
+	"os"
+	"time"
 )
 
 const (
 	APP     = "cyberd"
 	appName = "CyberdApp"
+)
+
+// default home directories for expected binaries
+var (
+	DefaultCLIHome  = os.ExpandEnv("$HOME/.cyberdcli")
+	DefaultNodeHome = os.ExpandEnv("$HOME/.cyberd")
 )
 
 type CyberdAppDbKeys struct {
@@ -38,14 +46,14 @@ type CyberdAppDbKeys struct {
 // integral app types.
 type CyberdApp struct {
 	*baseapp.BaseApp
-	cdc *wire.Codec
+	cdc *codec.Codec
 
 	// keys to access the multistore
 	dbKeys CyberdAppDbKeys
 
 	// manage getting and setting accounts
 	mainStorage         MainStorage
-	accStorage          auth.AccountMapper
+	accStorage          auth.AccountKeeper
 	feeCollectionKeeper auth.FeeCollectionKeeper
 	coinKeeper          bank.Keeper
 
@@ -54,6 +62,8 @@ type CyberdApp struct {
 	memStorage      *InMemoryStorage
 
 	latestRankHash []byte
+
+	computeUnit rank.ComputeUnit
 }
 
 // NewBasecoinApp returns a reference to a new CyberdApp given a
@@ -62,7 +72,9 @@ type CyberdApp struct {
 // In addition, all necessary mappers and keepers are created, routes
 // registered, and finally the stores being mounted along with any necessary
 // chain initialization.
-func NewCyberdApp(logger log.Logger, db dbm.DB, baseAppOptions ...func(*baseapp.BaseApp)) *CyberdApp {
+func NewCyberdApp(
+	logger log.Logger, db dbm.DB, computeUnit rank.ComputeUnit, baseAppOptions ...func(*baseapp.BaseApp),
+) *CyberdApp {
 	// create and register app-level codec for TXs and accounts
 	cdc := MakeCodec()
 
@@ -88,17 +100,18 @@ func NewCyberdApp(logger log.Logger, db dbm.DB, baseAppOptions ...func(*baseapp.
 		dbKeys:          dbKeys,
 		persistStorages: storages,
 		mainStorage:     ms,
+		computeUnit:     computeUnit,
 	}
 
 	// define and attach the mappers and keepers
-	app.accStorage = auth.NewAccountMapper(app.cdc, dbKeys.acc, NewAccount)
-	app.coinKeeper = bank.NewKeeper(app.accStorage)
+	app.accStorage = auth.NewAccountKeeper(app.cdc, dbKeys.acc, NewAccount)
+	app.coinKeeper = bank.NewBaseKeeper(app.accStorage)
 	app.memStorage = &InMemoryStorage{}
 
 	// register message routes
 	app.Router().
-		AddRoute("bank", NewBankHandler(app.coinKeeper, app.memStorage)).
-		AddRoute("link", NewLinksHandler(storages.CidIndex, storages.Links, app.memStorage))
+		AddRoute("bank", NewBankHandler(app.coinKeeper, app.memStorage, app.accStorage)).
+		AddRoute("link", NewLinksHandler(storages.CidIndex, storages.Links, app.memStorage, app.accStorage))
 
 	// perform initialization logic
 	app.SetInitChainer(NewGenesisApplier(app.memStorage, app.cdc, app.accStorage))
@@ -113,9 +126,11 @@ func NewCyberdApp(logger log.Logger, db dbm.DB, baseAppOptions ...func(*baseapp.
 		cmn.Exit(err.Error())
 	}
 	ctx := app.BaseApp.NewContext(true, abci.Header{})
+	start := time.Now()
+	app.BaseApp.Logger.Info("Loading mem state")
 	app.memStorage.Load(ctx, storages, app.accStorage)
+	app.BaseApp.Logger.Info("App loaded", "time", time.Since(start))
 	app.latestRankHash = ms.GetAppHash(ctx)
-
 	app.Seal()
 	return app
 }
@@ -131,7 +146,11 @@ func (app *CyberdApp) BeginBlocker(_ sdk.Context, _ abci.RequestBeginBlock) abci
 // App state is consensus driven state.
 func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.ResponseEndBlock {
 
-	newRank := rank.CalculateRank(app.memStorage)
+	start := time.Now()
+	app.BaseApp.Logger.Info("Calculating rank")
+	newRank, steps := rank.CalculateRank(app.memStorage, app.computeUnit, app.BaseApp.Logger)
+	app.BaseApp.Logger.Info("Rank calculated", "steps", steps, "time", time.Since(start))
+
 	rankAsBytes := make([]byte, 8*len(newRank))
 	for i, f64 := range newRank {
 		binary.LittleEndian.PutUint64(rankAsBytes[i*8:i*8+8], math.Float64bits(f64))
@@ -140,7 +159,6 @@ func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.R
 	hash := sha256.Sum256(rankAsBytes)
 	app.latestRankHash = hash[:]
 	app.memStorage.UpdateRank(newRank)
-	app.persistStorages.Rank.StoreFullRank(ctx, newRank)
 	app.mainStorage.StoreAppHash(ctx, hash[:])
 	return abci.ResponseEndBlock{}
 }
@@ -154,32 +172,17 @@ func (app *CyberdApp) Commit() (res abci.ResponseCommit) {
 // Implements ABCI
 func (app *CyberdApp) Info(req abci.RequestInfo) abci.ResponseInfo {
 
-	if app.LastBlockHeight() == 0 {
-		return abci.ResponseInfo{
-			Data:             app.BaseApp.Name(),
-			LastBlockHeight:  app.LastBlockHeight(),
-			LastBlockAppHash: make([]byte, 0),
-		}
-	}
-
 	return abci.ResponseInfo{
 		Data:             app.BaseApp.Name(),
 		LastBlockHeight:  app.LastBlockHeight(),
-		LastBlockAppHash: app.latestRankHash,
+		LastBlockAppHash: app.appHash(),
 	}
 }
 
-func (app *CyberdApp) Search(cid string, page, perPage int) ([]RankedCid, int, error) {
-	if perPage == 0 {
-		perPage = 100
-	}
-	result, totalSize, err := app.memStorage.GetCidRankedLinks(Cid(cid), page, perPage)
-	if err != nil {
-		return nil, totalSize, err
-	}
-	return result, totalSize, nil
-}
+func (app *CyberdApp) appHash() []byte {
 
-func (app *CyberdApp) Account(address sdk.AccAddress) auth.Account {
-	return app.accStorage.GetAccount(app.NewContext(true, abci.Header{}), address)
+	if app.LastBlockHeight() == 0 {
+		return make([]byte, 0)
+	}
+	return app.latestRankHash
 }
