@@ -4,6 +4,8 @@ package rank
 
 import (
 	. "github.com/cybercongress/cyberd/cosmos/poc/app/storage"
+	"github.com/tendermint/tendermint/libs/log"
+	"time"
 )
 
 /*
@@ -13,7 +15,12 @@ import (
 */
 import "C"
 
-func calculateRankGPU(data *InMemoryStorage) ([]float64, int) {
+func calculateRankGPU(data *InMemoryStorage, logger log.Logger) ([]float64, int) {
+
+	start := time.Now()
+	if data.GetCidsCount() == 0 {
+		return make([]float64, 0), 0
+	}
 
 	outLinks := data.GetOutLinks()
 
@@ -75,6 +82,9 @@ func calculateRankGPU(data *InMemoryStorage) ([]float64, int) {
 	cInLinksUsers := (*C.ulong)(&inLinksUsers[0])
 	cOutLinksUsers := (*C.ulong)(&outLinksUsers[0])
 
+	logger.Info("Rank: Data for gpu prepared", "time", time.Since(start))
+
+	start = time.Now()
 	cRank := (*C.double)(&rank[0])
 	C.calculate_rank(
 		cStakes, cStakesSize, cCidsSize, cLinksSize,
@@ -82,6 +92,7 @@ func calculateRankGPU(data *InMemoryStorage) ([]float64, int) {
 		cInLinksOuts, cInLinksUsers, cOutLinksUsers,
 		cRank,
 	)
+	logger.Info("Rank: gpu calculations", "time", time.Since(start))
 
 	return rank, 0
 }

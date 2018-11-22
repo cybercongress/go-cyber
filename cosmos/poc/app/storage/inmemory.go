@@ -198,7 +198,7 @@ func (s *InMemoryStorage) GetSortedInLinks(cid CidNumber) (CidLinks, []CidNumber
 		return nil, nil, false
 	}
 
-	var numbers []CidNumber
+	numbers := make([]CidNumber, 0, len(links))
 	for num := range links {
 		numbers = append(numbers, num)
 	}

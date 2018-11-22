@@ -20,6 +20,7 @@ import (
 
 func InitAddLink() func([]Link) {
 
+	app.SetPrefix()
 	chainId := viper.GetString(common.FlagChainId)
 	address := viper.GetString(common.FlagAddress)
 	addr, name := accountFromAddress(address)

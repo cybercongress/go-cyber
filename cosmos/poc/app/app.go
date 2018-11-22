@@ -148,7 +148,7 @@ func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.R
 
 	start := time.Now()
 	app.BaseApp.Logger.Info("Calculating rank")
-	newRank, steps := rank.CalculateRank(app.memStorage, app.computeUnit)
+	newRank, steps := rank.CalculateRank(app.memStorage, app.computeUnit, app.BaseApp.Logger)
 	app.BaseApp.Logger.Info("Rank calculated", "steps", steps, "time", time.Since(start))
 
 	rankAsBytes := make([]byte, 8*len(newRank))
