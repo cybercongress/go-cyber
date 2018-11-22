@@ -5,6 +5,7 @@ import numpy as np
 import scipy.sparse
 import scipy.sparse.linalg
 from networkx import DiGraph
+from scipy.sparse import csr_matrix
 
 from common.adjacency_list_to_graph import print_graph_info, Edge
 from common.graph_to_matrix import build_matrix
@@ -65,7 +66,7 @@ def calculate_spring_rank(A, initial_x=None):
         iterations += 1
 
     print_with_time("Solving Bx=b equation using 'bicgstab' iterative method")
-    result = scipy.sparse.linalg.bicgstab(B, b, x0=initial_x, callback=bicgstab_callback)
+    result = scipy.sparse.linalg.bicgstab(B, b, x0=initial_x, callback=bicgstab_callback, tol=1e-3)
 
     if result[1] != 0:
         print_with_time("Can't solve Bx=b")
@@ -102,3 +103,96 @@ def update_rank(graph: DiGraph, rank: Rank, new_edges: List[Edge]) -> (int, Rank
     rank = dict(zip(nodes, raw_rank))
 
     return iterations, rank
+
+
+def calculate_violations(A: csr_matrix, rank: [float]) -> (float, float, float):
+    """
+    Calculate number of violations in a graph given SpringRank scores
+    A violaton is an edge going from a lower ranked node to a higher ranked one
+    Input:
+        A: graph adjacency matrix where A[i,j] is the weight of an edge from node i to j
+        rank: SpringRank result
+    Output:
+        number of violations
+        proportion of all edges against violations
+    """
+
+    rank_sort = np.argsort(rank)[::-1]  # Get sorted by rank A indices
+    A_sort = A[rank_sort,][:, rank_sort]  # Create new matrix, where elements sorted by rank desc
+
+    # All elements below main triangle is connection from low-ranked node
+    # to high-ranked node. So to get all violation just sum all elements
+    # below main triangle.
+    viol = scipy.sparse.tril(A_sort).sum()
+
+    m = A_sort.sum()  # All matrix weights sum
+
+    return (viol, viol / m, m)
+
+
+def calculate_min_violations(A: csr_matrix) -> (float, float):
+    """
+    Calculate the minimum number of violations in a graph for all possible rankings
+    A violaton is an edge going from a lower ranked node to a higher ranked one
+    Minimum number is calculated by summing bidirectional interactions.
+    Input:
+        A: graph adjacency matrix where A[i,j] is the weight of an edge from node i to j
+    Output:
+        minimum number of violations
+        proportion of all edges against minimum violations
+    """
+
+    ii, ji, v = scipy.sparse.find(A)  # I,J,V contain the row, column indices, and values of the nonzero entries.
+
+    min_viol = 0.0
+    for e in range(len(v)):  # for all nodes interactions
+        i, j = ii[e], ji[e]
+        if A[i, j] > 0 and A[j, i] > 0:
+            min_viol = min_viol + min(A[i, j], A[j, i])
+
+    m = A.sum()
+    return (min_viol, min_viol / m)
+
+
+def calculate_system_violated_energy(A: csr_matrix, rank: [float]) -> (float, float, float):
+    """
+    Calculate number of violations in a graph given SpringRank scores
+    A violaton is an edge going from a lower ranked node to a higher ranked one
+        weighted by the difference between these two nodes
+    Input:
+        A: graph adjacency matrix where A[i,j] is the weight of an edge from node i to j
+        rank: SpringRank scores
+    Output:
+        system violated energy
+        proportion of system energy against system violated energy
+    """
+    i, j, v = scipy.sparse.find(A)  # I,J,V contain the row indices, column indices, and values of the nonzero entries.
+    normed_rank = (rank - min(rank)) / (max(rank) - min(rank))  # normalize
+    wv = 0.0
+    for e in range(len(v)):  # for all nodes interactions
+        if normed_rank[i[e]] < normed_rank[j[e]]:  # compare ranks of two nodes i and j
+            wv = wv + v[e] * (normed_rank[j[e]] - normed_rank[i[e]])
+
+    H = calculate_Hamiltonion(A, rank)
+    return (wv, wv / H, H)
+
+
+def calculate_Hamiltonion(A: csr_matrix, rank: [float]) -> float:
+    """
+    Calculate the Hamiltonion of the network
+    Input:
+        A: graph adjacency matrix where matrix[i,j] is the weight of an edge from node i to j
+        rank: SpringRank scores
+    Output:
+        H: Hamiltonion energy of the system
+    """
+
+    H = 0.0
+    normed_rank = (rank - min(rank)) / (max(rank) - min(rank))  # normalize
+
+    ii, ji, v = scipy.sparse.find(A)  # I,J,V contain the row, column indices, and values of the nonzero entries.
+    for e in range(len(v)):  # for all nodes interactions
+        i, j = ii[e], ji[e]
+        H = H + 0.5 * A[i, j] * (normed_rank[i] - normed_rank[j] - 1) ** 2
+
+    return H

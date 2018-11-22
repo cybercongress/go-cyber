@@ -39,7 +39,7 @@ for data_file in data_files:
 graph = build_graph(edges)
 
 initial_rank = OrderedDict()
-initial_rank_file = open("../data/initial-rank", "r")
+initial_rank_file = open("../data/calculated-rank", "r")
 for row in initial_rank_file:
     cells = row.split()
     initial_rank[cells[0]] = cells[1]
