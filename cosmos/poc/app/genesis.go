@@ -6,6 +6,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cybercongress/cyberd/cosmos/poc/app/coin"
 	"github.com/cybercongress/cyberd/cosmos/poc/app/storage"
+	cbd "github.com/cybercongress/cyberd/cosmos/poc/app/types"
 	abci "github.com/tendermint/tendermint/abci/types"
 )
 
@@ -48,7 +49,7 @@ func NewGenesisApplier(imms *storage.InMemoryStorage, cdc *codec.Codec, accStora
 
 			acc.AccountNumber = accStorage.GetNextAccountNumber(ctx)
 			accStorage.SetAccount(ctx, acc)
-			imms.UpdateStake(storage.AccountNumber(acc.AccountNumber), acc.Coins.AmountOf(coin.CBD).Int64())
+			imms.UpdateStake(cbd.AccountNumber(acc.AccountNumber), acc.Coins.AmountOf(coin.CBD).Int64())
 		}
 
 		return abci.ResponseInitChain{}

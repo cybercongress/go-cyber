@@ -1,8 +1,10 @@
 package storage
 
 import (
+	"encoding/binary"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	cbd "github.com/cybercongress/cyberd/cosmos/poc/app/types"
 )
 
 type LinksStorage struct {
@@ -17,40 +19,49 @@ func NewLinksStorage(key *sdk.KVStoreKey, cdc *codec.Codec) LinksStorage {
 	}
 }
 
-func (ls LinksStorage) AddLink(ctx sdk.Context, link LinkedCids) error {
-
+func (ls LinksStorage) AddLink(ctx sdk.Context, link cbd.Link) {
 	store := ctx.KVStore(ls.key)
-
-	linkAsBytes, err := ls.cdc.MarshalBinaryBare(link)
-	if err != nil {
-		return err
-	}
-
+	linkAsBytes := marshalLink(link)
 	store.Set(linkAsBytes, []byte{})
-	return nil
 }
 
-func (ls LinksStorage) GetAllLinks(ctx sdk.Context) (map[CidNumber]CidLinks, map[CidNumber]CidLinks, error) {
+func (ls LinksStorage) IsLinkExist(ctx sdk.Context, link cbd.Link) bool {
+	store := ctx.KVStore(ls.key)
+	linkAsBytes := marshalLink(link)
+	return store.Get(linkAsBytes) != nil
+}
 
-	inLinks := make(map[CidNumber]CidLinks)
-	outLinks := make(map[CidNumber]CidLinks)
+func (ls LinksStorage) GetAllLinks(ctx sdk.Context) (cbd.Links, cbd.Links, error) {
+
+	inLinks := make(map[cbd.CidNumber]cbd.CidLinks)
+	outLinks := make(map[cbd.CidNumber]cbd.CidLinks)
 
 	store := ctx.KVStore(ls.key)
 	iterator := store.Iterator(nil, nil)
+	defer iterator.Close()
 
-	var link LinkedCids
 	for iterator.Valid() {
 		linkAsBytes := iterator.Key()
-		err := ls.cdc.UnmarshalBinaryBare(linkAsBytes, &link)
-		if err != nil {
-			iterator.Close()
-			return nil, nil, err
-		}
-
-		CidsLinks(outLinks).Put(link.FromCid, link.ToCid, link.Creator)
-		CidsLinks(inLinks).Put(link.ToCid, link.FromCid, link.Creator)
+		link := unmarshalLink(linkAsBytes)
+		cbd.Links(outLinks).Put(link.From(), link.To(), link.Acc())
+		cbd.Links(inLinks).Put(link.To(), link.From(), link.Acc())
 		iterator.Next()
 	}
-	iterator.Close()
 	return inLinks, outLinks, nil
+}
+
+func unmarshalLink(b []byte) cbd.Link {
+	return cbd.NewLink(
+		cbd.CidNumber(binary.LittleEndian.Uint64(b[0:8])),
+		cbd.CidNumber(binary.LittleEndian.Uint64(b[8:16])),
+		cbd.AccountNumber(binary.LittleEndian.Uint64(b[16:24])),
+	)
+}
+
+func marshalLink(l cbd.Link) []byte {
+	b := make([]byte, 24)
+	binary.LittleEndian.PutUint64(b[0:8], uint64(l.From()))
+	binary.LittleEndian.PutUint64(b[8:16], uint64(l.To()))
+	binary.LittleEndian.PutUint64(b[16:24], uint64(l.Acc()))
+	return b
 }

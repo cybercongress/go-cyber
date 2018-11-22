@@ -2,6 +2,7 @@ package rank
 
 import (
 	. "github.com/cybercongress/cyberd/cosmos/poc/app/storage"
+	. "github.com/cybercongress/cyberd/cosmos/poc/app/types"
 	"sync"
 )
 

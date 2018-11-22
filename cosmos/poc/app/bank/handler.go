@@ -6,6 +6,7 @@ import (
 	. "github.com/cosmos/cosmos-sdk/x/bank"
 	"github.com/cybercongress/cyberd/cosmos/poc/app/coin"
 	"github.com/cybercongress/cyberd/cosmos/poc/app/storage"
+	cbd "github.com/cybercongress/cyberd/cosmos/poc/app/types"
 	"reflect"
 )
 
@@ -36,12 +37,12 @@ func handleMsgSend(
 	if !ctx.IsCheckTx() {
 		for _, input := range msg.Inputs {
 			accNumber := am.GetAccount(ctx, input.Address).GetAccountNumber()
-			imms.UpdateStake(storage.AccountNumber(accNumber), -input.Coins.AmountOf(coin.CBD).Int64())
+			imms.UpdateStake(cbd.AccountNumber(accNumber), -input.Coins.AmountOf(coin.CBD).Int64())
 		}
 
 		for _, output := range msg.Outputs {
 			accNumber := am.GetAccount(ctx, output.Address).GetAccountNumber()
-			imms.UpdateStake(storage.AccountNumber(accNumber), output.Coins.AmountOf(coin.CBD).Int64())
+			imms.UpdateStake(cbd.AccountNumber(accNumber), output.Coins.AmountOf(coin.CBD).Int64())
 		}
 	}
 	return sdk.Result{Tags: tags}

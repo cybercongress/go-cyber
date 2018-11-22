@@ -10,7 +10,7 @@ import (
 	authcmd "github.com/cosmos/cosmos-sdk/x/auth/client/cli"
 	authtxb "github.com/cosmos/cosmos-sdk/x/auth/client/txbuilder"
 	"github.com/cybercongress/cyberd/cosmos/poc/app"
-	"github.com/cybercongress/cyberd/cosmos/poc/app/storage"
+	cbd "github.com/cybercongress/cyberd/cosmos/poc/app/types"
 	"github.com/cybercongress/cyberd/cosmos/poc/claim/common"
 	"github.com/spf13/viper"
 	rpcclient "github.com/tendermint/tendermint/rpc/client"
@@ -47,7 +47,7 @@ func InitAddLink() func([]Link) {
 
 		msges := make([]sdk.Msg, 0, len(links))
 		for _, link := range links {
-			msges = append(msges, app.NewMsgLink(addr, storage.Cid(link.from), storage.Cid(link.to)))
+			msges = append(msges, app.NewMsgLink(addr, cbd.Cid(link.from), cbd.Cid(link.to)))
 		}
 
 		sendTx(address, txCtx, cliCtx, msges)

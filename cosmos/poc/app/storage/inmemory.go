@@ -3,6 +3,7 @@ package storage
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
+	. "github.com/cybercongress/cyberd/cosmos/poc/app/types"
 	"github.com/pkg/errors"
 	cmn "github.com/tendermint/tendermint/libs/common"
 	"sort"
@@ -89,10 +90,9 @@ func (s *InMemoryStorage) UpdateStakeByNumber(acc AccountNumber, stake int64) {
 	s.userStake[acc] += uint64(stake)
 }
 
-func (s *InMemoryStorage) AddLink(link LinkedCids) {
-
-	CidsLinks(s.outLinks).Put(link.FromCid, link.ToCid, link.Creator)
-	CidsLinks(s.inLinks).Put(link.ToCid, link.FromCid, link.Creator)
+func (s *InMemoryStorage) AddLink(link Link) {
+	Links(s.outLinks).Put(link.From(), link.To(), link.Acc())
+	Links(s.inLinks).Put(link.To(), link.From(), link.Acc())
 }
 
 func (s *InMemoryStorage) AddCid(cid Cid, number CidNumber) {

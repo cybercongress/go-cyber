@@ -3,6 +3,7 @@ package storage
 import (
 	"encoding/binary"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	. "github.com/cybercongress/cyberd/cosmos/poc/app/types"
 )
 
 type CidIndexStorage struct {
@@ -17,10 +18,21 @@ func NewCidIndexStorage(ms MainStorage, indexKey *sdk.KVStoreKey) CidIndexStorag
 	}
 }
 
+// Return cid number and true, if cid exists
+func (cis CidIndexStorage) GetCidIndex(ctx sdk.Context, cid Cid) (CidNumber, bool) {
+	cidsIndex := ctx.KVStore(cis.indexKey)
+	cidAsBytes := []byte(cid)
+	cidIndexAsBytes := cidsIndex.Get(cidAsBytes)
+	if cidIndexAsBytes != nil {
+		return CidNumber(binary.LittleEndian.Uint64(cidIndexAsBytes)), true
+	}
+	return 0, false
+}
+
 // CIDs index is array of all added CIDs, sorted asc by first link time.
 //   - for given link, CIDs added in order [CID1, CID2] (if they both new to chain)
 // This method performs lookup of CIDs, returns index value, or create and put in index new value if not exists.
-func (cis CidIndexStorage) GetOrPutCidIndex(ctx sdk.Context, cid Cid) CidNumber {
+func (cis CidIndexStorage) GetOrPutCidNumber(ctx sdk.Context, cid Cid) CidNumber {
 
 	cidsIndex := ctx.KVStore(cis.indexKey)
 

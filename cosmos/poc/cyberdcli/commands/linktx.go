@@ -7,7 +7,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authcmd "github.com/cosmos/cosmos-sdk/x/auth/client/cli"
 	authtxb "github.com/cosmos/cosmos-sdk/x/auth/client/txbuilder"
-	"github.com/cybercongress/cyberd/cosmos/poc/app/storage"
+	cbd "github.com/cybercongress/cyberd/cosmos/poc/app/types"
 	. "github.com/cybercongress/cyberd/cosmos/poc/cyberdcli/util"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -34,8 +34,8 @@ func LinkTxCmd(cdc *codec.Codec) *cobra.Command {
 				return err
 			}
 
-			cidFrom := storage.Cid(viper.GetString(flagCidFrom))
-			cidTo := storage.Cid(viper.GetString(flagCidTo))
+			cidFrom := cbd.Cid(viper.GetString(flagCidFrom))
+			cidTo := cbd.Cid(viper.GetString(flagCidTo))
 
 			from, err := cliCtx.GetFromAddress()
 			if err != nil {
