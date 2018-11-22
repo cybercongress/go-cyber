@@ -4,6 +4,7 @@ import (
 	"fmt"
 	cpurank "github.com/cybercongress/cyberd/cosmos/poc/app/rank"
 	. "github.com/cybercongress/cyberd/cosmos/poc/app/storage"
+	"github.com/tendermint/tendermint/libs/log"
 )
 
 /*
@@ -78,14 +79,14 @@ func main() {
 	m.AddLink(LinkedCids{FromCid: CidNumber(4), ToCid: CidNumber(3), Creator: AccountNumber(2)})
 	m.AddLink(LinkedCids{FromCid: CidNumber(5), ToCid: CidNumber(4), Creator: AccountNumber(1)})
 
-	rank, _ = cpurank.CalculateRank(&m, cpurank.CPU)
+	rank, _ = cpurank.CalculateRank(&m, cpurank.CPU, log.NewNopLogger())
 
 	fmt.Printf("Rank calculated on cpu...\n")
 	for c, r := range rank {
 		fmt.Printf("%v -> %v\n", c, r)
 	}
 
-	rank, _ = cpurank.CalculateRank(&m, cpurank.GPU)
+	rank, _ = cpurank.CalculateRank(&m, cpurank.GPU, log.NewNopLogger())
 
 	fmt.Printf("Rank calculated on gpu via cyberd ...\n")
 	for c, r := range rank {
