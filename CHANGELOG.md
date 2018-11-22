@@ -16,6 +16,7 @@
 
 **Merged pull requests:**
 
+- Calculate eth network significance [\#85](https://github.com/cybercongress/cyberd/pull/85) ([hleb-albau](https://github.com/hleb-albau))
 - 74 gpu rank calculation [\#83](https://github.com/cybercongress/cyberd/pull/83) ([hleb-albau](https://github.com/hleb-albau))
 - Remove 'cosmosaccaddr' prefix from cyberd address [\#82](https://github.com/cybercongress/cyberd/pull/82) ([arturalbov](https://github.com/arturalbov))
 - UPD docs\_upd job [\#81](https://github.com/cybercongress/cyberd/pull/81) ([SaveTheAles](https://github.com/SaveTheAles))
