@@ -37,32 +37,6 @@ jobs:
           go build -o cyberdproxy ./proxy
           go build -o cyberdclaim ./claim
 
-  build_and_deploy_images_to_dockerhub:
-    working_directory: ~/cyberd
-    docker:
-       - image: circleci/golang:1.11
-    steps:
-      - checkout
-      - setup_remote_docker:
-          version: 17.11.0-ce
-      - run:
-          name: Build Cyberd Image
-          command: |
-            cd cosmos/poc
-            docker build -t build/cyberd ./
-            if [[  -n  "$CIRCLE_TAG" ]]; then
-              docker login -u $DOCKER_USER -p $DOCKER_PASS
-              docker tag build/cyberd cybernode/cyberd:latest
-              docker push cybernode/cyberd:latest
-              docker tag build/cyberd cybernode/cyberd:$CIRCLE_TAG
-              docker push cybernode/cyberd:$CIRCLE_TAG
-            else
-              docker tag build/cyberd cybernode/cyberd:$CIRCLE_BRANCH
-              docker push cybernode/cyberd:$CIRCLE_BRANCH
-            fi
-
-
-
   update_changelog:
     <<: *defaults
     steps:
@@ -115,8 +89,6 @@ jobs:
             git push -q https://${DOCS_GITHUB_TOKEN}@github.com/cybercongress/library.git master
           fi
 
-
-
   release_cyberd_and_cyberdcli_binaries:
     docker:
     - image: circleci/golang:1.11
@@ -128,7 +100,7 @@ jobs:
         command: |
           cd cosmos/poc
           export GO111MODULE=on
-          go build ./...
+          go build -o cli ./cyberdcli
           sudo apt-get update && sudo apt-get install -y rpm
           curl -sL https://git.io/goreleaser | bash
 
@@ -146,14 +118,6 @@ workflows:
             - build_daemon_and_cli
       - update_docs:
           <<: *master_filter
-          requires:
-            - build_daemon_and_cli
-      - build_and_deploy_images_to_dockerhub:
-          filters:
-            tags:
-              only: /.*/
-            branches:
-              only: master
           requires:
             - build_daemon_and_cli
       - release_cyberd_and_cyberdcli_binaries:
