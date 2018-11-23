@@ -4,6 +4,7 @@ package rank
 
 import (
 	. "github.com/cybercongress/cyberd/cosmos/poc/app/storage"
+	cbd "github.com/cybercongress/cyberd/cosmos/poc/app/types"
 	"github.com/tendermint/tendermint/libs/log"
 	"time"
 )
@@ -46,7 +47,7 @@ func calculateRankGPU(data *InMemoryStorage, logger log.Logger) ([]float64, int)
 	// todo parallel this
 	for i := uint64(0); i < cidsCount; i++ {
 
-		if inLinks, sortedCids, ok := data.GetSortedInLinks(CidNumber(i)); ok {
+		if inLinks, sortedCids, ok := data.GetSortedInLinks(cbd.CidNumber(i)); ok {
 			for _, cid := range sortedCids {
 				inLinksCount[i] += uint32(len(inLinks[cid]))
 				for acc := range inLinks[cid] {
@@ -57,7 +58,7 @@ func calculateRankGPU(data *InMemoryStorage, logger log.Logger) ([]float64, int)
 			linksCount += uint64(inLinksCount[i])
 		}
 
-		if outLinks, ok := outLinks[CidNumber(i)]; ok {
+		if outLinks, ok := outLinks[cbd.CidNumber(i)]; ok {
 			for _, accs := range outLinks {
 				outLinksCount[i] += uint32(len(accs))
 				for acc := range accs {
