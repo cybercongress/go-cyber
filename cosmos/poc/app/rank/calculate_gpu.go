@@ -83,7 +83,7 @@ func calculateRankGPU(data *InMemoryStorage, logger log.Logger) ([]float64, int)
 	cInLinksUsers := (*C.ulong)(&inLinksUsers[0])
 	cOutLinksUsers := (*C.ulong)(&outLinksUsers[0])
 
-	logger.Info("Rank: Data for gpu prepared", "time", time.Since(start))
+	logger.Debug("Rank: data for gpu preparation", "time", time.Since(start))
 
 	start = time.Now()
 	cRank := (*C.double)(&rank[0])
@@ -93,7 +93,7 @@ func calculateRankGPU(data *InMemoryStorage, logger log.Logger) ([]float64, int)
 		cInLinksOuts, cInLinksUsers, cOutLinksUsers,
 		cRank,
 	)
-	logger.Info("Rank: gpu calculations", "time", time.Since(start))
+	logger.Debug("Rank: gpu calculations", "time", time.Since(start))
 
 	return rank, 0
 }

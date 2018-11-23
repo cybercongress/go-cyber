@@ -2,20 +2,19 @@ package storage
 
 import (
 	"encoding/binary"
-	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	cbd "github.com/cybercongress/cyberd/cosmos/poc/app/types"
 )
 
 type LinksStorage struct {
-	cdc *codec.Codec
+	ms  MainStorage
 	key *sdk.KVStoreKey
 }
 
-func NewLinksStorage(key *sdk.KVStoreKey, cdc *codec.Codec) LinksStorage {
+func NewLinksStorage(ms MainStorage, key *sdk.KVStoreKey) LinksStorage {
 	return LinksStorage{
 		key: key,
-		cdc: cdc,
+		ms:  ms,
 	}
 }
 
@@ -23,6 +22,7 @@ func (ls LinksStorage) AddLink(ctx sdk.Context, link cbd.Link) {
 	store := ctx.KVStore(ls.key)
 	linkAsBytes := marshalLink(link)
 	store.Set(linkAsBytes, []byte{})
+	ls.ms.IncrementLinksCount(ctx)
 }
 
 func (ls LinksStorage) IsLinkExist(ctx sdk.Context, link cbd.Link) bool {

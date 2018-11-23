@@ -14,23 +14,39 @@ import (
 // imms - in-memory storage
 func NewLinksHandler(cis CidIndexStorage, ls LinksStorage, imms *InMemoryStorage, as auth.AccountKeeper) sdk.Handler {
 
+	getCidNumber := GetCidNumberFunc(cis, imms)
+
 	return func(ctx sdk.Context, msg sdk.Msg) sdk.Result {
 
 		linkMsg := msg.(MsgLink)
-		fromCidNumber := cis.GetOrPutCidNumber(ctx, linkMsg.From)
-		toCidNumber := cis.GetOrPutCidNumber(ctx, linkMsg.To)
+		fromCidNumber := getCidNumber(ctx, linkMsg.From)
+		toCidNumber := getCidNumber(ctx, linkMsg.To)
 		accNumber := cbd.AccountNumber(as.GetAccount(ctx, linkMsg.Address).GetAccountNumber())
 		link := cbd.NewLink(fromCidNumber, toCidNumber, accNumber)
 
 		if ls.IsLinkExist(ctx, link) {
 			return sdk.Result{Code: cbd.LinkAlreadyExistsCode()}
 		}
-		ls.AddLink(ctx, link)
 
 		if !ctx.IsCheckTx() {
 			imms.AddLink(link)
 		}
+
 		return sdk.Result{Code: sdk.ABCICodeOK}
 	}
+}
 
+func GetCidNumberFunc(cis CidIndexStorage, imms *InMemoryStorage) func(sdk.Context, cbd.Cid) cbd.CidNumber {
+
+	return func(ctx sdk.Context, cid cbd.Cid) cbd.CidNumber {
+
+		index, exist := imms.GetCidIndex(cid)
+		if !exist { // new cid
+			index = cis.GetOrPutCidNumber(ctx, cid)
+			if !ctx.IsCheckTx() {
+				imms.AddCid(cid, index)
+			}
+		}
+		return index
+	}
 }

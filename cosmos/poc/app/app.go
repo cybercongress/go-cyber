@@ -89,7 +89,7 @@ func NewCyberdApp(
 	ms := NewMainStorage(dbKeys.main)
 	storages := CyberdPersistentStorages{
 		CidIndex: NewCidIndexStorage(ms, dbKeys.cidIndex),
-		Links:    NewLinksStorage(dbKeys.links, cdc),
+		Links:    NewLinksStorage(ms, dbKeys.links),
 		Rank:     NewRankStorage(ms, dbKeys.rank),
 	}
 
@@ -146,10 +146,14 @@ func (app *CyberdApp) BeginBlocker(_ sdk.Context, _ abci.RequestBeginBlock) abci
 // App state is consensus driven state.
 func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.ResponseEndBlock {
 
+	linksCount := app.mainStorage.GetLinksCount(ctx)
+	cidsCount := app.mainStorage.GetCidsCount(ctx)
+
 	start := time.Now()
-	app.BaseApp.Logger.Info("Calculating rank")
 	newRank, steps := rank.CalculateRank(app.memStorage, app.computeUnit, app.BaseApp.Logger)
-	app.BaseApp.Logger.Info("Rank calculated", "steps", steps, "time", time.Since(start))
+	app.BaseApp.Logger.Info(
+		"Rank calculated", "steps", steps, "time", time.Since(start), "links", linksCount, "cids", cidsCount,
+	)
 
 	rankAsBytes := make([]byte, 8*len(newRank))
 	for i, f64 := range newRank {
@@ -165,6 +169,7 @@ func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.R
 
 // Implements ABCI
 func (app *CyberdApp) Commit() (res abci.ResponseCommit) {
+
 	app.BaseApp.Commit()
 	return abci.ResponseCommit{Data: app.latestRankHash}
 }
