@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Start the first process
-cyberd start . &
+cyberd start --compute-rank-on-gpu=false . &
 status=$?
 if [ $status -ne 0 ]; then
   echo "Failed to start cyberd: $status"
