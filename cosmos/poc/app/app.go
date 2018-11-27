@@ -3,26 +3,34 @@ package app
 import (
 	"crypto/sha256"
 	"encoding/binary"
+	"fmt"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/bank"
+	"github.com/cosmos/cosmos-sdk/x/params"
+	"github.com/cosmos/cosmos-sdk/x/slashing"
+	"github.com/cosmos/cosmos-sdk/x/stake"
 	. "github.com/cybercongress/cyberd/cosmos/poc/app/bank"
+	"github.com/cybercongress/cyberd/cosmos/poc/app/coin"
 	"github.com/cybercongress/cyberd/cosmos/poc/app/rank"
 	. "github.com/cybercongress/cyberd/cosmos/poc/app/storage"
+	cbd "github.com/cybercongress/cyberd/cosmos/poc/app/types"
 	abci "github.com/tendermint/tendermint/abci/types"
 	cmn "github.com/tendermint/tendermint/libs/common"
 	dbm "github.com/tendermint/tendermint/libs/db"
 	"github.com/tendermint/tendermint/libs/log"
 	"math"
 	"os"
+	"sort"
 	"time"
 )
 
 const (
 	APP     = "cyberd"
 	appName = "CyberdApp"
+	DefaultKeyPass = "12345678"
 )
 
 // default home directories for expected binaries
@@ -38,6 +46,11 @@ type CyberdAppDbKeys struct {
 	cidIndex *sdk.KVStoreKey
 	links    *sdk.KVStoreKey
 	rank     *sdk.KVStoreKey
+	stake    *sdk.KVStoreKey
+	tStake   *sdk.TransientStoreKey
+	slashing *sdk.KVStoreKey
+	params   *sdk.KVStoreKey
+	tParams  *sdk.TransientStoreKey
 }
 
 // CyberdApp implements an extended ABCI application. It contains a BaseApp,
@@ -53,9 +66,12 @@ type CyberdApp struct {
 
 	// manage getting and setting accounts
 	mainStorage         MainStorage
-	accStorage          auth.AccountKeeper
+	accountKeeper       auth.AccountKeeper
 	feeCollectionKeeper auth.FeeCollectionKeeper
 	coinKeeper          bank.Keeper
+	stakeKeeper         stake.Keeper
+	slashingKeeper      slashing.Keeper
+	paramsKeeper        params.Keeper
 
 	// cyberd storages
 	persistStorages CyberdPersistentStorages
@@ -84,6 +100,11 @@ func NewCyberdApp(
 		cidIndex: sdk.NewKVStoreKey("cid_index"),
 		links:    sdk.NewKVStoreKey("links"),
 		rank:     sdk.NewKVStoreKey("rank"),
+		stake:    sdk.NewKVStoreKey("stake"),
+		tStake:   sdk.NewTransientStoreKey("transient_stake"),
+		slashing: sdk.NewKVStoreKey("slashing"),
+		params:   sdk.NewKVStoreKey("params"),
+		tParams:  sdk.NewTransientStoreKey("transient_params"),
 	}
 
 	ms := NewMainStorage(dbKeys.main)
@@ -104,23 +125,48 @@ func NewCyberdApp(
 	}
 
 	// define and attach the mappers and keepers
-	app.accStorage = auth.NewAccountKeeper(app.cdc, dbKeys.acc, NewAccount)
-	app.coinKeeper = bank.NewBaseKeeper(app.accStorage)
+	app.accountKeeper = auth.NewAccountKeeper(app.cdc, dbKeys.acc, NewAccount)
+	app.coinKeeper = bank.NewBaseKeeper(app.accountKeeper)
+	app.paramsKeeper = params.NewKeeper(app.cdc, dbKeys.params, dbKeys.tParams)
+	stakeKeeper := stake.NewKeeper(
+		app.cdc, dbKeys.stake,
+		dbKeys.tStake, app.coinKeeper,
+		app.paramsKeeper.Subspace(stake.DefaultParamspace),
+		app.RegisterCodespace(stake.DefaultCodespace),
+	)
+	app.slashingKeeper = slashing.NewKeeper(
+		app.cdc,
+		dbKeys.slashing,
+		&stakeKeeper, app.paramsKeeper.Subspace(slashing.DefaultParamspace),
+		app.RegisterCodespace(slashing.DefaultCodespace),
+	)
 	app.memStorage = &InMemoryStorage{}
+
+	// register the staking hooks
+	// NOTE: stakeKeeper above are passed by reference,
+	// so that it can be modified like below:
+	app.stakeKeeper = *stakeKeeper.SetHooks(NewHooks(app.slashingKeeper.Hooks()))
 
 	// register message routes
 	app.Router().
-		AddRoute("bank", NewBankHandler(app.coinKeeper, app.memStorage, app.accStorage)).
-		AddRoute("link", NewLinksHandler(storages.CidIndex, storages.Links, app.memStorage, app.accStorage))
+		AddRoute("bank", NewBankHandler(app.coinKeeper, app.memStorage, app.accountKeeper)).
+		AddRoute("link", NewLinksHandler(storages.CidIndex, storages.Links, app.memStorage, app.accountKeeper)).
+		AddRoute("stake", stake.NewHandler(app.stakeKeeper)).
+		AddRoute("slashing", slashing.NewHandler(app.slashingKeeper))
+
+	app.QueryRouter().
+		AddRoute("stake", stake.NewQuerier(app.stakeKeeper, app.cdc))
 
 	// perform initialization logic
-	app.SetInitChainer(NewGenesisApplier(app.memStorage, app.cdc, app.accStorage))
+	app.SetInitChainer(app.initChainer)
 	app.SetBeginBlocker(app.BeginBlocker)
 	app.SetEndBlocker(app.EndBlocker)
-	app.SetAnteHandler(auth.NewAnteHandler(app.accStorage, app.feeCollectionKeeper))
+	app.SetAnteHandler(auth.NewAnteHandler(app.accountKeeper, app.feeCollectionKeeper))
 
 	// mount the multistore and load the latest state
-	app.MountStoresIAVL(dbKeys.main, dbKeys.acc, dbKeys.cidIndex, dbKeys.links, dbKeys.rank)
+	app.MountStoresIAVL(dbKeys.main, dbKeys.acc, dbKeys.cidIndex, dbKeys.links, dbKeys.rank, dbKeys.stake,
+		dbKeys.slashing, dbKeys.params)
+	app.MountStoresTransient(dbKeys.tParams, dbKeys.tStake)
 	err := app.LoadLatestVersion(dbKeys.main)
 	if err != nil {
 		cmn.Exit(err.Error())
@@ -128,17 +174,100 @@ func NewCyberdApp(
 	ctx := app.BaseApp.NewContext(true, abci.Header{})
 	start := time.Now()
 	app.BaseApp.Logger.Info("Loading mem state")
-	app.memStorage.Load(ctx, storages, app.accStorage)
+	app.memStorage.Load(ctx, storages, app.accountKeeper)
 	app.BaseApp.Logger.Info("App loaded", "time", time.Since(start))
 	app.latestRankHash = ms.GetAppHash(ctx)
 	app.Seal()
 	return app
 }
 
+// initChainer implements the custom application logic that the BaseApp will
+// invoke upon initialization. In this case, it will take the application's
+// state provided by 'req' and attempt to deserialize said state. The state
+// should contain all the genesis accounts. These accounts will be added to the
+// application's account mapper.
+func (app *CyberdApp) initChainer(ctx sdk.Context, req abci.RequestInitChain) abci.ResponseInitChain {
+
+	stateJSON := req.AppStateBytes
+	// TODO is this now the whole genesis file?
+
+	var genesisState GenesisState
+	err := app.cdc.UnmarshalJSON(stateJSON, &genesisState)
+	if err != nil {
+		panic(err) // TODO https://github.com/cosmos/cosmos-sdk/issues/468
+		// return sdk.ErrGenesisParse("").TraceCause(err, "")
+	}
+
+	// sort by account number to maintain consistency
+	sort.Slice(genesisState.Accounts, func(i, j int) bool {
+		return genesisState.Accounts[i].AccountNumber < genesisState.Accounts[j].AccountNumber
+	})
+	// load the accounts
+	for _, gacc := range genesisState.Accounts {
+		acc := gacc.ToAccount()
+		acc.AccountNumber = app.accountKeeper.GetNextAccountNumber(ctx)
+		app.accountKeeper.SetAccount(ctx, acc)
+		app.memStorage.UpdateStake(cbd.AccountNumber(acc.AccountNumber), acc.Coins.AmountOf(coin.CBD).Int64())
+	}
+
+	// load the initial stake information
+	validators, err := stake.InitGenesis(ctx, app.stakeKeeper, genesisState.StakeData)
+	if err != nil {
+		panic(err) // TODO find a way to do this w/o panics
+	}
+
+	// initialize module-specific stores
+	slashing.InitGenesis(ctx, app.slashingKeeper, genesisState.SlashingData, genesisState.StakeData)
+	err = CyberdValidateGenesisState(genesisState)
+	if err != nil {
+		panic(err) // TODO find a way to do this w/o panics
+	}
+
+	if len(genesisState.GenTxs) > 0 {
+		for _, genTx := range genesisState.GenTxs {
+			var tx auth.StdTx
+			err = app.cdc.UnmarshalJSON(genTx, &tx)
+			if err != nil {
+				panic(err)
+			}
+			bz := app.cdc.MustMarshalBinaryLengthPrefixed(tx)
+			res := app.BaseApp.DeliverTx(bz)
+			if !res.IsOK() {
+				panic(res.Log)
+			}
+		}
+
+		validators = app.stakeKeeper.ApplyAndReturnValidatorSetUpdates(ctx)
+	}
+
+	// sanity check
+	if len(req.Validators) > 0 {
+		if len(req.Validators) != len(validators) {
+			panic(fmt.Errorf("len(RequestInitChain.Validators) != len(validators) (%d != %d)",
+				len(req.Validators), len(validators)))
+		}
+		sort.Sort(abci.ValidatorUpdates(req.Validators))
+		sort.Sort(abci.ValidatorUpdates(validators))
+		for i, val := range validators {
+			if !val.Equal(req.Validators[i]) {
+				panic(fmt.Errorf("validators[%d] != req.Validators[%d] ", i, i))
+			}
+		}
+	}
+
+	return abci.ResponseInitChain{
+		Validators: validators,
+	}
+}
+
 // BeginBlocker reflects logic to run before any TXs application are processed
 // by the application.
-func (app *CyberdApp) BeginBlocker(_ sdk.Context, _ abci.RequestBeginBlock) abci.ResponseBeginBlock {
-	return abci.ResponseBeginBlock{}
+func (app *CyberdApp) BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock) abci.ResponseBeginBlock {
+	tags := slashing.BeginBlocker(ctx, req, app.slashingKeeper)
+
+	return abci.ResponseBeginBlock{
+		Tags: tags.ToKVPairs(),
+	}
 }
 
 // Calculates cyber.Rank for block N, and returns Hash of result as app state.
@@ -164,7 +293,11 @@ func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.R
 	app.latestRankHash = hash[:]
 	app.memStorage.UpdateRank(newRank)
 	app.mainStorage.StoreAppHash(ctx, hash[:])
-	return abci.ResponseEndBlock{}
+
+	validatorUpdates := stake.EndBlocker(ctx, app.stakeKeeper)
+	return abci.ResponseEndBlock{
+		ValidatorUpdates: validatorUpdates,
+	}
 }
 
 // Implements ABCI
@@ -190,4 +323,46 @@ func (app *CyberdApp) appHash() []byte {
 		return make([]byte, 0)
 	}
 	return app.latestRankHash
+}
+
+//______________________________________________________________________________________________
+
+// Combined Staking Hooks
+type Hooks struct {
+	sh slashing.Hooks
+}
+
+func NewHooks(sh slashing.Hooks) Hooks {
+	return Hooks{sh}
+}
+
+var _ sdk.StakingHooks = Hooks{}
+
+// nolint
+func (h Hooks) OnValidatorCreated(ctx sdk.Context, valAddr sdk.ValAddress) {
+	h.sh.OnValidatorCreated(ctx, valAddr)
+}
+func (h Hooks) OnValidatorModified(ctx sdk.Context, valAddr sdk.ValAddress) {
+	h.sh.OnValidatorModified(ctx, valAddr)
+}
+func (h Hooks) OnValidatorRemoved(ctx sdk.Context, consAddr sdk.ConsAddress, valAddr sdk.ValAddress) {
+	h.sh.OnValidatorRemoved(ctx, consAddr, valAddr)
+}
+func (h Hooks) OnValidatorBonded(ctx sdk.Context, consAddr sdk.ConsAddress, valAddr sdk.ValAddress) {
+	h.sh.OnValidatorBonded(ctx, consAddr, valAddr)
+}
+func (h Hooks) OnValidatorPowerDidChange(ctx sdk.Context, consAddr sdk.ConsAddress, valAddr sdk.ValAddress) {
+	h.sh.OnValidatorPowerDidChange(ctx, consAddr, valAddr)
+}
+func (h Hooks) OnValidatorBeginUnbonding(ctx sdk.Context, consAddr sdk.ConsAddress, valAddr sdk.ValAddress) {
+	h.sh.OnValidatorBeginUnbonding(ctx, consAddr, valAddr)
+}
+func (h Hooks) OnDelegationCreated(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) {
+	h.sh.OnDelegationCreated(ctx, delAddr, valAddr)
+}
+func (h Hooks) OnDelegationSharesModified(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) {
+	h.sh.OnDelegationSharesModified(ctx, delAddr, valAddr)
+}
+func (h Hooks) OnDelegationRemoved(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) {
+	h.sh.OnDelegationRemoved(ctx, delAddr, valAddr)
 }

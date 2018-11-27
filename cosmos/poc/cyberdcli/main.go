@@ -11,6 +11,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/version"
 	authcmd "github.com/cosmos/cosmos-sdk/x/auth/client/cli"
 	bankcmd "github.com/cosmos/cosmos-sdk/x/bank/client/cli"
+	slashingcmd "github.com/cosmos/cosmos-sdk/x/slashing/client/cli"
+	stakecmd "github.com/cosmos/cosmos-sdk/x/stake/client/cli"
 	"github.com/cybercongress/cyberd/cosmos/poc/app"
 	cyberdcmd "github.com/cybercongress/cyberd/cosmos/poc/cyberdcli/commands"
 	"github.com/spf13/cobra"
@@ -53,6 +55,12 @@ func main() {
 		client.PostCommands(
 			cyberdcmd.LinkTxCmd(cdc),
 			bankcmd.SendTxCmd(cdc),
+			stakecmd.GetCmdCreateValidator(cdc),
+			stakecmd.GetCmdEditValidator(cdc),
+			stakecmd.GetCmdDelegate(cdc),
+			stakecmd.GetCmdRedelegate("stake", cdc),
+			stakecmd.GetCmdUnbond("stake", cdc),
+			slashingcmd.GetCmdUnjail(cdc),
 		)...)
 
 	cyberdcli.AddCommand(

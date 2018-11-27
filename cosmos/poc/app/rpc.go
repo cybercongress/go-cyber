@@ -18,7 +18,7 @@ func (app *CyberdApp) Search(cid string, page, perPage int) ([]RankedCid, int, e
 
 func (app *CyberdApp) Account(address sdk.AccAddress) auth.Account {
 
-	acc := app.accStorage.GetAccount(app.NewContext(true, abci.Header{}), address)
+	acc := app.accountKeeper.GetAccount(app.NewContext(true, abci.Header{}), address)
 
 	if acc != nil {
 		return acc
