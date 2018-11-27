@@ -54,7 +54,7 @@ require (
 	github.com/syndtr/goleveldb v0.0.0-20180815032940-ae2bd5eed72d // indirect
 	github.com/tendermint/btcd v0.0.0-20180816174608-e5840949ff4f // indirect
 	github.com/tendermint/ed25519 v0.0.0-20171027050219-d8387025d2b9 // indirect
-	github.com/tendermint/go-amino v0.14.0 // indirect
+	github.com/tendermint/go-amino v0.14.0
 	github.com/tendermint/iavl v0.11.1 // indirect
 	github.com/tendermint/tendermint v0.26.1
 	github.com/zondax/ledger-goclient v0.1.0 // indirect

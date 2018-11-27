@@ -6,6 +6,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/server"
 	"github.com/cybercongress/cyberd/cosmos/poc/app"
 	"github.com/cybercongress/cyberd/cosmos/poc/app/rank"
+	initCyberd "github.com/cybercongress/cyberd/cosmos/poc/cyberd/init"
 	"github.com/cybercongress/cyberd/cosmos/poc/cyberd/rpc"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -20,8 +21,6 @@ import (
 )
 
 const (
-	flagClientHome = "home-client"
-	flagAccsCount  = "accs-count"
 	flagGpuEnabled = "compute-rank-on-gpu"
 )
 
@@ -37,12 +36,15 @@ func main() {
 		PersistentPreRunE: server.PersistentPreRunEFn(ctx),
 	}
 
-	cyberdAppInit := server.AppInit{
-		AppGenState: CyberdAppGenState,
-	}
+	appInit := app.CyberdAppInit()
 
-	rootCmd.AddCommand(InitCmd(ctx, cdc, cyberdAppInit))
-	server.AddCommands(ctx, cdc, rootCmd, cyberdAppInit, newApp, exportAppStateAndTMValidators)
+	rootCmd.AddCommand(initCyberd.InitCmd(ctx, cdc, appInit))
+	rootCmd.AddCommand(initCyberd.GenerateAccountCmd())
+	rootCmd.AddCommand(initCyberd.CollectGenTxsCmd(ctx, cdc))
+	rootCmd.AddCommand(initCyberd.TestnetFilesCmd(ctx, cdc, server.AppInit{}))
+	rootCmd.AddCommand(initCyberd.GenTxCmd(ctx, cdc))
+	rootCmd.AddCommand(initCyberd.AddGenesisAccountCmd(ctx, cdc))
+	server.AddCommands(ctx, cdc, rootCmd, appInit, newApp, exportAppStateAndTMValidators)
 
 	for _, c := range rootCmd.Commands() {
 		if c.Use == "start" {

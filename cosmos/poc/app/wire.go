@@ -6,6 +6,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/bank"
 	"github.com/cosmos/cosmos-sdk/x/ibc"
+	"github.com/cosmos/cosmos-sdk/x/slashing"
+	"github.com/cosmos/cosmos-sdk/x/stake"
 )
 
 // Register concrete types on codec
@@ -29,6 +31,8 @@ func MakeCodec() *codec.Codec {
 	bank.RegisterCodec(cdc)
 	ibc.RegisterCodec(cdc)
 	auth.RegisterCodec(cdc)
+	stake.RegisterCodec(cdc)
+	slashing.RegisterCodec(cdc)
 	RegisterCodec(cdc)
 
 	cdc.Seal()
