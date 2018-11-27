@@ -27,13 +27,13 @@ const (
 	defaultCommissionMaxChangeRate = "0.01"
 )
 
-// GenTxCmd builds the gaiad gentx command.
+// GenTxCmd builds the cyberd gentx command.
 // nolint: errcheck
 func GenTxCmd(ctx *server.Context, cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "gentx",
 		Short: "Generate a genesis tx carrying a self delegation",
-		Long: fmt.Sprintf(`This command is an alias of the 'gaiad tx create-validator' command'.
+		Long: fmt.Sprintf(`This command is an alias of the 'cyberdcli create-validator' command'.
 
 It creates a genesis piece carrying a self delegation with the
 following delegation and commission default parameters:
@@ -67,7 +67,7 @@ following delegation and commission default parameters:
 					return err
 				}
 			}
-			// Run gaiad tx create-validator
+			// Run cyberd create-validator
 			prepareFlagsForTxCreateValidator(config, nodeID, ip, genDoc.ChainID, valPubKey)
 			createValidatorCmd := cli.GetCmdCreateValidator(cdc)
 

@@ -89,7 +89,7 @@ func CyberdAppInit() server.AppInit {
 	}
 }
 
-// Create the core parameters for genesis initialization for gaia
+// Create the core parameters for genesis initialization for cyberd
 // note that the pubkey input is this machines pubkey
 func CyberdAppGenState(cdc *codec.Codec, genDoc tmtypes.GenesisDoc, appGenTxs []json.RawMessage) (
 	genesisState GenesisState, err error) {
@@ -134,7 +134,7 @@ func CyberdAppGenState(cdc *codec.Codec, genDoc tmtypes.GenesisDoc, appGenTxs []
 	return genesisState, nil
 }
 
-// NewDefaultGenesisState generates the default state for gaia.
+// NewDefaultGenesisState generates the default state for cyberd.
 func NewDefaultGenesisState() GenesisState {
 	return GenesisState{
 		Accounts:     nil,
