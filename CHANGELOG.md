@@ -19,6 +19,7 @@
 
 **Merged pull requests:**
 
+- Small fixes for validators joining [\#98](https://github.com/cybercongress/cyberd/pull/98) ([arturalbov](https://github.com/arturalbov))
 - Remove poc folder [\#97](https://github.com/cybercongress/cyberd/pull/97) ([hleb-albau](https://github.com/hleb-albau))
 - Add possibility to join for new validators [\#96](https://github.com/cybercongress/cyberd/pull/96) ([arturalbov](https://github.com/arturalbov))
 - Calculate eth network significance [\#85](https://github.com/cybercongress/cyberd/pull/85) ([hleb-albau](https://github.com/hleb-albau))
