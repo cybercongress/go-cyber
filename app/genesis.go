@@ -6,11 +6,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/server"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/pkg/errors"
-
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/slashing"
 	"github.com/cosmos/cosmos-sdk/x/stake"
+	"github.com/pkg/errors"
 	tmtypes "github.com/tendermint/tendermint/types"
 	"io/ioutil"
 	"os"
@@ -137,8 +136,11 @@ func CyberdAppGenState(cdc *codec.Codec, genDoc tmtypes.GenesisDoc, appGenTxs []
 // NewDefaultGenesisState generates the default state for cyberd.
 func NewDefaultGenesisState() GenesisState {
 	return GenesisState{
-		Accounts:     nil,
-		StakeData:    stake.DefaultGenesisState(),
+		Accounts: nil,
+		StakeData: stake.GenesisState{
+			Pool:   stake.InitialPool(),
+			Params: DefaultStakeParams(),
+		},
 		SlashingData: slashing.DefaultGenesisState(),
 		GenTxs:       nil,
 	}
