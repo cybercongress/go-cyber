@@ -28,8 +28,8 @@ import (
 )
 
 const (
-	APP     = "cyberd"
-	appName = "CyberdApp"
+	APP            = "cyberd"
+	appName        = "CyberdApp"
 	DefaultKeyPass = "12345678"
 )
 

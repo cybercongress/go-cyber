@@ -1,7 +1,7 @@
 FROM golang:1.11-alpine as builder
 
 WORKDIR $GOPATH/src/github.com/cybercongress/cyberd/cosmos/poc
-COPY . .
+COPY cosmos/poc .
 
 RUN apk add --no-cache git
 
@@ -21,8 +21,8 @@ COPY --from=builder /go/bin/cyberdproxy /usr/bin/cyberdproxy
 COPY start_script.sh start_script.sh
 RUN chmod +x start_script.sh
 
-COPY ./testnet/genesis.json /genesis.json
-COPY ./testnet/config.toml /config.toml
+COPY testnet /genesis.json
+COPY testnet /config.toml
 
 EXPOSE 26656 26657 26660
 

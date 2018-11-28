@@ -26,7 +26,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	viper.SetDefault("home", homeDir + "/.cyberdcli")
+	viper.SetDefault("home", homeDir+"/.cyberdcli")
 
 	if err := cyberdclaim.Execute(); err != nil {
 		fmt.Println(err)
@@ -41,4 +41,3 @@ func getHomeDir() (string, error) {
 	}
 	return home, nil
 }
-
