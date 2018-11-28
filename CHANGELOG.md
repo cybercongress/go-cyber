@@ -11,11 +11,15 @@
 
 **Closed issues:**
 
+- Make up cyberd landing [\#87](https://github.com/cybercongress/cyberd/issues/87)
+- Calculate rank using GPU [\#74](https://github.com/cybercongress/cyberd/issues/74)
 - Create basic wiki cyberd indexer [\#71](https://github.com/cybercongress/cyberd/issues/71)
 - Create cyberd PoC based on Cosmos SDK [\#37](https://github.com/cybercongress/cyberd/issues/37)
+- Draw logo for cyberd [\#16](https://github.com/cybercongress/cyberd/issues/16)
 
 **Merged pull requests:**
 
+- Add possibility to join for new validators [\#96](https://github.com/cybercongress/cyberd/pull/96) ([arturalbov](https://github.com/arturalbov))
 - Calculate eth network significance [\#85](https://github.com/cybercongress/cyberd/pull/85) ([hleb-albau](https://github.com/hleb-albau))
 - 74 gpu rank calculation [\#83](https://github.com/cybercongress/cyberd/pull/83) ([hleb-albau](https://github.com/hleb-albau))
 - Remove 'cosmosaccaddr' prefix from cyberd address [\#82](https://github.com/cybercongress/cyberd/pull/82) ([arturalbov](https://github.com/arturalbov))
