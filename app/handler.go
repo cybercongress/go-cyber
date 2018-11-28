@@ -3,8 +3,8 @@ package app
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
-	. "github.com/cybercongress/cyberd/cosmos/poc/app/storage"
-	cbd "github.com/cybercongress/cyberd/cosmos/poc/app/types"
+	. "github.com/cybercongress/cyberd/app/storage"
+	cbd "github.com/cybercongress/cyberd/app/types"
 )
 
 // NewHandler returns a handler for "link" type messages.

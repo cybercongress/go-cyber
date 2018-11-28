@@ -4,9 +4,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	. "github.com/cosmos/cosmos-sdk/x/bank"
-	"github.com/cybercongress/cyberd/cosmos/poc/app/coin"
-	"github.com/cybercongress/cyberd/cosmos/poc/app/storage"
-	cbd "github.com/cybercongress/cyberd/cosmos/poc/app/types"
+	"github.com/cybercongress/cyberd/app/coin"
+	"github.com/cybercongress/cyberd/app/storage"
+	cbd "github.com/cybercongress/cyberd/app/types"
 	"reflect"
 )
 

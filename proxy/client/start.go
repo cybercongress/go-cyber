@@ -3,7 +3,7 @@ package client
 import (
 	"fmt"
 	"github.com/TV4/graceful"
-	"github.com/cybercongress/cyberd/cosmos/poc/proxy/core"
+	"github.com/cybercongress/cyberd/proxy/core"
 	"github.com/rs/cors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"

@@ -3,8 +3,8 @@ package client
 import (
 	"fmt"
 	"github.com/TV4/graceful"
-	"github.com/cybercongress/cyberd/cosmos/poc/claim/common"
-	"github.com/cybercongress/cyberd/cosmos/poc/claim/context"
+	"github.com/cybercongress/cyberd/claim/common"
+	"github.com/cybercongress/cyberd/claim/context"
 	"github.com/rs/cors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"

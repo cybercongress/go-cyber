@@ -1,7 +1,7 @@
 package core
 
 import (
-	"github.com/cybercongress/cyberd/cosmos/poc/http/util"
+	"github.com/cybercongress/cyberd/http/util"
 	"net/http"
 	"net/url"
 )

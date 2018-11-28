@@ -2,7 +2,7 @@ package init
 
 import (
 	"encoding/json"
-	"github.com/cybercongress/cyberd/cosmos/poc/app"
+	"github.com/cybercongress/cyberd/app"
 	"path/filepath"
 
 	"github.com/cosmos/cosmos-sdk/client"

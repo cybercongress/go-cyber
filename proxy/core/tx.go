@@ -2,7 +2,7 @@ package core
 
 import (
 	"github.com/cosmos/cosmos-sdk/x/auth"
-	"github.com/cybercongress/cyberd/cosmos/poc/http/util"
+	"github.com/cybercongress/cyberd/http/util"
 	"io/ioutil"
 	"net/http"
 )

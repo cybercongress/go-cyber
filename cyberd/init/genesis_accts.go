@@ -2,7 +2,7 @@ package init
 
 import (
 	"fmt"
-	"github.com/cybercongress/cyberd/cosmos/poc/app"
+	"github.com/cybercongress/cyberd/app"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/server"

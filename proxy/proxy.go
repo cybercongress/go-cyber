@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/cybercongress/cyberd/cosmos/poc/proxy/client"
+	"github.com/cybercongress/cyberd/proxy/client"
 	"github.com/spf13/cobra"
 	"os"
 )

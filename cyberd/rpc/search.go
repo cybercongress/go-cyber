@@ -1,6 +1,6 @@
 package rpc
 
-import "github.com/cybercongress/cyberd/cosmos/poc/app/storage"
+import "github.com/cybercongress/cyberd/app/storage"
 
 type ResultSearch struct {
 	Cids       []storage.RankedCid `json:"cids"`

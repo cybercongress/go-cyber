@@ -3,7 +3,7 @@ package storage
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
-	. "github.com/cybercongress/cyberd/cosmos/poc/app/types"
+	. "github.com/cybercongress/cyberd/app/types"
 	"github.com/pkg/errors"
 	cmn "github.com/tendermint/tendermint/libs/common"
 	"sort"

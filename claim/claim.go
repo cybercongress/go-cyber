@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/cybercongress/cyberd/cosmos/poc/claim/client"
+	"github.com/cybercongress/cyberd/claim/client"
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"

@@ -3,8 +3,8 @@
 package rank
 
 import (
-	. "github.com/cybercongress/cyberd/cosmos/poc/app/storage"
-	cbd "github.com/cybercongress/cyberd/cosmos/poc/app/types"
+	. "github.com/cybercongress/cyberd/app/storage"
+	cbd "github.com/cybercongress/cyberd/app/types"
 	"github.com/tendermint/tendermint/libs/log"
 	"time"
 )

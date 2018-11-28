@@ -7,8 +7,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authcmd "github.com/cosmos/cosmos-sdk/x/auth/client/cli"
 	authtxb "github.com/cosmos/cosmos-sdk/x/auth/client/txbuilder"
-	cbd "github.com/cybercongress/cyberd/cosmos/poc/app/types"
-	. "github.com/cybercongress/cyberd/cosmos/poc/cyberdcli/util"
+	cbd "github.com/cybercongress/cyberd/app/types"
+	. "github.com/cybercongress/cyberd/cyberdcli/util"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )

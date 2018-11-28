@@ -3,7 +3,7 @@ package init
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/cybercongress/cyberd/cosmos/poc/app"
+	"github.com/cybercongress/cyberd/app"
 	"io/ioutil"
 	"time"
 

@@ -17,9 +17,6 @@ github.com/btcsuite/btcd v0.0.0-20180903232927-cff30e1d23fc/go.mod h1:Dmm/EzmjnC
 github.com/btcsuite/btcutil v0.0.0-20180706230648-ab6388e0c60a h1:RQMUrEILyYJEoAT34XS/kLu40vC0+po/UfxrBBA4qZE=
 github.com/btcsuite/btcutil v0.0.0-20180706230648-ab6388e0c60a/go.mod h1:+5NJ2+qvTyV9exUAL/rxXi3DcLg2Ts+ymUAY5y4NvMg=
 github.com/client9/misspell v0.3.4/go.mod h1:qj6jICC3Q7zFZvVWo7KLAzC3yx5G7kyvSDkc90ppPyw=
-github.com/cosmos/cosmos-sdk v0.0.0-20181018195818-505c356f20d0 h1:CzP/5OIVq2/yFZ38jF/Sjior/YSy6XxYw97fLHdy6Xg=
-github.com/cosmos/cosmos-sdk v0.0.0-20181018195818-505c356f20d0/go.mod h1:JrX/JpJunJQXBI5PEX2zELHMFzQr/159jDjIhesOh2c=
-github.com/cosmos/cosmos-sdk v0.26.0/go.mod h1:JrX/JpJunJQXBI5PEX2zELHMFzQr/159jDjIhesOh2c=
 github.com/cosmos/cosmos-sdk v0.26.1-rc1 h1:OLFzEbZ9SJC9NaCaqyvSWev3YdhoI5NayX4lLxsqtGs=
 github.com/cosmos/cosmos-sdk v0.26.1-rc1/go.mod h1:JrX/JpJunJQXBI5PEX2zELHMFzQr/159jDjIhesOh2c=
 github.com/cosmos/go-bip39 v0.0.0-20180618194314-52158e4697b8 h1:Iwin12wRQtyZhH6FV3ykFcdGNlYEzoeR0jN8Vn+JWsI=

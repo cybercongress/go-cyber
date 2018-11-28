@@ -2,7 +2,7 @@ package app
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	cbd "github.com/cybercongress/cyberd/cosmos/poc/app/types"
+	cbd "github.com/cybercongress/cyberd/app/types"
 )
 
 type MsgLink struct {

@@ -13,8 +13,8 @@ import (
 	bankcmd "github.com/cosmos/cosmos-sdk/x/bank/client/cli"
 	slashingcmd "github.com/cosmos/cosmos-sdk/x/slashing/client/cli"
 	stakecmd "github.com/cosmos/cosmos-sdk/x/stake/client/cli"
-	"github.com/cybercongress/cyberd/cosmos/poc/app"
-	cyberdcmd "github.com/cybercongress/cyberd/cosmos/poc/cyberdcli/commands"
+	"github.com/cybercongress/cyberd/app"
+	cyberdcmd "github.com/cybercongress/cyberd/cyberdcli/commands"
 	"github.com/spf13/cobra"
 	"github.com/tendermint/tendermint/libs/cli"
 )

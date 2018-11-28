@@ -3,7 +3,7 @@ package core
 import (
 	"encoding/json"
 	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/cybercongress/cyberd/cosmos/poc/app"
+	"github.com/cybercongress/cyberd/app"
 	"github.com/tendermint/tendermint/rpc/client"
 	"io/ioutil"
 	"net/http"
