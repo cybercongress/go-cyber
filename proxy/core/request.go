@@ -24,15 +24,15 @@ type LinkRequest struct {
 	Memo       string        `json:"memo"`
 }
 
-func (r LinkRequest) GetFee() auth.StdFee { return r.Fee }
+func (r LinkRequest) GetFee() auth.StdFee        { return r.Fee }
 func (r LinkRequest) GetSignatures() []Signature { return r.Signatures }
-func (r LinkRequest) GetMemo() string { return r.Memo }
+func (r LinkRequest) GetMemo() string            { return r.Memo }
 func (r LinkRequest) GetMsgs() []types.Msg {
 	msgs := make([]types.Msg, 0, len(r.Msgs))
 	for _, msg := range r.Msgs {
 		msgs = append(msgs, msg)
 	}
-    return msgs
+	return msgs
 }
 
 func UnmarshalLinkRequest(reqBytes []byte) (TxRequest, error) {
@@ -45,21 +45,21 @@ func UnmarshalLinkRequest(reqBytes []byte) (TxRequest, error) {
 }
 
 type SendRequest struct {
-	Fee        auth.StdFee   `json:"fee"`
+	Fee        auth.StdFee    `json:"fee"`
 	Msgs       []bank.MsgSend `json:"msgs"`
-	Signatures []Signature   `json:"signatures"`
-	Memo       string        `json:"memo"`
+	Signatures []Signature    `json:"signatures"`
+	Memo       string         `json:"memo"`
 }
 
-func (r SendRequest) GetFee() auth.StdFee { return r.Fee }
+func (r SendRequest) GetFee() auth.StdFee        { return r.Fee }
 func (r SendRequest) GetSignatures() []Signature { return r.Signatures }
-func (r SendRequest) GetMemo() string { return r.Memo }
+func (r SendRequest) GetMemo() string            { return r.Memo }
 func (r SendRequest) GetMsgs() []types.Msg {
 	msgs := make([]types.Msg, 0, len(r.Msgs))
 	for _, msg := range r.Msgs {
 		msgs = append(msgs, msg)
 	}
-    return msgs
+	return msgs
 }
 
 func UnmarshalSendRequest(reqBytes []byte) (TxRequest, error) {
