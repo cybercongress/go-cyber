@@ -1,30 +1,34 @@
 package main
 
 import (
+	"github.com/cosmos/cosmos-sdk/client/tx"
+	"github.com/tendermint/go-amino"
 	"os"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/keys"
-	"github.com/cosmos/cosmos-sdk/client/lcd"
 	"github.com/cosmos/cosmos-sdk/client/rpc"
-	"github.com/cosmos/cosmos-sdk/client/tx"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/version"
-	authcmd "github.com/cosmos/cosmos-sdk/x/auth/client/cli"
-	bankcmd "github.com/cosmos/cosmos-sdk/x/bank/client/cli"
-	slashingcmd "github.com/cosmos/cosmos-sdk/x/slashing/client/cli"
-	stakecmd "github.com/cosmos/cosmos-sdk/x/stake/client/cli"
 	"github.com/cybercongress/cyberd/app"
 	cyberdcmd "github.com/cybercongress/cyberd/cyberdcli/commands"
 	"github.com/spf13/cobra"
 	"github.com/tendermint/tendermint/libs/cli"
+
+	authcmd "github.com/cosmos/cosmos-sdk/x/auth/client/cli"
+	bankcmd "github.com/cosmos/cosmos-sdk/x/bank/client/cli"
+	distClient "github.com/cosmos/cosmos-sdk/x/distribution/client"
+	govClient "github.com/cosmos/cosmos-sdk/x/gov/client"
+	slashingClient "github.com/cosmos/cosmos-sdk/x/slashing/client"
+	stakeClient "github.com/cosmos/cosmos-sdk/x/stake/client"
 )
 
-// cyberdcli is the entry point for this binary
-var (
-	cyberdcli = &cobra.Command{
-		Use:   "cyberdcli",
-		Short: "Cyberd node client",
-	}
+const (
+	storeAcc      = "acc"
+	storeGov      = "gov"
+	storeSlashing = "slashing"
+	storeStake    = "stake"
+	storeDist     = "distr"
 )
 
 func main() {
@@ -35,41 +39,33 @@ func main() {
 	cdc := app.MakeCodec()
 	app.SetPrefix()
 
-	// TODO: Setup keybase, viper object, etc. to be passed into
-	// the below functions and eliminate global vars, like we do
-	// with the cdc.
+	cyberdcli := &cobra.Command{
+		Use:   "gaiacli",
+		Short: "Command line interface for interacting with gaiad",
+	}
 
-	rpc.AddCommands(cyberdcli) // Node management commands
-	cyberdcli.AddCommand(client.LineBreak)
-	tx.AddCommands(cyberdcli, cdc) // Txs info commands
-	cyberdcli.AddCommand(client.LineBreak)
-	cyberdcli.AddCommand(rpc.BlockCommand()) // Block info command
-	cyberdcli.AddCommand(client.LineBreak)
+	mc := []sdk.ModuleClients{
+		govClient.NewModuleClient(storeGov, cdc),
+		distClient.NewModuleClient(storeDist, cdc),
+		stakeClient.NewModuleClient(storeStake, cdc),
+		slashingClient.NewModuleClient(storeSlashing, cdc),
+	}
 
+	// Construct Root Command
 	cyberdcli.AddCommand(
-		client.GetCommands(
-			authcmd.GetAccountCmd("acc", cdc, app.GetAccountDecoder(cdc)),
-		)...)
+		rpc.StatusCommand(),
+		client.ConfigCmd(),
+		queryCmd(cdc, mc),
+		txCmd(cdc, mc),
+		keys.Commands(),
+		client.LineBreak,
+		version.VersionCmd,
+	)
 
 	cyberdcli.AddCommand(
 		client.PostCommands(
 			cyberdcmd.LinkTxCmd(cdc),
-			bankcmd.SendTxCmd(cdc),
-			stakecmd.GetCmdCreateValidator(cdc),
-			stakecmd.GetCmdEditValidator(cdc),
-			stakecmd.GetCmdDelegate(cdc),
-			stakecmd.GetCmdRedelegate("stake", cdc),
-			stakecmd.GetCmdUnbond("stake", cdc),
-			slashingcmd.GetCmdUnjail(cdc),
 		)...)
-
-	cyberdcli.AddCommand(
-		client.LineBreak,
-		lcd.ServeCommand(cdc), // Commands to start local rpc proxy to node
-		keys.Commands(),       // Commands to generate and handle keys
-		client.LineBreak,
-		version.VersionCmd,
-	)
 
 	executor := cli.PrepareMainCmd(cyberdcli, "CBD", os.ExpandEnv("$HOME/.cyberdcli"))
 	err := executor.Execute()
@@ -77,4 +73,48 @@ func main() {
 		// Note: Handle with #870
 		panic(err)
 	}
+}
+
+func queryCmd(cdc *amino.Codec, mc []sdk.ModuleClients) *cobra.Command {
+	queryCmd := &cobra.Command{
+		Use:     "query",
+		Aliases: []string{"q"},
+		Short:   "Querying subcommands",
+	}
+
+	queryCmd.AddCommand(
+		rpc.ValidatorCommand(),
+		rpc.BlockCommand(),
+		tx.SearchTxCmd(cdc),
+		tx.QueryTxCmd(cdc),
+		client.LineBreak,
+		authcmd.GetAccountCmd(storeAcc, cdc),
+	)
+
+	for _, m := range mc {
+		queryCmd.AddCommand(m.GetQueryCmd())
+	}
+
+	return queryCmd
+}
+
+func txCmd(cdc *amino.Codec, mc []sdk.ModuleClients) *cobra.Command {
+	txCmd := &cobra.Command{
+		Use:   "tx",
+		Short: "Transactions subcommands",
+	}
+
+	txCmd.AddCommand(
+		bankcmd.SendTxCmd(cdc),
+		client.LineBreak,
+		authcmd.GetSignCommand(cdc),
+		bankcmd.GetBroadcastCommand(cdc),
+		client.LineBreak,
+	)
+
+	for _, m := range mc {
+		txCmd.AddCommand(m.GetTxCmd())
+	}
+
+	return txCmd
 }

@@ -22,8 +22,8 @@ type ClaimContext struct {
 	CliContext    cli.CLIContext
 	ipClaims      map[string]int
 	Mtx           *sync.Mutex
-	Sequence      *int64
-	AccountNumber int64
+	Sequence      *uint64
+	AccountNumber uint64
 }
 
 func NewClaimContext() (ClaimContext, error) {
@@ -35,7 +35,7 @@ func NewClaimContext() (ClaimContext, error) {
 
 	cliCtx := newCLIContext(name, chainId, viper.GetString(common.FlagNode)).
 		WithCodec(cdc).
-		WithAccountDecoder(app.GetAccountDecoder(cdc))
+		WithAccountDecoder(cdc)
 
 	address, err := types.AccAddressFromBech32(viper.GetString(common.FlagAddress))
 	if err != nil {

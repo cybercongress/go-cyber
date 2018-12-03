@@ -25,14 +25,14 @@ func NewLinksHandler(cis CidIndexStorage, ls LinksStorage, imms *InMemoryStorage
 		link := cbd.NewLink(fromCidNumber, toCidNumber, accNumber)
 
 		if ls.IsLinkExist(ctx, link) {
-			return sdk.Result{Code: cbd.LinkAlreadyExistsCode()}
+			return sdk.Result{Code: cbd.CodeLinkAlreadyExist, Codespace: cbd.CodespaceCbd}
 		}
 
 		if !ctx.IsCheckTx() {
 			imms.AddLink(link)
 		}
 
-		return sdk.Result{Code: sdk.ABCICodeOK}
+		return sdk.Result{Code: cbd.CodeOK, Codespace: cbd.CodespaceCbd}
 	}
 }
 

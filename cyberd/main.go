@@ -30,21 +30,20 @@ func main() {
 	app.SetPrefix()
 	ctx := server.NewDefaultContext()
 
+	cobra.EnableCommandSorting = false
 	rootCmd := &cobra.Command{
 		Use:               "cyberd",
 		Short:             "Cyberd Daemon (server)",
 		PersistentPreRunE: server.PersistentPreRunEFn(ctx),
 	}
 
-	appInit := app.CyberdAppInit()
-
-	rootCmd.AddCommand(initCyberd.InitCmd(ctx, cdc, appInit))
+	rootCmd.AddCommand(initCyberd.InitCmd(ctx, cdc))
 	rootCmd.AddCommand(initCyberd.GenerateAccountCmd())
 	rootCmd.AddCommand(initCyberd.CollectGenTxsCmd(ctx, cdc))
-	rootCmd.AddCommand(initCyberd.TestnetFilesCmd(ctx, cdc, server.AppInit{}))
+	rootCmd.AddCommand(initCyberd.TestnetFilesCmd(ctx, cdc))
 	rootCmd.AddCommand(initCyberd.GenTxCmd(ctx, cdc))
 	rootCmd.AddCommand(initCyberd.AddGenesisAccountCmd(ctx, cdc))
-	server.AddCommands(ctx, cdc, rootCmd, appInit, newApp, exportAppStateAndTMValidators)
+	server.AddCommands(ctx, cdc, rootCmd, newApp, exportAppStateAndTMValidators)
 
 	for _, c := range rootCmd.Commands() {
 		if c.Use == "start" {
@@ -74,7 +73,10 @@ func newApp(logger log.Logger, db dbm.DB, storeTracer io.Writer) abci.Applicatio
 	return cyberdApp
 }
 
-func exportAppStateAndTMValidators(logger log.Logger, db dbm.DB, storeTracer io.Writer) (json.RawMessage, []tmtypes.GenesisValidator, error) {
+func exportAppStateAndTMValidators(
+	logger log.Logger, db dbm.DB, traceStore io.Writer, height int64, forZeroHeight bool,
+) (json.RawMessage, []tmtypes.GenesisValidator, error) {
+
 	capp := app.NewCyberdApp(logger, db, rank.CPU)
 	return capp.ExportAppStateAndValidators()
 }
