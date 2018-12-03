@@ -132,13 +132,13 @@ func NewCyberdApp(
 		app.cdc, dbKeys.stake,
 		dbKeys.tStake, app.coinKeeper,
 		app.paramsKeeper.Subspace(stake.DefaultParamspace),
-		app.RegisterCodespace(stake.DefaultCodespace),
+		stake.DefaultCodespace,
 	)
 	app.slashingKeeper = slashing.NewKeeper(
 		app.cdc,
 		dbKeys.slashing,
 		&stakeKeeper, app.paramsKeeper.Subspace(slashing.DefaultParamspace),
-		app.RegisterCodespace(slashing.DefaultCodespace),
+		slashing.DefaultCodespace,
 	)
 	app.memStorage = &InMemoryStorage{}
 
@@ -164,7 +164,7 @@ func NewCyberdApp(
 	app.SetAnteHandler(auth.NewAnteHandler(app.accountKeeper, app.feeCollectionKeeper))
 
 	// mount the multistore and load the latest state
-	app.MountStoresIAVL(dbKeys.main, dbKeys.acc, dbKeys.cidIndex, dbKeys.links, dbKeys.rank, dbKeys.stake,
+	app.MountStores(dbKeys.main, dbKeys.acc, dbKeys.cidIndex, dbKeys.links, dbKeys.rank, dbKeys.stake,
 		dbKeys.slashing, dbKeys.params)
 	app.MountStoresTransient(dbKeys.tParams, dbKeys.tStake)
 	err := app.LoadLatestVersion(dbKeys.main)
@@ -294,9 +294,10 @@ func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.R
 	app.memStorage.UpdateRank(newRank)
 	app.mainStorage.StoreAppHash(ctx, hash[:])
 
-	validatorUpdates := stake.EndBlocker(ctx, app.stakeKeeper)
+	validatorUpdates, tags := stake.EndBlocker(ctx, app.stakeKeeper)
 	return abci.ResponseEndBlock{
 		ValidatorUpdates: validatorUpdates,
+		Tags:             tags,
 	}
 }
 

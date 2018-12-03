@@ -13,7 +13,7 @@ const (
 	CodeCidNotFound      sdk.CodeType = 3
 
 	// Code space
-	CodespaceCBD sdk.CodespaceType = 42
+	CodespaceCbd sdk.CodespaceType = "cyberd"
 )
 
 func codeToDefaultMsg(code sdk.CodeType) string {
@@ -30,21 +30,14 @@ func codeToDefaultMsg(code sdk.CodeType) string {
 }
 
 //----------------------------------------
-// Code constructors
-
-func LinkAlreadyExistsCode() sdk.ABCICodeType {
-	return sdk.ToABCICode(CodespaceCBD, CodeLinkAlreadyExist)
-}
-
-//----------------------------------------
 // Error constructors
 
 func ErrInvalidCid() sdk.Error {
-	return newError(CodespaceCBD, CodeInvalidCid)
+	return newError(CodespaceCbd, CodeInvalidCid)
 }
 
 func ErrCidNotFound() sdk.Error {
-	return newError(CodespaceCBD, CodeCidNotFound)
+	return newError(CodespaceCbd, CodeCidNotFound)
 }
 
 func newError(codespace sdk.CodespaceType, code sdk.CodeType) sdk.Error {

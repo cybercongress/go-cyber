@@ -7,7 +7,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/keys"
 	cskeys "github.com/cosmos/cosmos-sdk/crypto/keys"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	authcmd "github.com/cosmos/cosmos-sdk/x/auth/client/cli"
 	authtxb "github.com/cosmos/cosmos-sdk/x/auth/client/txbuilder"
 	"github.com/cybercongress/cyberd/app"
 	cbd "github.com/cybercongress/cyberd/app/types"
@@ -28,7 +27,7 @@ func InitAddLink() func([]Link) {
 	cdc := app.MakeCodec()
 	cliCtx := newCLIContext(name, chainId).
 		WithCodec(cdc).
-		WithAccountDecoder(authcmd.GetAccountDecoder(cdc))
+		WithAccountDecoder(cdc)
 
 	accountNumber, _ := cliCtx.GetAccountNumber(addr)
 	seq, _ := cliCtx.GetAccountSequence(addr)

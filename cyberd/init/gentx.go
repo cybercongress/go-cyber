@@ -84,7 +84,7 @@ following delegation and commission default parameters:
 			w.Close()
 
 			prepareFlagsForTxSign()
-			signCmd := authcmd.GetSignCommand(cdc, authcmd.GetAccountDecoder(cdc))
+			signCmd := authcmd.GetSignCommand(cdc)
 			if w, err = prepareOutputFile(config.RootDir, nodeID); err != nil {
 				return err
 			}

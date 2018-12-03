@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/cosmos/cosmos-sdk/server"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/slashing"
 	"github.com/cosmos/cosmos-sdk/x/stake"
+	"github.com/cybercongress/cyberd/app/coin"
 	"github.com/pkg/errors"
 	tmtypes "github.com/tendermint/tendermint/types"
 	"io/ioutil"
@@ -16,13 +16,6 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
-)
-
-var (
-	// bonded tokens given to genesis validators/accounts
-	freeFermionVal  = int64(100)
-	freeFermionsAcc = sdk.NewInt(150)
-	bondDenom       = "CBD"
 )
 
 // State to Unmarshal
@@ -48,8 +41,8 @@ type GenesisAccount struct {
 	Name          string         `json:"name"`
 	Address       sdk.AccAddress `json:"address"`
 	Coins         sdk.Coins      `json:"coins"`
-	Sequence      int64          `json:"sequence_number"`
-	AccountNumber int64          `json:"account_number"`
+	Sequence      uint64         `json:"sequence_number"`
+	AccountNumber uint64         `json:"account_number"`
 }
 
 func NewGenesisAccount(acc *auth.BaseAccount) GenesisAccount {
@@ -80,14 +73,6 @@ func (ga *GenesisAccount) ToAccount() (acc *auth.BaseAccount) {
 	}
 }
 
-// get app init parameters for server init command
-func CyberdAppInit() server.AppInit {
-
-	return server.AppInit{
-		AppGenState: CyberdAppGenStateJSON,
-	}
-}
-
 // Create the core parameters for genesis initialization for cyberd
 // note that the pubkey input is this machines pubkey
 func CyberdAppGenState(cdc *codec.Codec, genDoc tmtypes.GenesisDoc, appGenTxs []json.RawMessage) (
@@ -115,16 +100,15 @@ func CyberdAppGenState(cdc *codec.Codec, genDoc tmtypes.GenesisDoc, appGenTxs []
 		}
 		if _, ok := msgs[0].(stake.MsgCreateValidator); !ok {
 			return genesisState, fmt.Errorf(
-				"Genesis transaction %v does not contain a MsgCreateValidator", i)
+				"genesis transaction %v does not contain a MsgCreateValidator", i)
 		}
 	}
 
 	for _, acc := range genesisState.Accounts {
-		// create the genesis account, give'm few steaks and a buncha token with there name
-		for _, coin := range acc.Coins {
-			if coin.Denom == bondDenom {
+		for _, c := range acc.Coins {
+			if c.Denom == coin.CBD {
 				stakeData.Pool.LooseTokens = stakeData.Pool.LooseTokens.
-					Add(sdk.NewDecFromInt(coin.Amount)) // increase the supply
+					Add(sdk.NewDecFromInt(c.Amount)) // increase the supply
 			}
 		}
 	}

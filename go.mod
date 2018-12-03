@@ -11,7 +11,7 @@ require (
 	github.com/bgentry/speakeasy v0.1.0 // indirect
 	github.com/btcsuite/btcd v0.0.0-20180903232927-cff30e1d23fc // indirect
 	github.com/btcsuite/btcutil v0.0.0-20180706230648-ab6388e0c60a // indirect
-	github.com/cosmos/cosmos-sdk v0.26.1-rc1
+	github.com/cosmos/cosmos-sdk v0.27.0
 	github.com/cosmos/go-bip39 v0.0.0-20180618194314-52158e4697b8
 	github.com/ebuchman/fail-test v0.0.0-20170303061230-95f809107225 // indirect
 	github.com/fortytw2/leaktest v1.2.0 // indirect
@@ -51,12 +51,12 @@ require (
 	github.com/spf13/pflag v1.0.2
 	github.com/spf13/viper v1.0.0
 	github.com/stretchr/testify v1.2.1 // indirect
-	github.com/syndtr/goleveldb v0.0.0-20180815032940-ae2bd5eed72d // indirect
+	github.com/syndtr/goleveldb v0.0.0-20180708030551-c4c61651e9e3 // indirect
 	github.com/tendermint/btcd v0.0.0-20180816174608-e5840949ff4f // indirect
 	github.com/tendermint/ed25519 v0.0.0-20171027050219-d8387025d2b9 // indirect
-	github.com/tendermint/go-amino v0.14.0
-	github.com/tendermint/iavl v0.11.1 // indirect
-	github.com/tendermint/tendermint v0.26.1
+	github.com/tendermint/go-amino v0.14.1
+	github.com/tendermint/iavl v0.12.0 // indirect
+	github.com/tendermint/tendermint v0.27.0-dev1
 	github.com/zondax/ledger-goclient v0.1.0 // indirect
 	golang.org/x/crypto v0.0.0-20181015023909-0c41d7ab0a0e // indirect
 	golang.org/x/net v0.0.0-20180911220305-26e67e76b6c3 // indirect
