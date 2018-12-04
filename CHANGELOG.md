@@ -7,6 +7,7 @@
 **Implemented enhancements:**
 
 - Update to cosmos-sdk version 0.26.1 [\#79](https://github.com/cybercongress/cyberd/issues/79)
+- Build node releases with cleveldb [\#59](https://github.com/cybercongress/cyberd/issues/59)
 - Remove 'cosmosaccaddr' prefix from cyberd address [\#39](https://github.com/cybercongress/cyberd/issues/39)
 
 **Closed issues:**
@@ -19,6 +20,7 @@
 
 **Merged pull requests:**
 
+- Update cosmos to 0.27.0 [\#100](https://github.com/cybercongress/cyberd/pull/100) ([hleb-albau](https://github.com/hleb-albau))
 - Small fixes for validators joining [\#98](https://github.com/cybercongress/cyberd/pull/98) ([arturalbov](https://github.com/arturalbov))
 - Remove poc folder [\#97](https://github.com/cybercongress/cyberd/pull/97) ([hleb-albau](https://github.com/hleb-albau))
 - Add possibility to join for new validators [\#96](https://github.com/cybercongress/cyberd/pull/96) ([arturalbov](https://github.com/arturalbov))
