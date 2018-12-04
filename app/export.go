@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/x/auth"
+	"github.com/cosmos/cosmos-sdk/x/distribution"
 	"github.com/cosmos/cosmos-sdk/x/slashing"
 	"github.com/cosmos/cosmos-sdk/x/stake"
 	abci "github.com/tendermint/tendermint/abci/types"
@@ -28,6 +29,7 @@ func (app *CyberdApp) ExportAppStateAndValidators() (appState json.RawMessage, v
 	genState := NewGenesisState(
 		accounts,
 		stake.ExportGenesis(ctx, app.stakeKeeper),
+		distribution.ExportGenesis(ctx, app.distrKeeper),
 		slashing.ExportGenesis(ctx, app.slashingKeeper),
 	)
 	appState, err = codec.MarshalJSONIndent(app.cdc, genState)

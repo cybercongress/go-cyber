@@ -8,6 +8,7 @@ import (
 var lastCidNumberKey = []byte("cyberd_last_cid_number")
 var linksCountKey = []byte("cyberd_links_count")
 var lastAppHashKey = []byte("cyberd_app_hash")
+var genesisSupplyKey = []byte("cyberd_genesis_supply")
 
 type MainStorage struct {
 	key *sdk.KVStoreKey
@@ -47,6 +48,19 @@ func (ms MainStorage) IncrementLinksCount(ctx sdk.Context) {
 	binary.LittleEndian.PutUint64(linksCountAsBytes, linksCount)
 	mainStore.Set(linksCountKey, linksCountAsBytes)
 
+}
+
+func (ms MainStorage) SetGenesisSupply(ctx sdk.Context, supply uint64) {
+	mainStore := ctx.KVStore(ms.key)
+	supplyAsBytes := make([]byte, 8)
+	binary.LittleEndian.PutUint64(supplyAsBytes, supply)
+	mainStore.Set(genesisSupplyKey, supplyAsBytes)
+}
+
+func (ms MainStorage) GetGenesisSupply(ctx sdk.Context) uint64 {
+	mainStore := ctx.KVStore(ms.key)
+	supplyAsBytes := mainStore.Get(genesisSupplyKey)
+	return binary.LittleEndian.Uint64(supplyAsBytes)
 }
 
 func (ms MainStorage) SetLastCidIndex(ctx sdk.Context, cidsCount []byte) {

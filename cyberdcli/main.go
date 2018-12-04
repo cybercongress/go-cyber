@@ -40,8 +40,8 @@ func main() {
 	app.SetPrefix()
 
 	cyberdcli := &cobra.Command{
-		Use:   "gaiacli",
-		Short: "Command line interface for interacting with gaiad",
+		Use:   "cyberdcli",
+		Short: "Command line interface for interacting with cyberd",
 	}
 
 	mc := []sdk.ModuleClients{
