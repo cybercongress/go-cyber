@@ -8,5 +8,5 @@ import (
 )
 
 func calculateRankGPU(data *InMemoryStorage, logger log.Logger) ([]float64, int) {
-	panic("Not Supported")
+	panic("Daemon compiled without gpu support, but started in gpu mode")
 }

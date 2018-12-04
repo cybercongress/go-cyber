@@ -9,6 +9,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/bank"
+	distr "github.com/cosmos/cosmos-sdk/x/distribution"
 	"github.com/cosmos/cosmos-sdk/x/params"
 	"github.com/cosmos/cosmos-sdk/x/slashing"
 	"github.com/cosmos/cosmos-sdk/x/stake"
@@ -17,6 +18,7 @@ import (
 	"github.com/cybercongress/cyberd/app/rank"
 	. "github.com/cybercongress/cyberd/app/storage"
 	cbd "github.com/cybercongress/cyberd/app/types"
+	"github.com/cybercongress/cyberd/x/mint"
 	abci "github.com/tendermint/tendermint/abci/types"
 	cmn "github.com/tendermint/tendermint/libs/common"
 	dbm "github.com/tendermint/tendermint/libs/db"
@@ -48,6 +50,8 @@ type CyberdAppDbKeys struct {
 	rank     *sdk.KVStoreKey
 	stake    *sdk.KVStoreKey
 	tStake   *sdk.TransientStoreKey
+	fees     *sdk.KVStoreKey
+	keyDistr *sdk.KVStoreKey
 	slashing *sdk.KVStoreKey
 	params   *sdk.KVStoreKey
 	tParams  *sdk.TransientStoreKey
@@ -68,10 +72,14 @@ type CyberdApp struct {
 	mainStorage         MainStorage
 	accountKeeper       auth.AccountKeeper
 	feeCollectionKeeper auth.FeeCollectionKeeper
-	coinKeeper          bank.Keeper
+	bankKeeper          bank.Keeper
 	stakeKeeper         stake.Keeper
 	slashingKeeper      slashing.Keeper
+	distrKeeper         distr.Keeper
 	paramsKeeper        params.Keeper
+
+	//inflation
+	minter mint.Minter
 
 	// cyberd storages
 	persistStorages CyberdPersistentStorages
@@ -101,7 +109,9 @@ func NewCyberdApp(
 		links:    sdk.NewKVStoreKey("links"),
 		rank:     sdk.NewKVStoreKey("rank"),
 		stake:    sdk.NewKVStoreKey("stake"),
+		fees:     sdk.NewKVStoreKey("fee"),
 		tStake:   sdk.NewTransientStoreKey("transient_stake"),
+		keyDistr: sdk.NewKVStoreKey("distr"),
 		slashing: sdk.NewKVStoreKey("slashing"),
 		params:   sdk.NewKVStoreKey("params"),
 		tParams:  sdk.NewTransientStoreKey("transient_params"),
@@ -126,20 +136,29 @@ func NewCyberdApp(
 
 	// define and attach the mappers and keepers
 	app.accountKeeper = auth.NewAccountKeeper(app.cdc, dbKeys.acc, NewAccount)
-	app.coinKeeper = bank.NewBaseKeeper(app.accountKeeper)
+	app.bankKeeper = bank.NewBaseKeeper(app.accountKeeper)
 	app.paramsKeeper = params.NewKeeper(app.cdc, dbKeys.params, dbKeys.tParams)
+	app.feeCollectionKeeper = auth.NewFeeCollectionKeeper(app.cdc, dbKeys.fees)
+
 	stakeKeeper := stake.NewKeeper(
 		app.cdc, dbKeys.stake,
-		dbKeys.tStake, app.coinKeeper,
+		dbKeys.tStake, app.bankKeeper,
 		app.paramsKeeper.Subspace(stake.DefaultParamspace),
 		stake.DefaultCodespace,
 	)
 	app.slashingKeeper = slashing.NewKeeper(
-		app.cdc,
-		dbKeys.slashing,
+		app.cdc, dbKeys.slashing,
 		&stakeKeeper, app.paramsKeeper.Subspace(slashing.DefaultParamspace),
 		slashing.DefaultCodespace,
 	)
+	app.distrKeeper = distr.NewKeeper(
+		app.cdc, dbKeys.keyDistr,
+		app.paramsKeeper.Subspace(distr.DefaultParamspace),
+		app.bankKeeper, &stakeKeeper, app.feeCollectionKeeper,
+		distr.DefaultCodespace,
+	)
+	app.minter = mint.NewMinter(app.feeCollectionKeeper, stakeKeeper)
+
 	app.memStorage = &InMemoryStorage{}
 
 	// register the staking hooks
@@ -149,7 +168,7 @@ func NewCyberdApp(
 
 	// register message routes
 	app.Router().
-		AddRoute("bank", NewBankHandler(app.coinKeeper, app.memStorage, app.accountKeeper)).
+		AddRoute("bank", NewBankHandler(app.bankKeeper, app.memStorage, app.accountKeeper)).
 		AddRoute("link", NewLinksHandler(storages.CidIndex, storages.Links, app.memStorage, app.accountKeeper)).
 		AddRoute("stake", stake.NewHandler(app.stakeKeeper)).
 		AddRoute("slashing", slashing.NewHandler(app.slashingKeeper))
@@ -164,14 +183,18 @@ func NewCyberdApp(
 	app.SetAnteHandler(auth.NewAnteHandler(app.accountKeeper, app.feeCollectionKeeper))
 
 	// mount the multistore and load the latest state
-	app.MountStores(dbKeys.main, dbKeys.acc, dbKeys.cidIndex, dbKeys.links, dbKeys.rank, dbKeys.stake,
-		dbKeys.slashing, dbKeys.params)
+	app.MountStores(
+		dbKeys.main, dbKeys.acc, dbKeys.cidIndex, dbKeys.links, dbKeys.rank, dbKeys.stake,
+		dbKeys.slashing, dbKeys.params, dbKeys.keyDistr, dbKeys.fees,
+	)
 	app.MountStoresTransient(dbKeys.tParams, dbKeys.tStake)
 	err := app.LoadLatestVersion(dbKeys.main)
 	if err != nil {
 		cmn.Exit(err.Error())
 	}
 	ctx := app.BaseApp.NewContext(true, abci.Header{})
+
+	// load in-memory data
 	start := time.Now()
 	app.BaseApp.Logger.Info("Loading mem state")
 	app.memStorage.Load(ctx, storages, app.accountKeeper)
@@ -189,13 +212,10 @@ func NewCyberdApp(
 func (app *CyberdApp) initChainer(ctx sdk.Context, req abci.RequestInitChain) abci.ResponseInitChain {
 
 	stateJSON := req.AppStateBytes
-	// TODO is this now the whole genesis file?
-
 	var genesisState GenesisState
 	err := app.cdc.UnmarshalJSON(stateJSON, &genesisState)
 	if err != nil {
-		panic(err) // TODO https://github.com/cosmos/cosmos-sdk/issues/468
-		// return sdk.ErrGenesisParse("").TraceCause(err, "")
+		panic(err)
 	}
 
 	// sort by account number to maintain consistency
@@ -213,16 +233,18 @@ func (app *CyberdApp) initChainer(ctx sdk.Context, req abci.RequestInitChain) ab
 	// load the initial stake information
 	validators, err := stake.InitGenesis(ctx, app.stakeKeeper, genesisState.StakeData)
 	if err != nil {
-		panic(err) // TODO find a way to do this w/o panics
+		panic(err)
 	}
 
 	// initialize module-specific stores
 	slashing.InitGenesis(ctx, app.slashingKeeper, genesisState.SlashingData, genesisState.StakeData)
+	distr.InitGenesis(ctx, app.distrKeeper, genesisState.DistrData)
 	err = CyberdValidateGenesisState(genesisState)
 	if err != nil {
-		panic(err) // TODO find a way to do this w/o panics
+		panic(err)
 	}
 
+	// deliver genesis txes
 	if len(genesisState.GenTxs) > 0 {
 		for _, genTx := range genesisState.GenTxs {
 			var tx auth.StdTx
@@ -263,6 +285,7 @@ func (app *CyberdApp) initChainer(ctx sdk.Context, req abci.RequestInitChain) ab
 // BeginBlocker reflects logic to run before any TXs application are processed
 // by the application.
 func (app *CyberdApp) BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock) abci.ResponseBeginBlock {
+	mint.BeginBlocker(ctx, app.minter)
 	tags := slashing.BeginBlocker(ctx, req, app.slashingKeeper)
 
 	return abci.ResponseBeginBlock{

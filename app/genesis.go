@@ -6,11 +6,13 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
+	distr "github.com/cosmos/cosmos-sdk/x/distribution"
 	"github.com/cosmos/cosmos-sdk/x/slashing"
 	"github.com/cosmos/cosmos-sdk/x/stake"
 	"github.com/cybercongress/cyberd/app/coin"
 	"github.com/pkg/errors"
 	tmtypes "github.com/tendermint/tendermint/types"
+
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -21,17 +23,21 @@ import (
 // State to Unmarshal
 type GenesisState struct {
 	Accounts     []GenesisAccount      `json:"accounts"`
+	DistrData    distr.GenesisState    `json:"distr"`
 	StakeData    stake.GenesisState    `json:"stake"`
 	SlashingData slashing.GenesisState `json:"slashing"`
 	GenTxs       []json.RawMessage     `json:"gentxs"`
 }
 
-func NewGenesisState(accounts []GenesisAccount, stakeData stake.GenesisState,
-	slashingData slashing.GenesisState) GenesisState {
+func NewGenesisState(
+	accounts []GenesisAccount, stakeData stake.GenesisState, distrData distr.GenesisState,
+	slashingData slashing.GenesisState,
+) GenesisState {
 
 	return GenesisState{
 		Accounts:     accounts,
 		StakeData:    stakeData,
+		DistrData:    distrData,
 		SlashingData: slashingData,
 	}
 }
@@ -126,6 +132,7 @@ func NewDefaultGenesisState() GenesisState {
 			Params: DefaultStakeParams(),
 		},
 		SlashingData: slashing.DefaultGenesisState(),
+		DistrData:    distr.DefaultGenesisState(),
 		GenTxs:       nil,
 	}
 }
@@ -153,7 +160,7 @@ func validateGenesisStateAccounts(accs []GenesisAccount) (err error) {
 		acc := accs[i]
 		strAddr := string(acc.Address)
 		if _, ok := addrMap[strAddr]; ok {
-			return fmt.Errorf("Duplicate account in genesis state: Address %v", acc.Address)
+			return fmt.Errorf("duplicate account in genesis state: Address %v", acc.Address)
 		}
 		addrMap[strAddr] = true
 	}
