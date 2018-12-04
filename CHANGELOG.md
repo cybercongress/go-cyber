@@ -13,6 +13,7 @@
 **Closed issues:**
 
 - Make up cyberd landing [\#87](https://github.com/cybercongress/cyberd/issues/87)
+- Add possibility to join for new validators. [\#75](https://github.com/cybercongress/cyberd/issues/75)
 - Calculate rank using GPU [\#74](https://github.com/cybercongress/cyberd/issues/74)
 - Create basic wiki cyberd indexer [\#71](https://github.com/cybercongress/cyberd/issues/71)
 - Create cyberd PoC based on Cosmos SDK [\#37](https://github.com/cybercongress/cyberd/issues/37)
@@ -20,6 +21,7 @@
 
 **Merged pull requests:**
 
+-  \#1 Build basic economic model [\#102](https://github.com/cybercongress/cyberd/pull/102) ([hleb-albau](https://github.com/hleb-albau))
 - Update cosmos to 0.27.0 [\#100](https://github.com/cybercongress/cyberd/pull/100) ([hleb-albau](https://github.com/hleb-albau))
 - Small fixes for validators joining [\#98](https://github.com/cybercongress/cyberd/pull/98) ([arturalbov](https://github.com/arturalbov))
 - Remove poc folder [\#97](https://github.com/cybercongress/cyberd/pull/97) ([hleb-albau](https://github.com/hleb-albau))
