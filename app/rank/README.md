@@ -7,7 +7,7 @@ Next compile **cbdrank** lib, copy it to `/usr/lib/` folder:
 
 ```bash
 # project root
-cd poc/app/rank/cuda
+cd app/rank/cuda
 nvcc -fmad=false -shared -o libcbdrank.so rank.cu --compiler-options '-fPIC -frounding-math -fsignaling-nans'
 sudo cp libcbdrank.so /usr/lib/
 sudo cp cbdrank.h /usr/lib/
@@ -16,7 +16,6 @@ sudo cp cbdrank.h /usr/lib/
 Compile binaries, copy configs and run daemon
 ```bash
 # project root
-cd poc
 cp testnet/genesis.json .cyberd/config/genesis.json
 cp testnet/config.toml .cyberd/config/config.toml
 go build -tags cuda -o daemon ./cyberd
@@ -27,7 +26,7 @@ go build -tags cuda -o daemon ./cyberd
 To test GPU and CPU rank computing determinism run:
 ```bash
 # project root
-cd poc/app/rank/cuda
+cd app/rank/cuda
 nvcc -fmad=false -shared -o libcbdrank.so rank.cu --compiler-options '-fPIC -frounding-math -fsignaling-nans'
 sudo cp libcbdrank.so /usr/lib/
 sudo cp cbdrank.h /usr/lib/

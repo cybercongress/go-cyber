@@ -31,6 +31,7 @@ func NewLinksHandler(cis CidIndexStorage, ls LinksStorage, imms *InMemoryStorage
 		if !ctx.IsCheckTx() {
 			imms.AddLink(link)
 		}
+		ls.AddLink(ctx, link)
 
 		return sdk.Result{Code: cbd.CodeOK, Codespace: cbd.CodespaceCbd}
 	}
