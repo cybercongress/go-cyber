@@ -3,6 +3,7 @@ package app
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	cbd "github.com/cybercongress/cyberd/app/types"
+	"github.com/ipfs/go-cid"
 )
 
 type MsgLink struct {
@@ -28,8 +29,11 @@ func (msg MsgLink) ValidateBasic() sdk.Error {
 		return sdk.ErrInvalidAddress(msg.Address.String())
 	}
 
-	if len(msg.From) == 0 || len(msg.To) == 0 {
-		//todo add cid validation exception
+	if _, err := cid.Decode(string(msg.From)); err != nil {
+		return cbd.ErrInvalidCid()
+	}
+
+	if _, err := cid.Decode(string(msg.To)); err != nil {
 		return cbd.ErrInvalidCid()
 	}
 
