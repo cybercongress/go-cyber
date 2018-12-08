@@ -11,7 +11,7 @@ import (
 
 /*
 #cgo CFLAGS: -I/usr/lib/
-#cgo LDFLAGS: -lcbdrank -lcudart
+#cgo LDFLAGS: -L/usr/local/cuda/lib64 -lcbdrank -lcudart
 #include "cbdrank.h"
 */
 import "C"
