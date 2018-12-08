@@ -6,7 +6,7 @@ Build cyberd daemon and cli with default instructions. Let's suppose binaries na
 
 Create new account and copy seed phrase.
 ```
-./cli cyberdcli keys add testnet_v2
+./cli keys add testnet_v2
 ```
 
 Create network files for one validator:
