@@ -18,9 +18,11 @@
 - Create basic wiki cyberd indexer [\#71](https://github.com/cybercongress/cyberd/issues/71)
 - Create cyberd PoC based on Cosmos SDK [\#37](https://github.com/cybercongress/cyberd/issues/37)
 - Draw logo for cyberd [\#16](https://github.com/cybercongress/cyberd/issues/16)
+- Build basic economic model [\#1](https://github.com/cybercongress/cyberd/issues/1)
 
 **Merged pull requests:**
 
+- \#93 Cid validation [\#106](https://github.com/cybercongress/cyberd/pull/106) ([hleb-albau](https://github.com/hleb-albau))
 -  \#1 Build basic economic model [\#102](https://github.com/cybercongress/cyberd/pull/102) ([hleb-albau](https://github.com/hleb-albau))
 - Update cosmos to 0.27.0 [\#100](https://github.com/cybercongress/cyberd/pull/100) ([hleb-albau](https://github.com/hleb-albau))
 - Small fixes for validators joining [\#98](https://github.com/cybercongress/cyberd/pull/98) ([arturalbov](https://github.com/arturalbov))
