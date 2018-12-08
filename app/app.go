@@ -65,6 +65,9 @@ type CyberdApp struct {
 	*baseapp.BaseApp
 	cdc *codec.Codec
 
+	db dbm.DB
+	txDecoder sdk.TxDecoder
+
 	// keys to access the multistore
 	dbKeys CyberdAppDbKeys
 
@@ -85,7 +88,9 @@ type CyberdApp struct {
 	persistStorages CyberdPersistentStorages
 	memStorage      *InMemoryStorage
 
-	latestRankHash []byte
+	latestRankHash     []byte
+	latestBlockHeight  int64
+	currentCreditPrice float64
 
 	computeUnit rank.ComputeUnit
 }
@@ -124,10 +129,13 @@ func NewCyberdApp(
 		Rank:     NewRankStorage(ms, dbKeys.rank),
 	}
 
+	var txDecoder = auth.DefaultTxDecoder(cdc)
+
 	// create your application type
 	var app = &CyberdApp{
 		cdc:             cdc,
-		BaseApp:         baseapp.NewBaseApp(appName, logger, db, auth.DefaultTxDecoder(cdc), baseAppOptions...),
+		txDecoder:       txDecoder,
+		BaseApp:         baseapp.NewBaseApp(appName, logger, db, txDecoder, baseAppOptions...),
 		dbKeys:          dbKeys,
 		persistStorages: storages,
 		mainStorage:     ms,
@@ -291,6 +299,39 @@ func (app *CyberdApp) BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock) 
 	return abci.ResponseBeginBlock{
 		Tags: tags.ToKVPairs(),
 	}
+}
+
+func (app *CyberdApp) CheckTx(txBytes []byte) (res abci.ResponseCheckTx) {
+
+	//currentCheckContext := app.NewContext(true, abci.Header{Height: app.latestBlockHeight})
+
+
+
+	//var result sdk.Result
+	//var tx, err = app.txDecoder(txBytes)
+	//
+	//if err != nil {
+	//	result = err.Result()
+	//
+	//	return abci.ResponseCheckTx{
+	//		Code:      uint32(result.Code),
+	//		Data:      result.Data,
+	//		Log:       result.Log,
+	//		GasWanted: int64(result.GasWanted),
+	//		GasUsed:   int64(result.GasUsed),
+	//		Tags:      result.Tags,
+	//	}
+	//} else {
+	//
+	//
+	//}
+
+	return app.BaseApp.CheckTx(txBytes)
+}
+
+func (app *CyberdApp) DeliverTx(txBytes []byte) (res abci.ResponseDeliverTx) {
+
+	return app.BaseApp.DeliverTx(txBytes)
 }
 
 // Calculates cyber.Rank for block N, and returns Hash of result as app state.
