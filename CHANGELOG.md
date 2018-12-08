@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- Cid validation [\#93](https://github.com/cybercongress/cyberd/issues/93)
 - Update to cosmos-sdk version 0.26.1 [\#79](https://github.com/cybercongress/cyberd/issues/79)
 - Build node releases with cleveldb [\#59](https://github.com/cybercongress/cyberd/issues/59)
 - Remove 'cosmosaccaddr' prefix from cyberd address [\#39](https://github.com/cybercongress/cyberd/issues/39)
@@ -23,6 +24,7 @@
 **Merged pull requests:**
 
 - \#93 Cid validation [\#106](https://github.com/cybercongress/cyberd/pull/106) ([hleb-albau](https://github.com/hleb-albau))
+- \#78 Add guide `How to join network as validator` [\#105](https://github.com/cybercongress/cyberd/pull/105) ([hleb-albau](https://github.com/hleb-albau))
 -  \#1 Build basic economic model [\#102](https://github.com/cybercongress/cyberd/pull/102) ([hleb-albau](https://github.com/hleb-albau))
 - Update cosmos to 0.27.0 [\#100](https://github.com/cybercongress/cyberd/pull/100) ([hleb-albau](https://github.com/hleb-albau))
 - Small fixes for validators joining [\#98](https://github.com/cybercongress/cyberd/pull/98) ([arturalbov](https://github.com/arturalbov))
