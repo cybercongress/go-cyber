@@ -18,6 +18,8 @@ import (
 	"github.com/cybercongress/cyberd/app/rank"
 	. "github.com/cybercongress/cyberd/app/storage"
 	cbd "github.com/cybercongress/cyberd/app/types"
+	"github.com/cybercongress/cyberd/types"
+	"github.com/cybercongress/cyberd/x/bandwidth"
 	"github.com/cybercongress/cyberd/x/mint"
 	abci "github.com/tendermint/tendermint/abci/types"
 	cmn "github.com/tendermint/tendermint/libs/common"
@@ -42,19 +44,20 @@ var (
 )
 
 type CyberdAppDbKeys struct {
-	main     *sdk.KVStoreKey
-	acc      *sdk.KVStoreKey
-	accIndex *sdk.KVStoreKey
-	cidIndex *sdk.KVStoreKey
-	links    *sdk.KVStoreKey
-	rank     *sdk.KVStoreKey
-	stake    *sdk.KVStoreKey
-	tStake   *sdk.TransientStoreKey
-	fees     *sdk.KVStoreKey
-	keyDistr *sdk.KVStoreKey
-	slashing *sdk.KVStoreKey
-	params   *sdk.KVStoreKey
-	tParams  *sdk.TransientStoreKey
+	main         *sdk.KVStoreKey
+	acc          *sdk.KVStoreKey
+	accIndex     *sdk.KVStoreKey
+	cidIndex     *sdk.KVStoreKey
+	links        *sdk.KVStoreKey
+	rank         *sdk.KVStoreKey
+	stake        *sdk.KVStoreKey
+	tStake       *sdk.TransientStoreKey
+	fees         *sdk.KVStoreKey
+	keyDistr     *sdk.KVStoreKey
+	slashing     *sdk.KVStoreKey
+	params       *sdk.KVStoreKey
+	tParams      *sdk.TransientStoreKey
+	accBandwidth *sdk.KVStoreKey
 }
 
 // CyberdApp implements an extended ABCI application. It contains a BaseApp,
@@ -65,8 +68,8 @@ type CyberdApp struct {
 	*baseapp.BaseApp
 	cdc *codec.Codec
 
-	db dbm.DB
-	txDecoder sdk.TxDecoder
+	txDecoder        sdk.TxDecoder
+	bandwidthHandler types.BandwidthHandler
 
 	// keys to access the multistore
 	dbKeys CyberdAppDbKeys
@@ -80,6 +83,7 @@ type CyberdApp struct {
 	slashingKeeper      slashing.Keeper
 	distrKeeper         distr.Keeper
 	paramsKeeper        params.Keeper
+	accBandwidthKeeper  bandwidth.AccountBandwidthKeeper
 
 	//inflation
 	minter mint.Minter
@@ -120,6 +124,7 @@ func NewCyberdApp(
 		slashing: sdk.NewKVStoreKey("slashing"),
 		params:   sdk.NewKVStoreKey("params"),
 		tParams:  sdk.NewTransientStoreKey("transient_params"),
+		accBandwidth: sdk.NewKVStoreKey("acc_bandwidth"),
 	}
 
 	ms := NewMainStorage(dbKeys.main)
@@ -147,6 +152,7 @@ func NewCyberdApp(
 	app.bankKeeper = bank.NewBaseKeeper(app.accountKeeper)
 	app.paramsKeeper = params.NewKeeper(app.cdc, dbKeys.params, dbKeys.tParams)
 	app.feeCollectionKeeper = auth.NewFeeCollectionKeeper(app.cdc, dbKeys.fees)
+	app.accBandwidthKeeper = bandwidth.NewAccountBandwidthKeeper(dbKeys.accBandwidth)
 
 	stakeKeeper := stake.NewKeeper(
 		app.cdc, dbKeys.stake,
@@ -173,6 +179,8 @@ func NewCyberdApp(
 	// NOTE: stakeKeeper above are passed by reference,
 	// so that it can be modified like below:
 	app.stakeKeeper = *stakeKeeper.SetHooks(NewHooks(app.slashingKeeper.Hooks()))
+
+	app.bandwidthHandler = bandwidth.NewBandwidthHandler(app.stakeKeeper, app.accountKeeper, app.accBandwidthKeeper)
 
 	// register message routes
 	app.Router().
@@ -303,35 +311,66 @@ func (app *CyberdApp) BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock) 
 
 func (app *CyberdApp) CheckTx(txBytes []byte) (res abci.ResponseCheckTx) {
 
-	//currentCheckContext := app.NewContext(true, abci.Header{Height: app.latestBlockHeight})
+	cachedCtx, writeCache := app.NewContext(true, abci.Header{Height: app.latestBlockHeight}).CacheContext()
 
+	var tx, err = app.txDecoder(txBytes)
+	if err == nil {
 
+		err = app.bandwidthHandler(cachedCtx, tx)
+		if err == nil {
 
-	//var result sdk.Result
-	//var tx, err = app.txDecoder(txBytes)
-	//
-	//if err != nil {
-	//	result = err.Result()
-	//
-	//	return abci.ResponseCheckTx{
-	//		Code:      uint32(result.Code),
-	//		Data:      result.Data,
-	//		Log:       result.Log,
-	//		GasWanted: int64(result.GasWanted),
-	//		GasUsed:   int64(result.GasUsed),
-	//		Tags:      result.Tags,
-	//	}
-	//} else {
-	//
-	//
-	//}
+			resp := app.BaseApp.CheckTx(txBytes)
+			if resp.Code == 0 {
+				writeCache()
+			}
 
-	return app.BaseApp.CheckTx(txBytes)
+			return resp
+		}
+	}
+
+	result := err.Result()
+
+	return abci.ResponseCheckTx{
+		Code:      uint32(result.Code),
+		Data:      result.Data,
+		Log:       result.Log,
+		GasWanted: int64(result.GasWanted),
+		GasUsed:   int64(result.GasUsed),
+		Tags:      result.Tags,
+	}
+
 }
 
 func (app *CyberdApp) DeliverTx(txBytes []byte) (res abci.ResponseDeliverTx) {
 
-	return app.BaseApp.DeliverTx(txBytes)
+	cachedCtx, writeCache := app.NewContext(false, abci.Header{Height: app.latestBlockHeight}).CacheContext()
+
+	var tx, err = app.txDecoder(txBytes)
+	if err == nil {
+
+		err = app.bandwidthHandler(cachedCtx, tx)
+		if err == nil {
+
+			resp := app.BaseApp.DeliverTx(txBytes)
+			if resp.Code == 0 {
+				writeCache()
+			}
+
+			return resp
+		}
+	}
+
+	result := err.Result()
+
+	return abci.ResponseDeliverTx{
+		Code:      uint32(result.Code),
+		Codespace: string(result.Codespace),
+		Data:      result.Data,
+		Log:       result.Log,
+		GasWanted: int64(result.GasWanted),
+		GasUsed:   int64(result.GasUsed),
+		Tags:      result.Tags,
+	}
 }
 
 // Calculates cyber.Rank for block N, and returns Hash of result as app state.
