@@ -22,15 +22,15 @@ func (bs *AccountBandwidth) UpdateMax(newValue int64, currentBlock int64, recove
 }
 
 func (bs *AccountBandwidth) Recover(currentBlock int64, recoveryPeriod int64) {
-	recoverPerBlock := bs.MaxValue / recoveryPeriod
-	fullRecoveryAmount := bs.MaxValue - bs.RemainedValue
+	recoverPerBlock := float64(bs.MaxValue) / float64(recoveryPeriod)
+	fullRecoveryAmount := float64(bs.MaxValue - bs.RemainedValue)
 
-	recoverAmount := (currentBlock - bs.LastUpdatedBlock) * recoverPerBlock
+	recoverAmount := float64(currentBlock - bs.LastUpdatedBlock) * recoverPerBlock
 	if recoverAmount > fullRecoveryAmount {
 		recoverAmount = fullRecoveryAmount
 	}
 
-	bs.RemainedValue = bs.RemainedValue + recoverAmount
+	bs.RemainedValue = bs.RemainedValue + int64(recoverAmount)
 	bs.LastUpdatedBlock = currentBlock
 }
 

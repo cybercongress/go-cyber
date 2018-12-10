@@ -72,9 +72,12 @@ type CyberdApp struct {
 	txDecoder sdk.TxDecoder
 
 	// bandwidth
-	bandwidthHandler bw.BandwidthHandler
-	msgBandwidthCost bw.MsgBandwidthCost
-	maxAccBandwidth  bw.MaxAccBandwidth
+	bandwidthHandler       bw.BandwidthHandler
+	msgBandwidthCost       bw.MsgBandwidthCost
+	maxAccBandwidth        bw.MaxAccBandwidth
+	curBlockSpentBandwidth uint64 //resets every block
+	lastTotalSpentBandwidth uint64 //resets every bandwidth price adjustment interval
+	currentCreditPrice      float64
 
 	// keys to access the multistore
 	dbKeys CyberdAppDbKeys
@@ -97,9 +100,8 @@ type CyberdApp struct {
 	persistStorages CyberdPersistentStorages
 	memStorage      *InMemoryStorage
 
-	latestRankHash     []byte
-	latestBlockHeight  int64
-	currentCreditPrice float64
+	latestRankHash          []byte
+	latestBlockHeight       int64
 
 	computeUnit rank.ComputeUnit
 }
@@ -186,7 +188,6 @@ func NewCyberdApp(
 	// so that it can be modified like below:
 	app.stakeKeeper = *stakeKeeper.SetHooks(NewHooks(app.slashingKeeper.Hooks()))
 
-	app.currentCreditPrice = bandwidth.BaseCreditPrice
 	app.maxAccBandwidth = bw.NewMaxAccBandwidth(app.stakeKeeper, bandwidth.MaxNetworkBandwidth)
 	app.bandwidthHandler = bandwidth.NewBandwidthHandler(app.accountKeeper, app.accBandwidthKeeper, app.msgBandwidthCost, app.maxAccBandwidth)
 
@@ -224,6 +225,11 @@ func NewCyberdApp(
 	app.memStorage.Load(ctx, storages, app.accountKeeper)
 	app.BaseApp.Logger.Info("App loaded", "time", time.Since(start))
 	app.latestRankHash = ms.GetAppHash(ctx)
+	app.lastTotalSpentBandwidth = ms.GetSpentBandwidth(ctx)
+	app.currentCreditPrice = math.Float64frombits(ms.GetBandwidthPrice(ctx, bandwidth.BaseCreditPrice))
+	app.curBlockSpentBandwidth = 0
+	app.latestBlockHeight = int64(ms.GetLatestBlockNumber(ctx))
+
 	app.Seal()
 	return app
 }
@@ -326,7 +332,7 @@ func (app *CyberdApp) CheckTx(txBytes []byte) (res abci.ResponseCheckTx) {
 	var tx, err = app.txDecoder(txBytes)
 	if err == nil {
 
-		err = app.bandwidthHandler(cachedCtx, app.currentCreditPrice, tx)
+		_, err = app.bandwidthHandler(cachedCtx, app.currentCreditPrice, tx)
 		if err == nil {
 
 			resp := app.BaseApp.CheckTx(txBytes)
@@ -358,12 +364,13 @@ func (app *CyberdApp) DeliverTx(txBytes []byte) (res abci.ResponseDeliverTx) {
 	var tx, err = app.txDecoder(txBytes)
 	if err == nil {
 
-		err = app.bandwidthHandler(cachedCtx, app.currentCreditPrice, tx)
+		spent, err := app.bandwidthHandler(cachedCtx, app.currentCreditPrice, tx)
 		if err == nil {
 
 			resp := app.BaseApp.DeliverTx(txBytes)
 			if resp.Code == 0 {
 				writeCache()
+				app.curBlockSpentBandwidth = app.curBlockSpentBandwidth + uint64(spent)
 			}
 
 			return resp
@@ -397,6 +404,9 @@ func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.R
 		"Rank calculated", "steps", steps, "time", time.Since(start), "links", linksCount, "cids", cidsCount,
 	)
 
+	app.latestBlockHeight = ctx.BlockHeight()
+	app.mainStorage.StoreLatestBlockNumber(ctx, uint64(ctx.BlockHeight()))
+
 	rankAsBytes := make([]byte, 8*len(newRank))
 	for i, f64 := range newRank {
 		binary.LittleEndian.PutUint64(rankAsBytes[i*8:i*8+8], math.Float64bits(f64))
@@ -406,6 +416,11 @@ func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.R
 	app.latestRankHash = hash[:]
 	app.memStorage.UpdateRank(newRank)
 	app.mainStorage.StoreAppHash(ctx, hash[:])
+
+	totalSpentBandwidth := bandwidth.EndBlocker(
+		ctx, app.lastTotalSpentBandwidth+app.curBlockSpentBandwidth, app.mainStorage,
+	)
+	app.lastTotalSpentBandwidth = totalSpentBandwidth
 
 	validatorUpdates, tags := stake.EndBlocker(ctx, app.stakeKeeper)
 	return abci.ResponseEndBlock{

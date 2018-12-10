@@ -12,16 +12,16 @@ func NewBandwidthHandler(
 	msgCost types.MsgBandwidthCost, maxBandwidth types.MaxAccBandwidth,
 ) types.BandwidthHandler {
 
-	return func(ctx sdk.Context, price float64, tx sdk.Tx) sdk.Error {
+	return func(ctx sdk.Context, price float64, tx sdk.Tx) (int64, sdk.Error) {
 
 		account, sdkErr := getAccount(ctx, accKeeper, tx.(auth.StdTx))
 		if sdkErr != nil {
-			return sdkErr
+			return 0, sdkErr
 		}
 
 		accountBandwidth, err := bwKeeper.GetAccountBandwidth(account, ctx)
 		if err != nil {
-			return sdk.ErrInternal("Cannot process tx")
+			return 0, sdk.ErrInternal("Cannot process tx")
 		}
 
 		addressStake := accKeeper.GetAccount(ctx, account).GetCoins().AmountOf(coin.CBD)
@@ -37,13 +37,13 @@ func NewBandwidthHandler(
 		}
 
 		if !accountBandwidth.HasEnoughRemained(bandwidthForTx) {
-			return sdk.ErrInternal("Not enough bandwidth to make transaction! ")
+			return 0, sdk.ErrInternal("Not enough bandwidth to make transaction! ")
 		}
 
-		accountBandwidth.Consume(bandwidthForTx)
+		accountBandwidth.Consume(int64(float64(bandwidthForTx) * price))
 		bwKeeper.SetAccountBandwidth(ctx, accountBandwidth)
 
-		return nil
+		return bandwidthForTx, nil
 	}
 }
 
