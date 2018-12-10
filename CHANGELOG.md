@@ -23,6 +23,7 @@
 
 **Merged pull requests:**
 
+- \[DON'T MERGE\] Add bandwidth by stake. Part 2. [\#108](https://github.com/cybercongress/cyberd/pull/108) ([arturalbov](https://github.com/arturalbov))
 - Add bandwidth by stake Part 1 [\#107](https://github.com/cybercongress/cyberd/pull/107) ([arturalbov](https://github.com/arturalbov))
 - \#93 Cid validation [\#106](https://github.com/cybercongress/cyberd/pull/106) ([hleb-albau](https://github.com/hleb-albau))
 - \#78 Add guide `How to join network as validator` [\#105](https://github.com/cybercongress/cyberd/pull/105) ([hleb-albau](https://github.com/hleb-albau))
