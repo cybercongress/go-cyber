@@ -1,4 +1,4 @@
-package app
+package link
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"

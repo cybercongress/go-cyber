@@ -20,6 +20,7 @@ import (
 	cbd "github.com/cybercongress/cyberd/app/types"
 	"github.com/cybercongress/cyberd/types"
 	"github.com/cybercongress/cyberd/x/bandwidth"
+	"github.com/cybercongress/cyberd/x/link"
 	"github.com/cybercongress/cyberd/x/mint"
 	abci "github.com/tendermint/tendermint/abci/types"
 	cmn "github.com/tendermint/tendermint/libs/common"
@@ -68,8 +69,11 @@ type CyberdApp struct {
 	*baseapp.BaseApp
 	cdc *codec.Codec
 
-	txDecoder        sdk.TxDecoder
+	txDecoder sdk.TxDecoder
+
+	// bandwidth
 	bandwidthHandler types.BandwidthHandler
+	msgBandwidthCost types.MsgBandwidthCost
 
 	// keys to access the multistore
 	dbKeys CyberdAppDbKeys
@@ -112,18 +116,18 @@ func NewCyberdApp(
 	cdc := MakeCodec()
 
 	dbKeys := CyberdAppDbKeys{
-		main:     sdk.NewKVStoreKey("main"),
-		acc:      sdk.NewKVStoreKey("acc"),
-		cidIndex: sdk.NewKVStoreKey("cid_index"),
-		links:    sdk.NewKVStoreKey("links"),
-		rank:     sdk.NewKVStoreKey("rank"),
-		stake:    sdk.NewKVStoreKey("stake"),
-		fees:     sdk.NewKVStoreKey("fee"),
-		tStake:   sdk.NewTransientStoreKey("transient_stake"),
-		keyDistr: sdk.NewKVStoreKey("distr"),
-		slashing: sdk.NewKVStoreKey("slashing"),
-		params:   sdk.NewKVStoreKey("params"),
-		tParams:  sdk.NewTransientStoreKey("transient_params"),
+		main:         sdk.NewKVStoreKey("main"),
+		acc:          sdk.NewKVStoreKey("acc"),
+		cidIndex:     sdk.NewKVStoreKey("cid_index"),
+		links:        sdk.NewKVStoreKey("links"),
+		rank:         sdk.NewKVStoreKey("rank"),
+		stake:        sdk.NewKVStoreKey("stake"),
+		fees:         sdk.NewKVStoreKey("fee"),
+		tStake:       sdk.NewTransientStoreKey("transient_stake"),
+		keyDistr:     sdk.NewKVStoreKey("distr"),
+		slashing:     sdk.NewKVStoreKey("slashing"),
+		params:       sdk.NewKVStoreKey("params"),
+		tParams:      sdk.NewTransientStoreKey("transient_params"),
 		accBandwidth: sdk.NewKVStoreKey("acc_bandwidth"),
 	}
 
@@ -138,13 +142,14 @@ func NewCyberdApp(
 
 	// create your application type
 	var app = &CyberdApp{
-		cdc:             cdc,
-		txDecoder:       txDecoder,
-		BaseApp:         baseapp.NewBaseApp(appName, logger, db, txDecoder, baseAppOptions...),
-		dbKeys:          dbKeys,
-		persistStorages: storages,
-		mainStorage:     ms,
-		computeUnit:     computeUnit,
+		cdc:              cdc,
+		txDecoder:        txDecoder,
+		BaseApp:          baseapp.NewBaseApp(appName, logger, db, txDecoder, baseAppOptions...),
+		dbKeys:           dbKeys,
+		persistStorages:  storages,
+		mainStorage:      ms,
+		computeUnit:      computeUnit,
+		msgBandwidthCost: bandwidth.MsgBandwidthCost,
 	}
 
 	// define and attach the mappers and keepers
@@ -185,7 +190,7 @@ func NewCyberdApp(
 	// register message routes
 	app.Router().
 		AddRoute("bank", NewBankHandler(app.bankKeeper, app.memStorage, app.accountKeeper)).
-		AddRoute("link", NewLinksHandler(storages.CidIndex, storages.Links, app.memStorage, app.accountKeeper)).
+		AddRoute("link", link.NewLinksHandler(storages.CidIndex, storages.Links, app.memStorage, app.accountKeeper)).
 		AddRoute("stake", stake.NewHandler(app.stakeKeeper)).
 		AddRoute("slashing", slashing.NewHandler(app.slashingKeeper))
 
@@ -316,7 +321,7 @@ func (app *CyberdApp) CheckTx(txBytes []byte) (res abci.ResponseCheckTx) {
 	var tx, err = app.txDecoder(txBytes)
 	if err == nil {
 
-		err = app.bandwidthHandler(cachedCtx, tx)
+		err = app.bandwidthHandler(cachedCtx, app.msgBandwidthCost, app.currentCreditPrice, tx)
 		if err == nil {
 
 			resp := app.BaseApp.CheckTx(txBytes)
@@ -348,7 +353,7 @@ func (app *CyberdApp) DeliverTx(txBytes []byte) (res abci.ResponseDeliverTx) {
 	var tx, err = app.txDecoder(txBytes)
 	if err == nil {
 
-		err = app.bandwidthHandler(cachedCtx, tx)
+		err = app.bandwidthHandler(cachedCtx, app.msgBandwidthCost, app.currentCreditPrice, tx)
 		if err == nil {
 
 			resp := app.BaseApp.DeliverTx(txBytes)

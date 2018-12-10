@@ -5,7 +5,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/bank"
-	"github.com/cybercongress/cyberd/app"
+	"github.com/cybercongress/cyberd/x/link"
 )
 
 type TxRequest interface {
@@ -19,7 +19,7 @@ type UnmarshalTxRequest func([]byte) (TxRequest, error)
 
 type LinkRequest struct {
 	Fee        auth.StdFee   `json:"fee"`
-	Msgs       []app.MsgLink `json:"msgs"`
+	Msgs       []link.MsgLink `json:"msgs"`
 	Signatures []Signature   `json:"signatures"`
 	Memo       string        `json:"memo"`
 }
