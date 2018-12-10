@@ -42,3 +42,7 @@ func (bs AccountBandwidth) HasEnoughRemained(bandwidthToConsume int64) bool {
 func (bs *AccountBandwidth) Consume(bandwidthToConsume int64) {
 	bs.RemainedValue = bs.RemainedValue - bandwidthToConsume
 }
+
+func NewGenesisAccBandwidth(address types.AccAddress, bandwidth int64) AccountBandwidth {
+	return AccountBandwidth{Address:address, RemainedValue: bandwidth, MaxValue: bandwidth, LastUpdatedBlock: 0}
+}
