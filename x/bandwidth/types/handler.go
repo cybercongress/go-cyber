@@ -18,4 +18,4 @@ func NewMaxAccBandwidth(stakeKeeper stake.Keeper, MaxNetworkBandwidth int64) Max
 
 type MsgBandwidthCost func(msg sdk.Msg) int64
 
-type BandwidthHandler func(ctx sdk.Context, price float64, tx sdk.Tx) sdk.Error
+type BandwidthHandler func(ctx sdk.Context, price float64, tx sdk.Tx) (spent int64, err sdk.Error)

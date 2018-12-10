@@ -12,7 +12,7 @@ const (
 	// Number of blocks to recover full bandwidth
 	RecoveryPeriod = 1000
 
-	AdjustPriceInterval = 10
+	AdjustPricePeriod = 10
 
 	BaseCreditPrice = 1
 )
