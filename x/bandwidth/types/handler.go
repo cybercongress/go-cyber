@@ -10,9 +10,9 @@ type MaxAccBandwidth func(ctx sdk.Context, accStake int64) int64
 func NewMaxAccBandwidth(stakeKeeper stake.Keeper, MaxNetworkBandwidth int64) MaxAccBandwidth {
 	return func(ctx sdk.Context, accStake int64) int64 {
 		pool := stakeKeeper.GetPool(ctx)
-		totalStake := pool.BondedTokens.RoundInt64() + pool.LooseTokens.RoundInt64()
+		totalStake := float64(pool.BondedTokens.RoundInt64() + pool.LooseTokens.RoundInt64())
 
-		return ((accStake / totalStake) * MaxNetworkBandwidth) / 2
+		return int64(((float64(accStake) / totalStake) * float64(MaxNetworkBandwidth)) / 2)
 	}
 }
 

@@ -210,7 +210,7 @@ func NewCyberdApp(
 	// mount the multistore and load the latest state
 	app.MountStores(
 		dbKeys.main, dbKeys.acc, dbKeys.cidIndex, dbKeys.links, dbKeys.rank, dbKeys.stake,
-		dbKeys.slashing, dbKeys.params, dbKeys.keyDistr, dbKeys.fees,
+		dbKeys.slashing, dbKeys.params, dbKeys.keyDistr, dbKeys.fees, dbKeys.accBandwidth,
 	)
 	app.MountStoresTransient(dbKeys.tParams, dbKeys.tStake)
 	err := app.LoadLatestVersion(dbKeys.main)
@@ -417,10 +417,12 @@ func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.R
 	app.memStorage.UpdateRank(newRank)
 	app.mainStorage.StoreAppHash(ctx, hash[:])
 
-	totalSpentBandwidth := bandwidth.EndBlocker(
-		ctx, app.lastTotalSpentBandwidth+app.curBlockSpentBandwidth, app.mainStorage,
+	newPrice, totalSpentBandwidth := bandwidth.EndBlocker(
+		ctx, app.lastTotalSpentBandwidth+app.curBlockSpentBandwidth, app.currentCreditPrice, app.mainStorage,
 	)
 	app.lastTotalSpentBandwidth = totalSpentBandwidth
+	app.currentCreditPrice = newPrice
+	app.curBlockSpentBandwidth = 0
 
 	validatorUpdates, tags := stake.EndBlocker(ctx, app.stakeKeeper)
 	return abci.ResponseEndBlock{

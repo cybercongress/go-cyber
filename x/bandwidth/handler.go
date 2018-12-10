@@ -29,14 +29,14 @@ func NewBandwidthHandler(
 		// We should call this function instead of Recover() cause total stake could be changed since last update
 		// and currently we can't intercept all AccountKeeper interactions.
 		// This method calls Recover() under the hood, so everything should work fine.
-		accountBandwidth.UpdateMax(maxBandwidth(ctx, addressStake.Int64()), RecoveryPeriod, ctx.BlockHeight())
+		accountBandwidth.UpdateMax(maxBandwidth(ctx, addressStake.Int64()), ctx.BlockHeight(), RecoveryPeriod)
 
 		bandwidthForTx := TxCost
 		for _, msg := range tx.GetMsgs() {
 			bandwidthForTx = bandwidthForTx + msgCost(msg)
 		}
 
-		if !accountBandwidth.HasEnoughRemained(bandwidthForTx) {
+		if !accountBandwidth.HasEnoughRemained(int64(float64(bandwidthForTx) * price)) {
 			return 0, sdk.ErrInternal("Not enough bandwidth to make transaction! ")
 		}
 

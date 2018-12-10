@@ -3,6 +3,7 @@ package storage
 import (
 	"encoding/binary"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"math"
 )
 
 var lastCidNumberKey = []byte("cyberd_last_cid_number")
@@ -83,11 +84,12 @@ func (ms MainStorage) StoreAppHash(ctx sdk.Context, hash []byte) {
 	store.Set(lastAppHashKey, hash)
 }
 
-func (ms MainStorage) GetBandwidthPrice(ctx sdk.Context, basePrice uint64) uint64 {
+func (ms MainStorage) GetBandwidthPrice(ctx sdk.Context, basePrice float64) uint64 {
 	store := ctx.KVStore(ms.key)
 	priceAsBytes := store.Get(lastBandwidthPrice)
 	if priceAsBytes == nil {
-		return basePrice
+		priceAsBytes = make([]byte, 8)
+		binary.LittleEndian.PutUint64(priceAsBytes, math.Float64bits(basePrice))
 	}
 	return binary.LittleEndian.Uint64(priceAsBytes)
 }
