@@ -3,7 +3,7 @@ package bandwidth
 import (
 	"encoding/json"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cybercongress/cyberd/types"
+	"github.com/cybercongress/cyberd/x/bandwidth/types"
 )
 
 type AccountBandwidthKeeper interface {
@@ -22,6 +22,14 @@ func (bk BaseAccountBandwidthKeeper) SetAccountBandwidth(ctx sdk.Context, bandwi
 
 func (bk BaseAccountBandwidthKeeper) GetAccountBandwidth(address sdk.AccAddress, ctx sdk.Context) (bw types.AccountBandwidth, err error) {
 	bwBytes := ctx.KVStore(bk.key).Get(address)
+	if bwBytes == nil {
+		return types.AccountBandwidth{
+			Address:          address,
+			RemainedValue:    0,
+			LastUpdatedBlock: ctx.BlockHeight(),
+			MaxValue:         0,
+		}, nil
+	}
 	err = json.Unmarshal(bwBytes, &bw)
 	return
 }

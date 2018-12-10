@@ -3,14 +3,16 @@ package bandwidth
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
-	"github.com/cosmos/cosmos-sdk/x/stake"
 	"github.com/cybercongress/cyberd/app/coin"
-	"github.com/cybercongress/cyberd/types"
+	"github.com/cybercongress/cyberd/x/bandwidth/types"
 )
 
-func NewBandwidthHandler(stakeKeeper stake.Keeper, accKeeper auth.AccountKeeper, bwKeeper AccountBandwidthKeeper) types.BandwidthHandler {
+func NewBandwidthHandler(
+	accKeeper auth.AccountKeeper, bwKeeper AccountBandwidthKeeper,
+	msgCost types.MsgBandwidthCost, maxBandwidth types.MaxAccBandwidth,
+) types.BandwidthHandler {
 
-	return func(ctx sdk.Context, msgCost types.MsgBandwidthCost, price float64, tx sdk.Tx) sdk.Error {
+	return func(ctx sdk.Context, price float64, tx sdk.Tx) sdk.Error {
 
 		account, sdkErr := getAccount(ctx, accKeeper, tx.(auth.StdTx))
 		if sdkErr != nil {
@@ -24,15 +26,10 @@ func NewBandwidthHandler(stakeKeeper stake.Keeper, accKeeper auth.AccountKeeper,
 
 		addressStake := accKeeper.GetAccount(ctx, account).GetCoins().AmountOf(coin.CBD)
 
-		pool := stakeKeeper.GetPool(ctx)
-		totalStake := pool.BondedTokens.RoundInt64() + pool.LooseTokens.RoundInt64()
-
-		addressMaxBandwidth := ((addressStake.Int64() / totalStake) * MaxNetworkBandwidth) / 2
-
 		// We should call this function instead of Recover() cause total stake could be changed since last update
 		// and currently we can't intercept all AccountKeeper interactions.
 		// This method calls Recover() under the hood, so everything should work fine.
-		accountBandwidth.UpdateMax(addressMaxBandwidth, RecoveryPeriod, ctx.BlockHeight())
+		accountBandwidth.UpdateMax(maxBandwidth(ctx, addressStake.Int64()), RecoveryPeriod, ctx.BlockHeight())
 
 		bandwidthForTx := TxCost
 		for _, msg := range tx.GetMsgs() {

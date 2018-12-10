@@ -18,8 +18,8 @@ import (
 	"github.com/cybercongress/cyberd/app/rank"
 	. "github.com/cybercongress/cyberd/app/storage"
 	cbd "github.com/cybercongress/cyberd/app/types"
-	"github.com/cybercongress/cyberd/types"
 	"github.com/cybercongress/cyberd/x/bandwidth"
+	bw "github.com/cybercongress/cyberd/x/bandwidth/types"
 	"github.com/cybercongress/cyberd/x/link"
 	"github.com/cybercongress/cyberd/x/mint"
 	abci "github.com/tendermint/tendermint/abci/types"
@@ -72,8 +72,9 @@ type CyberdApp struct {
 	txDecoder sdk.TxDecoder
 
 	// bandwidth
-	bandwidthHandler types.BandwidthHandler
-	msgBandwidthCost types.MsgBandwidthCost
+	bandwidthHandler bw.BandwidthHandler
+	msgBandwidthCost bw.MsgBandwidthCost
+	maxAccBandwidth  bw.MaxAccBandwidth
 
 	// keys to access the multistore
 	dbKeys CyberdAppDbKeys
@@ -185,11 +186,13 @@ func NewCyberdApp(
 	// so that it can be modified like below:
 	app.stakeKeeper = *stakeKeeper.SetHooks(NewHooks(app.slashingKeeper.Hooks()))
 
-	app.bandwidthHandler = bandwidth.NewBandwidthHandler(app.stakeKeeper, app.accountKeeper, app.accBandwidthKeeper)
+	app.currentCreditPrice = bandwidth.BaseCreditPrice
+	app.maxAccBandwidth = bw.NewMaxAccBandwidth(app.stakeKeeper, bandwidth.MaxNetworkBandwidth)
+	app.bandwidthHandler = bandwidth.NewBandwidthHandler(app.accountKeeper, app.accBandwidthKeeper, app.msgBandwidthCost, app.maxAccBandwidth)
 
 	// register message routes
 	app.Router().
-		AddRoute("bank", NewBankHandler(app.bankKeeper, app.memStorage, app.accountKeeper)).
+		AddRoute("bank", NewBankHandler(app.bankKeeper, app.memStorage, app.accountKeeper, app.maxAccBandwidth, app.accBandwidthKeeper)).
 		AddRoute("link", link.NewLinksHandler(storages.CidIndex, storages.Links, app.memStorage, app.accountKeeper)).
 		AddRoute("stake", stake.NewHandler(app.stakeKeeper)).
 		AddRoute("slashing", slashing.NewHandler(app.slashingKeeper))
@@ -298,6 +301,8 @@ func (app *CyberdApp) initChainer(ctx sdk.Context, req abci.RequestInitChain) ab
 		}
 	}
 
+	bandwidth.InitGenesis(ctx, app.accBandwidthKeeper, app.accountKeeper, app.maxAccBandwidth)
+
 	return abci.ResponseInitChain{
 		Validators: validators,
 	}
@@ -321,7 +326,7 @@ func (app *CyberdApp) CheckTx(txBytes []byte) (res abci.ResponseCheckTx) {
 	var tx, err = app.txDecoder(txBytes)
 	if err == nil {
 
-		err = app.bandwidthHandler(cachedCtx, app.msgBandwidthCost, app.currentCreditPrice, tx)
+		err = app.bandwidthHandler(cachedCtx, app.currentCreditPrice, tx)
 		if err == nil {
 
 			resp := app.BaseApp.CheckTx(txBytes)
@@ -353,7 +358,7 @@ func (app *CyberdApp) DeliverTx(txBytes []byte) (res abci.ResponseDeliverTx) {
 	var tx, err = app.txDecoder(txBytes)
 	if err == nil {
 
-		err = app.bandwidthHandler(cachedCtx, app.msgBandwidthCost, app.currentCreditPrice, tx)
+		err = app.bandwidthHandler(cachedCtx, app.currentCreditPrice, tx)
 		if err == nil {
 
 			resp := app.BaseApp.DeliverTx(txBytes)
