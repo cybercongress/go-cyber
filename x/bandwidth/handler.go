@@ -10,7 +10,7 @@ import (
 
 func NewBandwidthHandler(stakeKeeper stake.Keeper, accKeeper auth.AccountKeeper, bwKeeper AccountBandwidthKeeper) types.BandwidthHandler {
 
-	return func(ctx sdk.Context, tx sdk.Tx) sdk.Error {
+	return func(ctx sdk.Context, msgCost types.MsgBandwidthCost, price float64, tx sdk.Tx) sdk.Error {
 
 		account, sdkErr := getAccount(ctx, accKeeper, tx.(auth.StdTx))
 		if sdkErr != nil {
@@ -32,8 +32,12 @@ func NewBandwidthHandler(stakeKeeper stake.Keeper, accKeeper auth.AccountKeeper,
 		// We should call this function instead of Recover() cause total stake could be changed since last update
 		// and currently we can't intercept all AccountKeeper interactions.
 		// This method calls Recover() under the hood, so everything should work fine.
-		accountBandwidth.UpdateMax(addressMaxBandwidth, ctx.BlockHeight())
-		bandwidthForTx := int64(1) // TODO: add calculations
+		accountBandwidth.UpdateMax(addressMaxBandwidth, RecoveryPeriod, ctx.BlockHeight())
+
+		bandwidthForTx := TxCost
+		for _, msg := range tx.GetMsgs() {
+			bandwidthForTx = bandwidthForTx + msgCost(msg)
+		}
 
 		if !accountBandwidth.HasEnoughRemained(bandwidthForTx) {
 			return sdk.ErrInternal("Not enough bandwidth to make transaction! ")

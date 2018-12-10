@@ -4,10 +4,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/types"
 )
 
-const (
-	RecoveryPeriod = 100
-)
-
 type AccountBandwidth struct {
 	Address          types.AccAddress `json:"address"`
 	RemainedValue    int64            `json:"remained"`
@@ -15,8 +11,8 @@ type AccountBandwidth struct {
 	MaxValue         int64            `json:"max_value"`
 }
 
-func (bs *AccountBandwidth) UpdateMax(newValue int64, currentBlock int64) {
-	bs.Recover(currentBlock)
+func (bs *AccountBandwidth) UpdateMax(newValue int64, currentBlock int64, recoveryPeriod int64) {
+	bs.Recover(currentBlock, recoveryPeriod)
 	bs.MaxValue = newValue
 	bs.LastUpdatedBlock = currentBlock
 
@@ -25,8 +21,8 @@ func (bs *AccountBandwidth) UpdateMax(newValue int64, currentBlock int64) {
 	}
 }
 
-func (bs *AccountBandwidth) Recover(currentBlock int64) {
-	recoverPerBlock := bs.MaxValue / RecoveryPeriod
+func (bs *AccountBandwidth) Recover(currentBlock int64, recoveryPeriod int64) {
+	recoverPerBlock := bs.MaxValue / recoveryPeriod
 	fullRecoveryAmount := bs.MaxValue - bs.RemainedValue
 
 	recoverAmount := (currentBlock - bs.LastUpdatedBlock) * recoverPerBlock
