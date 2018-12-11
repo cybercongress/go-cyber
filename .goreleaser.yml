@@ -1,7 +1,7 @@
 builds:
   -
-    main: ./cyberdcli
-    binary: cli
+    main: ./cli
+    binary: cyberdcli
     env:
       - CGO_ENABLED=0
       - GO111MODULE=on
@@ -23,8 +23,8 @@ changelog:
     exclude:
     - '^docs:'
     - '^test:'
+    - '^CI:'
     - Merge pull request
-    - Merge branch
 
 
 nfpm:

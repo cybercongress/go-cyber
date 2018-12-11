@@ -11,7 +11,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/cybercongress/cyberd/app"
-	cyberdcmd "github.com/cybercongress/cyberd/cyberdcli/commands"
+	cyberdcmd "github.com/cybercongress/cyberd/cli/commands"
 	"github.com/spf13/cobra"
 	"github.com/tendermint/tendermint/libs/cli"
 

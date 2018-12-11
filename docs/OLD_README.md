@@ -58,7 +58,7 @@ In project directory go into `/cosmos/poc/` and run:
 ```$bash
 export GO111MODULE=on
 go install ./cyberd
-go install ./cyberdcli
+go install -o cyberdcli ./cli
 ```
 
 This will create binaries for `cyberd` and `cyberdcli`

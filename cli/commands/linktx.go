@@ -7,7 +7,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtxb "github.com/cosmos/cosmos-sdk/x/auth/client/txbuilder"
 	cbd "github.com/cybercongress/cyberd/app/types"
-	. "github.com/cybercongress/cyberd/cyberdcli/util"
+	. "github.com/cybercongress/cyberd/cli/util"
 	"github.com/ipfs/go-cid"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"

@@ -34,8 +34,8 @@ RUN nvcc -fmad=false -shared -o libcbdrank.so rank.cu --compiler-options '-fPIC 
 ###############################################################################
 WORKDIR /sources
 RUN go build -tags cuda -o daemon ./cyberd
-RUN go build -o cli ./cyberdcli
-RUN go build -o daemon_proxy ./proxy
+RUN go build -o cyberdcli ./cli
+RUN go build -o cyberdproxy ./proxy
 
 
 ###############################################################################
@@ -65,8 +65,8 @@ RUN url="https://golang.org/dl/go${GO_VERSION}.${GO_ARCH}.tar.gz" && \
 #  Copy compiled kernel and binaries
 ###############################################################################
 COPY --from=build_stage /sources/daemon /usr/bin/cyberd
-COPY --from=build_stage /sources/cli /usr/bin/cyberdcli
-COPY --from=build_stage /sources/daemon_proxy /usr/bin/cyberdproxy
+COPY --from=build_stage /sources/cyberdcli /usr/bin/cyberdcli
+COPY --from=build_stage /sources/cyberdproxy /usr/bin/cyberdproxy
 
 COPY --from=build_stage /usr/lib/cbdrank.h /usr/lib/cbdrank.h
 COPY --from=build_stage /usr/lib/libcbdrank.so /usr/lib/libcbdrank.so

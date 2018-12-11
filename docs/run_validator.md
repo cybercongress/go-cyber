@@ -1,0 +1,136 @@
+# Join Cyberd Network As Validator
+
+## Prepare your server
+
+First, you have to setup a server. 
+You are supposed to run your validator node all time, so you will need a reliable server to keep it running. 
+Also, you may consider to use any cloud services like AWS or DigitalOcean.
+
+Cyberd is based on Cosmos SDK written in Go. 
+It should work on any platform which can compile and run programs in Go. 
+However, I strongly recommend running the validator node on a Linux server.
+
+Here is the current required server specification to run validator node:
+
+1. No. of CPUs: 6
+2. RAM: 32GB
+3. Card with Nvidia CUDA support(ex 1080ti) and at least 8gb VRAM.
+4. Disk: 256GB SSD
+
+
+## Install Dependencies
+
+Our main distribution unit is docker container. 
+All images are located in default [Dockerhub registry](https://hub.docker.com/r/cyberd/cyberd/).
+Rank calculated on **GPU** using [**CUDA Toolkit**](https://docs.nvidia.com/cuda/index.html).
+In order to access **GPU** from container, nvidia drivers version **410+** and 
+ [nvidia docker runtime](https://github.com/NVIDIA/nvidia-docker) should be installed on host system.
+
+
+Check both driver and docker runtime installed correctly:
+```bash
+docker run --runtime=nvidia --rm nvidia/cuda:10.0-base nvidia-smi
+
+# Should be displayed something like this.
+Tue Dec 11 18:02:15 2018       
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 410.78       Driver Version: 410.78       CUDA Version: 10.0     |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|===============================+======================+======================|
+|   0  GeForce GTX 1050    Off  | 00000000:01:00.0 Off |                  N/A |
+| N/A   52C    P0    N/A /  N/A |    302MiB /  4042MiB |      2%      Default |
++-------------------------------+----------------------+----------------------+
+                                                                               
++-----------------------------------------------------------------------------+
+| Processes:                                                       GPU Memory |
+|  GPU       PID   Type   Process name                             Usage      |
+|=============================================================================|
++-----------------------------------------------------------------------------+
+```
+
+## Start Fullnode 
+
+First, create folder, where daemon and cli will store data. Some commands may require admin privileges.
+```bash
+mkdir /cyberd
+```
+
+Run daemon with mounted volumes on created during previous step folder.
+```bash
+docker run -d --name=cyberd --runtime=nvidia \
+ -p 26656:26656 -p 26657:26657 -p 26660:26660 \
+ -v /cyberd/daemon:/root/.cyberd \
+ -v /cyberd/cli:/root/.cyberdcli \
+ cybercongress/cyberd:latest
+```
+
+To check if your node is connected to the testnet, you can run this:
+```
+docker exec cyberd cyberdcli status
+```
+You should be seeing a returned JSON with your node status including node_info, sync_info and validator_info.
+
+## Prepare stake address
+
+Alright, you are now connected to the testnet. 
+To be a validator, you will need some **CBD**(cyberd coin) to be bounded as your stake. 
+Top 146 validators by bounded stake will be active validators taking part in consensus. 
+
+If you already have address with **CBD**, just restore it with your seed phrase into your local keystore.
+```bash
+docker exec -ti cyberd cyberdcli keys add <your_key_name> --recover
+docker exec cyberd cyberdcli show <your_key_name>
+```
+
+If no, create new one using command below. 
+Also, you should send coins to that address to bound them later during validator submitting. 
+```
+docker exec -ti cyberd cyberdcli add <your_key_name> 
+docker exec cyberd cyberdcli show <your_key_name>
+```
+
+**<your_key_name>** is any name you pick to represent this key pair. 
+You have to refer to this <your_key_name> later when you use the keys to sign transactions. 
+It will ask you to enter your password twice to encrypt the key. 
+You also need to enter your password when you use your key to sign any transaction.
+
+The command returns the address, public key and a seed phrase which you can use it to 
+recover your account if you forget your password later.
+Keep the seed phrase in a safe place in case you have to use them.
+
+The address showing here is your account address. Let’s call this **<your_account_address>**. 
+It stores your assets.
+
+
+## Send create validator transaction
+
+Validators are actors on the network committing new blocks by submitting their votes. 
+It refers to the node itself, not a single person or a single account.
+Therefore, the public key here is referring to the node public key, 
+not the public key of the address you have just created.
+
+To get the node public key, run the following command.
+
+```bash
+docker exec cyberd cyberd tendermint show_validator
+```
+
+It will return a bech32 public key. Let’s call it **<your_node_pubkey>**.
+The next step you have to declare a validator candidate. 
+The validator candidate is the account which stake the coins. 
+So the validator candidate is an account this time.
+To declare a validator candidate, run the following command adjusting stake amount and other fields.
+
+```bash
+docker exec cyberd cyberdcli tx stake create-validator \
+  --amount=100CBD \
+  --pubkey=<your_node_pubkey> \
+  --moniker=<your_node_nickname> \
+  --trust-node \
+  --from=<your_key_name> \
+  --commission-rate="0.10" \
+  --commission-max-rate="0.20" \
+  --commission-max-change-rate="0.01"
+```
