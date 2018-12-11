@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	cpurank "github.com/cybercongress/cyberd/app/rank"
 	. "github.com/cybercongress/cyberd/app/storage"
 	. "github.com/cybercongress/cyberd/app/types"
+	cpurank "github.com/cybercongress/cyberd/x/rank"
 	"github.com/tendermint/tendermint/libs/log"
 )
 

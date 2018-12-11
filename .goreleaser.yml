@@ -1,31 +1,7 @@
 builds:
   -
     main: ./cyberdcli
-    binary: cyberdcli
-    env:
-      - CGO_ENABLED=0
-      - GO111MODULE=on
-    goos:
-      - linux
-      - darwin
-      - windows
-    goarch:
-      - amd64
-  -
-    main: ./proxy
-    binary: cyberdproxy
-    env:
-      - CGO_ENABLED=0
-      - GO111MODULE=on
-    goos:
-      - linux
-      - darwin
-      - windows
-    goarch:
-      - amd64
-  -
-    main: ./claim
-    binary: cyberdclaim
+    binary: cli
     env:
       - CGO_ENABLED=0
       - GO111MODULE=on
