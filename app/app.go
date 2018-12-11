@@ -15,13 +15,13 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/stake"
 	. "github.com/cybercongress/cyberd/app/bank"
 	"github.com/cybercongress/cyberd/app/coin"
-	"github.com/cybercongress/cyberd/app/rank"
 	. "github.com/cybercongress/cyberd/app/storage"
 	cbd "github.com/cybercongress/cyberd/app/types"
 	"github.com/cybercongress/cyberd/x/bandwidth"
 	bw "github.com/cybercongress/cyberd/x/bandwidth/types"
 	"github.com/cybercongress/cyberd/x/link"
 	"github.com/cybercongress/cyberd/x/mint"
+	"github.com/cybercongress/cyberd/x/rank"
 	abci "github.com/tendermint/tendermint/abci/types"
 	cmn "github.com/tendermint/tendermint/libs/common"
 	dbm "github.com/tendermint/tendermint/libs/db"
@@ -35,7 +35,7 @@ import (
 const (
 	APP            = "cyberd"
 	appName        = "CyberdApp"
-	DefaultKeyPass = "12345678"
+	DefaultKeyPass = "12345678" //todo remove from here
 )
 
 // default home directories for expected binaries
@@ -72,10 +72,10 @@ type CyberdApp struct {
 	txDecoder sdk.TxDecoder
 
 	// bandwidth
-	bandwidthHandler       bw.BandwidthHandler
-	msgBandwidthCost       bw.MsgBandwidthCost
-	maxAccBandwidth        bw.MaxAccBandwidth
-	curBlockSpentBandwidth uint64 //resets every block
+	bandwidthHandler        bw.BandwidthHandler
+	msgBandwidthCost        bw.MsgBandwidthCost
+	maxAccBandwidth         bw.MaxAccBandwidth
+	curBlockSpentBandwidth  uint64 //resets every block
 	lastTotalSpentBandwidth uint64 //resets every bandwidth price adjustment interval
 	currentCreditPrice      float64
 
@@ -100,8 +100,8 @@ type CyberdApp struct {
 	persistStorages CyberdPersistentStorages
 	memStorage      *InMemoryStorage
 
-	latestRankHash          []byte
-	latestBlockHeight       int64
+	latestRankHash    []byte
+	latestBlockHeight int64
 
 	computeUnit rank.ComputeUnit
 }
