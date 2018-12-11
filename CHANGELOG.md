@@ -1,5 +1,13 @@
 # Change Log
 
+## [Unreleased](https://github.com/cybercongress/cyberd/tree/HEAD)
+
+[Full Changelog](https://github.com/cybercongress/cyberd/compare/0.0.8...HEAD)
+
+**Closed issues:**
+
+- Make docker container based on  nvidia-gpu image. [\#104](https://github.com/cybercongress/cyberd/issues/104)
+
 ## [0.0.8](https://github.com/cybercongress/cyberd/tree/0.0.8) (2018-12-11)
 [Full Changelog](https://github.com/cybercongress/cyberd/compare/0.0.7...0.0.8)
 
