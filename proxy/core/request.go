@@ -18,10 +18,10 @@ type TxRequest interface {
 type UnmarshalTxRequest func([]byte) (TxRequest, error)
 
 type LinkRequest struct {
-	Fee        auth.StdFee   `json:"fee"`
-	Msgs       []link.MsgLink `json:"msgs"`
-	Signatures []Signature   `json:"signatures"`
-	Memo       string        `json:"memo"`
+	Fee        auth.StdFee `json:"fee"`
+	Msgs       []link.Msg  `json:"msgs"`
+	Signatures []Signature `json:"signatures"`
+	Memo       string      `json:"memo"`
 }
 
 func (r LinkRequest) GetFee() auth.StdFee        { return r.Fee }

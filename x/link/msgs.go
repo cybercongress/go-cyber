@@ -6,24 +6,24 @@ import (
 	"github.com/ipfs/go-cid"
 )
 
-type MsgLink struct {
+type Msg struct {
 	Address sdk.AccAddress `json:"address"`
 	From    cbd.Cid        `json:"cid1"`
 	To      cbd.Cid        `json:"cid2"`
 }
 
-var _ sdk.Msg = MsgLink{}
+var _ sdk.Msg = Msg{}
 
-func NewMsgLink(address sdk.AccAddress, fromCid cbd.Cid, toCid cbd.Cid) MsgLink {
-	return MsgLink{Address: address, From: fromCid, To: toCid}
+func NewMsg(address sdk.AccAddress, fromCid cbd.Cid, toCid cbd.Cid) Msg {
+	return Msg{Address: address, From: fromCid, To: toCid}
 }
 
-func (msg MsgLink) Name() string { return "link" }
+func (msg Msg) Name() string { return "link" }
 
-func (MsgLink) Route() string { return "link" }
-func (MsgLink) Type() string  { return "link" }
+func (Msg) Route() string { return "link" }
+func (Msg) Type() string  { return "link" }
 
-func (msg MsgLink) ValidateBasic() sdk.Error {
+func (msg Msg) ValidateBasic() sdk.Error {
 
 	if len(msg.Address) == 0 {
 		return sdk.ErrInvalidAddress(msg.Address.String())
@@ -40,7 +40,7 @@ func (msg MsgLink) ValidateBasic() sdk.Error {
 	return nil
 }
 
-func (msg MsgLink) GetSignBytes() []byte {
+func (msg Msg) GetSignBytes() []byte {
 	b, err := msgCdc.MarshalJSON(msg)
 	if err != nil {
 		panic(err)
@@ -48,6 +48,6 @@ func (msg MsgLink) GetSignBytes() []byte {
 	return sdk.MustSortJSON(b)
 }
 
-func (msg MsgLink) GetSigners() []sdk.AccAddress {
+func (msg Msg) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.Address}
 }

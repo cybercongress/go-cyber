@@ -18,7 +18,7 @@ func NewLinksHandler(cis CidIndexStorage, ls LinksStorage, imms *InMemoryStorage
 
 	return func(ctx sdk.Context, msg sdk.Msg) sdk.Result {
 
-		linkMsg := msg.(MsgLink)
+		linkMsg := msg.(Msg)
 		fromCidNumber := getCidNumber(ctx, linkMsg.From)
 		toCidNumber := getCidNumber(ctx, linkMsg.To)
 		accNumber := cbd.AccountNumber(as.GetAccount(ctx, linkMsg.Address).GetAccountNumber())

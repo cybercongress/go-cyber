@@ -5,7 +5,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/bank/client"
 	"github.com/cybercongress/cyberd/claim/context"
-	"github.com/cybercongress/cyberd/http/util"
+	"github.com/cybercongress/cyberd/util"
 	"github.com/pkg/errors"
 	"net"
 	"net/http"

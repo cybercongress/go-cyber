@@ -7,7 +7,7 @@ import (
 
 func MsgBandwidthCost(msg sdk.Msg) int64 {
 	switch msg.(type) {
-	case link.MsgLink:
+	case link.Msg:
 		return LinkMsgCost
 	default:
 		return NonLinkMsgCost

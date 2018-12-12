@@ -8,5 +8,5 @@ import (
 
 // build the sendTx msg
 func BuildMsg(address sdk.AccAddress, fromCid cbd.Cid, toCid cbd.Cid) sdk.Msg {
-	return link.NewMsgLink(address, fromCid, toCid)
+	return link.NewMsg(address, fromCid, toCid)
 }

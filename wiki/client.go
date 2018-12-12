@@ -11,6 +11,7 @@ import (
 	"github.com/cybercongress/cyberd/app"
 	cbd "github.com/cybercongress/cyberd/app/types"
 	"github.com/cybercongress/cyberd/claim/common"
+	"github.com/cybercongress/cyberd/x/link"
 	"github.com/spf13/viper"
 	rpcclient "github.com/tendermint/tendermint/rpc/client"
 	"os"
@@ -45,8 +46,8 @@ func InitAddLink() func([]Link) {
 	return func(links []Link) {
 
 		msges := make([]sdk.Msg, 0, len(links))
-		for _, link := range links {
-			msges = append(msges, app.NewMsgLink(addr, cbd.Cid(link.from), cbd.Cid(link.to)))
+		for _, l := range links {
+			msges = append(msges, link.NewMsg(addr, cbd.Cid(l.from), cbd.Cid(l.to)))
 		}
 
 		sendTx(address, txCtx, cliCtx, msges)
