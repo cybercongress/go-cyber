@@ -87,8 +87,8 @@ docker exec cyberd cyberdcli show <your_key_name>
 If no, create new one using command below. 
 Also, you should send coins to that address to bound them later during validator submitting. 
 ```
-docker exec -ti cyberd cyberdcli add <your_key_name> 
-docker exec cyberd cyberdcli show <your_key_name>
+docker exec -ti cyberd cyberdcli keys add <your_key_name> 
+docker exec cyberd cyberdcli keys show <your_key_name>
 ```
 
 **<your_key_name>** is any name you pick to represent this key pair. 
@@ -114,7 +114,7 @@ not the public key of the address you have just created.
 To get the node public key, run the following command.
 
 ```bash
-docker exec cyberd cyberd tendermint show_validator
+docker exec cyberd cyberd tendermint show-validator
 ```
 
 It will return a bech32 public key. Let’s call it **<your_node_pubkey>**.
