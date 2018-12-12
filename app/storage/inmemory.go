@@ -16,7 +16,7 @@ type RankedCidNumber struct {
 
 type RankedCid struct {
 	Cid  Cid
-	Rank float64
+	Rank float64 `amino:"unsafe"`
 }
 
 type CidRankedLinks []RankedCidNumber
