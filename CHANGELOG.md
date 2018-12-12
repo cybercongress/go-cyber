@@ -7,6 +7,7 @@
 **Closed issues:**
 
 - Make docker container based on  nvidia-gpu image. [\#104](https://github.com/cybercongress/cyberd/issues/104)
+- Add bandwidth by stake [\#77](https://github.com/cybercongress/cyberd/issues/77)
 
 ## [0.0.8](https://github.com/cybercongress/cyberd/tree/0.0.8) (2018-12-11)
 [Full Changelog](https://github.com/cybercongress/cyberd/compare/0.0.7...0.0.8)
@@ -30,6 +31,7 @@
 
 **Merged pull requests:**
 
+- \#76 Define Basic RPC specification [\#111](https://github.com/cybercongress/cyberd/pull/111) ([hleb-albau](https://github.com/hleb-albau))
 - \#104 Make docker container based on nvidia-gpu image [\#110](https://github.com/cybercongress/cyberd/pull/110) ([hleb-albau](https://github.com/hleb-albau))
 - \[DON'T MERGE\] Add bandwidth by stake. Part 2. [\#108](https://github.com/cybercongress/cyberd/pull/108) ([arturalbov](https://github.com/arturalbov))
 - Add bandwidth by stake Part 1 [\#107](https://github.com/cybercongress/cyberd/pull/107) ([arturalbov](https://github.com/arturalbov))
