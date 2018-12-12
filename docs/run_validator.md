@@ -81,7 +81,7 @@ Top 146 validators by bounded stake will be active validators taking part in con
 If you already have address with **CBD**, just restore it with your seed phrase into your local keystore.
 ```bash
 docker exec -ti cyberd cyberdcli keys add <your_key_name> --recover
-docker exec cyberd cyberdcli show <your_key_name>
+docker exec cyberd cyberdcli keys show <your_key_name>
 ```
 
 If no, create new one using command below. 
