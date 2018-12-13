@@ -174,7 +174,7 @@
               "type": "cosmos-sdk/MsgCreateValidator",
               "value": {
                 "Description": {
-                  "moniker": "node0",
+                  "moniker": "anonymous",
                   "identity": "",
                   "website": "",
                   "details": ""
@@ -188,11 +188,11 @@
                 "validator_address": "cbdvaloper1sk3uvpacpjm2t3389caqk4gd9n9gkzq2jhfzpy",
                 "pubkey": {
                   "type": "tendermint/PubKeyEd25519",
-                  "value": "TPJ89mSi4npYGKwKeyvfPkRpF1QYatxQ1yeWBI34XXk="
+                  "value": "yp3cSjqGor2Rdjsq0YcVcO/uZNoqtwz9QZZRmGc9CF4="
                 },
                 "delegation": {
                   "denom": "CBD",
-                  "amount": "900000000"
+                  "amount": "100000"
                 }
               }
             }
@@ -212,12 +212,12 @@
                 "type": "tendermint/PubKeySecp256k1",
                 "value": "AyAoX+4zFopYd2iKSVAfFqVKsFL+SSAsSPO+wNkNZNUw"
               },
-              "signature": "VDAIqgmYKqC2+dbn2aiPuRSmF5+VdmzTaGP4POCf3sVIyCWpOTbfkLeuDwBjXctKHeguqJEQLzOu64KDVDUcUg==",
+              "signature": "5ZemPp8sb4PM9B/3CZINguZzeJvPBnj+nVpPpf2f8BwAh+eEHctemZ6zBru4ZQWM4ptIdCrSN3KIsZDhH0VfXg==",
               "account_number": "0",
               "sequence": "0"
             }
           ],
-          "memo": "fce363a8cb762a9408ac7be78e277863dd578b82@192.168.100.42:26656"
+          "memo": "fce363a8cb762a9408ac7be78e277863dd578b82@192.168.0.166:26656"
         }
       }
     ]
