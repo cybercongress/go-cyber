@@ -15,6 +15,7 @@
 
 **Merged pull requests:**
 
+- Update readme [\#119](https://github.com/cybercongress/cyberd/pull/119) ([hleb-albau](https://github.com/hleb-albau))
 - Clean up folders [\#118](https://github.com/cybercongress/cyberd/pull/118) ([arturalbov](https://github.com/arturalbov))
 - \#103 Index transactions by signers. [\#117](https://github.com/cybercongress/cyberd/pull/117) ([hleb-albau](https://github.com/hleb-albau))
 
