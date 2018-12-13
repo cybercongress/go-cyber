@@ -1,8 +1,7 @@
 # Change Log
 
-## [Unreleased](https://github.com/cybercongress/cyberd/tree/HEAD)
-
-[Full Changelog](https://github.com/cybercongress/cyberd/compare/0.0.8...HEAD)
+## [0.0.9](https://github.com/cybercongress/cyberd/tree/0.0.9) (2018-12-13)
+[Full Changelog](https://github.com/cybercongress/cyberd/compare/0.0.8...0.0.9)
 
 **Closed issues:**
 
