@@ -1,21 +1,22 @@
 
-<h3 align="center">cyberd</h3>
+# cyberd. Knowledge consensus computer
+![banner](logo.png)
 
-<div align="center">
-   <img src="https://img.shields.io/badge/contributions-welcome-orange.svg?style=flat-square&longCache=true" alt="" />
-   <a href="https://t.me/fuckgoogle"><img src="https://img.shields.io/badge/Join%20Us%20On-Telegram-2599D2.svg?style=flat-square&longCache=true" alt=""></a>
-</div>  
+[![testnet](https://img.shields.io/badge/testnet-euler--dev1-green.svg?style=flat-square)](https://github.com/cybercongress/cyberd/blob/master/docs/run_validator.md)
+[![version](https://img.shields.io/github/release/cybercongress/cyberd.svg?style=flat-square)](https://github.com/cosmos/cosmos-sdk/releases/latest)
+[![CircleCI](https://img.shields.io/circleci/project/github/cybercongress/cyberd.svg?style=flat-square)](https://circleci.com/gh/cybercongress/cyberd/tree/master)
+[![license](https://img.shields.io/github/license/cybercongress/cyb.svg?style=flat-square)](https://github.com/cybercongress/cyberd)
+[![LoC](https://tokei.rs/b1/github/cybercongress/cyberd)](https://github.com/cybercongress/cyberd)
+[![contributors](https://img.shields.io/github/contributors/cybercongress/cyberd.svg?style=flat-square)](https://github.com/cybercongress/cyberd/graphs/contributors)
+[![discuss](https://img.shields.io/badge/Join%20Us%20On-Telegram-2599D2.svg?style=flat-square)](https://t.me/fuckgoogle)
+[![contribute](https://img.shields.io/badge/contributions-welcome-orange.svg?style=flat-square)](https://github.com/cybercongress/cyberd/blob/master/CONTRIBUTING.md)
 
-## Project Status
-Project status: **zeronet**. We are at [research](https://github.com/cybercongress/cyberd/blob/master/docs/cyberd.md) stage at the moment.
 
-## Getting Start Useful Links
+**WARNING**: Project status: **testnet**. We are at research state at the moment.
 
-* [Work in progress paper](https://github.com/cybercongress/cyberd/blob/master/docs/cyberd.md)
-* [Zeronet for Cyb testing](https://github.com/cybercongress/cyberd/tree/master/cosmos/poc)
+## cyberd Public Testnets
 
-## Quick Run Demo
-
+To run a full-node or validator in the latest public testnet of the cyberd follow [the guide](./docs/run_validator.md).
 
 ## Issues
 
@@ -28,14 +29,10 @@ You are invited to contribute new features, fixes, or updates, large or small; W
  requests, and do our best to process them as fast as We can. You can find detailed information in our
  [contribution guide](./docs/contributing/contributing.md).
 
-## Gitcoin Tasks
-<a href="https://gitcoin.co/explorer?q=cyberd">
-    <img src="https://gitcoin.co/funding/embed?repo=https://github.com/cybercongress/cyberd">
-</a>
 
-## Roadmap & Changelog
+## Changelog
 
-Stay tuned with our [Changelog](./CHANGELOG.md) and [Roadmap](./ROADMAP.md).
+Stay tuned with our [Changelog](./CHANGELOG.md).
 
 <div align="center">
   <sub>Built by
