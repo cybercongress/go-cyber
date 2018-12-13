@@ -4,12 +4,18 @@
 
 [Full Changelog](https://github.com/cybercongress/cyberd/compare/0.0.9...HEAD)
 
+**Implemented enhancements:**
+
+- Get rid of RPC proxy [\#94](https://github.com/cybercongress/cyberd/issues/94)
+
 **Closed issues:**
 
+- Index transactions by addresses. [\#103](https://github.com/cybercongress/cyberd/issues/103)
 - Include addresses into knowledge graph [\#90](https://github.com/cybercongress/cyberd/issues/90)
 
 **Merged pull requests:**
 
+- Clean up folders [\#118](https://github.com/cybercongress/cyberd/pull/118) ([arturalbov](https://github.com/arturalbov))
 - \#103 Index transactions by signers. [\#117](https://github.com/cybercongress/cyberd/pull/117) ([hleb-albau](https://github.com/hleb-albau))
 
 ## [0.0.9](https://github.com/cybercongress/cyberd/tree/0.0.9) (2018-12-13)
