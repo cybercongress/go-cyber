@@ -4,3 +4,4 @@
 2. adjust genesis supply in x/mint
 3. cyberd repo change chain-id
 4. reset old state
+5. change genesis file chain-id

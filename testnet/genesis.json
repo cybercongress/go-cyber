@@ -1,6 +1,6 @@
 {
   "genesis_time": "2018-12-08T11:11:09.854654507Z",
-  "chain_id": "euler-dev0",
+  "chain_id": "euler-dev1",
   "consensus_params": {
     "block_size": {
       "max_bytes": "22020096",
