@@ -12,9 +12,7 @@
 [![contribute](https://img.shields.io/badge/contributions-welcome-orange.svg?style=flat-square)](https://github.com/cybercongress/cyberd/blob/master/CONTRIBUTING.md)
 
 
-
-## Project Status
-Project status: **zeronet**. We are at [research](https://github.com/cybercongress/cyberd/blob/master/docs/cyberd.md) stage at the moment.
+**WARNING**: Project status: **testnet**. We are at research state at the moment.
 
 ## Getting Start Useful Links
 
