@@ -133,5 +133,5 @@ docker exec -ti cyberd cyberdcli tx stake create-validator \
   --commission-rate="0.10" \
   --commission-max-rate="0.20" \
   --commission-max-change-rate="0.01" \
-  --chain-id="euler-dev0"
+  --chain-id=<testnet_chain_id>
 ```
