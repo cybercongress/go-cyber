@@ -32,9 +32,9 @@ You are invited to contribute new features, fixes, or updates, large or small; W
  [contribution guide](./docs/contributing/contributing.md).
 
 
-## Roadmap & Changelog
+## Changelog
 
-Stay tuned with our [Changelog](./CHANGELOG.md) and [Roadmap](./ROADMAP.md).
+Stay tuned with our [Changelog](./CHANGELOG.md).
 
 <div align="center">
   <sub>Built by
