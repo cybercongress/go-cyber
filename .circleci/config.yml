@@ -31,10 +31,9 @@ jobs:
           name: Build And Test Project
           command: |
             export GO111MODULE=on
-            go build -o daemon ./cyberd
+            go build -o cyberd ./daemon
             go build -o cyberdcli ./cli
             go build -o cyberdproxy ./proxy
-            go build -o cyberdclaim ./claim
 
 
   update_changelog:
