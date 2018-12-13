@@ -14,12 +14,6 @@
 
 **WARNING**: Project status: **testnet**. We are at research state at the moment.
 
-## Getting Start Useful Links
-
-* [Work in progress paper](https://github.com/cybercongress/cyberd/blob/master/docs/cyberd.md)
-* [Zeronet for Cyb testing](https://github.com/cybercongress/cyberd/tree/master/cosmos/poc)
-
-
 ## Issues
 
 If you have any problems with or questions about search, please contact us through a
