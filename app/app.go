@@ -373,7 +373,15 @@ func (app *CyberdApp) DeliverTx(txBytes []byte) (res abci.ResponseDeliverTx) {
 				app.curBlockSpentBandwidth = app.curBlockSpentBandwidth + uint64(spent)
 			}
 
-			return resp
+			return abci.ResponseDeliverTx{
+				Code:      uint32(resp.Code),
+				Codespace: string(resp.Codespace),
+				Data:      resp.Data,
+				Log:       resp.Log,
+				GasWanted: int64(resp.GasWanted),
+				GasUsed:   int64(resp.GasUsed),
+				Tags:      append(resp.Tags, getSignersTags(tx)...),
+			}
 		}
 	}
 
@@ -388,6 +396,22 @@ func (app *CyberdApp) DeliverTx(txBytes []byte) (res abci.ResponseDeliverTx) {
 		GasUsed:   int64(result.GasUsed),
 		Tags:      result.Tags,
 	}
+}
+
+func getSignersTags(tx sdk.Tx) sdk.Tags {
+
+	signers := make(map[string]struct{})
+	for _, msg := range tx.GetMsgs() {
+		for _, s := range msg.GetSigners() {
+			signers[s.String()] = struct{}{}
+		}
+	}
+
+	var tags = make(sdk.Tags, 0)
+	for signer := range signers {
+		tags.AppendTag("signer", []byte(signer))
+	}
+	return tags
 }
 
 // Calculates cyber.Rank for block N, and returns Hash of result as app state.

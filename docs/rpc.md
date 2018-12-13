@@ -13,7 +13,7 @@ Cyberd provides a [JSON-RPC](http://json-rpc.org/wiki/specification) API. Http e
 
 Query http endpoint using curl:
 ```bash
-curl --data '{"method":"cyberd_mostResentBlockNumber","params":[],"id":"1","jsonrpc":"2.0"}' \
+curl --data '{"method":"status","params":[],"id":"1","jsonrpc":"2.0"}' \
 -H "Content-Type: application/json" -X POST earth.cybernode.ai:34657
 ```
 
@@ -21,7 +21,7 @@ Query ws endpoint from js:
 ```js
 let websocket = new WebSocket("ws://earth.cybernode.ai:34657/websocket");
 websocket.send(JSON.stringify({
-  "method":"cyberd_mostResentBlockNumber",
+  "method":"status",
   "params":[],
   "id":"1",
   "jsonrpc":"2.0"
@@ -36,20 +36,28 @@ the method name for further details such as parameter and return information.
 
 |#|Method|Description|
 |---|------|-----------|
-|1|[mostResentBlockNumber](#mostResentBlockNumber)|Returns the number of most recent block.|
+|1|[status](#status)|Get node info, pubkey, latest block hash, app hash, block height and time.|
+|2|[is_link_exist](#link-exist)|Return true, if given link exist.|
 
 ### Method Details
 
 ***
-<a name="mostResentBlockNumber"/>
+<a name="status"/>
 
 |   |   |
 |---|---|
-|Method|cyberd_mostResentBlockNumber|
+|Method|status|
 |Parameters|None|
-|Description|Returns the number of most recent block.|
-|Returns|`int`|
-|Example Return |`42`|
+|Description|Get node info, pubkey, latest block hash, app hash, block height and time.|
+|[Return to Overview](#method-overview)<br />
+
+<a name="link-exist"/>
+
+|   |   |
+|---|---|
+|Method|is_link_exist|
+|Parameters|1. from (cid, required)<br />2. to (cid, required)<br />3. address (string, required)<br />|
+|Description|Return true, if given link exist.|
 |[Return to Overview](#method-overview)<br />
 
 ***
@@ -80,6 +88,9 @@ Subscribe for new blocks header from js:
 |#|Event|Description|
 |---|------|-----------|
 |1|[NewBlockHeader](#NewBlockHeader)|Sends block header notification when a new block is committed.|
+|2|[CoinsReceived](#CoinsReceived)|Sends a notification when a new coins is arrived to given address.|
+|3|[CoinsSend](#CoinsSend)|Sends a notification when a new coins is send from given address.|
+|4|[СidsLinked](#СidsLinked)|Notification of link created by given address.|
 
 ### Events Details
 
@@ -127,6 +138,31 @@ Subscribe for new blocks header from js:
   }
 }
 ```
+
+#### CoinsReceived    
+|   |   |
+|---|---|
+|Event|CoinsReceived|
+|Description|Sends a notification when a new coins is arrived to given address.|
+|Query|'tm.event=\'EventTx\' AND recipient = 'cbd1sk3uvpacpjm2t3389caqk4gd9n9gkzq2054yds''|
+|[Return to Overview](#events-overview)<br />
+
+#### CoinsSend    
+|   |   |
+|---|---|
+|Event|CoinsSend|
+|Description|Sends a notification when a new coins is send from given address.|
+|Query|'tm.event=\'EventTx\' AND sender = 'cbd1sk3uvpacpjm2t3389caqk4gd9n9gkzq2054yds''|
+|[Return to Overview](#events-overview)<br />
+
+#### СidsLinked    
+|   |   |
+|---|---|
+|Event|СidsLinked|
+|Description|Notification of link created by given address.|
+|Query|'tm.event=\'EventTx\' AND signer = 'cbd1sk3uvpacpjm2t3389caqk4gd9n9gkzq2054yds' AND action = 'link' '|
+|[Return to Overview](#events-overview)<br />
+
 
 
 
