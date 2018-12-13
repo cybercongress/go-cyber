@@ -1,10 +1,14 @@
 
-<h3 align="center">cyberd</h3>
+# Knowledge consensus computer
+![banner](logo.png)
 
-<div align="center">
-   <img src="https://img.shields.io/badge/contributions-welcome-orange.svg?style=flat-square&longCache=true" alt="" />
-   <a href="https://t.me/fuckgoogle"><img src="https://img.shields.io/badge/Join%20Us%20On-Telegram-2599D2.svg?style=flat-square&longCache=true" alt=""></a>
-</div>  
+
+[![version](https://img.shields.io/github/release/cybercongress/cyberd.svg?style=flat-square)](https://github.com/cosmos/cosmos-sdk/releases/latest)
+[![CircleCI](https://img.shields.io/circleci/project/github/cybercongress/cyberd.svg?style=flat-square)](https://circleci.com/gh/cybercongress/cyberd/tree/master)
+[![license](https://img.shields.io/github/license/cybercongress/cyb.svg?style=flat-square)](https://github.com/cybercongress/cyberd)
+[![LoC](https://tokei.rs/b1/github/cybercongress/cyberd)](https://github.com/cybercongress/cyberd)
+[![contributors](https://img.shields.io/github/contributors/cybercongress/cyberd.svg?style=flat-square)](https://github.com/cybercongress/cyberd/graphs/contributors)
+
 
 ## Project Status
 Project status: **zeronet**. We are at [research](https://github.com/cybercongress/cyberd/blob/master/docs/cyberd.md) stage at the moment.
