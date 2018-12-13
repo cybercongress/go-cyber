@@ -7,7 +7,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtxb "github.com/cosmos/cosmos-sdk/x/auth/client/txbuilder"
 	cbd "github.com/cybercongress/cyberd/app/types"
-	. "github.com/cybercongress/cyberd/cli/util"
+	"github.com/cybercongress/cyberd/x/link"
 	"github.com/ipfs/go-cid"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -57,7 +57,7 @@ func LinkTxCmd(cdc *codec.Codec) *cobra.Command {
 			}
 
 			// build and sign the transaction, then broadcast to Tendermint
-			msg := BuildMsg(from, cidFrom, cidTo)
+			msg := link.NewMsg(from, cidFrom, cidTo)
 
 			return utils.CompleteAndBroadcastTxCli(txCtx, cliCtx, []sdk.Msg{msg})
 		},
