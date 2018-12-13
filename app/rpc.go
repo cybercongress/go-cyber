@@ -25,3 +25,20 @@ func (app *CyberdApp) Account(address sdk.AccAddress) auth.Account {
 	}
 	return nil
 }
+
+func (app *CyberdApp) IsLinkExist(from Cid, to Cid, address sdk.AccAddress) bool {
+
+	ctx := app.NewContext(true, abci.Header{})
+	acc := app.accountKeeper.GetAccount(ctx, address)
+
+	if acc != nil {
+		fromNumber, fromExist := app.persistStorages.CidIndex.GetCidIndex(ctx, from)
+		toNumber, toExists := app.persistStorages.CidIndex.GetCidIndex(ctx, to)
+		if fromExist && toExists {
+			accNumber := AccountNumber(acc.GetAccountNumber())
+			return app.persistStorages.Links.IsLinkExist(ctx, NewLink(fromNumber, toNumber, accNumber))
+		}
+	}
+
+	return false
+}
