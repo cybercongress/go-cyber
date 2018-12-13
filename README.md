@@ -14,6 +14,10 @@
 
 **WARNING**: Project status: **testnet**. We are at research state at the moment.
 
+## cyberd Public Testnets
+
+To run a full-node or validator in the latest public testnet of the cyberd follow [the guide](./docs/run_validator.md).
+
 ## Issues
 
 If you have any problems with or questions about search, please contact us through a
