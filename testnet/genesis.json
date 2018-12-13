@@ -134,7 +134,7 @@
     },
     "stake": {
       "pool": {
-        "loose_tokens": "1000000000.0",
+        "loose_tokens": "17000000000",
         "bonded_tokens": "0.0000000000"
       },
       "params": {
