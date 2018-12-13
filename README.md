@@ -1,5 +1,5 @@
 
-# Cyberd. Knowledge consensus computer
+# cyberd. Knowledge consensus computer
 ![banner](logo.png)
 
 [![testnet](https://img.shields.io/badge/testnet-euler--dev1-green.svg?style=flat-square)](https://github.com/cybercongress/cyberd/blob/master/docs/run_validator.md)
