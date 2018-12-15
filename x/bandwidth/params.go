@@ -4,6 +4,7 @@ const (
 	// Maximum bandwidth of network
 	MaxNetworkBandwidth = 100000000
 
+	// todo add more msg prices here
 	// Bandwidth cost of specific messages and tx itself
 	TxCost         int64 = 10
 	LinkMsgCost    int64 = 5

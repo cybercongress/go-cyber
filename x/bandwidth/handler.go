@@ -19,7 +19,7 @@ func NewBandwidthHandler(
 			return 0, sdkErr
 		}
 
-		accountBandwidth, err := bwKeeper.GetAccountBandwidth(account, ctx)
+		accountBandwidth, err := bwKeeper.GetAccountBandwidth(ctx, account)
 		if err != nil {
 			return 0, sdk.ErrInternal("Cannot process tx")
 		}

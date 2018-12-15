@@ -8,7 +8,7 @@ import (
 
 type AccountBandwidthKeeper interface {
 	SetAccountBandwidth(ctx sdk.Context, bandwidth types.AccountBandwidth)
-	GetAccountBandwidth(address sdk.AccAddress, ctx sdk.Context) (types.AccountBandwidth, error)
+	GetAccountBandwidth(ctx sdk.Context, address sdk.AccAddress) (types.AccountBandwidth, error)
 }
 
 type BaseAccountBandwidthKeeper struct {
@@ -20,7 +20,7 @@ func (bk BaseAccountBandwidthKeeper) SetAccountBandwidth(ctx sdk.Context, bandwi
 	ctx.KVStore(bk.key).Set(bandwidth.Address, bwBytes)
 }
 
-func (bk BaseAccountBandwidthKeeper) GetAccountBandwidth(address sdk.AccAddress, ctx sdk.Context) (bw types.AccountBandwidth, err error) {
+func (bk BaseAccountBandwidthKeeper) GetAccountBandwidth(ctx sdk.Context, address sdk.AccAddress) (bw types.AccountBandwidth, err error) {
 	bwBytes := ctx.KVStore(bk.key).Get(address)
 	if bwBytes == nil {
 		return types.AccountBandwidth{

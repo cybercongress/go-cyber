@@ -156,7 +156,7 @@ func NewCyberdApp(
 	}
 
 	// define and attach the mappers and keepers
-	app.accountKeeper = auth.NewAccountKeeper(app.cdc, dbKeys.acc, NewAccount)
+	app.accountKeeper = auth.NewAccountKeeper(app.cdc, dbKeys.acc, cbd.NewCyberdAccount)
 	app.bankKeeper = bank.NewBaseKeeper(app.accountKeeper)
 	app.paramsKeeper = params.NewKeeper(app.cdc, dbKeys.params, dbKeys.tParams)
 	app.feeCollectionKeeper = auth.NewFeeCollectionKeeper(app.cdc, dbKeys.fees)
