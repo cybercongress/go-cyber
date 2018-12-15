@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
+	bdwth "github.com/cybercongress/cyberd/x/bandwidth/types"
 )
 
 type ResultAccount struct {
@@ -29,4 +30,15 @@ func Account(address string) (*ResultAccount, error) {
 			AccountNumber: account.GetAccountNumber(),
 			Sequence:      account.GetSequence()},
 	}, nil
+}
+
+func AccountBandwidth(address string) (*bdwth.AccountBandwidth, error) {
+
+	accAddress, err := types.AccAddressFromBech32(address)
+	if err != nil {
+		return nil, err
+	}
+
+	accBdwth, err := cyberdApp.AccountBandwidth(accAddress)
+	return &accBdwth, err
 }

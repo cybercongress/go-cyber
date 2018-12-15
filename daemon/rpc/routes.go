@@ -13,9 +13,10 @@ func SetCyberdApp(cApp *app.CyberdApp) {
 }
 
 var Routes = map[string]*rpcserver.RPCFunc{
-	"search":        rpcserver.NewRPCFunc(Search, "cid,page,perPage"),
-	"account":       rpcserver.NewRPCFunc(Account, "address"),
-	"is_link_exist": rpcserver.NewRPCFunc(IsLinkExist, "from, to, address"),
+	"search":            rpcserver.NewRPCFunc(Search, "cid,page,perPage"),
+	"account":           rpcserver.NewRPCFunc(Account, "address"),
+	"account_bandwidth": rpcserver.NewRPCFunc(AccountBandwidth, "address"),
+	"is_link_exist":     rpcserver.NewRPCFunc(IsLinkExist, "from, to, address"),
 }
 
 func init() {

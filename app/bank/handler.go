@@ -60,7 +60,7 @@ func handleMsgSend(
 }
 
 func updateBandwidth(ctx sdk.Context, addr sdk.AccAddress, maxBandwidth int64, abk bandwidth.AccountBandwidthKeeper) {
-	accBandwidth, _ := abk.GetAccountBandwidth(addr, ctx)
+	accBandwidth, _ := abk.GetAccountBandwidth(ctx, addr)
 	accBandwidth.UpdateMax(maxBandwidth, ctx.BlockHeight(), bandwidth.RecoveryPeriod)
 	abk.SetAccountBandwidth(ctx, accBandwidth)
 }
