@@ -6,6 +6,11 @@ import (
 	"math"
 )
 
+// Used for 2 points:
+// 1. Adjust credit price each `AdjustPricePeriod` blocks
+// 2. For accs with updated on current block stake adjust max bandwidth. Why not update on `onCoinsTransfer`?
+//  Cuz for some bound related operations, coins already added/reduced from acc, but not added to
+//  validator\delegator pool.
 func EndBlocker(
 	ctx sdk.Context, totalSpentForPeriod uint64, curPrice float64, ms storage.MainStorage,
 ) (newPrice float64, totalSpent uint64) {
