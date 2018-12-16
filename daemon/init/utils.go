@@ -3,12 +3,12 @@ package init
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/cybercongress/cyberd/app"
+	. "github.com/cybercongress/cyberd/app/genesis"
 	"io/ioutil"
 	"time"
 
 	"github.com/cosmos/cosmos-sdk/codec"
-	amino "github.com/tendermint/go-amino"
+	"github.com/tendermint/go-amino"
 	cfg "github.com/tendermint/tendermint/config"
 	"github.com/tendermint/tendermint/crypto"
 	"github.com/tendermint/tendermint/libs/common"
@@ -108,5 +108,5 @@ func initializeEmptyGenesis(
 		return nil, fmt.Errorf("genesis.json file already exists: %v", genFile)
 	}
 
-	return codec.MarshalJSONIndent(cdc, app.NewDefaultGenesisState())
+	return codec.MarshalJSONIndent(cdc, NewDefaultGenesisState())
 }

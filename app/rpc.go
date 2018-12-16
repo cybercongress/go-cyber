@@ -5,7 +5,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	. "github.com/cybercongress/cyberd/app/storage"
 	cbd "github.com/cybercongress/cyberd/app/types"
-	"github.com/cybercongress/cyberd/x/bandwidth"
 	bdwth "github.com/cybercongress/cyberd/x/bandwidth/types"
 	abci "github.com/tendermint/tendermint/abci/types"
 )
@@ -22,12 +21,8 @@ func (app *CyberdApp) Account(address sdk.AccAddress) auth.Account {
 	return app.accountKeeper.GetAccount(app.RpcContext(), address)
 }
 
-func (app *CyberdApp) AccountBandwidth(address sdk.AccAddress) (bdwth.AccountBandwidth, error) {
-	accBdwth, err := app.accBandwidthKeeper.GetAccountBandwidth(app.RpcContext(), address)
-	if err != nil {
-		accBdwth.Recover(app.latestBlockHeight+1, bandwidth.RecoveryPeriod)
-	}
-	return accBdwth, err
+func (app *CyberdApp) AccountBandwidth(address sdk.AccAddress) bdwth.AcсBandwidth {
+	return app.accBandwidthKeeper.GetCurrentAccBandwidth(app.RpcContext(), address)
 }
 
 func (app *CyberdApp) IsLinkExist(from cbd.Cid, to cbd.Cid, address sdk.AccAddress) bool {

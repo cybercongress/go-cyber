@@ -3,8 +3,8 @@ package storage
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
-	"github.com/cybercongress/cyberd/app/coin"
 	cbd "github.com/cybercongress/cyberd/app/types"
+	"github.com/cybercongress/cyberd/app/types/coin"
 )
 
 // returns all added cids

@@ -32,13 +32,13 @@ func Account(address string) (*ResultAccount, error) {
 	}, nil
 }
 
-func AccountBandwidth(address string) (*bdwth.AccountBandwidth, error) {
+func AccountBandwidth(address string) (*bdwth.AcсBandwidth, error) {
 
 	accAddress, err := types.AccAddressFromBech32(address)
 	if err != nil {
 		return nil, err
 	}
 
-	accBdwth, err := cyberdApp.AccountBandwidth(accAddress)
-	return &accBdwth, err
+	accBdwth := cyberdApp.AccountBandwidth(accAddress)
+	return &accBdwth, nil
 }

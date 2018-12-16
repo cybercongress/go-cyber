@@ -9,6 +9,7 @@ import (
 func EndBlocker(
 	ctx sdk.Context, totalSpentForPeriod uint64, curPrice float64, ms storage.MainStorage,
 ) (newPrice float64, totalSpent uint64) {
+
 	newPrice = curPrice
 	if ctx.BlockHeight() != 0 && ctx.BlockHeight()%AdjustPricePeriod == 0 {
 		averageSpentValue := MaxNetworkBandwidth / (RecoveryPeriod / AdjustPricePeriod)

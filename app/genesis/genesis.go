@@ -1,4 +1,4 @@
-package app
+package genesis
 
 import (
 	"encoding/json"
@@ -9,7 +9,7 @@ import (
 	distr "github.com/cosmos/cosmos-sdk/x/distribution"
 	"github.com/cosmos/cosmos-sdk/x/slashing"
 	"github.com/cosmos/cosmos-sdk/x/stake"
-	"github.com/cybercongress/cyberd/app/coin"
+	"github.com/cybercongress/cyberd/app/types/coin"
 	"github.com/pkg/errors"
 	tmtypes "github.com/tendermint/tendermint/types"
 

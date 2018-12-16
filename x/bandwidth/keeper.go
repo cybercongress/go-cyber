@@ -6,34 +6,54 @@ import (
 	"github.com/cybercongress/cyberd/x/bandwidth/types"
 )
 
+type AccStakeProvider interface {
+	GetAccStakePercentage(ctx sdk.Context, address sdk.AccAddress) float64
+}
+
 type AccountBandwidthKeeper interface {
-	SetAccountBandwidth(ctx sdk.Context, bandwidth types.AccountBandwidth)
-	GetAccountBandwidth(ctx sdk.Context, address sdk.AccAddress) (types.AccountBandwidth, error)
+	SetAccBandwidth(ctx sdk.Context, bandwidth types.AcсBandwidth)
+	// Returns updated to current acc bandwidth
+	GetCurrentAccBandwidth(ctx sdk.Context, address sdk.AccAddress) types.AcсBandwidth
+	GetAccMaxBandwidth(ctx sdk.Context, address sdk.AccAddress) int64
 }
 
-type BaseAccountBandwidthKeeper struct {
-	key *sdk.KVStoreKey
+type BaseAccBandwidthKeeper struct {
+	key           *sdk.KVStoreKey
+	stakeProvider AccStakeProvider
 }
 
-func (bk BaseAccountBandwidthKeeper) SetAccountBandwidth(ctx sdk.Context, bandwidth types.AccountBandwidth) {
+func NewAccountBandwidthKeeper(key *sdk.KVStoreKey, stakeProvider AccStakeProvider) BaseAccBandwidthKeeper {
+	return BaseAccBandwidthKeeper{
+		key:           key,
+		stakeProvider: stakeProvider,
+	}
+}
+
+func (bk BaseAccBandwidthKeeper) GetAccMaxBandwidth(ctx sdk.Context, addr sdk.AccAddress) int64 {
+	accStakePercentage := bk.stakeProvider.GetAccStakePercentage(ctx, addr)
+	return int64(accStakePercentage * float64(MaxNetworkBandwidth) / 2)
+}
+
+func (bk BaseAccBandwidthKeeper) SetAccBandwidth(ctx sdk.Context, bandwidth types.AcсBandwidth) {
 	bwBytes, _ := json.Marshal(bandwidth)
 	ctx.KVStore(bk.key).Set(bandwidth.Address, bwBytes)
 }
 
-func (bk BaseAccountBandwidthKeeper) GetAccountBandwidth(ctx sdk.Context, address sdk.AccAddress) (bw types.AccountBandwidth, err error) {
+func (bk BaseAccBandwidthKeeper) GetCurrentAccBandwidth(ctx sdk.Context, address sdk.AccAddress) types.AcсBandwidth {
+
 	bwBytes := ctx.KVStore(bk.key).Get(address)
+	var accBw types.AcсBandwidth
 	if bwBytes == nil {
-		return types.AccountBandwidth{
+		accBw = types.AcсBandwidth{
 			Address:          address,
 			RemainedValue:    0,
 			LastUpdatedBlock: ctx.BlockHeight(),
 			MaxValue:         0,
-		}, nil
+		}
+	} else {
+		_ = json.Unmarshal(bwBytes, &accBw)
 	}
-	err = json.Unmarshal(bwBytes, &bw)
-	return
-}
-
-func NewAccountBandwidthKeeper(key *sdk.KVStoreKey) BaseAccountBandwidthKeeper {
-	return BaseAccountBandwidthKeeper{key: key}
+	accMaxBw := bk.GetAccMaxBandwidth(ctx, address)
+	accBw.UpdateMax(accMaxBw, ctx.BlockHeight(), RecoveryPeriod)
+	return accBw
 }

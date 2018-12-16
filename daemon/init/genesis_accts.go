@@ -3,6 +3,7 @@ package init
 import (
 	"fmt"
 	"github.com/cybercongress/cyberd/app"
+	. "github.com/cybercongress/cyberd/app/genesis"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/server"
@@ -43,14 +44,14 @@ func AddGenesisAccountCmd(ctx *server.Context, cdc *codec.Codec) *cobra.Command 
 				return err
 			}
 
-			var appState app.GenesisState
+			var appState GenesisState
 			if err = cdc.UnmarshalJSON(genDoc.AppState, &appState); err != nil {
 				return err
 			}
 
 			acc := auth.NewBaseAccountWithAddress(addr)
 			acc.Coins = coins
-			appState.Accounts = append(appState.Accounts, app.NewGenesisAccount(&acc))
+			appState.Accounts = append(appState.Accounts, NewGenesisAccount(&acc))
 
 			appStateJSON, err := cdc.MarshalJSON(appState)
 			if err != nil {

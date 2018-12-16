@@ -7,11 +7,11 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/distribution"
 	"github.com/cosmos/cosmos-sdk/x/slashing"
 	"github.com/cosmos/cosmos-sdk/x/stake"
+	. "github.com/cybercongress/cyberd/app/genesis"
 	abci "github.com/tendermint/tendermint/abci/types"
 	tmtypes "github.com/tendermint/tendermint/types"
 )
 
-// todo what is purpose of this functions?
 // ExportAppStateAndValidators implements custom application logic that exposes
 // various parts of the application's state and set of validators. An error is
 // returned if any step getting the state or set of validators fails.
