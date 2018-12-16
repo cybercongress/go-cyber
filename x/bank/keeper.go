@@ -6,26 +6,23 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/bank"
 	"github.com/cosmos/cosmos-sdk/x/stake"
 	"github.com/cybercongress/cyberd/app/types/coin"
-	bdwth "github.com/cybercongress/cyberd/x/bandwidth"
 )
 
 type Keeper struct {
 	bank.Keeper
 
-	ak  auth.AccountKeeper
-	sk  *stake.Keeper
-	bwk bdwth.AccountBandwidthKeeper
+	ak auth.AccountKeeper
+	sk *stake.Keeper
 
-	// stake changed hooks
-	accStakeChangedHooks []CoinsTransferHook
+	coinsTransferHooks []CoinsTransferHook
 }
 
-func NewBankKeeper(ak auth.AccountKeeper, sk *stake.Keeper, accStakeChangedHooks []CoinsTransferHook) Keeper {
+func NewBankKeeper(ak auth.AccountKeeper, sk *stake.Keeper, coinsTransferHooks []CoinsTransferHook) Keeper {
 	return Keeper{
-		Keeper:               bank.NewBaseKeeper(ak),
-		ak:                   ak,
-		sk:                   sk,
-		accStakeChangedHooks: accStakeChangedHooks,
+		Keeper:             bank.NewBaseKeeper(ak),
+		ak:                 ak,
+		sk:                 sk,
+		coinsTransferHooks: coinsTransferHooks,
 	}
 }
 
@@ -75,14 +72,13 @@ func (k Keeper) InputOutputCoins(
 		}
 		for _, j := range outputs {
 			k.onCoinsTransfer(ctx, nil, j.Address)
-			//k.bwk.UpdateAccountMaxBandwidth(ctx, j.Address, k.GetAccountTotalStakePercentage(ctx, j.Address))
 		}
 	}
 	return tags, err
 }
 
 func (k Keeper) onCoinsTransfer(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress) {
-	for _, hook := range k.accStakeChangedHooks {
+	for _, hook := range k.coinsTransferHooks {
 		hook(ctx, from, to)
 	}
 }
