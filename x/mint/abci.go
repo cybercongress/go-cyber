@@ -2,7 +2,7 @@ package mint
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cybercongress/cyberd/app/coin"
+	"github.com/cybercongress/cyberd/app/types/coin"
 )
 
 // Inflate every block

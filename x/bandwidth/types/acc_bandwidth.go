@@ -1,17 +1,20 @@
 package types
 
 import (
-	"github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-type AccountBandwidth struct {
-	Address          types.AccAddress `json:"address"`
-	RemainedValue    int64            `json:"remained"`
-	LastUpdatedBlock int64            `json:"last_updated_block"`
-	MaxValue         int64            `json:"max_value"`
+type MsgBandwidthCost func(msg sdk.Msg) int64
+type BandwidthHandler func(ctx sdk.Context, price float64, tx sdk.Tx) (spent int64, err sdk.Error)
+
+type AcсBandwidth struct {
+	Address          sdk.AccAddress `json:"address"`
+	RemainedValue    int64          `json:"remained"`
+	LastUpdatedBlock int64          `json:"last_updated_block"`
+	MaxValue         int64          `json:"max_value"`
 }
 
-func (bs *AccountBandwidth) UpdateMax(newValue int64, currentBlock int64, recoveryPeriod int64) {
+func (bs *AcсBandwidth) UpdateMax(newValue int64, currentBlock int64, recoveryPeriod int64) {
 	bs.Recover(currentBlock, recoveryPeriod)
 	bs.MaxValue = newValue
 	bs.LastUpdatedBlock = currentBlock
@@ -21,11 +24,11 @@ func (bs *AccountBandwidth) UpdateMax(newValue int64, currentBlock int64, recove
 	}
 }
 
-func (bs *AccountBandwidth) Recover(currentBlock int64, recoveryPeriod int64) {
+func (bs *AcсBandwidth) Recover(currentBlock int64, recoveryPeriod int64) {
 	recoverPerBlock := float64(bs.MaxValue) / float64(recoveryPeriod)
 	fullRecoveryAmount := float64(bs.MaxValue - bs.RemainedValue)
 
-	recoverAmount := float64(currentBlock - bs.LastUpdatedBlock) * recoverPerBlock
+	recoverAmount := float64(currentBlock-bs.LastUpdatedBlock) * recoverPerBlock
 	if recoverAmount > fullRecoveryAmount {
 		recoverAmount = fullRecoveryAmount
 	}
@@ -34,15 +37,15 @@ func (bs *AccountBandwidth) Recover(currentBlock int64, recoveryPeriod int64) {
 	bs.LastUpdatedBlock = currentBlock
 }
 
-func (bs AccountBandwidth) HasEnoughRemained(bandwidthToConsume int64) bool {
+func (bs AcсBandwidth) HasEnoughRemained(bandwidthToConsume int64) bool {
 	return bs.RemainedValue >= bandwidthToConsume
 }
 
 //TODO: Add check for remained bandwidth
-func (bs *AccountBandwidth) Consume(bandwidthToConsume int64) {
+func (bs *AcсBandwidth) Consume(bandwidthToConsume int64) {
 	bs.RemainedValue = bs.RemainedValue - bandwidthToConsume
 }
 
-func NewGenesisAccBandwidth(address types.AccAddress, bandwidth int64) AccountBandwidth {
-	return AccountBandwidth{Address:address, RemainedValue: bandwidth, MaxValue: bandwidth, LastUpdatedBlock: 0}
+func NewGenesisAccBandwidth(address sdk.AccAddress, bandwidth int64) AcсBandwidth {
+	return AcсBandwidth{Address: address, RemainedValue: bandwidth, MaxValue: bandwidth, LastUpdatedBlock: 0}
 }

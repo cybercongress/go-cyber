@@ -29,7 +29,7 @@ type CyberdClient interface {
 	GetAccount(address sdk.AccAddress) (auth.Account, error)
 
 	// returns account bandwidth information for given account
-	GetAccountBandwidth(address sdk.AccAddress) (bdwth.AccountBandwidth, error)
+	GetAccountBandwidth(address sdk.AccAddress) (bdwth.AcсBandwidth, error)
 
 	// links two cids for given user
 	// this method also should check, either cids are correct cids and given user is msg signer

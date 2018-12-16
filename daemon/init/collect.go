@@ -3,6 +3,8 @@ package init
 import (
 	"encoding/json"
 	"github.com/cybercongress/cyberd/app"
+	. "github.com/cybercongress/cyberd/app/genesis"
+
 	"path/filepath"
 
 	"github.com/cosmos/cosmos-sdk/client"
@@ -88,7 +90,7 @@ func genAppStateFromConfig(
 	)
 
 	// process genesis transactions, else create default genesis.json
-	appGenTxs, persistentPeers, err = app.CollectStdTxs(cdc, config.Moniker, initCfg.GenTxsDir, genDoc)
+	appGenTxs, persistentPeers, err = CollectStdTxs(cdc, config.Moniker, initCfg.GenTxsDir, genDoc)
 	if err != nil {
 		return
 	}
@@ -106,7 +108,7 @@ func genAppStateFromConfig(
 
 	cfg.WriteConfigFile(filepath.Join(config.RootDir, "config", "config.toml"), config)
 
-	appState, err = app.CyberdAppGenStateJSON(cdc, genDoc, genTxs)
+	appState, err = CyberdAppGenStateJSON(cdc, genDoc, genTxs)
 	if err != nil {
 		return
 	}

@@ -1,8 +1,8 @@
-package app
+package genesis
 
 import (
 	"github.com/cosmos/cosmos-sdk/x/stake/types"
-	"github.com/cybercongress/cyberd/app/coin"
+	"github.com/cybercongress/cyberd/app/types/coin"
 	"time"
 )
 

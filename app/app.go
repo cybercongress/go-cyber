@@ -8,17 +8,18 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
-	"github.com/cosmos/cosmos-sdk/x/bank"
+	sdkbank "github.com/cosmos/cosmos-sdk/x/bank"
 	distr "github.com/cosmos/cosmos-sdk/x/distribution"
 	"github.com/cosmos/cosmos-sdk/x/params"
 	"github.com/cosmos/cosmos-sdk/x/slashing"
 	"github.com/cosmos/cosmos-sdk/x/stake"
-	. "github.com/cybercongress/cyberd/app/bank"
-	"github.com/cybercongress/cyberd/app/coin"
+	. "github.com/cybercongress/cyberd/app/genesis"
 	. "github.com/cybercongress/cyberd/app/storage"
 	cbd "github.com/cybercongress/cyberd/app/types"
+	"github.com/cybercongress/cyberd/app/types/coin"
 	"github.com/cybercongress/cyberd/x/bandwidth"
 	bw "github.com/cybercongress/cyberd/x/bandwidth/types"
+	cbdbank "github.com/cybercongress/cyberd/x/bank"
 	"github.com/cybercongress/cyberd/x/link"
 	"github.com/cybercongress/cyberd/x/mint"
 	"github.com/cybercongress/cyberd/x/rank"
@@ -74,7 +75,6 @@ type CyberdApp struct {
 	// bandwidth
 	bandwidthHandler        bw.BandwidthHandler
 	msgBandwidthCost        bw.MsgBandwidthCost
-	maxAccBandwidth         bw.MaxAccBandwidth
 	curBlockSpentBandwidth  uint64 //resets every block
 	lastTotalSpentBandwidth uint64 //resets every bandwidth price adjustment interval
 	currentCreditPrice      float64
@@ -86,7 +86,7 @@ type CyberdApp struct {
 	mainStorage         MainStorage
 	accountKeeper       auth.AccountKeeper
 	feeCollectionKeeper auth.FeeCollectionKeeper
-	bankKeeper          bank.Keeper
+	bankKeeper          cbdbank.Keeper
 	stakeKeeper         stake.Keeper
 	slashingKeeper      slashing.Keeper
 	distrKeeper         distr.Keeper
@@ -157,12 +157,13 @@ func NewCyberdApp(
 
 	// define and attach the mappers and keepers
 	app.accountKeeper = auth.NewAccountKeeper(app.cdc, dbKeys.acc, cbd.NewCyberdAccount)
-	app.bankKeeper = bank.NewBaseKeeper(app.accountKeeper)
 	app.paramsKeeper = params.NewKeeper(app.cdc, dbKeys.params, dbKeys.tParams)
 	app.feeCollectionKeeper = auth.NewFeeCollectionKeeper(app.cdc, dbKeys.fees)
-	app.accBandwidthKeeper = bandwidth.NewAccountBandwidthKeeper(dbKeys.accBandwidth)
 
-	stakeKeeper := stake.NewKeeper(
+	var stakeKeeper *stake.Keeper
+	app.bankKeeper = cbdbank.NewBankKeeper(app.accountKeeper, stakeKeeper, nil)
+	app.accBandwidthKeeper = bandwidth.NewAccountBandwidthKeeper(dbKeys.accBandwidth, app.bankKeeper)
+	*stakeKeeper = stake.NewKeeper(
 		app.cdc, dbKeys.stake,
 		dbKeys.tStake, app.bankKeeper,
 		app.paramsKeeper.Subspace(stake.DefaultParamspace),
@@ -170,16 +171,16 @@ func NewCyberdApp(
 	)
 	app.slashingKeeper = slashing.NewKeeper(
 		app.cdc, dbKeys.slashing,
-		&stakeKeeper, app.paramsKeeper.Subspace(slashing.DefaultParamspace),
+		stakeKeeper, app.paramsKeeper.Subspace(slashing.DefaultParamspace),
 		slashing.DefaultCodespace,
 	)
 	app.distrKeeper = distr.NewKeeper(
 		app.cdc, dbKeys.keyDistr,
 		app.paramsKeeper.Subspace(distr.DefaultParamspace),
-		app.bankKeeper, &stakeKeeper, app.feeCollectionKeeper,
+		app.bankKeeper, stakeKeeper, app.feeCollectionKeeper,
 		distr.DefaultCodespace,
 	)
-	app.minter = mint.NewMinter(app.feeCollectionKeeper, stakeKeeper)
+	app.minter = mint.NewMinter(app.feeCollectionKeeper, *stakeKeeper)
 
 	app.memStorage = &InMemoryStorage{}
 
@@ -188,12 +189,11 @@ func NewCyberdApp(
 	// so that it can be modified like below:
 	app.stakeKeeper = *stakeKeeper.SetHooks(NewHooks(app.slashingKeeper.Hooks()))
 
-	app.maxAccBandwidth = bw.NewMaxAccBandwidth(app.stakeKeeper, bandwidth.MaxNetworkBandwidth)
-	app.bandwidthHandler = bandwidth.NewBandwidthHandler(app.accountKeeper, app.accBandwidthKeeper, app.msgBandwidthCost, app.maxAccBandwidth)
+	app.bandwidthHandler = bandwidth.NewBandwidthHandler(app.accountKeeper, app.accBandwidthKeeper, app.msgBandwidthCost)
 
 	// register message routes
 	app.Router().
-		AddRoute("bank", NewBankHandler(app.bankKeeper, app.memStorage, app.accountKeeper, app.maxAccBandwidth, app.accBandwidthKeeper)).
+		AddRoute("bank", sdkbank.NewHandler(app.bankKeeper)).
 		AddRoute("link", link.NewLinksHandler(storages.CidIndex, storages.Links, app.memStorage, app.accountKeeper)).
 		AddRoute("stake", stake.NewHandler(app.stakeKeeper)).
 		AddRoute("slashing", slashing.NewHandler(app.slashingKeeper))
@@ -307,7 +307,7 @@ func (app *CyberdApp) initChainer(ctx sdk.Context, req abci.RequestInitChain) ab
 		}
 	}
 
-	bandwidth.InitGenesis(ctx, app.accBandwidthKeeper, app.accountKeeper, app.maxAccBandwidth)
+	bandwidth.InitGenesis(ctx, app.accBandwidthKeeper, genesisState.Accounts)
 
 	return abci.ResponseInitChain{
 		Validators: validators,
