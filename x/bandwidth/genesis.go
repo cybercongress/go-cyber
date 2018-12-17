@@ -7,10 +7,10 @@ import (
 )
 
 // Genesis accounts should contains fully restored bandwidth on block 0
-func InitGenesis(ctx sdk.Context, bwKeeper AccountBandwidthKeeper, accs []genesis.GenesisAccount) {
+func InitGenesis(ctx sdk.Context, bwHandler types.Handler, bwKeeper types.Keeper, accs []genesis.GenesisAccount) {
 
 	for _, acc := range accs {
-		accMaxBw := bwKeeper.GetAccMaxBandwidth(ctx, acc.Address)
+		accMaxBw := bwHandler.GetAccMaxBandwidth(ctx, acc.Address)
 		bwKeeper.SetAccBandwidth(ctx, types.NewGenesisAccBandwidth(acc.Address, accMaxBw))
 	}
 }

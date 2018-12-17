@@ -22,7 +22,7 @@ func (app *CyberdApp) Account(address sdk.AccAddress) auth.Account {
 }
 
 func (app *CyberdApp) AccountBandwidth(address sdk.AccAddress) bdwth.AcсBandwidth {
-	return app.accBandwidthKeeper.GetCurrentAccBandwidth(app.RpcContext(), address)
+	return app.bandwidthHandler.GetCurrentAccBandwidth(app.RpcContext(), address)
 }
 
 func (app *CyberdApp) IsLinkExist(from cbd.Cid, to cbd.Cid, address sdk.AccAddress) bool {

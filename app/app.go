@@ -73,8 +73,7 @@ type CyberdApp struct {
 	txDecoder sdk.TxDecoder
 
 	// bandwidth
-	bandwidthHandler        bw.BandwidthHandler
-	msgBandwidthCost        bw.MsgBandwidthCost
+	bandwidthHandler        bw.Handler
 	curBlockSpentBandwidth  uint64 //resets every block
 	lastTotalSpentBandwidth uint64 //resets every bandwidth price adjustment interval
 	currentCreditPrice      float64
@@ -82,7 +81,7 @@ type CyberdApp struct {
 	// keys to access the multistore
 	dbKeys CyberdAppDbKeys
 
-	// manage getting and setting accounts
+	// manage getting and setting app data
 	mainStorage         MainStorage
 	accountKeeper       auth.AccountKeeper
 	feeCollectionKeeper auth.FeeCollectionKeeper
@@ -91,7 +90,7 @@ type CyberdApp struct {
 	slashingKeeper      slashing.Keeper
 	distrKeeper         distr.Keeper
 	paramsKeeper        params.Keeper
-	accBandwidthKeeper  bandwidth.AccountBandwidthKeeper
+	accBandwidthKeeper  bw.Keeper
 
 	//inflation
 	minter mint.Minter
@@ -145,14 +144,13 @@ func NewCyberdApp(
 
 	// create your application type
 	var app = &CyberdApp{
-		cdc:              cdc,
-		txDecoder:        txDecoder,
-		BaseApp:          baseapp.NewBaseApp(appName, logger, db, txDecoder, baseAppOptions...),
-		dbKeys:           dbKeys,
-		persistStorages:  storages,
-		mainStorage:      ms,
-		computeUnit:      computeUnit,
-		msgBandwidthCost: bandwidth.MsgBandwidthCost,
+		cdc:             cdc,
+		txDecoder:       txDecoder,
+		BaseApp:         baseapp.NewBaseApp(appName, logger, db, txDecoder, baseAppOptions...),
+		dbKeys:          dbKeys,
+		persistStorages: storages,
+		mainStorage:     ms,
+		computeUnit:     computeUnit,
 	}
 
 	// define and attach the mappers and keepers
@@ -162,7 +160,7 @@ func NewCyberdApp(
 
 	var stakeKeeper *stake.Keeper
 	app.bankKeeper = cbdbank.NewBankKeeper(app.accountKeeper, stakeKeeper, nil)
-	app.accBandwidthKeeper = bandwidth.NewAccountBandwidthKeeper(dbKeys.accBandwidth, app.bankKeeper)
+	app.accBandwidthKeeper = bandwidth.NewAccBandwidthKeeper(dbKeys.accBandwidth)
 	*stakeKeeper = stake.NewKeeper(
 		app.cdc, dbKeys.stake,
 		dbKeys.tStake, app.bankKeeper,
@@ -189,7 +187,9 @@ func NewCyberdApp(
 	// so that it can be modified like below:
 	app.stakeKeeper = *stakeKeeper.SetHooks(NewHooks(app.slashingKeeper.Hooks()))
 
-	app.bandwidthHandler = bandwidth.NewBandwidthHandler(app.accountKeeper, app.accBandwidthKeeper, app.msgBandwidthCost)
+	app.bandwidthHandler = bandwidth.NewHandler(
+		app.accountKeeper, app.bankKeeper, app.accBandwidthKeeper, bandwidth.MsgBandwidthCosts,
+	)
 
 	// register message routes
 	app.Router().
@@ -307,8 +307,7 @@ func (app *CyberdApp) initChainer(ctx sdk.Context, req abci.RequestInitChain) ab
 		}
 	}
 
-	bandwidth.InitGenesis(ctx, app.accBandwidthKeeper, genesisState.Accounts)
-
+	bandwidth.InitGenesis(ctx, app.bandwidthHandler, app.accBandwidthKeeper, genesisState.Accounts)
 	return abci.ResponseInitChain{
 		Validators: validators,
 	}
@@ -327,25 +326,27 @@ func (app *CyberdApp) BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock) 
 
 func (app *CyberdApp) CheckTx(txBytes []byte) (res abci.ResponseCheckTx) {
 
-	cachedCtx, writeCache := app.NewContext(true, abci.Header{Height: app.latestBlockHeight}).CacheContext()
+	ctx := app.NewContext(true, abci.Header{Height: app.latestBlockHeight})
+	tx, acc, err := app.decodeTxAndAcc(ctx, txBytes)
 
-	var tx, err = app.txDecoder(txBytes)
 	if err == nil {
 
-		_, err = app.bandwidthHandler(cachedCtx, app.currentCreditPrice, tx)
-		if err == nil {
+		txCost := app.bandwidthHandler.GetTxCost(ctx, app.currentCreditPrice, tx)
+		accBw := app.bandwidthHandler.GetCurrentAccBandwidth(ctx, acc)
+
+		if !accBw.HasEnoughRemained(txCost) {
+			err = cbd.ErrNotEnoughBandwidth()
+		} else {
 
 			resp := app.BaseApp.CheckTx(txBytes)
 			if resp.Code == 0 {
-				writeCache()
+				app.bandwidthHandler.ConsumeAccBandwidth(ctx, accBw, txCost)
 			}
-
 			return resp
 		}
 	}
 
 	result := err.Result()
-
 	return abci.ResponseCheckTx{
 		Code:      uint32(result.Code),
 		Data:      result.Data,
@@ -354,23 +355,26 @@ func (app *CyberdApp) CheckTx(txBytes []byte) (res abci.ResponseCheckTx) {
 		GasUsed:   int64(result.GasUsed),
 		Tags:      result.Tags,
 	}
-
 }
 
 func (app *CyberdApp) DeliverTx(txBytes []byte) (res abci.ResponseDeliverTx) {
 
-	cachedCtx, writeCache := app.NewContext(false, abci.Header{Height: app.latestBlockHeight}).CacheContext()
+	ctx := app.NewContext(true, abci.Header{Height: app.latestBlockHeight})
+	tx, acc, err := app.decodeTxAndAcc(ctx, txBytes)
 
-	var tx, err = app.txDecoder(txBytes)
 	if err == nil {
 
-		spent, err := app.bandwidthHandler(cachedCtx, app.currentCreditPrice, tx)
-		if err == nil {
+		txCost := app.bandwidthHandler.GetTxCost(ctx, app.currentCreditPrice, tx)
+		accBw := app.bandwidthHandler.GetCurrentAccBandwidth(ctx, acc)
+
+		if !accBw.HasEnoughRemained(txCost) {
+			err = cbd.ErrNotEnoughBandwidth()
+		} else {
 
 			resp := app.BaseApp.DeliverTx(txBytes)
 			if resp.Code == 0 {
-				writeCache()
-				app.curBlockSpentBandwidth = app.curBlockSpentBandwidth + uint64(spent)
+				app.bandwidthHandler.ConsumeAccBandwidth(ctx, accBw, txCost)
+				app.curBlockSpentBandwidth = app.curBlockSpentBandwidth + uint64(txCost)
 			}
 
 			return abci.ResponseDeliverTx{
@@ -386,7 +390,6 @@ func (app *CyberdApp) DeliverTx(txBytes []byte) (res abci.ResponseDeliverTx) {
 	}
 
 	result := err.Result()
-
 	return abci.ResponseDeliverTx{
 		Code:      uint32(result.Code),
 		Codespace: string(result.Codespace),
@@ -396,6 +399,32 @@ func (app *CyberdApp) DeliverTx(txBytes []byte) (res abci.ResponseDeliverTx) {
 		GasUsed:   int64(result.GasUsed),
 		Tags:      result.Tags,
 	}
+}
+
+func (app *CyberdApp) decodeTxAndAcc(ctx sdk.Context, txBytes []byte) (auth.StdTx, sdk.AccAddress, sdk.Error) {
+
+	decoded, err := app.txDecoder(txBytes)
+	if err != nil {
+		return auth.StdTx{}, nil, err
+	}
+
+	tx := decoded.(auth.StdTx)
+	if tx.GetMsgs() == nil || len(tx.GetMsgs()) == 0 {
+		return tx, nil, sdk.ErrInternal("Tx.GetMsgs() must return at least one message in list")
+	}
+
+	if err := tx.ValidateBasic(); err != nil {
+		return tx, nil, err
+	}
+
+	// signers acc [0] bandwidth will be consumed
+	account := tx.GetSigners()[0]
+	acc := app.accountKeeper.GetAccount(ctx, account)
+	if acc == nil {
+		return tx, nil, sdk.ErrUnknownAddress(account.String())
+	}
+
+	return tx, account, nil
 }
 
 func getSignersTags(tx sdk.Tx) sdk.Tags {

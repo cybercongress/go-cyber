@@ -5,7 +5,7 @@ import (
 	"github.com/cybercongress/cyberd/x/link"
 )
 
-func MsgBandwidthCost(msg sdk.Msg) int64 {
+func MsgBandwidthCosts(msg sdk.Msg) int64 {
 	switch msg.(type) {
 	case link.Msg:
 		return LinkMsgCost
