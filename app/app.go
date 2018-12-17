@@ -73,7 +73,7 @@ type CyberdApp struct {
 	txDecoder sdk.TxDecoder
 
 	// bandwidth
-	bandwidthHandler        bw.Handler
+	bandwidthHandler        bw.BandwidthMeter
 	curBlockSpentBandwidth  uint64 //resets every block
 	lastTotalSpentBandwidth uint64 //resets every bandwidth price adjustment interval
 	currentCreditPrice      float64
@@ -187,7 +187,7 @@ func NewCyberdApp(
 	// so that it can be modified like below:
 	app.stakeKeeper = *stakeKeeper.SetHooks(NewHooks(app.slashingKeeper.Hooks()))
 
-	app.bandwidthHandler = bandwidth.NewHandler(
+	app.bandwidthHandler = bandwidth.NewBaseMeter(
 		app.accountKeeper, app.bankKeeper, app.accBandwidthKeeper, bandwidth.MsgBandwidthCosts,
 	)
 
@@ -359,7 +359,7 @@ func (app *CyberdApp) CheckTx(txBytes []byte) (res abci.ResponseCheckTx) {
 
 func (app *CyberdApp) DeliverTx(txBytes []byte) (res abci.ResponseDeliverTx) {
 
-	ctx := app.NewContext(true, abci.Header{Height: app.latestBlockHeight})
+	ctx := app.NewContext(false, abci.Header{Height: app.latestBlockHeight})
 	tx, acc, err := app.decodeTxAndAcc(ctx, txBytes)
 
 	if err == nil {

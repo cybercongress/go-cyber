@@ -43,6 +43,7 @@ func (bs AcсBandwidth) HasEnoughRemained(bandwidthToConsume int64) bool {
 func (bs *AcсBandwidth) Consume(bandwidthToConsume int64) {
 	bs.RemainedValue = bs.RemainedValue - bandwidthToConsume
 	if bs.RemainedValue < 0 {
+		// should not happen
 		panic("Negative bandwidth!!")
 	}
 }

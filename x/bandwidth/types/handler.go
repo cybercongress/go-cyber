@@ -14,7 +14,7 @@ type AccStakeProvider interface {
 // 3. Run Tx, if tx succeed, than:
 // 4. Consume bw and save with old max bw value
 // 5. Load bw with new max value and save it
-type Handler interface {
+type BandwidthMeter interface {
 	// Returns recovered to current block height acc bandwidth
 	GetCurrentAccBandwidth(ctx sdk.Context, address sdk.AccAddress) AcсBandwidth
 	// Returns acc max bandwidth
