@@ -7,10 +7,11 @@ import (
 
 const (
 	// Base error codes
-	CodeOK               sdk.CodeType = 0
-	CodeLinkAlreadyExist sdk.CodeType = 1
-	CodeInvalidCid       sdk.CodeType = 2
-	CodeCidNotFound      sdk.CodeType = 3
+	CodeOK                 sdk.CodeType = 0
+	CodeLinkAlreadyExist   sdk.CodeType = 1
+	CodeInvalidCid         sdk.CodeType = 2
+	CodeCidNotFound        sdk.CodeType = 3
+	CodeNotEnoughBandwidth sdk.CodeType = 4
 
 	// Code space
 	CodespaceCbd sdk.CodespaceType = "cyberd"
@@ -24,6 +25,8 @@ func codeToDefaultMsg(code sdk.CodeType) string {
 		return "cid not found"
 	case CodeLinkAlreadyExist:
 		return "link already exists"
+	case CodeNotEnoughBandwidth:
+		return "not enough bandwidth to make transaction"
 	default:
 		return fmt.Sprintf("unknown error: code %d", code)
 	}
@@ -34,6 +37,10 @@ func codeToDefaultMsg(code sdk.CodeType) string {
 
 func ErrInvalidCid() sdk.Error {
 	return newError(CodespaceCbd, CodeInvalidCid)
+}
+
+func ErrNotEnoughBandwidth() sdk.Error {
+	return newError(CodespaceCbd, CodeNotEnoughBandwidth)
 }
 
 func ErrCidNotFound() sdk.Error {

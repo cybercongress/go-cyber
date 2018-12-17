@@ -6,55 +6,55 @@ import (
 	"github.com/cybercongress/cyberd/x/bandwidth/types"
 )
 
-func NewBandwidthHandler(
-	accKeeper auth.AccountKeeper, bwKeeper AccountBandwidthKeeper, msgCost types.MsgBandwidthCost,
-) types.BandwidthHandler {
+var _ types.Handler = BaseHandler{}
 
-	return func(ctx sdk.Context, price float64, tx sdk.Tx) (int64, sdk.Error) {
+type BaseHandler struct {
+	// data providers
+	accKeeper     auth.AccountKeeper
+	stakeProvider types.AccStakeProvider
+	bwKeeper      types.Keeper
 
-		account, sdkErr := getAccount(ctx, accKeeper, tx.(auth.StdTx))
-		if sdkErr != nil {
-			return 0, sdkErr
-		}
+	// bw configuration
+	msgCost types.MsgBandwidthCost
+}
 
-		// We should call this function cause total stake could be changed since last update
-		// and currently we can't intercept all AccountKeeper interactions.
-		// This method calls bandwidth.`Recover()` under the hood, so everything should work fine.
-		accountBandwidth := bwKeeper.GetCurrentAccBandwidth(ctx, account)
+func NewHandler(
+	ak auth.AccountKeeper, sp types.AccStakeProvider, bwKeeper types.Keeper, msgCost types.MsgBandwidthCost,
+) BaseHandler {
 
-		bandwidthForTx := TxCost
-		for _, msg := range tx.GetMsgs() {
-			bandwidthForTx = bandwidthForTx + msgCost(msg)
-		}
-
-		if !accountBandwidth.HasEnoughRemained(int64(float64(bandwidthForTx) * price)) {
-			return 0, sdk.ErrInternal("Not enough bandwidth to make transaction! ")
-		}
-
-		accountBandwidth.Consume(int64(float64(bandwidthForTx) * price))
-		bwKeeper.SetAccBandwidth(ctx, accountBandwidth)
-
-		return bandwidthForTx, nil
+	return BaseHandler{
+		accKeeper:     ak,
+		stakeProvider: sp,
+		bwKeeper:      bwKeeper,
+		msgCost:       msgCost,
 	}
 }
 
-func getAccount(ctx sdk.Context, accKeeper auth.AccountKeeper, tx auth.StdTx) (sdk.AccAddress, sdk.Error) {
-
-	if tx.GetMsgs() == nil || len(tx.GetMsgs()) == 0 {
-		return nil, sdk.ErrInternal("Tx.GetMsgs() must return at least one message in list")
+func (h BaseHandler) GetTxCost(ctx sdk.Context, price float64, tx sdk.Tx) int64 {
+	bandwidthForTx := TxCost
+	for _, msg := range tx.GetMsgs() {
+		bandwidthForTx = bandwidthForTx + h.msgCost(msg)
 	}
+	return bandwidthForTx
+}
 
-	if err := tx.ValidateBasic(); err != nil {
-		return nil, err
-	}
+func (h BaseHandler) GetAccMaxBandwidth(ctx sdk.Context, addr sdk.AccAddress) int64 {
+	accStakePercentage := h.stakeProvider.GetAccStakePercentage(ctx, addr)
+	return int64(accStakePercentage * float64(MaxNetworkBandwidth) / 2)
+}
 
-	// signers acc [0] bandwidth will be consumed
-	account := tx.GetSigners()[0]
+func (h BaseHandler) GetCurrentAccBandwidth(ctx sdk.Context, address sdk.AccAddress) types.AcсBandwidth {
+	accBw := h.bwKeeper.GetAccBandwidth(ctx, address)
+	accMaxBw := h.GetAccMaxBandwidth(ctx, address)
+	accBw.UpdateMax(accMaxBw, ctx.BlockHeight(), RecoveryPeriod)
+	return accBw
+}
 
-	acc := accKeeper.GetAccount(ctx, account)
-	if acc == nil {
-		return nil, sdk.ErrUnknownAddress(account.String())
-	}
-
-	return account, nil
+// Double save for case:
+// When acc send coins, we should consume bw before cutting max bw.
+func (h BaseHandler) ConsumeAccBandwidth(ctx sdk.Context, bw types.AcсBandwidth, amt int64) {
+	bw.Consume(amt)
+	h.bwKeeper.SetAccBandwidth(ctx, bw)
+	bw = h.GetCurrentAccBandwidth(ctx, bw.Address)
+	h.bwKeeper.SetAccBandwidth(ctx, bw)
 }

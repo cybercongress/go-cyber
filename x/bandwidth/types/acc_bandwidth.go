@@ -5,7 +5,6 @@ import (
 )
 
 type MsgBandwidthCost func(msg sdk.Msg) int64
-type BandwidthHandler func(ctx sdk.Context, price float64, tx sdk.Tx) (spent int64, err sdk.Error)
 
 type AcсBandwidth struct {
 	Address          sdk.AccAddress `json:"address"`
@@ -41,9 +40,11 @@ func (bs AcсBandwidth) HasEnoughRemained(bandwidthToConsume int64) bool {
 	return bs.RemainedValue >= bandwidthToConsume
 }
 
-//TODO: Add check for remained bandwidth
 func (bs *AcсBandwidth) Consume(bandwidthToConsume int64) {
 	bs.RemainedValue = bs.RemainedValue - bandwidthToConsume
+	if bs.RemainedValue < 0 {
+		panic("Negative bandwidth!!")
+	}
 }
 
 func NewGenesisAccBandwidth(address sdk.AccAddress, bandwidth int64) AcсBandwidth {
