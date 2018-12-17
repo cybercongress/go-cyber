@@ -6,9 +6,9 @@ import (
 	"github.com/cybercongress/cyberd/x/bandwidth/types"
 )
 
-var _ types.Handler = BaseHandler{}
+var _ types.BandwidthMeter = BaseBandwidthMeter{}
 
-type BaseHandler struct {
+type BaseBandwidthMeter struct {
 	// data providers
 	accKeeper     auth.AccountKeeper
 	stakeProvider types.AccStakeProvider
@@ -18,11 +18,11 @@ type BaseHandler struct {
 	msgCost types.MsgBandwidthCost
 }
 
-func NewHandler(
+func NewBaseMeter(
 	ak auth.AccountKeeper, sp types.AccStakeProvider, bwKeeper types.Keeper, msgCost types.MsgBandwidthCost,
-) BaseHandler {
+) BaseBandwidthMeter {
 
-	return BaseHandler{
+	return BaseBandwidthMeter{
 		accKeeper:     ak,
 		stakeProvider: sp,
 		bwKeeper:      bwKeeper,
@@ -30,7 +30,7 @@ func NewHandler(
 	}
 }
 
-func (h BaseHandler) GetTxCost(ctx sdk.Context, price float64, tx sdk.Tx) int64 {
+func (h BaseBandwidthMeter) GetTxCost(ctx sdk.Context, price float64, tx sdk.Tx) int64 {
 	bandwidthForTx := TxCost
 	for _, msg := range tx.GetMsgs() {
 		bandwidthForTx = bandwidthForTx + h.msgCost(msg)
@@ -38,21 +38,27 @@ func (h BaseHandler) GetTxCost(ctx sdk.Context, price float64, tx sdk.Tx) int64 
 	return bandwidthForTx
 }
 
-func (h BaseHandler) GetAccMaxBandwidth(ctx sdk.Context, addr sdk.AccAddress) int64 {
+func (h BaseBandwidthMeter) GetAccMaxBandwidth(ctx sdk.Context, addr sdk.AccAddress) int64 {
 	accStakePercentage := h.stakeProvider.GetAccStakePercentage(ctx, addr)
 	return int64(accStakePercentage * float64(MaxNetworkBandwidth) / 2)
 }
 
-func (h BaseHandler) GetCurrentAccBandwidth(ctx sdk.Context, address sdk.AccAddress) types.AcсBandwidth {
+func (h BaseBandwidthMeter) GetCurrentAccBandwidth(ctx sdk.Context, address sdk.AccAddress) types.AcсBandwidth {
 	accBw := h.bwKeeper.GetAccBandwidth(ctx, address)
 	accMaxBw := h.GetAccMaxBandwidth(ctx, address)
 	accBw.UpdateMax(accMaxBw, ctx.BlockHeight(), RecoveryPeriod)
 	return accBw
 }
 
-// Double save for case:
-// When acc send coins, we should consume bw before cutting max bw.
-func (h BaseHandler) ConsumeAccBandwidth(ctx sdk.Context, bw types.AcсBandwidth, amt int64) {
+//
+// Performs bw consumption for given acc
+// To get right number, should be called after tx delivery with bw state obtained prior delivery
+//
+// Pseudo code:
+// bw := getCurrentBw(addr)
+// bwCost := deliverTx(tx)
+// consumeBw(bw, bwCost)
+func (h BaseBandwidthMeter) ConsumeAccBandwidth(ctx sdk.Context, bw types.AcсBandwidth, amt int64) {
 	bw.Consume(amt)
 	h.bwKeeper.SetAccBandwidth(ctx, bw)
 	bw = h.GetCurrentAccBandwidth(ctx, bw.Address)
