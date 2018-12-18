@@ -158,11 +158,11 @@ func NewCyberdApp(
 	app.paramsKeeper = params.NewKeeper(app.cdc, dbKeys.params, dbKeys.tParams)
 	app.feeCollectionKeeper = auth.NewFeeCollectionKeeper(app.cdc, dbKeys.fees)
 
-	var stakeKeeper *stake.Keeper
+	var stakeKeeper stake.Keeper
 	coinTransferHooks := []cbdbank.CoinsTransferHook{bandwidth.CollectAddressesWithStakeChange()}
-	app.bankKeeper = cbdbank.NewBankKeeper(app.accountKeeper, stakeKeeper, coinTransferHooks)
+	app.bankKeeper = cbdbank.NewBankKeeper(app.accountKeeper, &stakeKeeper, coinTransferHooks)
 	app.accBandwidthKeeper = bandwidth.NewAccBandwidthKeeper(dbKeys.accBandwidth)
-	*stakeKeeper = stake.NewKeeper(
+	stakeKeeper = stake.NewKeeper(
 		app.cdc, dbKeys.stake,
 		dbKeys.tStake, app.bankKeeper,
 		app.paramsKeeper.Subspace(stake.DefaultParamspace),
@@ -179,7 +179,7 @@ func NewCyberdApp(
 		app.bankKeeper, stakeKeeper, app.feeCollectionKeeper,
 		distr.DefaultCodespace,
 	)
-	app.minter = mint.NewMinter(app.feeCollectionKeeper, *stakeKeeper)
+	app.minter = mint.NewMinter(app.feeCollectionKeeper, stakeKeeper)
 
 	app.memStorage = &InMemoryStorage{}
 
