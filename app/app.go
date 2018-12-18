@@ -73,7 +73,7 @@ type CyberdApp struct {
 	txDecoder sdk.TxDecoder
 
 	// bandwidth
-	bandwidthHandler        bw.BandwidthMeter
+	bandwidthMeter          bw.BandwidthMeter
 	curBlockSpentBandwidth  uint64 //resets every block
 	lastTotalSpentBandwidth uint64 //resets every bandwidth price adjustment interval
 	currentCreditPrice      float64
@@ -159,7 +159,8 @@ func NewCyberdApp(
 	app.feeCollectionKeeper = auth.NewFeeCollectionKeeper(app.cdc, dbKeys.fees)
 
 	var stakeKeeper *stake.Keeper
-	app.bankKeeper = cbdbank.NewBankKeeper(app.accountKeeper, stakeKeeper, nil)
+	coinTransferHooks := []cbdbank.CoinsTransferHook{bandwidth.CollectAddressesWithStakeChange()}
+	app.bankKeeper = cbdbank.NewBankKeeper(app.accountKeeper, stakeKeeper, coinTransferHooks)
 	app.accBandwidthKeeper = bandwidth.NewAccBandwidthKeeper(dbKeys.accBandwidth)
 	*stakeKeeper = stake.NewKeeper(
 		app.cdc, dbKeys.stake,
@@ -187,7 +188,7 @@ func NewCyberdApp(
 	// so that it can be modified like below:
 	app.stakeKeeper = *stakeKeeper.SetHooks(NewHooks(app.slashingKeeper.Hooks()))
 
-	app.bandwidthHandler = bandwidth.NewBaseMeter(
+	app.bandwidthMeter = bandwidth.NewBaseMeter(
 		app.accountKeeper, app.bankKeeper, app.accBandwidthKeeper, bandwidth.MsgBandwidthCosts,
 	)
 
@@ -307,7 +308,7 @@ func (app *CyberdApp) initChainer(ctx sdk.Context, req abci.RequestInitChain) ab
 		}
 	}
 
-	bandwidth.InitGenesis(ctx, app.bandwidthHandler, app.accBandwidthKeeper, genesisState.Accounts)
+	bandwidth.InitGenesis(ctx, app.bandwidthMeter, app.accBandwidthKeeper, genesisState.Accounts)
 	return abci.ResponseInitChain{
 		Validators: validators,
 	}
@@ -331,8 +332,8 @@ func (app *CyberdApp) CheckTx(txBytes []byte) (res abci.ResponseCheckTx) {
 
 	if err == nil {
 
-		txCost := app.bandwidthHandler.GetTxCost(ctx, app.currentCreditPrice, tx)
-		accBw := app.bandwidthHandler.GetCurrentAccBandwidth(ctx, acc)
+		txCost := app.bandwidthMeter.GetTxCost(ctx, app.currentCreditPrice, tx)
+		accBw := app.bandwidthMeter.GetCurrentAccBandwidth(ctx, acc)
 
 		if !accBw.HasEnoughRemained(txCost) {
 			err = cbd.ErrNotEnoughBandwidth()
@@ -340,7 +341,7 @@ func (app *CyberdApp) CheckTx(txBytes []byte) (res abci.ResponseCheckTx) {
 
 			resp := app.BaseApp.CheckTx(txBytes)
 			if resp.Code == 0 {
-				app.bandwidthHandler.ConsumeAccBandwidth(ctx, accBw, txCost)
+				app.bandwidthMeter.ConsumeAccBandwidth(ctx, accBw, txCost)
 			}
 			return resp
 		}
@@ -364,8 +365,8 @@ func (app *CyberdApp) DeliverTx(txBytes []byte) (res abci.ResponseDeliverTx) {
 
 	if err == nil {
 
-		txCost := app.bandwidthHandler.GetTxCost(ctx, app.currentCreditPrice, tx)
-		accBw := app.bandwidthHandler.GetCurrentAccBandwidth(ctx, acc)
+		txCost := app.bandwidthMeter.GetTxCost(ctx, app.currentCreditPrice, tx)
+		accBw := app.bandwidthMeter.GetCurrentAccBandwidth(ctx, acc)
 
 		if !accBw.HasEnoughRemained(txCost) {
 			err = cbd.ErrNotEnoughBandwidth()
@@ -373,7 +374,7 @@ func (app *CyberdApp) DeliverTx(txBytes []byte) (res abci.ResponseDeliverTx) {
 
 			resp := app.BaseApp.DeliverTx(txBytes)
 			if resp.Code == 0 {
-				app.bandwidthHandler.ConsumeAccBandwidth(ctx, accBw, txCost)
+				app.bandwidthMeter.ConsumeAccBandwidth(ctx, accBw, txCost)
 				app.curBlockSpentBandwidth = app.curBlockSpentBandwidth + uint64(txCost)
 			}
 
@@ -471,7 +472,8 @@ func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.R
 	app.mainStorage.StoreAppHash(ctx, hash[:])
 
 	newPrice, totalSpentBandwidth := bandwidth.EndBlocker(
-		ctx, app.lastTotalSpentBandwidth+app.curBlockSpentBandwidth, app.currentCreditPrice, app.mainStorage,
+		ctx, app.lastTotalSpentBandwidth+app.curBlockSpentBandwidth, app.currentCreditPrice,
+		app.mainStorage, app.bandwidthMeter,
 	)
 	app.lastTotalSpentBandwidth = totalSpentBandwidth
 	app.currentCreditPrice = newPrice
