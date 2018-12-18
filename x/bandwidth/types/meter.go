@@ -15,6 +15,8 @@ type AccStakeProvider interface {
 // 4. Consume bw and save with old max bw value
 // 5. Load bw with new max value and save it
 type BandwidthMeter interface {
+	// Update acc max bandwidth for current stake. Also, performs recover.
+	UpdateAccMaxBandwidth(ctx sdk.Context, address sdk.AccAddress)
 	// Returns recovered to current block height acc bandwidth
 	GetCurrentAccBandwidth(ctx sdk.Context, address sdk.AccAddress) AcсBandwidth
 	// Returns acc max bandwidth
