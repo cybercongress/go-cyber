@@ -98,7 +98,7 @@ func (k Keeper) GetAccountBoundedStake(ctx sdk.Context, addr sdk.AccAddress) int
 	delegations := k.sk.GetAllDelegatorDelegations(ctx, addr)
 	boundedStake := int64(0)
 	for _, del := range delegations {
-		boundedStake += del.Shares.Int64()
+		boundedStake += del.Shares.TruncateInt64()
 	}
 	return boundedStake
 }

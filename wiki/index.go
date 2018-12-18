@@ -2,17 +2,17 @@ package main
 
 import (
 	"bufio"
+	"github.com/cybercongress/cyberd/client"
 	"os"
 	"regexp"
 	"strings"
+	"time"
 	"unicode"
 )
 
-func Index() {
+func ContinueIndex(cbdClient client.CyberdClient) {
 
 	startArticleId := int64(1)
-
-	sendLinks := InitAddLink()
 
 	f, err := os.OpenFile("enwiki-latest-all-titles", 0, 0)
 	if err != nil {
@@ -24,7 +24,7 @@ func Index() {
 	reg, err := regexp.Compile("[^a-zA-Z0-9]+")
 
 	counter := int64(0)
-	links := make([]Link, 0, 100)
+	links := make([]client.Link, 0, 1000)
 	for {
 
 		line, err := br.ReadString('\n')
@@ -54,15 +54,19 @@ func Index() {
 				continue
 			}
 
-			page := ".wiki/wiki/" + split[1] + ".html"
-			links = append(links, Link{from: id, to: page})
+			page := split[1] + ".wiki"
+			links = append(links, client.Link{From: Cid(id), To: Cid(page)})
 			counter++
 
 			if len(links) == 1000 {
 				println(split[1])
 				println(counter)
-				sendLinks(links)
-				links = make([]Link, 0, 100)
+				time.Sleep(500 * time.Millisecond)
+				err := cbdClient.SubmitLinksSync(links)
+				if err != nil {
+					panic(err.Error())
+				}
+				links = make([]client.Link, 0, 1000)
 			}
 		}
 	}

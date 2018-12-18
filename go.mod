@@ -39,7 +39,7 @@ require (
 	github.com/mitchellh/mapstructure v1.0.0 // indirect
 	github.com/mr-tron/base58 v1.1.0 // indirect
 	github.com/multiformats/go-multibase v0.3.0 // indirect
-	github.com/multiformats/go-multihash v1.0.8 // indirect
+	github.com/multiformats/go-multihash v1.0.8
 	github.com/onsi/gomega v1.4.2 // indirect
 	github.com/pelletier/go-toml v1.2.0 // indirect
 	github.com/pkg/errors v0.8.0
