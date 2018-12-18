@@ -27,6 +27,7 @@ func NewBankKeeper(ak auth.AccountKeeper, sk *stake.Keeper, coinsTransferHooks [
 }
 
 /* Override methods */
+// sdk acc keeper is not interface yet
 func (k Keeper) AddCoins(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coins) (sdk.Coins, sdk.Tags, sdk.Error) {
 	coins, tags, err := k.Keeper.AddCoins(ctx, addr, amt)
 	if err != nil {
