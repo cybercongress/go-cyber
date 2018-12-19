@@ -1,7 +1,6 @@
 package rank
 
 import (
-	. "github.com/cybercongress/cyberd/app/storage"
 	"github.com/tendermint/tendermint/libs/log"
 )
 
@@ -12,11 +11,11 @@ const (
 	GPU ComputeUnit = iota
 )
 
-func CalculateRank(data *InMemoryStorage, unit ComputeUnit, logger log.Logger) ([]float64, int) {
+func CalculateRank(ctx *CalculationContext, unit ComputeUnit, logger log.Logger) ([]float64, int) {
 	if unit == CPU {
 		//used only for development
-		return calculateRankCPU(data)
+		return calculateRankCPU(ctx)
 	} else {
-		return calculateRankGPU(data, logger)
+		return calculateRankGPU(ctx, logger)
 	}
 }

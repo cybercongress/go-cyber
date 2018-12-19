@@ -1,8 +1,7 @@
 package rank
 
 import (
-	. "github.com/cybercongress/cyberd/app/storage"
-	. "github.com/cybercongress/cyberd/app/types"
+	. "github.com/cybercongress/cyberd/x/link/types"
 	"sync"
 )
 
@@ -11,11 +10,11 @@ const (
 	tolerance float64 = 1e-3
 )
 
-func calculateRankCPU(data *InMemoryStorage) ([]float64, int) {
+func calculateRankCPU(ctx *CalculationContext) ([]float64, int) {
 
-	inLinks := data.GetInLinks()
+	inLinks := ctx.GetInLinks()
 
-	size := data.GetCidsCount()
+	size := ctx.GetCidsCount()
 	if size == 0 {
 		return []float64{}, 0
 	}
@@ -40,7 +39,7 @@ func calculateRankCPU(data *InMemoryStorage) ([]float64, int) {
 	prevrank := make([]float64, 0)
 	prevrank = append(prevrank, rank...)
 	for change > tolerance {
-		rank = step(defaultRankWithCorrection, prevrank, data)
+		rank = step(ctx, defaultRankWithCorrection, prevrank)
 		change = calculateChange(prevrank, rank)
 		prevrank = rank
 		steps++
@@ -49,18 +48,18 @@ func calculateRankCPU(data *InMemoryStorage) ([]float64, int) {
 	return rank, steps
 }
 
-func step(defaultRankWithCorrection float64, prevrank []float64, data *InMemoryStorage) []float64 {
+func step(ctx *CalculationContext, defaultRankWithCorrection float64, prevrank []float64) []float64 {
 
 	rank := append(make([]float64, 0, len(prevrank)), prevrank...)
 
 	var wg sync.WaitGroup
-	wg.Add(len(data.GetInLinks()))
+	wg.Add(len(ctx.GetInLinks()))
 
-	for cid := range data.GetInLinks() {
+	for cid := range ctx.GetInLinks() {
 
 		go func(i CidNumber) {
 			defer wg.Done()
-			_, sortedCids, ok := data.GetSortedInLinks(i)
+			_, sortedCids, ok := ctx.GetSortedInLinks(i)
 
 			if !ok {
 				rank[i] = defaultRankWithCorrection
@@ -68,8 +67,8 @@ func step(defaultRankWithCorrection float64, prevrank []float64, data *InMemoryS
 				ksum := float64(0)
 				for _, j := range sortedCids {
 					//todo add pre-calculation of overall stake for cid and links
-					linkStake := data.GetOverallLinkStake(j, i)
-					jCidOutStake := data.GetOverallOutLinksStake(j)
+					linkStake := getOverallLinkStake(ctx, j, i)
+					jCidOutStake := getOverallOutLinksStake(ctx, j)
 					weight := float64(linkStake) / float64(jCidOutStake)
 					ksum = float64(prevrank[j]*weight) + ksum //force no-fma here by explicit conversion
 				}
@@ -81,6 +80,25 @@ func step(defaultRankWithCorrection float64, prevrank []float64, data *InMemoryS
 	}
 	wg.Wait()
 	return rank
+}
+
+func getOverallLinkStake(ctx *CalculationContext, from CidNumber, to CidNumber) uint64 {
+
+	stake := uint64(0)
+	users := ctx.GetOutLinks()[from][to]
+	for user := range users {
+		stake += ctx.GetStakes()[user]
+	}
+	return stake
+}
+
+func getOverallOutLinksStake(ctx *CalculationContext, from CidNumber) uint64 {
+
+	stake := uint64(0)
+	for to := range ctx.GetOutLinks()[from] {
+		stake += getOverallLinkStake(ctx, from, to)
+	}
+	return stake
 }
 
 func calculateChange(prevrank, rank []float64) float64 {
