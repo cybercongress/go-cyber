@@ -1,9 +1,9 @@
 package rpc
 
-import "github.com/cybercongress/cyberd/app/storage"
+import "github.com/cybercongress/cyberd/app"
 
 type ResultSearch struct {
-	Cids       []storage.RankedCid `json:"cids"`
+	Cids       []app.RankedCid `json:"cids"`
 	TotalCount int                 `json:"total"`
 	Page       int                 `json:"page"`
 	PerPage    int                 `json:"perPage"`

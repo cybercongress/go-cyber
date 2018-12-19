@@ -14,13 +14,15 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/slashing"
 	"github.com/cosmos/cosmos-sdk/x/stake"
 	. "github.com/cybercongress/cyberd/app/genesis"
-	. "github.com/cybercongress/cyberd/app/storage"
 	cbd "github.com/cybercongress/cyberd/app/types"
 	"github.com/cybercongress/cyberd/app/types/coin"
+	"github.com/cybercongress/cyberd/store"
+	"github.com/cybercongress/cyberd/types"
 	"github.com/cybercongress/cyberd/x/bandwidth"
 	bw "github.com/cybercongress/cyberd/x/bandwidth/types"
 	cbdbank "github.com/cybercongress/cyberd/x/bank"
 	"github.com/cybercongress/cyberd/x/link"
+	"github.com/cybercongress/cyberd/x/link/keeper"
 	"github.com/cybercongress/cyberd/x/mint"
 	"github.com/cybercongress/cyberd/x/rank"
 	abci "github.com/tendermint/tendermint/abci/types"
@@ -46,20 +48,21 @@ var (
 )
 
 type CyberdAppDbKeys struct {
-	main         *sdk.KVStoreKey
-	acc          *sdk.KVStoreKey
-	accIndex     *sdk.KVStoreKey
-	cidIndex     *sdk.KVStoreKey
-	links        *sdk.KVStoreKey
-	rank         *sdk.KVStoreKey
-	stake        *sdk.KVStoreKey
-	tStake       *sdk.TransientStoreKey
-	fees         *sdk.KVStoreKey
-	keyDistr     *sdk.KVStoreKey
-	slashing     *sdk.KVStoreKey
-	params       *sdk.KVStoreKey
-	tParams      *sdk.TransientStoreKey
-	accBandwidth *sdk.KVStoreKey
+	main          *sdk.KVStoreKey
+	acc           *sdk.KVStoreKey
+	accIndex      *sdk.KVStoreKey
+	cidNum        *sdk.KVStoreKey
+	cidNumReverse *sdk.KVStoreKey
+	links         *sdk.KVStoreKey
+	rank          *sdk.KVStoreKey
+	stake         *sdk.KVStoreKey
+	tStake        *sdk.TransientStoreKey
+	fees          *sdk.KVStoreKey
+	keyDistr      *sdk.KVStoreKey
+	slashing      *sdk.KVStoreKey
+	params        *sdk.KVStoreKey
+	tParams       *sdk.TransientStoreKey
+	accBandwidth  *sdk.KVStoreKey
 }
 
 // CyberdApp implements an extended ABCI application. It contains a BaseApp,
@@ -82,7 +85,7 @@ type CyberdApp struct {
 	dbKeys CyberdAppDbKeys
 
 	// manage getting and setting app data
-	mainStorage         MainStorage
+	mainKeeper          store.MainKeeper
 	accountKeeper       auth.AccountKeeper
 	feeCollectionKeeper auth.FeeCollectionKeeper
 	bankKeeper          cbdbank.Keeper
@@ -96,8 +99,10 @@ type CyberdApp struct {
 	minter mint.Minter
 
 	// cyberd storages
-	persistStorages CyberdPersistentStorages
-	memStorage      *InMemoryStorage
+	linkIndexedKeeper keeper.LinkIndexedKeeper
+	cidNumKeeper      keeper.CidNumberKeeper
+	stakeIndex        cbdbank.IndexedKeeper
+	rankState         *rank.RankState
 
 	latestRankHash    []byte
 	latestBlockHeight int64
@@ -120,7 +125,7 @@ func NewCyberdApp(
 	dbKeys := CyberdAppDbKeys{
 		main:         sdk.NewKVStoreKey("main"),
 		acc:          sdk.NewKVStoreKey("acc"),
-		cidIndex:     sdk.NewKVStoreKey("cid_index"),
+		cidNum:       sdk.NewKVStoreKey("cid_index"),
 		links:        sdk.NewKVStoreKey("links"),
 		rank:         sdk.NewKVStoreKey("rank"),
 		stake:        sdk.NewKVStoreKey("stake"),
@@ -133,24 +138,18 @@ func NewCyberdApp(
 		accBandwidth: sdk.NewKVStoreKey("acc_bandwidth"),
 	}
 
-	ms := NewMainStorage(dbKeys.main)
-	storages := CyberdPersistentStorages{
-		CidIndex: NewCidIndexStorage(ms, dbKeys.cidIndex),
-		Links:    NewLinksStorage(ms, dbKeys.links),
-		Rank:     NewRankStorage(ms, dbKeys.rank),
-	}
+	ms := store.NewMainKeeper(dbKeys.main)
 
 	var txDecoder = auth.DefaultTxDecoder(cdc)
 
 	// create your application type
 	var app = &CyberdApp{
-		cdc:             cdc,
-		txDecoder:       txDecoder,
-		BaseApp:         baseapp.NewBaseApp(appName, logger, db, txDecoder, baseAppOptions...),
-		dbKeys:          dbKeys,
-		persistStorages: storages,
-		mainStorage:     ms,
-		computeUnit:     computeUnit,
+		cdc:         cdc,
+		txDecoder:   txDecoder,
+		BaseApp:     baseapp.NewBaseApp(appName, logger, db, txDecoder, baseAppOptions...),
+		dbKeys:      dbKeys,
+		mainKeeper:  ms,
+		computeUnit: computeUnit,
 	}
 
 	// define and attach the mappers and keepers
@@ -181,7 +180,11 @@ func NewCyberdApp(
 	)
 	app.minter = mint.NewMinter(app.feeCollectionKeeper, stakeKeeper)
 
-	app.memStorage = &InMemoryStorage{}
+	// cyberd keepers
+	app.linkIndexedKeeper = keeper.NewLinkIndexedKeeper(keeper.NewBaseLinkKeeper(ms, dbKeys.links))
+	app.cidNumKeeper = keeper.NewBaseCidNumberKeeper(ms, dbKeys.cidNum, dbKeys.cidNumReverse)
+	app.stakeIndex = cbdbank.NewIndexedKeeper(app.bankKeeper, app.accountKeeper)
+	app.rankState = rank.NewRankState(&app.linkIndexedKeeper)
 
 	// register the staking hooks
 	// NOTE: stakeKeeper above are passed by reference,
@@ -195,7 +198,7 @@ func NewCyberdApp(
 	// register message routes
 	app.Router().
 		AddRoute("bank", sdkbank.NewHandler(app.bankKeeper)).
-		AddRoute("link", link.NewLinksHandler(storages.CidIndex, storages.Links, app.memStorage, app.accountKeeper)).
+		AddRoute("link", link.NewLinksHandler(app.cidNumKeeper, app.linkIndexedKeeper, app.accountKeeper)).
 		AddRoute("stake", stake.NewHandler(app.stakeKeeper)).
 		AddRoute("slashing", slashing.NewHandler(app.slashingKeeper))
 
@@ -210,7 +213,7 @@ func NewCyberdApp(
 
 	// mount the multistore and load the latest state
 	app.MountStores(
-		dbKeys.main, dbKeys.acc, dbKeys.cidIndex, dbKeys.links, dbKeys.rank, dbKeys.stake,
+		dbKeys.main, dbKeys.acc, dbKeys.cidNum, dbKeys.links, dbKeys.rank, dbKeys.stake,
 		dbKeys.slashing, dbKeys.params, dbKeys.keyDistr, dbKeys.fees, dbKeys.accBandwidth,
 	)
 	app.MountStoresTransient(dbKeys.tParams, dbKeys.tStake)
@@ -223,7 +226,8 @@ func NewCyberdApp(
 	// load in-memory data
 	start := time.Now()
 	app.BaseApp.Logger.Info("Loading mem state")
-	app.memStorage.Load(ctx, storages, app.accountKeeper)
+	app.linkIndexedKeeper.Load(ctx)
+	app.stakeIndex.Load(ctx)
 	app.BaseApp.Logger.Info("App loaded", "time", time.Since(start))
 	app.latestRankHash = ms.GetAppHash(ctx)
 	app.lastTotalSpentBandwidth = ms.GetSpentBandwidth(ctx)
@@ -258,7 +262,7 @@ func (app *CyberdApp) initChainer(ctx sdk.Context, req abci.RequestInitChain) ab
 		acc := gacc.ToAccount()
 		acc.AccountNumber = app.accountKeeper.GetNextAccountNumber(ctx)
 		app.accountKeeper.SetAccount(ctx, acc)
-		app.memStorage.UpdateStake(cbd.AccountNumber(acc.AccountNumber), acc.Coins.AmountOf(coin.CBD).Int64())
+		app.stakeIndex.UpdateStake(types.AccNumber(acc.AccountNumber), acc.Coins.AmountOf(coin.CBD).Int64())
 	}
 
 	// load the initial stake information
@@ -336,7 +340,7 @@ func (app *CyberdApp) CheckTx(txBytes []byte) (res abci.ResponseCheckTx) {
 		accBw := app.bandwidthMeter.GetCurrentAccBandwidth(ctx, acc)
 
 		if !accBw.HasEnoughRemained(txCost) {
-			err = cbd.ErrNotEnoughBandwidth()
+			err = types.ErrNotEnoughBandwidth()
 		} else {
 
 			resp := app.BaseApp.CheckTx(txBytes)
@@ -369,7 +373,7 @@ func (app *CyberdApp) DeliverTx(txBytes []byte) (res abci.ResponseDeliverTx) {
 		accBw := app.bandwidthMeter.GetCurrentAccBandwidth(ctx, acc)
 
 		if !accBw.HasEnoughRemained(txCost) {
-			err = cbd.ErrNotEnoughBandwidth()
+			err = types.ErrNotEnoughBandwidth()
 		} else {
 
 			resp := app.BaseApp.DeliverTx(txBytes)
@@ -449,17 +453,18 @@ func getSignersTags(tx sdk.Tx) sdk.Tags {
 // App state is consensus driven state.
 func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.ResponseEndBlock {
 
-	linksCount := app.mainStorage.GetLinksCount(ctx)
-	cidsCount := app.mainStorage.GetCidsCount(ctx)
+	linksCount := app.mainKeeper.GetLinksCount(ctx)
+	cidsCount := app.mainKeeper.GetCidsCount(ctx)
 
 	start := time.Now()
-	newRank, steps := rank.CalculateRank(app.memStorage, app.computeUnit, app.BaseApp.Logger)
+	calcCtx := rank.NewCalcContext(ctx, app.linkIndexedKeeper, app.cidNumKeeper, app.stakeIndex)
+	newRank, steps := rank.CalculateRank(calcCtx, app.computeUnit, app.BaseApp.Logger)
 	app.BaseApp.Logger.Info(
 		"Rank calculated", "steps", steps, "time", time.Since(start), "links", linksCount, "cids", cidsCount,
 	)
 
 	app.latestBlockHeight = ctx.BlockHeight()
-	app.mainStorage.StoreLatestBlockNumber(ctx, uint64(ctx.BlockHeight()))
+	app.mainKeeper.StoreLatestBlockNumber(ctx, uint64(ctx.BlockHeight()))
 
 	rankAsBytes := make([]byte, 8*len(newRank))
 	for i, f64 := range newRank {
@@ -468,12 +473,12 @@ func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.R
 
 	hash := sha256.Sum256(rankAsBytes)
 	app.latestRankHash = hash[:]
-	app.memStorage.UpdateRank(newRank)
-	app.mainStorage.StoreAppHash(ctx, hash[:])
+	app.rankState.UpdateRank(newRank, int64(app.cidNumKeeper.GetCidsCount(ctx)))
+	app.mainKeeper.StoreAppHash(ctx, hash[:])
 
 	newPrice, totalSpentBandwidth := bandwidth.EndBlocker(
 		ctx, app.lastTotalSpentBandwidth+app.curBlockSpentBandwidth, app.currentCreditPrice,
-		app.mainStorage, app.bandwidthMeter,
+		app.mainKeeper, app.bandwidthMeter,
 	)
 	app.lastTotalSpentBandwidth = totalSpentBandwidth
 	app.currentCreditPrice = newPrice

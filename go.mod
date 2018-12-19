@@ -5,15 +5,13 @@ require (
 	github.com/TV4/graceful v0.3.3
 	github.com/VividCortex/gohistogram v1.0.0 // indirect
 	github.com/ZondaX/hid-go v0.0.0-20180905224704-48b08affede2 // indirect
-	github.com/agl/ed25519 v0.0.0-20170116200512-5312a6153412 // indirect
 	github.com/bartekn/go-bip39 v0.0.0-20171116152956-a05967ea095d // indirect
 	github.com/beorn7/perks v0.0.0-20180321164747-3a771d992973 // indirect
 	github.com/bgentry/speakeasy v0.1.0 // indirect
 	github.com/btcsuite/btcd v0.0.0-20180903232927-cff30e1d23fc // indirect
 	github.com/btcsuite/btcutil v0.0.0-20180706230648-ab6388e0c60a // indirect
 	github.com/cosmos/cosmos-sdk v0.27.0
-	github.com/cosmos/go-bip39 v0.0.0-20180618194314-52158e4697b8
-	github.com/ebuchman/fail-test v0.0.0-20170303061230-95f809107225 // indirect
+	github.com/cosmos/go-bip39 v0.0.0-20180618194314-52158e4697b8 // indirect
 	github.com/fortytw2/leaktest v1.2.0 // indirect
 	github.com/go-kit/kit v0.7.0 // indirect
 	github.com/go-logfmt/logfmt v0.3.0 // indirect
@@ -48,7 +46,6 @@ require (
 	github.com/prometheus/client_model v0.0.0-20180712105110-5c3871d89910 // indirect
 	github.com/prometheus/common v0.0.0-20180801064454-c7de2306084e // indirect
 	github.com/prometheus/procfs v0.0.0-20180725123919-05ee40e3a273 // indirect
-	github.com/rakyll/statik v0.1.5 // indirect
 	github.com/rcrowley/go-metrics v0.0.0-20180503174638-e2704e165165 // indirect
 	github.com/rs/cors v1.6.0
 	github.com/spaolacci/murmur3 v0.0.0-20180118202830-f09979ecbc72 // indirect
@@ -56,12 +53,11 @@ require (
 	github.com/spf13/cast v1.2.0 // indirect
 	github.com/spf13/cobra v0.0.1
 	github.com/spf13/jwalterweatherman v1.0.0 // indirect
-	github.com/spf13/pflag v1.0.2
+	github.com/spf13/pflag v1.0.2 // indirect
 	github.com/spf13/viper v1.0.0
 	github.com/stretchr/testify v1.2.1 // indirect
 	github.com/syndtr/goleveldb v0.0.0-20181128100959-b001fa50d6b2 // indirect
 	github.com/tendermint/btcd v0.0.0-20180816174608-e5840949ff4f // indirect
-	github.com/tendermint/ed25519 v0.0.0-20171027050219-d8387025d2b9 // indirect
 	github.com/tendermint/go-amino v0.14.1
 	github.com/tendermint/iavl v0.12.0 // indirect
 	github.com/tendermint/tendermint v0.27.0

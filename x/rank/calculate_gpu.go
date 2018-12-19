@@ -3,8 +3,7 @@
 package rank
 
 import (
-	. "github.com/cybercongress/cyberd/app/storage"
-	cbd "github.com/cybercongress/cyberd/app/types"
+	"github.com/cybercongress/cyberd/x/link/types"
 	"github.com/tendermint/tendermint/libs/log"
 	"time"
 )
@@ -16,18 +15,18 @@ import (
 */
 import "C"
 
-func calculateRankGPU(data *InMemoryStorage, logger log.Logger) ([]float64, int) {
+func calculateRankGPU(ctx *CalculationContext, logger log.Logger) ([]float64, int) {
 
 	start := time.Now()
-	if data.GetCidsCount() == 0 {
+	if ctx.GetCidsCount() == 0 {
 		return make([]float64, 0), 0
 	}
 
-	outLinks := data.GetOutLinks()
+	outLinks := ctx.GetOutLinks()
 
-	cidsCount := data.GetCidsCount()
+	cidsCount := ctx.GetCidsCount()
 	linksCount := uint64(0)
-	stakesCount := len(data.GetStakes())
+	stakesCount := len(ctx.GetStakes())
 
 	rank := make([]float64, cidsCount)
 	inLinksCount := make([]uint32, cidsCount)
@@ -39,7 +38,7 @@ func calculateRankGPU(data *InMemoryStorage, logger log.Logger) ([]float64, int)
 
 	// todo reduce size of stake by passing only participating in linking stakes.
 	stakes := make([]uint64, stakesCount)
-	for acc, stake := range data.GetStakes() {
+	for acc, stake := range ctx.GetStakes() {
 		stakes[uint64(acc)] = stake
 	}
 
@@ -47,7 +46,7 @@ func calculateRankGPU(data *InMemoryStorage, logger log.Logger) ([]float64, int)
 	// todo parallel this
 	for i := uint64(0); i < cidsCount; i++ {
 
-		if inLinks, sortedCids, ok := data.GetSortedInLinks(cbd.CidNumber(i)); ok {
+		if inLinks, sortedCids, ok := ctx.GetSortedInLinks(types.CidNumber(i)); ok {
 			for _, cid := range sortedCids {
 				inLinksCount[i] += uint32(len(inLinks[cid]))
 				for acc := range inLinks[cid] {
@@ -58,7 +57,7 @@ func calculateRankGPU(data *InMemoryStorage, logger log.Logger) ([]float64, int)
 			linksCount += uint64(inLinksCount[i])
 		}
 
-		if outLinks, ok := outLinks[cbd.CidNumber(i)]; ok {
+		if outLinks, ok := outLinks[types.CidNumber(i)]; ok {
 			for _, accs := range outLinks {
 				outLinksCount[i] += uint32(len(accs))
 				for acc := range accs {

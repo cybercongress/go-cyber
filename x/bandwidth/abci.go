@@ -2,7 +2,7 @@ package bandwidth
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cybercongress/cyberd/app/storage"
+	"github.com/cybercongress/cyberd/store"
 	"github.com/cybercongress/cyberd/x/bandwidth/types"
 	"math"
 )
@@ -38,7 +38,7 @@ func CollectAddressesWithStakeChange() func(ctx sdk.Context, from sdk.AccAddress
 //  Cuz for some bound related operations, coins already added/reduced from acc, but not added to
 //  validator\delegator pool.
 func EndBlocker(
-	ctx sdk.Context, totalSpentForPeriod uint64, curPrice float64, ms storage.MainStorage, meter types.BandwidthMeter,
+	ctx sdk.Context, totalSpentForPeriod uint64, curPrice float64, ms store.MainKeeper, meter types.BandwidthMeter,
 ) (newPrice float64, totalSpent uint64) {
 
 	newPrice = curPrice

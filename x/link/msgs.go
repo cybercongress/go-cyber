@@ -2,19 +2,20 @@ package link
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	cbd "github.com/cybercongress/cyberd/app/types"
+	cbd "github.com/cybercongress/cyberd/types"
+	. "github.com/cybercongress/cyberd/x/link/types"
 	"github.com/ipfs/go-cid"
 )
 
 type Msg struct {
 	Address sdk.AccAddress `json:"address"`
-	From    cbd.Cid        `json:"cid1"`
-	To      cbd.Cid        `json:"cid2"`
+	From    Cid        `json:"cid1"`
+	To      Cid        `json:"cid2"`
 }
 
 var _ sdk.Msg = Msg{}
 
-func NewMsg(address sdk.AccAddress, fromCid cbd.Cid, toCid cbd.Cid) Msg {
+func NewMsg(address sdk.AccAddress, fromCid Cid, toCid Cid) Msg {
 	return Msg{Address: address, From: fromCid, To: toCid}
 }
 

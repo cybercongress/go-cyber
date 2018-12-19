@@ -1,20 +1,44 @@
 package app
 
 import (
+	"errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
-	. "github.com/cybercongress/cyberd/app/storage"
-	cbd "github.com/cybercongress/cyberd/app/types"
+	cbd "github.com/cybercongress/cyberd/types"
 	bdwth "github.com/cybercongress/cyberd/x/bandwidth/types"
+	cbdlink "github.com/cybercongress/cyberd/x/link/types"
 	abci "github.com/tendermint/tendermint/abci/types"
 )
+
+type RankedCid struct {
+	cid  cbdlink.Cid
+	rank float64
+}
 
 func (app *CyberdApp) RpcContext() sdk.Context {
 	return app.NewContext(true, abci.Header{})
 }
 
 func (app *CyberdApp) Search(cid string, page, perPage int) ([]RankedCid, int, error) {
-	return app.memStorage.GetCidRankedLinks(cbd.Cid(cid), page, perPage)
+
+	ctx := app.RpcContext()
+	cidNumber, exists := app.cidNumKeeper.GetCidNumber(ctx, cbdlink.Cid(cid))
+	if !exists {
+		return nil, 0, errors.New("no such cid found")
+	}
+
+	rankedCidNumbers, size, err := app.rankState.GetCidRankedLinks(cidNumber, page, perPage)
+
+	if err != nil {
+		return nil, size, err
+	}
+
+	result := make([]RankedCid, 0, len(rankedCidNumbers))
+	for _, c := range rankedCidNumbers {
+		result = append(result, RankedCid{cid: app.cidNumKeeper.GetCid(ctx, c.GetNumber()), rank: c.GetRank()})
+	}
+
+	return result, size, nil
 }
 
 func (app *CyberdApp) Account(address sdk.AccAddress) auth.Account {
@@ -25,17 +49,17 @@ func (app *CyberdApp) AccountBandwidth(address sdk.AccAddress) bdwth.AcсBandwid
 	return app.bandwidthMeter.GetCurrentAccBandwidth(app.RpcContext(), address)
 }
 
-func (app *CyberdApp) IsLinkExist(from cbd.Cid, to cbd.Cid, address sdk.AccAddress) bool {
+func (app *CyberdApp) IsLinkExist(from cbdlink.Cid, to cbdlink.Cid, address sdk.AccAddress) bool {
 
 	ctx := app.RpcContext()
 	acc := app.accountKeeper.GetAccount(ctx, address)
 
 	if acc != nil {
-		fromNumber, fromExist := app.persistStorages.CidIndex.GetCidIndex(ctx, from)
-		toNumber, toExists := app.persistStorages.CidIndex.GetCidIndex(ctx, to)
+		fromNumber, fromExist := app.cidNumKeeper.GetCidNumber(ctx, from)
+		toNumber, toExists := app.cidNumKeeper.GetCidNumber(ctx, to)
 		if fromExist && toExists {
-			accNumber := cbd.AccountNumber(acc.GetAccountNumber())
-			return app.persistStorages.Links.IsLinkExist(ctx, cbd.NewLink(fromNumber, toNumber, accNumber))
+			accNumber := cbd.AccNumber(acc.GetAccountNumber())
+			return app.linkIndexedKeeper.IsLinkExist(ctx, cbdlink.NewLink(fromNumber, toNumber, accNumber))
 		}
 	}
 

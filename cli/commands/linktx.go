@@ -6,8 +6,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtxb "github.com/cosmos/cosmos-sdk/x/auth/client/txbuilder"
-	cbd "github.com/cybercongress/cyberd/app/types"
+	cbd "github.com/cybercongress/cyberd/types"
 	"github.com/cybercongress/cyberd/x/link"
+	cbdlink "github.com/cybercongress/cyberd/x/link/types"
 	"github.com/ipfs/go-cid"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -34,8 +35,8 @@ func LinkTxCmd(cdc *codec.Codec) *cobra.Command {
 				return err
 			}
 
-			cidFrom := cbd.Cid(viper.GetString(flagCidFrom))
-			cidTo := cbd.Cid(viper.GetString(flagCidTo))
+			cidFrom := cbdlink.Cid(viper.GetString(flagCidFrom))
+			cidTo := cbdlink.Cid(viper.GetString(flagCidTo))
 
 			if _, err := cid.Decode(string(cidFrom)); err != nil {
 				return cbd.ErrInvalidCid()
