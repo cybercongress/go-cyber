@@ -22,11 +22,12 @@ Here is the current required server specification to run validator node:
 
 Our main distribution unit is docker container. 
 All images are located in default [Dockerhub registry](https://hub.docker.com/r/cyberd/cyberd/).
-Rank calculated on **GPU** using [**CUDA Toolkit**](https://docs.nvidia.com/cuda/index.html).
 In order to access **GPU** from container, nvidia drivers version **410+** and 
  [nvidia docker runtime](https://github.com/NVIDIA/nvidia-docker) should be installed on host system.
 
-
+**Note**: Before installing nvidia docker runtime, reboot pc(nvidia drivers should be loaded into kernel during startup),
+ check that drivers loaded correctly by `nvidia-smi` command.
+  
 Check both driver and docker runtime installed correctly:
 ```bash
 docker run --runtime=nvidia --rm nvidia/cuda:10.0-base nvidia-smi
