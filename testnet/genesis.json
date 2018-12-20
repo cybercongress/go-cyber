@@ -1,6 +1,6 @@
 {
   "genesis_time": "2018-12-08T11:11:09.854654507Z",
-  "chain_id": "euler-dev1",
+  "chain_id": "euler-dev2",
   "consensus_params": {
     "block_size": {
       "max_bytes": "22020096",
@@ -188,7 +188,7 @@
                 "validator_address": "cbdvaloper1sk3uvpacpjm2t3389caqk4gd9n9gkzq2jhfzpy",
                 "pubkey": {
                   "type": "tendermint/PubKeyEd25519",
-                  "value": "yp3cSjqGor2Rdjsq0YcVcO/uZNoqtwz9QZZRmGc9CF4="
+                  "value": "gwRv8nwdMf1WpA7qth/rUrvctzfXN9VlnuG8Ty2/neY="
                 },
                 "delegation": {
                   "denom": "CBD",
@@ -212,12 +212,12 @@
                 "type": "tendermint/PubKeySecp256k1",
                 "value": "AyAoX+4zFopYd2iKSVAfFqVKsFL+SSAsSPO+wNkNZNUw"
               },
-              "signature": "5ZemPp8sb4PM9B/3CZINguZzeJvPBnj+nVpPpf2f8BwAh+eEHctemZ6zBru4ZQWM4ptIdCrSN3KIsZDhH0VfXg==",
+              "signature": "9R3lu50AhIaaVSv0osVeSTuZD9ZPjyR1X5FrDb8YrP8+eN4qIPUEQHdw+uRRpqTBs+TD5YCVK5WDSY4/0jQ3vg==",
               "account_number": "0",
               "sequence": "0"
             }
           ],
-          "memo": "fce363a8cb762a9408ac7be78e277863dd578b82@192.168.0.166:26656"
+          "memo": "fc8d5f870023bf4828bf5e76f69c08e2aa21af38@192.168.100.42:26656"
         }
       }
     ]
