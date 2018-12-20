@@ -10,13 +10,13 @@ const (
 	tolerance float64 = 1e-3
 )
 
-func calculateRankCPU(ctx *CalculationContext) ([]float64, int) {
+func calculateRankCPU(ctx *CalculationContext, rankChan chan []float64) {
 
 	inLinks := ctx.GetInLinks()
 
 	size := ctx.GetCidsCount()
 	if size == 0 {
-		return []float64{}, 0
+		rankChan <- []float64{}
 	}
 
 	rank := make([]float64, size)
@@ -45,7 +45,7 @@ func calculateRankCPU(ctx *CalculationContext) ([]float64, int) {
 		steps++
 	}
 
-	return rank, steps
+	rankChan <- rank
 }
 
 func step(ctx *CalculationContext, defaultRankWithCorrection float64, prevrank []float64) []float64 {
