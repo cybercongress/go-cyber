@@ -3,37 +3,38 @@ package bandwidth
 import (
 	"encoding/json"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cybercongress/cyberd/x/bandwidth/types"
+	. "github.com/cybercongress/cyberd/x/bandwidth/types"
 )
 
-type AccountBandwidthKeeper interface {
-	SetAccountBandwidth(ctx sdk.Context, bandwidth types.AccountBandwidth)
-	GetAccountBandwidth(address sdk.AccAddress, ctx sdk.Context) (types.AccountBandwidth, error)
-}
+var _ Keeper = BaseAccBandwidthKeeper{}
 
-type BaseAccountBandwidthKeeper struct {
+type BaseAccBandwidthKeeper struct {
 	key *sdk.KVStoreKey
 }
 
-func (bk BaseAccountBandwidthKeeper) SetAccountBandwidth(ctx sdk.Context, bandwidth types.AccountBandwidth) {
+func NewAccBandwidthKeeper(key *sdk.KVStoreKey) BaseAccBandwidthKeeper {
+	return BaseAccBandwidthKeeper{key: key}
+}
+
+func (bk BaseAccBandwidthKeeper) SetAccBandwidth(ctx sdk.Context, bandwidth AcсBandwidth) {
 	bwBytes, _ := json.Marshal(bandwidth)
 	ctx.KVStore(bk.key).Set(bandwidth.Address, bwBytes)
 }
 
-func (bk BaseAccountBandwidthKeeper) GetAccountBandwidth(address sdk.AccAddress, ctx sdk.Context) (bw types.AccountBandwidth, err error) {
-	bwBytes := ctx.KVStore(bk.key).Get(address)
+func (bk BaseAccBandwidthKeeper) GetAccBandwidth(ctx sdk.Context, addr sdk.AccAddress) (bw AcсBandwidth) {
+	bwBytes := ctx.KVStore(bk.key).Get(addr)
 	if bwBytes == nil {
-		return types.AccountBandwidth{
-			Address:          address,
+		return AcсBandwidth{
+			Address:          addr,
 			RemainedValue:    0,
 			LastUpdatedBlock: ctx.BlockHeight(),
 			MaxValue:         0,
-		}, nil
+		}
 	}
-	err = json.Unmarshal(bwBytes, &bw)
+	err := json.Unmarshal(bwBytes, &bw)
+	if err != nil {
+		// should not happen
+		panic("bandwidth index is broken")
+	}
 	return
-}
-
-func NewAccountBandwidthKeeper(key *sdk.KVStoreKey) BaseAccountBandwidthKeeper {
-	return BaseAccountBandwidthKeeper{key: key}
 }

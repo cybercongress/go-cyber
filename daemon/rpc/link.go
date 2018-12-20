@@ -1,7 +1,9 @@
 package rpc
 
-import "github.com/cosmos/cosmos-sdk/types"
-import cbd "github.com/cybercongress/cyberd/app/types"
+import (
+	"github.com/cosmos/cosmos-sdk/types"
+	cbd "github.com/cybercongress/cyberd/x/link/types"
+)
 
 func IsLinkExist(from string, to string, address string) (bool, error) {
 

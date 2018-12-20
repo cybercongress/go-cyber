@@ -1,44 +1,71 @@
 package app
 
 import (
+	"errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
-	. "github.com/cybercongress/cyberd/app/storage"
-	. "github.com/cybercongress/cyberd/app/types"
+	cbd "github.com/cybercongress/cyberd/types"
+	bdwth "github.com/cybercongress/cyberd/x/bandwidth/types"
+	cbdlink "github.com/cybercongress/cyberd/x/link/types"
 	abci "github.com/tendermint/tendermint/abci/types"
 )
 
+type RankedCid struct {
+	Cid  cbdlink.Cid `json:"cid"`
+	Rank float64     `amino:"unsafe" json:"rank"`
+}
+
+func (app *CyberdApp) RpcContext() sdk.Context {
+	return app.NewContext(true, abci.Header{})
+}
+
 func (app *CyberdApp) Search(cid string, page, perPage int) ([]RankedCid, int, error) {
-	result, totalSize, err := app.memStorage.GetCidRankedLinks(Cid(cid), page, perPage)
-	if err != nil {
-		return nil, totalSize, err
+
+	ctx := app.RpcContext()
+	cidNumber, exists := app.cidNumKeeper.GetCidNumber(ctx, cbdlink.Cid(cid))
+	if !exists {
+		return nil, 0, errors.New("no such cid found")
 	}
-	return result, totalSize, nil
+
+	rankedCidNumbers, size, err := app.rankState.GetCidRankedLinks(cidNumber, page, perPage)
+
+	if err != nil {
+		return nil, size, err
+	}
+
+	result := make([]RankedCid, 0, len(rankedCidNumbers))
+	for _, c := range rankedCidNumbers {
+		result = append(result, RankedCid{Cid: app.cidNumKeeper.GetCid(ctx, c.GetNumber()), Rank: c.GetRank()})
+	}
+
+	return result, size, nil
 }
 
 func (app *CyberdApp) Account(address sdk.AccAddress) auth.Account {
-
-	acc := app.accountKeeper.GetAccount(app.NewContext(true, abci.Header{}), address)
-
-	if acc != nil {
-		return acc
-	}
-	return nil
+	return app.accountKeeper.GetAccount(app.RpcContext(), address)
 }
 
-func (app *CyberdApp) IsLinkExist(from Cid, to Cid, address sdk.AccAddress) bool {
+func (app *CyberdApp) AccountBandwidth(address sdk.AccAddress) bdwth.AcсBandwidth {
+	return app.bandwidthMeter.GetCurrentAccBandwidth(app.RpcContext(), address)
+}
 
-	ctx := app.NewContext(true, abci.Header{})
+func (app *CyberdApp) IsLinkExist(from cbdlink.Cid, to cbdlink.Cid, address sdk.AccAddress) bool {
+
+	ctx := app.RpcContext()
 	acc := app.accountKeeper.GetAccount(ctx, address)
 
 	if acc != nil {
-		fromNumber, fromExist := app.persistStorages.CidIndex.GetCidIndex(ctx, from)
-		toNumber, toExists := app.persistStorages.CidIndex.GetCidIndex(ctx, to)
+		fromNumber, fromExist := app.cidNumKeeper.GetCidNumber(ctx, from)
+		toNumber, toExists := app.cidNumKeeper.GetCidNumber(ctx, to)
 		if fromExist && toExists {
-			accNumber := AccountNumber(acc.GetAccountNumber())
-			return app.persistStorages.Links.IsLinkExist(ctx, NewLink(fromNumber, toNumber, accNumber))
+			accNumber := cbd.AccNumber(acc.GetAccountNumber())
+			return app.linkIndexedKeeper.IsLinkExist(ctx, cbdlink.NewLink(fromNumber, toNumber, accNumber))
 		}
 	}
 
 	return false
+}
+
+func (app *CyberdApp) CurrentBandwidthPrice() float64 {
+	return app.currentCreditPrice
 }

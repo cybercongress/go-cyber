@@ -1,7 +1,7 @@
-package app
+package types
 
 import "github.com/cosmos/cosmos-sdk/x/auth"
 
-func NewAccount() auth.Account {
+func NewCyberdAccount() auth.Account {
 	return &auth.BaseAccount{}
 }

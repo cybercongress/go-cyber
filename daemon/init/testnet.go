@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/cybercongress/cyberd/app"
+	. "github.com/cybercongress/cyberd/app/genesis"
 	"net"
 	"os"
 	"path/filepath"
@@ -94,7 +95,7 @@ func initTestnet(config *cfg.Config, cdc *codec.Codec) error {
 	valPubKeys := make([]crypto.PubKey, numValidators)
 
 	var (
-		accs     []app.GenesisAccount
+		accs     []GenesisAccount
 		genFiles []string
 	)
 
@@ -175,7 +176,7 @@ func initTestnet(config *cfg.Config, cdc *codec.Codec) error {
 			return err
 		}
 
-		accs = append(accs, app.GenesisAccount{
+		accs = append(accs, GenesisAccount{
 			Address: addr,
 			Coins: sdk.Coins{
 				sdk.NewInt64Coin("CBD", 100),
@@ -229,11 +230,11 @@ func initTestnet(config *cfg.Config, cdc *codec.Codec) error {
 }
 
 func initGenFiles(
-	cdc *codec.Codec, chainID string, accs []app.GenesisAccount,
+	cdc *codec.Codec, chainID string, accs []GenesisAccount,
 	genFiles []string, numValidators int,
 ) error {
 
-	appGenState := app.NewDefaultGenesisState()
+	appGenState := NewDefaultGenesisState()
 	appGenState.Accounts = accs
 
 	appGenStateJSON, err := codec.MarshalJSONIndent(cdc, appGenState)
