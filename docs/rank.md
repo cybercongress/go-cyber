@@ -24,3 +24,8 @@ May be we need third context...
 Don't save rank. Calculate it before node start.
 If node falls then it should recalculate rank.
 Node doesn't participate in consensus till rank not calculated (obvious).
+
+We probably don't care about indices of new cids and user stakes cause they are ordered by numbers
+and in rank calculation algorithm no needed numbers will be ignored (need to check).
+
+We could store cidCount per rank calculation.

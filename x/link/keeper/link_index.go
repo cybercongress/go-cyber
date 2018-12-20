@@ -9,14 +9,21 @@ import (
 type LinkIndexedKeeper struct {
 	LinkKeeper
 
+	// Actual links for current rank state.
 	inLinks  map[CidNumber]CidLinks
 	outLinks map[CidNumber]CidLinks
+
+	// New links for the next calculation.
+	// Actually, do we need them in memory?
+	// TODO: init???
+	newLinks []Link
 }
 
 func NewLinkIndexedKeeper(keeper LinkKeeper) LinkIndexedKeeper {
 	return LinkIndexedKeeper{LinkKeeper: keeper}
 }
 
+// TODO: rewrite to load from previous version to current links and older versions to new links.
 func (i *LinkIndexedKeeper) Load(ctx sdk.Context) {
 	inLinks, outLinks, err := i.LinkKeeper.GetAllLinks(ctx)
 	if err != nil {
@@ -27,14 +34,16 @@ func (i *LinkIndexedKeeper) Load(ctx sdk.Context) {
 	i.outLinks = outLinks
 }
 
-func (i *LinkIndexedKeeper) Empty() {
-	i.inLinks = make(map[CidNumber]CidLinks)
-	i.outLinks = make(map[CidNumber]CidLinks)
+func (i *LinkIndexedKeeper) MergeNewLinks() {
+	for _, l := range i.newLinks {
+		Links(i.outLinks).Put(l.From(), l.To(), l.Acc())
+		Links(i.inLinks).Put(l.To(), l.From(), l.Acc())
+	}
+	i.newLinks = make([]Link, 0)
 }
 
 func (i *LinkIndexedKeeper) PutIntoIndex(link Link) {
-	Links(i.outLinks).Put(link.From(), link.To(), link.Acc())
-	Links(i.inLinks).Put(link.To(), link.From(), link.Acc())
+	i.newLinks = append(i.newLinks, link) //TODO: optimize addition
 }
 
 func (i *LinkIndexedKeeper) GetOutLinks() map[CidNumber]CidLinks {

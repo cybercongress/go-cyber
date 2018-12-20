@@ -1,8 +1,6 @@
 package app
 
 import (
-	"crypto/sha256"
-	"encoding/binary"
 	"fmt"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -109,6 +107,9 @@ type CyberdApp struct {
 	latestBlockHeight int64
 
 	computeUnit rank.ComputeUnit
+
+	rankCalculationFinished bool
+	lastCidCount            int64
 }
 
 // NewBasecoinApp returns a reference to a new CyberdApp given a
@@ -243,6 +244,7 @@ func NewCyberdApp(
 	app.currentCreditPrice = math.Float64frombits(ms.GetBandwidthPrice(ctx, bandwidth.BaseCreditPrice))
 	app.curBlockSpentBandwidth = 0
 	app.latestBlockHeight = int64(ms.GetLatestBlockNumber(ctx))
+	app.rankCalculationFinished = true
 
 	app.Seal()
 	return app
@@ -461,10 +463,15 @@ func (app *CyberdApp) BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock) 
 	}
 }
 
+var rankChan = make(chan []float64, 1)
+
 // Calculates cyber.Rank for block N, and returns Hash of result as app state.
 // Calculated app state will be included in N+1 block header, thus influence on block hash.
 // App state is consensus driven state.
 func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.ResponseEndBlock {
+
+	app.latestBlockHeight = ctx.BlockHeight()
+	app.mainKeeper.StoreLatestBlockNumber(ctx, uint64(ctx.BlockHeight()))
 
 	validatorUpdates, tags := stake.EndBlocker(ctx, app.stakeKeeper)
 	app.stakeIndex.EndBlocker(ctx)
@@ -477,28 +484,48 @@ func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.R
 	app.currentCreditPrice = newPrice
 	app.curBlockSpentBandwidth = 0
 
-	linksCount := app.mainKeeper.GetLinksCount(ctx)
-	cidsCount := app.mainKeeper.GetCidsCount(ctx)
+	// START RANK CALCULATION
+	//linksCount := app.mainKeeper.GetLinksCount(ctx)
 
-	start := time.Now()
-	calcCtx := rank.NewCalcContext(ctx, app.linkIndexedKeeper, app.cidNumKeeper, *app.stakeIndex)
-	newRank, steps := rank.CalculateRank(calcCtx, app.computeUnit, app.BaseApp.Logger)
-	app.BaseApp.Logger.Info(
-		"Rank calculated", "steps", steps, "time", time.Since(start), "links", linksCount, "cids", cidsCount,
-	)
+	//start := time.Now()
+	// TODO: Deal with hashes (new, old)
+	// TODO: Run reindexation in parallel
+	if ctx.BlockHeight()%rank.CalculationPeriod == 0 || ctx.BlockHeight() == 1 {
 
-	app.latestBlockHeight = ctx.BlockHeight()
-	app.mainKeeper.StoreLatestBlockNumber(ctx, uint64(ctx.BlockHeight()))
+		if !app.rankCalculationFinished {
+			newRank := <-rankChan
+			app.rankState.SetNewRank(newRank)
+			app.rankCalculationFinished = true
+		}
 
-	rankAsBytes := make([]byte, 8*len(newRank))
-	for i, f64 := range newRank {
-		binary.LittleEndian.PutUint64(rankAsBytes[i*8:i*8+8], math.Float64bits(f64))
+		app.rankState.ApplyNewRank(app.lastCidCount)
+		app.linkIndexedKeeper.MergeNewLinks()
+
+		rankHash := app.rankState.CalculateHash()
+		app.latestRankHash = rankHash
+		app.mainKeeper.StoreAppHash(ctx, rankHash)
+
+		app.rankCalculationFinished = false
+
+		app.lastCidCount = int64(app.mainKeeper.GetCidsCount(ctx))
+		calcCtx := rank.NewCalcContext(ctx, app.linkIndexedKeeper, app.cidNumKeeper, app.stakeIndex)
+		go rank.CalculateRank(calcCtx, rankChan, app.computeUnit, app.BaseApp.Logger)
+
+	} else if !app.rankCalculationFinished {
+
+		select {
+		case newRank := <-rankChan:
+			app.rankState.SetNewRank(newRank)
+			app.rankCalculationFinished = true
+		default:
+		}
+
 	}
+	//app.BaseApp.Logger.Info(
+	//	"Rank calculated", "steps", steps, "time", time.Since(start), "links", linksCount, "cids", cidsCount,
+	//)
 
-	hash := sha256.Sum256(rankAsBytes)
-	app.latestRankHash = hash[:]
-	app.rankState.UpdateRank(newRank, int64(app.cidNumKeeper.GetCidsCount(ctx)))
-	app.mainKeeper.StoreAppHash(ctx, hash[:])
+	// END RANK CALCULATION
 
 	return abci.ResponseEndBlock{
 		ValidatorUpdates: validatorUpdates,
