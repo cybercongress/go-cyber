@@ -1,7 +1,7 @@
 package main
 
 import (
-	cbd "github.com/cybercongress/cyberd/app/types"
+	links "github.com/cybercongress/cyberd/x/link/types"
 	"github.com/ipfs/go-cid"
 	"github.com/multiformats/go-multihash"
 )
@@ -13,7 +13,7 @@ var pref = cid.Prefix{
 	MhLength: -1, // default length
 }
 
-func Cid(data string) cbd.Cid {
+func Cid(data string) links.Cid {
 	result, _ := pref.Sum([]byte(data))
-	return cbd.Cid(result.String())
+	return links.Cid(result.String())
 }

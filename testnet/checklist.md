@@ -4,8 +4,9 @@
 2. adjust genesis supply in x/mint
 3. reset old state
 4. change genesis file chain-id
-5. generate new first validator keys
-6. upadte genesis gen tx
+5. upadte genesis gen tx
+6. update readme.md testnet lable
+7. Update docs/run_validator.md guide
 
 ## Useful commands
 
@@ -21,7 +22,7 @@
 scp -P 33324 /home/hlb/projects/cyberd/testnet/genesis.json   earth@earth.cybernode.ai:/cyberdata/cyberd/config/
 scp -P 33324 /home/hlb/projects/cyberd/testnet/config.toml   earth@earth.cybernode.ai:/cyberdata/cyberd/config/
 # Copy from earth
-scp -P 33324 earth@earth.cybernode.ai:/path/file /host/path/file
+scp -P 33324 earth@93.125.26.210:/cyberdata/cyberd/config/priv_validator.json ~/.cyberd/config/
 ```
 
 ```bash

@@ -11,8 +11,8 @@ import (
 )
 
 type RankedCid struct {
-	cid  cbdlink.Cid
-	rank float64
+	Cid  cbdlink.Cid `json:"cid"`
+	Rank float64     `amino:"unsafe" json:"rank"`
 }
 
 func (app *CyberdApp) RpcContext() sdk.Context {
@@ -35,7 +35,7 @@ func (app *CyberdApp) Search(cid string, page, perPage int) ([]RankedCid, int, e
 
 	result := make([]RankedCid, 0, len(rankedCidNumbers))
 	for _, c := range rankedCidNumbers {
-		result = append(result, RankedCid{cid: app.cidNumKeeper.GetCid(ctx, c.GetNumber()), rank: c.GetRank()})
+		result = append(result, RankedCid{Cid: app.cidNumKeeper.GetCid(ctx, c.GetNumber()), Rank: c.GetRank()})
 	}
 
 	return result, size, nil
@@ -64,4 +64,8 @@ func (app *CyberdApp) IsLinkExist(from cbdlink.Cid, to cbdlink.Cid, address sdk.
 	}
 
 	return false
+}
+
+func (app *CyberdApp) CurrentBandwidthPrice() float64 {
+	return app.currentCreditPrice
 }
