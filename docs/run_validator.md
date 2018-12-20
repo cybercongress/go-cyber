@@ -1,5 +1,7 @@
 # Join Cyberd Network As Validator
 
+**Note**. Currently active dev testnet is `euler-dev1` (substitute <testnet_chain_id> with that value).
+
 ## Prepare your server
 
 First, you have to setup a server. 
