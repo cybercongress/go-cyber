@@ -64,7 +64,7 @@ docker run -d --name=cyberd --runtime=nvidia \
  -p 26656:26656 -p 26657:26657 -p 26660:26660 \
  -v /cyberd/daemon:/root/.cyberd \
  -v /cyberd/cli:/root/.cyberdcli \
- cyberd/cyberd:euler-dev0
+ cyberd/cyberd:<testnet_chain_id>
 ```
 
 To check if your node is connected to the testnet, you can run this:
