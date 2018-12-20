@@ -64,7 +64,7 @@ func (s *RankState) buildCidRankedLinksIndex(cidsCount int64) {
 	for cidNumber := CidNumber(0); cidNumber < CidNumber(cidsCount); cidNumber++ {
 		cidOutLinks := s.linkIndex.GetOutLinks()[cidNumber]
 		cidSortedByRankLinkedCids := s.getLinksSortedByRank(cidOutLinks)
-		s.cidRankedLinksIndex[cidNumber] = cidSortedByRankLinkedCids
+		newIndex[cidNumber] = cidSortedByRankLinkedCids
 	}
 
 	s.cidRankedLinksIndex = newIndex

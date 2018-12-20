@@ -40,6 +40,7 @@ the method name for further details such as parameter and return information.
 |2|[account](#account)|Get account nonce, pubkey, number, and coins.|
 |3|[account_bandwidth](#account-bandwidth)|Get account bandwidth info for current height.|
 |4|[is_link_exist](#link-exist)|Return true, if given link exist.|
+|5|[current_bandwidth_price](#current-bandwidth-price)|Returns current bandwidth credit price.|
 
 ### Method Details
 
@@ -78,6 +79,15 @@ the method name for further details such as parameter and return information.
 |Method|is_link_exist|
 |Parameters|1. from (cid, required)<br />2. to (cid, required)<br />3. address (string, required)<br />|
 |Description|Return true, if given link exist.|
+|[Return to Overview](#method-overview)<br />
+
+<a name="current-bandwidth-price"/>
+
+|   |   |
+|---|---|
+|Method|current_bandwidth_price|
+|Parameters||
+|Description|Returns current bandwidth credit price.|
 |[Return to Overview](#method-overview)<br />
 
 ***

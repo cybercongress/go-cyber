@@ -123,19 +123,20 @@ func NewCyberdApp(
 	cdc := MakeCodec()
 
 	dbKeys := CyberdAppDbKeys{
-		main:         sdk.NewKVStoreKey("main"),
-		acc:          sdk.NewKVStoreKey("acc"),
-		cidNum:       sdk.NewKVStoreKey("cid_index"),
-		links:        sdk.NewKVStoreKey("links"),
-		rank:         sdk.NewKVStoreKey("rank"),
-		stake:        sdk.NewKVStoreKey("stake"),
-		fees:         sdk.NewKVStoreKey("fee"),
-		tStake:       sdk.NewTransientStoreKey("transient_stake"),
-		keyDistr:     sdk.NewKVStoreKey("distr"),
-		slashing:     sdk.NewKVStoreKey("slashing"),
-		params:       sdk.NewKVStoreKey("params"),
-		tParams:      sdk.NewTransientStoreKey("transient_params"),
-		accBandwidth: sdk.NewKVStoreKey("acc_bandwidth"),
+		main:          sdk.NewKVStoreKey("main"),
+		acc:           sdk.NewKVStoreKey("acc"),
+		cidNum:        sdk.NewKVStoreKey("cid_index"),
+		cidNumReverse: sdk.NewKVStoreKey("cid_index_reverse"),
+		links:         sdk.NewKVStoreKey("links"),
+		rank:          sdk.NewKVStoreKey("rank"),
+		stake:         sdk.NewKVStoreKey("stake"),
+		fees:          sdk.NewKVStoreKey("fee"),
+		tStake:        sdk.NewTransientStoreKey("transient_stake"),
+		keyDistr:      sdk.NewKVStoreKey("distr"),
+		slashing:      sdk.NewKVStoreKey("slashing"),
+		params:        sdk.NewKVStoreKey("params"),
+		tParams:       sdk.NewTransientStoreKey("transient_params"),
+		accBandwidth:  sdk.NewKVStoreKey("acc_bandwidth"),
 	}
 
 	ms := store.NewMainKeeper(dbKeys.main)
@@ -198,7 +199,7 @@ func NewCyberdApp(
 	// register message routes
 	app.Router().
 		AddRoute("bank", sdkbank.NewHandler(app.bankKeeper)).
-		AddRoute("link", link.NewLinksHandler(app.cidNumKeeper, app.linkIndexedKeeper, app.accountKeeper)).
+		AddRoute("link", link.NewLinksHandler(app.cidNumKeeper, &app.linkIndexedKeeper, app.accountKeeper)).
 		AddRoute("stake", stake.NewHandler(app.stakeKeeper)).
 		AddRoute("slashing", slashing.NewHandler(app.slashingKeeper))
 
@@ -213,7 +214,7 @@ func NewCyberdApp(
 
 	// mount the multistore and load the latest state
 	app.MountStores(
-		dbKeys.main, dbKeys.acc, dbKeys.cidNum, dbKeys.links, dbKeys.rank, dbKeys.stake,
+		dbKeys.main, dbKeys.acc, dbKeys.cidNum, dbKeys.cidNumReverse, dbKeys.links, dbKeys.rank, dbKeys.stake,
 		dbKeys.slashing, dbKeys.params, dbKeys.keyDistr, dbKeys.fees, dbKeys.accBandwidth,
 	)
 	app.MountStoresTransient(dbKeys.tParams, dbKeys.tStake)
@@ -377,10 +378,8 @@ func (app *CyberdApp) DeliverTx(txBytes []byte) (res abci.ResponseDeliverTx) {
 		} else {
 
 			resp := app.BaseApp.DeliverTx(txBytes)
-			if resp.Code == 0 {
-				app.bandwidthMeter.ConsumeAccBandwidth(ctx, accBw, txCost)
-				app.curBlockSpentBandwidth = app.curBlockSpentBandwidth + uint64(txCost)
-			}
+			app.bandwidthMeter.ConsumeAccBandwidth(ctx, accBw, txCost)
+			app.curBlockSpentBandwidth = app.curBlockSpentBandwidth + uint64(txCost)
 
 			return abci.ResponseDeliverTx{
 				Code:      uint32(resp.Code),

@@ -2,11 +2,11 @@ package main
 
 import (
 	"bufio"
+	"fmt"
 	"github.com/cybercongress/cyberd/client"
 	"os"
 	"regexp"
 	"strings"
-	"time"
 	"unicode"
 )
 
@@ -58,11 +58,16 @@ func ContinueIndex(cbdClient client.CyberdClient) {
 			links = append(links, client.Link{From: Cid(id), To: Cid(page)})
 			counter++
 
-			if len(links) == 1000 {
-				println(split[1])
-				println(counter)
-				time.Sleep(500 * time.Millisecond)
-				err := cbdClient.SubmitLinksSync(links)
+			if len(links) == 100 {
+				fmt.Printf("%d %s\n", counter, split[1])
+
+				accBw, err := cbdClient.GetAccountBandwidth()
+				if err == nil {
+					per := int64(100 * float64(accBw.RemainedValue) / float64(accBw.MaxValue))
+					fmt.Printf("Remaining acc bw: %d %v%%\n", accBw.RemainedValue, per)
+				}
+
+				err = cbdClient.SubmitLinksSync(links)
 				if err != nil {
 					panic(err.Error())
 				}

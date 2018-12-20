@@ -9,8 +9,10 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtxb "github.com/cosmos/cosmos-sdk/x/auth/client/txbuilder"
 	"github.com/cybercongress/cyberd/app"
-	cbd "github.com/cybercongress/cyberd/app/types"
+	"github.com/cybercongress/cyberd/daemon/rpc"
+	bwtps "github.com/cybercongress/cyberd/x/bandwidth/types"
 	"github.com/cybercongress/cyberd/x/link"
+	cbdlink "github.com/cybercongress/cyberd/x/link/types"
 	tdmClient "github.com/tendermint/tendermint/rpc/client"
 	"github.com/tendermint/tendermint/rpc/lib/client"
 	"os"
@@ -29,8 +31,8 @@ type HttpCyberdClient struct {
 	// fields used by local keys store to sing transactions
 	passphrase  string
 	fromAddress sdk.AccAddress
-	cliCtx      cli.CLIContext
-	txBuilder   authtxb.TxBuilder
+	cliCtx      *cli.CLIContext
+	txBuilder   *authtxb.TxBuilder
 }
 
 func NewHttpCyberdClient(nodeUrl string, passphrase string, singAddr string) CyberdClient {
@@ -58,11 +60,18 @@ func NewHttpCyberdClient(nodeUrl string, passphrase string, singAddr string) Cyb
 	}.WithCodec(cdc).WithAccountDecoder(cdc)
 
 	accountNumber, _ := cliCtx.GetAccountNumber(addr)
+	seq, err := cliCtx.GetAccountSequence(addr)
+
+	if err != nil {
+		panic(err)
+	}
+
 	txBuilder := authtxb.TxBuilder{
 		Gas:           1000000,
 		ChainID:       status.NodeInfo.Network,
 		AccountNumber: accountNumber,
 		Codec:         cdc,
+		Sequence:      seq,
 	}
 
 	return HttpCyberdClient{
@@ -73,8 +82,8 @@ func NewHttpCyberdClient(nodeUrl string, passphrase string, singAddr string) Cyb
 
 		passphrase:  passphrase,
 		fromAddress: addr,
-		cliCtx:      cliCtx,
-		txBuilder:   txBuilder,
+		cliCtx:      &cliCtx,
+		txBuilder:   &txBuilder,
 	}
 }
 
@@ -82,37 +91,59 @@ func (c HttpCyberdClient) GetChainId() string {
 	return c.chainId
 }
 
-/*func (c HttpCyberdClient) GetCurrentBandwidthCreditPrice() (float64, error) {
-
+func (c HttpCyberdClient) IsLinkExist(from cbdlink.Cid, to cbdlink.Cid, addr sdk.AccAddress) (result bool, err error) {
+	_, err = c.httpClient.Call("is_link_exist",
+		map[string]interface{}{"from": from, "to": to, "address": addr.String()},
+		&result,
+	)
+	return
 }
 
-func (c HttpCyberdClient) GetAccount(address sdk.AccAddress) (auth.Account, error) {
-
+func (c HttpCyberdClient) GetCurrentBandwidthCreditPrice() (float64, error) {
+	result := &rpc.ResultBandwidthPrice{}
+	_, err := c.httpClient.Call("current_bandwidth_price", map[string]interface{}{}, &result)
+	return result.Price, err
 }
 
-func (c HttpCyberdClient) GetAccountBandwidth(address sdk.AccAddress) (bdwth.AcсBandwidth, error) {
-
-}*/
+func (c HttpCyberdClient) GetAccountBandwidth() (result bwtps.AcсBandwidth, err error) {
+	_, err = c.httpClient.Call("account_bandwidth",
+		map[string]interface{}{"address": c.fromAddress.String()}, &result)
+	return
+}
 
 func (c HttpCyberdClient) SubmitLinkSync(link Link) error {
 	return c.SubmitLinksSync([]Link{link})
 }
 
 func (c HttpCyberdClient) SubmitLinksSync(links []Link) error {
-	msges := make([]sdk.Msg, 0, len(links))
+
+	// used to remove duplicated items
+	var filter = make(CidsFilter)
+	msges := make([]sdk.Msg, 0)
+
 	for _, l := range links {
-		msges = append(msges, link.NewMsg(c.fromAddress, cbd.Cid(l.From), cbd.Cid(l.To)))
+
+		if filter.Contains(l.From, l.To) {
+			continue
+		}
+
+		exists, err := c.IsLinkExist(l.From, l.To, c.fromAddress)
+		if err != nil {
+			return err
+		}
+		if !exists {
+			msges = append(msges, link.NewMsg(c.fromAddress, l.From, l.To))
+		}
+		filter.Put(l.From, l.To)
 	}
 	return c.BroadcastTx(msges)
 }
 
 func (c HttpCyberdClient) BroadcastTx(msgs []sdk.Msg) error {
 
-	seq, err := c.cliCtx.GetAccountSequence(c.fromAddress)
-	if err != nil {
-		return err
+	if len(msgs) == 0 {
+		return nil
 	}
-	c.txBuilder.Sequence = seq
 
 	txBytes, err := c.txBuilder.BuildAndSign(c.cliCtx.From, c.passphrase, msgs)
 	if err != nil {
@@ -130,6 +161,7 @@ func (c HttpCyberdClient) BroadcastTx(msgs []sdk.Msg) error {
 	if result.Code != 0 {
 		return errors.New(string(result.Log))
 	}
+	c.txBuilder.Sequence = c.txBuilder.Sequence + 1
 	return nil
 }
 

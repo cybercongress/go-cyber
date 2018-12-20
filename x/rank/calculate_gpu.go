@@ -44,7 +44,7 @@ func calculateRankGPU(ctx *CalculationContext, logger log.Logger) ([]float64, in
 
 	/* Fill values */
 	// todo parallel this
-	for i := uint64(0); i < cidsCount; i++ {
+	for i := int64(0); i < cidsCount; i++ {
 
 		if inLinks, sortedCids, ok := ctx.GetSortedInLinks(types.CidNumber(i)); ok {
 			for _, cid := range sortedCids {
