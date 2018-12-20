@@ -55,10 +55,6 @@ following delegation and commission default parameters:
 			if err != nil {
 				return err
 			}
-			genDoc, err := loadGenesisDoc(cdc, config.GenesisFile())
-			if err != nil {
-				return err
-			}
 
 			// Read --pubkey, if empty take it from priv_validator.json
 			if valPubKeyString := viper.GetString(cli.FlagPubKey); valPubKeyString != "" {
@@ -67,8 +63,21 @@ following delegation and commission default parameters:
 					return err
 				}
 			}
+
+			var chainId string
+
+			if id := viper.GetString(client.FlagChainID); id != "" {
+				chainId = id
+			} else {
+				genDoc, err := loadGenesisDoc(cdc, config.GenesisFile())
+				if err != nil {
+					return err
+				}
+				chainId = genDoc.ChainID
+			}
+
 			// Run cyberd create-validator
-			prepareFlagsForTxCreateValidator(config, nodeID, ip, genDoc.ChainID, valPubKey)
+			prepareFlagsForTxCreateValidator(config, nodeID, ip, chainId, valPubKey)
 			createValidatorCmd := cli.GetCmdCreateValidator(cdc)
 
 			w, err := ioutil.TempFile("", "gentx")
@@ -96,6 +105,7 @@ following delegation and commission default parameters:
 	cmd.Flags().String(tmcli.HomeFlag, app.DefaultNodeHome, "node's home directory")
 	cmd.Flags().String(flagClientHome, app.DefaultCLIHome, "client's home directory")
 	cmd.Flags().String(client.FlagName, "", "name of private key with which to sign the gentx")
+	cmd.Flags().String(client.FlagChainID, "euler-dev", "current chain-id")
 	cmd.Flags().AddFlagSet(cli.FsCommissionCreate)
 	cmd.Flags().AddFlagSet(cli.FsAmount)
 	cmd.Flags().AddFlagSet(cli.FsPk)

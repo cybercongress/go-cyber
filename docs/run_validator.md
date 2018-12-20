@@ -1,6 +1,6 @@
 # Join Cyberd Network As Validator
 
-**Note**. Currently active dev testnet is `euler-dev1` (substitute <testnet_chain_id> with that value).
+**Note**. Currently active dev testnet is `euler-dev2` (substitute <testnet_chain_id> with that value).
 
 ## Prepare your server
 

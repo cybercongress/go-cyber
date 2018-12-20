@@ -2,7 +2,7 @@
 # cyberd. Knowledge consensus computer
 ![banner](logo.png)
 
-[![testnet](https://img.shields.io/badge/testnet-euler--dev1-green.svg?style=flat-square)](https://github.com/cybercongress/cyberd/blob/master/docs/run_validator.md)
+[![testnet](https://img.shields.io/badge/testnet-euler--dev2-green.svg?style=flat-square)](https://github.com/cybercongress/cyberd/blob/master/docs/run_validator.md)
 [![version](https://img.shields.io/github/release/cybercongress/cyberd.svg?style=flat-square)](https://github.com/cosmos/cosmos-sdk/releases/latest)
 [![CircleCI](https://img.shields.io/circleci/project/github/cybercongress/cyberd.svg?style=flat-square)](https://circleci.com/gh/cybercongress/cyberd/tree/master)
 [![license](https://img.shields.io/github/license/cybercongress/cyb.svg?style=flat-square)](https://github.com/cybercongress/cyberd)
