@@ -24,6 +24,7 @@
 
 **Merged pull requests:**
 
+- Update stake index every block [\#129](https://github.com/cybercongress/cyberd/pull/129) ([hleb-albau](https://github.com/hleb-albau))
 - \#126 Update to cosmos 29 [\#127](https://github.com/cybercongress/cyberd/pull/127) ([hleb-albau](https://github.com/hleb-albau))
 - Refactoring [\#125](https://github.com/cybercongress/cyberd/pull/125) ([hleb-albau](https://github.com/hleb-albau))
 - Various Bug fixes [\#124](https://github.com/cybercongress/cyberd/pull/124) ([hleb-albau](https://github.com/hleb-albau))
