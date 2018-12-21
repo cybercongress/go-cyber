@@ -6,15 +6,29 @@
 
 **Implemented enhancements:**
 
+- Simple go cyberd client [\#122](https://github.com/cybercongress/cyberd/issues/122)
+- Add remainig bandwidth endpoint [\#109](https://github.com/cybercongress/cyberd/issues/109)
 - Get rid of RPC proxy [\#94](https://github.com/cybercongress/cyberd/issues/94)
+
+**Fixed bugs:**
+
+- Account inmem balances should be updated by wrapping accountKeeper [\#99](https://github.com/cybercongress/cyberd/issues/99)
 
 **Closed issues:**
 
+- Update to cosmos 29 [\#126](https://github.com/cybercongress/cyberd/issues/126)
+- Write down bandwidth specification [\#114](https://github.com/cybercongress/cyberd/issues/114)
 - Index transactions by addresses. [\#103](https://github.com/cybercongress/cyberd/issues/103)
 - Include addresses into knowledge graph [\#90](https://github.com/cybercongress/cyberd/issues/90)
 
 **Merged pull requests:**
 
+- \#126 Update to cosmos 29 [\#127](https://github.com/cybercongress/cyberd/pull/127) ([hleb-albau](https://github.com/hleb-albau))
+- Refactoring [\#125](https://github.com/cybercongress/cyberd/pull/125) ([hleb-albau](https://github.com/hleb-albau))
+- Various Bug fixes [\#124](https://github.com/cybercongress/cyberd/pull/124) ([hleb-albau](https://github.com/hleb-albau))
+- In-memory storages refactoring [\#123](https://github.com/cybercongress/cyberd/pull/123) ([arturalbov](https://github.com/arturalbov))
+- \#114 Write bw specification [\#121](https://github.com/cybercongress/cyberd/pull/121) ([hleb-albau](https://github.com/hleb-albau))
+- WIP \#114 Add cbdbank module [\#120](https://github.com/cybercongress/cyberd/pull/120) ([hleb-albau](https://github.com/hleb-albau))
 - Update readme [\#119](https://github.com/cybercongress/cyberd/pull/119) ([hleb-albau](https://github.com/hleb-albau))
 - Clean up folders [\#118](https://github.com/cybercongress/cyberd/pull/118) ([arturalbov](https://github.com/arturalbov))
 - \#103 Index transactions by signers. [\#117](https://github.com/cybercongress/cyberd/pull/117) ([hleb-albau](https://github.com/hleb-albau))
