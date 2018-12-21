@@ -26,7 +26,7 @@ func LinkTxCmd(cdc *codec.Codec) *cobra.Command {
 		Short: "Create and sign a link tx",
 		RunE: func(cmd *cobra.Command, args []string) error {
 
-			txCtx := authtxb.NewTxBuilderFromCLI().WithCodec(cdc)
+			txCtx := authtxb.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
 			cliCtx := context.NewCLIContext().
 				WithCodec(cdc).
 				WithAccountDecoder(cdc)

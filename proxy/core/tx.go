@@ -28,9 +28,7 @@ func TxHandlerFn(ctx ProxyContext, unmarshal UnmarshalTxRequest) func(http.Respo
 		// BUILDING COSMOS SDK TX
 		signatures := make([]auth.StdSignature, 0, len(txReq.GetSignatures()))
 		for _, sig := range txReq.GetSignatures() {
-			stdSig := auth.StdSignature{
-				PubKey: sig.PubKey, Signature: sig.Signature, AccountNumber: sig.AccountNumber, Sequence: sig.Sequence,
-			}
+			stdSig := auth.StdSignature{PubKey: sig.PubKey, Signature: sig.Signature}
 			signatures = append(signatures, stdSig)
 		}
 

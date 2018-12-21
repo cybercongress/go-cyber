@@ -58,7 +58,7 @@ type CyberdAppDbKeys struct {
 	stake         *sdk.KVStoreKey
 	tStake        *sdk.TransientStoreKey
 	fees          *sdk.KVStoreKey
-	keyDistr      *sdk.KVStoreKey
+	distr         *sdk.KVStoreKey
 	slashing      *sdk.KVStoreKey
 	params        *sdk.KVStoreKey
 	tParams       *sdk.TransientStoreKey
@@ -119,6 +119,7 @@ type CyberdApp struct {
 func NewCyberdApp(
 	logger log.Logger, db dbm.DB, computeUnit rank.ComputeUnit, baseAppOptions ...func(*baseapp.BaseApp),
 ) *CyberdApp {
+
 	// create and register app-level codec for TXs and accounts
 	cdc := MakeCodec()
 
@@ -132,7 +133,7 @@ func NewCyberdApp(
 		stake:         sdk.NewKVStoreKey("stake"),
 		fees:          sdk.NewKVStoreKey("fee"),
 		tStake:        sdk.NewTransientStoreKey("transient_stake"),
-		keyDistr:      sdk.NewKVStoreKey("distr"),
+		distr:         sdk.NewKVStoreKey("distr"),
 		slashing:      sdk.NewKVStoreKey("slashing"),
 		params:        sdk.NewKVStoreKey("params"),
 		tParams:       sdk.NewTransientStoreKey("transient_params"),
@@ -174,7 +175,7 @@ func NewCyberdApp(
 		slashing.DefaultCodespace,
 	)
 	app.distrKeeper = distr.NewKeeper(
-		app.cdc, dbKeys.keyDistr,
+		app.cdc, dbKeys.distr,
 		app.paramsKeeper.Subspace(distr.DefaultParamspace),
 		app.bankKeeper, stakeKeeper, app.feeCollectionKeeper,
 		distr.DefaultCodespace,
@@ -190,7 +191,9 @@ func NewCyberdApp(
 	// register the staking hooks
 	// NOTE: stakeKeeper above are passed by reference,
 	// so that it can be modified like below:
-	app.stakeKeeper = *stakeKeeper.SetHooks(NewHooks(app.slashingKeeper.Hooks()))
+	app.stakeKeeper = *stakeKeeper.SetHooks(
+		NewStakeHooks(app.distrKeeper.Hooks(), app.slashingKeeper.Hooks()),
+	)
 
 	app.bandwidthMeter = bandwidth.NewBaseMeter(
 		app.accountKeeper, app.bankKeeper, app.accBandwidthKeeper, bandwidth.MsgBandwidthCosts,
@@ -201,6 +204,7 @@ func NewCyberdApp(
 		AddRoute("bank", sdkbank.NewHandler(app.bankKeeper)).
 		AddRoute("link", link.NewLinksHandler(app.cidNumKeeper, &app.linkIndexedKeeper, app.accountKeeper)).
 		AddRoute("stake", stake.NewHandler(app.stakeKeeper)).
+		AddRoute("distr", distr.NewHandler(app.distrKeeper)).
 		AddRoute("slashing", slashing.NewHandler(app.slashingKeeper))
 
 	app.QueryRouter().
@@ -215,7 +219,7 @@ func NewCyberdApp(
 	// mount the multistore and load the latest state
 	app.MountStores(
 		dbKeys.main, dbKeys.acc, dbKeys.cidNum, dbKeys.cidNumReverse, dbKeys.links, dbKeys.rank, dbKeys.stake,
-		dbKeys.slashing, dbKeys.params, dbKeys.keyDistr, dbKeys.fees, dbKeys.accBandwidth,
+		dbKeys.slashing, dbKeys.params, dbKeys.distr, dbKeys.fees, dbKeys.accBandwidth,
 	)
 	app.MountStoresTransient(dbKeys.tParams, dbKeys.tStake)
 	err := app.LoadLatestVersion(dbKeys.main)
@@ -316,17 +320,6 @@ func (app *CyberdApp) initChainer(ctx sdk.Context, req abci.RequestInitChain) ab
 	bandwidth.InitGenesis(ctx, app.bandwidthMeter, app.accBandwidthKeeper, genesisState.Accounts)
 	return abci.ResponseInitChain{
 		Validators: validators,
-	}
-}
-
-// BeginBlocker reflects logic to run before any TXs application are processed
-// by the application.
-func (app *CyberdApp) BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock) abci.ResponseBeginBlock {
-	mint.BeginBlocker(ctx, app.minter)
-	tags := slashing.BeginBlocker(ctx, req, app.slashingKeeper)
-
-	return abci.ResponseBeginBlock{
-		Tags: tags.ToKVPairs(),
 	}
 }
 
@@ -445,6 +438,23 @@ func getSignersTags(tx sdk.Tx) sdk.Tags {
 		tags.AppendTag("signer", []byte(signer))
 	}
 	return tags
+}
+
+func (app *CyberdApp) BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock) abci.ResponseBeginBlock {
+
+	// mint new tokens for the previous block
+	mint.BeginBlocker(ctx, app.minter)
+	// distribute rewards for the previous block
+	distr.BeginBlocker(ctx, req, app.distrKeeper)
+
+	// slash anyone who double signed.
+	// NOTE: This should happen after distr.BeginBlocker so that
+	// there is nothing left over in the validator fee pool,
+	// so as to keep the CanWithdrawInvariant invariant.
+	tags := slashing.BeginBlocker(ctx, req, app.slashingKeeper)
+	return abci.ResponseBeginBlock{
+		Tags: tags.ToKVPairs(),
+	}
 }
 
 // Calculates cyber.Rank for block N, and returns Hash of result as app state.
