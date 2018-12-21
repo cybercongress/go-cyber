@@ -5,6 +5,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/bank"
+	distr "github.com/cosmos/cosmos-sdk/x/distribution"
 	"github.com/cosmos/cosmos-sdk/x/ibc"
 	"github.com/cosmos/cosmos-sdk/x/slashing"
 	"github.com/cosmos/cosmos-sdk/x/stake"
@@ -20,6 +21,7 @@ func MakeCodec() *codec.Codec {
 	sdk.RegisterCodec(cdc)
 	bank.RegisterCodec(cdc)
 	ibc.RegisterCodec(cdc)
+	distr.RegisterCodec(cdc)
 	auth.RegisterCodec(cdc)
 	stake.RegisterCodec(cdc)
 	slashing.RegisterCodec(cdc)
@@ -28,4 +30,3 @@ func MakeCodec() *codec.Codec {
 	cdc.Seal()
 	return cdc
 }
-

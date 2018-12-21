@@ -5,6 +5,7 @@ import (
 	"fmt"
 	cli "github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/client/keys"
+	"github.com/cosmos/cosmos-sdk/client/utils"
 	cskeys "github.com/cosmos/cosmos-sdk/crypto/keys"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtxb "github.com/cosmos/cosmos-sdk/x/auth/client/txbuilder"
@@ -70,7 +71,7 @@ func NewHttpCyberdClient(nodeUrl string, passphrase string, singAddr string) Cyb
 		Gas:           1000000,
 		ChainID:       status.NodeInfo.Network,
 		AccountNumber: accountNumber,
-		Codec:         cdc,
+		TxEncoder:     utils.GetTxEncoder(cdc),
 		Sequence:      seq,
 	}
 
