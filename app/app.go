@@ -76,7 +76,8 @@ type CyberdApp struct {
 	txDecoder sdk.TxDecoder
 
 	// bandwidth
-	bandwidthMeter          bw.BandwidthMeter
+	bandwidthMeter bw.BandwidthMeter
+	//todo 3 fields below should be in bw meter
 	curBlockSpentBandwidth  uint64 //resets every block
 	lastTotalSpentBandwidth uint64 //resets every bandwidth price adjustment interval
 	currentCreditPrice      float64
@@ -101,7 +102,7 @@ type CyberdApp struct {
 	// cyberd storages
 	linkIndexedKeeper keeper.LinkIndexedKeeper
 	cidNumKeeper      keeper.CidNumberKeeper
-	stakeIndex        cbdbank.IndexedKeeper
+	stakeIndex        *cbdbank.IndexedKeeper
 	rankState         *rank.RankState
 
 	latestRankHash    []byte
@@ -160,9 +161,12 @@ func NewCyberdApp(
 	app.feeCollectionKeeper = auth.NewFeeCollectionKeeper(app.cdc, dbKeys.fees)
 
 	var stakeKeeper stake.Keeper
-	coinTransferHooks := []cbdbank.CoinsTransferHook{bandwidth.CollectAddressesWithStakeChange()}
-	app.bankKeeper = cbdbank.NewBankKeeper(app.accountKeeper, &stakeKeeper, coinTransferHooks)
+
+	app.bankKeeper = cbdbank.NewBankKeeper(app.accountKeeper, &stakeKeeper)
+	app.bankKeeper.AddHook(bandwidth.CollectAddressesWithStakeChange())
+
 	app.accBandwidthKeeper = bandwidth.NewAccBandwidthKeeper(dbKeys.accBandwidth)
+
 	stakeKeeper = stake.NewKeeper(
 		app.cdc, dbKeys.stake,
 		dbKeys.tStake, app.bankKeeper,
@@ -185,7 +189,7 @@ func NewCyberdApp(
 	// cyberd keepers
 	app.linkIndexedKeeper = keeper.NewLinkIndexedKeeper(keeper.NewBaseLinkKeeper(ms, dbKeys.links))
 	app.cidNumKeeper = keeper.NewBaseCidNumberKeeper(ms, dbKeys.cidNum, dbKeys.cidNumReverse)
-	app.stakeIndex = cbdbank.NewIndexedKeeper(app.bankKeeper, app.accountKeeper)
+	app.stakeIndex = cbdbank.NewIndexedKeeper(&app.bankKeeper, app.accountKeeper)
 	app.rankState = rank.NewRankState(&app.linkIndexedKeeper)
 
 	// register the staking hooks
@@ -462,11 +466,22 @@ func (app *CyberdApp) BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock) 
 // App state is consensus driven state.
 func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.ResponseEndBlock {
 
+	validatorUpdates, tags := stake.EndBlocker(ctx, app.stakeKeeper)
+	app.stakeIndex.EndBlocker(ctx)
+
+	newPrice, totalSpentBandwidth := bandwidth.EndBlocker(
+		ctx, app.lastTotalSpentBandwidth+app.curBlockSpentBandwidth, app.currentCreditPrice,
+		app.mainKeeper, app.bandwidthMeter,
+	)
+	app.lastTotalSpentBandwidth = totalSpentBandwidth
+	app.currentCreditPrice = newPrice
+	app.curBlockSpentBandwidth = 0
+
 	linksCount := app.mainKeeper.GetLinksCount(ctx)
 	cidsCount := app.mainKeeper.GetCidsCount(ctx)
 
 	start := time.Now()
-	calcCtx := rank.NewCalcContext(ctx, app.linkIndexedKeeper, app.cidNumKeeper, app.stakeIndex)
+	calcCtx := rank.NewCalcContext(ctx, app.linkIndexedKeeper, app.cidNumKeeper, *app.stakeIndex)
 	newRank, steps := rank.CalculateRank(calcCtx, app.computeUnit, app.BaseApp.Logger)
 	app.BaseApp.Logger.Info(
 		"Rank calculated", "steps", steps, "time", time.Since(start), "links", linksCount, "cids", cidsCount,
@@ -485,15 +500,6 @@ func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.R
 	app.rankState.UpdateRank(newRank, int64(app.cidNumKeeper.GetCidsCount(ctx)))
 	app.mainKeeper.StoreAppHash(ctx, hash[:])
 
-	newPrice, totalSpentBandwidth := bandwidth.EndBlocker(
-		ctx, app.lastTotalSpentBandwidth+app.curBlockSpentBandwidth, app.currentCreditPrice,
-		app.mainKeeper, app.bandwidthMeter,
-	)
-	app.lastTotalSpentBandwidth = totalSpentBandwidth
-	app.currentCreditPrice = newPrice
-	app.curBlockSpentBandwidth = 0
-
-	validatorUpdates, tags := stake.EndBlocker(ctx, app.stakeKeeper)
 	return abci.ResponseEndBlock{
 		ValidatorUpdates: validatorUpdates,
 		Tags:             tags,

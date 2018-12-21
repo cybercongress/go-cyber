@@ -29,7 +29,7 @@ func NewCalcContext(
 		inLinks:  linkIndex.GetInLinks(),
 		outLinks: linkIndex.GetOutLinks(),
 
-		stakes: indexedKeeper.GetStakes(),
+		stakes: indexedKeeper.GetTotalStakes(),
 	}
 }
 
