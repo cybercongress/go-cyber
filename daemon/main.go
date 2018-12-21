@@ -21,7 +21,8 @@ import (
 )
 
 const (
-	flagGpuEnabled = "compute-rank-on-gpu"
+	flagGpuEnabled            = "compute-rank-on-gpu"
+	flagSearchRpcQueryEnabled = "allow-search-rpc-query"
 )
 
 func main() {
@@ -48,6 +49,7 @@ func main() {
 	for _, c := range rootCmd.Commands() {
 		if c.Use == "start" {
 			c.Flags().Bool(flagGpuEnabled, true, "Run cyberd with cuda calculations")
+			c.Flags().Bool(flagSearchRpcQueryEnabled, true, "Build index of links with ranks and allow to query search through RPC")
 		}
 	}
 
@@ -68,7 +70,7 @@ func newApp(logger log.Logger, db dbm.DB, storeTracer io.Writer) abci.Applicatio
 	if viper.GetBool(flagGpuEnabled) {
 		computeUnit = rank.GPU
 	}
-	cyberdApp := app.NewCyberdApp(logger, db, computeUnit, pruning)
+	cyberdApp := app.NewCyberdApp(logger, db, computeUnit, viper.GetBool(flagSearchRpcQueryEnabled), pruning)
 	rpc.SetCyberdApp(cyberdApp)
 	return cyberdApp
 }
@@ -77,6 +79,6 @@ func exportAppStateAndTMValidators(
 	logger log.Logger, db dbm.DB, traceStore io.Writer, height int64, forZeroHeight bool,
 ) (json.RawMessage, []tmtypes.GenesisValidator, error) {
 
-	capp := app.NewCyberdApp(logger, db, rank.CPU)
+	capp := app.NewCyberdApp(logger, db, rank.CPU, false)
 	return capp.ExportAppStateAndValidators()
 }

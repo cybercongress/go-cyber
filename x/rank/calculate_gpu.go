@@ -15,11 +15,11 @@ import (
 */
 import "C"
 
-func calculateRankGPU(ctx *CalculationContext, rankChan chan []float64, logger log.Logger) {
+func calculateRankGPU(ctx *CalculationContext, logger log.Logger) []float64 {
 
 	start := time.Now()
 	if ctx.GetCidsCount() == 0 {
-		rankChan <- make([]float64, 0)
+		return make([]float64, 0)
 	}
 
 	outLinks := ctx.GetOutLinks()
@@ -94,5 +94,5 @@ func calculateRankGPU(ctx *CalculationContext, rankChan chan []float64, logger l
 	)
 	logger.Debug("Rank: gpu calculations", "time", time.Since(start))
 
-	rankChan <- rank
+	return rank
 }

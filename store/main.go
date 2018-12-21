@@ -9,6 +9,7 @@ import (
 var lastCidNumberKey = []byte("cyberd_last_cid_number")
 var linksCountKey = []byte("cyberd_links_count")
 var lastAppHashKey = []byte("cyberd_app_hash")
+var nextAppHashKey = []byte("cyberd_next_app_hash")
 var genesisSupplyKey = []byte("cyberd_genesis_supply")
 var lastBandwidthPrice = []byte("cyberd_last_bandwidth_price")
 var spentBandwidth = []byte("cyberd_spent_bandwidth")
@@ -84,6 +85,17 @@ func (ms MainKeeper) StoreAppHash(ctx sdk.Context, hash []byte) {
 	store.Set(lastAppHashKey, hash)
 }
 
+func (ms MainKeeper) GetNextAppHash(ctx sdk.Context) []byte {
+	store := ctx.KVStore(ms.key)
+	return store.Get(nextAppHashKey)
+}
+
+func (ms MainKeeper) StoreNextAppHash(ctx sdk.Context, hash []byte) {
+
+	store := ctx.KVStore(ms.key)
+	store.Set(nextAppHashKey, hash)
+}
+
 func (ms MainKeeper) GetBandwidthPrice(ctx sdk.Context, basePrice float64) uint64 {
 	store := ctx.KVStore(ms.key)
 	priceAsBytes := store.Get(lastBandwidthPrice)
@@ -100,7 +112,6 @@ func (ms MainKeeper) StoreBandwidthPrice(ctx sdk.Context, price uint64) {
 	binary.LittleEndian.PutUint64(priceAsBytes, price)
 	store.Set(lastBandwidthPrice, priceAsBytes)
 }
-
 
 func (ms MainKeeper) GetSpentBandwidth(ctx sdk.Context) uint64 {
 	store := ctx.KVStore(ms.key)

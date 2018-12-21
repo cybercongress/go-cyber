@@ -16,6 +16,7 @@ import (
 	"github.com/cybercongress/cyberd/app/types/coin"
 	"github.com/cybercongress/cyberd/store"
 	"github.com/cybercongress/cyberd/types"
+	"github.com/cybercongress/cyberd/util"
 	"github.com/cybercongress/cyberd/x/bandwidth"
 	bw "github.com/cybercongress/cyberd/x/bandwidth/types"
 	cbdbank "github.com/cybercongress/cyberd/x/bank"
@@ -103,15 +104,16 @@ type CyberdApp struct {
 	stakeIndex        *cbdbank.IndexedKeeper
 	rankState         *rank.RankState
 
-	latestRankHash    []byte
 	latestBlockHeight int64
 
 	computeUnit rank.ComputeUnit
 
+	// TODO: move to RankState???
 	rankCalculationFinished bool
-	lastCidCount            int64
+	rankCidCount            int64
 
-	rankCalcChannel chan []float64
+	rankCalcChan chan []float64
+	rankErrChan  chan error
 }
 
 // NewBasecoinApp returns a reference to a new CyberdApp given a
@@ -121,7 +123,7 @@ type CyberdApp struct {
 // registered, and finally the stores being mounted along with any necessary
 // chain initialization.
 func NewCyberdApp(
-	logger log.Logger, db dbm.DB, computeUnit rank.ComputeUnit, baseAppOptions ...func(*baseapp.BaseApp),
+	logger log.Logger, db dbm.DB, computeUnit rank.ComputeUnit, allowSearch bool, baseAppOptions ...func(*baseapp.BaseApp),
 ) *CyberdApp {
 
 	// create and register app-level codec for TXs and accounts
@@ -193,7 +195,7 @@ func NewCyberdApp(
 	app.linkIndexedKeeper = keeper.NewLinkIndexedKeeper(keeper.NewBaseLinkKeeper(ms, dbKeys.links))
 	app.cidNumKeeper = keeper.NewBaseCidNumberKeeper(ms, dbKeys.cidNum, dbKeys.cidNumReverse)
 	app.stakeIndex = cbdbank.NewIndexedKeeper(&app.bankKeeper, app.accountKeeper)
-	app.rankState = rank.NewRankState(&app.linkIndexedKeeper)
+	app.rankState = rank.NewRankState(&app.linkIndexedKeeper, allowSearch)
 
 	// register the staking hooks
 	// NOTE: stakeKeeper above are passed by reference,
@@ -233,21 +235,44 @@ func NewCyberdApp(
 	if err != nil {
 		cmn.Exit(err.Error())
 	}
+
 	ctx := app.BaseApp.NewContext(true, abci.Header{})
+	app.latestBlockHeight = int64(ms.GetLatestBlockNumber(ctx))
+
+	// build context for current rank calculation round
+	rankRoundBlockNumber := (app.latestBlockHeight / rank.CalculationPeriod) * rank.CalculationPeriod
+	// todo: we need to pass all keys cause under the hood it checks keys by commited state :(
+	rankCtx, err := util.NewContextWithMSVersion(
+		db, rankRoundBlockNumber,
+		dbKeys.main, dbKeys.acc, dbKeys.cidNum, dbKeys.cidNumReverse, dbKeys.links, dbKeys.rank, dbKeys.stake,
+		dbKeys.slashing, dbKeys.params, dbKeys.distr, dbKeys.fees, dbKeys.accBandwidth,
+	)
 
 	// load in-memory data
 	start := time.Now()
 	app.BaseApp.Logger.Info("Loading mem state")
-	app.linkIndexedKeeper.Load(ctx)
-	app.stakeIndex.Load(ctx)
+	app.linkIndexedKeeper.Load(rankCtx, ctx)
+	app.stakeIndex.Load(rankCtx, ctx)
 	app.BaseApp.Logger.Info("App loaded", "time", time.Since(start))
-	app.latestRankHash = ms.GetAppHash(ctx)
+
+	// BANDWIDTH PARAMS
 	app.lastTotalSpentBandwidth = ms.GetSpentBandwidth(ctx)
 	app.currentCreditPrice = math.Float64frombits(ms.GetBandwidthPrice(ctx, bandwidth.BaseCreditPrice))
 	app.curBlockSpentBandwidth = 0
-	app.latestBlockHeight = int64(ms.GetLatestBlockNumber(ctx))
+
+	// RANK PARAMS
+	app.rankState.Load(ctx, app.mainKeeper)
 	app.rankCalculationFinished = true
-	app.rankCalcChannel = make(chan []float64, 1)
+	app.rankCalcChan = make(chan []float64, 1)
+	app.rankCidCount = int64(app.mainKeeper.GetCidsCount(ctx))
+	app.rankErrChan = make(chan error)
+
+	// if we have fallen and need to start new rank calculation
+	// todo: what if rank didn't changed in new calculation???
+	if app.latestBlockHeight != 0 && !app.rankState.NextRankReady() {
+		app.startRankCalculation(ctx)
+		app.rankCalculationFinished = false
+	}
 
 	app.Seal()
 	return app
@@ -489,42 +514,50 @@ func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.R
 	//linksCount := app.mainKeeper.GetLinksCount(ctx)
 
 	//start := time.Now()
-	// TODO: Deal with hashes (new, old)
-	// TODO: Run reindexation in parallel
 	if ctx.BlockHeight()%rank.CalculationPeriod == 0 || ctx.BlockHeight() == 1 {
 
 		if !app.rankCalculationFinished {
-			newRank := <-app.rankCalcChannel
-			app.rankState.SetNewRank(newRank)
-			app.rankCalculationFinished = true
+			select {
+			case newRank := <-app.rankCalcChan:
+				app.handleNewRank(ctx, newRank)
+			case err := <-app.rankErrChan:
+				// DUMB ERROR HANDLING
+				app.BaseApp.Logger.Error("Error during rank calculation " + err.Error())
+				panic(err.Error())
+			}
 		}
 
-		app.rankState.ApplyNewRank(app.lastCidCount)
-		app.linkIndexedKeeper.MergeNewLinks()
+		app.rankState.ApplyNextRank(app.rankCidCount)
+		// Recalculate index
+		go app.rankState.BuildCidRankedLinksIndexInParallel(app.rankCidCount)
 
-		rankHash := app.rankState.CalculateHash()
-		app.latestRankHash = rankHash
+		rankHash := app.rankState.GetCurrentRankHash()
 		app.mainKeeper.StoreAppHash(ctx, rankHash)
 
 		app.rankCalculationFinished = false
 
-		app.lastCidCount = int64(app.mainKeeper.GetCidsCount(ctx))
-		calcCtx := rank.NewCalcContext(ctx, app.linkIndexedKeeper, app.cidNumKeeper, app.stakeIndex)
-		go rank.CalculateRank(calcCtx, app.rankCalcChannel, app.computeUnit, app.BaseApp.Logger)
+		app.rankCidCount = int64(app.mainKeeper.GetCidsCount(ctx))
+		app.linkIndexedKeeper.FixLinks() //todo: synchronize with index recalculation. copy out links
+		app.stakeIndex.FixUserStake()
+		app.startRankCalculation(ctx)
 
 	} else if !app.rankCalculationFinished {
 
 		select {
-		case newRank := <-app.rankCalcChannel:
-			app.rankState.SetNewRank(newRank)
-			app.rankCalculationFinished = true
+		case newRank := <-app.rankCalcChan:
+			app.handleNewRank(ctx, newRank)
+			app.BaseApp.Logger.Info("Rank calculation finished!")
+		case err := <-app.rankErrChan:
+			// DUMB ERROR HANDLING
+			app.BaseApp.Logger.Error("Error during rank calculation " + err.Error())
+			panic(err.Error())
 		default:
 		}
 
 	}
-	//app.BaseApp.Logger.Info(
-	//	"Rank calculated", "steps", steps, "time", time.Since(start), "links", linksCount, "cids", cidsCount,
-	//)
+
+	//CHECK INDEX BUILDING FOR ERROR:
+	app.rankState.CheckBuildIndexError(app.BaseApp.Logger)
 
 	// END RANK CALCULATION
 
@@ -534,11 +567,22 @@ func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.R
 	}
 }
 
+func (app *CyberdApp) startRankCalculation(ctx sdk.Context) {
+	calcCtx := rank.NewCalcContext(ctx, app.linkIndexedKeeper, app.cidNumKeeper, app.stakeIndex)
+	go rank.CalculateRankInParallel(calcCtx, app.rankCalcChan, app.rankErrChan, app.computeUnit, app.BaseApp.Logger)
+}
+
+func (app *CyberdApp) handleNewRank(ctx sdk.Context, newRank []float64) {
+	app.rankState.SetNextRank(newRank)
+	app.mainKeeper.StoreNextAppHash(ctx, app.rankState.GetNextRankHash())
+	app.rankCalculationFinished = true
+}
+
 // Implements ABCI
 func (app *CyberdApp) Commit() (res abci.ResponseCommit) {
 
 	app.BaseApp.Commit()
-	return abci.ResponseCommit{Data: app.latestRankHash}
+	return abci.ResponseCommit{Data: app.rankState.GetCurrentRankHash()}
 }
 
 // Implements ABCI
@@ -556,5 +600,5 @@ func (app *CyberdApp) appHash() []byte {
 	if app.LastBlockHeight() == 0 {
 		return make([]byte, 0)
 	}
-	return app.latestRankHash
+	return app.rankState.GetCurrentRankHash()
 }

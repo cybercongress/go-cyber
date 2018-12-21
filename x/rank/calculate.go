@@ -11,11 +11,24 @@ const (
 	GPU ComputeUnit = iota
 )
 
-func CalculateRank(ctx *CalculationContext, rankChan chan []float64, unit ComputeUnit, logger log.Logger) {
+func CalculateRank(ctx *CalculationContext, unit ComputeUnit, logger log.Logger) []float64 {
 	if unit == CPU {
 		//used only for development
-		calculateRankCPU(ctx, rankChan)
+		return calculateRankCPU(ctx)
 	} else {
-		calculateRankGPU(ctx, rankChan, logger)
+		return calculateRankGPU(ctx, logger)
 	}
+}
+
+func CalculateRankInParallel(
+	ctx *CalculationContext, rankChan chan []float64, err chan error, unit ComputeUnit, logger log.Logger,
+) {
+	defer func() {
+		if r := recover(); r != nil {
+			err <- r.(error)
+		}
+	}()
+
+	rank := CalculateRank(ctx, unit, logger)
+	rankChan <- rank
 }
