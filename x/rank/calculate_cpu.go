@@ -17,6 +17,7 @@ func calculateRankCPU(ctx *CalculationContext, rankChan chan []float64) {
 	size := ctx.GetCidsCount()
 	if size == 0 {
 		rankChan <- []float64{}
+		return
 	}
 
 	rank := make([]float64, size)
