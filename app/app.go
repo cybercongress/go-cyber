@@ -110,6 +110,8 @@ type CyberdApp struct {
 
 	rankCalculationFinished bool
 	lastCidCount            int64
+
+	rankCalcChannel chan []float64
 }
 
 // NewBasecoinApp returns a reference to a new CyberdApp given a
@@ -245,6 +247,7 @@ func NewCyberdApp(
 	app.curBlockSpentBandwidth = 0
 	app.latestBlockHeight = int64(ms.GetLatestBlockNumber(ctx))
 	app.rankCalculationFinished = true
+	app.rankCalcChannel = make(chan []float64, 1)
 
 	app.Seal()
 	return app
@@ -463,8 +466,6 @@ func (app *CyberdApp) BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock) 
 	}
 }
 
-var rankChan = make(chan []float64, 1)
-
 // Calculates cyber.Rank for block N, and returns Hash of result as app state.
 // Calculated app state will be included in N+1 block header, thus influence on block hash.
 // App state is consensus driven state.
@@ -493,7 +494,7 @@ func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.R
 	if ctx.BlockHeight()%rank.CalculationPeriod == 0 || ctx.BlockHeight() == 1 {
 
 		if !app.rankCalculationFinished {
-			newRank := <-rankChan
+			newRank := <-app.rankCalcChannel
 			app.rankState.SetNewRank(newRank)
 			app.rankCalculationFinished = true
 		}
@@ -509,12 +510,12 @@ func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.R
 
 		app.lastCidCount = int64(app.mainKeeper.GetCidsCount(ctx))
 		calcCtx := rank.NewCalcContext(ctx, app.linkIndexedKeeper, app.cidNumKeeper, app.stakeIndex)
-		go rank.CalculateRank(calcCtx, rankChan, app.computeUnit, app.BaseApp.Logger)
+		go rank.CalculateRank(calcCtx, app.rankCalcChannel, app.computeUnit, app.BaseApp.Logger)
 
 	} else if !app.rankCalculationFinished {
 
 		select {
-		case newRank := <-rankChan:
+		case newRank := <-app.rankCalcChannel:
 			app.rankState.SetNewRank(newRank)
 			app.rankCalculationFinished = true
 		default:
