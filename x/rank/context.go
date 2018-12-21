@@ -20,7 +20,7 @@ type CalculationContext struct {
 
 func NewCalcContext(
 	ctx sdk.Context, linkIndex keeper.LinkIndexedKeeper,
-	numberKeeper keeper.CidNumberKeeper, indexedKeeper bank.IndexedKeeper,
+	numberKeeper keeper.CidNumberKeeper, indexedKeeper *bank.IndexedKeeper,
 ) *CalculationContext {
 
 	return &CalculationContext{
