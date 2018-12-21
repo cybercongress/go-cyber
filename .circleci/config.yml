@@ -22,7 +22,7 @@ jobs:
   build_daemon_and_cli:
     working_directory: ~/cyberd
     docker:
-      - image: circleci/golang:1.11
+      - image: circleci/golang:1.11.2
     steps:
       - checkout
       - setup_remote_docker:
@@ -91,7 +91,7 @@ jobs:
   build_and_deploy_images_to_dockerhub:
     working_directory: ~/cyberd
     docker:
-      - image: circleci/golang:1.11
+      - image: circleci/golang:1.11.2
     steps:
       - checkout
       - setup_remote_docker:
@@ -107,7 +107,7 @@ jobs:
 
   release_cyberdcli_binaries:
     docker:
-      - image: circleci/golang:1.11
+      - image: circleci/golang:1.11.2
     working_directory: /go/src/github.com/cybercongress/cyberd
     steps:
       - checkout
