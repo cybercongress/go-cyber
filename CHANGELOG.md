@@ -16,6 +16,7 @@
 
 **Closed issues:**
 
+- Go mod Ci dependency error  [\#128](https://github.com/cybercongress/cyberd/issues/128)
 - Update to cosmos 29 [\#126](https://github.com/cybercongress/cyberd/issues/126)
 - Write down bandwidth specification [\#114](https://github.com/cybercongress/cyberd/issues/114)
 - Index transactions by addresses. [\#103](https://github.com/cybercongress/cyberd/issues/103)
