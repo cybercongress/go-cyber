@@ -2,7 +2,7 @@ package genesis
 
 import (
 	"github.com/cosmos/cosmos-sdk/x/stake/types"
-	"github.com/cybercongress/cyberd/app/types/coin"
+	"github.com/cybercongress/cyberd/types/coin"
 	"time"
 )
 

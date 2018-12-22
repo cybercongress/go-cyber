@@ -5,7 +5,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/bank"
 	"github.com/cosmos/cosmos-sdk/x/stake"
-	"github.com/cybercongress/cyberd/app/types/coin"
+	"github.com/cybercongress/cyberd/types/coin"
 )
 
 type Keeper struct {

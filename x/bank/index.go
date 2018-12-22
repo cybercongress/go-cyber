@@ -37,6 +37,7 @@ func NewIndexedKeeper(keeper *Keeper, accKeeper auth.AccountKeeper) *IndexedKeep
 	return &index
 }
 
+// todo: how to load only new stakes from last n blocks? We could iterate over whole db and compare stakes by address and amount.
 func (s *IndexedKeeper) Load(rankCtx sdk.Context, freshCtx sdk.Context) {
 
 	s.userTotalStake = make(map[cbd.AccNumber]uint64)
@@ -73,7 +74,7 @@ func (s *IndexedKeeper) EndBlocker(ctx sdk.Context) {
 	for _, addr := range s.accsToUpdate {
 		stake := s.Keeper.GetAccountTotalStake(ctx, addr)
 		accNum := cbd.AccNumber(s.accKeeper.GetAccount(ctx, addr).GetAccountNumber())
-		s.userTotalStake[accNum] = uint64(stake)
+		s.userNewTotalStake[accNum] = uint64(stake)
 	}
 	s.accsToUpdate = make([]sdk.AccAddress, 0)
 }

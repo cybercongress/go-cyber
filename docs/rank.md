@@ -36,6 +36,7 @@ Add new incoming links to index with rank 0, so they immediately can be seen by 
 Include those "zero" ranks to consensus hash.
 
 Problems:
-1. Reload of app state after failure (dealing with hashes)
+1. Reload of app state after failure (dealing with hashes).
+ Store 3 hashes (last calculation hash, last block hash, new calculation hash)
 2. Recalculation of index. New links will go to next rank calculation and old index (with those links) 
 will be replaced by currently calculated rank.

@@ -12,10 +12,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/slashing"
 	"github.com/cosmos/cosmos-sdk/x/stake"
 	. "github.com/cybercongress/cyberd/app/genesis"
-	cbd "github.com/cybercongress/cyberd/app/types"
-	"github.com/cybercongress/cyberd/app/types/coin"
 	"github.com/cybercongress/cyberd/store"
 	"github.com/cybercongress/cyberd/types"
+	cbd "github.com/cybercongress/cyberd/types"
+	"github.com/cybercongress/cyberd/types/coin"
 	"github.com/cybercongress/cyberd/util"
 	"github.com/cybercongress/cyberd/x/bandwidth"
 	bw "github.com/cybercongress/cyberd/x/bandwidth/types"
@@ -45,24 +45,6 @@ var (
 	DefaultCLIHome  = os.ExpandEnv("$HOME/.cyberdcli")
 	DefaultNodeHome = os.ExpandEnv("$HOME/.cyberd")
 )
-
-type CyberdAppDbKeys struct {
-	main          *sdk.KVStoreKey
-	acc           *sdk.KVStoreKey
-	accIndex      *sdk.KVStoreKey
-	cidNum        *sdk.KVStoreKey
-	cidNumReverse *sdk.KVStoreKey
-	links         *sdk.KVStoreKey
-	rank          *sdk.KVStoreKey
-	stake         *sdk.KVStoreKey
-	tStake        *sdk.TransientStoreKey
-	fees          *sdk.KVStoreKey
-	distr         *sdk.KVStoreKey
-	slashing      *sdk.KVStoreKey
-	params        *sdk.KVStoreKey
-	tParams       *sdk.TransientStoreKey
-	accBandwidth  *sdk.KVStoreKey
-}
 
 // CyberdApp implements an extended ABCI application. It contains a BaseApp,
 // a codec for serialization, KVStore dbKeys for multistore state management, and
@@ -129,22 +111,7 @@ func NewCyberdApp(
 	// create and register app-level codec for TXs and accounts
 	cdc := MakeCodec()
 
-	dbKeys := CyberdAppDbKeys{
-		main:          sdk.NewKVStoreKey("main"),
-		acc:           sdk.NewKVStoreKey("acc"),
-		cidNum:        sdk.NewKVStoreKey("cid_index"),
-		cidNumReverse: sdk.NewKVStoreKey("cid_index_reverse"),
-		links:         sdk.NewKVStoreKey("links"),
-		rank:          sdk.NewKVStoreKey("rank"),
-		stake:         sdk.NewKVStoreKey("stake"),
-		fees:          sdk.NewKVStoreKey("fee"),
-		tStake:        sdk.NewTransientStoreKey("transient_stake"),
-		distr:         sdk.NewKVStoreKey("distr"),
-		slashing:      sdk.NewKVStoreKey("slashing"),
-		params:        sdk.NewKVStoreKey("params"),
-		tParams:       sdk.NewTransientStoreKey("transient_params"),
-		accBandwidth:  sdk.NewKVStoreKey("acc_bandwidth"),
-	}
+	dbKeys := NewCyberdAppDbKeys()
 
 	ms := store.NewMainKeeper(dbKeys.main)
 
@@ -226,11 +193,8 @@ func NewCyberdApp(
 	app.SetAnteHandler(auth.NewAnteHandler(app.accountKeeper, app.feeCollectionKeeper))
 
 	// mount the multistore and load the latest state
-	app.MountStores(
-		dbKeys.main, dbKeys.acc, dbKeys.cidNum, dbKeys.cidNumReverse, dbKeys.links, dbKeys.rank, dbKeys.stake,
-		dbKeys.slashing, dbKeys.params, dbKeys.distr, dbKeys.fees, dbKeys.accBandwidth,
-	)
-	app.MountStoresTransient(dbKeys.tParams, dbKeys.tStake)
+	app.MountStores(dbKeys.GetStoreKeys()...)
+	app.MountStoresTransient(dbKeys.GetTransientStoreKeys()...)
 	err := app.LoadLatestVersion(dbKeys.main)
 	if err != nil {
 		cmn.Exit(err.Error())
@@ -241,12 +205,7 @@ func NewCyberdApp(
 
 	// build context for current rank calculation round
 	rankRoundBlockNumber := (app.latestBlockHeight / rank.CalculationPeriod) * rank.CalculationPeriod
-	// todo: we need to pass all keys cause under the hood it checks keys by commited state :(
-	rankCtx, err := util.NewContextWithMSVersion(
-		db, rankRoundBlockNumber,
-		dbKeys.main, dbKeys.acc, dbKeys.cidNum, dbKeys.cidNumReverse, dbKeys.links, dbKeys.rank, dbKeys.stake,
-		dbKeys.slashing, dbKeys.params, dbKeys.distr, dbKeys.fees, dbKeys.accBandwidth,
-	)
+	rankCtx, err := util.NewContextWithMSVersion(db, rankRoundBlockNumber, dbKeys.GetStoreKeys()...)
 
 	// load in-memory data
 	start := time.Now()
