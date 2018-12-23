@@ -24,6 +24,8 @@
 
 **Merged pull requests:**
 
+- Small fixes [\#131](https://github.com/cybercongress/cyberd/pull/131) ([arturalbov](https://github.com/arturalbov))
+- Parallel rank calculation [\#130](https://github.com/cybercongress/cyberd/pull/130) ([arturalbov](https://github.com/arturalbov))
 - Update stake index every block [\#129](https://github.com/cybercongress/cyberd/pull/129) ([hleb-albau](https://github.com/hleb-albau))
 - \#126 Update to cosmos 29 [\#127](https://github.com/cybercongress/cyberd/pull/127) ([hleb-albau](https://github.com/hleb-albau))
 - Refactoring [\#125](https://github.com/cybercongress/cyberd/pull/125) ([hleb-albau](https://github.com/hleb-albau))
