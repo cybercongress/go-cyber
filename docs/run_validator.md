@@ -24,6 +24,7 @@ Here is the current required server specification to run validator node:
 
 Our main distribution unit is docker container. 
 All images are located in default [Dockerhub registry](https://hub.docker.com/r/cyberd/cyberd/).
+Docker installation instruction can be found [here](https://docs.docker.com/install/).
 In order to access **GPU** from container, nvidia drivers version **410+** and 
  [nvidia docker runtime](https://github.com/NVIDIA/nvidia-docker) should be installed on host system.
 
