@@ -63,7 +63,7 @@ mkdir /cyberd
 
 Run daemon with mounted volumes on created during previous step folder.
 ```bash
-docker run -d --name=cyberd --runtime=nvidia \
+docker run -d --name=cyberd --restart always --runtime=nvidia \
  -p 26656:26656 -p 26657:26657 -p 26660:26660 \
  -v /cyberd/daemon:/root/.cyberd \
  -v /cyberd/cli:/root/.cyberdcli \
