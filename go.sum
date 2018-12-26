@@ -134,8 +134,8 @@ github.com/tendermint/go-amino v0.14.1 h1:o2WudxNfdLNBwMyl2dqOJxiro5rfrEaU0Ugs6o
 github.com/tendermint/go-amino v0.14.1/go.mod h1:i/UKE5Uocn+argJJBb12qTZsCDBcAYMbR92AaJVmKso=
 github.com/tendermint/iavl v0.12.0 h1:xcaFAr+ycqCj7WN1RzL2EfcBioRDOHcU1oWcg83K028=
 github.com/tendermint/iavl v0.12.0/go.mod h1:EoKMMv++tDOL5qKKVnoIqtVPshRrEPeJ0WsgDOLAauM=
-github.com/tendermint/tendermint v0.27.3 h1:yJQhTEjFiNtTqO2OQTPnIYmy1Gj3EBqBik3c5wCY7nU=
-github.com/tendermint/tendermint v0.27.3/go.mod h1:ymcPyWblXCplCPQjbOYbrF1fWnpslATMVqiGgWbZrlc=
+github.com/tendermint/tendermint v0.27.4 h1:rytK6+o/TYPhLJJu/tRaq6PBx/25VGAwiee2qdNnFsY=
+github.com/tendermint/tendermint v0.27.4/go.mod h1:ymcPyWblXCplCPQjbOYbrF1fWnpslATMVqiGgWbZrlc=
 github.com/whyrusleeping/base32 v0.0.0-20170828182744-c30ac30633cc h1:BCPnHtcboadS0DvysUuJXZ4lWVv5Bh5i7+tbIyi+ck4=
 github.com/whyrusleeping/base32 v0.0.0-20170828182744-c30ac30633cc/go.mod h1:r45hJU7yEoA81k6MWNhpMj/kms0n14dkzkxYHoB96UM=
 github.com/zondax/ledger-goclient v0.1.0 h1:9JZVE1s565asON/yvxvpDB6k+xfel1BGuvlNflLCu+o=
