@@ -22,6 +22,7 @@ import (
 	cbdbank "github.com/cybercongress/cyberd/x/bank"
 	"github.com/cybercongress/cyberd/x/link"
 	"github.com/cybercongress/cyberd/x/link/keeper"
+	lnk "github.com/cybercongress/cyberd/x/link/types"
 	"github.com/cybercongress/cyberd/x/mint"
 	"github.com/cybercongress/cyberd/x/rank"
 	abci "github.com/tendermint/tendermint/abci/types"
@@ -162,7 +163,7 @@ func NewCyberdApp(
 	app.linkIndexedKeeper = keeper.NewLinkIndexedKeeper(keeper.NewBaseLinkKeeper(ms, dbKeys.links))
 	app.cidNumKeeper = keeper.NewBaseCidNumberKeeper(ms, dbKeys.cidNum, dbKeys.cidNumReverse)
 	app.stakeIndex = cbdbank.NewIndexedKeeper(&app.bankKeeper, app.accountKeeper)
-	app.rankState = rank.NewRankState(&app.linkIndexedKeeper, allowSearch)
+	app.rankState = rank.NewRankState(allowSearch)
 
 	// register the staking hooks
 	// NOTE: stakeKeeper above are passed by reference,
@@ -484,7 +485,9 @@ func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.R
 
 		app.rankState.ApplyNextRank(app.rankCidCount)
 		// Recalculate index
-		go app.rankState.BuildCidRankedLinksIndexInParallel(app.rankCidCount)
+		// todo state copied
+		outLinksCopy := lnk.Links(app.linkIndexedKeeper.GetOutLinks()).Copy()
+		go app.rankState.BuildCidRankedLinksIndexInParallel(app.rankCidCount, outLinksCopy)
 
 		rankHash := app.rankState.GetCurrentRankHash()
 		app.mainKeeper.StoreAppHash(ctx, rankHash)
@@ -501,7 +504,6 @@ func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.R
 		select {
 		case newRank := <-app.rankCalcChan:
 			app.handleNewRank(ctx, newRank)
-			app.BaseApp.Logger.Info("Rank calculation finished!")
 		case err := <-app.rankErrChan:
 			// DUMB ERROR HANDLING
 			app.BaseApp.Logger.Error("Error during rank calculation " + err.Error())

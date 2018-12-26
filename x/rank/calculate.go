@@ -2,6 +2,7 @@ package rank
 
 import (
 	"github.com/tendermint/tendermint/libs/log"
+	"time"
 )
 
 type ComputeUnit int
@@ -11,13 +12,19 @@ const (
 	GPU ComputeUnit = iota
 )
 
-func CalculateRank(ctx *CalculationContext, unit ComputeUnit, logger log.Logger) []float64 {
+func CalculateRank(ctx *CalculationContext, unit ComputeUnit, logger log.Logger) (rank []float64) {
+	start := time.Now()
 	if unit == CPU {
 		//used only for development
-		return calculateRankCPU(ctx)
+		rank = calculateRankCPU(ctx)
+
 	} else {
-		return calculateRankGPU(ctx, logger)
+		rank = calculateRankGPU(ctx, logger)
 	}
+	logger.Info(
+		"Rank calculated", "time", time.Since(start), "links", len(ctx.outLinks), "cids", ctx.cidsCount,
+	)
+	return
 }
 
 func CalculateRankInParallel(

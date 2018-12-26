@@ -23,3 +23,21 @@ func (links Links) Put(from CidNumber, to CidNumber, acc AccNumber) {
 	cidLinks[to] = users
 	links[from] = cidLinks
 }
+
+func (links Links) Copy() Links {
+
+	linksCopy := make(Links, len(links))
+
+	for from := range links {
+		fromLinks := make(CidLinks, len(links[from]))
+		for to := range links[from] {
+			users := make(map[AccNumber]struct{}, len(links[from][to]))
+			for u := range links[from][to] {
+				users[u] = struct{}{}
+			}
+			fromLinks[to] = users
+		}
+		linksCopy[from] = fromLinks
+	}
+	return linksCopy
+}
