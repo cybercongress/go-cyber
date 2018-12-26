@@ -55,7 +55,7 @@ func InitCmd(ctx *server.Context, cdc *codec.Codec) *cobra.Command {
 			if chainID == "" {
 				chainID = fmt.Sprintf("test-chain-%v", common.RandStr(6))
 			}
-			nodeID, _, err := InitializeNodeValidatorFiles(config)
+			_, _, err := InitializeNodeValidatorFiles(config)
 			if err != nil {
 				return err
 			}
@@ -74,16 +74,8 @@ func InitCmd(ctx *server.Context, cdc *codec.Codec) *cobra.Command {
 				return err
 			}
 
-			toPrint := printInfo{
-				ChainID:    chainID,
-				Moniker:    config.Moniker,
-				NodeID:     nodeID,
-				AppMessage: appState,
-			}
-
 			cfg.WriteConfigFile(filepath.Join(config.RootDir, "config", "config.toml"), config)
-
-			return displayInfo(cdc, toPrint)
+			return nil
 		},
 	}
 
