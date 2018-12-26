@@ -44,38 +44,29 @@ func NewGenesisState(
 
 // nolint
 type GenesisAccount struct {
-	Name          string         `json:"name"`
-	Address       sdk.AccAddress `json:"address"`
-	Coins         sdk.Coins      `json:"coins"`
-	Sequence      uint64         `json:"sequence_number"`
-	AccountNumber uint64         `json:"account_number"`
+	Address sdk.AccAddress `json:"addr"`
+	Amount  int64          `json:"amt"`
 }
 
 func NewGenesisAccount(acc *auth.BaseAccount) GenesisAccount {
 	return GenesisAccount{
-		Address:       acc.Address,
-		Coins:         acc.Coins,
-		AccountNumber: acc.AccountNumber,
-		Sequence:      acc.Sequence,
+		Address: acc.Address,
+		Amount:  acc.Coins.AmountOf(coin.CBD).Int64(),
 	}
 }
 
 func NewGenesisAccountI(acc auth.Account) GenesisAccount {
 	return GenesisAccount{
-		Address:       acc.GetAddress(),
-		Coins:         acc.GetCoins(),
-		AccountNumber: acc.GetAccountNumber(),
-		Sequence:      acc.GetSequence(),
+		Address: acc.GetAddress(),
+		Amount:  acc.GetCoins().AmountOf(coin.CBD).Int64(),
 	}
 }
 
 // convert GenesisAccount to auth.BaseAccount
 func (ga *GenesisAccount) ToAccount() (acc *auth.BaseAccount) {
 	return &auth.BaseAccount{
-		Address:       ga.Address,
-		Coins:         ga.Coins.Sort(),
-		AccountNumber: ga.AccountNumber,
-		Sequence:      ga.Sequence,
+		Address: ga.Address,
+		Coins:   sdk.Coins{sdk.NewInt64Coin(coin.CBD, ga.Amount)},
 	}
 }
 
@@ -111,12 +102,8 @@ func CyberdAppGenState(cdc *codec.Codec, genDoc tmtypes.GenesisDoc, appGenTxs []
 	}
 
 	for _, acc := range genesisState.Accounts {
-		for _, c := range acc.Coins {
-			if c.Denom == coin.CBD {
-				stakeData.Pool.LooseTokens = stakeData.Pool.LooseTokens.
-					Add(sdk.NewDecFromInt(c.Amount)) // increase the supply
-			}
-		}
+		// increase the supply
+		stakeData.Pool.LooseTokens = stakeData.Pool.LooseTokens.Add(sdk.NewDec(acc.Amount))
 	}
 	genesisState.StakeData = stakeData
 	genesisState.GenTxs = appGenTxs
@@ -138,9 +125,6 @@ func NewDefaultGenesisState() GenesisState {
 }
 
 // CyberdValidateGenesisState ensures that the genesis state obeys the expected invariants
-// TODO: No validators are both bonded and jailed (#2088)
-// TODO: Error if there is a duplicate validator (#1708)
-// TODO: Ensure all state machine parameters are in genesis (#1704)
 func CyberdValidateGenesisState(genesisState GenesisState) (err error) {
 	err = validateGenesisStateAccounts(genesisState.Accounts)
 	if err != nil {
@@ -247,9 +231,9 @@ func CollectStdTxs(cdc *codec.Codec, moniker string, genTxsDir string, genDoc tm
 			return appGenTxs, persistentPeers, fmt.Errorf(
 				"account %v not in genesis.json: %+v", addr, addrMap)
 		}
-		if acc.Coins.AmountOf(msg.Delegation.Denom).LT(msg.Delegation.Amount) {
+		if sdk.NewInt(acc.Amount).LT(msg.Delegation.Amount) {
 			err = fmt.Errorf("insufficient fund for the delegation: %s < %s",
-				acc.Coins.AmountOf(msg.Delegation.Denom), msg.Delegation.Amount)
+				acc.Amount, msg.Delegation.Amount)
 		}
 
 		// exclude itself from persistent peers

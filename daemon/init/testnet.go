@@ -178,9 +178,7 @@ func initTestnet(config *cfg.Config, cdc *codec.Codec) error {
 
 		accs = append(accs, GenesisAccount{
 			Address: addr,
-			Coins: sdk.Coins{
-				sdk.NewInt64Coin("CBD", 100),
-			},
+			Amount:  100,
 		})
 
 		msg := stake.NewMsgCreateValidator(

@@ -40,6 +40,7 @@ func main() {
 
 	rootCmd.AddCommand(initCyberd.InitCmd(ctx, cdc))
 	rootCmd.AddCommand(initCyberd.GenerateAccountCmd())
+	rootCmd.AddCommand(initCyberd.GenerateAccountsCmd(ctx, cdc))
 	rootCmd.AddCommand(initCyberd.CollectGenTxsCmd(ctx, cdc))
 	rootCmd.AddCommand(initCyberd.TestnetFilesCmd(ctx, cdc))
 	rootCmd.AddCommand(initCyberd.GenTxCmd(ctx, cdc))
