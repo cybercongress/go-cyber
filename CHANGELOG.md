@@ -20,10 +20,23 @@
 - Update to cosmos 29 [\#126](https://github.com/cybercongress/cyberd/issues/126)
 - Write down bandwidth specification [\#114](https://github.com/cybercongress/cyberd/issues/114)
 - Index transactions by addresses. [\#103](https://github.com/cybercongress/cyberd/issues/103)
+- Calculate rank in ||, post results each 600 blocks. [\#101](https://github.com/cybercongress/cyberd/issues/101)
+- Linkchains support [\#91](https://github.com/cybercongress/cyberd/issues/91)
 - Include addresses into knowledge graph [\#90](https://github.com/cybercongress/cyberd/issues/90)
+- Graphics for whitepaper [\#88](https://github.com/cybercongress/cyberd/issues/88)
+- Cyberd landing design [\#51](https://github.com/cybercongress/cyberd/issues/51)
+- Simulation [\#31](https://github.com/cybercongress/cyberd/issues/31)
+- Link Chain PoC | Zeronet [\#26](https://github.com/cybercongress/cyberd/issues/26)
+- Write benchmark and test SpringRank with different amount of objects/edges [\#22](https://github.com/cybercongress/cyberd/issues/22)
+- Parse Ethereum network and calculate SpringRank [\#21](https://github.com/cybercongress/cyberd/issues/21)
+- Research basic chains fundamentals [\#15](https://github.com/cybercongress/cyberd/issues/15)
+- Perfomance testing of Solana [\#10](https://github.com/cybercongress/cyberd/issues/10)
+- Research on perfomance of consensus computers [\#9](https://github.com/cybercongress/cyberd/issues/9)
+- Perfomance testing scenario for cyberd [\#8](https://github.com/cybercongress/cyberd/issues/8)
 
 **Merged pull requests:**
 
+- \#92 Populate state with random addresses [\#134](https://github.com/cybercongress/cyberd/pull/134) ([hleb-albau](https://github.com/hleb-albau))
 - Small fixes [\#131](https://github.com/cybercongress/cyberd/pull/131) ([arturalbov](https://github.com/arturalbov))
 - Parallel rank calculation [\#130](https://github.com/cybercongress/cyberd/pull/130) ([arturalbov](https://github.com/arturalbov))
 - Update stake index every block [\#129](https://github.com/cybercongress/cyberd/pull/129) ([hleb-albau](https://github.com/hleb-albau))
