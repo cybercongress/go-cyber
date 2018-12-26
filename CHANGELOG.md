@@ -36,6 +36,7 @@
 
 **Merged pull requests:**
 
+- \#101 Copy state before index creation [\#135](https://github.com/cybercongress/cyberd/pull/135) ([hleb-albau](https://github.com/hleb-albau))
 - \#92 Populate state with random addresses [\#134](https://github.com/cybercongress/cyberd/pull/134) ([hleb-albau](https://github.com/hleb-albau))
 - Small fixes [\#131](https://github.com/cybercongress/cyberd/pull/131) ([arturalbov](https://github.com/arturalbov))
 - Parallel rank calculation [\#130](https://github.com/cybercongress/cyberd/pull/130) ([arturalbov](https://github.com/arturalbov))
