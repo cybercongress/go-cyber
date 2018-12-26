@@ -7,7 +7,6 @@ import (
 	"errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cybercongress/cyberd/store"
-	"github.com/cybercongress/cyberd/x/link/keeper"
 	. "github.com/cybercongress/cyberd/x/link/types"
 	"github.com/tendermint/tendermint/libs/log"
 	"math"
@@ -23,8 +22,6 @@ func (c RankedCidNumber) GetNumber() CidNumber { return c.number }
 func (c RankedCidNumber) GetRank() float64     { return c.rank }
 
 type RankState struct {
-	linkIndex *keeper.LinkIndexedKeeper
-
 	cidRankedLinksIndex []cidRankedLinks
 	networkCidRank      []float64 // array index is cid number
 	nextCidRank         []float64 // array index is cid number
@@ -36,10 +33,9 @@ type RankState struct {
 	indexErrChan chan error
 }
 
-func NewRankState(linkIndex *keeper.LinkIndexedKeeper, allowSearch bool) *RankState {
-
+func NewRankState(allowSearch bool) *RankState {
 	return &RankState{
-		linkIndex: linkIndex, allowSearch: allowSearch, indexErrChan: make(chan error),
+		allowSearch: allowSearch, indexErrChan: make(chan error),
 	}
 }
 
@@ -107,16 +103,16 @@ func (s *RankState) ApplyNextRank(cidsCount int64) {
 	s.nextCidRank = nil
 }
 
-func (s *RankState) BuildCidRankedLinksIndex(cidsCount int64) {
+func (s *RankState) BuildCidRankedLinksIndex(cidsCount int64, outLinks Links) {
 	// If search on this node is not allowed then we don't need to build index
-	if !s.allowSearch {
+	if !s.allowSearch || s.networkCidRank == nil {
 		return
 	}
 
 	newIndex := make([]cidRankedLinks, cidsCount)
 
 	for cidNumber := CidNumber(0); cidNumber < CidNumber(cidsCount); cidNumber++ {
-		cidOutLinks := s.linkIndex.GetOutLinks()[cidNumber]
+		cidOutLinks := outLinks[cidNumber]
 		cidSortedByRankLinkedCids := s.getLinksSortedByRank(cidOutLinks)
 		newIndex[cidNumber] = cidSortedByRankLinkedCids
 	}
@@ -125,23 +121,23 @@ func (s *RankState) BuildCidRankedLinksIndex(cidsCount int64) {
 }
 
 // Used for building index in parallel
-func (s *RankState) BuildCidRankedLinksIndexInParallel(cidsCount int64) {
+func (s *RankState) BuildCidRankedLinksIndexInParallel(cidsCount int64, outLinks Links) {
 	defer func() {
 		if r := recover(); r != nil {
 			s.indexErrChan <- r.(error)
 		}
 	}()
 
-	s.BuildCidRankedLinksIndex(cidsCount)
+	s.BuildCidRankedLinksIndex(cidsCount, outLinks)
 }
 
 func (s *RankState) CheckBuildIndexError(logger log.Logger) {
 	if s.allowSearch {
 		select {
-		case err := <- s.indexErrChan:
+		case err := <-s.indexErrChan:
 			// DUMB ERROR HANDLING
 			logger.Error("Error during building rank index " + err.Error())
-			panic(err.Error())
+			panic(err)
 		default:
 		}
 	}

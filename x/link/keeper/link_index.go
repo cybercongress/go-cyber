@@ -43,14 +43,9 @@ func (i *LinkIndexedKeeper) Load(rankCtx sdk.Context, freshCtx sdk.Context) {
 }
 
 func (i *LinkIndexedKeeper) FixLinks() {
-
-	for k, v := range i.newInLinks {
-		i.inLinks[k] = v
-	}
-
-	for k, v := range i.newOutLinks {
-		i.outLinks[k] = v
-	}
+	// todo state copied
+	i.inLinks = Links(i.newInLinks).Copy()
+	i.outLinks = Links(i.newOutLinks).Copy()
 }
 
 func (i *LinkIndexedKeeper) PutIntoIndex(link Link) {
