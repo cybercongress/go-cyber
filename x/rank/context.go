@@ -10,7 +10,8 @@ import (
 )
 
 type CalculationContext struct {
-	cidsCount int64
+	cidsCount  int64
+	linksCount int64
 
 	inLinks  map[CidNumber]CidLinks
 	outLinks map[CidNumber]CidLinks
@@ -24,7 +25,8 @@ func NewCalcContext(
 ) *CalculationContext {
 
 	return &CalculationContext{
-		cidsCount: int64(numberKeeper.GetCidsCount(ctx)),
+		cidsCount:  int64(numberKeeper.GetCidsCount(ctx)),
+		linksCount: int64(linkIndex.LinkKeeper.GetLinksCount(ctx)),
 
 		inLinks:  linkIndex.GetInLinks(),
 		outLinks: linkIndex.GetOutLinks(),

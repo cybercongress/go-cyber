@@ -12,6 +12,7 @@ type LinkKeeper interface {
 	PutLink(ctx sdk.Context, link Link)
 	IsLinkExist(ctx sdk.Context, link Link) bool
 	GetAllLinks(ctx sdk.Context) (Links, Links, error)
+	GetLinksCount(ctx sdk.Context) uint64
 }
 
 type BaseLinkKeeper struct {
@@ -26,25 +27,25 @@ func NewBaseLinkKeeper(ms store.MainKeeper, key *sdk.KVStoreKey) LinkKeeper {
 	}
 }
 
-func (ls BaseLinkKeeper) PutLink(ctx sdk.Context, link Link) {
-	store := ctx.KVStore(ls.key)
+func (lk BaseLinkKeeper) PutLink(ctx sdk.Context, link Link) {
+	store := ctx.KVStore(lk.key)
 	linkAsBytes := marshalLink(link)
 	store.Set(linkAsBytes, []byte{})
-	ls.ms.IncrementLinksCount(ctx)
+	lk.ms.IncrementLinksCount(ctx)
 }
 
-func (ls BaseLinkKeeper) IsLinkExist(ctx sdk.Context, link Link) bool {
-	store := ctx.KVStore(ls.key)
+func (lk BaseLinkKeeper) IsLinkExist(ctx sdk.Context, link Link) bool {
+	store := ctx.KVStore(lk.key)
 	linkAsBytes := marshalLink(link)
 	return store.Get(linkAsBytes) != nil
 }
 
-func (ls BaseLinkKeeper) GetAllLinks(ctx sdk.Context) (Links, Links, error) {
+func (lk BaseLinkKeeper) GetAllLinks(ctx sdk.Context) (Links, Links, error) {
 
 	inLinks := make(map[CidNumber]CidLinks)
 	outLinks := make(map[CidNumber]CidLinks)
 
-	store := ctx.KVStore(ls.key)
+	store := ctx.KVStore(lk.key)
 	iterator := store.Iterator(nil, nil)
 	defer iterator.Close()
 
@@ -56,6 +57,10 @@ func (ls BaseLinkKeeper) GetAllLinks(ctx sdk.Context) (Links, Links, error) {
 		iterator.Next()
 	}
 	return inLinks, outLinks, nil
+}
+
+func (lk BaseLinkKeeper) GetLinksCount(ctx sdk.Context) uint64 {
+	return lk.ms.GetLinksCount(ctx)
 }
 
 func unmarshalLink(b []byte) Link {

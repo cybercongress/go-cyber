@@ -19,100 +19,60 @@
   "app_state": {
     "accounts": [
       {
-        "name": "earth",
-        "address": "cbd1sk3uvpacpjm2t3389caqk4gd9n9gkzq2054yds",
-        "coins": [
-          {
-            "denom": "CBD",
-            "amount": "1000000000"
-          }
-        ],
-        "sequence_number": "0",
-        "account_number": "0"
+        "addr": "cbd1sk3uvpacpjm2t3389caqk4gd9n9gkzq2054yds",
+        "amt": "1000000000"
       },
       {
-        "name": "hlb",
-        "address": "cbd1gjganh2xg0z5k6hn4gh0cv27n4w7xmfh4dh64e",
-        "coins": [
-          {
-            "denom": "CBD",
-            "amount": "1000000000"
-          }
-        ],
-        "sequence_number": "0",
-        "account_number": "0"
+        "addr": "cbd1gjganh2xg0z5k6hn4gh0cv27n4w7xmfh4dh64e",
+        "amt": "1000000000"
       },
       {
-        "name": "litvintech",
-        "address": "cbd13d5yhvklp8pc7aff49d0ufv8wwkqw9t0qu976s",
-        "coins": [
-          {
-            "denom": "CBD",
-            "amount": "1000000000"
-          }
-        ],
-        "sequence_number": "0",
-        "account_number": "0"
+        "addr": "cbd1l3yyrm5ctme33y0nk5r94vqfestaplqt0wlya2",
+        "amt": "2000000000"
       },
       {
-        "name": "xhipster",
-        "address": "cbd1sg0xn3kg9alq849ppma44e5yd5067qpq6uu7qa",
-        "coins": [
-          {
-            "denom": "CBD",
-            "amount": "1000000000"
-          }
-        ],
-        "sequence_number": "0",
-        "account_number": "0"
+        "addr": "cbd1sg0xn3kg9alq849ppma44e5yd5067qpq6uu7qa",
+        "amt": "3000000000"
       },
       {
-        "name": "olala",
-        "address": "cbd1rvc9dxn4dwfa689rxq079y03mgv4kavfwp8squ",
-        "coins": [
-          {
-            "denom": "CBD",
-            "amount": "1000000000"
-          }
-        ],
-        "sequence_number": "0",
-        "account_number": "0"
+        "addr": "cbd1rvc9dxn4dwfa689rxq079y03mgv4kavfwp8squ",
+        "amt": "1000000000"
       },
       {
-        "name": "asadovka",
-        "address": "cbd1gss7y04dky2fykck4dyp0pe39wxawlxmsqpg6z",
-        "coins": [
-          {
-            "denom": "CBD",
-            "amount": "1000000000"
-          }
-        ],
-        "sequence_number": "0",
-        "account_number": "0"
+        "addr": "cbd1gss7y04dky2fykck4dyp0pe39wxawlxmsqpg6z",
+        "amt": "1000000000"
       },
       {
-        "name": "savetheales",
-        "address": "cbd139wwxt9tpyrhg2d3llve8ysldv5haq9jlls6zu",
-        "coins": [
-          {
-            "denom": "CBD",
-            "amount": "1000000000"
-          }
-        ],
-        "sequence_number": "0",
-        "account_number": "0"
+        "addr": "cbd139wwxt9tpyrhg2d3llve8ysldv5haq9jlls6zu",
+        "amt": "1000000000"
       },
       {
-        "name": "bank",
-        "address": "cbd1nu0n4wfjwn6gq20fprmm486g33apj88k5vemmm",
-        "coins": [
-          {
-            "denom": "CBD",
-            "amount": "10000000000"
-          }
-        ],
-        "sequence_number": "0",
-        "account_number": "0"
+        "addr": "cbd1uag49duvunxw97hgmc0clej7e8npqrezfauxfw",
+        "amt": "1000000000"
+      },
+      {
+        "addr": "cbd1fxue8vw8gsyxfug2ke7uzh9x3q5uqs8c9egukw",
+        "amt": "1000000000"
+      },
+      {
+        "addr": "cbd1svm5wl5jf4p7dwemj7wh0p4egr3js6rq3qa4p5",
+        "amt": "1000000000"
+      },
+      {
+        "addr": "cbd13zqk230zc42q529acqq2cr47paum5dc3ngxx53",
+        "amt": "10"
+      },
+      {
+        "addr": "cbd1s9ul8rxqqzyvu34ryk4rk9zpz35982awsujxtw",
+        "amt": "10"
+      },
+      {
+        "addr": "cbd1cp8st22k35r28w8h4xqa7zs03wwuakztz3r452",
+        "amt": "10"
+      },
+      {
+        "addr": "cbd16xft7hw9ul6peyggk96axz6u4nt76wj25k2e2y",
+        "amt": "10"
       }
     ],
     "distr": {
