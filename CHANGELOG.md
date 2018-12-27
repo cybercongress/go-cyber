@@ -36,6 +36,7 @@
 
 **Merged pull requests:**
 
+- Fix http client and rank logs [\#137](https://github.com/cybercongress/cyberd/pull/137) ([hleb-albau](https://github.com/hleb-albau))
 - \[euler-dev3\] New testnet [\#136](https://github.com/cybercongress/cyberd/pull/136) ([hleb-albau](https://github.com/hleb-albau))
 - \#101 Copy state before index creation [\#135](https://github.com/cybercongress/cyberd/pull/135) ([hleb-albau](https://github.com/hleb-albau))
 - \#92 Populate state with random addresses [\#134](https://github.com/cybercongress/cyberd/pull/134) ([hleb-albau](https://github.com/hleb-albau))
