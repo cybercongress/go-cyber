@@ -41,7 +41,12 @@ func ContinueIndex(cbdClient client.CyberdClient) {
 		split := strings.Split(strings.TrimSuffix(line, "\n"), "\t")
 		ids := strings.Split(split[1], "_")
 
+		idsSet := make(map[string]struct{})
 		for _, id := range ids {
+			idsSet[id] = struct{}{}
+		}
+
+		for id := range idsSet {
 
 			id = reg.ReplaceAllString(id, "")
 			id = strings.ToLower(id)
@@ -58,7 +63,7 @@ func ContinueIndex(cbdClient client.CyberdClient) {
 			links = append(links, client.Link{From: Cid(id), To: Cid(page)})
 			counter++
 
-			if len(links) == 100 {
+			if len(links) == 1000 {
 				fmt.Printf("%d %s\n", counter, split[1])
 
 				accBw, err := cbdClient.GetAccountBandwidth()

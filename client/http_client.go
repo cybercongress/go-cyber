@@ -68,7 +68,7 @@ func NewHttpCyberdClient(nodeUrl string, passphrase string, singAddr string) Cyb
 	}
 
 	txBuilder := authtxb.TxBuilder{
-		Gas:           1000000,
+		Gas:           10000000000,
 		ChainID:       status.NodeInfo.Network,
 		AccountNumber: accountNumber,
 		TxEncoder:     utils.GetTxEncoder(cdc),

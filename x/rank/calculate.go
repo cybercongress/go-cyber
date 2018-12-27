@@ -22,7 +22,7 @@ func CalculateRank(ctx *CalculationContext, unit ComputeUnit, logger log.Logger)
 		rank = calculateRankGPU(ctx, logger)
 	}
 	logger.Info(
-		"Rank calculated", "time", time.Since(start), "links", len(ctx.outLinks), "cids", ctx.cidsCount,
+		"Rank calculated", "time", time.Since(start), "links", ctx.linksCount, "cids", ctx.cidsCount,
 	)
 	return
 }
