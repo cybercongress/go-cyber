@@ -63,6 +63,10 @@ a {
     text-decoration: none;
 }
 
+li {
+    line-height:150%;
+}
+
 .container:hover {
     font-size: 13px;
     transition: all 0.3s ease;
