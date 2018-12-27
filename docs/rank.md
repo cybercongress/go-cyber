@@ -32,7 +32,7 @@ We could store cidCount per rank calculation.
 
 #### New links handling
 
-Add new incoming links to index with rank 0, so they immediately can be seen by users.
+Add new incoming links cids to index with rank 0 (only for new cids), so they immediately can be seen by users.
 Include those "zero" ranks to consensus hash.
 
 Problems:
