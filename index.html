@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" >
+        <title>cyberd</title>
+        <link rel="shortcut icon" href="img/favicon.png" type="image/png">
+        <link href="https://fonts.googleapis.com/css?family=Play" rel="stylesheet">
+        <link href="css/reset.css" rel="stylesheet" />
+        <link href="css/main.css" rel="stylesheet" />
+        <link href="css/animeidcss.css" rel="stylesheet"/>
+    </head>
+
+    <body>
+        <div class='flex'>
+
+            
+            <nav class='navigation'>
+                <div class='logo'><img src='img/favicon.png' ></div>
+
+
+                <input type="checkbox" name='toggle' id='menu' class='togglemenu'> 
+                <label for='menu' class='togglemenu'><i class='fa fa-bars'></i></label>
+
+                <ul class="navi wow bounceInLeft" data-wow-delay="0.5s">
+                    <li class="link-navi"><a href="#Glossary" class="container">Glossary</a></li>
+                    <li class="link-navi"><a href="#Introduction_to_web3" class="container">Introduction to web3</a></li>
+                    <li class="link-navi"><a href="#The_protocol" class="container">The protocol</a></li>
+                    <li class="link-navi"><a href="#Knowledge_graph" class="container">Knowledge graph</a></li>
+                    <li class="link-navi"><a href="#Agents_of_knowledge" class="container">Agents of knowledge</a></li>
+                    <li class="link-navi"><a href="#Link_chains" class="container">Link chains</a></li>
+                    <li class="link-navi"><a href="#Notion_of_consensus_computer" class="container">Notion of consensus computer</a></li>
+                    <li class="link-navi"><a href="#Relevance_machine" class="container">Relevance machine</a></li>
+                    <li class="link-navi"><a href="#cyber•Rank" class="container">cyber•Rank</a></li>
+                    <li class="link-navi"><a href="#Proof_of_relevance" class="container">Proof of relevance</a></li>
+                    <li class="link-navi"><a href="#State_grow_history_problem" class="container">State grow history problem</a></li>
+                    <li class="link-navi"><a href="#Motivation_for_read_requests" class="container">Motivation for read requests</a></li>
+                    <li class="link-navi"><a href="#Self_prediction" class="container">Self prediction</a></li>
+                    <li class="link-navi"><a href="#Universal_oracle" class="container">Universal oracle</a></li>
+                    <li class="link-navi"><a href="#Smart_contracts" class="container">Smart contracts</a></li>
+                    <li class="link-navi"><a href="#Selfish_predictions" class="container">Selfish predictions</a></li>
+                    <li class="link-navi"><a href="#Spam_protection" class="container">Spam protection</a></li>
+                    <li class="link-navi"><a href="#Distribution" class="container">Distribution</a></li>
+                    <li class="link-navi"><a href="#Incentive_structure" class="container">Incentive structure</a></li>
+                    <li class="link-navi"><a href="#Applications" class="container">Applications</a></li>
+                    <li class="link-navi"><a href="#Evolvability" class="container">Evolvability</a></li>
+                    <li class="link-navi"><a href="#Decentralization" class="container">Decentralization</a></li>
+                    <li class="link-navi"><a href="#Performance" class="container">Performance</a></li>
+                    <li class="link-navi"><a href="#Scalability" class="container">Scalability</a></li>
+                    <li class="link-navi"><a href="#Conclusion" class="container">Conclusion</a></li>
+                    <li class="link-navi"><a href="#References" class="container">References</a></li>
+                </ul>
+            </nav>
+
+            <main class='main'>
+                <div class='mainmargin'> 
+
+                    <div class='imgone'></div>
+
+                    <div>
+                        <p class="textimg"><span>/A search</br> consensus computer</br> for web3</span></p>
+                    </div>
+
+                    <div class="contact">
+                        <p><a class='linkcolor' href="https://github.com/xhipster">@xhipster,</a><a class='linkcolor' href="https://github.com/litvintech">@litvintech</a></p>
+                        <p class="mobiversion">Version 0.3 . Research notes. Kenig and Minsk</p>
+                    </div>
+
+
+                    <div>
+                        <h2 id="Glossary" class="wow pulse" data-wow-duration="1s" data-wow-offset="100"><span>&#8260; </span>&nbsp;Glossary</h2>
+                        <div class="glossary">
+                            <ul class='marginul'>
+                                <li>cyb:</li>
+                                <li>- nick. a friendly software robot who helps you explore universes</li>
+                            </ul><br>
+
+                            <ul class='marginul'>
+                                <li>cyber:</li>
+                                <li>- noun. a superintelligent network computer for answers</li>
+                                <li>- verb. to do something intelligent, to be very smart</li>
+                            </ul><br>
+
+                            <ul class='marginul'><li>CYB:</li>
+                                <li>- ticker. transferable token expressing will to become smarter</li>
+                            </ul><br>
+
+                            <ul class='marginul'>
+                                <li>CYBER:</li>
+                                <li>- ticker. non-transferable token expressing intelligence</li>
+                            </ul>
+                        </div>
+                    </div>
+
+
+                    <div class="abstract">
+                    <div>
+                        <h2 id="Abstract" class="wow pulse" data-wow-duration="1s" data-wow-offset="100"><span>&#8260; </span>&nbsp;Abstract</h2>
+                        <p>
+                            An incentivized consensus computer would allow to compute provably relevant answers without opinionated blackbox
+                            intermediaries such as Google. Stateless content-addressable peer-to-peer communication networks such as IPFS and
+                            stateful consensus computers such as Ethereum provide part of the solution but there are at least three problems
+                            associated with implementation. Of course, the first problem is subjective nature of relevance. The second problem
+                            is that it is hard to scale consensus computer of huge knowledge graph. The third problem is that the quality of
+                            such knowledge graph will suffer from different attack surfaces such as sybil and selfish behavior of interacting
+                            agents. In this paper we (1) define a protocol for provable consensus computing of relevance between IPFS objects
+                            based on some offline observation and theory behind prediction markets, (2) solve a problem of implementation
+                            inside consensus computer based on SpringRank and propose workaround for pruning historical state and (3) design
+                            distribution and incentive scheme based on our experience and known attacks. Also we discuss some considerations on
+                            minimalistic architecture of the protocol as we believe that is critical for formation of a network of domain
+                            specific search consensus computers. As result of our work some applications never existed before emerge.
+                        </p>
+                    </div>  
+
+
+                    <div class='Introduction_to_web3'>
+                        <h2 id="Introduction_to_web3" class="wow pulse" data-wow-duration="1s" data-wow-offset="100"><span>&#8260; </span>&nbsp;Introduction to web3</h2>
+                        <p>
+                            Original protocols of the Internet such as TCP/IP, DNS, URL and HTTPS brought a web into the point there it is now. Along with
+                            all benefits they has created they brought more problem into the table. Globality being a key property of the the web
+                            since inception is under real threat. Speed of connections degrade with network grow and from ubiquitous government
+                            interventions into privacy and security of web users. One property, not obvious in the beginning, become really
+                            important with everyday usage of the Internet: its ability to exchange permanent hyperlinks thus they would not break
+                            after time have pass. Reliance on one at a time internet service provider architecture allow governments censor packets
+                            is the last straw in conventional web stack for every engineer who is concerned about the future of our children. Other
+                            properties while being not so critical are very desirable: offline and real-time. Average internet user being offline
+                            must have ability to work with the state it has and after acquiring connection being able to sync with global state and
+                            continue verify state&apos;s validity in realtime while having connection. Now this properties offered on app level
+                            while such properties must be integrated into lower level protocols.
+                        </p>  
+                            <br>
+                        <p> 
+                            The emergence of a distributed protocol stack [W3S] creates an opportunity for a new kind of Internet. We call it web3.
+                            It has a promise to remove problems of conventional protocol stack and add to the web better speed and more accessible
+                            connection. But as usually in a story with a new stack, new problems emerge. One of such problem is general purpose
+                            search. Existing general purpose search engines are restrictive centralized databases everybody forced to trust. These
+                            search engines were designed primarily for client-server architecture based on TCP/IP, DNS, URL and HTPPS protocols.
+                            Web3 create a challenge and opportunity for a search engine based on developing technologies and specifically designed
+                            for them. Surprisingly the permission-less blockchain architecture itself allows organizing general purpose search
+                            engine in a way inaccessible for previous architectures
+                        </p>
+                    </div>
+
+                    <div class='The_protocol'>
+                        <h2 id="The_protocol" class="wow pulse" data-wow-duration="1s" data-wow-offset="100"><span>&#8260; </span>&nbsp;The protocol</h2>
+                        <p>• def knowledge graph state</p>
+                        <p>• take link chains</p>
+                        <p>• check that linkchain signatures are valid</p>
+                        <p>• check that resource consumption of a signer is not exceed 24 moving average</p>
+                        <p>• emit prediction of links for every valid link chain</p>
+                        <p>• every block calculate cyber•rank deltas for the knowledge graph</p>
+                        <p>• every block distribute 42 CYB based on links CYBERs</p>
+                        <p>• for links with proven keys distribute payouts based on CYBER</p>
+                        <p>• for links without proven keys distribute payouts according to CYBER weight of incoming links with proven keys</p>
+                        <p>• every block apply predictions of consensus computer according to prediction bound</p>
+                        <p>• every block write data to key/value store according to storage bound based on size and cyber•rank</p>
+                        <p>• every epoch nodes reach consensus around pruned state history via ipfs hash of state blob</p>
+                    </div>    
+
+                    <div class='Knowledge_graph'>
+                        <h2 id="Knowledge_graph" class="wow pulse" data-wow-duration="1s" data-wow-offset="100"><span>&#8260; </span>&nbsp;Knowledge graph</h2>
+                        <p>We represent a knowledge graph as weighted graph of directed links between content addresses.</p>
+                        <div class='imgtwo'></div>
+                    </div>
+
+                    <div class='Agents_of_knowledge'>
+                        <h2 id="Agents_of_knowledge" class="wow pulse" data-wow-duration="1s" data-wow-offset="100"><span>&#8260; </span>&nbsp;Agents of knowledge</h2>
+                        <p>A concept of linkchain is a convention around simple semantics of communication format with a consensus computer.</p>
+                    </div>
+
+                     <div class='Link_chains'>
+                        <h2 id="Link_chains" class="wow pulse" data-wow-duration="1s" data-wow-offset="100"><span>&#8260; </span>&nbsp;Link chains</h2>
+                        <p>A concept of linkchain is a convention around simple semantics of communication format with a consensus computer.</p><br>
+                        <p>
+                            a tx format is <span class="backcolor">&lt;peer id&gt; &lt;up to 7 ipfs hashes of links&gt; &lt;signature&gt;</span><br>
+                            <span class="backcolor">&lt;signature&gt;</span> must be valid from<span class="backcolor"> &lt;peer id&gt;</span><br>
+                            Explain the concept of link chains and demonstrate a case of semantic linking based on interpretation of an ERC-20
+                            transfer transaction or something similar
+                        </p>
+                        <div class='imgthree'></div>
+                        <p>Amount of content addresses ipfs-addresses: up to 7 link-chain-proof: ... cyber-protocol-current: ...</p>
+                    </div>
+
+                    <div class='Notion_of_consensus_computer'>
+                        <h2 id="Notion_of_consensus_computer" class="wow pulse" data-wow-duration="1s" data-wow-offset="100"><span>&#8260; </span>&nbsp;Notion of consensus computer</h2>
+                        <p>Consensus computer is an abstract machine that has capacity in terms of fundamental computing resources such as memory, processing and bandwidth.</p><br>
+                        <p>/// Ideal consensus computer is a computer in which sum of agents contribution as actual . Its like a perforamnce indicator resources simple part of memory, processing and bandwidth of all computers. ///</p><br>
+                        <p>(1) maximization of knowledge graph, aligned with computational, storage and broadband bound and (2) reduction for attack surfaces such as sybil and selfish behavior</p>
+                        <div class='imgfour'></div>
+                    </div>
+
+                    <div class='Relevance_machine'>
+                        <h2 id="Relevance_machine" class="wow pulse" data-wow-duration="1s" data-wow-offset="100"><span>&#8260; </span>&nbsp;Relevance machine</h2>
+                        <p>Ranking of knowledge graph based on prediction market on links relevance.</p><br>
+                        <p>
+                            A useful property of a computer is that it must have inductive reasoning property. She must be able to interfere
+                            predictions without any knowledge about objects except when, who and where some prediction was asked. If we assume
+                            that a consensus computer must have some information about linked objects the complexity of such model growth
+                            unpredictably, hence a requirements for a computer for memory and computations. That is, deduction of a meaning
+                            inside consensus computer is expensive thus our design hardly depend on the blindness assumption. Instead we design
+                            incentives around meaning extractions
+                        </p><br>
+
+                        <p>
+                            Proof of who. Digital signatures and zero knowledge proofs. Privacy is foundational. The problem is to compute rank
+                            based on link of an agent based on its ranking without revealing identity. Zero knowledge proofs in general are
+                            very expensive. Privacy of search by design or as an option?
+                        </p><br>
+
+                        <p>Proof of when. Proof-of-history + Tendermint</p><br>
+
+                        <p>Proof of where. Mining triangulations and attaching proof of location for every link chain</p>
+                    </div>
+
+
+                  
+                    <div class='cyber•Rank'>
+                        <h2 id="cyber•Rank" class="wow pulse" data-wow-duration="1s" data-wow-offset="100"><span>&#8260; </span>&nbsp;cyber•Rank</h2>
+                        <p>As input for every edge value get signer account&apos;s:</p><br>
+                        <div class="background">
+                            <p>sums of `&lt;CYBER&gt;`</p><br>
+                            <p>plus</p><br>
+                            <p>(sum of square root from `&lt;CYB&gt;`) squared</p><br>
+                        </div><br>
+
+                        <p>Ranking using consensus computer is hard because consensus computers bring serious resource bounds. e.g. Nebulas fail to deliver something useful onchain.</p><br>
+
+                        <p class="linkcolor">&#60;No rank computed inside consensus computer =&gt; no possibility to incentivize network participants to form predictions on relevance.&#62;</p><br>
+
+                        <p>
+                            A problem here is that computational complexity of conventional ranks grow sublineary with the growth of the
+                            network. So we need to find (1) deterministic algorithm that allow to compute a rank for continuously appended
+                            network to scale the consensus computer to orders of magnitude that of Google. Perfect algorithm (2) must have
+                            linear memory and computation complexity. The most importantly without having (3) good prediction capabilities for
+                            existence of relevant links it proves to be useless. One of recent algorithms: SpringRank.
+                        </p><br>
+
+                        <p>Original idea came from physics. Links represented as system of springs with some energy.</p>
+
+                        <div class='imgfive'></div>
+
+                        <p>H(s) = 1/2 ...</p>  
+                    </div>
+
+
+                    <div class='Proof_of_relevance'>
+                        <h2 id="Proof_of_relevance" class="wow pulse" data-wow-duration="1s" data-wow-offset="100"><span>&#8260; </span>&nbsp;Proof of relevance</h2>
+                        <p>Payouts ...</p><br>
+
+                        <p>Based on linkchains its possible to know which content addresses proved that private keys are exist, and which do not.</p><br>
+
+                        <p>
+                            We design a system under assumption that in terms of search such thing as bad behavior does not exist as nothing bad
+                            can be in the intention of finding answers.
+                        </p><br>
+
+                        <p class="linkcolor">&#60; Ranks is computed on the only fact that something has been searched, thus linked and as result affected predictive model.&#62;</p><br>
+
+                        <p>
+                            Good analogy is observing in quantum mechanics. So no negative voting is implemented. Doing this we remove
+                            subjectivity out of the protocol and can define one possible method for proof of relevance. Also this approach
+                            significantly reduce attack surface. Implication of this assumption is that we must bind resource supply of
+                            relevance machine with demand of queries.
+                        </p>    
+                    </div>
+
+
+                     <div class='State_grow_history_problem'>
+                        <h2 id="State_grow_history_problem" class="wow pulse" data-wow-duration="1s" data-wow-offset="100"><span>&#8260; </span>&nbsp;State grow history problem</h2>
+                        <p>
+                            Every N blocks cybernodes prune blockchain/history and calculate IPFS hash for them/publish to IPFS, add hash to
+                            block and validate them with consensus. This state/blob economicaly finalized and new node start from them.
+                            Cybernodes motivated to store/provide this blob cause this cause network grow. Dynamically recalculate N with
+                            economy, network size, rank score...
+                        </p>
+                    </div>
+
+
+                    <div class='Motivation_for_read_requests'>
+                        <h2 id="Motivation_for_read_requests" class="wow pulse" data-wow-duration="1s" data-wow-offset="100"><span>&#8260; </span>&nbsp;Motivation for read requests</h2>
+                        <p>Explain an economic difference and censorship impact between read search queries and write search queries</p><br>
+
+                        <p>
+                            Idea: All nodes run payment channels to serve request for their users and take tokens for request processing.
+                            Because this is heavy computation (only cybernodes will serve this) nodes will serve this only with payments for
+                            them. Cybernodes run protocol and earn tokens for read requests.
+                        </p>
+                            <br>
+                        <p>
+                            Solution is payment channels based on HLTC and proof verification which unlocks amount earned for already served
+                            request (new signatures post via requester/user to cybernode via whisper/ipfs-pub-sub)
+                        </p>
+                    </div>
+
+
+                    <div class='Self_prediction'>
+                        <h2 id="Self_prediction" class="wow pulse" data-wow-duration="1s" data-wow-offset="100"><span>&#8260; </span>&nbsp;Self prediction</h2>
+                        <p>
+                            A consensus computer is able to continuously build a knowledge graph by itself predicting existence of links and
+                            applying this predictions to a state of itself.
+                        </p>
+                            <br>
+                        <p>
+                            Idea: Everything that has been earned by a consensus computer can form a validators budget.
+                        </p>
+                            <br>
+                        <p>
+                            Forgetting links: Prune min possible rank / 2
+                        </p>
+                    </div>
+
+
+                    <div class='Universal_oracle'>
+                        <h2 id="Universal_oracle" class="wow pulse" data-wow-duration="1s" data-wow-offset="100"><span>&#8260; </span>&nbsp;Universal oracle</h2>
+                        <p>
+                            A consensus computer is able to store the most relevant data in key value store. She is doing it by making a
+                            decision every block about what record he want to prune and what he want to apply. This key-value store can be ...
+                        </p>
+                    </div>
+
+
+                    <div class='Smart_contracts'>
+                        <h2 id="Smart_contracts" class="wow pulse" data-wow-duration="1s" data-wow-offset="100"><span>&#8260; </span>&nbsp;Smart contracts</h2>
+                        <p>
+                            Ability to programmatically extend state based on proven knowledge graph is of paramount importance. Thus we consider
+                            that WASM programs will be available for execution on top of knowledge graph.
+                        </p>
+                    </div>
+
+
+                    <div class='Selfish_predictions'>
+                        <h2 id="Selfish_predictions" class="wow pulse" data-wow-duration="1s" data-wow-offset="100"><span>&#8260; </span>&nbsp;Selfish predictions</h2>
+                        <p>Protection from selfish predictions: from linear in the beginning to sum of square roots being mature.</p>
+                    </div>
+
+
+                    <div class='Spam_protection'>
+                        <h2 id="Spam_protection" class="wow pulse" data-wow-duration="1s" data-wow-offset="100"><span>&#8260; </span>&nbsp;Spam protection</h2>
+                        <p>
+                            In the center of spam protection system is an assumption that write operations can be executed only by those who have
+                            vested interest in the evolutionary success of a consensus computer. Every 1% of stake in consensus computer gives the
+                            ability to use 1% of possible network broadband and computing capabilities. As nobody uses all possessed broadband we
+                            can use fractional reserves while limiting broadband like ISPs do, but we cant because it degrades value of rank. So we
+                            just compute 24 hours moving avarage and
+                        </p><br>
+                        <p>
+                            In order to automate governance process we will not add a feature of staking and unstaking, but instead implement
+                            s-curve type of automatic staking time depending on which all bandwith and computational limits will be accounted
+                        </p>
+                    </div>
+
+
+                    <div class='Distribution'>
+                        <h2 id="Distribution" class="wow pulse" data-wow-duration="1s" data-wow-offset="100"><span>&#8260; </span>&nbsp;Distribution</h2>
+                        <p>No ERC-20. Reasons: expensive and non deterministic.</p><br>
+                        <ul>
+                            <li>• Compute SpringRank for Ethereum (Link is tx, weight is amount)</li></br>
+                            <li>• Create initial genesis for our network</li>
+                        </ul>
+                        </br>
+                        <p>  
+                            Every snapshot amount to be distributed is announced for the next snapshot. Every new PoC do distribution based on
+                            snapshot of previous chain merged with new Ethereum snapshot. For each new PoC amount of distribution which goes to
+                            Ethereum snapshot decreases.
+                        </p>
+                    </div>
+
+
+                    <div class='Incentive_structure'>
+                        <h2 id="Incentive_structure" class="wow pulse" data-wow-duration="1s" data-wow-offset="100"><span>&#8260; </span>&nbsp;Incentive structure</h2>
+                        <p>
+                            To make cyber•rank economically resistant to Sybil attack and to incentivize all participant for rational behavior a
+                            system uses CYBER token.
+                        </p>
+                            <br>
+                        <p>Since inception, a network prints 42 CYB every block.</p>
+                            <br>
+                        <p>Reward pool is defined as 100% of emission and split among the contracts according to (?):</p></br>
+                        <ul>
+                            <li>• Validators</li></br>
+                            <li>• Linkers</li>
+                        </ul>
+                    </div>
+
+
+                    <div class='Applications'>
+                        <h2 id="Applications" class="wow pulse" data-wow-duration="1s" data-wow-offset="100"><span>&#8260; </span>&nbsp;Applications</h2>
+                        <p>
+                            <span class="colortexttwo">Web3 browsers.</span> It easy to imagine the emergence of a full-blown blockchain browser. Currently, there are several
+                            efforts for developing browsers around blockchains and distributed tech. Among them are Beaker, Mist and Brave .. All
+                            of them suffer from very limited functionality. Our developments can be useful for teams who are developing such tools.
+                        </p>
+                            <br>
+                        <p>
+                            <span class="colortexttwo">Programmable semantic cores.</span> Relevance everywhere means that on any given user input string in any application relevant
+                            answer can be computed either globally, in the context of an app or in the context of a user.
+                        </p><br>
+                        <p>
+                            <span class="colortextwto">Actions in search.</span> Proposed design enable native support for blockchain asset related activity. It is trivial to design
+                            an applications which are (1) owned by creators, (2) appear right in search results and (3) allow a transact-able call
+                            to actions with (4) provable attribution of a conversion to search query. e-Commerce has never been so easy for
+                            everybody.
+                        </p><br>
+                        <p>
+                            <span class="colortexttwo">Offline search.</span> IPFS make possible easy retrieval of documents from surroundings without global internet connection.
+                            cyberd itself can be distributed using IPFS. That create a possibility for ubiquitous offline search.
+                        </p><br>
+                        <p>
+                            <span class="colortexttwo">Command tools.</span> Command line tools can rely on relevant and structured answers from a search engine. That practically
+                            means that the following CLI tool is possible to implement
+                        </p><br>
+                    
+                        <div class="backgroundtwo">
+                            <p>&gt; cyberd earn using 100 gb hdd</p><br>
+                            <p>
+                                Enjoy the following predictions:<br>
+                                - apt install go-filecoin /// 0.001 btc per month<br>
+                                - apt install siad /// 0.0001 btc per month per GB<br>
+                                - apt install storjd /// 0.00008 btc per month per GB<br>
+                            </p><br>
+                            <p> According to the best prediction I made a decision try `go get go-filecoin`</p><br>
+                            <p> Git clone ...<br>
+                                Building go-filecoin<br>
+                                Starting go-filecoin<br>
+                                Creating wallet using your standard seed<br>
+                                You address is ....<br>
+                                Placing bids ...<br>
+                                Waiting for incoming storage requests ...<br>
+                            </p><br>
+                        </div><br>
+                        <p>Search from CLI tools will inevitably create a highly competitive market of a dedicated semantic core for bots.</p><br>
+                        <p>
+                            Autonomous robots. Blockchain technology enables creation of devices which are able to earn, store, spend and invest
+                            digital assets by themselves.
+                        </p><br>
+                        <p class="linkcolor">&#60; If a robot can earn, store, spend and invest she can do everything you can do &#62;</p><br>
+                        <p>
+                            What is needed is simple yet powerful API about the state of reality evaluated in transact-able assets. Our solution
+                            offers minimalistic but continuously self-improving API that provides necessary tools for programming economically
+                            rational robots.
+                        </p><br>
+                        <p>
+                            <span class="colortexttwo">Language convergence.</span> A programmer should not care about what language do the user use. We don&apos;t need to have
+                            knowledge of what language user is searching in. Entire UTF-8 spectrum is at work. A semantic core is open so
+                            competition for answering can become distributed across different domain-specific areas, including semantic cores of
+                            different languages. The unified approach creates an opportunity for cyber•Bahasa. Since the Internet, we observe a
+                            process of rapid language convergence. We use more truly global words across the entire planet independently of our
+                            nationality, language and race, Name the Internet. The dream of truly global language is hard to deploy because it is
+                            hard to agree on what mean what. But we have tools to make that dream come true. It is not hard to predict that the
+                            shorter a word the more it&apos;s cyber•rank will be. Global publicly available list of symbols, words and phrases
+                            sorted by cyber•rank with corresponding links provided by cyberd can be the foundation for the emergence of truly
+                            global language everybody can accept. Recent scientific advances in machine translation [GNMT] are breathtaking but
+                            meaningless for those who wish to apply them without Google scale trained model. Proposed cyber•rank offers exactly
+                            this.
+                        </p><br>
+                        <p>This is sure not the exhaustive list of possible applications but very exciting, though.</p>
+                    </div>
+
+
+                     <div class='Evolvability'>
+                        <h2 id="Evolvability" class="wow pulse" data-wow-duration="1s" data-wow-offset="100"><span>&#8260; </span>&nbsp;Evolvability</h2>
+                        <p>
+                            Following ideas from Tezos we can define the current state of a protocol as immutable content address. Thus she can
+                            adopt to a new environment changing content address of current protocol following the rules hidden behind previous
+                            protocol. We would love to check the hypothesis that it is possible to have a protocol which follows simple rule:
+                        </p><br>
+                        <p class="linkcolor">
+                            &#60; The more closer some content address to literally cyber-protocol-current ipfs address the more probability than it will
+                            become winning. The most close protocol cyber-protocol-current is the protocol which is the most relevant to users. &#62;
+                        </p><br>
+                        <p>
+                            Thus nodes must always signal connection with cyber-protocol-current by sending linkchains with semantics like
+                            &lt;{cyber-protocol-current}&gt; &lt;cid&gt;.
+                        </p>
+                    </div>
+
+
+                    <div class='Decentralization'>
+                        <h2 id="Decentralization" class="wow pulse" data-wow-duration="1s" data-wow-offset="100"><span>&#8260; </span>&nbsp;Decentralization</h2>
+                        <p>
+                            Decentralization comes with costs and slowness. We want to find a good balance between those as we believe both are
+                            sensitive for widespread web3 adoption. That is the area of research for us now.
+                        </p>
+                    </div>
+
+
+                    <div class='Performance'>
+                        <h2 id="Performance" class="wow pulse" data-wow-duration="1s" data-wow-offset="100"><span>&#8260; </span>&nbsp;Performance</h2>
+                        <p>We need very fast conformation times.</p><br>
+                        <p>
+                            Proposed blockchain design is based on Tendermint consensus algorithm and has fast and predictable before seconds
+                            block confirmation time and very fast finality time. Average confirmation timeframe is less than second thus
+                            conformations can be asynchronous and nearly invisible for users. A good thing is that users don&apos;t need
+                            confirmations at all before getting search response as there is no risk associated with that.
+                        </p>
+                    </div>
+
+
+                    <div class='Scalability'>
+                        <h2 id="Scalability" class="wow pulse" data-wow-duration="1s" data-wow-offset="100"><span>&#8260; </span>&nbsp;Scalability</h2>
+                        <p>
+                            Let us say that our node implementation based on Cosmos-SDK can process 10k transactions per second. Thus every day at
+                            least 8.64 million nodes can submit 100 predictions and get back search results simultaneously. That is enough to
+                            verify all assumptions in the wild. As blockchain technology evolve we want to check that every hypothesis work before
+                            scale it further.
+                        </p>
+                    </div>
+
+
+                    <div class='Conclusion'>
+                        <h2 id="Conclusion" class="wow pulse" data-wow-duration="1s" data-wow-offset="100"><span>&#8260; </span>&nbsp;Conclusion</h2>
+                        <p>
+                            We describe a motivated blockchain based search engine for web3. A search engine is based on the content-addressable
+                            peer-to-peer paradigm and uses IPFS as a foundation. IPFS provide significant benefits in terms of resources
+                            consumption. IPFS addresses as a primary objects are robust in its simplicity. For every IPFS hash cyber•rank is
+                            computed by a consensus computer with no single point of failure. Cyber•rank is a spring rank with economic protection
+                            from selfish predictions. Sybil resistance is also implemented on two levels: during id generation and during bandwidth
+                            limiting. Embedded smart contracts offer fair compensations for those who is able to predict relevance of content
+                            addresses. The primary goal is indexing of peer-to-peer systems with self-authenticated data either stateless, such as
+                            IPFS, Swarm, DAT, Git, BitTorent, or stateful such as Bitcoin, Ethereum and other blockchains and tangles. Proposed
+                            semantics of linking offers robust mechanism for predicting meaningful relations between objects. A source code of a
+                            relevance machine is open source. Every bit of data accumulated by a consensus computer is available for everybody if
+                            the one has resources to process it. The performance of proposed software implementation is sufficient for seamless
+                            user interactions. Scalability of proposed implementation is enough to index all self-authenticated data that exist
+                            today. The blockchain is managed by a decentralized autonomous organization which functions under Tendermint consensus
+                            algorithm. Thought a system provide necessary utility to offer an alternative for conventional search engines it is not
+                            limited to this use case either. The system is extendable for numerous applications and e.g. makes possible to design
+                            economically rational self-owned robots that are able to autonomously understand objects around them.
+                        </p>
+                    </div>
+
+
+                    <div class='References'>
+                        <h2 id="References" class="wow pulse" data-wow-duration="1s" data-wow-offset="50"><span>&#8260; </span>&nbsp;References</h2>
+                        <p>W3S:<a class='linkcolor' href="https://github.com/w3f/Web3-wiki/wiki">Web3 stack</a></p>
+                    </div>
+
+
+
+                </div>
+            <a href="#" class="scrollup">Наверх</a>
+            <footer></footer>    
+            </main>
+        </div>
+
+
+         <script src="js/wow.main.js"></script>
+    <script>
+        new WOW().init();
+    </script>
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            // ссылки
+                $("ul").on("click", "a", function (event) {
+                //отменяем стандартную обработку нажатия по ссылке
+                event.preventDefault();
+
+                //забираем идентификатор бока с атрибута href
+                var id = $(this).attr('href'),
+
+                    //узнаем высоту от начала страницы до блока на который ссылается якорь
+                    top = $(id).offset().top;
+
+                //анимируем переход на расстояние 
+                $('body,html').animate({
+                    scrollTop: top
+                }, 2000);
+            });
+        });
+    </script>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $(window).scroll(function () {
+                if ($(this).scrollTop() > 100) {
+                    $('.scrollup').fadeIn();
+                } else {
+                    $('.scrollup').fadeOut();
+                }
+            });
+
+            $('.scrollup').click(function () {
+                $("html, body").animate({
+                    scrollTop: 0
+                }, 600);
+                return false;
+            });
+
+        });
+    </script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    </body>
+
+</html>    

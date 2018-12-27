@@ -1,0 +1,357 @@
+* {
+    padding: 0;
+    margin: 0;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+@font-face {
+    font-family: "AndaleMono";
+    src: url("../fonts/AndaleMono.ttf");
+    font-style: normal;
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: "Play-Regular";
+    src: url("../fonts/Play-Regular.ttf");
+    font-style: normal;
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: "Play-Bold";
+    src: url("../fonts/Play-Bold.ttf");
+    font-style: normal;
+    font-weight: normal;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    background-color: #222222;
+    font-family: 'Play-Regular';
+    color: #f2f2f2;
+    overflow-x: hidden;
+}
+
+.flex {
+    display: flex;
+}
+
+.navigation {
+    position: fixed;
+    width: 20%;
+    height: 100%;
+}
+
+.navi {
+    margin-left: 10%;
+    line-height: 1.7;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 1px;
+}
+
+.logo {
+    margin: 5% 10%;
+}
+
+a {
+    color: rgba(248, 247, 247, 0.3);
+    text-decoration: none;
+}
+
+.container:hover {
+    font-size: 13px;
+    transition: all 0.3s ease;
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    -ms-transition: all 0.3s ease;
+    color: #f2f2f2f2;
+}
+
+.main {
+    position: absolute;
+    width: 70%;
+    border-left: dashed 1px rgba(248, 247, 247, 0.3);
+    opacity: 2;
+    margin-left: 20%;
+}
+
+.mainmargin {
+    margin-left: 10%;
+}
+
+.mainmargin img {
+    display: block;
+    width: 100%;
+    max-width: 700px;
+    height: auto;
+    margin: 0 5%;
+}
+
+.imgone {
+    width: 600px;
+    height: 530px;
+    background: url(../img/boll.png);
+    margin-left: 20%;
+    margin-top: 5%;
+}
+
+.textimg {
+    position: absolute;
+    width: 100%;
+    height: 300px;
+    font-size: 37.8px;
+    line-height: 41px;
+    letter-spacing: 1.45px;
+    top: 350px;
+    left: 15%;
+    text-transform: uppercase;
+}
+
+span {
+    background: #222;
+}
+
+.linkcolor {
+    color: #94ff4b;
+}
+
+.contact {
+    width: 39%;
+    margin-left: 20%;
+    line-height: 2;
+    text-align: right;
+}
+
+h2 {
+    font-family: 'Play-Bold';
+    font-size: 24px;
+    margin-bottom: 20px;
+    margin-top: 5%;
+}
+
+.glossary {
+    width: 100%;
+    height: 100%;
+    background-color: #292929;
+}
+
+.marginul {
+    padding: 1% 4%;
+}
+
+p {
+    line-height: 1.5;
+}
+
+.abstract, .Introduction_to_web3, .The_protocol, .Knowledge_graph, .Agents_of_knowledge, .Link_chains, .Notion_of_consensus_computer, .Relevance_machine, .cyber•Rank, .Proof_of_relevance, .State_grow_history_problem, .Motivation_for_read_requests, .Self_prediction, .Universal_oracle, .Smart_contracts, .Selfish_predictions, .Spam_protection, .Distribution, .Incentive_structure, .Applications, .Evolvability, .Decentralization, .Performance, .Scalability, .Conclusion, .References {
+    margin-top: 5%;
+    border-top: dashed 1px rgba(248, 247, 247, 0.3);
+}
+
+.imgtwo {
+    width: 430px;
+    height: 250px;
+    object-fit: contain;
+    background: url(../img/4.png);
+    margin: 5% auto;
+}
+
+.imgthree {
+    width: 540px;
+    height: 200px;
+    object-fit: contain;
+    background: url(../img/22.png);
+    margin: 5% auto;
+}
+
+.imgfour {
+    width: 415px;
+    height: 240px;
+    object-fit: contain;
+    background: url(../img/1.png);
+    margin: 5% auto;
+}
+
+.backcolor {
+    background-color: #292929;
+}
+
+.imgfive {
+    width: 315px;
+    height: 300px;
+    object-fit: contain;
+    background: url(../img/3.png);
+    margin: 5% auto;
+}
+
+.background {
+    width: 100%;
+    background-color: #292929;
+    padding: 2% 3%;
+}
+
+.colortexttwo {
+    font-family: 'Play-Bold';
+}
+
+.backgroundtwo {
+    width: 100%;
+    background-color: #292929;
+    padding: 2% 3%;
+    font-family: 'AndaleMono';
+    font-size: 14px;
+    color: #c8c8c8;
+}
+
+footer {
+    width: 100%;
+    height: 50px;
+}
+
+.scrollup {
+    width: 56px;
+    height: 56px;
+    opacity: 0.7;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: none;
+    text-indent: -9999px;
+    background: url(../img/arrow-up.svg) no-repeat;
+}
+
+.navigation [type='checkbox'] {
+    display: none;
+}
+
+.navigation label.togglemenu {
+    display: none;
+    padding: 0px 0px;
+    text-transform: uppercase;
+    cursor: pointer;
+    position: relative;
+}
+
+.navigation label.togglemenu .fa {
+    position: relative;
+    font-size: 18px;
+    margin-top: 5%;
+    margin-bottom: 5%;
+    margin-left: 10%;
+}
+
+@media screen and (max-width:768px) {
+    .flex {
+        display: block;
+    }
+    .navigation {
+        position: relative;
+        width: 98%;
+        height: 20%;
+        overflow: hidden;
+        top: 20px;
+        left: 20px;
+    }
+    .logo {
+        margin: 0% 00%;
+    }
+    .mainmargin {
+        width: 90%;
+        margin-left: 15px;
+    }
+    .main {
+        width: 100%;
+        margin-right: 0%;
+        margin-left: 0%;
+        border: none;
+    }
+    .navigation ul {
+        display: none;
+        text-align: center;
+        margin-right: 20%;
+    }
+    .navigation label.togglemenu {
+        display: block;
+        text-align: right;
+        position: absolute;
+        top: 10px;
+        left: 85%;
+    }
+    input.togglemenu:checked+label.togglemenu {
+        background: #222;
+        color: grey;
+    }
+    input.togglemenu:checked~ul {
+        display: block;
+    }
+    .textimg {
+        width: 82%;
+        margin-top: -30%;
+        font-size: 25px;
+    }
+    .mobiversion {
+        width: 100%;
+        font-size: 12px;
+        margin-left: 9%;
+        text-align: left;
+    }
+    h2 {
+        font-family: 'Play-Bold';
+        font-size: 20px;
+        margin-bottom: 7%;
+        margin-top: 7%;
+        margin-left: 5%;
+    }
+    .contact {
+        width: 80%;
+        height: 70px;
+        margin-left: 15%;
+        line-height: 3;
+        text-align: right;
+    }
+    .imgone {
+        width: 350px;
+        height: 310px;
+        background: url(../img/header.png);
+        margin-left: 3%;
+        margin-top: 20%;
+        margin-bottom: 10%;
+    }
+    .imgtwo {
+        width: 350px;
+        height: 204px;
+        object-fit: contain;
+        background: url(../img/knowledge.png);
+        margin: 5% auto;
+    }
+    .imgthree {
+        width: 350px;
+        height: 120px;
+        object-fit: contain;
+        background: url(../img/666.png);
+        margin: 5% auto;
+    }
+    .imgfour {
+        width: 350px;
+        height: 190px;
+        object-fit: contain;
+        background: url(../img/z6.png);
+        margin: 5% auto;
+    }
+    .backcolor {
+        background-color: #292929;
+    }
+    .imgfive {
+        width: 315px;
+        height: 300px;
+        object-fit: contain;
+        background: url(../img/3.png);
+        margin: 5% auto;
+    }
+}
