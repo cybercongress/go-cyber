@@ -1,7 +1,6 @@
 package merkle
 
 import (
-	"crypto/sha256"
 	"encoding/binary"
 	"github.com/stretchr/testify/require"
 	"testing"
@@ -18,46 +17,11 @@ func TestProofs(t *testing.T) {
 		tree.Push(data)
 	}
 
-	indexToProof := 25
-	proofs := tree.GetIndexProofs(indexToProof)
+	// Check all proofs
+	for i := 0; i < 31; i++ {
+		proofs := tree.GetIndexProofs(i)
+		binary.LittleEndian.PutUint64(data, uint64(i))
+		require.Equal(t, true, tree.ValidateIndexByProofs(i, data, proofs))
+	}
 
-	require.Equal(t, 5, len(proofs))
-
-	binary.LittleEndian.PutUint64(data, uint64(indexToProof))
-	h := sha256.New()
-	h.Write(data)
-
-	rootHash :=  h.Sum(nil)
-
-	h.Reset()
-	h.Write(proofs[0])
-	h.Write(rootHash)
-
-	rootHash = h.Sum(nil)
-
-	h.Reset()
-	h.Write(rootHash)
-	h.Write(proofs[1])
-
-	rootHash = h.Sum(nil)
-
-	h.Reset()
-	h.Write(proofs[2])
-	h.Write(rootHash)
-
-	rootHash = h.Sum(nil)
-
-	h.Reset()
-	h.Write(rootHash)
-	h.Write(proofs[3])
-
-	rootHash = h.Sum(nil)
-
-	h.Reset()
-	h.Write(rootHash)
-	h.Write(proofs[4])
-
-	rootHash = h.Sum(nil)
-
-	require.Equal(t, rootHash, tree.hash)
 }

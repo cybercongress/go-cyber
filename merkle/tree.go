@@ -1,6 +1,7 @@
 package merkle
 
 import (
+	"bytes"
 	"crypto/sha256"
 	"math"
 )
@@ -14,8 +15,8 @@ type Subtree struct {
 	height int
 }
 
-func (t *Subtree) GetTreeProofs() [][]byte {
-	proofs := make([][]byte, 0)
+func (t *Subtree) GetRootProofs() []Proof {
+	proofs := make([]Proof, 0)
 
 	proofs = append(proofs, t.getRightProofs()...)
 	proofs = append(proofs, t.getLeftProofs()...)
@@ -23,21 +24,21 @@ func (t *Subtree) GetTreeProofs() [][]byte {
 	return proofs
 }
 
-func (t *Subtree) getLeftProofs() [][]byte {
-	proofs := make([][]byte, 0, 1)
+func (t *Subtree) getLeftProofs() []Proof {
+	proofs := make([]Proof, 0, 1)
 	current := t.left
 	for current != nil {
-		proofs = append(proofs, current.root.hash)
+		proofs = append(proofs, Proof{hash: current.root.hash, left: false})
 		current = current.left
 	}
 	return proofs
 }
 
 // right proof is only one cause we have to merge all right trees
-func (t *Subtree) getRightProofs() [][]byte {
+func (t *Subtree) getRightProofs() []Proof {
 
 	if t.right == nil {
-		return make([][]byte, 0)
+		return make([]Proof, 0)
 	}
 
 	hashesToSum := make([][]byte, 0)
@@ -57,7 +58,7 @@ func (t *Subtree) getRightProofs() [][]byte {
 		proofHash = h.Sum(nil)
 	}
 
-	return [][]byte{proofHash}
+	return []Proof{{hash: proofHash, left: true}}
 }
 
 type Node struct {
@@ -73,17 +74,17 @@ type Node struct {
 	lastIndex int
 }
 
-func (n *Node) GetIndexProofs(i int) [][]byte {
-	proofs := make([][]byte, 0)
+func (n *Node) GetIndexProofs(i int) []Proof {
+	proofs := make([]Proof, 0)
 
 	if n.left != nil && i >= n.left.firstIndex && i <= n.left.lastIndex {
 		proofs = n.left.GetIndexProofs(i)
-		proofs = append(proofs, n.right.hash)
+		proofs = append(proofs, Proof{hash: n.right.hash, left: false})
 	}
 
 	if n.right != nil && i >= n.right.firstIndex && i <= n.right.lastIndex {
 		proofs = n.right.GetIndexProofs(i)
-		proofs = append(proofs, n.left.hash)
+		proofs = append(proofs, Proof{hash: n.left.hash, left: true})
 	}
 
 	return proofs
@@ -106,7 +107,6 @@ func NewTree() Tree {
 	return Tree{}
 }
 
-// only for root tree
 func (t *Tree) joinAllSubtrees() {
 
 	for t.subTree.left != nil && t.subTree.height == t.subTree.left.height {
@@ -175,15 +175,15 @@ func (t *Tree) Push(data []byte) {
 }
 
 // going from right trees to left
-func (t *Tree) GetIndexProofs(i int) [][]byte {
+func (t *Tree) GetIndexProofs(i int) []Proof {
 
-	proofs := make([][]byte, 0, int64(math.Log2(float64(t.lastIndex))))
+	proofs := make([]Proof, 0, int64(math.Log2(float64(t.lastIndex))))
 
 	for current := t.subTree; current != nil; {
 
 		if i >= current.root.firstIndex && i <= current.root.lastIndex {
 			proofs = append(proofs, current.root.GetIndexProofs(i)...)
-			proofs = append(proofs, current.GetTreeProofs()...)
+			proofs = append(proofs, current.GetRootProofs()...)
 			return proofs
 		}
 
@@ -191,6 +191,23 @@ func (t *Tree) GetIndexProofs(i int) [][]byte {
 	}
 
 	return proofs
+}
+
+func (t *Tree) ValidateIndex(i int, data []byte) bool {
+	return t.ValidateIndexByProofs(i, data, t.GetIndexProofs(i))
+}
+
+func (t *Tree) ValidateIndexByProofs(i int, data []byte, proofs []Proof) bool {
+
+	h := sha256.New()
+	h.Write(data)
+
+	rootHash := h.Sum(nil)
+	for _, proof := range proofs {
+		rootHash = proof.ConcatWith(rootHash)
+	}
+
+	return bytes.Equal(rootHash, t.GetRootHash())
 }
 
 func (t *Tree) GetRootHash() []byte {
