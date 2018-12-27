@@ -5,23 +5,6 @@ import (
 	"math"
 )
 
-// we separate whole tree to sub trees where nodes count equal power of 2
-type Tree struct {
-	// this tree subtrees start from lowest height (from last right subtree)
-	subTree *Subtree
-
-	// first index of elements in this tree (inclusive)
-	firstIndex int
-	// last index of elements in this tree (exclusive)
-	lastIndex int
-
-	hash []byte
-}
-
-func NewTree() Tree {
-	return Tree{}
-}
-
 type Subtree struct {
 	root *Node
 
@@ -34,7 +17,7 @@ type Subtree struct {
 func (t *Subtree) GetTreeProofs() [][]byte {
 	proofs := make([][]byte, 0)
 
-	proofs = append(proofs, t.getRightProof())
+	proofs = append(proofs, t.getRightProofs()...)
 	proofs = append(proofs, t.getLeftProofs()...)
 
 	return proofs
@@ -51,8 +34,11 @@ func (t *Subtree) getLeftProofs() [][]byte {
 }
 
 // right proof is only one cause we have to merge all right trees
-func (t *Subtree) getRightProof() []byte {
-	h := sha256.New()
+func (t *Subtree) getRightProofs() [][]byte {
+
+	if t.right == nil {
+		return make([][]byte, 0)
+	}
 
 	hashesToSum := make([][]byte, 0)
 
@@ -62,11 +48,16 @@ func (t *Subtree) getRightProof() []byte {
 		rightTree = rightTree.right
 	}
 
-	for i := len(hashesToSum) - 1; i >= 0; i-- {
-		_, _ = h.Write(hashesToSum[i])
+	n := len(hashesToSum) - 1
+	proofHash := hashesToSum[n]
+	for i := n - 1; i >= 0; i-- {
+		h := sha256.New()
+		h.Write(proofHash)
+		h.Write(hashesToSum[i])
+		proofHash = h.Sum(nil)
 	}
 
-	return h.Sum(nil)
+	return [][]byte{proofHash}
 }
 
 type Node struct {
@@ -86,14 +77,33 @@ func (n *Node) GetIndexProofs(i int) [][]byte {
 	proofs := make([][]byte, 0)
 
 	if n.left != nil && i >= n.left.firstIndex && i <= n.left.lastIndex {
-		proofs = append(append(proofs, n.right.hash), n.left.GetIndexProofs(i)...)
+		proofs = n.left.GetIndexProofs(i)
+		proofs = append(proofs, n.right.hash)
 	}
 
-	if n.right != nil && i  >= n.right.firstIndex && i <= n.right.lastIndex {
-		proofs = append(append(proofs, n.left.hash), n.right.GetIndexProofs(i)...)
+	if n.right != nil && i >= n.right.firstIndex && i <= n.right.lastIndex {
+		proofs = n.right.GetIndexProofs(i)
+		proofs = append(proofs, n.left.hash)
 	}
 
 	return proofs
+}
+
+// we separate whole tree to sub trees where nodes count equal power of 2
+type Tree struct {
+	// this tree subtrees start from lowest height (from last right subtree)
+	subTree *Subtree
+
+	// first index of elements in this tree (inclusive)
+	firstIndex int
+	// last index of elements in this tree (exclusive)
+	lastIndex int
+
+	hash []byte
+}
+
+func NewTree() Tree {
+	return Tree{}
 }
 
 // only for root tree
@@ -160,6 +170,8 @@ func (t *Tree) Push(data []byte) {
 	}
 
 	t.joinAllSubtrees()
+
+	t.hash = t.GetRootHash()
 }
 
 // going from right trees to left
@@ -170,8 +182,8 @@ func (t *Tree) GetIndexProofs(i int) [][]byte {
 	for current := t.subTree; current != nil; {
 
 		if i >= current.root.firstIndex && i <= current.root.lastIndex {
-			proofs = append(proofs, current.GetTreeProofs()...)
 			proofs = append(proofs, current.root.GetIndexProofs(i)...)
+			proofs = append(proofs, current.GetTreeProofs()...)
 			return proofs
 		}
 
@@ -181,9 +193,23 @@ func (t *Tree) GetIndexProofs(i int) [][]byte {
 	return proofs
 }
 
+func (t *Tree) GetRootHash() []byte {
 
-//[227 176 196 66 152 252 28 20 154 251 244 200 153 111 185 36 39 174 65 228 100 155 147 76 164 149 153 27 120 82 184 85]
-//[75 217 49 194 89 99 166 172 221 108 189 32 135 207 23 40 30 96 254 174 103 138 69 33 215 139 153 126 162 232 247 2]
-//[159 242 126 58 20 8 10 86 205 90 252 235 41 220 68 66 233 158 235 199 53 219 40 10 111 243 215 180 166 159 143 73]
-//[136 251 153 33 90 8 180 55 66 184 146 46 64 60 223 40 135 200 252 202 215 213 222 106 30 140 104 137 177 227 196 23]
-//[63 133 40 196 85 15 252 43 31 93 133 83 188 95 168 173 6 123 248 205 181 127 135 107 22 112 206 86 201 87 38 178]
+	if t.subTree == nil {
+		return nil
+	}
+
+	rootHash := t.subTree.root.hash
+	current := t.subTree.left
+
+	for current != nil {
+		h := sha256.New()
+		h.Write(rootHash)
+		h.Write(current.root.hash)
+
+		rootHash = h.Sum(nil)
+		current = current.left
+	}
+
+	return rootHash
+}
