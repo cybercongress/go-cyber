@@ -23,7 +23,7 @@ func (app *CyberdApp) Search(cid string, page, perPage int) ([]RankedCid, int, e
 
 	ctx := app.RpcContext()
 	cidNumber, exists := app.cidNumKeeper.GetCidNumber(ctx, cbdlink.Cid(cid))
-	if !exists {
+	if !exists || cidNumber > app.rankState.GetLastCidNum() {
 		return nil, 0, errors.New("no such cid found")
 	}
 
