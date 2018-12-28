@@ -24,6 +24,7 @@
 - Linkchains support [\#91](https://github.com/cybercongress/cyberd/issues/91)
 - Include addresses into knowledge graph [\#90](https://github.com/cybercongress/cyberd/issues/90)
 - Graphics for whitepaper [\#88](https://github.com/cybercongress/cyberd/issues/88)
+- Test Ethereum Network Statistical Significance [\#52](https://github.com/cybercongress/cyberd/issues/52)
 - Cyberd landing design [\#51](https://github.com/cybercongress/cyberd/issues/51)
 - Simulation [\#31](https://github.com/cybercongress/cyberd/issues/31)
 - Link Chain PoC | Zeronet [\#26](https://github.com/cybercongress/cyberd/issues/26)
@@ -36,6 +37,7 @@
 
 **Merged pull requests:**
 
+- \#139 Index out of range for cids with not calculated rank yet. [\#140](https://github.com/cybercongress/cyberd/pull/140) ([hleb-albau](https://github.com/hleb-albau))
 - Fix http client and rank logs [\#137](https://github.com/cybercongress/cyberd/pull/137) ([hleb-albau](https://github.com/hleb-albau))
 - \[euler-dev3\] New testnet [\#136](https://github.com/cybercongress/cyberd/pull/136) ([hleb-albau](https://github.com/hleb-albau))
 - \#101 Copy state before index creation [\#135](https://github.com/cybercongress/cyberd/pull/135) ([hleb-albau](https://github.com/hleb-albau))
