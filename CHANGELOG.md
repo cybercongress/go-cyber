@@ -12,6 +12,7 @@
 
 **Fixed bugs:**
 
+- Index out of range for cids with not calculated rank yet. [\#139](https://github.com/cybercongress/cyberd/issues/139)
 - Account inmem balances should be updated by wrapping accountKeeper [\#99](https://github.com/cybercongress/cyberd/issues/99)
 
 **Closed issues:**
@@ -37,6 +38,7 @@
 
 **Merged pull requests:**
 
+- Merkle tree implementation [\#141](https://github.com/cybercongress/cyberd/pull/141) ([arturalbov](https://github.com/arturalbov))
 - \#139 Index out of range for cids with not calculated rank yet. [\#140](https://github.com/cybercongress/cyberd/pull/140) ([hleb-albau](https://github.com/hleb-albau))
 - Fix http client and rank logs [\#137](https://github.com/cybercongress/cyberd/pull/137) ([hleb-albau](https://github.com/hleb-albau))
 - \[euler-dev3\] New testnet [\#136](https://github.com/cybercongress/cyberd/pull/136) ([hleb-albau](https://github.com/hleb-albau))
