@@ -2,121 +2,33 @@ package merkle
 
 import (
 	"bytes"
-	"crypto/sha256"
+	"hash"
 	"math"
 )
 
-type Subtree struct {
-	root *Node
-
-	left  *Subtree
-	right *Subtree
-
-	height int
-}
-
-func (t *Subtree) GetRootProofs() []Proof {
-	proofs := make([]Proof, 0)
-
-	proofs = append(proofs, t.getRightProofs()...)
-	proofs = append(proofs, t.getLeftProofs()...)
-
-	return proofs
-}
-
-func (t *Subtree) getLeftProofs() []Proof {
-	proofs := make([]Proof, 0, 1)
-	current := t.left
-	for current != nil {
-		proofs = append(proofs, Proof{hash: current.root.hash, left: false})
-		current = current.left
-	}
-	return proofs
-}
-
-// right proof is only one cause we have to merge all right trees
-func (t *Subtree) getRightProofs() []Proof {
-
-	if t.right == nil {
-		return make([]Proof, 0)
-	}
-
-	hashesToSum := make([][]byte, 0)
-
-	rightTree := t.right
-	for rightTree != nil {
-		hashesToSum = append(hashesToSum, rightTree.root.hash)
-		rightTree = rightTree.right
-	}
-
-	n := len(hashesToSum) - 1
-	proofHash := hashesToSum[n]
-	for i := n - 1; i >= 0; i-- {
-		h := sha256.New()
-		h.Write(proofHash)
-		h.Write(hashesToSum[i])
-		proofHash = h.Sum(nil)
-	}
-
-	return []Proof{{hash: proofHash, left: true}}
-}
-
-type Node struct {
-	hash []byte
-
-	parent *Node
-	left   *Node
-	right  *Node
-
-	// first index of elements in this node subnodes (inclusive)
-	firstIndex int
-	// last index of elements in this node subnodes (inclusive)
-	lastIndex int
-}
-
-func (n *Node) GetIndexProofs(i int) []Proof {
-	proofs := make([]Proof, 0)
-
-	if n.left != nil && i >= n.left.firstIndex && i <= n.left.lastIndex {
-		proofs = n.left.GetIndexProofs(i)
-		proofs = append(proofs, Proof{hash: n.right.hash, left: false})
-	}
-
-	if n.right != nil && i >= n.right.firstIndex && i <= n.right.lastIndex {
-		proofs = n.right.GetIndexProofs(i)
-		proofs = append(proofs, Proof{hash: n.left.hash, left: true})
-	}
-
-	return proofs
-}
-
-// we separate whole tree to sub trees where nodes count equal power of 2
+// Merkle tree data structure based on RFC-6962 standard (https://tools.ietf.org/html/rfc6962#section-2.1)
+// we separate whole tree to subtrees where nodes count equal power of 2
+// root hash calculates from right to left by summing subtree roots hashes.
 type Tree struct {
-	// this tree subtrees start from lowest height (from last right subtree)
+	// this tree subtrees start from lowest height (extreme right subtree)
 	subTree *Subtree
 
-	// first index of elements in this tree (inclusive)
-	firstIndex int
 	// last index of elements in this tree (exclusive)
 	lastIndex int
 
-	hash []byte
+	hashF hash.Hash // DON'T USE IT FOR PARALLEL CALCULATION (results in errors)
 }
 
-func NewTree() Tree {
-	return Tree{}
+func NewTree(hashF hash.Hash) Tree {
+	return Tree{hashF: hashF}
 }
 
 func (t *Tree) joinAllSubtrees() {
 
 	for t.subTree.left != nil && t.subTree.height == t.subTree.left.height {
 
-		newRootHash := sha256.New()
-		newRootHash.Write(t.subTree.left.root.hash)
-		newRootHash.Write(t.subTree.root.hash)
-
 		newSubtreeRoot := &Node{
-			hash:       newRootHash.Sum(nil),
+			hash:       sum(t.hashF, t.subTree.left.root.hash, t.subTree.root.hash),
 			parent:     nil,
 			left:       t.subTree.left.root,
 			right:      t.subTree.root,
@@ -132,6 +44,7 @@ func (t *Tree) joinAllSubtrees() {
 			right:  nil,
 			left:   t.subTree.left.left,
 			height: t.subTree.height + 1,
+			hashF:  t.hashF,
 		}
 
 		if t.subTree.left != nil {
@@ -141,14 +54,48 @@ func (t *Tree) joinAllSubtrees() {
 	}
 }
 
+func (t *Tree) Reset() {
+	t.lastIndex = 0
+	t.subTree = nil
+}
+
+// build completely new tree with data
+// works the same (by time) as using Push method one by one
+func (t *Tree) BuildNew(data [][]byte) {
+	t.Reset()
+	itemsLeft := int64(len(data))
+
+	nextSubtreeLen := int64(math.Pow(2, float64(int64(math.Log2(float64(itemsLeft))))))
+	startIndex := int64(0)
+	endIndex := startIndex + nextSubtreeLen
+
+	for nextSubtreeLen != 0 {
+
+		nextSubtree := buildSubTree(t.hashF, int(startIndex), data[startIndex:endIndex])
+
+		if t.subTree != nil {
+			t.subTree.right = nextSubtree
+			nextSubtree.left = t.subTree
+			t.subTree = nextSubtree
+		} else {
+			t.subTree = nextSubtree
+		}
+
+		itemsLeft = itemsLeft - nextSubtreeLen
+		nextSubtreeLen = int64(math.Pow(2, float64(int64(math.Log2(float64(itemsLeft))))))
+		startIndex = endIndex
+		endIndex = startIndex + nextSubtreeLen
+	}
+
+	t.lastIndex = int(endIndex)
+
+}
+
 // n*log(n)
 func (t *Tree) Push(data []byte) {
 
-	hash := sha256.New()
-	hash.Write(data)
-
 	newSubtreeRoot := &Node{
-		hash:       hash.Sum(nil),
+		hash:       sum(t.hashF, data),
 		parent:     nil,
 		left:       nil,
 		right:      nil,
@@ -163,6 +110,7 @@ func (t *Tree) Push(data []byte) {
 		right:  nil,
 		left:   t.subTree,
 		height: 0,
+		hashF:  t.hashF,
 	}
 
 	if t.subTree.left != nil {
@@ -170,8 +118,6 @@ func (t *Tree) Push(data []byte) {
 	}
 
 	t.joinAllSubtrees()
-
-	t.hash = t.GetRootHash()
 }
 
 // going from right trees to left
@@ -199,18 +145,16 @@ func (t *Tree) ValidateIndex(i int, data []byte) bool {
 
 func (t *Tree) ValidateIndexByProofs(i int, data []byte, proofs []Proof) bool {
 
-	h := sha256.New()
-	h.Write(data)
-
-	rootHash := h.Sum(nil)
+	rootHash := sum(t.hashF, data)
 	for _, proof := range proofs {
-		rootHash = proof.ConcatWith(rootHash)
+		rootHash = proof.SumWith(t.hashF, rootHash)
 	}
 
-	return bytes.Equal(rootHash, t.GetRootHash())
+	return bytes.Equal(rootHash, t.RootHash())
 }
 
-func (t *Tree) GetRootHash() []byte {
+// root hash calculates from right to left by summing subtree roots hashes.
+func (t *Tree) RootHash() []byte {
 
 	if t.subTree == nil {
 		return nil
@@ -220,11 +164,7 @@ func (t *Tree) GetRootHash() []byte {
 	current := t.subTree.left
 
 	for current != nil {
-		h := sha256.New()
-		h.Write(rootHash)
-		h.Write(current.root.hash)
-
-		rootHash = h.Sum(nil)
+		rootHash = sum(t.hashF, rootHash, current.root.hash)
 		current = current.left
 	}
 

@@ -1,14 +1,15 @@
 package merkle
 
 import (
+	"crypto/sha256"
 	"encoding/binary"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
 
-func TestProofs(t *testing.T) {
+func TestPushAndProofs(t *testing.T) {
 
-	tree := NewTree()
+	tree := NewTree(sha256.New())
 
 	data := make([]byte, 8)
 
@@ -24,4 +25,54 @@ func TestProofs(t *testing.T) {
 		require.Equal(t, true, tree.ValidateIndexByProofs(i, data, proofs))
 	}
 
+}
+
+func TestBuildNewAndProofs(t *testing.T) {
+
+	tree := NewTree(sha256.New())
+
+	allData := make([][]byte, 0, 31)
+
+	for i := 0; i < 31; i++ {
+		data := make([]byte, 8)
+		binary.LittleEndian.PutUint64(data, uint64(i))
+		allData = append(allData, data)
+	}
+
+	tree.BuildNew(allData)
+
+	// Check all proofs
+	for i := 0; i < 31; i++ {
+		proofs := tree.GetIndexProofs(i)
+		data := make([]byte, 8)
+		binary.LittleEndian.PutUint64(data, uint64(i))
+		require.Equal(t, true, tree.ValidateIndexByProofs(i, data, proofs))
+	}
+
+}
+
+func TestEqualityOfBuildNewAndPush(t *testing.T) {
+
+	tree1 := NewTree(sha256.New())
+
+	data := make([]byte, 8)
+
+	for i := 0; i < 31; i++ {
+		binary.LittleEndian.PutUint64(data, uint64(i))
+		tree1.Push(data)
+	}
+
+	tree2 := NewTree(sha256.New())
+
+	allData := make([][]byte, 0, 31)
+
+	for i := 0; i < 31; i++ {
+		data := make([]byte, 8)
+		binary.LittleEndian.PutUint64(data, uint64(i))
+		allData = append(allData, data)
+	}
+
+	tree2.BuildNew(allData)
+
+	require.Equal(t, tree1.RootHash(), tree2.RootHash())
 }

@@ -1,23 +1,20 @@
 package merkle
 
-import "crypto/sha256"
+import (
+	"hash"
+)
 
 type Proof struct {
-	left bool // where proof should be placed for concat with hash (left or right)
-	hash []byte
+	leftSide bool // where proof should be placed to sum with hash (left or right side)
+	hash     []byte
 }
 
 // calculate sum hash
-func (p *Proof) ConcatWith(hash []byte) []byte {
-	h := sha256.New()
+func (p *Proof) SumWith(hashF hash.Hash, hash []byte) []byte {
 
-	if p.left {
-		h.Write(p.hash)
-		h.Write(hash)
+	if p.leftSide {
+		return sum(hashF, p.hash, hash)
 	} else {
-		h.Write(hash)
-		h.Write(p.hash)
+		return sum(hashF, hash, p.hash)
 	}
-
-	return h.Sum(nil)
 }
