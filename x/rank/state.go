@@ -50,7 +50,6 @@ func (s *RankState) Load(ctx sdk.Context, mainKeeper store.MainKeeper) {
 	}
 }
 
-// TODO: add flag to not build index at all
 func (s *RankState) GetCidRankedLinks(cidNumber CidNumber, page, perPage int) ([]RankedCidNumber, int, error) {
 
 	if !s.allowSearch {
@@ -175,6 +174,10 @@ func (s *RankState) GetCurrentRankHash() []byte {
 
 func (s *RankState) NextRankReady() bool {
 	return !bytes.Equal(s.nextRankHash, s.networkRankHash)
+}
+
+func (s *RankState) GetLastCidNum() CidNumber {
+	return CidNumber(len(s.networkCidRank) - 1)
 }
 
 //
