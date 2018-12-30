@@ -16,7 +16,7 @@ func sum(h hash.Hash, data ...[]byte) []byte {
 
 // number of data elements should be power of 2
 // not suitable for parallel calculations cause using same hash.Hash
-func buildSubTree(h hash.Hash, startIndex int, data [][]byte) *Subtree {
+func buildSubTree(h hash.Hash, full bool, startIndex int, data [][]byte) *Subtree {
 
 	nodes := make([]*Node, len(data))
 	for i := 0; i < len(data); i++ {
@@ -29,7 +29,7 @@ func buildSubTree(h hash.Hash, startIndex int, data [][]byte) *Subtree {
 
 	}
 
-	root := sumNodes(h, nodes)[0]
+	root := sumNodes(h, full, nodes)[0]
 
 	return &Subtree{
 		root:   root,
@@ -40,7 +40,7 @@ func buildSubTree(h hash.Hash, startIndex int, data [][]byte) *Subtree {
 	}
 }
 
-func sumNodes(h hash.Hash, nodes []*Node) []*Node {
+func sumNodes(h hash.Hash, full bool, nodes []*Node) []*Node {
 
 	if len(nodes) == 1 {
 		return nodes
@@ -48,22 +48,24 @@ func sumNodes(h hash.Hash, nodes []*Node) []*Node {
 
 	newNodes := make([]*Node, len(nodes)/2)
 	for i := 0; i < len(nodes); i += 2 {
-		newNodes[i/2] = joinNodes(h, nodes[i], nodes[i+1])
+		newNodes[i/2] = joinNodes(h, full, nodes[i], nodes[i+1])
 	}
 
-	return sumNodes(h, newNodes)
+	return sumNodes(h, full, newNodes)
 }
 
-func joinNodes(h hash.Hash, left *Node, right *Node) *Node {
+func joinNodes(h hash.Hash, full bool, left *Node, right *Node) *Node {
 	newNode := &Node{
 		firstIndex: left.firstIndex,
 		lastIndex:  right.lastIndex,
 		hash:       sum(h, left.hash, right.hash),
-		left:       left,
-		right:      right,
-		parent:     nil,
 	}
-	left.parent = newNode
-	right.parent = newNode
+
+	if full {
+		newNode.left = left
+		newNode.right = right
+		left.parent = newNode
+		right.parent = newNode
+	}
 	return newNode
 }

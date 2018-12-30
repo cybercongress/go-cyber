@@ -2,6 +2,7 @@ package merkle
 
 import (
 	"bytes"
+	"encoding/binary"
 	"hash"
 	"math"
 )
@@ -12,15 +13,22 @@ import (
 type Tree struct {
 	// this tree subtrees start from lowest height (extreme right subtree)
 	subTree *Subtree
+	// subtrees total count (for convenience)
+	subTreesCount int
 
 	// last index of elements in this tree (exclusive)
 	lastIndex int
 
-	hashF hash.Hash // DON'T USE IT FOR PARALLEL CALCULATION (results in errors)
+	// DON'T USE IT FOR PARALLEL CALCULATION (results in errors)
+	hashF hash.Hash
+
+	// if false then store only roots of subtrees (no proofs available => suitable for consensus only)
+	// for 1,099,511,627,775 links tree would contain only 40 root hashes.
+	full bool
 }
 
-func NewTree(hashF hash.Hash) Tree {
-	return Tree{hashF: hashF}
+func NewTree(hashF hash.Hash, full bool) Tree {
+	return Tree{hashF: hashF, full: full}
 }
 
 func (t *Tree) joinAllSubtrees() {
@@ -29,15 +37,17 @@ func (t *Tree) joinAllSubtrees() {
 
 		newSubtreeRoot := &Node{
 			hash:       sum(t.hashF, t.subTree.left.root.hash, t.subTree.root.hash),
-			parent:     nil,
-			left:       t.subTree.left.root,
-			right:      t.subTree.root,
 			firstIndex: t.subTree.left.root.firstIndex,
 			lastIndex:  t.subTree.root.lastIndex,
 		}
 
-		newSubtreeRoot.left.parent = newSubtreeRoot
-		newSubtreeRoot.right.parent = newSubtreeRoot
+		// for full tree we should keep all nodes
+		if t.full {
+			newSubtreeRoot.left = t.subTree.left.root
+			newSubtreeRoot.right = t.subTree.root
+			newSubtreeRoot.left.parent = newSubtreeRoot
+			newSubtreeRoot.right.parent = newSubtreeRoot
+		}
 
 		t.subTree = &Subtree{
 			root:   newSubtreeRoot,
@@ -51,12 +61,14 @@ func (t *Tree) joinAllSubtrees() {
 			t.subTree.left.right = t.subTree
 		}
 
+		t.subTreesCount--
 	}
 }
 
 func (t *Tree) Reset() {
 	t.lastIndex = 0
 	t.subTree = nil
+	t.subTreesCount = 0
 }
 
 // build completely new tree with data
@@ -71,7 +83,7 @@ func (t *Tree) BuildNew(data [][]byte) {
 
 	for nextSubtreeLen != 0 {
 
-		nextSubtree := buildSubTree(t.hashF, int(startIndex), data[startIndex:endIndex])
+		nextSubtree := buildSubTree(t.hashF, t.full, int(startIndex), data[startIndex:endIndex])
 
 		if t.subTree != nil {
 			t.subTree.right = nextSubtree
@@ -80,6 +92,8 @@ func (t *Tree) BuildNew(data [][]byte) {
 		} else {
 			t.subTree = nextSubtree
 		}
+
+		t.subTreesCount++
 
 		itemsLeft = itemsLeft - nextSubtreeLen
 		nextSubtreeLen = int64(math.Pow(2, float64(int64(math.Log2(float64(itemsLeft))))))
@@ -117,11 +131,17 @@ func (t *Tree) Push(data []byte) {
 		t.subTree.left.right = t.subTree
 	}
 
+	t.subTreesCount++
 	t.joinAllSubtrees()
 }
 
 // going from right trees to left
 func (t *Tree) GetIndexProofs(i int) []Proof {
+
+	// we cannot build proofs with not full tree
+	if !t.full {
+		return nil
+	}
 
 	proofs := make([]Proof, 0, int64(math.Log2(float64(t.lastIndex))))
 
@@ -140,6 +160,9 @@ func (t *Tree) GetIndexProofs(i int) []Proof {
 }
 
 func (t *Tree) ValidateIndex(i int, data []byte) bool {
+	if !t.full {
+		return false
+	}
 	return t.ValidateIndexByProofs(i, data, t.GetIndexProofs(i))
 }
 
@@ -153,7 +176,7 @@ func (t *Tree) ValidateIndexByProofs(i int, data []byte, proofs []Proof) bool {
 	return bytes.Equal(rootHash, t.RootHash())
 }
 
-// root hash calculates from right to left by summing subtree roots hashes.
+// root hash calculates from right to left by summing subtrees root hashes.
 func (t *Tree) RootHash() []byte {
 
 	if t.subTree == nil {
@@ -169,4 +192,69 @@ func (t *Tree) RootHash() []byte {
 	}
 
 	return rootHash
+}
+
+// from right to left
+// we need to export root hash and height of tree
+// from those bytes we could restore it later and use for consensus
+func (t *Tree) ExportSubtreesRoots() []byte {
+	if t.subTree == nil {
+		return nil
+	}
+
+	hashSize := t.hashF.Size()
+	heightSize := 8 // using 8 byte integer
+	result := make([]byte, 0, (hashSize+heightSize)*t.subTreesCount)
+	current := t.subTree
+
+	for current != nil {
+		heightBytes := make([]byte, 8)
+		binary.LittleEndian.PutUint64(heightBytes, uint64(current.height))
+
+		result = append(result, current.root.hash...)
+		result = append(result, heightBytes...)
+		current = current.left
+	}
+
+	return result
+}
+
+// from right to left
+// after import we loosing indices (actually they don't need for consensus and pushing)
+func (t *Tree) ImportSubtreesRoots(subTreesRoots []byte) {
+	t.Reset()
+	t.full = false
+
+	hashSize := t.hashF.Size()
+	heightSize := 8
+
+	t.subTreesCount = len(subTreesRoots) / (hashSize + heightSize)
+
+	start := 0
+	var first *Subtree
+	var current *Subtree
+	for i := 0; i < t.subTreesCount; i++ {
+		end := start + hashSize
+		rootHash := subTreesRoots[start : end]
+		height := binary.LittleEndian.Uint64(subTreesRoots[end : end+heightSize])
+		nextSubtree := &Subtree{
+			root: &Node{
+				hash: rootHash,
+			},
+			height: int(height),
+		}
+
+		if current != nil {
+			nextSubtree.right = current
+			current.left = nextSubtree
+			current = nextSubtree
+		} else {
+			current = nextSubtree
+			first = nextSubtree
+		}
+
+		start = end + heightSize
+	}
+
+	t.subTree = first
 }
