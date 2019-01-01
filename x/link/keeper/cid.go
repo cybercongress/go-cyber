@@ -62,7 +62,7 @@ func (k BaseCidNumberKeeper) GetOrPutCidNumber(ctx sdk.Context, cid Cid) CidNumb
 	// new cid, get new index
 	if cidIndexAsBytes == nil {
 
-		lastIndex := k.ms.GetCidsCount(ctx)
+		lastIndex := k.GetCidsCount(ctx)
 		lastIndexAsBytes := make([]byte, 8)
 		binary.LittleEndian.PutUint64(lastIndexAsBytes, lastIndex)
 

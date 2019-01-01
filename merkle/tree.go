@@ -27,8 +27,8 @@ type Tree struct {
 	full bool
 }
 
-func NewTree(hashF hash.Hash, full bool) Tree {
-	return Tree{hashF: hashF, full: full}
+func NewTree(hashF hash.Hash, full bool) *Tree {
+	return &Tree{hashF: hashF, full: full}
 }
 
 func (t *Tree) joinAllSubtrees() {
@@ -180,7 +180,7 @@ func (t *Tree) ValidateIndexByProofs(i int, data []byte, proofs []Proof) bool {
 func (t *Tree) RootHash() []byte {
 
 	if t.subTree == nil {
-		return nil
+		return sum(t.hashF) // zero hash
 	}
 
 	rootHash := t.subTree.root.hash
@@ -199,7 +199,7 @@ func (t *Tree) RootHash() []byte {
 // from those bytes we could restore it later and use for consensus
 func (t *Tree) ExportSubtreesRoots() []byte {
 	if t.subTree == nil {
-		return nil
+		return make([]byte, 0)
 	}
 
 	hashSize := t.hashF.Size()
