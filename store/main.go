@@ -8,12 +8,13 @@ import (
 
 var lastCidNumberKey = []byte("cyberd_last_cid_number")
 var linksCountKey = []byte("cyberd_links_count")
-var lastAppHashKey = []byte("cyberd_app_hash")
-var nextAppHashKey = []byte("cyberd_next_app_hash")
+var lastCalculatedRankHashKey = []byte("cyberd_last_calculated_rank_hash")
 var genesisSupplyKey = []byte("cyberd_genesis_supply")
 var lastBandwidthPrice = []byte("cyberd_last_bandwidth_price")
 var spentBandwidth = []byte("cyberd_spent_bandwidth")
 var latestBlockNumber = []byte("cyberd_latest_block_number")
+var latestMerkleTree = []byte("cyberd_latest_merkle_tree")
+var nextMerkleTree = []byte("cyberd_next_merkle_tree")
 
 type MainKeeper struct {
 	key *sdk.KVStoreKey
@@ -74,26 +75,14 @@ func (ms MainKeeper) SetLastCidIndex(ctx sdk.Context, cidsCount []byte) {
 	mainStore.Set(lastCidNumberKey, cidsCount)
 }
 
-func (ms MainKeeper) GetAppHash(ctx sdk.Context) []byte {
+func (ms MainKeeper) GetLastCalculatedRankHash(ctx sdk.Context) []byte {
 	store := ctx.KVStore(ms.key)
-	return store.Get(lastAppHashKey)
+	return store.Get(lastCalculatedRankHashKey)
 }
 
-func (ms MainKeeper) StoreAppHash(ctx sdk.Context, hash []byte) {
-
+func (ms MainKeeper) StoreLastCalculatedRankHash(ctx sdk.Context, hash []byte) {
 	store := ctx.KVStore(ms.key)
-	store.Set(lastAppHashKey, hash)
-}
-
-func (ms MainKeeper) GetNextAppHash(ctx sdk.Context) []byte {
-	store := ctx.KVStore(ms.key)
-	return store.Get(nextAppHashKey)
-}
-
-func (ms MainKeeper) StoreNextAppHash(ctx sdk.Context, hash []byte) {
-
-	store := ctx.KVStore(ms.key)
-	store.Set(nextAppHashKey, hash)
+	store.Set(lastCalculatedRankHashKey, hash)
 }
 
 func (ms MainKeeper) GetBandwidthPrice(ctx sdk.Context, basePrice float64) uint64 {
@@ -143,4 +132,24 @@ func (ms MainKeeper) StoreLatestBlockNumber(ctx sdk.Context, number uint64) {
 	numberAsBytes := make([]byte, 8)
 	binary.LittleEndian.PutUint64(numberAsBytes, number)
 	store.Set(latestBlockNumber, numberAsBytes)
+}
+
+func (ms MainKeeper) GetLatestMerkleTree(ctx sdk.Context) []byte {
+	store := ctx.KVStore(ms.key)
+	return store.Get(latestMerkleTree)
+}
+
+func (ms MainKeeper) StoreLatestMerkleTree(ctx sdk.Context, treeAsBytes []byte) {
+	store := ctx.KVStore(ms.key)
+	store.Set(latestMerkleTree, treeAsBytes)
+}
+
+func (ms MainKeeper) GetNextMerkleTree(ctx sdk.Context) []byte {
+	store := ctx.KVStore(ms.key)
+	return store.Get(nextMerkleTree)
+}
+
+func (ms MainKeeper) StoreNextMerkleTree(ctx sdk.Context, treeAsBytes []byte) {
+	store := ctx.KVStore(ms.key)
+	store.Set(nextMerkleTree, treeAsBytes)
 }

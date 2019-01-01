@@ -3,13 +3,12 @@ package rank
 import (
 	"bytes"
 	"crypto/sha256"
-	"encoding/binary"
 	"errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cybercongress/cyberd/merkle"
 	"github.com/cybercongress/cyberd/store"
 	. "github.com/cybercongress/cyberd/x/link/types"
 	"github.com/tendermint/tendermint/libs/log"
-	"math"
 	"sort"
 )
 
@@ -23,11 +22,10 @@ func (c RankedCidNumber) GetRank() float64     { return c.rank }
 
 type RankState struct {
 	cidRankedLinksIndex []cidRankedLinks
-	networkCidRank      []float64 // array index is cid number
-	nextCidRank         []float64 // array index is cid number
+	networkCidRank      Rank // array index is cid number
+	nextCidRank         Rank // array index is cid number
 
-	networkRankHash []byte
-	nextRankHash    []byte
+	lastCalculatedRankHash []byte
 
 	allowSearch  bool
 	indexErrChan chan error
@@ -40,14 +38,11 @@ func NewRankState(allowSearch bool) *RankState {
 }
 
 func (s *RankState) Load(ctx sdk.Context, mainKeeper store.MainKeeper) {
-	s.networkRankHash = mainKeeper.GetAppHash(ctx)
-	s.nextRankHash = mainKeeper.GetNextAppHash(ctx)
-	if s.networkRankHash == nil {
-		s.networkRankHash = s.calculateHash(s.networkCidRank)
-	}
-	if s.nextRankHash == nil {
-		s.nextRankHash = s.calculateHash(s.nextCidRank)
-	}
+	s.lastCalculatedRankHash = mainKeeper.GetLastCalculatedRankHash(ctx)
+	s.networkCidRank = Rank{Values: nil, MerkleTree: merkle.NewTree(sha256.New(), false)}
+	s.nextCidRank = Rank{Values: nil, MerkleTree: merkle.NewTree(sha256.New(), false)}
+	s.networkCidRank.MerkleTree.ImportSubtreesRoots(mainKeeper.GetLatestMerkleTree(ctx))
+	s.nextCidRank.MerkleTree.ImportSubtreesRoots(mainKeeper.GetNextMerkleTree(ctx))
 }
 
 func (s *RankState) GetCidRankedLinks(cidNumber CidNumber, page, perPage int) ([]RankedCidNumber, int, error) {
@@ -81,30 +76,24 @@ func (s *RankState) GetCidRankedLinks(cidNumber CidNumber, page, perPage int) ([
 	return resultSet, totalSize, nil
 }
 
-func (s *RankState) SetNextRank(newRank []float64) {
+func (s *RankState) SetNextRank(newRank Rank) {
 	s.nextCidRank = newRank
-	s.nextRankHash = s.calculateHash(newRank)
 }
 
-func (s *RankState) calculateHash(rank []float64) []byte {
-	rankAsBytes := make([]byte, 8*len(rank))
-	for i, f64 := range rank {
-		binary.LittleEndian.PutUint64(rankAsBytes[i*8:i*8+8], math.Float64bits(f64))
-	}
-
-	hash := sha256.Sum256(rankAsBytes)
-	return hash[:]
-}
-
-func (s *RankState) ApplyNextRank(cidsCount int64) {
+func (s *RankState) ApplyNextRank() {
 	s.networkCidRank = s.nextCidRank
-	s.networkRankHash = s.nextRankHash
-	s.nextCidRank = nil
+	s.lastCalculatedRankHash = s.nextCidRank.MerkleTree.RootHash()
+	s.nextCidRank.Reset()
+}
+
+// add new cids to rank with 0 value
+func (s *RankState) AddNewCids(cidCount uint64) {
+	s.networkCidRank.AddNewCids(cidCount)
 }
 
 func (s *RankState) BuildCidRankedLinksIndex(cidsCount int64, outLinks Links) {
 	// If search on this node is not allowed then we don't need to build index
-	if !s.allowSearch || s.networkCidRank == nil {
+	if !s.allowSearch || s.networkCidRank.Values == nil {
 		return
 	}
 
@@ -145,7 +134,7 @@ func (s *RankState) CheckBuildIndexError(logger log.Logger) {
 func (s *RankState) getLinksSortedByRank(cidOutLinks CidLinks) cidRankedLinks {
 	cidRankedLinks := make(cidRankedLinks, 0, len(cidOutLinks))
 	for linkedCidNumber := range cidOutLinks {
-		rankedCid := RankedCidNumber{number: linkedCidNumber, rank: s.networkCidRank[linkedCidNumber]}
+		rankedCid := RankedCidNumber{number: linkedCidNumber, rank: s.networkCidRank.Values[linkedCidNumber]}
 		cidRankedLinks = append(cidRankedLinks, rankedCid)
 	}
 	sort.Stable(sort.Reverse(cidRankedLinks))
@@ -156,28 +145,28 @@ func (s *RankState) getLinksSortedByRank(cidOutLinks CidLinks) cidRankedLinks {
 // GETTERS
 
 //rank index
-func (s *RankState) GetNetworkRank() []float64 {
-	return s.networkCidRank
-}
-
 func (s *RankState) SearchAllowed() bool {
 	return s.allowSearch
 }
 
-func (s *RankState) GetNextRankHash() []byte {
-	return s.nextRankHash
+func (s *RankState) GetNetworkRankHash() []byte {
+	return s.networkCidRank.MerkleTree.RootHash()
 }
 
-func (s *RankState) GetCurrentRankHash() []byte {
-	return s.networkRankHash
+func (s *RankState) GetNetworkMerkleTreeAsBytes() []byte {
+	return s.networkCidRank.MerkleTree.ExportSubtreesRoots()
+}
+
+func (s *RankState) GetNextMerkleTreeAsBytes() []byte {
+	return s.nextCidRank.MerkleTree.ExportSubtreesRoots()
 }
 
 func (s *RankState) NextRankReady() bool {
-	return !bytes.Equal(s.nextRankHash, s.networkRankHash)
+	return s.lastCalculatedRankHash != nil && !bytes.Equal(s.nextCidRank.MerkleTree.RootHash(), s.lastCalculatedRankHash)
 }
 
 func (s *RankState) GetLastCidNum() CidNumber {
-	return CidNumber(len(s.networkCidRank) - 1)
+	return CidNumber(len(s.networkCidRank.Values) - 1)
 }
 
 //

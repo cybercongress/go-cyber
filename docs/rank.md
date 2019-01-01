@@ -40,3 +40,6 @@ Problems:
  Store 3 hashes (last calculation hash, last block hash, new calculation hash)
 2. Recalculation of index. New links will go to next rank calculation and old index (with those links) 
 will be replaced by currently calculated rank.
+
+For building index we need to find sorting algorithm that will be fast on almost sorted arrays. 
+Also we should implement it for GPU (therefore it better be parallelizable). Mergesort(Timsort), Heapsort, Smoothsort???

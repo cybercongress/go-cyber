@@ -93,9 +93,9 @@ type CyberdApp struct {
 
 	// TODO: move to RankState???
 	rankCalculationFinished bool
-	rankCidCount            int64
+	cidCount                int64
 
-	rankCalcChan chan []float64
+	rankCalcChan chan rank.Rank
 	rankErrChan  chan error
 }
 
@@ -223,8 +223,8 @@ func NewCyberdApp(
 	// RANK PARAMS
 	app.rankState.Load(ctx, app.mainKeeper)
 	app.rankCalculationFinished = true
-	app.rankCalcChan = make(chan []float64, 1)
-	app.rankCidCount = int64(app.mainKeeper.GetCidsCount(ctx))
+	app.rankCalcChan = make(chan rank.Rank, 1)
+	app.cidCount = int64(app.mainKeeper.GetCidsCount(ctx))
 	app.rankErrChan = make(chan error)
 
 	// if we have fallen and need to start new rank calculation
@@ -467,9 +467,9 @@ func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.R
 	app.curBlockSpentBandwidth = 0
 
 	// START RANK CALCULATION
-	//linksCount := app.mainKeeper.GetLinksCount(ctx)
 
-	//start := time.Now()
+	currentCidsCount := app.mainKeeper.GetCidsCount(ctx)
+	app.linkIndexedKeeper.EndBlocker()
 	if ctx.BlockHeight()%rank.CalculationPeriod == 0 || ctx.BlockHeight() == 1 {
 
 		if !app.rankCalculationFinished {
@@ -483,18 +483,17 @@ func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.R
 			}
 		}
 
-		app.rankState.ApplyNextRank(app.rankCidCount)
+		app.rankState.ApplyNextRank()
 		// Recalculate index
 		// todo state copied
 		outLinksCopy := lnk.Links(app.linkIndexedKeeper.GetOutLinks()).Copy()
-		go app.rankState.BuildCidRankedLinksIndexInParallel(app.rankCidCount, outLinksCopy)
+		go app.rankState.BuildCidRankedLinksIndexInParallel(app.cidCount, outLinksCopy)
 
-		rankHash := app.rankState.GetCurrentRankHash()
-		app.mainKeeper.StoreAppHash(ctx, rankHash)
+		app.mainKeeper.StoreLastCalculatedRankHash(ctx, app.rankState.GetNetworkRankHash())
 
+		// start new calculation
 		app.rankCalculationFinished = false
-
-		app.rankCidCount = int64(app.mainKeeper.GetCidsCount(ctx))
+		app.cidCount = int64(currentCidsCount)
 		app.linkIndexedKeeper.FixLinks()
 		app.stakeIndex.FixUserStake()
 		app.startRankCalculation(ctx)
@@ -514,6 +513,8 @@ func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.R
 	}
 
 	//CHECK INDEX BUILDING FOR ERROR:
+	app.rankState.AddNewCids(currentCidsCount)
+	app.mainKeeper.StoreLatestMerkleTree(ctx, app.rankState.GetNetworkMerkleTreeAsBytes())
 	app.rankState.CheckBuildIndexError(app.BaseApp.Logger)
 
 	// END RANK CALCULATION
@@ -525,13 +526,15 @@ func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.R
 }
 
 func (app *CyberdApp) startRankCalculation(ctx sdk.Context) {
-	calcCtx := rank.NewCalcContext(ctx, app.linkIndexedKeeper, app.cidNumKeeper, app.stakeIndex)
+	calcCtx := rank.NewCalcContext(
+		ctx, app.linkIndexedKeeper, app.cidNumKeeper, app.stakeIndex, app.rankState.SearchAllowed(),
+	)
 	go rank.CalculateRankInParallel(calcCtx, app.rankCalcChan, app.rankErrChan, app.computeUnit, app.BaseApp.Logger)
 }
 
-func (app *CyberdApp) handleNewRank(ctx sdk.Context, newRank []float64) {
+func (app *CyberdApp) handleNewRank(ctx sdk.Context, newRank rank.Rank) {
 	app.rankState.SetNextRank(newRank)
-	app.mainKeeper.StoreNextAppHash(ctx, app.rankState.GetNextRankHash())
+	app.mainKeeper.StoreNextMerkleTree(ctx, app.rankState.GetNextMerkleTreeAsBytes())
 	app.rankCalculationFinished = true
 }
 
@@ -539,7 +542,7 @@ func (app *CyberdApp) handleNewRank(ctx sdk.Context, newRank []float64) {
 func (app *CyberdApp) Commit() (res abci.ResponseCommit) {
 
 	app.BaseApp.Commit()
-	return abci.ResponseCommit{Data: app.rankState.GetCurrentRankHash()}
+	return abci.ResponseCommit{Data: app.rankState.GetNetworkRankHash()}
 }
 
 // Implements ABCI
@@ -557,5 +560,5 @@ func (app *CyberdApp) appHash() []byte {
 	if app.LastBlockHeight() == 0 {
 		return make([]byte, 0)
 	}
-	return app.rankState.GetCurrentRankHash()
+	return app.rankState.GetNetworkRankHash()
 }

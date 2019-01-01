@@ -9,15 +9,17 @@ import (
 type LinkIndexedKeeper struct {
 	LinkKeeper
 
-	// Actual links for current rank state.
-	inLinks  map[CidNumber]CidLinks
-	outLinks map[CidNumber]CidLinks
+	// Actual links for current rank calculated state.
+	currentRankInLinks  map[CidNumber]CidLinks
+	currentRankOurLinks map[CidNumber]CidLinks
 
-	// New links for the next calculation.
+	// New links for the next rank calculation.
 	// Actually, do we need them in memory?
 	// TODO: optimize to not store whole index (store just new links)
-	newInLinks  map[CidNumber]CidLinks
-	newOutLinks map[CidNumber]CidLinks
+	nextRankInLinks  map[CidNumber]CidLinks
+	nextRankOutLinks map[CidNumber]CidLinks
+
+	currentBlockLinks []Link
 }
 
 func NewLinkIndexedKeeper(keeper LinkKeeper) LinkIndexedKeeper {
@@ -30,33 +32,44 @@ func (i *LinkIndexedKeeper) Load(rankCtx sdk.Context, freshCtx sdk.Context) {
 		cmn.Exit(err.Error())
 	}
 
-	i.inLinks = inLinks
-	i.outLinks = outLinks
+	i.currentRankInLinks = inLinks
+	i.currentRankOurLinks = outLinks
 
 	newInLinks, newOutLinks, err := i.LinkKeeper.GetAllLinks(freshCtx)
 	if err != nil {
 		cmn.Exit(err.Error())
 	}
 
-	i.newInLinks = newInLinks
-	i.newOutLinks = newOutLinks
+	i.nextRankInLinks = newInLinks
+	i.nextRankOutLinks = newOutLinks
 }
 
 func (i *LinkIndexedKeeper) FixLinks() {
 	// todo state copied
-	i.inLinks = Links(i.newInLinks).Copy()
-	i.outLinks = Links(i.newOutLinks).Copy()
+	i.currentRankInLinks = Links(i.nextRankInLinks).Copy()
+	i.currentRankOurLinks = Links(i.nextRankOutLinks).Copy()
+}
+
+func (i *LinkIndexedKeeper) EndBlocker() {
+	for _, link := range i.currentBlockLinks {
+		Links(i.nextRankOutLinks).Put(link.From(), link.To(), link.Acc())
+		Links(i.nextRankInLinks).Put(link.To(), link.From(), link.Acc())
+	}
+	i.currentBlockLinks = make([]Link, 0, 1000) // todo: 1000 hardcoded value
 }
 
 func (i *LinkIndexedKeeper) PutIntoIndex(link Link) {
-	Links(i.newOutLinks).Put(link.From(), link.To(), link.Acc())
-	Links(i.newInLinks).Put(link.To(), link.From(), link.Acc())
+	i.currentBlockLinks = append(i.currentBlockLinks, link)
 }
 
 func (i *LinkIndexedKeeper) GetOutLinks() map[CidNumber]CidLinks {
-	return i.outLinks
+	return i.currentRankOurLinks
 }
 
 func (i *LinkIndexedKeeper) GetInLinks() map[CidNumber]CidLinks {
-	return i.inLinks
+	return i.currentRankInLinks
+}
+
+func (i *LinkIndexedKeeper) GetCurrentBlockLinks() []Link {
+	return i.currentBlockLinks
 }

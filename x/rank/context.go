@@ -17,11 +17,13 @@ type CalculationContext struct {
 	outLinks map[CidNumber]CidLinks
 
 	stakes map[AccNumber]uint64
+
+	fullTree bool
 }
 
 func NewCalcContext(
 	ctx sdk.Context, linkIndex keeper.LinkIndexedKeeper,
-	numberKeeper keeper.CidNumberKeeper, indexedKeeper *bank.IndexedKeeper,
+	numberKeeper keeper.CidNumberKeeper, indexedKeeper *bank.IndexedKeeper, fullTree bool,
 ) *CalculationContext {
 
 	return &CalculationContext{
@@ -32,6 +34,8 @@ func NewCalcContext(
 		outLinks: linkIndex.GetOutLinks(),
 
 		stakes: indexedKeeper.GetTotalStakes(),
+
+		fullTree: fullTree,
 	}
 }
 

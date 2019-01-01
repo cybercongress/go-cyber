@@ -12,14 +12,13 @@ const (
 	GPU ComputeUnit = iota
 )
 
-func CalculateRank(ctx *CalculationContext, unit ComputeUnit, logger log.Logger) (rank []float64) {
+func CalculateRank(ctx *CalculationContext, unit ComputeUnit, logger log.Logger) (rank Rank) {
 	start := time.Now()
 	if unit == CPU {
 		//used only for development
-		rank = calculateRankCPU(ctx)
-
+		rank = NewRank(calculateRankCPU(ctx), ctx.fullTree)
 	} else {
-		rank = calculateRankGPU(ctx, logger)
+		rank = NewRank(calculateRankGPU(ctx, logger), ctx.fullTree)
 	}
 	logger.Info(
 		"Rank calculated", "time", time.Since(start), "links", ctx.linksCount, "cids", ctx.cidsCount,
@@ -28,7 +27,7 @@ func CalculateRank(ctx *CalculationContext, unit ComputeUnit, logger log.Logger)
 }
 
 func CalculateRankInParallel(
-	ctx *CalculationContext, rankChan chan []float64, err chan error, unit ComputeUnit, logger log.Logger,
+	ctx *CalculationContext, rankChan chan Rank, err chan error, unit ComputeUnit, logger log.Logger,
 ) {
 	defer func() {
 		if r := recover(); r != nil {
