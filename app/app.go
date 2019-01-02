@@ -495,7 +495,7 @@ func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.R
 		app.rankCalculationFinished = false
 
 		app.rankCidCount = int64(app.mainKeeper.GetCidsCount(ctx))
-		app.linkIndexedKeeper.FixLinks() //todo: synchronize with index recalculation. copy out links
+		app.linkIndexedKeeper.FixLinks()
 		app.stakeIndex.FixUserStake()
 		app.startRankCalculation(ctx)
 
