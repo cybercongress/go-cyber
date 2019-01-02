@@ -7,4 +7,5 @@ const (
 	FlagChainId    = "chain-id"
 	FlagAddress    = "address"
 	FlagNode       = "node"
+	FlagHome       = "home"
 )

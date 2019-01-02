@@ -39,11 +39,12 @@ func main() {
 	cmd.Flags().String(client.FlagAddress, "", "Account to sign transactions")
 	cmd.Flags().String(client.FlagPassphrase, "", "Passphrase of account")
 	cmd.Flags().String(client.FlagNode, "127.0.0.1:26657", "Url of node communicate with")
+	cmd.Flags().String(client.FlagHome, homeDir+"/.cyberdcli", "Cyberd CLI home folder")
 
 	_ = viper.BindPFlag(client.FlagPassphrase, cmd.Flags().Lookup(client.FlagPassphrase))
 	_ = viper.BindPFlag(client.FlagAddress, cmd.Flags().Lookup(client.FlagAddress))
 	_ = viper.BindPFlag(client.FlagNode, cmd.Flags().Lookup(client.FlagNode))
-	viper.SetDefault("home", homeDir+"/.cyberdcli")
+	_ = viper.BindPFlag(client.FlagHome, cmd.Flags().Lookup(client.FlagHome))
 
 	if err := cmd.Execute(); err != nil {
 		fmt.Println(err)
