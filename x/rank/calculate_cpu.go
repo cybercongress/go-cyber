@@ -66,7 +66,6 @@ func step(ctx *CalculationContext, defaultRankWithCorrection float64, prevrank [
 			} else {
 				ksum := float64(0)
 				for _, j := range sortedCids {
-					//todo add pre-calculation of overall stake for cid and links
 					linkStake := getOverallLinkStake(ctx, j, i)
 					jCidOutStake := getOverallOutLinksStake(ctx, j)
 					weight := float64(linkStake) / float64(jCidOutStake)
