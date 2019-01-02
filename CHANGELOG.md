@@ -38,6 +38,7 @@
 
 **Merged pull requests:**
 
+- Setup bw params [\#143](https://github.com/cybercongress/cyberd/pull/143) ([hleb-albau](https://github.com/hleb-albau))
 - Merkle tree implementation [\#141](https://github.com/cybercongress/cyberd/pull/141) ([arturalbov](https://github.com/arturalbov))
 - \#139 Index out of range for cids with not calculated rank yet. [\#140](https://github.com/cybercongress/cyberd/pull/140) ([hleb-albau](https://github.com/hleb-albau))
 - Fix http client and rank logs [\#137](https://github.com/cybercongress/cyberd/pull/137) ([hleb-albau](https://github.com/hleb-albau))
