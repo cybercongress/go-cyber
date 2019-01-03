@@ -60,6 +60,7 @@ func main() {
 		keys.Commands(),
 		client.LineBreak,
 		version.VersionCmd,
+		cyberdcmd.ImportPrivateKeyCmd(),
 	)
 
 	cyberdcli.AddCommand(
