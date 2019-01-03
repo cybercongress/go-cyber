@@ -19,7 +19,7 @@ func NewMinter(fck auth.FeeCollectionKeeper, stakeKeeper keeper.Keeper) Minter {
 	return Minter{
 		fck:         fck,
 		stakeKeeper: stakeKeeper,
-		blockReward: blockReward,
+		blockReward: uint64(blockReward),
 	}
 }
 

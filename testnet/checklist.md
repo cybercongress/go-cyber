@@ -13,9 +13,9 @@
 ```bash
 # Generate genesis validator tx
 docker run --rm  -v /cyberdata/cyberd:/root/.cyberd  cyberd/cyberd:euler-dev1 cyberd tendermint show-validator
-./cyberd gentx --amount=100000CBD \
+./cyberd gentx --amount=100CBD \
  --pubkey=cbdvalconspub1zcjduepqsvzxlunur5cl644ypm4tv8lt22aaedeh6uma2ev7ux7y7tdlnhnqd5f0q3 \
- --name=euler-dev_earth --chain-id=euler-dev2
+ --name=euler-hlb --chain-id=euler --moniker=hlb
 ```
 
 ```bash
