@@ -5,7 +5,7 @@ const (
 	// assuming 1 second block times
 	BlocksPerYear = 60 * 60 * 24 * 365
 	// todo hardcoded
-	GenesisSupply = uint64(13)*1000*1000*1000 + uint64(10)*1000*1000
+	GenesisSupply = int64(10 * 1000 * 1000 * 1000 * 1000 * 1000) // 1*10^15
 	// percentage value 0....1, 1 means 100% year inflation
-	InflationRatePerYear = 1
+	InflationRatePerYear = 2
 )

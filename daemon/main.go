@@ -5,6 +5,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/server"
 	"github.com/cybercongress/cyberd/app"
+	"github.com/cybercongress/cyberd/daemon/genesis"
 	initCyberd "github.com/cybercongress/cyberd/daemon/init"
 	"github.com/cybercongress/cyberd/daemon/rpc"
 	"github.com/cybercongress/cyberd/x/rank"
@@ -45,6 +46,7 @@ func main() {
 	rootCmd.AddCommand(initCyberd.TestnetFilesCmd(ctx, cdc))
 	rootCmd.AddCommand(initCyberd.GenTxCmd(ctx, cdc))
 	rootCmd.AddCommand(initCyberd.AddGenesisAccountCmd(ctx, cdc))
+	rootCmd.AddCommand(genesis.GenerateEulerGenesisFile(ctx, cdc))
 	server.AddCommands(ctx, cdc, rootCmd, newApp, exportAppStateAndTMValidators)
 
 	for _, c := range rootCmd.Commands() {
