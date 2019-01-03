@@ -2,10 +2,19 @@
 
 ## [Unreleased](https://github.com/cybercongress/cyberd/tree/HEAD)
 
-[Full Changelog](https://github.com/cybercongress/cyberd/compare/0.0.9...HEAD)
+[Full Changelog](https://github.com/cybercongress/cyberd/compare/0.1.0...HEAD)
+
+**Closed issues:**
+
+- Cli: Add possibility to restore acc from priv keys [\#146](https://github.com/cybercongress/cyberd/issues/146)
+- Launch testnet Euler [\#73](https://github.com/cybercongress/cyberd/issues/73)
+
+## [0.1.0](https://github.com/cybercongress/cyberd/tree/0.1.0) (2019-01-03)
+[Full Changelog](https://github.com/cybercongress/cyberd/compare/0.0.9...0.1.0)
 
 **Implemented enhancements:**
 
+- CID rank merkle proofs [\#133](https://github.com/cybercongress/cyberd/issues/133)
 - Simple go cyberd client [\#122](https://github.com/cybercongress/cyberd/issues/122)
 - Add remainig bandwidth endpoint [\#109](https://github.com/cybercongress/cyberd/issues/109)
 - Get rid of RPC proxy [\#94](https://github.com/cybercongress/cyberd/issues/94)
@@ -38,6 +47,8 @@
 
 **Merged pull requests:**
 
+- \[euler\] Launch euler testnet [\#148](https://github.com/cybercongress/cyberd/pull/148) ([hleb-albau](https://github.com/hleb-albau))
+- Cli: Add possibility to restore acc from priv keys [\#147](https://github.com/cybercongress/cyberd/pull/147) ([arturalbov](https://github.com/arturalbov))
 - Rank merkle proofs [\#144](https://github.com/cybercongress/cyberd/pull/144) ([arturalbov](https://github.com/arturalbov))
 - Setup bw params [\#143](https://github.com/cybercongress/cyberd/pull/143) ([hleb-albau](https://github.com/hleb-albau))
 - Merkle tree implementation [\#141](https://github.com/cybercongress/cyberd/pull/141) ([arturalbov](https://github.com/arturalbov))
