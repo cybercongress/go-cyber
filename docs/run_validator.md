@@ -82,13 +82,22 @@ Alright, you are now connected to the testnet.
 To be a validator, you will need some **CBD**(cyberd coin) to be bounded as your stake. 
 Top 146 validators by bounded stake will be active validators taking part in consensus. 
 
-If you already have address with **CBD**, just restore it with your seed phrase into your local keystore.
+If you already have address with **CBD** and know seed phrase just restore it into your local keystore.
 ```bash
 docker exec -ti cyberd cyberdcli keys add <your_key_name> --recover
 docker exec cyberd cyberdcli keys show <your_key_name>
 ```
 
-If no, create new one using command below. 
+If you have been lucky enought and your Ethereum address has been included in genesis you can import ethereum private key:
+
+> Please, do not import high value Ethereum accounts. This can not be safe! cyberd software is a new software and is not battle tested yet.
+
+```bash
+docker exec -ti cyberd cyberdcli import_private <your_key_name>
+docker exec cyberd cyberdcli keys show <your_key_name>
+```
+
+If you want to create new acccount use the command below. 
 Also, you should send coins to that address to bound them later during validator submitting. 
 ```
 docker exec -ti cyberd cyberdcli keys add <your_key_name> 
