@@ -4,6 +4,10 @@
 
 [Full Changelog](https://github.com/cybercongress/cyberd/compare/0.1.0...HEAD)
 
+**Fixed bugs:**
+
+- Cannot check balance using cli [\#149](https://github.com/cybercongress/cyberd/issues/149)
+
 **Closed issues:**
 
 - Cli: Add possibility to restore acc from priv keys [\#146](https://github.com/cybercongress/cyberd/issues/146)
