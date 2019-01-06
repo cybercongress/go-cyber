@@ -76,19 +76,22 @@ docker exec cyberd cyberdcli status
 ```
 You should be seeing a returned JSON with your node status including node_info, sync_info and validator_info.
 
+## Get CYB tokens
+
+To be a validator, you will need some CYB to be bounded as your stake. 
+Top 146 validators by bounded stake will be active validators taking part in consensus and earning validator rewards.
+
+Once the network do not have 146 validators 100M CYB is enougth to join. Don't worry - it is not so much tokens. CYB do not have decimals so 1 CYB is comparable to 1 wei in Ethereum. Cyber network is pure POS [Tendermint](https://tendermint.com/) based network, so there is no ability to mine tokens. But there are [several ways to get tokens](/docs/get_CYB.md).
+
 ## Prepare stake address
 
-Alright, you are now connected to the testnet. 
-To be a validator, you will need some **CBD**(cyberd coin) to be bounded as your stake. 
-Top 146 validators by bounded stake will be active validators taking part in consensus. 
-
-If you already have address with **CBD** and know seed phrase just restore it into your local keystore.
+If you already have address with CYB and know seed phrase just restore it into your local keystore.
 ```bash
 docker exec -ti cyberd cyberdcli keys add <your_key_name> --recover
 docker exec cyberd cyberdcli keys show <your_key_name>
 ```
 
-If you have been lucky enought and your Ethereum address has been included in genesis you can import ethereum private key:
+If you have been lucky enought and your Ethereum address has been included in genesis you can import ethereum private key
 
 > Please, do not import high value Ethereum accounts. This can not be safe! cyberd software is a new software and is not battle tested yet.
 
