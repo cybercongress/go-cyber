@@ -2,11 +2,11 @@ package main
 
 import (
 	"github.com/cosmos/cosmos-sdk/client/tx"
+	"github.com/cybercongress/cyberd/cli/commands/keys"
 	"github.com/tendermint/go-amino"
 	"os"
 
 	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/client/keys"
 	"github.com/cosmos/cosmos-sdk/client/rpc"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/version"
@@ -60,7 +60,6 @@ func main() {
 		keys.Commands(),
 		client.LineBreak,
 		version.VersionCmd,
-		cyberdcmd.ImportPrivateKeyCmd(),
 	)
 
 	cyberdcli.AddCommand(
