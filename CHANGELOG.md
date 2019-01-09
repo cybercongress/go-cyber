@@ -2,19 +2,22 @@
 
 ## [Unreleased](https://github.com/cybercongress/cyberd/tree/HEAD)
 
-[Full Changelog](https://github.com/cybercongress/cyberd/compare/0.1.0...HEAD)
+[Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.1.0...HEAD)
 
 **Fixed bugs:**
 
-- Cannot check balance using cli [\#149](https://github.com/cybercongress/cyberd/issues/149)
+- Wrong CYB allocation in Genesis [\#156](https://github.com/cybercongress/cyberd/issues/156)
+- Update docker with 0.1.0 version [\#154](https://github.com/cybercongress/cyberd/issues/154)
 
-**Closed issues:**
+**Merged pull requests:**
 
-- Cli: Add possibility to restore acc from priv keys [\#146](https://github.com/cybercongress/cyberd/issues/146)
-- Launch testnet Euler [\#73](https://github.com/cybercongress/cyberd/issues/73)
+- Move import\_private command to keys subcomand [\#159](https://github.com/cybercongress/cyberd/pull/159) ([arturalbov](https://github.com/arturalbov))
 
-## [0.1.0](https://github.com/cybercongress/cyberd/tree/0.1.0) (2019-01-03)
-[Full Changelog](https://github.com/cybercongress/cyberd/compare/0.0.9...0.1.0)
+## [v0.1.0](https://github.com/cybercongress/cyberd/tree/v0.1.0) (2019-01-06)
+[Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.0.9...v0.1.0)
+
+## [v0.0.9](https://github.com/cybercongress/cyberd/tree/v0.0.9) (2019-01-06)
+[Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.0.8...v0.0.9)
 
 **Implemented enhancements:**
 
@@ -25,19 +28,24 @@
 
 **Fixed bugs:**
 
+- Cannot check balance using cli [\#149](https://github.com/cybercongress/cyberd/issues/149)
 - Index out of range for cids with not calculated rank yet. [\#139](https://github.com/cybercongress/cyberd/issues/139)
 - Account inmem balances should be updated by wrapping accountKeeper [\#99](https://github.com/cybercongress/cyberd/issues/99)
 
 **Closed issues:**
 
+- Cli: Add possibility to restore acc from priv keys [\#146](https://github.com/cybercongress/cyberd/issues/146)
 - Go mod Ci dependency error  [\#128](https://github.com/cybercongress/cyberd/issues/128)
 - Update to cosmos 29 [\#126](https://github.com/cybercongress/cyberd/issues/126)
 - Write down bandwidth specification [\#114](https://github.com/cybercongress/cyberd/issues/114)
+- Make docker container based on  nvidia-gpu image. [\#104](https://github.com/cybercongress/cyberd/issues/104)
 - Index transactions by addresses. [\#103](https://github.com/cybercongress/cyberd/issues/103)
 - Calculate rank in ||, post results each 600 blocks. [\#101](https://github.com/cybercongress/cyberd/issues/101)
 - Linkchains support [\#91](https://github.com/cybercongress/cyberd/issues/91)
 - Include addresses into knowledge graph [\#90](https://github.com/cybercongress/cyberd/issues/90)
 - Graphics for whitepaper [\#88](https://github.com/cybercongress/cyberd/issues/88)
+- Add bandwidth by stake [\#77](https://github.com/cybercongress/cyberd/issues/77)
+- Launch testnet Euler [\#73](https://github.com/cybercongress/cyberd/issues/73)
 - Test Ethereum Network Statistical Significance [\#52](https://github.com/cybercongress/cyberd/issues/52)
 - Cyberd landing design [\#51](https://github.com/cybercongress/cyberd/issues/51)
 - Simulation [\#31](https://github.com/cybercongress/cyberd/issues/31)
@@ -74,16 +82,8 @@
 - Clean up folders [\#118](https://github.com/cybercongress/cyberd/pull/118) ([arturalbov](https://github.com/arturalbov))
 - \#103 Index transactions by signers. [\#117](https://github.com/cybercongress/cyberd/pull/117) ([hleb-albau](https://github.com/hleb-albau))
 
-## [0.0.9](https://github.com/cybercongress/cyberd/tree/0.0.9) (2018-12-13)
-[Full Changelog](https://github.com/cybercongress/cyberd/compare/0.0.8...0.0.9)
-
-**Closed issues:**
-
-- Make docker container based on  nvidia-gpu image. [\#104](https://github.com/cybercongress/cyberd/issues/104)
-- Add bandwidth by stake [\#77](https://github.com/cybercongress/cyberd/issues/77)
-
-## [0.0.8](https://github.com/cybercongress/cyberd/tree/0.0.8) (2018-12-11)
-[Full Changelog](https://github.com/cybercongress/cyberd/compare/0.0.7...0.0.8)
+## [v0.0.8](https://github.com/cybercongress/cyberd/tree/v0.0.8) (2018-12-11)
+[Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.0.7...v0.0.8)
 
 **Implemented enhancements:**
 
@@ -121,8 +121,8 @@
 - UPD docs\_upd job [\#81](https://github.com/cybercongress/cyberd/pull/81) ([SaveTheAles](https://github.com/SaveTheAles))
 - Update cosmos-sdk version to 0.26.1 [\#80](https://github.com/cybercongress/cyberd/pull/80) ([arturalbov](https://github.com/arturalbov))
 
-## [0.0.7](https://github.com/cybercongress/cyberd/tree/0.0.7) (2018-10-25)
-[Full Changelog](https://github.com/cybercongress/cyberd/compare/0.0.6...0.0.7)
+## [v0.0.7](https://github.com/cybercongress/cyberd/tree/v0.0.7) (2018-10-25)
+[Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.0.6...v0.0.7)
 
 **Implemented enhancements:**
 
@@ -145,18 +145,18 @@
 - Proxy service. Search request with spaces fails [\#68](https://github.com/cybercongress/cyberd/pull/68) ([arturalbov](https://github.com/arturalbov))
 - Claim service: increment tx sequence manually [\#65](https://github.com/cybercongress/cyberd/pull/65) ([arturalbov](https://github.com/arturalbov))
 
-## [0.0.6](https://github.com/cybercongress/cyberd/tree/0.0.6) (2018-10-24)
-[Full Changelog](https://github.com/cybercongress/cyberd/compare/0.0.5...0.0.6)
+## [v0.0.6](https://github.com/cybercongress/cyberd/tree/v0.0.6) (2018-10-24)
+[Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.0.5...v0.0.6)
 
-## [0.0.5](https://github.com/cybercongress/cyberd/tree/0.0.5) (2018-10-23)
-[Full Changelog](https://github.com/cybercongress/cyberd/compare/0.0.4...0.0.5)
+## [v0.0.5](https://github.com/cybercongress/cyberd/tree/v0.0.5) (2018-10-23)
+[Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.0.4...v0.0.5)
 
 **Implemented enhancements:**
 
 - \[RPC\] Fix small finding  [\#57](https://github.com/cybercongress/cyberd/issues/57)
 
-## [0.0.4](https://github.com/cybercongress/cyberd/tree/0.0.4) (2018-10-23)
-[Full Changelog](https://github.com/cybercongress/cyberd/compare/0.0.3...0.0.4)
+## [v0.0.4](https://github.com/cybercongress/cyberd/tree/v0.0.4) (2018-10-23)
+[Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.0.3...v0.0.4)
 
 **Closed issues:**
 
@@ -171,8 +171,8 @@
 - \#57 \[RPC\] Fix small finding [\#58](https://github.com/cybercongress/cyberd/pull/58) ([hleb-albau](https://github.com/hleb-albau))
 - Update cosmos-sdk to latest dev branch version [\#53](https://github.com/cybercongress/cyberd/pull/53) ([hleb-albau](https://github.com/hleb-albau))
 
-## [0.0.3](https://github.com/cybercongress/cyberd/tree/0.0.3) (2018-10-19)
-[Full Changelog](https://github.com/cybercongress/cyberd/compare/0.0.2...0.0.3)
+## [v0.0.3](https://github.com/cybercongress/cyberd/tree/v0.0.3) (2018-10-19)
+[Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.0.2...v0.0.3)
 
 **Implemented enhancements:**
 
@@ -193,8 +193,8 @@
 - Add cyberdproxy process to docker container. Add status endpoint [\#55](https://github.com/cybercongress/cyberd/pull/55) ([arturalbov](https://github.com/arturalbov))
 - Proxy rpc [\#54](https://github.com/cybercongress/cyberd/pull/54) ([arturalbov](https://github.com/arturalbov))
 
-## [0.0.2](https://github.com/cybercongress/cyberd/tree/0.0.2) (2018-10-05)
-[Full Changelog](https://github.com/cybercongress/cyberd/compare/0.0.1...0.0.2)
+## [v0.0.2](https://github.com/cybercongress/cyberd/tree/v0.0.2) (2018-10-05)
+[Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.0.1...v0.0.2)
 
 **Implemented enhancements:**
 
@@ -217,8 +217,8 @@
 - Cosmos POC: Clean up CLI [\#35](https://github.com/cybercongress/cyberd/pull/35) ([arturalbov](https://github.com/arturalbov))
 - Update cyberd/cosmos README [\#34](https://github.com/cybercongress/cyberd/pull/34) ([arturalbov](https://github.com/arturalbov))
 
-## [0.0.1](https://github.com/cybercongress/cyberd/tree/0.0.1) (2018-09-25)
-[Full Changelog](https://github.com/cybercongress/cyberd/compare/0.2.0...0.0.1)
+## [v0.0.1](https://github.com/cybercongress/cyberd/tree/v0.0.1) (2018-09-25)
+[Full Changelog](https://github.com/cybercongress/cyberd/compare/0.2.0...v0.0.1)
 
 **Closed issues:**
 
