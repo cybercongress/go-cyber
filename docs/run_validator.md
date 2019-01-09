@@ -96,7 +96,7 @@ If you have been lucky enought and your Ethereum address has been included in ge
 > Please, do not import high value Ethereum accounts. This can not be safe! cyberd software is a new software and is not battle tested yet.
 
 ```bash
-docker exec -ti cyberd cyberdcli import_private <your_key_name>
+docker exec -ti cyberd cyberdcli keys add import_private <your_key_name>
 docker exec cyberd cyberdcli keys show <your_key_name>
 ```
 
