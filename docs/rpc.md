@@ -86,7 +86,7 @@ the method name for further details such as parameter and return information.
 |   |   |
 |---|---|
 |Method|current_bandwidth_price|
-|Parameters||
+|Parameters|None|
 |Description|Returns current bandwidth credit price.|
 |[Return to Overview](#method-overview)<br />
 
@@ -121,6 +121,7 @@ Subscribe for new blocks header from js:
 |2|[CoinsReceived](#CoinsReceived)|Sends a notification when a new coins is arrived to given address.|
 |3|[CoinsSend](#CoinsSend)|Sends a notification when a new coins is send from given address.|
 |4|[СidsLinked](#СidsLinked)|Notification of link created by given address.|
+|5|[SignedTxCommitted](#SignedTxCommitted)|Notify when any tx for given signer is committed.|
 
 ### Events Details
 
@@ -129,52 +130,16 @@ Subscribe for new blocks header from js:
 |---|---|
 |Event|NewBlockHeader|
 |Description|Sends block header notification when a new block is committed.|
-|Query|'tm.event=\'NewBlockHeader\''|
+|Query|`tm.event='NewBlockHeader'`|
 |[Return to Overview](#events-overview)<br />
-```json
-{
-  "jsonrpc": "2.0",
-  "id": "1#event",
-  "result": {
-    "query": "tm.event='NewBlockHeader'",
-    "data": {
-      "type": "tendermint/event/NewBlockHeader",
-      "value": {
-        "header": {
-          "chain_id": "test-chain-gRXWCL",
-          "height": "40561",
-          "time": "2018-11-08T14:40:11.820674115Z",
-          "num_txs": "0",
-          "total_txs": "510",
-          "last_block_id": {
-            "hash": "CC1693981B0353C907EBC2EBEB1578ABD21C955D",
-            "parts": {
-              "total": "1",
-              "hash": "E854DA23981283464484FEA41D8AB5FF7697728C"
-            }
-          },
-          "last_commit_hash": "51E1DEBA90591C532E8C58BF99F29AE4B2264644",
-          "data_hash": "",
-          "validators_hash": "985037CEBE01051C949F01278621449712C85715",
-          "next_validators_hash": "985037CEBE01051C949F01278621449712C85715",
-          "consensus_hash": "0E520AF30D47BE28F293E040E418D0361BFB5370",
-          "app_hash": "2DBED732547DD6A3223027EF8C80FD3C3A1AD11420CA899533DCFCA260F8D170",
-          "last_results_hash": "",
-          "evidence_hash": "",
-          "proposer_address": "A41C2ED742E47A9BDC4E71BE4B879F949045EC97"
-        }
-      }
-    }
-  }
-}
-```
+
 
 #### CoinsReceived    
 |   |   |
 |---|---|
 |Event|CoinsReceived|
 |Description|Sends a notification when a new coins is arrived to given address.|
-|Query|'tm.event=\'EventTx\' AND recipient = 'cbd1sk3uvpacpjm2t3389caqk4gd9n9gkzq2054yds''|
+|Query|`tm.event='EventTx' AND recipient='cbd1sk3uvpacpjm2t3389caqk4gd9n9gkzq2054yds'`|
 |[Return to Overview](#events-overview)<br />
 
 #### CoinsSend    
@@ -182,7 +147,7 @@ Subscribe for new blocks header from js:
 |---|---|
 |Event|CoinsSend|
 |Description|Sends a notification when a new coins is send from given address.|
-|Query|'tm.event=\'EventTx\' AND sender = 'cbd1sk3uvpacpjm2t3389caqk4gd9n9gkzq2054yds''|
+|Query|`tm.event='EventTx' AND sender='cbd1sk3uvpacpjm2t3389caqk4gd9n9gkzq2054yds'`|
 |[Return to Overview](#events-overview)<br />
 
 #### СidsLinked    
@@ -190,7 +155,15 @@ Subscribe for new blocks header from js:
 |---|---|
 |Event|СidsLinked|
 |Description|Notification of link created by given address.|
-|Query|'tm.event=\'EventTx\' AND signer = 'cbd1sk3uvpacpjm2t3389caqk4gd9n9gkzq2054yds' AND action = 'link' '|
+|Query|`tm.event='EventTx' AND signer='cbd1sk3uvpacpjm2t3389caqk4gd9n9gkzq2054yds' AND action='link'`|
+|[Return to Overview](#events-overview)<br />
+
+#### SignedTxCommitted    
+|   |   |
+|---|---|
+|Event|SignedTxCommitted|
+|Description|Notify when any tx for given signer is committed.|
+|Query|`tm.event='EventTx' AND signer='cbd1sk3uvpacpjm2t3389caqk4gd9n9gkzq2054yds'`|
 |[Return to Overview](#events-overview)<br />
 
 
