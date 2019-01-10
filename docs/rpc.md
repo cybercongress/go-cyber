@@ -41,6 +41,7 @@ the method name for further details such as parameter and return information.
 |3|[account_bandwidth](#account-bandwidth)|Get account bandwidth info for current height.|
 |4|[is_link_exist](#link-exist)|Return true, if given link exist.|
 |5|[current_bandwidth_price](#current-bandwidth-price)|Returns current bandwidth credit price.|
+|6|[index_stats](#index-stats)|Returns current index entities count.|
 
 ### Method Details
 
@@ -88,6 +89,15 @@ the method name for further details such as parameter and return information.
 |Method|current_bandwidth_price|
 |Parameters|None|
 |Description|Returns current bandwidth credit price.|
+|[Return to Overview](#method-overview)<br />
+
+<a name="index-stats"/>
+
+|   |   |
+|---|---|
+|Method|index_stats|
+|Parameters|None|
+|Description|Returns current index entities count.|
 |[Return to Overview](#method-overview)<br />
 
 ***
