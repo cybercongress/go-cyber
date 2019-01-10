@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/cybercongress/cyberd/cli/commands/keys"
+	"github.com/spf13/viper"
 	"github.com/tendermint/go-amino"
 	"os"
 
@@ -66,6 +67,9 @@ func main() {
 		client.PostCommands(
 			cyberdcmd.LinkTxCmd(cdc),
 		)...)
+
+	// todo: hack till we don't handle with all merkle proofs
+	viper.SetDefault(client.FlagTrustNode, true)
 
 	executor := cli.PrepareMainCmd(cyberdcli, "CBD", os.ExpandEnv("$HOME/.cyberdcli"))
 	err := executor.Execute()
