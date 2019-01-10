@@ -16,7 +16,7 @@ type RankedCid struct {
 }
 
 func (app *CyberdApp) RpcContext() sdk.Context {
-	return app.NewContext(true, abci.Header{})
+	return app.NewContext(true, abci.Header{Height: app.LastBlockHeight()})
 }
 
 func (app *CyberdApp) Search(cid string, page, perPage int) ([]RankedCid, int, error) {
@@ -68,4 +68,16 @@ func (app *CyberdApp) IsLinkExist(from cbdlink.Cid, to cbdlink.Cid, address sdk.
 
 func (app *CyberdApp) CurrentBandwidthPrice() float64 {
 	return app.currentCreditPrice
+}
+
+func (app *CyberdApp) CidsCount() uint64 {
+	return app.mainKeeper.GetCidsCount(app.RpcContext())
+}
+
+func (app *CyberdApp) LinksCount() uint64 {
+	return app.mainKeeper.GetLinksCount(app.RpcContext())
+}
+
+func (app *CyberdApp) AccsCount() uint64 {
+	return app.accountKeeper.GetNextAccountNumber(app.RpcContext())
 }

@@ -18,6 +18,7 @@ var Routes = map[string]*rpcserver.RPCFunc{
 	"account_bandwidth":       rpcserver.NewRPCFunc(AccountBandwidth, "address"),
 	"is_link_exist":           rpcserver.NewRPCFunc(IsLinkExist, "from,to,address"),
 	"current_bandwidth_price": rpcserver.NewRPCFunc(CurrentBandwidthPrice, ""),
+	"index_stats":             rpcserver.NewRPCFunc(IndexStats, ""),
 }
 
 func init() {
