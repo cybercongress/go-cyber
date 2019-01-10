@@ -8,9 +8,11 @@
 
 - Update docker with 0.1.0 version [\#154](https://github.com/cybercongress/cyberd/issues/154)
 - Move import\_private command to keys subcomand [\#152](https://github.com/cybercongress/cyberd/issues/152)
+- Handle import of ethereum privkeys with 0x [\#150](https://github.com/cybercongress/cyberd/issues/150)
 
 **Merged pull requests:**
 
+- Handle import of ethereum privkeys with 0x. Trust node by default  [\#167](https://github.com/cybercongress/cyberd/pull/167) ([arturalbov](https://github.com/arturalbov))
 - \#164 fix rpc negative bw \#165 add index entities count endpoint [\#166](https://github.com/cybercongress/cyberd/pull/166) ([hleb-albau](https://github.com/hleb-albau))
 - Move import\_private command to keys subcomand [\#159](https://github.com/cybercongress/cyberd/pull/159) ([arturalbov](https://github.com/arturalbov))
 
