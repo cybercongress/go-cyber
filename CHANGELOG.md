@@ -7,16 +7,15 @@
 **Fixed bugs:**
 
 - Update docker with 0.1.0 version [\#154](https://github.com/cybercongress/cyberd/issues/154)
+- Move import\_private command to keys subcomand [\#152](https://github.com/cybercongress/cyberd/issues/152)
 
 **Merged pull requests:**
 
+- \#164 fix rpc negative bw \#165 add index entities count endpoint [\#166](https://github.com/cybercongress/cyberd/pull/166) ([hleb-albau](https://github.com/hleb-albau))
 - Move import\_private command to keys subcomand [\#159](https://github.com/cybercongress/cyberd/pull/159) ([arturalbov](https://github.com/arturalbov))
 
 ## [v0.1.0](https://github.com/cybercongress/cyberd/tree/v0.1.0) (2019-01-06)
-[Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.0.9...v0.1.0)
-
-## [v0.0.9](https://github.com/cybercongress/cyberd/tree/v0.0.9) (2019-01-06)
-[Full Changelog](https://github.com/cybercongress/cyberd/compare/0.0.8...v0.0.9)
+[Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.0.8...v0.1.0)
 
 **Implemented enhancements:**
 
@@ -81,9 +80,6 @@
 - Clean up folders [\#118](https://github.com/cybercongress/cyberd/pull/118) ([arturalbov](https://github.com/arturalbov))
 - \#103 Index transactions by signers. [\#117](https://github.com/cybercongress/cyberd/pull/117) ([hleb-albau](https://github.com/hleb-albau))
 
-## [0.0.8](https://github.com/cybercongress/cyberd/tree/0.0.8) (2018-12-11)
-[Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.0.8...0.0.8)
-
 ## [v0.0.8](https://github.com/cybercongress/cyberd/tree/v0.0.8) (2018-12-11)
 [Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.0.7...v0.0.8)
 
@@ -124,10 +120,7 @@
 - Update cosmos-sdk version to 0.26.1 [\#80](https://github.com/cybercongress/cyberd/pull/80) ([arturalbov](https://github.com/arturalbov))
 
 ## [v0.0.7](https://github.com/cybercongress/cyberd/tree/v0.0.7) (2018-10-25)
-[Full Changelog](https://github.com/cybercongress/cyberd/compare/0.0.7...v0.0.7)
-
-## [0.0.7](https://github.com/cybercongress/cyberd/tree/0.0.7) (2018-10-25)
-[Full Changelog](https://github.com/cybercongress/cyberd/compare/0.0.6...0.0.7)
+[Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.0.6...v0.0.7)
 
 **Implemented enhancements:**
 
@@ -150,27 +143,18 @@
 - Proxy service. Search request with spaces fails [\#68](https://github.com/cybercongress/cyberd/pull/68) ([arturalbov](https://github.com/arturalbov))
 - Claim service: increment tx sequence manually [\#65](https://github.com/cybercongress/cyberd/pull/65) ([arturalbov](https://github.com/arturalbov))
 
-## [0.0.6](https://github.com/cybercongress/cyberd/tree/0.0.6) (2018-10-24)
-[Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.0.6...0.0.6)
-
 ## [v0.0.6](https://github.com/cybercongress/cyberd/tree/v0.0.6) (2018-10-24)
 [Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.0.5...v0.0.6)
 
 ## [v0.0.5](https://github.com/cybercongress/cyberd/tree/v0.0.5) (2018-10-23)
-[Full Changelog](https://github.com/cybercongress/cyberd/compare/0.0.5...v0.0.5)
-
-## [0.0.5](https://github.com/cybercongress/cyberd/tree/0.0.5) (2018-10-23)
-[Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.0.4...0.0.5)
+[Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.0.4...v0.0.5)
 
 **Implemented enhancements:**
 
 - \[RPC\] Fix small finding  [\#57](https://github.com/cybercongress/cyberd/issues/57)
 
 ## [v0.0.4](https://github.com/cybercongress/cyberd/tree/v0.0.4) (2018-10-23)
-[Full Changelog](https://github.com/cybercongress/cyberd/compare/0.0.4...v0.0.4)
-
-## [0.0.4](https://github.com/cybercongress/cyberd/tree/0.0.4) (2018-10-23)
-[Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.0.3...0.0.4)
+[Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.0.3...v0.0.4)
 
 **Closed issues:**
 
@@ -186,10 +170,7 @@
 - Update cosmos-sdk to latest dev branch version [\#53](https://github.com/cybercongress/cyberd/pull/53) ([hleb-albau](https://github.com/hleb-albau))
 
 ## [v0.0.3](https://github.com/cybercongress/cyberd/tree/v0.0.3) (2018-10-19)
-[Full Changelog](https://github.com/cybercongress/cyberd/compare/0.0.3...v0.0.3)
-
-## [0.0.3](https://github.com/cybercongress/cyberd/tree/0.0.3) (2018-10-19)
-[Full Changelog](https://github.com/cybercongress/cyberd/compare/0.0.2...0.0.3)
+[Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.0.2...v0.0.3)
 
 **Implemented enhancements:**
 
@@ -209,9 +190,6 @@
 
 - Add cyberdproxy process to docker container. Add status endpoint [\#55](https://github.com/cybercongress/cyberd/pull/55) ([arturalbov](https://github.com/arturalbov))
 - Proxy rpc [\#54](https://github.com/cybercongress/cyberd/pull/54) ([arturalbov](https://github.com/arturalbov))
-
-## [0.0.2](https://github.com/cybercongress/cyberd/tree/0.0.2) (2018-10-05)
-[Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.0.2...0.0.2)
 
 ## [v0.0.2](https://github.com/cybercongress/cyberd/tree/v0.0.2) (2018-10-05)
 [Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.0.1...v0.0.2)
@@ -238,11 +216,6 @@
 - Update cyberd/cosmos README [\#34](https://github.com/cybercongress/cyberd/pull/34) ([arturalbov](https://github.com/arturalbov))
 
 ## [v0.0.1](https://github.com/cybercongress/cyberd/tree/v0.0.1) (2018-09-25)
-[Full Changelog](https://github.com/cybercongress/cyberd/compare/0.0.1...v0.0.1)
-
-## [0.0.1](https://github.com/cybercongress/cyberd/tree/0.0.1) (2018-09-25)
-[Full Changelog](https://github.com/cybercongress/cyberd/compare/0.2.0...0.0.1)
-
 **Closed issues:**
 
 - Make cyberd docs to be included into common wiki. [\#32](https://github.com/cybercongress/cyberd/issues/32)
@@ -261,7 +234,6 @@
 - \[WIP\] 21 calculate spring rank for ethereum [\#23](https://github.com/cybercongress/cyberd/pull/23) ([hleb-albau](https://github.com/hleb-albau))
 - Fixing typo [\#2](https://github.com/cybercongress/cyberd/pull/2) ([trummax](https://github.com/trummax))
 
-## [0.2.0](https://github.com/cybercongress/cyberd/tree/0.2.0) (2018-03-18)
 
 
 \* *This Change Log was automatically generated by [github_changelog_generator](https://github.com/skywinder/Github-Changelog-Generator)*
