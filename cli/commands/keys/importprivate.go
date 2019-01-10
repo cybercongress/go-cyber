@@ -7,6 +7,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/keys"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/mintkey"
+	"github.com/cybercongress/cyberd/util"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/tendermint/btcd/btcec"
@@ -14,6 +15,8 @@ import (
 	"github.com/tendermint/tendermint/crypto/secp256k1"
 	"github.com/tendermint/tendermint/libs/cli"
 )
+
+const hashPrefix = "0x"
 
 func importPrivateKeyCmd() *cobra.Command {
 	cmd := &cobra.Command{
@@ -43,6 +46,10 @@ func importPrivateKeyCmd() *cobra.Command {
 				"Enter your private key (hex encoded):", bufStdin)
 			if err != nil {
 				return err
+			}
+
+			if util.HasPrefixIgnoreCase(privateKey, hashPrefix) {
+				privateKey = privateKey[len(hashPrefix):]
 			}
 
 			b, _ := hex.DecodeString(privateKey)
