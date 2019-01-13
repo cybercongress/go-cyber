@@ -57,6 +57,7 @@ cyberlink:
 	* [Genesis is secure as `merkle`](#genesis-is-secure-as-merkle)
 	* [Conclusion](#conclusion)
 	* [References](#references)
+	* [Notes](#notes)
 
 <!-- /code_chunk_output -->
 
@@ -443,7 +444,12 @@ We describe a motivated blockchain based search engine for web3. A search engine
 
 ## References
 
-W3S: [Web3 stack](https://github.com/w3f/Web3-wiki/wiki)
+...
 
+## Notes
 
-Two fundamental problems associated with that: vote buying and selfish predictions.
+Abstract and Conclusion must be rewritten
+
+Other parts require proof read, error correction and thorough discussion.
+
+Two fundamental problems associated has not been discussed: vote buying and selfish predictions.
