@@ -7,6 +7,7 @@ import (
 )
 
 var cyberdApp *app.CyberdApp
+var codec = app.MakeCodec()
 
 func SetCyberdApp(cApp *app.CyberdApp) {
 	cyberdApp = cApp
@@ -19,6 +20,10 @@ var Routes = map[string]*rpcserver.RPCFunc{
 	"is_link_exist":           rpcserver.NewRPCFunc(IsLinkExist, "from,to,address"),
 	"current_bandwidth_price": rpcserver.NewRPCFunc(CurrentBandwidthPrice, ""),
 	"index_stats":             rpcserver.NewRPCFunc(IndexStats, ""),
+
+	// routes required cuz of amino.js not exists yet.
+	"submit_signed_link": rpcserver.NewRPCFunc(SignedMsgHandler(UnmarshalLinkRequestFn), "data"),
+	"submit_signed_send": rpcserver.NewRPCFunc(SignedMsgHandler(UnmarshalSendRequestFn), "data"),
 }
 
 func init() {

@@ -35,7 +35,6 @@ RUN nvcc -fmad=false -shared -o libcbdrank.so rank.cu --compiler-options '-fPIC 
 WORKDIR /sources
 RUN go build -tags cuda -o cyberd ./daemon
 RUN go build -o cyberdcli ./cli
-RUN go build -o cyberdproxy ./proxy
 
 
 ###############################################################################
@@ -66,7 +65,6 @@ RUN url="https://golang.org/dl/go${GO_VERSION}.${GO_ARCH}.tar.gz" && \
 ###############################################################################
 COPY --from=build_stage /sources/cyberd /usr/bin/cyberd
 COPY --from=build_stage /sources/cyberdcli /usr/bin/cyberdcli
-COPY --from=build_stage /sources/cyberdproxy /usr/bin/cyberdproxy
 
 COPY --from=build_stage /usr/lib/cbdrank.h /usr/lib/cbdrank.h
 COPY --from=build_stage /usr/lib/libcbdrank.so /usr/lib/libcbdrank.so
