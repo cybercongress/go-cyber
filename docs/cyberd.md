@@ -77,7 +77,7 @@ The emergence of a [web3 stack](https://github.com/w3f/Web3-wiki/wiki) creates a
 - def knowledge graph state
 - take cyberlinks
 - check that signatures are valid
-- check that resource consumption of a signer is not exceed 24 moving average
+- check that resource consumption of a signer is not exceed 24 moving average (bandwidth)
 - if signatures and broadband ok than cyberlink is valid
 - for every valid cyberlink emit prediction as array of cyberlinks
 - every round calculate cyber•rank deltas for the knowledge graph
