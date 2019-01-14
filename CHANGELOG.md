@@ -6,12 +6,19 @@
 
 **Fixed bugs:**
 
+- negative bandwidnt  [\#164](https://github.com/cybercongress/cyberd/issues/164)
 - Update docker with 0.1.0 version [\#154](https://github.com/cybercongress/cyberd/issues/154)
 - Move import\_private command to keys subcomand [\#152](https://github.com/cybercongress/cyberd/issues/152)
 - Handle import of ethereum privkeys with 0x [\#150](https://github.com/cybercongress/cyberd/issues/150)
 
+**Closed issues:**
+
+- index entities count  endpoint [\#165](https://github.com/cybercongress/cyberd/issues/165)
+- Add trust-node by default in cli [\#151](https://github.com/cybercongress/cyberd/issues/151)
+
 **Merged pull requests:**
 
+- \#173 Add rpc endpoint to submit signed link and send messages [\#174](https://github.com/cybercongress/cyberd/pull/174) ([hleb-albau](https://github.com/hleb-albau))
 - Handle import of ethereum privkeys with 0x. Trust node by default  [\#167](https://github.com/cybercongress/cyberd/pull/167) ([arturalbov](https://github.com/arturalbov))
 - \#164 fix rpc negative bw \#165 add index entities count endpoint [\#166](https://github.com/cybercongress/cyberd/pull/166) ([hleb-albau](https://github.com/hleb-albau))
 - Move import\_private command to keys subcomand [\#159](https://github.com/cybercongress/cyberd/pull/159) ([arturalbov](https://github.com/arturalbov))
