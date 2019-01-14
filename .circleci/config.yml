@@ -33,7 +33,6 @@ jobs:
             export GO111MODULE=on
             go build -o cyberd ./daemon
             go build -o cyberdcli ./cli
-            go build -o cyberdproxy ./proxy
 
 
   update_changelog:
