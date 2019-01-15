@@ -195,6 +195,8 @@ This machine is enable simple construction for search question querying and answ
 
 The reputation score is projected on every agent's cyberlink. Agents abuse is prevented by a simple rule: one content address can be voted by a token only once. So it does not matter for ranking from how much accounts you voted. Only sum of their balances matters.
 
+> Illustration
+
 A useful property of a relevance machine is that it must have inductive reasoning property or simply follows black box principle.
 
 ```
@@ -232,10 +234,6 @@ We need to find (1) deterministic algorithm that allow to compute a rank for con
 After some research we found that we can not find silver bullet here. We find an algorithm that is probably satisfy all criteria: SpringRank. Original idea of an algorithm came to
 A physical model for efficient ranking in networks
 Caterina from physics. Links represented as system of springs with some energy.
-
-> Illustration
-
-H(s) = 1/2 ...
 
 The task of computing the ranks is finding relaxed state of springs.
 
