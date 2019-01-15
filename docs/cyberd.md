@@ -261,11 +261,13 @@ In our relevance for commons `euler` implementation proof of relevance root hash
 
 Now cyberlinks can provably answer and deliver results
 
-## Speed
+## Speed and scalability
 
-We need very fast conformation times in order to feels like usual web app. It is strong architecture requirement that shape an economic topology of cyber protocol.
+We need very fast conformation times in order to feels like usual web app. It is strong architecture requirement that shape an economic topology and scalability of cyber protocol.
 
 Proposed blockchain design is based on Tendermint consensus algorithm with 146 validators and has very fast 1 second finality time. Average confirmation timeframe at half the second with asynchronous interaction make complex blockchain search almost invisible for agents.
+
+Let us say that our node implementation based on cosmos-sdk can process 10k transactions per second. Thus every day at least 8.64 million agents can submit 100 cyberlinks each and impact results simultaneously. That is enough to verify all assumptions in the wild. As blockchain technology evolve we want to check that every hypothesis work before scale it further. Moreover, proposed design needs demand for full bandwith in order the relevance become valuable. That is why we strongly focus on accesable, but provable distribution to millions from inception.
 
 ## Implementation in browser
 
