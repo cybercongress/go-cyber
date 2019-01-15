@@ -207,8 +207,6 @@ If we assume that a consensus computer must have some information about linked o
 
 Also thanks to content addresses the relevance machine following black box principle do not need to store the data but can effectively operate on it.
 
-Merfle proof of [rank computation](https://github.com/cybercongress/cyberd/blob/master/docs/rank.md) by  ...
-
 [IBC](dura://QmdCeixQUHBjGnKfwbB1dxf4X8xnadL8xWmmEnQah5n7x2.ipfs) can help to prove relevance for a domain specific relevance machine. Thanks to inter-blockchain communication protocol you basically can launch you own domain specific search engine either private or public by forking cyberd which is focuses on the public common knowledge. So in our search architecture domain specific relevance machine can learn from common knowledge. We are going to work on IBC during `smith` implementation.
 
 Human intelligence organized in a way to prune non relevant and non important memories with time has pass. The same way can do relevance machine.
