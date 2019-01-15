@@ -207,8 +207,6 @@ If we assume that a consensus computer must have some information about linked o
 
 Also thanks to content addresses the relevance machine following black box principle do not need to store the data but can effectively operate on it.
 
-[IBC](dura://QmdCeixQUHBjGnKfwbB1dxf4X8xnadL8xWmmEnQah5n7x2.ipfs) can help to prove relevance for a domain specific relevance machine. Thanks to inter-blockchain communication protocol you basically can launch you own domain specific search engine either private or public by forking cyberd which is focuses on the public common knowledge. So in our search architecture domain specific relevance machine can learn from common knowledge. We are going to work on IBC during `smith` implementation.
-
 Human intelligence organized in a way to prune non relevant and non important memories with time has pass. The same way can do relevance machine.
 
 Also one useful property of relevance machine is that it doesn't need to store neither past state nor full current state to remain useful, or more precisely: "relevant".
@@ -228,6 +226,34 @@ Ranking using consensus computer is hard because consensus computers bring serio
 First we must ask ourselves why do we need to compute and store the rank on chain, and not go Colony or Trubit way?
 
 If rank computed inside consensus computer you have easy content distribution of the rank as well as easy way to build provable applications on top of the rank.
+
+We need to find (1) deterministic algorithm that allow to compute a rank for continuously appended network to scale the consensus computer to orders of magnitude that of Google. Perfect algorithm (2) must have linear memory and computation complexity. The most importantly it must have (3) provable prediction capabilities for existence of relevant links.
+
+After some research we found that we can not find silver bullet here. We find an algorithm that is probably satisfy all criteria: SpringRank. Original idea of an algorithm came to
+A physical model for efficient ranking in networks
+Caterina from physics. Links represented as system of springs with some energy.
+
+> Illustration
+
+H(s) = 1/2 ...
+
+The task of computing the ranks is finding relaxed state of springs.
+
+The problem with spring rank that we were not able to implement it onchain fast using Go in `euler`. Another problem with SpringRank is that we was not able to prove it for the knowledge graph because we just did not have provable knowledge graph. Also we was not able to prove it applying it for the Ethereum blockchain during computing the genesis file for `euler`. In theory it could work. But for the time being it is better to call it a lottery.
+
+So we decide to find some more basic bulletproof way to bootstrap the network: a rank from which a previous network has been bootstrapped by Lary and Sergey. Token weighted [PageRank](http://ilpubs.stanford.edu:8090/422/1/1999-66.pdf) do not have inherent problems of naive PageRank
+
+In the center of spam protection system is an assumption that write operations can be executed only by those who have vested interest in the evolutionary success of a consensus computer. Every 1% of stake in consensus computer gives the ability to use 1% of possible network broadband and computing capabilities. As nobody uses all possessed broadband we can use 10x fractional reserves with 2 minute recalculation target.
+
+In order to switch from one algorithm to another we will experiment with economic a/b testing based on winning chains through hard spoons.
+
+## Proof of relevance
+
+We design a system under assumption that in terms of search such thing as bad behaviour does not exist as nothing bad can be in the intention of finding answers. Also this approach significantly reduce attack surfaces.
+
+> Ranks is computed on the only fact that something has been searched, thus linked and as result affected predictive model.
+
+Good analogy is observing in quantum mechanics. That is why we do not need such things as negative voting. Doing this we remove subjectivity out of the protocol and can define proof of relevance.
 
 ```
 Rank State = rank values stored in one dimensional array and merkle tree of those values.
@@ -328,44 +354,19 @@ Validator should be able to turn off index support. May be even make it a separa
 Need to solve problem of adjusting arrays capacity (to not copy arrays each time new linked cid added). Possible solution is to adjust capacity with reserve before resorting array.
 
 Therefore for building index we need to find sorting algorithm that will be fast on almost sorted arrays. Also we should implement it for GPU (so it should better be parallelizable:
+Mergesort(Timsort), Heapsort, Smoothsort ... ?
+
+Now we have proof of rank of any given content address. While the relevance is still subjective by nature we have a collective proof that something was relevant for some community at some point in time.
 
 ```
-Mergesort(Timsort), Heapsort, Smoothsort ???
+For any given CID it is possible to prove the relevance
 ```
 
-Now we have proof of rank of any given content address. Another problem that we have is how actually to compute it. So we need to find (1) deterministic algorithm that allow to compute a rank for continuously appended network to scale the consensus computer to orders of magnitude that of Google. Perfect algorithm (2) must have linear memory and computation complexity. The most importantly it must have (3) provable prediction capabilities for existence of relevant links.
-
-After some research we found that we can not find silver bullet here. We find an algorithm that is probably satisfy all criteria: SpringRank. Original idea of an algorithm came to
-A physical model for efficient ranking in networks
-Caterina from physics. Links represented as system of springs with some energy.
-
-> Illustration
-
-H(s) = 1/2 ...
-
-The task of computing the ranks is finding relaxed state of springs.
-
-The problem with spring rank that we were not able to implement it onchain fast using Go in `euler`. Another problem with SpringRank is that we was not able to prove it for the knowledge graph because we just did not have provable knowledge graph. Also we was not able to prove it applying it for the Ethereum blockchain during computing the genesis file for `euler`. In theory it could work. But for the time being it is better to call it a lottery.
-
-So we decide to find some more basic bulletproof way to bootstrap the network: a rank from which a previous network has been bootstrapped by Lary and Sergey. Token weighted [PageRank](http://ilpubs.stanford.edu:8090/422/1/1999-66.pdf) do not have inherent problems of naive PageRank
-
-In the center of spam protection system is an assumption that write operations can be executed only by those who have vested interest in the evolutionary success of a consensus computer. Every 1% of stake in consensus computer gives the ability to use 1% of possible network broadband and computing capabilities. As nobody uses all possessed broadband we can use 10x fractional reserves with 2 minute recalculation target.
-
-In order to switch from one algorithm to another we will experiment with economic a/b testing based on winning chains through hard spoons.
-
-## Proof of relevance
-
-We design a system under assumption that in terms of search such thing as bad behaviour does not exist as nothing bad can be in the intention of finding answers. Also this approach significantly reduce attack surfaces.
-
-> Ranks is computed on the only fact that something has been searched, thus linked and as result affected predictive model.
-
-Good analogy is observing in quantum mechanics. That is why we do not need such things as negative voting. Doing this we remove subjectivity out of the protocol and can define proof of relevance.
-
-While the relevance is still subjective by nature we have a collective proof that something was relevant for some community at some point in time. And every piece of this proof is verified.
+Using this type of proof any two [IBC compatible](dura://QmdCeixQUHBjGnKfwbB1dxf4X8xnadL8xWmmEnQah5n7x2.ipfs) consensus computers can proof the relevance to each other, so domain specific relevance machines can flourish. Thanks to inter-blockchain communication protocol you basically can launch you own domain specific search engine either private or public by forking cyberd which is focuses on the public common knowledge. So in our search architecture domain specific relevance machine can learn from common knowledge. We are going to work on IBC during `smith` implementation.
 
 In our relevance for commons `euler` implementation proof of relevance root hash is computed on cuda gpus every round.
 
-Now cyberlinks can provably answer and deliver results
+Now cyberlinks can provably answer and deliver results.
 
 ## Speed and scalability
 
