@@ -223,27 +223,30 @@ The pruning group of features features can be implemented in `nash`.
 
 ## cyber•Rank
 
-Ranking using consensus computer is hard because consensus computers bring serious resource bounds. e.g. [Nebulas](dura://QmefxTSFG1W95yg3PLfKV2mshh6TtyRxwv5yPiyZCGyPmG.ipfs) fail to deliver something useful onchain.
+Ranking using consensus computer is hard because consensus computers bring serious resource bounds. e.g. [Nebulas](dura://QmefxTSFG1W95yg3PLfKV2mshh6TtyRxwv5yPiyZCGyPmG.ipfs) fail to deliver something useful onchain. First we must ask ourselves why do we need to compute and store the rank on chain, and not go Colony or Truebit way?
 
-First we must ask ourselves why do we need to compute and store the rank on chain, and not go Colony or Trubit way?
+If rank computed inside consensus computer you have easy content distribution of the rank as well as easy way to build provable applications on top of the rank. Hence we decide to follow more cosmic architecture. In the next section we describe proof of relevance mechanism which allow network to scale with help of domain specific relevance machines that works in parallel.
 
-If rank computed inside consensus computer you have easy content distribution of the rank as well as easy way to build provable applications on top of the rank.
+Eventually relevance machine need to find (1) deterministic algorithm that allow to compute a rank for continuously appended network to scale the consensus computer to orders of magnitude that of Google. Perfect algorithm (2) must have linear memory and computation complexity. The most importantly it must have (3) highest provable prediction capabilities for existence of relevant links.
 
-We need to find (1) deterministic algorithm that allow to compute a rank for continuously appended network to scale the consensus computer to orders of magnitude that of Google. Perfect algorithm (2) must have linear memory and computation complexity. The most importantly it must have (3) provable prediction capabilities for existence of relevant links.
+After some research we found that we can not find silver bullet here. We find an algorithm that is probably satisfy our criteria: SpringRank. Original idea of an algorithm came to Caterina from physics. Links represented as system of springs with some energy and the task of computing the ranks is the task of finding relaxed state of springs.
 
-After some research we found that we can not find silver bullet here. We find an algorithm that is probably satisfy all criteria: SpringRank. Original idea of an algorithm came to
-A physical model for efficient ranking in networks
-Caterina from physics. Links represented as system of springs with some energy.
+But we got at least 3 problems with SpringRank:
+1. We were not able to implement it onchain fast using Go in `euler`.
+2. We was not able to prove it for knowledge graph because we just did not have provable knowledge graph yet.
+3. Also we was not able to prove it applying it for the Ethereum blockchain during computing the genesis file for `euler`. It could work, but for the time being it is better to call this kind of distribution a lottery.
 
-The task of computing the ranks is finding relaxed state of springs.
+So we decide to find some more basic bulletproof way to bootstrap the network: a rank from which a previous network has been bootstrapped by Lary and Sergey. The problem with original PageRank is that it is not resistant to Sybil Attack.
 
-The problem with spring rank that we were not able to implement it onchain fast using Go in `euler`. Another problem with SpringRank is that we was not able to prove it for the knowledge graph because we just did not have provable knowledge graph. Also we was not able to prove it applying it for the Ethereum blockchain during computing the genesis file for `euler`. In theory it could work. But for the time being it is better to call it a lottery.
+Token weighted [PageRank](http://ilpubs.stanford.edu:8090/422/1/1999-66.pdf) limited by token weighted bandwidth do not have inherent problems of naive PageRank and is resistant to sybil attacks. For the time being we will call it cyber•Rank until something better emerge.
 
-So we decide to find some more basic bulletproof way to bootstrap the network: a rank from which a previous network has been bootstrapped by Lary and Sergey. Token weighted [PageRank](http://ilpubs.stanford.edu:8090/422/1/1999-66.pdf) do not have inherent problems of naive PageRank
+In the centre of spam protection system is an assumption that write operations can be executed only by those who have vested interest in the evolutionary success of a relevance machine. Every 1% of stake in consensus computer gives the ability to use 1% of possible network broadband and computing capabilities.
 
-In the center of spam protection system is an assumption that write operations can be executed only by those who have vested interest in the evolutionary success of a consensus computer. Every 1% of stake in consensus computer gives the ability to use 1% of possible network broadband and computing capabilities. As nobody uses all possessed broadband we can use 10x fractional reserves with 2 minute recalculation target.
+As nobody uses all possessed broadband we can safely use 10x fractional reserves with 2 minute recalculation target.
 
-In order to switch from one algorithm to another we will experiment with economic a/b testing based on winning chains through hard spoons.
+In order to switch from one algorithm to another we are going to make simulations and experiment with economic a/b testing based on winning chains through hard spoons.
+
+Consensus computer based on relevance machine for cyber•Rank is able to answer and deliver relevant results for any given search request in the 64 byte CID space. But in order to build a network of domain specific relevance machines it is not enough. Consensus computers must have ability to prove relevance for each other.
 
 ## Proof of relevance
 
@@ -254,7 +257,7 @@ We design a system under assumption that in terms of search such thing as bad be
 Good analogy is observing in quantum mechanics. That is why we do not need such things as negative voting. Doing this we remove subjectivity out of the protocol and can define proof of relevance.
 
 ```
-Rank State = rank values stored in one dimensional array and merkle tree of those values.
+Rank state = rank values stored in one dimensional array and merkle tree of those values
 ```
 
 Each new CID gets unique number. Number starts from zero and incrementing by one for each new CID. So that we can store rank in one dimensional array where indices are CID numbers.
@@ -281,7 +284,9 @@ Rank merkle tree can be stored differently:
 The trick is that <b>full tree</b> is only necessary for providing merkle proofs. For consensus purposes and updating tree it's enough to have <b>short tree</b>. To store merkle tree in database use only <b>short tree</b>. Marshaling of short tree with `n` subtrees (each subtree takes 40 bytes):  
 
 ```
-<subtree_1_root_hash_bytes><subtree_1_height_bytes>....<subtree_n_root_hash_bytes><subtree_n_height_bytes>
+<subtree_1_root_hash_bytes><subtree_1_height_bytes>
+....
+<subtree_n_root_hash_bytes><subtree_n_height_bytes>
 ```
 
 For `1,099,511,627,775` leafs <b>short tree</b> would contain only 40 subtrees roots and take only 1600 bytes.
@@ -294,10 +299,10 @@ Lets denote rank state calculation:
 `lr` -  length of rank values array  
 
 For rank storing and calculation we have two separate in-memory contexts:
+
 1. Current rank context. It includes last calculated rank state (values and merkle tree) plus
 all links and user stakes submitted to the moment of this rank submission.
-2. New rank context. It's currently calculating (or already calculated and waiting for submission) rank state.
-Consists of new calculated rank state (values and merkle tree) plus new incoming links and updated user stakes.
+2. New rank context. It's currently calculating (or already calculated and waiting for submission) rank state. Consists of new calculated rank state (values and merkle tree) plus new incoming links and updated user stakes.
 
 Calculation of new rank state happens once per `p` blocks and going in parallel.
 Iteration starts from block number that `≡ 0 (mod p)` and goes till next block number that `≡ 0 (mod p)`.
@@ -363,8 +368,6 @@ For any given CID it is possible to prove the relevance
 Using this type of proof any two [IBC compatible](dura://QmdCeixQUHBjGnKfwbB1dxf4X8xnadL8xWmmEnQah5n7x2.ipfs) consensus computers can proof the relevance to each other, so domain specific relevance machines can flourish. Thanks to inter-blockchain communication protocol you basically can launch you own domain specific search engine either private or public by forking cyberd which is focuses on the public common knowledge. So in our search architecture domain specific relevance machine can learn from common knowledge. We are going to work on IBC during `smith` implementation.
 
 In our relevance for commons `euler` implementation proof of relevance root hash is computed on cuda gpus every round.
-
-Now cyberlinks can provably answer and deliver results.
 
 ## Speed and scalability
 
