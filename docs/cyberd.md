@@ -44,9 +44,10 @@ cyberlink:
 	* [Relevance machine](#relevance-machine)
 	* [cyber•Rank](#cyberrank)
 	* [Proof of relevance](#proof-of-relevance)
-	* [Speed](#speed)
+	* [Speed and scalability](#speed-and-scalability)
 	* [Implementation in browser](#implementation-in-browser)
 	* [From Inception to Genesis](#from-inception-to-genesis)
+	* [Validators incentive](#validators-incentive)
 	* [Satoshi Lottery](#satoshi-lottery)
 	* [Possible applications](#possible-applications)
 	* [Economic protection is `smith`](#economic-protection-is-smith)
@@ -278,10 +279,10 @@ To get merkle root hash - join subtree roots from right to left.
 
 Rank merkle tree can be stored differently:
 
-<b>Full tree</b> - all subtrees with all leafs and intermediary nodes  
-<b>Short tree</b> - contains only subtrees roots
+_Full tree_ - all subtrees with all leafs and intermediary nodes  
+_Short tree_ - contains only subtrees roots
 
-The trick is that <b>full tree</b> is only necessary for providing merkle proofs. For consensus purposes and updating tree it's enough to have <b>short tree</b>. To store merkle tree in database use only <b>short tree</b>. Marshaling of short tree with `n` subtrees (each subtree takes 40 bytes):  
+The trick is that _full tree_ is only necessary for providing merkle proofs. For consensus purposes and updating tree it's enough to have _short tree_. To store merkle tree in database use only _short tree_. Marshaling of short tree with `n` subtrees (each subtree takes 40 bytes):  
 
 ```
 <subtree_1_root_hash_bytes><subtree_1_height_bytes>
@@ -289,7 +290,7 @@ The trick is that <b>full tree</b> is only necessary for providing merkle proofs
 <subtree_n_root_hash_bytes><subtree_n_height_bytes>
 ```
 
-For `1,099,511,627,775` leafs <b>short tree</b> would contain only 40 subtrees roots and take only 1600 bytes.
+For `1,099,511,627,775` leafs _short tree_ would contain only 40 subtrees roots and take only 1600 bytes.
 
 Lets denote rank state calculation:
 
@@ -326,7 +327,7 @@ to the end of this array with value equal to zero.
 4. Check if new rank calculation finished. If yes go to (4.) if not go to next block.
 5. Push calculated rank state to new rank context. Store merkle tree of newly calculated rank.
 
-To sum up. In <b>current rank context</b> we have rank state from last calculated iteration (plus, every block, it updates with new CIDs). And we have links and user stakes that are participating in current rank calculation iteration (whether it finished or not). <b>New rank context</b> contains links and stakes that will go to next rank calculation and newly calculated rank state (if calculation is finished) that waiting for submitting.
+To sum up. In _current rank context_ we have rank state from last calculated iteration (plus, every block, it updates with new CIDs). And we have links and user stakes that are participating in current rank calculation iteration (whether it finished or not). _New rank context_ contains links and stakes that will go to next rank calculation and newly calculated rank state (if calculation is finished) that waiting for submitting.
 
 If we need to restart node firstly, we need to restore both contexts (current and new).
 Load links and user stakes from database using different versions:
@@ -339,10 +340,10 @@ Also to restart node correctly we have to store next entities in database:
 2. Newly calculated rank short merkle tree
 3. Last block short merkle tree
 
-With <b>last calculated rank hash</b> and <b>newly calculated rank merkle tree</b> we could check if rank calculation was finished before node restart. If they are equal then rank wasn't calculated and we should run rank calculation. If not we could skip rank calculation and use <b>newly calculated rank merkle tree</b> to participate in consensus when it comes to block number `cbn ≡ 0 (mod p)` (rank values will not be available until rank calculation happens
+With _last calculated rank hash_ and _newly calculated rank merkle tree_ we could check if rank calculation was finished before node restart. If they are equal then rank wasn't calculated and we should run rank calculation. If not we could skip rank calculation and use _newly calculated rank merkle tree_ to participate in consensus when it comes to block number `cbn ≡ 0 (mod p)` (rank values will not be available until rank calculation happens
 in next iteration. Still validator can participate in consensus so nothing bad).
 
-<b>Last block merkle tree</b> necessary to participate in consensus till start of next rank calculation iteration. So, after restart we could end up with two states:
+_Last block merkle tree_ necessary to participate in consensus till start of next rank calculation iteration. So, after restart we could end up with two states:
 1. Restored current rank context and new rank context without rank values (links, user stakes and merkle tree).
 2. Restored current rank context without rank values. Restored new rank context only with links and user stakes.
 
@@ -352,7 +353,7 @@ till two rank calculation iterations finished (current and next).
 Search index should be ran in parallel and do not influence work of consensus machine.
 Validator should be able to turn off index support. May be even make it a separate daemon.
 
-<b>Base idea.</b> Always submit new links to index and take rank values from current context (insert in sorted array operation). When new rank state is submitted trigger index to update rank values and do sortings (in most cases new arrays will be almost sorted).
+_Base idea._ Always submit new links to index and take rank values from current context (insert in sorted array operation). When new rank state is submitted trigger index to update rank values and do sortings (in most cases new arrays will be almost sorted).
 
 Need to solve problem of adjusting arrays capacity (to not copy arrays each time new linked cid added). Possible solution is to adjust capacity with reserve before resorting array.
 
@@ -375,11 +376,13 @@ We need very fast conformation times in order to feels like usual web app. It is
 
 Proposed blockchain design is based on Tendermint consensus algorithm with 146 validators and has very fast 1 second finality time. Average confirmation timeframe at half the second with asynchronous interaction make complex blockchain search almost invisible for agents.
 
-Let us say that our node implementation based on cosmos-sdk can process 10k transactions per second. Thus every day at least 8.64 million agents can submit 100 cyberlinks each and impact results simultaneously. That is enough to verify all assumptions in the wild. As blockchain technology evolve we want to check that every hypothesis work before scale it further. Moreover, proposed design needs demand for full bandwith in order the relevance become valuable. That is why we strongly focus on accesable, but provable distribution to millions from inception.
+Let us say that our node implementation based on `cosmos-sdk` can process 10k transactions per second. Thus every day at least 8.64 million agents can submit 100 cyberlinks each and impact results simultaneously. That is enough to verify all assumptions in the wild. As blockchain technology evolve we want to check that every hypothesis work before scale it further. Moreover, proposed design needs demand for full bandwith in order the relevance become valuable. That is why we strongly focus on accesable, but provable distribution to millions from inception.
 
 ## Implementation in browser
 
 We wanted to imagine how that could work in web3 browser. To our disappointment we [was not able](https://github.com/cybercongress/cyb/blob/master/docs/comparison.md) to find web3 browser that is able to showcase the coolness of proposed approach in action. That is why we decide to develop web3 browser [cyb](https://github.com/cybercongress/cyb/blob/master/docs/cyb.md) that has sample application .cyber for interacting with `cyber://` protocol.
+
+Todo: screenshots with basic steps of .cyber application
 
 ## From Inception to Genesis
 
@@ -398,7 +401,7 @@ merkle = 27
 In order to secure value of CYB before genesis 100 CBD ERC-20 tokens [are issued](https://etherscan.io/token/0x136c1121f21c29415D8cd71F8Bb140C7fF187033) by cyberFoundation. Based on CBD cyber proto substance snapshot balances are recomputed 7 times according to defined proportions.
 
 ``` Need triple check !!!
-100 CBD in euler got 70 000 000 000 000 CYB
+100 CBD in euler got 100 000 000 000 000 CYB
 ```
 
 Essentially CBD substance is distributed by cyberFoundation in the following proportion:
@@ -411,6 +414,14 @@ Details of code and value distribution will be produced by cyberFoundation.
 
 Except 7 proof-of-use lotteries CYB tokens can be created only by validators based on default staking and slashing parameters in accordance with the following approximate percents of inflation per year:
 
+Basic consensus is that newly created CYB tokens are distributed to validators as they do the most essential work to make relevance machine run both in terms of energy consumed for computation and cost for storage capacity. So validators decide where the tokens can flow further.
+
+## Validators incentive
+
+Validators are the most important building block of proposed architecture. Hence we want to bring them better incentive to participate before mainnet. In our case validators will must to compute and process requests for billions edge knowledge graph hence it would be naive to expect that it is possible to expect prepare such a network for production for free. In the beginning inflation must be high enough to compensate risks of early investments into the ecosystem.
+
+This is approximation of year inflation expressed in percents defined for testnets:
+
 ```toml
 euler = 200
 smith = 134
@@ -421,15 +432,17 @@ weiner = 27
 merkle = 18
 ```
 
-Basic consensus is that newly created CYB tokens are distributed to validators as they do the most essential work to make relevance machine run both in terms of energy consumed for computation and cost for storage capacity. So validators decide where the tokens can flow further.
+The scheme motivate developers to release earlier to be less diluted from holding CBD and honour validators if development is going slower than expected.
 
 After Genesis starting inflation rate will become fixed at `4 200 000 CYB` per block.
 
+[Join](/docs/how_to_become_validator.md).
+
+Once we have validators we can think about million web3 agents.
+
 ## Satoshi Lottery
 
-Satoshi Lottery is the inception version of proof-of-use distribution that happens in the tenth birthday of Bitcoin Genesis at 3 Jan 2019. It is highly experimental way of provable distribution.
-
-Basic algorithm is of 5 steps:
+Satoshi Lottery is the inception version of proof-of-use distribution that already happens in the tenth birthday of Bitcoin Genesis at 3 Jan 2019. It is highly experimental way of provable distribution. Basic idea is that very broad set of agents receive CYB tokens because they behave good. Basic algorithm is of 5 steps:
 
 ```
 - Compute SpringRank for Ethereum addresses
@@ -439,13 +452,17 @@ Basic algorithm is of 5 steps:
 - Create genesis for cyber protocol
 ```
 
-Tolik's article goes here
+Translation todo: Tolik's article goes here: QmS4YuH377EyzAjH84AR4EZKrnT879pMz4VKXcDNuej9DZ.ipfs.
+
+Next testnet we will improve logic of the lottery based on received data and repeat this every testnet until Genesis.
+
+Soon you will be able verify either you was lucky enough to receive CYB or not just searching your ethereum address. If you was you will be able to claim CYB even without compromising your Ethereum keys.
 
 ## Possible applications
 
 A lot of cool applications can be build on top of proposed architecture:
 
-_Web3 browsers_. It easy to imagine the emergence of a full-blown blockchain browser. Currently, there are several efforts for developing browsers around blockchains and distributed tech. Among them are Beaker, Mist, Brave and Metamask .. All of them suffer from trying to embed web2 in we3. Our approach is a bit different. We develop truly web3 experience first.
+_Web3 browsers_. It easy to imagine the emergence of a full-blown blockchain browser. Currently, there are several efforts for developing browsers around blockchains and distributed tech. Among them are Beaker, Mist, Brave and Metamask. All of them suffer from trying to embed web2 in web3. Our approach is a bit different. We consider web2 as unsafe subset of web3. That is why we decide to develop a web3 browser that can showcase cyber approach to answer questions better.
 
 _Programmable semantic cores_. Currently the most popular keywords in gigantic semantic core of Google are keywords of apps such as youtube, facebook, github etc. But developers has very limited possibility to explain Google how to better structure results. Cyber approach bring this power back to developers. On any given user input string in any application relevant answer can be computed either globally, in the context of an app, a user, a geo or in all of them combined.
 
@@ -488,7 +505,9 @@ This is sure not the exhaustive list of possible applications but very exciting,
 
 ## Economic protection is `smith`
 
-About private knowledge on relevance.
+About private knowledge on relevance. Explain the difference between private cyberlinks and private relevance machines.
+
+The plan for learning the beast. How to index ipfs, wiki, bitcoin and ethereum?
 
 ## Ability to evolve is `darwin`
 
@@ -498,29 +517,31 @@ About the importance of alternative implementation.
 
 Ability to programmatically extend state based on proven knowledge graph is of paramount importance. Thus we consider that WASM programs will be available for execution in cyber consensus computer on top of knowledge graph.
 
-Our approach to economics of consensus computer is that users buys amount of ram, cpu and gpu as they want to execute programs. The following list is simple programs we can envision that can be build on top of simple relevance machine.
+Our approach to economics of consensus computer is that users buys amount of ram, cpu and gpu as they want to execute programs. OpenCypher or GraphQL like language can be provided to explore semantics of the knowledge graph. The following list is simple programs we can envision that can be build on top of simple relevance machine.
 
 _Self prediction_. A consensus computer is able to continuously build a knowledge graph by itself predicting existence of cyberlinks and applying this predictions to a state of itself. Hence a consensus computer can participate in economic consensus of cyber protocol.
 
-_Universal oracle._ A consensus computer is able to store the most relevant data in key value store, where key is cid and value is bytes of actual content. She is doing it by making a decision every round about which value she want to prune and which she want to apply based on utility measure of content addresses in the knowledge graph. In order to compute utility measure validators check availability and size of a content for top ranked content address in the knowledge graph. Then weighted on size of cids and rank of . N is variable defined by consensus. The most  The logic is simple:   The good question os Every available content Emergent key-value store will be available to write for consensus computer only and not agents. but values can be used in programs.
+_Universal oracle._ A consensus computer is able to store the most relevant data in key value store, where key is cid and value is bytes of actual content. She is doing it by making a decision every round about which cid value she want to prune and which she want to apply based on utility measure of content addresses in the knowledge graph. In order to compute utility measure validators check availability and size of a content for top ranked content address in the knowledge graph, then weight on size of cids and its ranks. Emergent key-value store will be available to write for consensus computer only and not agents, but values can be used in programs.
 
 _Proof of location_. It is possible to construct cyberlinks with proof-of-location based on some existing protocol such as [Foam](dura://QmZYKGuLHf2h1mZrhiP2FzYsjj3tWt2LYduMCRbpgi5pKG.ipfs). So location based search also can become provable if web3 agents will mine triangulations and attaching proof of location for every link chain.
 
 _Proof of web3 agent_. Agents are a subset of content addresses with one very important property: consensus computer can prove an existence of private keys for content addresses for the subset of knowledge graph even if those addresses has never transacted in its own chain. Hence it is possible to compute a lot of provable stuff on top of that knowledge. Eg. some inflation can be distributed to addresses that have never transacted in the cyber network but have provable link.
 
-_Motivation for read requests_. It would be great to create cybernomics not only for write requests to consensus computer, but from read requests also. So read requests can be two order of magnitude cheaper. Read requests to a search engine can be provided by the second tier of nodes which earn CYB tokens in state channels. We consider to implement state channels based on HTLC and proof verification which unlocks amount earned for already served request (new signatures post via requester/user to cybernode via whisper/ipfs-pub-sub)
+_Motivation for read requests_. It would be great to create cybernomics not only for write requests to consensus computer, but from read requests also. So read requests can be two order of magnitude cheaper, but guaranteed. Read requests to a search engine can be provided by the second tier of nodes which earn CYB tokens in state channels. We consider to implement state channels based on HTLC and proof verification which unlocks amount earned for already served requests.
 
 _Prediction markets on link relevance_. We can move idea further by ranking of knowledge graph based on prediction market on links relevance. App that allow to bet on link relevance can become unique source of truth for direction of terms as well motivate to submit more links.
 
-_Private cyberlinks_. Privacy is foundational. While we are committed to privacy achieving implementation of private is unfeasible for our team hence we leave it on after genesis times. zero knowledge proofs. . The problem is to compute rank based on link of an agent based on its ranking without revealing identity. Zero knowledge proofs in general are very expensive. Privacy of search by design or as an option? Interactive proofs.
+_Private cyberlinks_. Privacy is foundational. While we are committed to privacy achieving implementation of private cyberlinks is unfeasible for our team up to Genesis. Hence it is up to community to work on wasm programs that can be executed on top of the protocol. The problem is to compute cyberRank based on cyberlink submitted by web3 agent without revealing neither previous request nor public keys of web3 agent. Zero knowledge proofs in general are very expensive. We believe that privacy of search should be must by design, but not sure that we know how to implement it. Coda like recursive snarks and mimblewimble constructions in theory can solve part of the privacy issue, but they are new, untested and anyway will be more expensive in terms of computations than transparent alternative.
 
 ## In search for equilibria is `nash`
 
+We need to find answers for a lot of hard questions regarding consensus variables and its default values. So we decide to stick to a community generated feedback on the road to Genesis and continuously adjust them to keep going better.
+
 On scalability trilema ...
 
-Decentralization comes with costs and slowness. We want to find a good balance between speed, relience and ability to scale, as we believe all three are sensitive for widespread web3 adoption.
+Decentralization comes with costs and slowness. We want to find a good balance between speed, reliance and ability to scale, as we believe all three are sensitive for widespread web3 adoption.
 
-That is the area of research for us now.
+That is the area of research for us now. We need real economic measurements in order to apply scientific method for this class of challenges.
 
 Let us say that our node implementation based on cosmos-sdk can process 10k transactions per second. Thus every day at least 8.64 million agents can submit 100 cyberlinks each and impact results simultaneously. That is enough to verify all assumptions in the wild. As blockchain technology evolve we want to check that every hypothesis work before scale it further.
 
@@ -538,9 +559,9 @@ Also instead of formal governance procedure we would love to check the hypothesi
 
 Starting protocol can be as simple as follows:
 
-> The more closer some content address to literally `cyber-protocol-current` content address the more probability than it will become winning. The most close protocol `cyber-protocol-current` is the protocol which is the most relevant to users.
+> The more closer some content address to `QmRBKYsQ4FPEtHeGBRuUZEfNXQfvNiJFXvbyrdF4Y7pqfh` the more probability than it will become the winning during upgrade. The most close protocol to `cyber-protocol-current` is the protocol which is the most relevant to users.
 
-Hence it is up to nodes to signal `cyber-protocol-current` by sending cyberlinks with semantics like `<cyber-protocol-current> <cid-of-protocol>`.
+Hence it is up to nodes to signal `cyber-protocol-current` by sending cyberlinks with semantics like `<cQmRBKYsQ4FPEtHeGBRuUZEfNXQfvNiJFXvbyrdF4Y7pqfh> <cid-of-protocol>`.
 
 ## Genesis is secure as `merkle`
 
@@ -550,7 +571,7 @@ After this release the network of relevance machines become fully functional and
 
 ## Conclusion
 
-We describe a motivated blockchain based search engine for web3. A search engine is based on the content-addressable peer-to-peer paradigm and uses IPFS as a foundation. IPFS provide significant benefits in terms of resources consumption. IPFS addresses as a primary objects are robust in its simplicity. For every IPFS hash cyber•rank is computed by a consensus computer with no single point of failure. Cyber•rank is a spring rank with economic protection from selfish predictions. Sybil resistance is also implemented on two levels: during id generation and during bandwidth limiting. Embedded smart contracts offer fair compensations for those who is able to predict relevance of content addresses. The primary goal is indexing of peer-to-peer systems with self-authenticated data either stateless, such as IPFS, Swarm, DAT, Git, BitTorent, or stateful such as Bitcoin, Ethereum and other blockchains and tangles. Proposed semantics of  linking offers robust mechanism for predicting meaningful relations between objects. A source code of a relevance machine is open source. Every bit of data accumulated by a consensus computer is available for everybody if the one has resources to process it. The performance of proposed software implementation is sufficient for seamless user interactions. Scalability of proposed implementation is enough to index all self-authenticated data that exist today. The blockchain is managed by a decentralized autonomous organization which functions under Tendermint consensus algorithm. Thought a system provide necessary utility to offer an alternative for conventional search engines it is not limited to this use case either. The system is extendable for numerous applications and e.g. makes possible to design economically rational self-owned robots that are able to autonomously understand objects around them.
+We define and implemented a protocol for provable communications of consensus computers on relevance. The protocol is based on simple idea of content defined knowledge graphs which are generated by web3 agents using cyberlinks. Cyberlinks are processed by a consensus computer using concept we call relevance machine. `euler` consensus computer is based on the content-addressable peer-to-peer paradigm and uses `go-ipfs` and `cosmos-sdk` as a foundation. IPFS provide significant benefits in terms of resources consumption. IPFS addresses as a primary objects are robust in its simplicity. For every IPFS hash cyber•rank is computed by a consensus computer with no single point of failure. Cyber•rank is CYB weighted PagaRank with economic protection from sybil attacks and selfish voting. Every round merkle root of rank tree is published so every computer can prove to any computer a relevance value for a given CID. Sybil resistance is based on bandwidth limiting. Embedded ability to execute programs offer very exciting apps. Starting primary goal is indexing of peer-to-peer systems with self-authenticated data either stateless, such as IPFS, Swarm, DAT, Git, BitTorent, or stateful such as Bitcoin, Ethereum and other blockchains and tangles. Proposed semantics of linking offers robust mechanism for predicting meaningful relations between objects by a consensus computer itself. A source code of a relevance machine is open source. Every bit of data accumulated by a consensus computer is available for everybody if the one has resources to process it. The performance of proposed software implementation is sufficient for seamless user interactions. Scalability of proposed implementation is enough to index all self-authenticated data that exist today and serve it to millions of web3 agents. The blockchain is managed by a decentralized autonomous organisation which functions under Tendermint consensus algorithm with standard governance module. Thought a system provide necessary utility to offer an alternative for conventional search engines it is not limited to this use case either. The system is extendable for numerous applications and e.g. makes possible to design economically rational self-owned robots that are able to autonomously understand objects around them.
 
 ## References
 
