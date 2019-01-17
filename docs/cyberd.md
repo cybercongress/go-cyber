@@ -184,15 +184,17 @@ Our current implementation is a 64 bit consensus computer for relevance of 64 by
 
 > Illustration
 
-We must bind computational, storage and broadband supply of relevance machine with maximised demand of queries.
+We must bind computational, storage and bandwidth supply of relevance machine with maximised demand of queries. Computation and storage in case of basic relevance machine can be easily predicted based on bandwidth, but bandwidth require limiting mechanism.
 
-Computation and storage in case of basic relevance machine can be easily predicted based on broadband, but broadband require limiting mechanism. Broadband limit can be imported from [/docs](https://github.com/cybercongress/cyberd/blob/master/docs/bandwidth.md). CYB tokens must appears here.
+Todo: Bandwidth limit must be imported from [/docs](https://github.com/cybercongress/cyberd/blob/master/docs/bandwidth.md).
+
+Todo: CYB tokens appears here.
 
 ## Relevance machine
 
 Relevance machine is a machine that transition knowledge graph state based on some reputation score of agents.
 
-This machine is enable simple construction for search question querying and answers delivering.
+This machine enables simple construction for search question querying and answers delivering.
 
 The reputation score is projected on every agent's cyberlink. Agents abuse is prevented by a simple rule: one content address can be voted by a token only once. So it does not matter for ranking from how much accounts you voted. Only sum of their balances matters.
 
@@ -216,21 +218,19 @@ Also one useful property of relevance machine is that it doesn't need to store n
 
 So relevance machine can implement aggressive pruning strategies such as pruning all history of knowledge graph formation or forgetting links that become non relevant.
 
-Forgetting links: Prune min possible rank / 2
-
 The pruning group of features features can be implemented in `nash`.
 
 `euler` implementation of relevance machine is based on the simplest mechanism which is called cyber•Rank.
 
 ## cyber•Rank
 
-Ranking using consensus computer is hard because consensus computers bring serious resource bounds. e.g. [Nebulas](dura://QmefxTSFG1W95yg3PLfKV2mshh6TtyRxwv5yPiyZCGyPmG.ipfs) fail to deliver something useful onchain. First we must ask ourselves why do we need to compute and store the rank on chain, and not go Colony or Truebit way?
+Ranking using consensus computer is hard because consensus computers bring serious resource bounds. e.g. [Nebulas](dura://QmefxTSFG1W95yg3PLfKV2mshh6TtyRxwv5yPiyZCGyPmG.ipfs) fail to deliver something useful onchain. First we must ask ourselves why do we need to compute and store the rank on chain, and not go [Colony]() or [Truebit]() way?
 
 If rank computed inside consensus computer you have easy content distribution of the rank as well as easy way to build provable applications on top of the rank. Hence we decide to follow more cosmic architecture. In the next section we describe proof of relevance mechanism which allow network to scale with help of domain specific relevance machines that works in parallel.
 
 Eventually relevance machine need to find (1) deterministic algorithm that allow to compute a rank for continuously appended network to scale the consensus computer to orders of magnitude that of Google. Perfect algorithm (2) must have linear memory and computation complexity. The most importantly it must have (3) highest provable prediction capabilities for existence of relevant links.
 
-After some research we found that we can not find silver bullet here. We find an algorithm that is probably satisfy our criteria: SpringRank. Original idea of an algorithm came to Caterina from physics. Links represented as system of springs with some energy and the task of computing the ranks is the task of finding relaxed state of springs.
+After some research we found that we can not find silver bullet here. We find an algorithm that is probably satisfy our criteria: [SpringRank](dura://QmNvxWTXQaAqjEouZQXTV4wDB5ryW4PGcaxe2Lukv1BxuM.ipfs). Original idea of an algorithm came to Caterina from physics. Links represented as system of springs with some energy and the task of computing the ranks is the task of finding relaxed state of springs.
 
 But we got at least 3 problems with SpringRank:
 1. We were not able to implement it onchain fast using Go in `euler`.
@@ -241,9 +241,9 @@ So we decide to find some more basic bulletproof way to bootstrap the network: a
 
 Token weighted [PageRank](http://ilpubs.stanford.edu:8090/422/1/1999-66.pdf) limited by token weighted bandwidth do not have inherent problems of naive PageRank and is resistant to sybil attacks. For the time being we will call it cyber•Rank until something better emerge.
 
-In the centre of spam protection system is an assumption that write operations can be executed only by those who have vested interest in the evolutionary success of a relevance machine. Every 1% of stake in consensus computer gives the ability to use 1% of possible network broadband and computing capabilities.
+In the centre of spam protection system is an assumption that write operations can be executed only by those who have vested interest in the evolutionary success of a relevance machine. Every 1% of stake in consensus computer gives the ability to use 1% of possible network bandwidth and computing capabilities.
 
-As nobody uses all possessed broadband we can safely use 10x fractional reserves with 2 minute recalculation target.
+As nobody uses all possessed bandwidth we can safely use 10x fractional reserves with 2 minute recalculation target.
 
 In order to switch from one algorithm to another we are going to make simulations and experiment with economic a/b testing based on winning chains through hard spoons.
 
@@ -357,7 +357,7 @@ _Base idea._ Always submit new links to index and take rank values from current 
 
 Need to solve problem of adjusting arrays capacity (to not copy arrays each time new linked cid added). Possible solution is to adjust capacity with reserve before resorting array.
 
-Therefore for building index we need to find sorting algorithm that will be fast on almost sorted arrays. Also we should implement it for GPU (so it should better be parallelizable:
+Therefore for building index we need to find sorting algorithm that will be fast on almost sorted arrays. Also we should implement it for GPU (todo: so it should better be parallelizable:
 Mergesort(Timsort), Heapsort, Smoothsort ... ?
 
 Now we have proof of rank of any given content address. While the relevance is still subjective by nature we have a collective proof that something was relevant for some community at some point in time.
@@ -376,7 +376,7 @@ We need very fast conformation times in order to feels like usual web app. It is
 
 Proposed blockchain design is based on Tendermint consensus algorithm with 146 validators and has very fast 1 second finality time. Average confirmation timeframe at half the second with asynchronous interaction make complex blockchain search almost invisible for agents.
 
-Let us say that our node implementation based on `cosmos-sdk` can process 10k transactions per second. Thus every day at least 8.64 million agents can submit 100 cyberlinks each and impact results simultaneously. That is enough to verify all assumptions in the wild. As blockchain technology evolve we want to check that every hypothesis work before scale it further. Moreover, proposed design needs demand for full bandwith in order the relevance become valuable. That is why we strongly focus on accesable, but provable distribution to millions from inception.
+Let us say that our node implementation based on `cosmos-sdk` can process 10k transactions per second. Thus every day at least 8.64 million agents can submit 100 cyberlinks each and impact results simultaneously. That is enough to verify all assumptions in the wild. As blockchain technology evolve we want to check that every hypothesis work before scale it further. Moreover, proposed design needs demand for full bandwidth in order the relevance become valuable. That is why we strongly focus on accessible, but provable distribution to millions from inception.
 
 ## Implementation in browser
 
@@ -386,36 +386,29 @@ Todo: screenshots with basic steps of .cyber application
 
 ## From Inception to Genesis
 
-It is trivial to develop `euler` like proof-of-concept implementation but it is hard to achieve stable protocol `merkle` a lot of CYB value on which can exist. `euler` is Inception that already happened, `merkle` is Genesis that is far away. That is why we decide to innovate a bit on the going mainnet process. We do not have CYB balances and rank guaranties before `merkle` but we can have exponentially growing semantic core which can be improved based on measurements and observations during development and gradual transfer of value since `euler`. So think that Genesis or `merkle` is very stable and can store semantic core and value, but all releases before can store the whole semantic core and only part of the value you would love to store due to weak security guaranties. The percents of CYB value to be distributed in every testnet:
+It is trivial to develop `euler` like proof-of-concept implementation but it is hard to achieve stable protocol `merkle` a lot of CYB value on which can exist. `euler` is Inception that already happened, `merkle` is Genesis that is far away. That is why we decide to innovate a bit on the going mainnet process. We do not have CYB balances and rank guaranties before `merkle` but we can have exponentially growing semantic core which can be improved based on measurements and observations during development and gradual transfer of value since `euler`. So think that Genesis or `merkle` is very stable and can store semantic core and value, but all releases before can store the whole semantic core and only part of the value you would love to store due to weak security guaranties. The percents of CYB value to be distributed based in CBD balances:
 
 ```toml
-euler = 0.7
-smith = 3.3
-darwin = 8
+euler  =  0.7
+smith  =  3.3
+darwin =  8
 turing = 15
-nash = 21
+nash   = 21
 weiner = 25
 merkle = 27
 ```
 
-In order to secure value of CYB before genesis 100 CBD ERC-20 tokens [are issued](https://etherscan.io/token/0x136c1121f21c29415D8cd71F8Bb140C7fF187033) by cyberFoundation. Based on CBD cyber proto substance snapshot balances are recomputed 7 times according to defined proportions.
-
-```
-Need triple check !!!
-100 CBD in euler got 100 000 000 000 000 CYB
-```
+In order to secure value of CYB before genesis 100 CBD ERC-20 tokens [are issued](https://etherscan.io/token/0x136c1121f21c29415D8cd71F8Bb140C7fF187033) by [cyberFoundation](https://mainnet.aragon.org/#/cyberfoundation.aragonid.eth/0xf4d85b5a1650a335b30072d178f6dcb611f05a3e). So snapshot balances are computed 7 times based on CBD.
 
 Essentially CBD substance is distributed by cyberFoundation in the following proportion:
 
-- `Proof-of-use : 70%` is allocated to web3 agents according to some probabilistic algorithm. E.g. first `euler` proof-of-use distribution we call Satoshi Lottery is allocated to top 1M key owned Ethereum addresses by [SpringRank](dura://QmNvxWTXQaAqjEouZQXTV4wDB5ryW4PGcaxe2Lukv1BxuM.ipfs).
+- `Proof-of-use : 70%` is allocated to web3 agents according to some probabilistic algorithm. E.g. first `euler` proof-of-use distribution we call Satoshi Lottery is allocated to top 1M key owned Ethereum addresses based on SpringRank.
 - `Proof-of-code: 15%` is allocated for direct contribution into the code base. E.g. as assigned by cyberFoundation to cyberCongress contribution including team is 11.2% and the other 3.8% allocated to developers community projects such as Gitcoin community and cyberColony based experimental organization.
-- `Proof-of-value: 15%` is allocated for direct contribution of funds. 8% of this value either has been already contributed nor has some reservation for ongoing contributions by close friends and 7% is going to be distributed during eos like auction not defined exactly yet. All contribution will go to Aragon based cyberFoundation and will be managed by CBD token holders.
+- `Proof-of-value: 15%` is allocated for direct contribution of funds. 8% of this value either has been already contributed nor has some reservation for ongoing contributions by close friends and 7% is going to be distributed during Eos-like auction not defined exactly yet. All contribution from the auction will go to Aragon based cyberFoundation and will be managed by CBD token holders.
 
 Details of code and value distribution will be produced by cyberFoundation.
 
-Except 7 proof-of-use lotteries CYB tokens can be created only by validators based on default staking and slashing parameters in accordance with the following approximate percents of inflation per year:
-
-Basic consensus is that newly created CYB tokens are distributed to validators as they do the most essential work to make relevance machine run both in terms of energy consumed for computation and cost for storage capacity. So validators decide where the tokens can flow further.
+Except 7 CBD based distributions CYB tokens can be created only by validators based on default staking and slashing parameters. Basic consensus is that newly created CYB tokens are distributed to validators as they do the most essential work to make relevance machine run both in terms of energy consumed for computation and cost for storage capacity. So validators decide where the tokens can flow further.
 
 ## Validators incentive
 
@@ -435,11 +428,13 @@ merkle = 18
 
 The scheme motivate developers to release earlier to be less diluted from holding CBD and honour validators if development is going slower than expected.
 
+Todo: Check inflation rate
+
 After Genesis starting inflation rate will become fixed at `4 200 000 CYB` per block.
 
 [Join](/docs/how_to_become_validator.md).
 
-Once we have validators we can think about million web3 agents.
+Once we have validators we can think about first million of web3 agents.
 
 ## Satoshi Lottery
 
@@ -453,11 +448,16 @@ Satoshi Lottery is the inception version of proof-of-use distribution that alrea
 - Create genesis for cyber protocol
 ```
 
-Translation todo: Tolik's article goes here: QmS4YuH377EyzAjH84AR4EZKrnT879pMz4VKXcDNuej9DZ.ipfs.
+Translation todo: [Tolik's article](http://127.0.0.1:8080/ipfs/QmS4YuH377EyzAjH84AR4EZKrnT879pMz4VKXcDNuej9DZ) have to translated here:
 
 Next testnet we will improve logic of the lottery based on received data and repeat this every testnet until Genesis.
 
 Soon you will be able verify either you was lucky enough to receive CYB or not just searching your ethereum address. If you was you will be able to claim CYB even without compromising your Ethereum keys.
+
+The genesis file containing lotery results for `euler` has he following cid:
+```
+Qma5U4joYWEf41ku16g9cQr6fADsxCPsiWeYZBxpnpu1D4
+```
 
 ## Possible applications
 
@@ -532,7 +532,7 @@ _Motivation for read requests_. It would be great to create cybernomics not only
 
 _Prediction markets on link relevance_. We can move idea further by ranking of knowledge graph based on prediction market on links relevance. App that allow to bet on link relevance can become unique source of truth for direction of terms as well motivate to submit more links.
 
-_Private cyberlinks_. Privacy is foundational. While we are committed to privacy achieving implementation of private cyberlinks is unfeasible for our team up to Genesis. Hence it is up to community to work on wasm programs that can be executed on top of the protocol. The problem is to compute cyberRank based on cyberlink submitted by web3 agent without revealing neither previous request nor public keys of web3 agent. Zero knowledge proofs in general are very expensive. We believe that privacy of search should be must by design, but not sure that we know how to implement it. Coda like recursive snarks and mimblewimble constructions in theory can solve part of the privacy issue, but they are new, untested and anyway will be more expensive in terms of computations than transparent alternative.
+_Private cyberlinks_. Privacy is foundational. While we are committed to privacy achieving implementation of private cyberlinks is unfeasible for our team up to Genesis. Hence it is up to community to work on wasm programs that can be executed on top of the protocol. The problem is to compute cyberRank based on cyberlink submitted by web3 agent without revealing neither previous request nor public keys of web3 agent. Zero knowledge proofs in general are very expensive. We believe that privacy of search should be must by design, but not sure that we know how to implement it. [Coda]() like recursive snarks and [mimblewimble]() constructions in theory can solve part of the privacy issue, but they are new, untested and anyway will be more expensive in terms of computations than transparent alternative.
 
 ## In search for equilibria is `nash`
 
@@ -544,8 +544,6 @@ Decentralization comes with costs and slowness. We want to find a good balance b
 
 That is the area of research for us now. We need real economic measurements in order to apply scientific method for this class of challenges.
 
-Let us say that our node implementation based on cosmos-sdk can process 10k transactions per second. Thus every day at least 8.64 million agents can submit 100 cyberlinks each and impact results simultaneously. That is enough to verify all assumptions in the wild. As blockchain technology evolve we want to check that every hypothesis work before scale it further.
-
 ## On faster evolution at `weiner`
 
 Basic purpose of wiener stage is to be able to update the consensus of a network from a consensus computer state using some onchain upgrade mechanism.
@@ -554,7 +552,7 @@ Evolvability and governance are connected tightly.
 
 Ability to reflect input from the world and output changes of itself is essential evolutionary feature. Hence, thanks to cosmos-sdk `euler` implementation has basic but very power features such as onchain voting with vetos and abstains that drastically simplified open discussions for change. So we are going to use this feature from the inception of the network.
 
-But we can go to different direction than cosmos-sdk offers. Following ideas from Tezos in Weiner we can define the current state of a protocol as immutable content address that is included in round merkle root.
+But we can go to different direction than cosmos-sdk offers. Following ideas from [Tezos]() in Weiner we can define the current state of a protocol as immutable content address that is included in round merkle root.
 
 Also instead of formal governance procedure we would love to check the hypothesis that changing state of a protocol is possible indeed using relevance machine itself.
 
@@ -574,10 +572,38 @@ After this release the network of relevance machines become fully functional and
 
 We define and implemented a protocol for provable communications of consensus computers on relevance. The protocol is based on simple idea of content defined knowledge graphs which are generated by web3 agents using cyberlinks. Cyberlinks are processed by a consensus computer using concept we call relevance machine. `euler` consensus computer is based on the content-addressable peer-to-peer paradigm and uses `go-ipfs` and `cosmos-sdk` as a foundation. IPFS provide significant benefits in terms of resources consumption. IPFS addresses as a primary objects are robust in its simplicity. For every IPFS hash cyber•rank is computed by a consensus computer with no single point of failure. Cyber•rank is CYB weighted PagaRank with economic protection from sybil attacks and selfish voting. Every round merkle root of rank tree is published so every computer can prove to any computer a relevance value for a given CID. Sybil resistance is based on bandwidth limiting. Embedded ability to execute programs offer very exciting apps. Starting primary goal is indexing of peer-to-peer systems with self-authenticated data either stateless, such as IPFS, Swarm, DAT, Git, BitTorent, or stateful such as Bitcoin, Ethereum and other blockchains and tangles. Proposed semantics of linking offers robust mechanism for predicting meaningful relations between objects by a consensus computer itself. A source code of a relevance machine is open source. Every bit of data accumulated by a consensus computer is available for everybody if the one has resources to process it. The performance of proposed software implementation is sufficient for seamless user interactions. Scalability of proposed implementation is enough to index all self-authenticated data that exist today and serve it to millions of web3 agents. The blockchain is managed by a decentralized autonomous organisation which functions under Tendermint consensus algorithm with standard governance module. Thought a system provide necessary utility to offer an alternative for conventional search engines it is not limited to this use case either. The system is extendable for numerous applications and e.g. makes possible to design economically rational self-owned robots that are able to autonomously understand objects around them.
 
+## Refferences
+
+- [Web3 stack](https://github.com/w3f/Web3-wiki/wiki)
+- [An idea of decentralised search](https://steemit.com/web3/@hipster/an-idea-of-decentralized-search-for-web3-ce860d61defe5est)
+- [IPFS](dura://QmV9tSDx9UiPeWExXEeH6aoDvmihvx6jD5eLb4jbTaKGps.ipfs)
+- [DAT](dura://QmXHGmfo4sjdHVW2MAxczAfs44RCpSeva2an4QvkzqYgfR.ipfs)
+- [cosmos-sdk](https://github.com/cosmos/cosmos-sdk)
+- [CIDv0](https://github.com/multiformats/cid#cidv0)
+- [DURA]( )
+- [Nebulas](dura://QmefxTSFG1W95yg3PLfKV2mshh6TtyRxwv5yPiyZCGyPmG.ipfs)
+- [Colony]( )
+- [Truebit]( )
+- [SpringRank](dura://QmNvxWTXQaAqjEouZQXTV4wDB5ryW4PGcaxe2Lukv1BxuM.ipfs)
+- [PageRank](http://ilpubs.stanford.edu:8090/422/1/1999-66.pdf)
+- [RFC-6962](https://tools.ietf.org/html/rfc6962#section-2.1)
+- [Inter Blockchain Communication protocol](dura://QmdCeixQUHBjGnKfwbB1dxf4X8xnadL8xWmmEnQah5n7x2.ipfs)
+- [Comparison of web3 browsers](https://github.com/cybercongress/cyb/blob/master/docs/comparison.md)
+- [Cyb](https://github.com/cybercongress/cyb/blob/master/docs/cyb.md)
+- [CBD](https://etherscan.io/token/0x136c1121f21c29415D8cd71F8Bb140C7fF187033)
+- [cyberFoundation in Aragon](https://mainnet.aragon.org/#/cyberfoundation.aragonid.eth/0xf4d85b5a1650a335b30072d178f6dcb611f05a3e)
+- [How to become validator in Cyber network](/docs/how_to_become_validator.md)
+- [Tolik's article](http://127.0.0.1:8080/ipfs/QmS4YuH377EyzAjH84AR4EZKrnT879pMz4VKXcDNuej9DZ)
+- [Top 10000 english words](https://github.com/first20hours/google-10000-english)
+- [Foam](dura://QmZYKGuLHf2h1mZrhiP2FzYsjj3tWt2LYduMCRbpgi5pKG.ipfs)
+- [Coda]( )
+- [Mimblewimble]( )
+- [Tezos]( )
+
 ## Notes
 
 Todo: Not discussed adversarial examples problem
 Todo: Distribution is defined unclearly
 Todo: Vote buying is not discussed
 Todo: Images
-Todo: References
+Todo: References with names
