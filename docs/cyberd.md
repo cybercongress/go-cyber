@@ -37,6 +37,7 @@ cyberlink:
 	* [Content](#content)
 	* [Abstract](#abstract)
 	* [Introduction to web3](#introduction-to-web3)
+	* [Adversarial examples problem](#adversarial-examples-problem)
 	* [Cyber protocol at `euler`](#cyber-protocol-at-euler)
 	* [Knowledge graph](#knowledge-graph)
 	* [Cyberlinks](#cyberlinks)
@@ -49,6 +50,7 @@ cyberlink:
 	* [From Inception to Genesis](#from-inception-to-genesis)
 	* [Validators incentive](#validators-incentive)
 	* [Satoshi Lottery](#satoshi-lottery)
+	* [Inception](#inception)
 	* [Possible applications](#possible-applications)
 	* [Economic protection is `smith`](#economic-protection-is-smith)
 	* [Ability to evolve is `darwin`](#ability-to-evolve-is-darwin)
@@ -58,7 +60,6 @@ cyberlink:
 	* [Genesis is secure as `merkle`](#genesis-is-secure-as-merkle)
 	* [Conclusion](#conclusion)
 	* [References](#references)
-	* [Notes](#notes)
 
 <!-- /code_chunk_output -->
 
@@ -71,6 +72,10 @@ A consensus computer allow to compute provably relevant answers without opiniona
 Original protocols of the Internet such as TCP/IP, DNS, URL and HTTPS brought a web into the point there it is now. Along with all benefits they has created they brought more problem into the table. Globality being a key property of the the web since inception is under real threat. Speed of connections degrade with network grow and from ubiquitous government interventions into privacy and security of web users. One property, not obvious in the beginning, become really important with everyday usage of the Internet: its ability to exchange permanent hyperlinks thus they would not break after time have pass. Reliance on one at a time internet service provider architecture allow governments censor packets is the last straw in conventional web stack for every engineer who is concerned about the future of our children. Other properties while being not so critical are very desirable: offline and real-time. Average internet user being offline must have ability to work with the state it has and after acquiring connection being able to sync with global state and continue verify state's validity in realtime while having connection. Now this properties offered on app level while such properties must be integrated into lower level protocols.
 
 The emergence of a [web3 stack](https://github.com/w3f/Web3-wiki/wiki) creates an opportunity for a new kind of Internet. We call it web3. It has a promise to remove problems of conventional protocol stack and add to the web better speed and more accessible connection. But as usually in a story with a new stack, new problems emerge. One of such problem is general purpose search. Existing general purpose search engines are restrictive centralized databases everybody forced to trust. These search engines were designed primarily for client-server architecture based on TCP/IP, DNS, URL and HTPPS protocols. Web3 create a challenge and opportunity for a search engine based on developing technologies and specifically designed for them. Surprisingly the permission-less blockchain architecture itself allows organizing general purpose search engine in a way inaccessible for previous architectures.
+
+## Adversarial examples problem
+
+[Conventional architecture of search engine](dura://QmeS4LjoL1iMNRGuyYSx78RAtubTT2bioSGnsvoaupcHR6.ipfs) where one entity process and rank all the shit suffers from one hard but very specific problem that still has not been solved even by brilliant Google scientists: [adversarial examples problem](QmNrAFz34SLqkzhSg4wAYYJeokfJU5hBEpkT4hPRi226y9). The problem Google acknowledge is that it is rather hard to algorithmically reason either this particular sample is adversarial or not independently on how cool the learning technology is. Obviously cryptoeconomic approach can change beneficiaries in this game effectively removing possible sybil attack vectors and removing necessity to make a decision on example crawling and meaning extraction from one entity to the whole world.
 
 ## Cyber protocol at `euler`
 
@@ -133,7 +138,9 @@ A concept of cyberlink is a convention around simple semantics of communication 
 
 You can see that cyberlink represents a link between two links. Easy peasy!
 
-Cyberlink is simple yet powerful semantic construction. Cyberlinks can form link chains if exist a series of two cyberlinks from one agent in which the second link in first cyberlink is equal to first link in second cyberlink:
+Cyberlink is simple yet powerful semantic construction for building a predictive model of the universe.
+
+Cyberlinks can form link chains if exist a series of two cyberlinks from one agent in which the second link in first cyberlink is equal to first link in second cyberlink:
 
 ```
 <content-address x>.<content-address y>
@@ -172,8 +179,8 @@ We know that:
 
 ```
 verifications of computations < computations + verifications of computations
-
 ```
+
 Hence we will not be able to achieve ideal consensus computer ever.
 
 But this theory can work as a performance indicator of a consensus computer.
@@ -182,9 +189,9 @@ Our current implementation is a 64 bit consensus computer for relevance of 64 by
 
 We must bind computational, storage and bandwidth supply of relevance machine with maximised demand of queries. Computation and storage in case of basic relevance machine can be easily predicted based on bandwidth, but bandwidth require limiting mechanism.
 
-Todo: Bandwidth limit must be imported from [/docs](https://github.com/cybercongress/cyberd/blob/master/docs/bandwidth.md).
+Bandwidth limiting mechanism is work in progress. Current notes on implementation are in [the /docs](https://github.com/cybercongress/cyberd/blob/master/docs/bandwidth.md).
 
-Todo: CYB tokens appears here.
+So agents must have CYB tokens in accordance to their will of learning the knowledge graph. But proposed mechanics of CYB tokens work not only as spam protection but as economic regulation mechanism to align ability of validators to process knowledge graph and market demand for processing.
 
 ## Relevance machine
 
@@ -210,7 +217,7 @@ Human intelligence organized in a way to prune non relevant and non important me
 
 Also one useful property of relevance machine is that it doesn't need to store neither past state nor full current state to remain useful, or more precisely: "relevant".
 
-So relevance machine can implement aggressive pruning strategies such as pruning all history of knowledge graph formation or forgetting links that become non relevant.
+So relevance machine can implement [aggressive pruning strategies](QmP81EcuNDZHQutvdcDjbQEqiTYUzU315aYaTyrVj6gtJb) such as pruning all history of knowledge graph formation or forgetting links that become non relevant.
 
 The pruning group of features features can be implemented in `nash`.
 
@@ -218,7 +225,7 @@ The pruning group of features features can be implemented in `nash`.
 
 ## cyber•Rank
 
-Ranking using consensus computer is hard because consensus computers bring serious resource bounds. e.g. [Nebulas](dura://QmefxTSFG1W95yg3PLfKV2mshh6TtyRxwv5yPiyZCGyPmG.ipfs) fail to deliver something useful onchain. First we must ask ourselves why do we need to compute and store the rank on chain, and not go [Colony]() or [Truebit]() way?
+Ranking using consensus computer is hard because consensus computers bring serious resource bounds. e.g. [Nebulas](dura://QmWTZjDZNbBqcJ5b6VhWGXBQ5EQavKKDteHsdoYqB5CBjh.ipfs) still fail to deliver something useful onchain. First we must ask ourselves why do we need to compute and store the rank on chain, and not go [Colony](dura://QmZo7eY5UdJYotf3Z9GNVBGLjkCnE1j2fMdW2PgGCmvGPj.ipfs) or [Truebit](dura://QmPmQ1xw9QkwnP1DcZ7fT1MuEc1e6Gqyjo6oGSw9xbcG89.ipfs) way?
 
 If rank computed inside consensus computer you have easy content distribution of the rank as well as easy way to build provable applications on top of the rank. Hence we decide to follow more cosmic architecture. In the next section we describe proof of relevance mechanism which allow network to scale with help of domain specific relevance machines that works in parallel.
 
@@ -231,13 +238,15 @@ But we got at least 3 problems with SpringRank:
 2. We was not able to prove it for knowledge graph because we just did not have provable knowledge graph yet.
 3. Also we was not able to prove it applying it for the Ethereum blockchain during computing the genesis file for `euler`. It could work, but for the time being it is better to call this kind of distribution a lottery.
 
-So we decide to find some more basic bulletproof way to bootstrap the network: a rank from which a previous network has been bootstrapped by Lary and Sergey. The problem with original PageRank is that it is not resistant to Sybil Attack.
+So we decide to find some more basic bulletproof way to bootstrap the network: a rank from which a previous network has been bootstrapped by Lary and Sergey. The problem with original PageRank is that it is not resistant to Sybil attacks.
 
 Token weighted [PageRank](http://ilpubs.stanford.edu:8090/422/1/1999-66.pdf) limited by token weighted bandwidth do not have inherent problems of naive PageRank and is resistant to sybil attacks. For the time being we will call it cyber•Rank until something better emerge.
 
 In the centre of spam protection system is an assumption that write operations can be executed only by those who have vested interest in the evolutionary success of a relevance machine. Every 1% of stake in consensus computer gives the ability to use 1% of possible network bandwidth and computing capabilities.
 
 As nobody uses all possessed bandwidth we can safely use 10x fractional reserves with 2 minute recalculation target.
+
+We would love to especially discuss the problem of vote buying. Vote buying by itself is not such bad. The problem with vote buying appears in the systems where voting affect allocation of inflation in system like [Steem](QmepU77tqMAHHuiSASUvUnu8f8ENuPF2Kfs97WjLn8vAS3) or in any state based system. So vote buying can become easily profitable for adversary by the means of zero-sum game without necessity to add value. Our original idea of decentralized search was based on this approach, but we reject this idea completely removing incentive on consensus level for knowledge graph formation completely. In our setting in which every participant must bring some value to the system in order to affect predictive model vote buying become NP-hard problem hence is useful for the system.
 
 In order to switch from one algorithm to another we are going to make simulations and experiment with economic a/b testing based on winning chains through hard spoons.
 
@@ -351,8 +360,7 @@ _Base idea._ Always submit new links to index and take rank values from current 
 
 Need to solve problem of adjusting arrays capacity (to not copy arrays each time new linked cid added). Possible solution is to adjust capacity with reserve before resorting array.
 
-Therefore for building index we need to find sorting algorithm that will be fast on almost sorted arrays. Also we should implement it for GPU (todo: so it should better be parallelizable:
-Mergesort(Timsort), Heapsort, Smoothsort ... ?
+Todo: Therefore for building index we need to find sorting algorithm that will be fast on almost sorted arrays. Also we should implement it for GPU so it should better be parallelizable: Mergesort(Timsort), Heapsort, Smoothsort ...
 
 Now we have proof of rank of any given content address. While the relevance is still subjective by nature we have a collective proof that something was relevant for some community at some point in time.
 
@@ -370,7 +378,7 @@ In our relevance for commons `euler` implementation proof of relevance root hash
 
 We need very fast conformation times in order to feels like usual web app. It is strong architecture requirement that shape an economic topology and scalability of cyber protocol.
 
-Proposed blockchain design is based on Tendermint consensus algorithm with 146 validators and has very fast 1 second finality time. Average confirmation timeframe at half the second with asynchronous interaction make complex blockchain search almost invisible for agents.
+Proposed blockchain design is based on [Tendermint consensus](dura://QmaMtD7xDgghqgjN62zWZ5TBGFiEjGQtuZBjJ9sMh816KJ.ipfs) algorithm with 146 validators and has very fast 1 second finality time. Average confirmation timeframe at half the second with asynchronous interaction make complex blockchain search almost invisible for agents.
 
 Let us say that our node implementation based on `cosmos-sdk` can process 10k transactions per second. Thus every day at least 8.64 million agents can submit 100 cyberlinks each and impact results simultaneously. That is enough to verify all assumptions in the wild. As blockchain technology evolve we want to check that every hypothesis work before scale it further. Moreover, proposed design needs demand for full bandwidth in order the relevance become valuable. That is why we strongly focus on accessible, but provable distribution to millions from inception.
 
@@ -424,9 +432,7 @@ merkle = 18
 
 The scheme motivate developers to release earlier to be less diluted from holding CBD and honour validators if development is going slower than expected.
 
-Todo: Check inflation rate
-
-After Genesis starting inflation rate will become fixed at `4 200 000 CYB` per block.
+After Genesis starting inflation rate will become fixed at `z` per block.
 
 [Join](/docs/how_to_become_validator.md).
 
@@ -444,16 +450,20 @@ Satoshi Lottery is the inception version of proof-of-use distribution that alrea
 - Create genesis for cyber protocol
 ```
 
-Translation todo: [Tolik's article](http://127.0.0.1:8080/ipfs/QmS4YuH377EyzAjH84AR4EZKrnT879pMz4VKXcDNuej9DZ) have to translated here:
+Translation todo: [Tolik's article](http://127.0.0.1:8080/ipfs/QmS4YuH377EyzAjH84AR4EZKrnT879pMz4VKXcDNuej9DZ) have to be translated here.
 
 Next testnet we will improve logic of the lottery based on received data and repeat this every testnet until Genesis.
 
 Soon you will be able verify either you was lucky enough to receive CYB or not just searching your ethereum address. If you was you will be able to claim CYB even without compromising your Ethereum keys.
 
-The genesis file containing lotery results for `euler` has he following cid:
+## Inception
+
+The genesis file for `euler` containing lottery results and CBD based distribution has he following cid:
 ```
 Qma5U4joYWEf41ku16g9cQr6fADsxCPsiWeYZBxpnpu1D4
 ```
+
+`x` acccount with  `y` CYB tokens has been created in inception of the network.
 
 ## Possible applications
 
@@ -570,35 +580,35 @@ We define and implemented a protocol for provable communications of consensus co
 
 ## References
 
+> Github do not display web3 links correctly so follow source code
+
 - [Web3 stack](https://github.com/w3f/Web3-wiki/wiki)
+- [Search engines information retrieval in practice](dura://QmeS4LjoL1iMNRGuyYSx78RAtubTT2bioSGnsvoaupcHR6.ipfs)
+- [Motivating game for adversarial example research](dura://QmNrAFz34SLqkzhSg4wAYYJeokfJU5hBEpkT4hPRi226y9.ifps)
 - [An idea of decentralised search](https://steemit.com/web3/@hipster/an-idea-of-decentralized-search-for-web3-ce860d61defe5est)
 - [IPFS](dura://QmV9tSDx9UiPeWExXEeH6aoDvmihvx6jD5eLb4jbTaKGps.ipfs)
 - [DAT](dura://QmXHGmfo4sjdHVW2MAxczAfs44RCpSeva2an4QvkzqYgfR.ipfs)
 - [cosmos-sdk](https://github.com/cosmos/cosmos-sdk)
 - [CIDv0](https://github.com/multiformats/cid#cidv0)
-- [DURA]( )
-- [Nebulas](dura://QmefxTSFG1W95yg3PLfKV2mshh6TtyRxwv5yPiyZCGyPmG.ipfs)
-- [Colony]( )
-- [Truebit]( )
+- [Bandwidth in cyber network](https://github.com/cybercongress/cyberd/blob/master/docs/bandwidth.md)
+- [Thermodynamics of predictions](dura://QmP81EcuNDZHQutvdcDjbQEqiTYUzU315aYaTyrVj6gtJb.ipfs)
+- [DURA](https://github.com/cybercongress/cyb/blob/master/docs/web3-vision.md)
+- [Nebulas](dura://QmWTZjDZNbBqcJ5b6VhWGXBQ5EQavKKDteHsdoYqB5CBjh.ipfs)
+- [Colony](dura://QmZo7eY5UdJYotf3Z9GNVBGLjkCnE1j2fMdW2PgGCmvGPj.ipfs)
+- [Truebit](dura://QmPmQ1xw9QkwnP1DcZ7fT1MuEc1e6Gqyjo6oGSw9xbcG89.ipfs)
 - [SpringRank](dura://QmNvxWTXQaAqjEouZQXTV4wDB5ryW4PGcaxe2Lukv1BxuM.ipfs)
 - [PageRank](http://ilpubs.stanford.edu:8090/422/1/1999-66.pdf)
 - [RFC-6962](https://tools.ietf.org/html/rfc6962#section-2.1)
-- [Inter Blockchain Communication protocol](dura://QmdCeixQUHBjGnKfwbB1dxf4X8xnadL8xWmmEnQah5n7x2.ipfs)
+- [IBC protocol](dura://QmdCeixQUHBjGnKfwbB1dxf4X8xnadL8xWmmEnQah5n7x2.ipfs)
+- [Tendermint](dura://QmaMtD7xDgghqgjN62zWZ5TBGFiEjGQtuZBjJ9sMh816KJ.ipfs)
 - [Comparison of web3 browsers](https://github.com/cybercongress/cyb/blob/master/docs/comparison.md)
 - [Cyb](https://github.com/cybercongress/cyb/blob/master/docs/cyb.md)
 - [CBD](https://etherscan.io/token/0x136c1121f21c29415D8cd71F8Bb140C7fF187033)
 - [cyberFoundation in Aragon](https://mainnet.aragon.org/#/cyberfoundation.aragonid.eth/0xf4d85b5a1650a335b30072d178f6dcb611f05a3e)
-- [How to become validator in Cyber network](/docs/how_to_become_validator.md)
-- [Tolik's article](http://127.0.0.1:8080/ipfs/QmS4YuH377EyzAjH84AR4EZKrnT879pMz4VKXcDNuej9DZ)
+- [How to become validator in cyber protocol](/docs/how_to_become_validator.md)
+- [Tolik's article on Satoshi Lottery](http://ipfs.io/ipfs/QmV2kjvY1QvY17sPgBDRGd13vaaks1zmFj867Ez5mbXz1y/genesis-explanation.html)
 - [Top 10000 english words](https://github.com/first20hours/google-10000-english)
 - [Foam](dura://QmZYKGuLHf2h1mZrhiP2FzYsjj3tWt2LYduMCRbpgi5pKG.ipfs)
-- [Coda]( )
-- [Mimblewimble]( )
-- [Tezos]( )
-
-## Notes
-
-- Todo: Not discussed adversarial examples problem
-- Todo: Distribution is defined unclearly
-- Todo: Vote buying is not discussed
-- Todo: References with names
+- [Coda](dura://Qmdje3AmtsfjX9edWAxo3LFhV9CTAXoUvwGR7wHJXnc2Gk.ipfs)
+- [Mimblewimble](dura://Qmd99xmraYip9cVv8gRMy6Y97Bkij8qUYArGDME7CzFasg.ipfs)
+- [Tezos](dura://QmdSQ1AGTizWjSRaVLJ8Bw9j1xi6CGLptNUcUodBwCkKNS.ipfs)
