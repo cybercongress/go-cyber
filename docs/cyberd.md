@@ -1,8 +1,8 @@
-# cyberd: Computing knowledge from web3
+# cyberd: Computing the knowledge from web3
 
-Notes for [euler](https://github.com/cybercongress/cyberd/releases/tag/v0.1.0) release of [cyberd](https://github.com/cybercongress/cyberd) reference implementation of `cyber://` protocol in Go
+Notes on [`euler`](https://github.com/cybercongress/cyberd/releases/tag/v0.1.0) release of `cyber://` protocol [reference implementation](https://github.com/cybercongress/cyberd) using Go.
 
-[cyber•Congress](https://cybercongress.ai/): @xhipster, @litvintech, @hleb-albau, @arturalbov
+[cyber•Congress](https://cybercongress.ai/): @xhipster, @litvintech, @hleb-albau, @arturalbov, @belya
 
 ```
 cyb:
@@ -16,16 +16,16 @@ cyber://
 - web3 protocol for computing answers and knowledge exchange
 
 CYB:
-- ticker. transferable token expressing will to become smarter
+- ticker. transferable token expressing a will to become smarter
 
 CYBER:
 - ticker. non-transferable token measuring intelligence
 
 CBD:
-- ticker. erc-20 proto token representing substance from which CYB emerge
+- ticker. ERC-20 proto token representing substance from which CYB emerge
 
 cyberlink:
-- link type. express connection from one link to another as link-x.link-y
+- link type. expressing connection from one link to another as link-x.link-y
 
 ```
 
@@ -33,11 +33,11 @@ cyberlink:
 <!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
 <!-- code_chunk_output -->
 
-* [cyberd: Computing knowledge from web3](#cyberd-computing-knowledge-from-web3)
+* [cyberd: Computing the knowledge from web3](#cyberd-computing-the-knowledge-from-web3)
 	* [Content](#content)
 	* [Abstract](#abstract)
 	* [Introduction to web3](#introduction-to-web3)
-	* [Adversarial examples problem](#adversarial-examples-problem)
+	* [On adversarial examples problem](#on-adversarial-examples-problem)
 	* [Cyber protocol at `euler`](#cyber-protocol-at-euler)
 	* [Knowledge graph](#knowledge-graph)
 	* [Cyberlinks](#cyberlinks)
@@ -55,7 +55,7 @@ cyberlink:
 	* [Economic protection is `smith`](#economic-protection-is-smith)
 	* [Ability to evolve is `darwin`](#ability-to-evolve-is-darwin)
 	* [`turing` is about computing more](#turing-is-about-computing-more)
-	* [In search for equilibria is `nash`](#in-search-for-equilibria-is-nash)
+	* [In a search for equilibria is `nash`](#in-a-search-for-equilibria-is-nash)
 	* [On faster evolution at `weiner`](#on-faster-evolution-at-weiner)
 	* [Genesis is secure as `merkle`](#genesis-is-secure-as-merkle)
 	* [Conclusion](#conclusion)
@@ -65,39 +65,41 @@ cyberlink:
 
 ## Abstract
 
-A consensus computer allow to compute provably relevant answers without opinionated blackbox intermediaries such as Google, Youtube, Amazon or Facebook. Stateless content-addressable peer-to-peer communication networks such as IPFS and stateful consensus computers such as Ethereum provide part of the solution but there are at least three problems associated with implementation. Of course, the first problem is subjective nature of relevance. The second problem is that it is hard to scale consensus computer of huge knowledge graph. The third problem is that the quality of such knowledge graph will suffer from different attack surfaces such as sybil, selfish behaviour of interacting agents. In this paper we (1) define a protocol for provable consensus computing of relevance between IPFS objects based on Tendermint consensus of cyber•rank computed on GPU (2) discus implementation details and (3) design distribution and incentive scheme based on our experience and known attacks. We believe the minimalistic architecture of the protocol is critical for formation of a network of domain specific knowledge consensus computers. As result of our work some applications never existed before emerge. We expand the work including our vision on features we expect to work up to Genesis.
+A consensus computer allows computing of provably relevant answers without opinionated blackbox intermediaries such as Google, Youtube, Amazon or Facebook. Stateless content-addressable peer-to-peer communication networks such as IPFS and stateful consensus computers such as Ethereum provide part of the solution but there are at least three problems associated with implementation. Of course, the first problem is the subjective nature of relevance. The second problem is that it is hard to scale consensus computer for a huge knowledge graph. The third problem is that the quality of such a knowledge graph will suffer from different attack surfaces such as sybil, selfish behaviour of interacting agents. In this paper, we (1) define a protocol for provable consensus computing of relevance between IPFS objects based on Tendermint consensus of cyber•rank computed on GPU, (2) discuss implementation details and (3) design distribution and incentive scheme based on our experience. We believe the minimalistic architecture of the protocol is critical for the formation of a network of domain-specific knowledge consensus computers. As a result of our work some applications never existed before emerge. We expand the work including our vision on features we expect to work up to Genesis.
 
 ## Introduction to web3
 
-Original protocols of the Internet such as TCP/IP, DNS, URL and HTTPS brought a web into the point there it is now. Along with all benefits they has created they brought more problem into the table. Globality being a key property of the the web since inception is under real threat. Speed of connections degrade with network grow and from ubiquitous government interventions into privacy and security of web users. One property, not obvious in the beginning, become really important with everyday usage of the Internet: its ability to exchange permanent hyperlinks thus they would not break after time have pass. Reliance on one at a time internet service provider architecture allow governments censor packets is the last straw in conventional web stack for every engineer who is concerned about the future of our children. Other properties while being not so critical are very desirable: offline and real-time. Average internet user being offline must have ability to work with the state it has and after acquiring connection being able to sync with global state and continue verify state's validity in realtime while having connection. Now this properties offered on app level while such properties must be integrated into lower level protocols.
+Original protocols of the Internet such as TCP/IP, DNS, URL, and HTTPS brought a web into the point where it is now. Along with all the benefits they have created they brought more problem to the table. Globality being a key property of the web since inception is under real threat. The speed of connections degrades with network grow and from ubiquitous government interventions into privacy and security of web users. One property, not obvious in the beginning, become really important with everyday usage of the Internet: its ability to exchange permanent hyperlinks thus they [would not break after time have passed](dura://QmNhaUrhM7KcWzFYdBeyskoNyihrpHvUEBQnaddwPZigcN.ipfs). Reliance on "one at a time ISP" architecture allows governments effectively censor packets. It is the last straw in a conventional web stack for every engineer who is concerned about the future of our children.
 
-The emergence of a [web3 stack](https://github.com/w3f/Web3-wiki/wiki) creates an opportunity for a new kind of Internet. We call it web3. It has a promise to remove problems of conventional protocol stack and add to the web better speed and more accessible connection. But as usually in a story with a new stack, new problems emerge. One of such problem is general purpose search. Existing general purpose search engines are restrictive centralized databases everybody forced to trust. These search engines were designed primarily for client-server architecture based on TCP/IP, DNS, URL and HTPPS protocols. Web3 create a challenge and opportunity for a search engine based on developing technologies and specifically designed for them. Surprisingly the permission-less blockchain architecture itself allows organizing general purpose search engine in a way inaccessible for previous architectures.
+Other properties while being not so critical are very desirable: offline and real-time. Average internet user being offline must have the ability to work with the state it has and after acquiring connection being able to sync with global state and continue to verify state's validity in realtime while having a connection. Now, these properties offered on the app level while such properties must be integrated into lower level protocols.
 
-## Adversarial examples problem
+The emergence of a [web3 stack](https://github.com/w3f/Web3-wiki/wiki) creates an opportunity for a new kind of Internet. We call it web3. It has a promise to remove problems of a conventional protocol stack and add to the web better speed and more accessible connection. But as usual in a story with a new stack, new problems emerge. One of such problem is general-purpose search. Existing general-purpose search engines are restrictive centralized databases everybody forced to trust. These search engines were designed primarily for client-server architecture based on TCP/IP, DNS, URL and HTPPS protocols. Web3 create a challenge and opportunity for a search engine based on developing technologies and specifically designed for them. Surprisingly the permission-less blockchain architecture itself allows organizing general purpose search engine in a way inaccessible for previous architectures.
 
-[Conventional architecture of search engine](dura://QmeS4LjoL1iMNRGuyYSx78RAtubTT2bioSGnsvoaupcHR6.ipfs) where one entity process and rank all the shit suffers from one hard but very specific problem that still has not been solved even by brilliant Google scientists: [adversarial examples problem](QmNrAFz34SLqkzhSg4wAYYJeokfJU5hBEpkT4hPRi226y9). The problem Google acknowledge is that it is rather hard to algorithmically reason either this particular sample is adversarial or not independently on how cool the learning technology is. Obviously cryptoeconomic approach can change beneficiaries in this game effectively removing possible sybil attack vectors and removing necessity to make a decision on example crawling and meaning extraction from one entity to the whole world.
+## On adversarial examples problem
+
+[Conventional architecture of search engines](dura://QmeS4LjoL1iMNRGuyYSx78RAtubTT2bioSGnsvoaupcHR6.ipfs) where one entity process and rank all the shit suffers from one hard but very specific problem that still has not been solved even by brilliant Google scientists: [adversarial examples problem](QmNrAFz34SLqkzhSg4wAYYJeokfJU5hBEpkT4hPRi226y9). The problem Google acknowledge is that it is rather hard to algorithmically reason either this particular sample is adversarial or not independently on how cool the learning technology is. Obviously, a cryptoeconomic approach can change beneficiaries in this game effectively removing possible sybil attack vectors and removing the necessity to make a decision on example crawling and meaning extraction from one entity to the whole world. Learning sybil-resistant model will probably lead to orders of magnitude more predictive results.
 
 ## Cyber protocol at `euler`
 
-- compute `euler` inception of cyber protocol based on satoshi lottery
+- compute `euler` inception of cyber protocol based on satoshi lottery and CBD balances
 - def knowledge graph state
 - take cyberlinks
-- check that signatures are valid
-- check that resource consumption of a signer is not exceed 24 moving average (bandwidth)
-- if signatures and bandwidth ok than cyberlink is valid
-- for every valid cyberlink emit prediction as array of cyberlinks
+- check the validity of signatures
+- check bandwidth limit
+- check the validity of CIDv0
+- if signatures, bandwidth limit, and CIDv0 are ok than cyberlink is valid
+- for every valid cyberlink emit prediction as an array of cyberlinks
 - every round calculate cyber•rank deltas for the knowledge graph
 - every round distribute CYB based on defined rules
-- apply more secure consensus state based on CBD balances
-- continue up to `merkle`
+- apply more secure consensus state based on CBD balances 6 times up to `merkle`
 
 ## Knowledge graph
 
-We represent a knowledge graph as weighted graph of directed links between content addresses or content identifications or CIDs. In this paper we will use them as synonyms.
+We represent a knowledge graph as a weighted graph of directed links between content addresses or content identifications or CIDs. In this paper, we will use them as synonyms.
 
 ![knowledge_graph.png](http://ipfs.io/ipfs/QmV1uci2DUuwM1T8gEeL4NefyvCYiYPVPmqf1ETJCotH6e)
 
-Content addresses are essentially a web3 links. Instead of using non obvious and mutable thing:
+Content addresses are essentially a web3 links. Instead of using nonobvious and mutable thing:
 ```
 https://github.com/cosmos/cosmos/blob/master/WHITEPAPER.md
 ```
@@ -114,7 +116,7 @@ Using content addresses for building a knowledge graph we get [so much needed](h
 - accessible
 - technology agnostic
 
-Our knowledge graph is generated by web3 agents. Web3 agents includes itself to the knowledge graph transacting only once. Thereby they proof the existence of private keys for content addresses of public keys.
+Our knowledge graph is generated by web3 agents. Web3 agents include itself to the knowledge graph by transacting only once. Thereby they prove the existence of private keys for content addresses of revealed public keys.
 
 Our `euler` implementation is based on [cosmos-sdk](https://github.com/cosmos/cosmos-sdk) identities and [cidv0](https://github.com/multiformats/cid#cidv0) content addresses.
 
@@ -122,7 +124,7 @@ Web 3 agents generate knowledge graph by applying cyberlinks.
 
 ## Cyberlinks
 
-In order to understanding cyberlinks we need to understand the difference between url link and ipfs link. Url link points to location of content, but ipfs link point to the content itself. The difference in web architecture based on location links and content links is drastical, hence require new approaches.
+In order to understand cyberlinks, we need to understand the difference between URL link and IPFS link. URL link points to the location of content, but IPFS link point to the content itself. The difference in web architecture based on location links and content links is drastical, hence require new approaches.
 
 Cyberlink is an approach to semantically link two content address links.
 
@@ -138,24 +140,24 @@ A concept of cyberlink is a convention around simple semantics of communication 
 
 You can see that cyberlink represents a link between two links. Easy peasy!
 
-Cyberlink is simple yet powerful semantic construction for building a predictive model of the universe.
+Cyberlink is a simple yet powerful semantic construction for building a predictive model of the universe.
 
-Cyberlinks can form link chains if exist a series of two cyberlinks from one agent in which the second link in first cyberlink is equal to first link in second cyberlink:
+Cyberlinks can form link chains if exist a series of two cyberlinks from one agent in which the second link in the first cyberlink is equal to the first link in the second cyberlink:
 
 ```
 <content-address x>.<content-address y>
 <content-address y>.<content-address z>
 ```
 
-Using this simple principle agents can reach consensus around interpreting clauses. So link chains are helpful for interpreting rich communications around relevance.
+Using this simple principle all interacting agents can reach consensus around interpreting clauses. So link chains are helpful for interpreting rich communications around relevance.
 
 ![link_chains.png](http://ipfs.io/ipfs/QmUfsd3js7DJR7AkT1xug5uv3fScGs2WMnMF82k7s9yHAd)
 
-Also using the following link: `QmNedUe2wktW65xXxWqcR8EWWssHVMXm3Ly4GKiRRSEBkn` the one can signal start and stop of execution in the knowledge graph.
+Also using the following link: `QmNedUe2wktW65xXxWqcR8EWWssHVMXm3Ly4GKiRRSEBkn` the one can signal the start and stop of execution in the knowledge graph.
 
-If web3 agents instead of native ipfs links use something semantically more rich as [dura]() links than web3 agents can easier to reach consensus on the rules for program execution.
+If web3 agents instead of native ipfs links use something semantically richer as [dura]() links than web3 agents can easier to reach consensus on the rules for program execution.
 
-Certainly DURA protocol is a good implementation of a cyberlinks concept.
+Certainly, DURA protocol is a good implementation of a cyberlinks concept.
 
 `euler` implementation of cyberlinks based on DURA specification is available in `.cyber` app of browser `cyb`.
 
@@ -163,16 +165,16 @@ Based on cyberlinks we can compute the relevance of subjects and objects in a kn
 
 ## Notion of consensus computer
 
-Consensus computer is an abstract computing machine that emerge from agents interactions.
+Consensus computer is an abstract computing machine that emerges from agents interactions.
 
-A consensus computer has a capacity in terms of fundamental computing resources such as memory and computing. In order to interact with agents a computer need a bandwidth.
+A consensus computer has a capacity in terms of fundamental computing resources such as memory and computing. In order to interact with agents, a computer needs a bandwidth.
 
 Ideal consensus computer is a computer in which:
 
 ```
-sum of all *individual agents* computations and memory
+the sum of all *individual agents* computations and memory
 is equal to
-sum of all verified by agents computations and memory of a *consensus computer*
+the sum of all verified by agents computations and memory of a *consensus computer*
 ```
 
 We know that:
@@ -181,17 +183,17 @@ We know that:
 verifications of computations < computations + verifications of computations
 ```
 
-Hence we will not be able to achieve ideal consensus computer ever.
+Hence we will not be able to achieve an ideal consensus computer ever. CAP theorem and scalability trilemma also prove this statement.
 
 But this theory can work as a performance indicator of a consensus computer.
 
-Our current implementation is a 64 bit consensus computer for relevance of 64 byte string space that is as far from ideal at least as 1/146.
+Our current implementation is a 64-bit consensus computer of the relevance for 64-byte string space that is as far from ideal at least as 1/146.
 
-We must bind computational, storage and bandwidth supply of relevance machine with maximised demand of queries. Computation and storage in case of basic relevance machine can be easily predicted based on bandwidth, but bandwidth require limiting mechanism.
+We must bind computational, storage and bandwidth supply of relevance machine with maximized demand of queries. Computation and storage in case of basic relevance machine can be easily predicted based on bandwidth, but bandwidth requires a limiting mechanism.
 
-Bandwidth limiting mechanism is work in progress. Current notes on implementation are in [the /docs](https://github.com/cybercongress/cyberd/blob/master/docs/bandwidth.md).
+Bandwidth limiting mechanism is work in progress. Current notes on implementation are in [the docs](https://github.com/cybercongress/cyberd/blob/master/docs/bandwidth.md).
 
-So agents must have CYB tokens in accordance to their will of learning the knowledge graph. But proposed mechanics of CYB tokens work not only as spam protection but as economic regulation mechanism to align ability of validators to process knowledge graph and market demand for processing.
+So agents must have CYB tokens in accordance to their will of learning the knowledge graph. But proposed mechanics of CYB tokens work not only as spam protection but as the economic regulation mechanism to align the ability of validators to process knowledge graph and market demand for processing.
 
 ## Relevance machine
 
@@ -199,9 +201,9 @@ Relevance machine is a machine that transition knowledge graph state based on so
 
 This machine enables simple construction for search question querying and answers delivering.
 
-The reputation score is projected on every agent's cyberlink. Agents abuse is prevented by a simple rule: one content address can be voted by a token only once. So it does not matter for ranking from how much accounts you voted. Only sum of their balances matters.
+The reputation score is projected on every agent's cyberlink. Agents abuse is prevented by a simple rule: one content address can be voted by a token only once. So it does not matter for ranking from how much accounts you voted. The only sum of their balances matters.
 
-A useful property of a relevance machine is that it must have inductive reasoning property or simply follows black box principle.
+A useful property of a relevance machine is that it must have inductive reasoning property or simply follows the blackbox principle.
 
 ```
 She must be able to interfere predictions
@@ -209,66 +211,66 @@ without any knowledge about objects
 except who linked, when linked and what was linked.
 ```
 
-If we assume that a consensus computer must have some information about linked objects the complexity of such model growth unpredictably, hence a requirements for a computer for memory and computations. That is, deduction of a meaning inside consensus computer is expensive thus our design hardly depend on the blindness assumption. Instead we design a system in which meaning extraction is incentivezed because agents need CYB to compute relevance.
+If we assume that a consensus computer must have some information about linked objects the complexity of such model growth unpredictably, hence a requirement for a computer for memory and computations. That is, deduction of meaning inside consensus computer is expensive thus our design depends on the blindness assumption. Instead of deducting a meaning inside consensus computer we design a system in which meaning extraction is incentivized because agents need CYB to compute relevance.
 
-Also thanks to content addresses the relevance machine following black box principle do not need to store the data but can effectively operate on it.
+Also, thanks to content addressing the relevance machine following the blackbox principle does not need to store the data but can effectively operate on it.
 
-Human intelligence organized in a way to prune non relevant and non important memories with time has pass. The same way can do relevance machine.
+Human intelligence organized in a way to prune none-relevant and none-important memories with time has passed. The same way can do relevance machine.
 
-Also one useful property of relevance machine is that it doesn't need to store neither past state nor full current state to remain useful, or more precisely: "relevant".
+Also, one useful property of relevance machine is that it doesn't need to store neither past state nor full current state to remain useful, or more precisely: "relevant".
 
-So relevance machine can implement [aggressive pruning strategies](QmP81EcuNDZHQutvdcDjbQEqiTYUzU315aYaTyrVj6gtJb) such as pruning all history of knowledge graph formation or forgetting links that become non relevant.
+So relevance machine can implement [aggressive pruning strategies](QmP81EcuNDZHQutvdcDjbQEqiTYUzU315aYaTyrVj6gtJb) such as pruning all history of knowledge graph formation or forgetting links that become non-relevant.
 
-The pruning group of features features can be implemented in `nash`.
+The pruning group of features can be implemented in `nash`.
 
 `euler` implementation of relevance machine is based on the simplest mechanism which is called cyber•Rank.
 
 ## cyber•Rank
 
-Ranking using consensus computer is hard because consensus computers bring serious resource bounds. e.g. [Nebulas](dura://QmWTZjDZNbBqcJ5b6VhWGXBQ5EQavKKDteHsdoYqB5CBjh.ipfs) still fail to deliver something useful onchain. First we must ask ourselves why do we need to compute and store the rank on chain, and not go [Colony](dura://QmZo7eY5UdJYotf3Z9GNVBGLjkCnE1j2fMdW2PgGCmvGPj.ipfs) or [Truebit](dura://QmPmQ1xw9QkwnP1DcZ7fT1MuEc1e6Gqyjo6oGSw9xbcG89.ipfs) way?
+Ranking using consensus computer is hard because consensus computers bring serious resource bounds. e.g. [Nebulas](dura://QmWTZjDZNbBqcJ5b6VhWGXBQ5EQavKKDteHsdoYqB5CBjh.ipfs) still fail to deliver something useful on-chain. First, we must ask ourselves why do we need to compute and store the rank on-chain, and not go [Colony](dura://QmZo7eY5UdJYotf3Z9GNVBGLjkCnE1j2fMdW2PgGCmvGPj.ipfs) or [Truebit](dura://QmTrxXp2xhB2zWGxhNoLgsztevqKLwpy5HwKjLjzFa7rnD.ipfs) way?
 
-If rank computed inside consensus computer you have easy content distribution of the rank as well as easy way to build provable applications on top of the rank. Hence we decide to follow more cosmic architecture. In the next section we describe proof of relevance mechanism which allow network to scale with help of domain specific relevance machines that works in parallel.
+If rank computed inside consensus computer you have an easy content distribution of the rank as well as an easy way to build provable applications on top of the rank. Hence we decided to follow more cosmic architecture. In the next section, we describe the proof of relevance mechanism which allows the network to scale with help of domain-specific relevance machines that works in parallel.
 
-Eventually relevance machine need to find (1) deterministic algorithm that allow to compute a rank for continuously appended network to scale the consensus computer to orders of magnitude that of Google. Perfect algorithm (2) must have linear memory and computation complexity. The most importantly it must have (3) highest provable prediction capabilities for existence of relevant links.
+Eventually, relevance machine needs to find (1) deterministic algorithm that allows computing a rank for a continuously appended network to scale the consensus computer to orders of magnitude that of Google. Perfect algorithm (2) must have linear memory and computation complexity. The most importantly it must have (3) highest provable prediction capabilities for the existence of relevant links.                   
 
-After some research we found that we can not find silver bullet here. We find an algorithm that is probably satisfy our criteria: [SpringRank](dura://QmNvxWTXQaAqjEouZQXTV4wDB5ryW4PGcaxe2Lukv1BxuM.ipfs). Original idea of an algorithm came to Caterina from physics. Links represented as system of springs with some energy and the task of computing the ranks is the task of finding relaxed state of springs.
+After some research, we found that we can not find silver bullet here. We find an algorithm that probably satisfies our criteria: [SpringRank](dura://QmNvxWTXQaAqjEouZQXTV4wDB5ryW4PGcaxe2Lukv1BxuM.ipfs). An original idea of the algorithm came to Caterina from physics. Links represented as a system of springs with some energy and the task of computing the ranks is the task of finding a relaxed state of springs.
 
 But we got at least 3 problems with SpringRank:
-1. We were not able to implement it onchain fast using Go in `euler`.
-2. We was not able to prove it for knowledge graph because we just did not have provable knowledge graph yet.
-3. Also we was not able to prove it applying it for the Ethereum blockchain during computing the genesis file for `euler`. It could work, but for the time being it is better to call this kind of distribution a lottery.
+1. We were not able to implement it on-chain fast using Go in `euler`.
+2. We were not able to prove it for knowledge graph because we just did not have provable knowledge graph yet.
+3. Also, we were not able to prove it applying it for the Ethereum blockchain during computing the genesis file for `euler`. It could work, but for the time being it is better to call this kind of distribution a lottery.
 
-So we decide to find some more basic bulletproof way to bootstrap the network: a rank from which a previous network has been bootstrapped by Lary and Sergey. The problem with original PageRank is that it is not resistant to Sybil attacks.
+So we decided to find some more basic bulletproof way to bootstrap the network: a rank from which a previous network has been bootstrapped by Lary and Sergey. The problem with original PageRank is that it is not resistant to sybil attacks.
 
-Token weighted [PageRank](http://ilpubs.stanford.edu:8090/422/1/1999-66.pdf) limited by token weighted bandwidth do not have inherent problems of naive PageRank and is resistant to sybil attacks. For the time being we will call it cyber•Rank until something better emerge.
+Token weighted [PageRank](http://ilpubs.stanford.edu:8090/422/1/1999-66.pdf) limited by token weighted bandwidth do not have inherent problems of naive PageRank and is resistant to sybil attacks. For the time being, we will call it cyber•Rank until something better emerge.
 
-In the centre of spam protection system is an assumption that write operations can be executed only by those who have vested interest in the evolutionary success of a relevance machine. Every 1% of stake in consensus computer gives the ability to use 1% of possible network bandwidth and computing capabilities.
+In the centre of spam protection system is an assumption that write operations can be executed only by those who have a vested interest in the evolutionary success of a relevance machine. Every 1% of stake in consensus computer gives the ability to use 1% of possible network bandwidth and computing capabilities.
 
-As nobody uses all possessed bandwidth we can safely use 10x fractional reserves with 2 minute recalculation target.
+As nobody uses all possessed bandwidth we can safely use 10x fractional reserves with 2-minute recalculation target.
 
-We would love to especially discuss the problem of vote buying. Vote buying by itself is not such bad. The problem with vote buying appears in the systems where voting affect allocation of inflation in system like [Steem](QmepU77tqMAHHuiSASUvUnu8f8ENuPF2Kfs97WjLn8vAS3) or in any state based system. So vote buying can become easily profitable for adversary by the means of zero-sum game without necessity to add value. Our original idea of decentralized search was based on this approach, but we reject this idea completely removing incentive on consensus level for knowledge graph formation completely. In our setting in which every participant must bring some value to the system in order to affect predictive model vote buying become NP-hard problem hence is useful for the system.
+We would love to especially discuss the problem of vote buying. Vote buying by itself is not such bad. The problem with vote buying appears in the systems where voting affects the allocation of inflation in the system like [Steem](QmepU77tqMAHHuiSASUvUnu8f8ENuPF2Kfs97WjLn8vAS3) or in any state based system. So vote buying can become easily profitable for adversary by the means of a zero-sum game without a necessity to add value. Our original idea of a decentralized search was based on this approach, but we reject this idea completely removing incentive on consensus level for knowledge graph formation completely. In our setting in which every participant must bring some value to the system in order to affect predictive model vote buying become NP-hard problem hence is useful for the system.
 
-In order to switch from one algorithm to another we are going to make simulations and experiment with economic a/b testing based on winning chains through hard spoons.
+In order to switch from one algorithm to another, we are going to make simulations and experiment with economic a/b testing based on winning chains through hard spoons.
 
-Consensus computer based on relevance machine for cyber•Rank is able to answer and deliver relevant results for any given search request in the 64 byte CID space. But in order to build a network of domain specific relevance machines it is not enough. Consensus computers must have ability to prove relevance for each other.
+Consensus computer based on relevance machine for cyber•Rank is able to answer and deliver relevant results for any given search request in the 64 byte CID space. But in order to build a network of domain-specific relevance machines it is not enough. Consensus computers must have the ability to prove relevance for each other.
 
 ## Proof of relevance
 
-We design a system under assumption that in terms of search such thing as bad behaviour does not exist as nothing bad can be in the intention of finding answers. Also this approach significantly reduce attack surfaces.
+We design a system under the assumption that in terms of search such thing as bad behaviour does not exist as anything bad can be in the intention of finding answers. Also, this approach significantly reduces attack surfaces.
 
-> Ranks is computed on the only fact that something has been searched, thus linked and as result affected predictive model.
+> Ranks are computed on the only fact that something has been searched, thus linked and as result affected the predictive model.
 
-Good analogy is observing in quantum mechanics. That is why we do not need such things as negative voting. Doing this we remove subjectivity out of the protocol and can define proof of relevance.
+A good analogy is observing in quantum mechanics. That is why we do not need such things as negative voting. Doing this we remove subjectivity out of the protocol and can define proof of relevance.
 
 ```
-Rank state = rank values stored in one dimensional array and merkle tree of those values
+Rank state = rank values stored in one-dimensional array and merkle tree of those values
 ```
 
-Each new CID gets unique number. Number starts from zero and incrementing by one for each new CID. So that we can store rank in one dimensional array where indices are CID numbers.
+Each new CID gets a unique number. The number starts from zero and incrementing by one for each new CID. So that we can store rank in one-dimensional array where indices are CID numbers.
 
-Merkle Tree calculated based on RFC-6962 standard (https://tools.ietf.org/html/rfc6962#section-2.1). Since rank stored in one dimensional array where indices are CID numbers (we could say that it ordered by CID numbers) leafs in merkle tree from left to right are `SHA-256` hashes of rank value. Index of leaf is CID number. It helps to easily find proofs for specified CID (`log n` iterations where `n` is number of leafs).
+Merkle Tree calculated based on RFC-6962 standard (https://tools.ietf.org/html/rfc6962#section-2.1). Since rank stored in one-dimensional array where indices are CID numbers (we could say that it ordered by CID numbers) leaves in merkle tree from left to right are `SHA-256` hashes of rank value. Index of leaf is CID number. It helps to easily find proofs for specified CID (`log n` iterations where `n` is a number of leaves).
 
-To store merkle tree is necessary to split tree on subtrees with number of leafs multiply of power of 2. The smallest one is obviously subtree with only one leaf (and therefore `height == 0`). Leaf addition looks as follows. Each new leaf is added as subtree with `height == 0`.
+To store merkle tree is necessary to split tree into subtrees with a number of leaves multiply of the power of 2. The smallest one is obviously subtree with only one leaf (and therefore `height == 0`). Leaf addition looks as follows. Each new leaf is added as subtree with `height == 0`.
 Then sequentially merge subtrees with the same `height` from right to left.
 
 Example:
@@ -282,10 +284,10 @@ To get merkle root hash - join subtree roots from right to left.
 
 Rank merkle tree can be stored differently:
 
-_Full tree_ - all subtrees with all leafs and intermediary nodes  
+_Full tree_ - all subtrees with all leaves and intermediary nodes  
 _Short tree_ - contains only subtrees roots
 
-The trick is that _full tree_ is only necessary for providing merkle proofs. For consensus purposes and updating tree it's enough to have _short tree_. To store merkle tree in database use only _short tree_. Marshaling of short tree with `n` subtrees (each subtree takes 40 bytes):  
+The trick is that _full tree_ is only necessary for providing merkle proofs. For consensus purposes and updating tree, it's enough to have a _short tree_. To store merkle tree in database use only an _short tree_. Marshaling of a short tree with `n` subtrees (each subtree takes 40 bytes):  
 
 ```
 <subtree_1_root_hash_bytes><subtree_1_height_bytes>
@@ -293,9 +295,9 @@ The trick is that _full tree_ is only necessary for providing merkle proofs. For
 <subtree_n_root_hash_bytes><subtree_n_height_bytes>
 ```
 
-For `1,099,511,627,775` leafs _short tree_ would contain only 40 subtrees roots and take only 1600 bytes.
+For `1,099,511,627,775` leaves _short tree_ would contain only 40 subtrees roots and take only 1600 bytes.
 
-Lets denote rank state calculation:
+Let us denote rank state calculation:
 
 `p` - rank calculation period  
 `lbn` - last confirmed block number  
@@ -304,12 +306,13 @@ Lets denote rank state calculation:
 
 For rank storing and calculation we have two separate in-memory contexts:
 
-1. Current rank context. It includes last calculated rank state (values and merkle tree) plus
+1. Current rank context. It includes the last calculated rank state (values and merkle tree) plus
 all links and user stakes submitted to the moment of this rank submission.
 2. New rank context. It's currently calculating (or already calculated and waiting for submission) rank state. Consists of new calculated rank state (values and merkle tree) plus new incoming links and updated user stakes.
 
 Calculation of new rank state happens once per `p` blocks and going in parallel.
-Iteration starts from block number that `≡ 0 (mod p)` and goes till next block number that `≡ 0 (mod p)`.
+
+The iteration starts from block number that `≡ 0 (mod p)` and goes till next block number that `≡ 0 (mod p)`.
 
 For block number `cbn ≡ 0 (mod p)` (including block number 1 cause in cosmos blocks starts from 1):
 
@@ -321,29 +324,29 @@ For block number `cbn ≡ 0 (mod p)` (including block number 1 cause in cosmos b
 
 For each block:
 
-1. All links goes to new rank context.
+1. All links go to a new rank context.
 2. New coming CIDs gets rank equals to zero. We could do it by checking last CIDs number and `lr`
-(it's obviously equals to number of CIDs that already have rank). Then add CIDs with number `>lr`
-to the end of this array with value equal to zero.
-3. Update current context merkle tree with CIDs from previous step
-4. Store latest merkle tree from current context (lets call it last block merkle tree).
+(it is obviously equals the number of CIDs that already have rank). Then add CIDs with number `>lr`
+to the end of this array with the value equal to zero.
+3. Update current context merkle tree with CIDs from the previous step
+4. Store latest merkle tree from current context (let us call it last block merkle tree).
 4. Check if new rank calculation finished. If yes go to (4.) if not go to next block.
 5. Push calculated rank state to new rank context. Store merkle tree of newly calculated rank.
 
-To sum up. In _current rank context_ we have rank state from last calculated iteration (plus, every block, it updates with new CIDs). And we have links and user stakes that are participating in current rank calculation iteration (whether it finished or not). _New rank context_ contains links and stakes that will go to next rank calculation and newly calculated rank state (if calculation is finished) that waiting for submitting.
+To sum up. In _current rank context_, we have rank state from last calculated iteration (plus, every block, it updates with new CIDs). And we have links and user stakes that are participating in current rank calculation iteration (whether it finished or not). The _new rank context_ contains links and stakes that will go to next rank calculation and newly calculated rank state (if a calculation is finished) that waiting for submitting.
 
 If we need to restart node firstly, we need to restore both contexts (current and new).
-Load links and user stakes from database using different versions:
-1. Links and stakes from last calculated rank version `v = lbn - (lbn mod n)` goes to current rank context.
-2. Links and stakes between versions `v` and `lbn` goes to new rank context.
+Load links and user stakes from a database using different versions:
+1. Links and stakes from last calculated rank version `v = lbn - (lbn mod n)` go to current rank context.
+2. Links and stakes between versions `v` and `lbn` go to new rank context.
 
 Also to restart node correctly we have to store next entities in database:
 
 1. Last calculated rank hash (merkle tree root)
-2. Newly calculated rank short merkle tree
+2. A newly calculated rank short merkle tree
 3. Last block short merkle tree
 
-With _last calculated rank hash_ and _newly calculated rank merkle tree_ we could check if rank calculation was finished before node restart. If they are equal then rank wasn't calculated and we should run rank calculation. If not we could skip rank calculation and use _newly calculated rank merkle tree_ to participate in consensus when it comes to block number `cbn ≡ 0 (mod p)` (rank values will not be available until rank calculation happens
+With _last calculated rank hash_ and _newly calculated rank merkle tree_ we could check if the rank calculation was finished before node restart. If they are equal then rank wasn't calculated and we should run rank calculation. If not we could skip rank calculation and use _newly calculated rank merkle tree_ to participate in consensus when it comes to block number `cbn ≡ 0 (mod p)` (rank values will not be available until rank calculation happens
 in next iteration. Still validator can participate in consensus so nothing bad).
 
 _Last block merkle tree_ necessary to participate in consensus till start of next rank calculation iteration. So, after restart we could end up with two states:
@@ -368,11 +371,11 @@ Now we have proof of rank of any given content address. While the relevance is s
 For any given CID it is possible to prove the relevance
 ```
 
-Using this type of proof any two [IBC compatible](dura://QmdCeixQUHBjGnKfwbB1dxf4X8xnadL8xWmmEnQah5n7x2.ipfs) consensus computers can proof the relevance to each other, so domain specific relevance machines can flourish. Thanks to inter-blockchain communication protocol you basically can launch you own domain specific search engine either private or public by forking cyberd which is focuses on the public common knowledge. So in our search architecture domain specific relevance machine can learn from common knowledge. We are going to work on IBC during `smith` implementation.
+Using this type of proof any two [IBC compatible](dura://QmdCeixQUHBjGnKfwbB1dxf4X8xnadL8xWmmEnQah5n7x2.ipfs) consensus computers can proof the relevance to each other, so domain-specific relevance machines can flourish. Thanks to inter-blockchain communication protocol you basically can launch you own domain-specific search engine either private or public by forking cyberd which is focuses on the public common knowledge. So in our search architecture domain-specific relevance machine can learn from common knowledge. We are going to work on IBC during `smith` implementation.
 
 ![rm-network.png](https://ipfs.io/ipfs/QmdfgdkaU8CKXD7ow983vZ2LjJjz8Um9JA5buwQ1aaXT6Q)
 
-In our relevance for commons `euler` implementation proof of relevance root hash is computed on cuda gpus every round.
+In our relevance for commons `euler` implementation proof of relevance root hash is computed on Cuda GPUs every round.
 
 ## Speed and scalability
 
@@ -506,7 +509,7 @@ _Autonomous robots_. Blockchain technology enables creation of devices which are
 
 What is needed is simple yet powerful state reality tool with ability to find particular things. cyberd offers minimalistic but continuously self-improving datasource that provides necessary tools for programming economically rational robots. According to [top-10000 english words](https://github.com/first20hours/google-10000-english) the most popular word in english is defined article `the` that mean a pointer to a particular thing. That fact can be explained as the following: particular things are the most important for us. So current nature of our current semantic computing is to find very unique things. Hence understanding of unique things become essential for robots too.
 
-_Language convergence_. A programmer should not care about what language do the user use. We don't need to have knowledge of what language user is searching in. Entire UTF-8 spectrum is at work. A semantic core is open so competition for answering can become distributed across different domain-specific areas, including semantic cores of different languages. The unified approach creates an opportunity for cyber•Bahasa. Since the Internet, we observe a process of rapid language convergence. We use more truly global words across the entire planet independently of our nationality, language and race, Name the Internet. The dream of truly global language is hard to deploy because it is hard to agree on what mean what. But we have tools to make that dream come true. It is not hard to predict that the shorter a word the more it's cyber•rank will be. Global publicly available list of symbols, words and phrases sorted by cyber•rank with corresponding links provided by cyberd can be the foundation for the emergence of truly global language everybody can accept. Recent scientific advances in machine translation [GNMT] are breathtaking but meaningless for those who wish to apply them without Google scale trained model. Proposed cyber•rank offers exactly this.
+_Language convergence_. A programmer should not care about what language do the user use. We don't need to have knowledge of what language user is searching in. Entire UTF-8 spectrum is at work. A semantic core is open so competition for answering can become distributed across different domain-specific areas, including semantic cores of different languages. The unified approach creates an opportunity for cyber•Bahasa. Since the Internet, we observe a process of rapid language convergence. We use more truly global words across the entire planet independently of our nationality, language and race, Name the Internet. The dream of truly global language is hard to deploy because it is hard to agree on what mean what. But we have tools to make that dream come true. It is not hard to predict that the shorter a word the more it's cyber•rank will be. Global publicly available list of symbols, words and phrases sorted by cyber•rank with corresponding links provided by cyberd can be the foundation for the emergence of truly global language everybody can accept. Recent [scientific advances](dura://QmQUWBhDMfPKgFt3NfbxM1VU22oU8CRepUzGPBDtopwap1.ipfs) in machine translation are breathtaking but meaningless for those who wish to apply them without Google scale trained model. Proposed cyber•rank offers exactly this.
 
 This is sure not the exhaustive list of possible applications but very exciting, though.
 
@@ -514,7 +517,7 @@ This is sure not the exhaustive list of possible applications but very exciting,
 
 About private knowledge on relevance. Explain the difference between private cyberlinks and private relevance machines.
 
-The plan for learning the beast. How to index ipfs, wiki, bitcoin and ethereum?
+The plan for learning the beast. How cyberlink ipfs, wiki, bitcoin and ethereum?
 
 ## Ability to evolve is `darwin`
 
@@ -540,7 +543,7 @@ _Prediction markets on link relevance_. We can move idea further by ranking of k
 
 _Private cyberlinks_. Privacy is foundational. While we are committed to privacy achieving implementation of private cyberlinks is unfeasible for our team up to Genesis. Hence it is up to community to work on wasm programs that can be executed on top of the protocol. The problem is to compute cyberRank based on cyberlink submitted by web3 agent without revealing neither previous request nor public keys of web3 agent. Zero knowledge proofs in general are very expensive. We believe that privacy of search should be must by design, but not sure that we know how to implement it. [Coda]() like recursive snarks and [mimblewimble]() constructions in theory can solve part of the privacy issue, but they are new, untested and anyway will be more expensive in terms of computations than transparent alternative.
 
-## In search for equilibria is `nash`
+## In a search for equilibria is `nash`
 
 We need to find answers for a lot of hard questions regarding consensus variables and its default values. So we decide to stick to a community generated feedback on the road to Genesis and continuously adjust them to keep going better.
 
@@ -552,11 +555,11 @@ That is the area of research for us now. We need real economic measurements in o
 
 ## On faster evolution at `weiner`
 
-Basic purpose of wiener stage is to be able to update the consensus of a network from a consensus computer state using some onchain upgrade mechanism.
+Basic purpose of wiener stage is to be able to update the consensus of a network from a consensus computer state using some on-chain upgrade mechanism.
 
 Evolvability and governance are connected tightly.
 
-Ability to reflect input from the world and output changes of itself is essential evolutionary feature. Hence, thanks to cosmos-sdk `euler` implementation has basic but very power features such as onchain voting with vetos and abstains that drastically simplified open discussions for change. So we are going to use this feature from the inception of the network.
+Ability to reflect input from the world and output changes of itself is essential evolutionary feature. Hence, thanks to cosmos-sdk `euler` implementation has basic but very power features such as on-chain voting with vetos and abstains that drastically simplified open discussions for change. So we are going to use this feature from the inception of the network.
 
 But we can go to different direction than cosmos-sdk offers. Following ideas from [Tezos]() in Weiner we can define the current state of a protocol as immutable content address that is included in round merkle root.
 
@@ -580,8 +583,10 @@ We define and implemented a protocol for provable communications of consensus co
 
 ## References
 
-> Github do not display web3 links correctly so follow source code
+> Github do not display permanent web3 links correctly so follow source code
 
+- [cyberd](https://github.com/cybercongress/cyberd)
+- [Scholarly context adrift](dura://QmNhaUrhM7KcWzFYdBeyskoNyihrpHvUEBQnaddwPZigcN.ipfs)
 - [Web3 stack](https://github.com/w3f/Web3-wiki/wiki)
 - [Search engines information retrieval in practice](dura://QmeS4LjoL1iMNRGuyYSx78RAtubTT2bioSGnsvoaupcHR6.ipfs)
 - [Motivating game for adversarial example research](dura://QmNrAFz34SLqkzhSg4wAYYJeokfJU5hBEpkT4hPRi226y9.ifps)
@@ -595,7 +600,7 @@ We define and implemented a protocol for provable communications of consensus co
 - [DURA](https://github.com/cybercongress/cyb/blob/master/docs/web3-vision.md)
 - [Nebulas](dura://QmWTZjDZNbBqcJ5b6VhWGXBQ5EQavKKDteHsdoYqB5CBjh.ipfs)
 - [Colony](dura://QmZo7eY5UdJYotf3Z9GNVBGLjkCnE1j2fMdW2PgGCmvGPj.ipfs)
-- [Truebit](dura://QmPmQ1xw9QkwnP1DcZ7fT1MuEc1e6Gqyjo6oGSw9xbcG89.ipfs)
+- [Truebit](dura://QmTrxXp2xhB2zWGxhNoLgsztevqKLwpy5HwKjLjzFa7rnD.ipfs)
 - [SpringRank](dura://QmNvxWTXQaAqjEouZQXTV4wDB5ryW4PGcaxe2Lukv1BxuM.ipfs)
 - [PageRank](http://ilpubs.stanford.edu:8090/422/1/1999-66.pdf)
 - [RFC-6962](https://tools.ietf.org/html/rfc6962#section-2.1)
@@ -608,6 +613,7 @@ We define and implemented a protocol for provable communications of consensus co
 - [How to become validator in cyber protocol](/docs/how_to_become_validator.md)
 - [Tolik's article on Satoshi Lottery](http://ipfs.io/ipfs/QmV2kjvY1QvY17sPgBDRGd13vaaks1zmFj867Ez5mbXz1y/genesis-explanation.html)
 - [Top 10000 english words](https://github.com/first20hours/google-10000-english)
+- [Multilingual neural machine translation](dura://QmQUWBhDMfPKgFt3NfbxM1VU22oU8CRepUzGPBDtopwap1.ipfs)
 - [Foam](dura://QmZYKGuLHf2h1mZrhiP2FzYsjj3tWt2LYduMCRbpgi5pKG.ipfs)
 - [Coda](dura://Qmdje3AmtsfjX9edWAxo3LFhV9CTAXoUvwGR7wHJXnc2Gk.ipfs)
 - [Mimblewimble](dura://Qmd99xmraYip9cVv8gRMy6Y97Bkij8qUYArGDME7CzFasg.ipfs)
