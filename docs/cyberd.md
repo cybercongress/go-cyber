@@ -481,9 +481,9 @@ _Command tools_. Command line tools can rely on relevant and structured answers 
 >  cyberd earn using 100 gb hdd
 
 Enjoy the following predictions:
-- apt install go-filecoin:   0.001      BTC per month per GB
-- apt install siad:                0.0001    BTC per month per GB
-- apt install storjd:             0.00008 BTC per month per GB
+- apt install go-filecoin:     0.001   BTC per month per GB
+- apt install siad:            0.0001  BTC per month per GB
+- apt install storjd:          0.00008 BTC per month per GB
 
 According to the best prediction, I made a decision try `mine go-filecoin`
 
@@ -588,7 +588,7 @@ We define and implement a protocol for provable communications of consensus comp
 - [An idea of decentralised search](https://steemit.com/web3/@hipster/an-idea-of-decentralized-search-for-web3-ce860d61defe5est)
 - [IPFS](dura://QmV9tSDx9UiPeWExXEeH6aoDvmihvx6jD5eLb4jbTaKGps.ipfs)
 - [DAT](dura://QmXHGmfo4sjdHVW2MAxczAfs44RCpSeva2an4QvkzqYgfR.ipfs)
-- [`cosmos-sdk`](https://github.com/cosmos/cosmos-sdk)
+- [cosmos-sdk](https://github.com/cosmos/cosmos-sdk)
 - [CIDv0](https://github.com/multiformats/cid#cidv0)
 - [Bandwidth in cyber network](https://github.com/cybercongress/cyberd/blob/master/docs/bandwidth.md)
 - [Thermodynamics of predictions](dura://QmP81EcuNDZHQutvdcDjbQEqiTYUzU315aYaTyrVj6gtJb.ipfs)
