@@ -97,7 +97,7 @@ The emergence of a [web3 stack](https://github.com/w3f/Web3-wiki/wiki) creates a
 
 We represent a knowledge graph as a weighted graph of directed links between content addresses or content identifications or CIDs. In this paper, we will use them as synonyms.
 
-![knowledge_graph.png](http://ipfs.io/ipfs/QmV1uci2DUuwM1T8gEeL4NefyvCYiYPVPmqf1ETJCotH6e)
+![knowledge_graph.png](https://ipfs.io/ipfs/QmejVRS9irYb6eXGDZNM9YEuFyb3a5jn4EWh3MRC3LVRij)
 
 Content addresses are essentially a web3 links. Instead of using nonobvious and mutable thing:
 ```
@@ -151,7 +151,7 @@ Cyberlinks can form link chains if exist a series of two cyberlinks from one age
 
 Using this simple principle, all interacting agents can reach consensus around interpreting clauses. So link chains are helpful for interpreting rich communications around relevance.
 
-![link_chains.png](http://ipfs.io/ipfs/QmUfsd3js7DJR7AkT1xug5uv3fScGs2WMnMF82k7s9yHAd)
+![link_chains.png](https://ipfs.io/ipfs/QmUfsd3js7DJR7AkT1xug5uv3fScGs2WMnMF82k7s9yHAd)
 
 Also using the following link: `QmNedUe2wktW65xXxWqcR8EWWssHVMXm3Ly4GKiRRSEBkn` the one can signal the start and stop of execution in the knowledge graph.
 
