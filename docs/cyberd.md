@@ -151,7 +151,7 @@ Cyberlinks can form link chains if exist a series of two cyberlinks from one age
 
 Using this simple principle, all interacting agents can reach consensus around interpreting clauses. So link chains are helpful for interpreting rich communications around relevance.
 
-![link_chains.png](https://ipfs.io/ipfs/QmUfsd3js7DJR7AkT1xug5uv3fScGs2WMnMF82k7s9yHAd)
+![link_chains.png](https://ipfs.io/ipfs/QmNd15Pa1pzFVv98jmf1uuvPGLxRpptQMVoMidYkj1YvDC)
 
 Also using the following link: `QmNedUe2wktW65xXxWqcR8EWWssHVMXm3Ly4GKiRRSEBkn` the one can signal the start and stop of execution in the knowledge graph.
 
