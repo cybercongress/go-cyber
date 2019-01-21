@@ -388,11 +388,11 @@ Todo: screenshots with basic steps of the .cyber application
 
 ## From Inception to Genesis
 
-It is trivial to develop `euler` like proof-of-concept implementation, but it is hard to achieve stable protocol `merkle` a lot of CYB value on which can exist. `euler` is Inception that already happened, `merkle` is Genesis that is far away. That is why we decide to innovate a bit on the going main net process. We do not have CYB balances and rank guaranties before `merkle` but we can have exponentially growing semantic core which can be improved based on measurements and observations during development and gradual transfer of value since `euler`. So think that Genesis or `merkle` is very stable and can store semantic core and value, but all releases before can store the whole semantic core and only part of the value you would love to store due to weak security guarantees. The percents of CYB value to be distributed based in CBD balances:
+It is trivial to develop `euler` like proof-of-concept implementation, but it is hard to achieve stable protocol `merkle` a lot of CYB value on which can exist. `euler` is Inception that already happened, `merkle` is Genesis that is far away. That is why we decide to innovate a bit on the going main net process. We do not have CYB balances and rank guaranties before `merkle` but we can have exponentially growing semantic core which can be improved based on measurements and observations during development and gradual transfer of value since `euler`. So think that Genesis or `merkle` is very stable and can store semantic core and value, but all releases before can store the whole semantic core and only part of the value you would love to store due to weak security guarantees. The percents of CYB value to be distributed based on CBD balances:
 
 ```toml
-euler  =  0.7
-smith  =  3.3
+euler  =  1
+smith  =  4
 darwin =  8
 turing = 15
 nash   = 21
@@ -404,7 +404,7 @@ To secure the value of CYB before Genesis 100 CBD ERC-20 tokens [are issued](htt
 
 Essentially CBD substance is distributed by cyberFoundation in the following proportion:
 
-- `Proof-of-use: 70%` is allocated to web3 agents according to some probabilistic algorithm. E.g., first `euler` proof-of-use distribution we call Satoshi Lottery is allocated to top `z` key owned Ethereum addresses based on SpringRank.
+- `Proof-of-use: 70%` is allocated to web3 agents according to some probabilistic algorithm. E.g., first `euler` proof-of-use distribution we call Satoshi Lottery is allocated to key owned Ethereum addresses based on ongoing research. First allocation is based on SpringRank.
 - `Proof-of-code: 15%` is allocated for direct contribution to the code base. E.g., as assigned by cyberFoundation to cyberCongress contribution including team is 11.2% and the other 3.8% allocated to developers community projects such as Gitcoin community and cyberColony based experimental organization.
 - `Proof-of-value: 15%` is allocated for a direct contribution of funds. 8% of this value either has been already contributed nor has some reservation for ongoing contributions by close friends and 7% is going to be distributed during Eos-like auction not defined precisely yet. All contribution from the auction will go to Aragon based cyberFoundation and will be managed by CBD token holders.
 
@@ -430,7 +430,7 @@ merkle =  18
 
 The scheme motivates developers to release earlier to be less diluted from holding CBD and honour validators if development is going slower than expected.
 
-After Genesis starting inflation rate will become fixed at `z` per block.
+After Genesis starting inflation rate will become fixed at `2 100 000 000` CYB per block.
 
 [Join](/docs/how_to_become_validator.md).
 
@@ -461,7 +461,11 @@ The genesis file for `euler` containing lottery results and CBD based distributi
 Qma5U4joYWEf41ku16g9cQr6fADsxCPsiWeYZBxpnpu1D4
 ```
 
-`x` account with  `y` CYB tokens has been created in Inception of the network.
+`132307` accounts with  `8 274 000 000 000 000` CYB tokens has been created in Inception of the network.
+
+Amount of created tokens is consist of the following sources:
+- 1% of CYB value allocated to `euler` testnet based on proof-of-use distribution as planned
+- 0.7% of CYB value allocated to `euler` testnet based on proof-of-value and proof-of-code distribution except 11.8 CBD due to bug. Appropriate corrections will be done during scheduled hardfork.
 
 ## Possible applications
 
@@ -583,7 +587,7 @@ We define and implement a protocol for provable communications of consensus comp
 - [Web3 stack](https://github.com/w3f/Web3-wiki/wiki)
 - [Search engines information retrieval in practice](https://ipfs.io/ipfs/QmeS4LjoL1iMNRGuyYSx78RAtubTT2bioSGnsvoaupcHR6)
 - [Motivating game for adversarial example research](https://ipfs.io/ipfs/QmNrAFz34SLqkzhSg4wAYYJeokfJU5hBEpkT4hPRi226y9.ifps)
-- [An idea of decentralised search](https://steemit.com/web3/@hipster/an-idea-of-decentralized-search-for-web3-ce860d61defe5est)
+- [An idea of decentralized search](https://steemit.com/web3/@hipster/an-idea-of-decentralized-search-for-web3-ce860d61defe5est)
 - [IPFS](https://ipfs.io/ipfs/QmV9tSDx9UiPeWExXEeH6aoDvmihvx6jD5eLb4jbTaKGps)
 - [DAT](https://ipfs.io/ipfs/QmXHGmfo4sjdHVW2MAxczAfs44RCpSeva2an4QvkzqYgfR)
 - [cosmos-sdk](https://github.com/cosmos/cosmos-sdk)
