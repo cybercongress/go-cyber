@@ -46,8 +46,8 @@ func EndBlocker(
 		averageSpentValue := DesirableNetworkBandwidthForRecoveryPeriod / (RecoveryPeriod / AdjustPricePeriod)
 		newPrice = float64(totalSpentForPeriod) / float64(averageSpentValue)
 
-		if newPrice < 0.1*float64(BaseCreditPrice) {
-			newPrice = 0.1 * float64(BaseCreditPrice)
+		if newPrice < 0.01*BaseCreditPrice {
+			newPrice = 0.01 * BaseCreditPrice
 		}
 
 		ms.StoreBandwidthPrice(ctx, math.Float64bits(newPrice))
