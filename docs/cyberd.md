@@ -384,7 +384,9 @@ Let us say that our node implementation based on `cosmos-sdk` can process 10k tr
 
 We wanted to imagine how that could work in a web3 browser. To our disappointment we [was not able](https://github.com/cybercongress/cyb/blob/master/docs/comparison.md) to find the web3 browser that can showcase the coolness of the proposed approach in action. That is why we decide to develop the web3 browser [cyb](https://github.com/cybercongress/cyb/blob/master/docs/cyb.md) that has sample application .cyber for interacting with `cyber://` protocol.
 
-Todo: screenshots with basic steps of the .cyber application
+![search-main](https://ipfs.io/ipfs/QmbyeY5ySyWiP5XtMSnaiNpJZuzFz3trGxjRJSBQzFehoC)
+
+![search-results](https://ipfs.io/ipfs/QmSSyqEqh9oSC4voDDYwEAuQczeJCyRfsx4gqecSyTcVWs)
 
 ## From Inception to Genesis
 
