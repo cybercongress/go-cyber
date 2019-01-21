@@ -97,7 +97,7 @@ The emergence of a [web3 stack](https://github.com/w3f/Web3-wiki/wiki) creates a
 
 We represent a knowledge graph as a weighted graph of directed links between content addresses or content identifications or CIDs. In this paper, we will use them as synonyms.
 
-![knowledge_graph.png](https://ipfs.io/ipfs/QmejVRS9irYb6eXGDZNM9YEuFyb3a5jn4EWh3MRC3LVRij)
+![knowledge_graph.png](https://ipfs.io/ipfs/Qma3ctc8XB64V3YqkWYPnRtQaqicdGebaQmRZqhUdEeMtB)
 
 Content addresses are essentially a web3 links. Instead of using nonobvious and mutable thing:
 ```
@@ -151,7 +151,7 @@ Cyberlinks can form link chains if exist a series of two cyberlinks from one age
 
 Using this simple principle, all interacting agents can reach consensus around interpreting clauses. So link chains are helpful for interpreting rich communications around relevance.
 
-![link_chains.png](https://ipfs.io/ipfs/QmUfsd3js7DJR7AkT1xug5uv3fScGs2WMnMF82k7s9yHAd)
+![link_chains.png](https://ipfs.io/ipfs/QmULePTyC7CsC871U5JzWwp7JG1epphtU2dRwcQdF18wB9)
 
 Also using the following link: `QmNedUe2wktW65xXxWqcR8EWWssHVMXm3Ly4GKiRRSEBkn` the one can signal the start and stop of execution in the knowledge graph.
 
@@ -368,7 +368,7 @@ For any given CID it is possible to prove the relevance
 
 Using this type of proof any two [IBC compatible](https://ipfs.io/ipfs/QmdCeixQUHBjGnKfwbB1dxf4X8xnadL8xWmmEnQah5n7x2) consensus computers can proof the relevance to each other so that domain-specific relevance machines can flourish. Thanks to inter-blockchain communication protocol you basically can launch your own domain-specific search engine either private or public by forking cyberd which is focused on the _common public knowledge_. So in our search architecture, domain-specific relevance machine can learn from common knowledge. We are going to work on IBC during `smith` implementation.
 
-![rm-network.png](https://ipfs.io/ipfs/QmdfgdkaU8CKXD7ow983vZ2LjJjz8Um9JA5buwQ1aaXT6Q)
+![rm-network.png](https://ipfs.io/ipfs/Qmbfc8eZEvXNUk5TG3qRSFiQBYQYp976YLMJcbAEdfwHka)
 
 In our relevance for commons `euler` implementation proof of relevance root hash is computed on Cuda GPUs every round.
 
