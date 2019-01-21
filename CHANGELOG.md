@@ -13,12 +13,15 @@
 
 **Closed issues:**
 
+- Add rpc endpoint to submit signed link and send messages [\#173](https://github.com/cybercongress/cyberd/issues/173)
 - index entities count  endpoint [\#165](https://github.com/cybercongress/cyberd/issues/165)
 - Add trust-node by default in cli [\#151](https://github.com/cybercongress/cyberd/issues/151)
+- Cyberd landing make up [\#36](https://github.com/cybercongress/cyberd/issues/36)
 
 **Merged pull requests:**
 
 - \#173 Add rpc endpoint to submit signed link and send messages [\#174](https://github.com/cybercongress/cyberd/pull/174) ([hleb-albau](https://github.com/hleb-albau))
+- Technical notes on euler release [\#169](https://github.com/cybercongress/cyberd/pull/169) ([xhipster](https://github.com/xhipster))
 - Handle import of ethereum privkeys with 0x. Trust node by default  [\#167](https://github.com/cybercongress/cyberd/pull/167) ([arturalbov](https://github.com/arturalbov))
 - \#164 fix rpc negative bw \#165 add index entities count endpoint [\#166](https://github.com/cybercongress/cyberd/pull/166) ([hleb-albau](https://github.com/hleb-albau))
 - Move import\_private command to keys subcomand [\#159](https://github.com/cybercongress/cyberd/pull/159) ([arturalbov](https://github.com/arturalbov))
