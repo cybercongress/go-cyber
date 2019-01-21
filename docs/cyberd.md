@@ -69,15 +69,15 @@ A consensus computer allows computing of provably relevant answers without opini
 
 ## Introduction to web3
 
-Original protocols of the Internet such as TCP/IP, DNS, URL, and HTTPS brought a web into the point where it is now. Along with all the benefits they have created they brought more problem to the table. Globality being a vital property of the web since inception is under real threat. The speed of connections degrades with network grow and from ubiquitous government interventions into privacy and security of web users. One property, not evident in the beginning, become important with everyday usage of the Internet: its ability to exchange permanent hyperlinks thus they [would not break after time has passed](dura://QmNhaUrhM7KcWzFYdBeyskoNyihrpHvUEBQnaddwPZigcN.ipfs). Reliance on "one at a time ISP" architecture allows governments effectively censor packets. It is the last straw in a conventional web stack for every engineer who is concerned about the future of our children.
+Original protocols of the Internet such as TCP/IP, DNS, URL, and HTTPS brought a web into the point where it is now. Along with all the benefits they have created they brought more problem to the table. Globality being a vital property of the web since inception is under real threat. The speed of connections degrades with network grow and from ubiquitous government interventions into privacy and security of web users. One property, not evident in the beginning, become important with everyday usage of the Internet: its ability to exchange permanent hyperlinks thus they [would not break after time has passed](https://ipfs.io/ipfs/QmNhaUrhM7KcWzFYdBeyskoNyihrpHvUEBQnaddwPZigcN). Reliance on "one at a time ISP" architecture allows governments effectively censor packets. It is the last straw in a conventional web stack for every engineer who is concerned about the future of our children.
 
 Other properties while being not so critical are very desirable: offline and real-time. Average internet user being offline must have the ability to work with the state it has and after acquiring connection being able to sync with global state and continue to verify state's validity in realtime while having a connection. Now, these properties offered on the app level while such properties must be integrated into lower level protocols.
 
-The emergence of a [web3 stack](https://github.com/w3f/Web3-wiki/wiki) creates an opportunity for a new kind of Internet. We call it web3. It has a promise to remove problems of a conventional protocol stack and add to the web better speed and more accessible connection. However, as usual in a story with a new stack, new problems emerge. One of such problem is general-purpose search. Existing general-purpose search engines are restrictive centralized databases everybody forced to trust. These search engines were designed primarily for client-server architecture based on TCP/IP, DNS, URL and HTPPS protocols. Web3 create a challenge and opportunity for a search engine based on developing technologies and specifically designed for them. Surprisingly the permission-less blockchain architecture itself allows organizing general purpose search engine in a way inaccessible for previous architectures.
+The emergence of a [web3 stack](https://github.com/w3f/Web3-wiki/wiki) creates an opportunity for a new kind of Internet. We call it web3. It has a promise to remove problems of a conventional protocol stack and add to the web better speed and more accessible connection. However, as usual in a story with a new stack, new problems emerge. One of such problem is general-purpose search. Existing general-purpose search engines are restrictive centralized databases everybody forced to trust. These search engines were designed primarily for client-server architecture based on TCP/IP, DNS, URL and HTTPS protocols. Web3 creates a challenge and opportunity for a search engine based on developing technologies and specifically designed for them. Surprisingly the permission-less blockchain architecture itself allows organizing general purpose search engine in a way inaccessible for previous architectures.
 
 ## On adversarial examples problem
 
-[Conventional architecture of search engines](dura://QmeS4LjoL1iMNRGuyYSx78RAtubTT2bioSGnsvoaupcHR6.ipfs) where one entity process and rank all the shit suffers from one hard but the particular problem that still has not been solved even by brilliant Google scientists: [adversarial examples problem](QmNrAFz34SLqkzhSg4wAYYJeokfJU5hBEpkT4hPRi226y9). The problem Google acknowledge is that it is rather hard to algorithmically reason either this particular sample is adversarial or not independently on how cool the learning technology is. Obviously, a cryptoeconomic approach can change beneficiaries in this game effectively removing possible sybil attack vectors and removing the necessity to make a decision on example crawling and meaning extraction from one entity to the whole world. Learning sybil-resistant model will probably lead to orders of magnitude more predictive results.
+[Conventional architecture of search engines](https://ipfs.io/ipfs/QmeS4LjoL1iMNRGuyYSx78RAtubTT2bioSGnsvoaupcHR6) where one entity process and rank all the shit suffers from one hard but the particular problem that still has not been solved even by brilliant Google scientists: [adversarial examples problem](https://ipfs.io/ipfs/QmNrAFz34SLqkzhSg4wAYYJeokfJU5hBEpkT4hPRi226y9). The problem Google acknowledge is that it is rather hard to algorithmically reason either this particular sample is adversarial or not independently on how cool the learning technology is. Obviously, a cryptoeconomic approach can change beneficiaries in this game effectively removing possible sybil attack vectors and removing the necessity to make a decision on example crawling and meaning extraction from one entity to the whole world. Learning sybil-resistant model will probably lead to orders of magnitude more predictive results.
 
 ## Cyber protocol at `euler`
 
@@ -88,7 +88,7 @@ The emergence of a [web3 stack](https://github.com/w3f/Web3-wiki/wiki) creates a
 - check bandwidth limit
 - check the validity of CIDv0
 - if signatures, bandwidth limit, and CIDv0 are ok than cyberlink is valid
-- for every valid cyberlink emit prediction as an array of cyberlinks
+- for every valid cyberlink emit prediction as an array of CIDv0
 - every round calculate cyber•rank deltas for the knowledge graph
 - every round distribute CYB based on defined rules
 - apply more secure consensus state based on CBD balances 6 times up to `merkle`
@@ -108,7 +108,7 @@ we can use pretty much exact thing:
 Qme4z71Zea9xaXScUi6pbsuTKCCNFp5TAv8W5tjdfH7yuHhttps
 ```
 
-Using content addresses for building a knowledge graph we get [so much needed](https://steemit.com/web3/@hipster/an-idea-of-decentralized-search-for-web3-ce860d61defe5est) superpowers of [ipfs](dura://QmV9tSDx9UiPeWExXEeH6aoDvmihvx6jD5eLb4jbTaKGps.ipfs)-[like](dura://QmXHGmfo4sjdHVW2MAxczAfs44RCpSeva2an4QvkzqYgfR.ipfs) p2p protocols for a search engine:
+Using content addresses for building a knowledge graph we get [so much needed](https://steemit.com/web3/@hipster/an-idea-of-decentralized-search-for-web3-ce860d61defe5est) superpowers of [ipfs](https://ipfs.io/ipfs/QmV9tSDx9UiPeWExXEeH6aoDvmihvx6jD5eLb4jbTaKGps)-[like](https://ipfs.io/ipfs/QmXHGmfo4sjdHVW2MAxczAfs44RCpSeva2an4QvkzqYgfR) p2p protocols for a search engine:
 
 - mesh-network future proof
 - interplanetary
@@ -126,7 +126,7 @@ Web 3 agents generate knowledge graph by applying cyberlinks.
 
 To understand cyberlinks, we need to understand the difference between URL link and IPFS link. URL link points to the location of content, but IPFS link point to the content itself. The difference in web architecture based on location links and content links is drastical, hence require new approaches.
 
-Cyberlink is an approach to link two content address links semantically.
+Cyberlink is an approach to link two content addresses semantically.
 
 ```
 QmdvsvrVqdkzx8HnowpXGLi88tXZDsoNrGhGvPvHBQB6sH.QmdSQ1AGTizWjSRaVLJ8Bw9j1xi6CGLptNUcUodBwCkKNS
@@ -155,7 +155,7 @@ Using this simple principle, all interacting agents can reach consensus around i
 
 Also using the following link: `QmNedUe2wktW65xXxWqcR8EWWssHVMXm3Ly4GKiRRSEBkn` the one can signal the start and stop of execution in the knowledge graph.
 
-If web3 agents instead of native ipfs links use something semantically richer as [dura]() links than web3 agents can easier to reach consensus on the rules for program execution.
+If web3 agents expand native IPFS links with something semantically richer as [DURA](https://github.com/cybercongress/cyb/blob/master/docs/web3-vision.md) links than web3 agents can easier to reach consensus on the rules for program execution.
 
 Indeed, DURA protocol is a proper implementation of a cyberlinks concept.
 
@@ -187,7 +187,7 @@ Hence we will not be able to achieve an ideal consensus computer ever. CAP theor
 
 However, this theory can work as a performance indicator of a consensus computer.
 
-Our current implementation is a 64-bit consensus computer of the relevance for 64-byte string space that is as far from ideal at least as 1/146.
+The `euler` implementation is a 64-bit consensus computer of the relevance for 64-byte string space that is as far from ideal at least as 1/146.
 
 We must bind computational, storage and bandwidth supply of relevance machine with maximized demand of queries. Computation and storage in case of basic relevance machine can be easily predicted based on bandwidth, but bandwidth requires a limiting mechanism.
 
@@ -227,13 +227,13 @@ The pruning group of features can be implemented in `nash`.
 
 ## cyber•Rank
 
-Ranking using consensus computer is hard because consensus computers bring serious resource bounds. e.g. [Nebulas](dura://QmWTZjDZNbBqcJ5b6VhWGXBQ5EQavKKDteHsdoYqB5CBjh.ipfs) still fail to deliver something useful on-chain. First, we must ask ourselves why do we need to compute and store the rank on-chain, and not go [Colony](dura://QmZo7eY5UdJYotf3Z9GNVBGLjkCnE1j2fMdW2PgGCmvGPj.ipfs) or [Truebit](dura://QmTrxXp2xhB2zWGxhNoLgsztevqKLwpy5HwKjLjzFa7rnD.ipfs) way?
+Ranking using consensus computer is hard because consensus computers bring serious resource bounds. e.g. [Nebulas](https://ipfs.io/ipfs/QmWTZjDZNbBqcJ5b6VhWGXBQ5EQavKKDteHsdoYqB5CBjh) still fail to deliver something useful on-chain. First, we must ask ourselves why do we need to compute and store the rank on-chain, and not go [Colony](https://ipfs.io/ipfs/QmZo7eY5UdJYotf3Z9GNVBGLjkCnE1j2fMdW2PgGCmvGPj) or [Truebit](https://ipfs.io/ipfs/QmTrxXp2xhB2zWGxhNoLgsztevqKLwpy5HwKjLjzFa7rnD) way?
 
 If rank computed inside consensus computer, you have an easy content distribution of the rank as well as an easy way to build provable applications on top of the rank. Hence we decided to follow more cosmic architecture. In the next section, we describe the proof of relevance mechanism which allows the network to scale with the help of domain-specific relevance machines that works in parallel.
 
 Eventually, relevance machine needs to find (1) deterministic algorithm that allows computing a rank for a continuously appended network to scale the consensus computer to orders of magnitude that of Google. Perfect algorithm (2) must have linear memory and computation complexity. The most importantly it must have (3) highest provable prediction capabilities for the existence of relevant links.                   
 
-After some research, we found that we can not find silver bullet here. We find an algorithm that probably satisfies our criteria: [SpringRank](dura://QmNvxWTXQaAqjEouZQXTV4wDB5ryW4PGcaxe2Lukv1BxuM.ipfs). An original idea of the algorithm came to Caterina from physics. Links represented as a system of springs with some energy, and the task of computing the ranks is the task of finding a relaxed state of springs.
+After some research, we found that we can not find silver bullet here. We find an algorithm that probably satisfies our criteria: [SpringRank](https://ipfs.io/ipfs/QmNvxWTXQaAqjEouZQXTV4wDB5ryW4PGcaxe2Lukv1BxuM). An original idea of the algorithm came to Caterina from physics. Links represented as a system of springs with some energy, and the task of computing the ranks is the task of finding a relaxed state of springs.
 
 However, we got at least 3 problems with SpringRank:
 1. We were not able to implement it on-chain fast using Go in `euler`.
@@ -366,7 +366,7 @@ Now we have proof of rank of any given content address. While the relevance is s
 For any given CID it is possible to prove the relevance
 ```
 
-Using this type of proof any two [IBC compatible](dura://QmdCeixQUHBjGnKfwbB1dxf4X8xnadL8xWmmEnQah5n7x2.ipfs) consensus computers can proof the relevance to each other so that domain-specific relevance machines can flourish. Thanks to inter-blockchain communication protocol you basically can launch your own domain-specific search engine either private or public by forking cyberd which is focused on the _common public knowledge_. So in our search architecture, domain-specific relevance machine can learn from common knowledge. We are going to work on IBC during `smith` implementation.
+Using this type of proof any two [IBC compatible](https://ipfs.io/ipfs/QmdCeixQUHBjGnKfwbB1dxf4X8xnadL8xWmmEnQah5n7x2) consensus computers can proof the relevance to each other so that domain-specific relevance machines can flourish. Thanks to inter-blockchain communication protocol you basically can launch your own domain-specific search engine either private or public by forking cyberd which is focused on the _common public knowledge_. So in our search architecture, domain-specific relevance machine can learn from common knowledge. We are going to work on IBC during `smith` implementation.
 
 ![rm-network.png](https://ipfs.io/ipfs/QmdfgdkaU8CKXD7ow983vZ2LjJjz8Um9JA5buwQ1aaXT6Q)
 
@@ -376,7 +376,7 @@ In our relevance for commons `euler` implementation proof of relevance root hash
 
 We need speedy confirmation times to feels like the usual web app. It is a strong architecture requirement that shape an economic topology and scalability of the cyber protocol.
 
-Proposed blockchain design is based on [Tendermint consensus](dura://QmaMtD7xDgghqgjN62zWZ5TBGFiEjGQtuZBjJ9sMh816KJ.ipfs) algorithm with 146 validators and has very fast 1 second finality time. Average confirmation timeframe at half the second with asynchronous interaction make complex blockchain search almost invisible for agents.
+Proposed blockchain design is based on [Tendermint consensus](https://ipfs.io/ipfs/QmaMtD7xDgghqgjN62zWZ5TBGFiEjGQtuZBjJ9sMh816KJ) algorithm with 146 validators and has very fast 1 second finality time. Average confirmation timeframe at half the second with asynchronous interaction make complex blockchain search almost invisible for agents.
 
 Let us say that our node implementation based on `cosmos-sdk` can process 10k transactions per second. Thus every day at least 8.64 million agents can submit 100 cyberlinks each and impact results simultaneously. That is enough to verify all assumptions in the wild. As blockchain technology evolves we want to check that every hypothesis work before scale it further. Moreover, proposed design needs demand for full bandwidth in order the relevance become valuable. That is why we strongly focus on accessible, but provable distribution to millions from inception.
 
@@ -504,7 +504,7 @@ _Autonomous robots_. Blockchain technology enables the creation of devices which
 
 What is needed is a simple yet powerful state reality tool with the ability to find particular things. cyberd offers minimalistic but continuously self-improving data source that provides necessary tools for programming economically rational robots. According to [top-10000 english words](https://github.com/first20hours/google-10000-english) the most popular word in English is defined article `the` that means a pointer to a particular thing. That fact can be explained as the following: particular things are the most important for us. So the nature of our current semantic computing is to find unique things. Hence the understanding of unique things become essential for robots too.
 
-_Language convergence_. A programmer should not care about what language do the user use. We don't need to know about what language user is searching in. Entire UTF-8 spectrum is at work. A semantic core is open so competition for answering can become distributed across different domain-specific areas, including semantic cores of different languages. The unified approach creates an opportunity for cyber•Bahasa. Since the Internet, we observe a process of rapid language convergence. We use more truly global words across the entire planet independently of our nationality, language and race, Name the Internet. The dream of truly global language is hard to deploy because it is hard to agree on what means what. However, we have the tools to make that dream come true. It is not hard to predict that the shorter a word, the more its cyber•rank will be. Global publicly available list of symbols, words, and phrases sorted by cyber•rank with corresponding links provided by cyberd can be the foundation for the emergence of genuinely global language everybody can accept. Recent [scientific advances](dura://QmQUWBhDMfPKgFt3NfbxM1VU22oU8CRepUzGPBDtopwap1.ipfs) in machine translation are breathtaking but meaningless for those who wish to apply them without Google scale trained model. Proposed cyber•rank offers precisely this.
+_Language convergence_. A programmer should not care about what language do the user use. We don't need to know about what language user is searching in. Entire UTF-8 spectrum is at work. A semantic core is open so competition for answering can become distributed across different domain-specific areas, including semantic cores of different languages. The unified approach creates an opportunity for cyber•Bahasa. Since the Internet, we observe a process of rapid language convergence. We use more truly global words across the entire planet independently of our nationality, language and race, Name the Internet. The dream of truly global language is hard to deploy because it is hard to agree on what means what. However, we have the tools to make that dream come true. It is not hard to predict that the shorter a word, the more its cyber•rank will be. Global publicly available list of symbols, words, and phrases sorted by cyber•rank with corresponding links provided by cyberd can be the foundation for the emergence of genuinely global language everybody can accept. Recent [scientific advances](https://ipfs.io/ipfs/QmQUWBhDMfPKgFt3NfbxM1VU22oU8CRepUzGPBDtopwap1) in machine translation are breathtaking but meaningless for those who wish to apply them without Google scale trained model. Proposed cyber•rank offers precisely this.
 
 This is sure not the exhaustive list of possible applications but very exciting, though.
 
@@ -528,7 +528,7 @@ _Self prediction_. A consensus computer can continuously build a knowledge graph
 
 _Universal oracle._ A consensus computer can store the most relevant data in the key-value store, where the key is cid and value is bytes of actual content. She is doing it by making a decision every round about which cid value she want to prune and which she wants to apply based on the utility measure of content addresses in the knowledge graph. To compute utility measure validators check availability and size of content for the top-ranked content address in the knowledge graph, then weight on the size of cids and its ranks. The emergent key-value store will be available to write for consensus computer only and not agents, but values can be used in programs.
 
-_Proof of location_. It is possible to construct cyberlinks with proof-of-location based on some existing protocol such as [Foam](dura://QmZYKGuLHf2h1mZrhiP2FzYsjj3tWt2LYduMCRbpgi5pKG.ipfs). So location-based search also can become provable if web3 agents will mine triangulations and attaching proof of location for every link chain.
+_Proof of location_. It is possible to construct cyberlinks with proof-of-location based on some existing protocol such as [Foam](https://ipfs.io/ipfs/QmZYKGuLHf2h1mZrhiP2FzYsjj3tWt2LYduMCRbpgi5pKG). So location-based search also can become provable if web3 agents will mine triangulations and attaching proof of location for every link chain.
 
 _Proof of web3 agent_. Agents are a subset of content addresses with one fundamental property: consensus computer can prove the existence of private keys for content addresses for the subset of knowledge graph even if those addresses has never transacted in its own chain. Hence it is possible to compute much provable stuff on top of that knowledge. E.g., some inflation can be distributed to addresses that have never transacted in the cyber network but have the provable link.
 
@@ -556,7 +556,7 @@ Evolvability and governance are connected tightly.
 
 Ability to reflect input from the world and output changes of itself is an essential evolutionary feature. Hence, thanks to `cosmos-sdk` `euler` implementation have basic but compelling features such as on-chain voting with vetos and abstain that drastically simplified open discussions for a change. So we are going to use this feature from the inception of the network.
 
-However, we can go in a different direction than `cosmos-sdk` offers. Following ideas from [Tezos](dura://QmdSQ1AGTizWjSRaVLJ8Bw9j1xi6CGLptNUcUodBwCkKNS.ipfs) in `weiner` we can define the current state of a protocol as the immutable content address that included in round merkle root.
+However, we can go in a different direction than `cosmos-sdk` offers. Following ideas from [Tezos](https://ipfs.io/ipfs/QmdSQ1AGTizWjSRaVLJ8Bw9j1xi6CGLptNUcUodBwCkKNS) in `weiner` we can define the current state of a protocol as the immutable content address that included in round merkle root.
 
 Also instead of formal governance procedure, we would love to check the hypothesis that changing state of a protocol is possible indeed using relevance machine itself.
 
@@ -578,29 +578,27 @@ We define and implement a protocol for provable communications of consensus comp
 
 ## References
 
-> Github does not display permanent web3 links correctly so follow source code
-
 - [cyberd](https://github.com/cybercongress/cyberd)
-- [Scholarly context adrift](dura://QmNhaUrhM7KcWzFYdBeyskoNyihrpHvUEBQnaddwPZigcN.ipfs)
+- [Scholarly context adrift](https://ipfs.io/ipfs/QmNhaUrhM7KcWzFYdBeyskoNyihrpHvUEBQnaddwPZigcN)
 - [Web3 stack](https://github.com/w3f/Web3-wiki/wiki)
-- [Search engines information retrieval in practice](dura://QmeS4LjoL1iMNRGuyYSx78RAtubTT2bioSGnsvoaupcHR6.ipfs)
-- [Motivating game for adversarial example research](dura://QmNrAFz34SLqkzhSg4wAYYJeokfJU5hBEpkT4hPRi226y9.ifps)
+- [Search engines information retrieval in practice](https://ipfs.io/ipfs/QmeS4LjoL1iMNRGuyYSx78RAtubTT2bioSGnsvoaupcHR6)
+- [Motivating game for adversarial example research](https://ipfs.io/ipfs/QmNrAFz34SLqkzhSg4wAYYJeokfJU5hBEpkT4hPRi226y9.ifps)
 - [An idea of decentralised search](https://steemit.com/web3/@hipster/an-idea-of-decentralized-search-for-web3-ce860d61defe5est)
-- [IPFS](dura://QmV9tSDx9UiPeWExXEeH6aoDvmihvx6jD5eLb4jbTaKGps.ipfs)
-- [DAT](dura://QmXHGmfo4sjdHVW2MAxczAfs44RCpSeva2an4QvkzqYgfR.ipfs)
+- [IPFS](https://ipfs.io/ipfs/QmV9tSDx9UiPeWExXEeH6aoDvmihvx6jD5eLb4jbTaKGps)
+- [DAT](https://ipfs.io/ipfs/QmXHGmfo4sjdHVW2MAxczAfs44RCpSeva2an4QvkzqYgfR)
 - [cosmos-sdk](https://github.com/cosmos/cosmos-sdk)
 - [CIDv0](https://github.com/multiformats/cid#cidv0)
 - [Bandwidth in cyber network](https://github.com/cybercongress/cyberd/blob/master/docs/bandwidth.md)
-- [Thermodynamics of predictions](dura://QmP81EcuNDZHQutvdcDjbQEqiTYUzU315aYaTyrVj6gtJb.ipfs)
+- [Thermodynamics of predictions](https://ipfs.io/ipfs/QmP81EcuNDZHQutvdcDjbQEqiTYUzU315aYaTyrVj6gtJb)
 - [DURA](https://github.com/cybercongress/cyb/blob/master/docs/web3-vision.md)
-- [Nebulas](dura://QmWTZjDZNbBqcJ5b6VhWGXBQ5EQavKKDteHsdoYqB5CBjh.ipfs)
-- [Colony](dura://QmZo7eY5UdJYotf3Z9GNVBGLjkCnE1j2fMdW2PgGCmvGPj.ipfs)
-- [Truebit](dura://QmTrxXp2xhB2zWGxhNoLgsztevqKLwpy5HwKjLjzFa7rnD.ipfs)
-- [SpringRank](dura://QmNvxWTXQaAqjEouZQXTV4wDB5ryW4PGcaxe2Lukv1BxuM.ipfs)
+- [Nebulas](https://ipfs.io/ipfs/QmWTZjDZNbBqcJ5b6VhWGXBQ5EQavKKDteHsdoYqB5CBjh)
+- [Colony](https://ipfs.io/ipfs/QmZo7eY5UdJYotf3Z9GNVBGLjkCnE1j2fMdW2PgGCmvGPj)
+- [Truebit](https://ipfs.io/ipfs/QmTrxXp2xhB2zWGxhNoLgsztevqKLwpy5HwKjLjzFa7rnD)
+- [SpringRank](https://ipfs.io/ipfs/QmNvxWTXQaAqjEouZQXTV4wDB5ryW4PGcaxe2Lukv1BxuM)
 - [PageRank](http://ilpubs.stanford.edu:8090/422/1/1999-66.pdf)
 - [RFC-6962](https://tools.ietf.org/html/rfc6962#section-2.1)
-- [IBC protocol](dura://QmdCeixQUHBjGnKfwbB1dxf4X8xnadL8xWmmEnQah5n7x2.ipfs)
-- [Tendermint](dura://QmaMtD7xDgghqgjN62zWZ5TBGFiEjGQtuZBjJ9sMh816KJ.ipfs)
+- [IBC protocol](https://ipfs.io/ipfs/QmdCeixQUHBjGnKfwbB1dxf4X8xnadL8xWmmEnQah5n7x2)
+- [Tendermint](https://ipfs.io/ipfs/QmaMtD7xDgghqgjN62zWZ5TBGFiEjGQtuZBjJ9sMh816KJ)
 - [Comparison of web3 browsers](https://github.com/cybercongress/cyb/blob/master/docs/comparison.md)
 - [Cyb](https://github.com/cybercongress/cyb/blob/master/docs/cyb.md)
 - [CBD](https://etherscan.io/token/0x136c1121f21c29415D8cd71F8Bb140C7fF187033)
@@ -608,8 +606,8 @@ We define and implement a protocol for provable communications of consensus comp
 - [How to become validator in cyber protocol](/docs/how_to_become_validator.md)
 - [Tolik's article on Satoshi Lottery](http://ipfs.io/ipfs/QmV2kjvY1QvY17sPgBDRGd13vaaks1zmFj867Ez5mbXz1y/genesis-explanation.html)
 - [Top 10000 english words](https://github.com/first20hours/google-10000-english)
-- [Multilingual neural machine translation](dura://QmQUWBhDMfPKgFt3NfbxM1VU22oU8CRepUzGPBDtopwap1.ipfs)
-- [Foam](dura://QmZYKGuLHf2h1mZrhiP2FzYsjj3tWt2LYduMCRbpgi5pKG.ipfs)
-- [Coda](dura://Qmdje3AmtsfjX9edWAxo3LFhV9CTAXoUvwGR7wHJXnc2Gk.ipfs)
-- [Mimblewimble](dura://Qmd99xmraYip9cVv8gRMy6Y97Bkij8qUYArGDME7CzFasg.ipfs)
-- [Tezos](dura://QmdSQ1AGTizWjSRaVLJ8Bw9j1xi6CGLptNUcUodBwCkKNS.ipfs)
+- [Multilingual neural machine translation](https://ipfs.io/ipfs/QmQUWBhDMfPKgFt3NfbxM1VU22oU8CRepUzGPBDtopwap1)
+- [Foam](https://ipfs.io/ipfs/QmZYKGuLHf2h1mZrhiP2FzYsjj3tWt2LYduMCRbpgi5pKG)
+- [Coda](https://ipfs.io/ipfs/Qmdje3AmtsfjX9edWAxo3LFhV9CTAXoUvwGR7wHJXnc2Gk)
+- [Mimblewimble](https://ipfs.io/ipfs/Qmd99xmraYip9cVv8gRMy6Y97Bkij8qUYArGDME7CzFasg)
+- [Tezos](https://ipfs.io/ipfs/QmdSQ1AGTizWjSRaVLJ8Bw9j1xi6CGLptNUcUodBwCkKNS)
