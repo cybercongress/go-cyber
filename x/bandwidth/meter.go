@@ -35,12 +35,12 @@ func (h BaseBandwidthMeter) GetTxCost(ctx sdk.Context, price float64, tx sdk.Tx)
 	for _, msg := range tx.GetMsgs() {
 		bandwidthForTx = bandwidthForTx + h.msgCost(msg)
 	}
-	return bandwidthForTx
+	return int64(float64(bandwidthForTx) * price)
 }
 
 func (h BaseBandwidthMeter) GetAccMaxBandwidth(ctx sdk.Context, addr sdk.AccAddress) int64 {
 	accStakePercentage := h.stakeProvider.GetAccStakePercentage(ctx, addr)
-	return int64(accStakePercentage * float64(DesirableNetworkBandwidthForRecoveryPeriod) / 2)
+	return int64(accStakePercentage * float64(DesirableNetworkBandwidthForRecoveryPeriod))
 }
 
 func (h BaseBandwidthMeter) GetCurrentAccBandwidth(ctx sdk.Context, address sdk.AccAddress) types.AcсBandwidth {
