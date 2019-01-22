@@ -14,13 +14,18 @@
 
 **Closed issues:**
 
+- High bandwidth cost for create validator msg [\#178](https://github.com/cybercongress/cyberd/issues/178)
 - Add rpc endpoint to submit signed link and send messages [\#173](https://github.com/cybercongress/cyberd/issues/173)
 - index entities count  endpoint [\#165](https://github.com/cybercongress/cyberd/issues/165)
+- Add ipfs hashes to release [\#161](https://github.com/cybercongress/cyberd/issues/161)
 - Add trust-node by default in cli [\#151](https://github.com/cybercongress/cyberd/issues/151)
+- Numerous small fixes in whitepaper [\#89](https://github.com/cybercongress/cyberd/issues/89)
 - Cyberd landing make up [\#36](https://github.com/cybercongress/cyberd/issues/36)
+- Whitepaper 0.3 [\#25](https://github.com/cybercongress/cyberd/issues/25)
 
 **Merged pull requests:**
 
+- \#153 Add more issues templates. [\#183](https://github.com/cybercongress/cyberd/pull/183) ([hleb-albau](https://github.com/hleb-albau))
 - \#178 \#168 Bandwidth price + Msg cost for non link txes [\#182](https://github.com/cybercongress/cyberd/pull/182) ([hleb-albau](https://github.com/hleb-albau))
 - \#173 Add rpc endpoint to submit signed link and send messages [\#174](https://github.com/cybercongress/cyberd/pull/174) ([hleb-albau](https://github.com/hleb-albau))
 - Technical notes on euler release [\#169](https://github.com/cybercongress/cyberd/pull/169) ([xhipster](https://github.com/xhipster))
