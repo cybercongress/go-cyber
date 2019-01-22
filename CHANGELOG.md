@@ -20,6 +20,7 @@
 
 **Merged pull requests:**
 
+- \#178 \#168 Bandwidth price + Msg cost for non link txes [\#182](https://github.com/cybercongress/cyberd/pull/182) ([hleb-albau](https://github.com/hleb-albau))
 - \#173 Add rpc endpoint to submit signed link and send messages [\#174](https://github.com/cybercongress/cyberd/pull/174) ([hleb-albau](https://github.com/hleb-albau))
 - Technical notes on euler release [\#169](https://github.com/cybercongress/cyberd/pull/169) ([xhipster](https://github.com/xhipster))
 - Handle import of ethereum privkeys with 0x. Trust node by default  [\#167](https://github.com/cybercongress/cyberd/pull/167) ([arturalbov](https://github.com/arturalbov))
