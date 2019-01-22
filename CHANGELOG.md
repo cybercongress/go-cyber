@@ -6,6 +6,7 @@
 
 **Fixed bugs:**
 
+- Current Bandwidth do not respect price [\#168](https://github.com/cybercongress/cyberd/issues/168)
 - negative bandwidnt  [\#164](https://github.com/cybercongress/cyberd/issues/164)
 - Update docker with 0.1.0 version [\#154](https://github.com/cybercongress/cyberd/issues/154)
 - Move import\_private command to keys subcomand [\#152](https://github.com/cybercongress/cyberd/issues/152)
