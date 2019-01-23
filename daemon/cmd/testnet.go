@@ -1,10 +1,9 @@
-package init
+package cmd
 
 import (
 	"encoding/json"
 	"fmt"
 	"github.com/cybercongress/cyberd/app"
-	. "github.com/cybercongress/cyberd/app/genesis"
 	"net"
 	"os"
 	"path/filepath"
@@ -14,16 +13,16 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	authtx "github.com/cosmos/cosmos-sdk/x/auth/client/txbuilder"
-	"github.com/cosmos/cosmos-sdk/x/stake"
-
-	"github.com/cosmos/cosmos-sdk/server"
+	"github.com/cosmos/cosmos-sdk/x/staking"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	cfg "github.com/tendermint/tendermint/config"
+	tmconfig "github.com/tendermint/tendermint/config"
 	"github.com/tendermint/tendermint/crypto"
 	cmn "github.com/tendermint/tendermint/libs/common"
 	"github.com/tendermint/tendermint/types"
 	tmtime "github.com/tendermint/tendermint/types/time"
+
+	"github.com/cosmos/cosmos-sdk/server"
 )
 
 var (
@@ -80,8 +79,9 @@ Example:
 	return cmd
 }
 
-func initTestnet(config *cfg.Config, cdc *codec.Codec) error {
+func initTestnet(config *tmconfig.Config, cdc *codec.Codec) error {
 	var chainID string
+
 	outDir := viper.GetString(flagOutputDir)
 	numValidators := viper.GetInt(flagNumValidators)
 
@@ -95,7 +95,7 @@ func initTestnet(config *cfg.Config, cdc *codec.Codec) error {
 	valPubKeys := make([]crypto.PubKey, numValidators)
 
 	var (
-		accs     []GenesisAccount
+		accs     []app.GenesisAccount
 		genFiles []string
 	)
 
@@ -176,17 +176,17 @@ func initTestnet(config *cfg.Config, cdc *codec.Codec) error {
 			return err
 		}
 
-		accs = append(accs, GenesisAccount{
+		accs = append(accs, app.GenesisAccount{
 			Address: addr,
 			Amount:  100,
 		})
 
-		msg := stake.NewMsgCreateValidator(
+		msg := staking.NewMsgCreateValidator(
 			sdk.ValAddress(addr),
 			valPubKeys[i],
 			sdk.NewInt64Coin("CBD", 100),
-			stake.NewDescription(nodeDirName, "", "", ""),
-			stake.NewCommissionMsg(sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec()),
+			staking.NewDescription(nodeDirName, "", "", ""),
+			staking.NewCommissionMsg(sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec()),
 		)
 		tx := auth.NewStdTx([]sdk.Msg{msg}, auth.StdFee{}, []auth.StdSignature{}, memo)
 		txBldr := authtx.NewTxBuilderFromCLI().WithChainID(chainID).WithMemo(memo)
@@ -228,11 +228,11 @@ func initTestnet(config *cfg.Config, cdc *codec.Codec) error {
 }
 
 func initGenFiles(
-	cdc *codec.Codec, chainID string, accs []GenesisAccount,
+	cdc *codec.Codec, chainID string, accs []app.GenesisAccount,
 	genFiles []string, numValidators int,
 ) error {
 
-	appGenState := NewDefaultGenesisState()
+	appGenState := app.NewDefaultGenesisState()
 	appGenState.Accounts = accs
 
 	appGenStateJSON, err := codec.MarshalJSONIndent(cdc, appGenState)
@@ -257,7 +257,7 @@ func initGenFiles(
 }
 
 func collectGenFiles(
-	cdc *codec.Codec, config *cfg.Config, chainID string,
+	cdc *codec.Codec, config *tmconfig.Config, chainID string,
 	monikers, nodeIDs []string, valPubKeys []crypto.PubKey,
 	numValidators int, outDir, nodeDirPrefix, nodeDaemonHomeName string,
 ) error {

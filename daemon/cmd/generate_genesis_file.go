@@ -1,4 +1,4 @@
-package genesis
+package cmd
 
 import (
 	"bufio"
@@ -6,8 +6,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/server"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cybercongress/cyberd/app/genesis"
-	"github.com/cybercongress/cyberd/x/mint"
+	"github.com/cybercongress/cyberd/app"
 	"github.com/spf13/cobra"
 	"github.com/tendermint/tendermint/types"
 	"io"
@@ -20,11 +19,11 @@ import (
 var (
 	bitcoinHeightZeroTime = time.Unix(1231006505, 0).UTC() // 2009-01-03 18:15:05 +0000 UTC
 	chainId               = "euler"
-	genesisSupply         = mint.GenesisSupply
+	genesisSupply         = int64(10 * 1000 * 1000 * 1000 * 1000 * 1000) // 10^16
 	pocPercentage         = 0.7
 )
 
-func GenerateEulerGenesisFile(ctx *server.Context, cdc *codec.Codec) *cobra.Command {
+func GenerateEulerGenesisFileCmd(ctx *server.Context, cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "generate-euler-genesis-block",
 		Short: "Generate genesis file for euler testnet.",
@@ -36,7 +35,7 @@ func GenerateEulerGenesisFile(ctx *server.Context, cdc *codec.Codec) *cobra.Comm
 				return err
 			}
 
-			appState := genesis.NewDefaultGenesisState()
+			appState := app.NewDefaultGenesisState()
 			appState.Accounts = append(appState.Accounts, getGenesisAccs()...)
 			appState.Accounts = append(appState.Accounts, pouAccs...)
 
@@ -50,13 +49,13 @@ func GenerateEulerGenesisFile(ctx *server.Context, cdc *codec.Codec) *cobra.Comm
 				addrMap[strAddr] += acc.Amount
 			}
 
-			addrAsArray := make([]genesis.GenesisAccount, 0)
+			addrAsArray := make([]app.GenesisAccount, 0)
 			for k, v := range addrMap {
-				addrAsArray = append(addrAsArray, genesis.GenesisAccount{Address: addr(k), Amount: v})
+				addrAsArray = append(addrAsArray, app.GenesisAccount{Address: addr(k), Amount: v})
 			}
 			appState.Accounts = addrAsArray
 
-			appState.StakeData.Pool.LooseTokens = sdk.NewDec(genesisSupply)
+			appState.StakingData.Pool.NotBondedTokens = sdk.NewInt(genesisSupply)
 			stateAsJson, err := codec.MarshalJSONIndent(cdc, appState)
 			if err != nil {
 				return err
@@ -76,9 +75,9 @@ func GenerateEulerGenesisFile(ctx *server.Context, cdc *codec.Codec) *cobra.Comm
 	return cmd
 }
 
-func readPouAccounts() ([]genesis.GenesisAccount, error) {
+func readPouAccounts() ([]app.GenesisAccount, error) {
 
-	accs := make([]genesis.GenesisAccount, 0)
+	accs := make([]app.GenesisAccount, 0)
 	pocFile, err := os.Open("/home/hlb/.cyberd/proof-of-code")
 	if err != nil {
 		return nil, err
@@ -106,7 +105,7 @@ func readPouAccounts() ([]genesis.GenesisAccount, error) {
 			return nil, err
 		}
 
-		accs = append(accs, genesis.GenesisAccount{
+		accs = append(accs, app.GenesisAccount{
 			Address: accAddress,
 			Amount:  amt(accAmtPercent),
 		})
@@ -116,8 +115,8 @@ func readPouAccounts() ([]genesis.GenesisAccount, error) {
 }
 
 // Returns all, except genesis poc accs
-func getGenesisAccs() []genesis.GenesisAccount {
-	accs := []genesis.GenesisAccount{
+func getGenesisAccs() []app.GenesisAccount {
+	accs := []app.GenesisAccount{
 		{Address: addr("cbd1f9yjqmxh6prsmgpcaqj8lmjnxg644n50qjl4vw"), Amount: amt(8.288000001)},
 		{Address: addr("cbd1hlu0kqwvxmhjjsezr00jdrvs2k537mqhrv02ja"), Amount: amt(3.045611111)},
 		{Address: addr("cbd1myeyqp96pz3tayjdctflrxpwf45dq3xyj56yk0"), Amount: amt(2.1153)},

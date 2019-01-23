@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/server"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cybercongress/cyberd/app"
-	"github.com/cybercongress/cyberd/daemon/genesis"
-	initCyberd "github.com/cybercongress/cyberd/daemon/init"
+	initCyberd "github.com/cybercongress/cyberd/daemon/cmd"
 	"github.com/cybercongress/cyberd/daemon/rpc"
 	"github.com/cybercongress/cyberd/x/rank"
 	"github.com/spf13/cobra"
@@ -46,7 +46,7 @@ func main() {
 	rootCmd.AddCommand(initCyberd.TestnetFilesCmd(ctx, cdc))
 	rootCmd.AddCommand(initCyberd.GenTxCmd(ctx, cdc))
 	rootCmd.AddCommand(initCyberd.AddGenesisAccountCmd(ctx, cdc))
-	rootCmd.AddCommand(genesis.GenerateEulerGenesisFile(ctx, cdc))
+	rootCmd.AddCommand(initCyberd.GenerateEulerGenesisFileCmd(ctx, cdc))
 	server.AddCommands(ctx, cdc, rootCmd, newApp, exportAppStateAndTMValidators)
 
 	for _, c := range rootCmd.Commands() {
@@ -68,7 +68,8 @@ func main() {
 }
 
 func newApp(logger log.Logger, db dbm.DB, storeTracer io.Writer) abci.Application {
-	pruning := baseapp.SetPruning(viper.GetString("pruning"))
+	// todo use constant here
+	pruning := baseapp.SetPruning(sdk.NewPruningOptions(60*60*24, 0))
 	computeUnit := rank.CPU
 	if viper.GetBool(flagGpuEnabled) {
 		computeUnit = rank.GPU

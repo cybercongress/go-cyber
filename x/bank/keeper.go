@@ -4,7 +4,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/bank"
-	"github.com/cosmos/cosmos-sdk/x/stake"
+	"github.com/cosmos/cosmos-sdk/x/staking"
 	"github.com/cybercongress/cyberd/types/coin"
 )
 
@@ -12,12 +12,12 @@ type Keeper struct {
 	bank.Keeper
 
 	ak auth.AccountKeeper
-	sk *stake.Keeper
+	sk *staking.Keeper
 
 	coinsTransferHooks []CoinsTransferHook
 }
 
-func NewBankKeeper(ak auth.AccountKeeper, sk *stake.Keeper) Keeper {
+func NewBankKeeper(ak auth.AccountKeeper, sk *staking.Keeper) Keeper {
 	return Keeper{
 		Keeper:             bank.NewBaseKeeper(ak),
 		ak:                 ak,
@@ -118,5 +118,5 @@ func (k Keeper) GetAccStakePercentage(ctx sdk.Context, addr sdk.AccAddress) floa
 
 func (k Keeper) GetTotalSupply(ctx sdk.Context) int64 {
 	pool := k.sk.GetPool(ctx)
-	return pool.BondedTokens.RoundInt64() + pool.LooseTokens.RoundInt64()
+	return pool.TokenSupply().Int64()
 }
