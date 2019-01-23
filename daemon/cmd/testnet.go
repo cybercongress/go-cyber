@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/cybercongress/cyberd/app"
+	"github.com/cybercongress/cyberd/types/coin"
 	"net"
 	"os"
 	"path/filepath"
@@ -178,20 +179,20 @@ func initTestnet(config *tmconfig.Config, cdc *codec.Codec) error {
 
 		accs = append(accs, app.GenesisAccount{
 			Address: addr,
-			Amount:  100,
+			Amount:  10000000000000000,
 		})
 
 		msg := staking.NewMsgCreateValidator(
 			sdk.ValAddress(addr),
 			valPubKeys[i],
-			sdk.NewInt64Coin("CBD", 100),
+			sdk.NewInt64Coin(coin.CBD, 10000000000000000),
 			staking.NewDescription(nodeDirName, "", "", ""),
 			staking.NewCommissionMsg(sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec()),
 		)
 		tx := auth.NewStdTx([]sdk.Msg{msg}, auth.StdFee{}, []auth.StdSignature{}, memo)
 		txBldr := authtx.NewTxBuilderFromCLI().WithChainID(chainID).WithMemo(memo)
 
-		signedTx, err := txBldr.SignStdTx(nodeDirName, app.DefaultKeyPass, tx, false)
+		signedTx, err := txBldr.SignStdTx(nodeDirName, keyPass, tx, false)
 		if err != nil {
 			_ = os.RemoveAll(outDir)
 			return err
