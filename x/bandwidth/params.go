@@ -12,6 +12,8 @@ const (
 	// Number of blocks to recover full bandwidth
 	RecoveryPeriod = 60 * 60 * 24
 	// Number of blocks before next adjust price
-	AdjustPricePeriod         = 60 * 10
-	BaseCreditPrice   float64 = 1.0
+	AdjustPricePeriod                     = 60 * 10
+	BaseCreditPrice               float64 = 1.0
+	SlidingWindowSize                     = RecoveryPeriod / 2
+	ShouldBeSpentPerSlidingWindow         = float64(DesirableNetworkBandwidthForRecoveryPeriod) / (float64(RecoveryPeriod) / float64(SlidingWindowSize))
 )
