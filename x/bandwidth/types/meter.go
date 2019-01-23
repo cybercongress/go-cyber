@@ -15,6 +15,16 @@ type AccStakeProvider interface {
 // 4. Consume bw and save with old max bw value
 // 5. Load bw with new max value and save it
 type BandwidthMeter interface {
+	// load current bandwidth state after restart
+	Load(ctx sdk.Context)
+	// add value to consumed bandwidth for current block
+	AddToBlockBandwidth(value uint64)
+	// adjust price based on 24h loading
+	AdjustPrice(ctx sdk.Context)
+	// get current bandwidth price
+	GetCurrentCreditPrice() float64
+	// commit bandwidth value spent for current block
+	CommitBlockBandwidth(ctx sdk.Context)
 	// Update acc max bandwidth for current stake. Also, performs recover.
 	UpdateAccMaxBandwidth(ctx sdk.Context, address sdk.AccAddress)
 	// Returns recovered to current block height acc bandwidth
@@ -22,7 +32,7 @@ type BandwidthMeter interface {
 	// Returns acc max bandwidth
 	GetAccMaxBandwidth(ctx sdk.Context, address sdk.AccAddress) int64
 	// Returns tx bandwidth cost
-	GetTxCost(ctx sdk.Context, price float64, tx sdk.Tx) int64
+	GetTxCost(ctx sdk.Context, tx sdk.Tx) int64
 	//
 	// Performs bw consumption for given acc
 	// To get right number, should be called after tx delivery with bw state obtained prior delivery

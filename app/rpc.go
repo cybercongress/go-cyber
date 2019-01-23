@@ -67,7 +67,7 @@ func (app *CyberdApp) IsLinkExist(from cbdlink.Cid, to cbdlink.Cid, address sdk.
 }
 
 func (app *CyberdApp) CurrentBandwidthPrice() float64 {
-	return app.currentCreditPrice
+	return app.bandwidthMeter.GetCurrentCreditPrice()
 }
 
 func (app *CyberdApp) CidsCount() uint64 {

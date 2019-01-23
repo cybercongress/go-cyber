@@ -2,9 +2,7 @@ package bandwidth
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cybercongress/cyberd/store"
 	"github.com/cybercongress/cyberd/x/bandwidth/types"
-	"math"
 )
 
 var accsToUpdate = make([]sdk.AccAddress, 0)
@@ -37,25 +35,11 @@ func CollectAddressesWithStakeChange() func(ctx sdk.Context, from sdk.AccAddress
 // 2. For accs with updated on current block stake adjust max bandwidth. Why not update on `onCoinsTransfer`?
 //  Cuz for some bound related operations, coins already added/reduced from acc, but not added to
 //  validator\delegator pool.
-func EndBlocker(
-	ctx sdk.Context, totalSpentForPeriod uint64, curPrice float64, ms store.MainKeeper, meter types.BandwidthMeter,
-) (newPrice float64, totalSpent uint64) {
+func EndBlocker(ctx sdk.Context, meter types.BandwidthMeter) {
 
-	newPrice = curPrice
 	if ctx.BlockHeight() != 0 && ctx.BlockHeight()%AdjustPricePeriod == 0 {
-		averageSpentValue := DesirableNetworkBandwidthForRecoveryPeriod / (RecoveryPeriod / AdjustPricePeriod)
-		newPrice = float64(totalSpentForPeriod) / float64(averageSpentValue)
-
-		if newPrice < 0.01*BaseCreditPrice {
-			newPrice = 0.01 * BaseCreditPrice
-		}
-
-		ms.StoreBandwidthPrice(ctx, math.Float64bits(newPrice))
-		ms.StoreSpentBandwidth(ctx, 0)
-		totalSpentForPeriod = 0
+		meter.AdjustPrice(ctx)
 	}
-
-	ms.StoreSpentBandwidth(ctx, totalSpentForPeriod)
+	meter.CommitBlockBandwidth(ctx)
 	updateAccMaxBandwidth(ctx, meter)
-	return newPrice, totalSpentForPeriod
 }
