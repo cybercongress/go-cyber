@@ -2,7 +2,6 @@ module github.com/cybercongress/cyberd
 
 require (
 	github.com/BurntSushi/toml v0.3.1 // indirect
-	github.com/TV4/graceful v0.3.3
 	github.com/VividCortex/gohistogram v1.0.0 // indirect
 	github.com/ZondaX/hid-go v0.0.0-20180905224704-48b08affede2 // indirect
 	github.com/bartekn/go-bip39 v0.0.0-20171116152956-a05967ea095d // indirect
@@ -10,7 +9,7 @@ require (
 	github.com/bgentry/speakeasy v0.1.0 // indirect
 	github.com/btcsuite/btcd v0.0.0-20180903232927-cff30e1d23fc // indirect
 	github.com/btcsuite/btcutil v0.0.0-20180706230648-ab6388e0c60a // indirect
-	github.com/cosmos/cosmos-sdk v0.29.0
+	github.com/cosmos/cosmos-sdk v0.28.2-0.20190123020839-b2ae4ed57319
 	github.com/cosmos/go-bip39 v0.0.0-20180618194314-52158e4697b8
 	github.com/fortytw2/leaktest v1.2.0 // indirect
 	github.com/go-kit/kit v0.7.0 // indirect
@@ -47,7 +46,7 @@ require (
 	github.com/prometheus/common v0.0.0-20180801064454-c7de2306084e // indirect
 	github.com/prometheus/procfs v0.0.0-20180725123919-05ee40e3a273 // indirect
 	github.com/rcrowley/go-metrics v0.0.0-20180503174638-e2704e165165 // indirect
-	github.com/rs/cors v1.6.0
+	github.com/rs/cors v1.6.0 // indirect
 	github.com/spaolacci/murmur3 v0.0.0-20180118202830-f09979ecbc72 // indirect
 	github.com/spf13/afero v1.1.2 // indirect
 	github.com/spf13/cast v1.2.0 // indirect
@@ -60,9 +59,9 @@ require (
 	github.com/tendermint/btcd v0.0.0-20180816174608-e5840949ff4f
 	github.com/tendermint/go-amino v0.14.1
 	github.com/tendermint/iavl v0.12.0 // indirect
-	github.com/tendermint/tendermint v0.27.4
+	github.com/tendermint/tendermint v0.29.0
 	github.com/whyrusleeping/base32 v0.0.0-20170828182744-c30ac30633cc // indirect
-	github.com/zondax/ledger-goclient v0.1.0 // indirect
+	github.com/zondax/ledger-cosmos-go v0.1.0 // indirect
 	golang.org/x/crypto v0.0.0-20181015023909-0c41d7ab0a0e // indirect
 	golang.org/x/net v0.0.0-20180911220305-26e67e76b6c3 // indirect
 	google.golang.org/grpc v1.15.0 // indirect

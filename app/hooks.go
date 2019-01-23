@@ -20,39 +20,49 @@ func NewStakeHooks(dh distr.Hooks, sh slashing.Hooks) Hooks {
 }
 
 // nolint
-func (h Hooks) OnValidatorCreated(ctx sdk.Context, valAddr sdk.ValAddress) {
-	h.sh.OnValidatorCreated(ctx, valAddr)
-	h.dh.OnValidatorCreated(ctx, valAddr)
+func (h Hooks) AfterValidatorCreated(ctx sdk.Context, valAddr sdk.ValAddress) {
+	h.sh.AfterValidatorCreated(ctx, valAddr)
+	h.dh.AfterValidatorCreated(ctx, valAddr)
 }
-func (h Hooks) OnValidatorModified(ctx sdk.Context, valAddr sdk.ValAddress) {
-	h.sh.OnValidatorModified(ctx, valAddr)
-	h.dh.OnValidatorModified(ctx, valAddr)
+
+func (h Hooks) BeforeValidatorModified(ctx sdk.Context, valAddr sdk.ValAddress) {
+	h.dh.BeforeValidatorModified(ctx, valAddr)
+	h.sh.BeforeValidatorModified(ctx, valAddr)
 }
-func (h Hooks) OnValidatorRemoved(ctx sdk.Context, consAddr sdk.ConsAddress, valAddr sdk.ValAddress) {
-	h.sh.OnValidatorRemoved(ctx, consAddr, valAddr)
-	h.dh.OnValidatorRemoved(ctx, consAddr, valAddr)
+
+func (h Hooks) AfterValidatorRemoved(ctx sdk.Context, consAddr sdk.ConsAddress, valAddr sdk.ValAddress) {
+	h.dh.AfterValidatorRemoved(ctx, consAddr, valAddr)
+	h.sh.AfterValidatorRemoved(ctx, consAddr, valAddr)
 }
-func (h Hooks) OnValidatorBonded(ctx sdk.Context, consAddr sdk.ConsAddress, valAddr sdk.ValAddress) {
-	h.sh.OnValidatorBonded(ctx, consAddr, valAddr)
-	h.dh.OnValidatorBonded(ctx, consAddr, valAddr)
+func (h Hooks) AfterValidatorBonded(ctx sdk.Context, consAddr sdk.ConsAddress, valAddr sdk.ValAddress) {
+	h.dh.AfterValidatorBonded(ctx, consAddr, valAddr)
+	h.sh.AfterValidatorBonded(ctx, consAddr, valAddr)
 }
-func (h Hooks) OnValidatorPowerDidChange(ctx sdk.Context, consAddr sdk.ConsAddress, valAddr sdk.ValAddress) {
-	h.sh.OnValidatorPowerDidChange(ctx, consAddr, valAddr)
-	h.dh.OnValidatorPowerDidChange(ctx, consAddr, valAddr)
+func (h Hooks) AfterValidatorPowerDidChange(ctx sdk.Context, consAddr sdk.ConsAddress, valAddr sdk.ValAddress) {
+	h.dh.AfterValidatorPowerDidChange(ctx, consAddr, valAddr)
+	h.sh.AfterValidatorPowerDidChange(ctx, consAddr, valAddr)
 }
-func (h Hooks) OnValidatorBeginUnbonding(ctx sdk.Context, consAddr sdk.ConsAddress, valAddr sdk.ValAddress) {
-	h.sh.OnValidatorBeginUnbonding(ctx, consAddr, valAddr)
-	h.dh.OnValidatorBeginUnbonding(ctx, consAddr, valAddr)
+func (h Hooks) AfterValidatorBeginUnbonding(ctx sdk.Context, consAddr sdk.ConsAddress, valAddr sdk.ValAddress) {
+	h.dh.AfterValidatorBeginUnbonding(ctx, consAddr, valAddr)
+	h.sh.AfterValidatorBeginUnbonding(ctx, consAddr, valAddr)
 }
-func (h Hooks) OnDelegationCreated(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) {
-	h.sh.OnDelegationCreated(ctx, delAddr, valAddr)
-	h.dh.OnDelegationCreated(ctx, delAddr, valAddr)
+func (h Hooks) BeforeDelegationCreated(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) {
+	h.dh.BeforeDelegationCreated(ctx, delAddr, valAddr)
+	h.sh.BeforeDelegationCreated(ctx, delAddr, valAddr)
 }
-func (h Hooks) OnDelegationSharesModified(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) {
-	h.sh.OnDelegationSharesModified(ctx, delAddr, valAddr)
-	h.dh.OnDelegationSharesModified(ctx, delAddr, valAddr)
+func (h Hooks) BeforeDelegationSharesModified(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) {
+	h.dh.BeforeDelegationSharesModified(ctx, delAddr, valAddr)
+	h.sh.BeforeDelegationSharesModified(ctx, delAddr, valAddr)
 }
-func (h Hooks) OnDelegationRemoved(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) {
-	h.sh.OnDelegationRemoved(ctx, delAddr, valAddr)
-	h.dh.OnDelegationRemoved(ctx, delAddr, valAddr)
+func (h Hooks) BeforeDelegationRemoved(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) {
+	h.dh.BeforeDelegationRemoved(ctx, delAddr, valAddr)
+	h.sh.BeforeDelegationRemoved(ctx, delAddr, valAddr)
+}
+func (h Hooks) AfterDelegationModified(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) {
+	h.dh.AfterDelegationModified(ctx, delAddr, valAddr)
+	h.sh.AfterDelegationModified(ctx, delAddr, valAddr)
+}
+func (h Hooks) BeforeValidatorSlashed(ctx sdk.Context, valAddr sdk.ValAddress, fraction sdk.Dec) {
+	h.dh.BeforeValidatorSlashed(ctx, valAddr, fraction)
+	h.sh.BeforeValidatorSlashed(ctx, valAddr, fraction)
 }

@@ -1,10 +1,10 @@
-package init
+package cmd
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/cybercongress/cyberd/app"
-	. "github.com/cybercongress/cyberd/app/genesis"
-
+	"os"
 	"path/filepath"
 
 	"github.com/cosmos/cosmos-sdk/client"
@@ -77,6 +77,16 @@ func CollectGenTxsCmd(ctx *server.Context, cdc *codec.Codec) *cobra.Command {
 	return cmd
 }
 
+// nolint: errcheck
+func displayInfo(cdc *codec.Codec, info printInfo) error {
+	out, err := codec.MarshalJSONIndent(cdc, info)
+	if err != nil {
+		return err
+	}
+	_, _ = fmt.Fprintf(os.Stderr, "%s\n", string(out))
+	return nil
+}
+
 func genAppStateFromConfig(
 	cdc *codec.Codec, config *cfg.Config, initCfg initConfig, genDoc types.GenesisDoc,
 ) (appState json.RawMessage, err error) {
@@ -90,7 +100,7 @@ func genAppStateFromConfig(
 	)
 
 	// process genesis transactions, else create default genesis.json
-	appGenTxs, persistentPeers, err = CollectStdTxs(cdc, config.Moniker, initCfg.GenTxsDir, genDoc)
+	appGenTxs, persistentPeers, err = app.CollectStdTxs(cdc, config.Moniker, initCfg.GenTxsDir, genDoc)
 	if err != nil {
 		return
 	}
@@ -108,7 +118,7 @@ func genAppStateFromConfig(
 
 	cfg.WriteConfigFile(filepath.Join(config.RootDir, "config", "config.toml"), config)
 
-	appState, err = CyberdAppGenStateJSON(cdc, genDoc, genTxs)
+	appState, err = app.CyberdAppGenStateJSON(cdc, genDoc, genTxs)
 	if err != nil {
 		return
 	}

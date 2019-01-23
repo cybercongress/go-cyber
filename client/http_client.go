@@ -67,13 +67,10 @@ func NewHttpCyberdClient(nodeUrl string, passphrase string, singAddr string) Cyb
 		panic(err)
 	}
 
-	txBuilder := authtxb.TxBuilder{
-		Gas:           10000000000,
-		ChainID:       status.NodeInfo.Network,
-		AccountNumber: accountNumber,
-		TxEncoder:     utils.GetTxEncoder(cdc),
-		Sequence:      seq,
-	}
+	txBuilder := authtxb.NewTxBuilder(
+		utils.GetTxEncoder(cdc), accountNumber, seq, 0, 0.0, false, status.NodeInfo.Network,
+		"", sdk.Coins{}, sdk.NewDecCoins(sdk.Coins{}),
+	)
 
 	return HttpCyberdClient{
 		tdmClient:  tdmHttpClient,
@@ -162,7 +159,8 @@ func (c HttpCyberdClient) BroadcastTx(msgs []sdk.Msg) error {
 	if result.Code != 0 {
 		return errors.New(string(result.Log))
 	}
-	c.txBuilder.Sequence = c.txBuilder.Sequence + 1
+	newBuilder := c.txBuilder.WithSequence(c.txBuilder.GetSequence() + 1)
+	c.txBuilder = &newBuilder
 	return nil
 }
 
