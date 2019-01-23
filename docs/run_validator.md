@@ -4,12 +4,12 @@
 
 ## Prepare your server
 
-First, you have to setup a server. 
-You are supposed to run your validator node all time, so you will need a reliable server to keep it running. 
+First, you have to setup a server.
+You are supposed to run your validator node all time, so you will need a reliable server to keep it running.
 Also, you may consider to use any cloud services like AWS or DigitalOcean.
 
-Cyberd is based on Cosmos SDK written in Go. 
-It should work on any platform which can compile and run programs in Go. 
+Cyberd is based on Cosmos SDK written in Go.
+It should work on any platform which can compile and run programs in Go.
 However, I strongly recommend running the validator node on a Linux server.
 
 Here is the current required server specification to run validator node:
@@ -22,15 +22,15 @@ Here is the current required server specification to run validator node:
 
 ## Install Dependencies
 
-Our main distribution unit is docker container. 
+Our main distribution unit is docker container.
 All images are located in default [Dockerhub registry](https://hub.docker.com/r/cyberd/cyberd/).
 Docker installation instruction can be found [here](https://docs.docker.com/install/).
-In order to access **GPU** from container, nvidia drivers version **410+** and 
+In order to access **GPU** from container, nvidia drivers version **410+** and
  [nvidia docker runtime](https://github.com/NVIDIA/nvidia-docker) should be installed on host system.
 
 **Note**: Before installing nvidia docker runtime, reboot pc(nvidia drivers should be loaded into kernel during startup),
  check that drivers loaded correctly by `nvidia-smi` command.
-  
+
 Check both driver and docker runtime installed correctly:
 ```bash
 docker run --runtime=nvidia --rm nvidia/cuda:10.0-base nvidia-smi
@@ -46,7 +46,7 @@ Tue Dec 11 18:02:15 2018
 |   0  GeForce GTX 1050    Off  | 00000000:01:00.0 Off |                  N/A |
 | N/A   52C    P0    N/A /  N/A |    302MiB /  4042MiB |      2%      Default |
 +-------------------------------+----------------------+----------------------+
-                                                                               
+
 +-----------------------------------------------------------------------------+
 | Processes:                                                       GPU Memory |
 |  GPU       PID   Type   Process name                             Usage      |
@@ -54,7 +54,7 @@ Tue Dec 11 18:02:15 2018
 +-----------------------------------------------------------------------------+
 ```
 
-## Start Fullnode 
+## Start Fullnode
 
 First, create folder, where daemon and cli will store data. Some commands may require admin privileges.
 ```bash
@@ -76,9 +76,27 @@ docker exec cyberd cyberdcli status
 ```
 You should be seeing a returned JSON with your node status including node_info, sync_info and validator_info.
 
+## Upgrading
+
+Updating is easy as pulling the new docker container and launching it again
+
+```bash
+docker stop cyberd
+docker rm cyberd
+docker pull cyberd/cyberd:euler
+
+docker run -d --name=cyberd --restart always --runtime=nvidia \
+ -p 26656:26656 -p 26657:26657 -p 26660:26660 \
+ -v /cyberd/daemon:/root/.cyberd \
+ -v /cyberd/cli:/root/.cyberdcli \
+ cyberd/cyberd:<testnet_chain_id>
+```
+
+Don't forget to unjail if you was jailed during update.
+
 ## Get CYB tokens
 
-To be a validator, you will need some CYB to be bounded as your stake. 
+To be a validator, you will need some CYB to be bounded as your stake.
 Top 146 validators by bounded stake will be active validators taking part in consensus and earning validator rewards.
 
 Once the network do not have 146 validators 100M CYB is enougth to join. Don't worry - it is not so much tokens. CYB do not have decimals so 1 CYB is comparable to 1 wei in Ethereum. Cyber network is pure POS [Tendermint](https://tendermint.com/) based network, so there is no ability to mine tokens. But there are [several ways to get tokens](/docs/get_CYB.md).
@@ -100,31 +118,30 @@ docker exec -ti cyberd cyberdcli keys add import_private <your_key_name>
 docker exec cyberd cyberdcli keys show <your_key_name>
 ```
 
-If you want to create new acccount use the command below. 
-Also, you should send coins to that address to bound them later during validator submitting. 
+If you want to create new acccount use the command below.
+Also, you should send coins to that address to bound them later during validator submitting.
 ```
-docker exec -ti cyberd cyberdcli keys add <your_key_name> 
+docker exec -ti cyberd cyberdcli keys add <your_key_name>
 docker exec cyberd cyberdcli keys show <your_key_name>
 ```
 
-**<your_key_name>** is any name you pick to represent this key pair. 
-You have to refer to this <your_key_name> later when you use the keys to sign transactions. 
-It will ask you to enter your password twice to encrypt the key. 
+**<your_key_name>** is any name you pick to represent this key pair.
+You have to refer to this <your_key_name> later when you use the keys to sign transactions.
+It will ask you to enter your password twice to encrypt the key.
 You also need to enter your password when you use your key to sign any transaction.
 
-The command returns the address, public key and a seed phrase which you can use it to 
+The command returns the address, public key and a seed phrase which you can use it to
 recover your account if you forget your password later.
 Keep the seed phrase in a safe place in case you have to use them.
 
-The address showing here is your account address. Let’s call this **<your_account_address>**. 
+The address showing here is your account address. Let’s call this **<your_account_address>**.
 It stores your assets.
-
 
 ## Send create validator transaction
 
-Validators are actors on the network committing new blocks by submitting their votes. 
+Validators are actors on the network committing new blocks by submitting their votes.
 It refers to the node itself, not a single person or a single account.
-Therefore, the public key here is referring to the node public key, 
+Therefore, the public key here is referring to the node public key,
 not the public key of the address you have just created.
 
 To get the node public key, run the following command.
@@ -134,8 +151,8 @@ docker exec cyberd cyberd tendermint show-validator
 ```
 
 It will return a bech32 public key. Let’s call it **<your_node_pubkey>**.
-The next step you have to declare a validator candidate. 
-The validator candidate is the account which stake the coins. 
+The next step you have to declare a validator candidate.
+The validator candidate is the account which stake the coins.
 So the validator candidate is an account this time.
 To declare a validator candidate, run the following command adjusting stake amount and other fields.
 
@@ -150,4 +167,20 @@ docker exec -ti cyberd cyberdcli tx stake create-validator \
   --commission-max-rate="0.20" \
   --commission-max-change-rate="0.01" \
   --chain-id=<testnet_chain_id>
+```
+
+## Verify that you validating
+
+```
+docker exec -ti cyberd cyberdcli query stake validators --trust-node=true
+```
+
+If you see your valconspub key with status `Bonded` and Jailed `false` everything must be good. You are validating the network.
+
+## Unjailing
+
+If your validator go under slashing conditions it first go to jail. After this event operator must unjail it manually.
+
+```
+docker exec -ti cyberd cyberdcli tx slashing unjail --from=<your-wallet> --chain-id=<chain-id>
 ```
