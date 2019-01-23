@@ -22,13 +22,11 @@ import (
 	cbdbank "github.com/cybercongress/cyberd/x/bank"
 	"github.com/cybercongress/cyberd/x/link"
 	"github.com/cybercongress/cyberd/x/link/keeper"
-	lnk "github.com/cybercongress/cyberd/x/link/types"
 	"github.com/cybercongress/cyberd/x/rank"
 	abci "github.com/tendermint/tendermint/abci/types"
 	cmn "github.com/tendermint/tendermint/libs/common"
 	dbm "github.com/tendermint/tendermint/libs/db"
 	"github.com/tendermint/tendermint/libs/log"
-	"math"
 	"os"
 	"sort"
 	"time"
@@ -57,11 +55,8 @@ type CyberdApp struct {
 	txDecoder sdk.TxDecoder
 
 	// bandwidth
-	bandwidthMeter bw.BandwidthMeter
-	//todo 3 fields below should be in bw meter
-	curBlockSpentBandwidth  uint64 //resets every block
-	lastTotalSpentBandwidth uint64 //resets every bandwidth price adjustment interval
-	currentCreditPrice      float64
+	bandwidthMeter       bw.BandwidthMeter
+	blockBandwidthKeeper bw.BlockSpentBandwidthKeeper
 
 	// keys to access the multistore
 	dbKeys CyberdAppDbKeys
@@ -85,8 +80,6 @@ type CyberdApp struct {
 	rankState         *rank.RankState
 
 	latestBlockHeight int64
-
-	// TODO: move to RankState???
 }
 
 // NewBasecoinApp returns a reference to a new CyberdApp given a
@@ -120,6 +113,7 @@ func NewCyberdApp(
 	app.feeCollectionKeeper = NoopFeeCollectionKeeper{}
 	app.paramsKeeper = params.NewKeeper(app.cdc, dbKeys.params, dbKeys.tParams)
 	app.accBandwidthKeeper = bandwidth.NewAccBandwidthKeeper(dbKeys.accBandwidth)
+	app.blockBandwidthKeeper = bandwidth.NewBlockSpentBandwidthKeeper(dbKeys.blockBandwidth)
 
 	app.accountKeeper = auth.NewAccountKeeper(
 		app.cdc, dbKeys.acc,
@@ -169,7 +163,8 @@ func NewCyberdApp(
 	)
 
 	app.bandwidthMeter = bandwidth.NewBaseMeter(
-		app.accountKeeper, app.bankKeeper, app.accBandwidthKeeper, bandwidth.MsgBandwidthCosts,
+		app.mainKeeper, app.accountKeeper, app.bankKeeper, app.accBandwidthKeeper, bandwidth.MsgBandwidthCosts,
+		app.blockBandwidthKeeper,
 	)
 
 	// register message routes
@@ -202,6 +197,7 @@ func NewCyberdApp(
 
 	ctx := app.BaseApp.NewContext(true, abci.Header{})
 	app.latestBlockHeight = int64(ms.GetLatestBlockNumber(ctx))
+	ctx = ctx.WithBlockHeight(app.latestBlockHeight)
 
 	// build context for current rank calculation round
 	rankRoundBlockNumber := (app.latestBlockHeight / rank.CalculationPeriod) * rank.CalculationPeriod
@@ -214,10 +210,8 @@ func NewCyberdApp(
 	app.stakeIndex.Load(rankCtx, ctx)
 	app.BaseApp.Logger.Info("App loaded", "time", time.Since(start))
 
-	// BANDWIDTH PARAMS
-	app.lastTotalSpentBandwidth = ms.GetSpentBandwidth(ctx)
-	app.currentCreditPrice = math.Float64frombits(ms.GetBandwidthPrice(ctx, bandwidth.BaseCreditPrice))
-	app.curBlockSpentBandwidth = 0
+	// BANDWIDTH LOAD
+	app.bandwidthMeter.Load(ctx)
 
 	// RANK PARAMS
 	app.rankState.Load(ctx, app.latestBlockHeight, app.Logger)
@@ -315,7 +309,7 @@ func (app *CyberdApp) CheckTx(txBytes []byte) (res abci.ResponseCheckTx) {
 
 	if err == nil {
 
-		txCost := app.bandwidthMeter.GetTxCost(ctx, app.currentCreditPrice, tx)
+		txCost := app.bandwidthMeter.GetTxCost(ctx, tx)
 		accBw := app.bandwidthMeter.GetCurrentAccBandwidth(ctx, acc)
 
 		if !accBw.HasEnoughRemained(txCost) {
@@ -348,7 +342,7 @@ func (app *CyberdApp) DeliverTx(txBytes []byte) (res abci.ResponseDeliverTx) {
 
 	if err == nil {
 
-		txCost := app.bandwidthMeter.GetTxCost(ctx, app.currentCreditPrice, tx)
+		txCost := app.bandwidthMeter.GetTxCost(ctx, tx)
 		accBw := app.bandwidthMeter.GetCurrentAccBandwidth(ctx, acc)
 
 		if !accBw.HasEnoughRemained(txCost) {
@@ -357,7 +351,7 @@ func (app *CyberdApp) DeliverTx(txBytes []byte) (res abci.ResponseDeliverTx) {
 
 			resp := app.BaseApp.DeliverTx(txBytes)
 			app.bandwidthMeter.ConsumeAccBandwidth(ctx, accBw, txCost)
-			app.curBlockSpentBandwidth = app.curBlockSpentBandwidth + uint64(txCost)
+			app.bandwidthMeter.AddToBlockBandwidth(uint64(txCost))
 
 			return abci.ResponseDeliverTx{
 				Code:      uint32(resp.Code),
@@ -453,13 +447,7 @@ func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.R
 	validatorUpdates, tags := staking.EndBlocker(ctx, app.stakingKeeper)
 	app.stakeIndex.EndBlocker(ctx)
 
-	newPrice, totalSpentBandwidth := bandwidth.EndBlocker(
-		ctx, app.lastTotalSpentBandwidth+app.curBlockSpentBandwidth, app.currentCreditPrice,
-		app.mainKeeper, app.bandwidthMeter,
-	)
-	app.lastTotalSpentBandwidth = totalSpentBandwidth
-	app.currentCreditPrice = newPrice
-	app.curBlockSpentBandwidth = 0
+	bandwidth.EndBlocker(ctx, app.bandwidthMeter)
 
 	// RANK CALCULATION
 	app.rankState.EndBlocker(ctx, app.Logger)
