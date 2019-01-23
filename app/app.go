@@ -193,16 +193,17 @@ func NewCyberdApp(
 	// mount the multistore and load the latest state
 	app.MountStores(dbKeys.GetStoreKeys()...)
 	app.MountStoresTransient(dbKeys.GetTransientStoreKeys()...)
-	err := app.LoadLatestVersion(dbKeys.main)
-	if err != nil {
-		cmn.Exit(err.Error())
-	}
 
-	// perform initialization logic
 	app.SetInitChainer(app.initChainer)
 	app.SetBeginBlocker(app.BeginBlocker)
 	app.SetEndBlocker(app.EndBlocker)
 	app.SetAnteHandler(NewAnteHandler(app.accountKeeper))
+
+	// perform initialization logic
+	err := app.LoadLatestVersion(dbKeys.main)
+	if err != nil {
+		cmn.Exit(err.Error())
+	}
 
 	ctx := app.BaseApp.NewContext(true, abci.Header{})
 	app.latestBlockHeight = int64(ms.GetLatestBlockNumber(ctx))

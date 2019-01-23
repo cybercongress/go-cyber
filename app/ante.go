@@ -36,12 +36,10 @@ func NewAnteHandler(ak auth.AccountKeeper) sdk.AnteHandler {
 		signerAccs := make([]auth.Account, len(signerAddrs))
 
 		for i := 0; i < len(stdSigs); i++ {
-			// skip the fee payer, account is cached and fees were deducted already
-			if i != 0 {
-				signerAccs[i], res = auth.GetSignerAcc(newCtx, ak, signerAddrs[i])
-				if !res.IsOK() {
-					return newCtx, res, true
-				}
+
+			signerAccs[i], res = auth.GetSignerAcc(newCtx, ak, signerAddrs[i])
+			if !res.IsOK() {
+				return newCtx, res, true
 			}
 
 			// check signature, return account with incremented nonce

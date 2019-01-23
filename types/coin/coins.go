@@ -1,5 +1,5 @@
 package coin
 
 const (
-	CBD = "CBD"
+	CBD = "cbd"
 )
