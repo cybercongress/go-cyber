@@ -8,7 +8,7 @@ import (
 	distr "github.com/cosmos/cosmos-sdk/x/distribution"
 	"github.com/cosmos/cosmos-sdk/x/ibc"
 	"github.com/cosmos/cosmos-sdk/x/slashing"
-	"github.com/cosmos/cosmos-sdk/x/stake"
+	"github.com/cosmos/cosmos-sdk/x/staking"
 	"github.com/cybercongress/cyberd/x/link"
 )
 
@@ -23,7 +23,7 @@ func MakeCodec() *codec.Codec {
 	ibc.RegisterCodec(cdc)
 	distr.RegisterCodec(cdc)
 	auth.RegisterCodec(cdc)
-	stake.RegisterCodec(cdc)
+	staking.RegisterCodec(cdc)
 	slashing.RegisterCodec(cdc)
 	link.RegisterCodec(cdc)
 

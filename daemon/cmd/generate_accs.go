@@ -1,11 +1,10 @@
-package init
+package cmd
 
 import (
 	"fmt"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/go-bip39"
 	"github.com/cybercongress/cyberd/app"
-	. "github.com/cybercongress/cyberd/app/genesis"
 	"sync"
 
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -44,14 +43,14 @@ func GenerateAccountsCmd(ctx *server.Context, cdc *codec.Codec) *cobra.Command {
 				return err
 			}
 
-			var appState GenesisState
+			var appState app.GenesisState
 			if err = cdc.UnmarshalJSON(genDoc.AppState, &appState); err != nil {
 				return err
 			}
 
 			amount := int64(10)
 			kb := client.MockKeyBase()
-			addresses := make([]GenesisAccount, count.Int64())
+			addresses := make([]app.GenesisAccount, count.Int64())
 
 			var wg sync.WaitGroup
 			wg.Add(int(count.Int64()))
@@ -61,7 +60,7 @@ func GenerateAccountsCmd(ctx *server.Context, cdc *codec.Codec) *cobra.Command {
 					entropySeed, _ := bip39.NewEntropy(256)
 					mnemonic, _ := bip39.NewMnemonic(entropySeed[:])
 					info, _ := kb.CreateKey(string(position), mnemonic, "")
-					addresses[position] = GenesisAccount{Address: info.GetAddress(), Amount: amount}
+					addresses[position] = app.GenesisAccount{Address: info.GetAddress(), Amount: amount}
 				}(i)
 			}
 			wg.Wait()

@@ -21,7 +21,7 @@ import (
 	distClient "github.com/cosmos/cosmos-sdk/x/distribution/client"
 	govClient "github.com/cosmos/cosmos-sdk/x/gov/client"
 	slashingClient "github.com/cosmos/cosmos-sdk/x/slashing/client"
-	stakeClient "github.com/cosmos/cosmos-sdk/x/stake/client"
+	stakingClient "github.com/cosmos/cosmos-sdk/x/staking/client"
 )
 
 const (
@@ -48,7 +48,7 @@ func main() {
 	mc := []sdk.ModuleClients{
 		govClient.NewModuleClient(storeGov, cdc),
 		distClient.NewModuleClient(storeDist, cdc),
-		stakeClient.NewModuleClient(storeStake, cdc),
+		stakingClient.NewModuleClient(storeStake, cdc),
 		slashingClient.NewModuleClient(storeSlashing, cdc),
 	}
 

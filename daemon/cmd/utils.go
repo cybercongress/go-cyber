@@ -1,10 +1,12 @@
-package init
+package cmd
 
 import (
 	"encoding/json"
 	"fmt"
-	. "github.com/cybercongress/cyberd/app/genesis"
+	"github.com/cosmos/cosmos-sdk/server"
+	"github.com/cybercongress/cyberd/app"
 	"io/ioutil"
+	"path/filepath"
 	"time"
 
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -57,20 +59,6 @@ func ExportGenesisFileWithTime(
 	return genDoc.SaveAs(genFile)
 }
 
-// read of create the private key file for this config
-func ReadOrCreatePrivValidator(privValFile string) crypto.PubKey {
-	var privValidator *privval.FilePV
-
-	if common.FileExists(privValFile) {
-		privValidator = privval.LoadFilePV(privValFile)
-	} else {
-		privValidator = privval.GenFilePV(privValFile)
-		privValidator.Save()
-	}
-
-	return privValidator.GetPubKey()
-}
-
 // InitializeNodeValidatorFiles creates private validator and p2p configuration files.
 func InitializeNodeValidatorFiles(
 	config *cfg.Config) (nodeID string, valPubKey crypto.PubKey, err error,
@@ -82,7 +70,19 @@ func InitializeNodeValidatorFiles(
 	}
 
 	nodeID = string(nodeKey.ID())
-	valPubKey = ReadOrCreatePrivValidator(config.PrivValidatorFile())
+	server.UpgradeOldPrivValFile(config)
+
+	pvKeyFile := config.PrivValidatorKeyFile()
+	if err := common.EnsureDir(filepath.Dir(pvKeyFile), 0777); err != nil {
+		return nodeID, valPubKey, nil
+	}
+
+	pvStateFile := config.PrivValidatorStateFile()
+	if err := common.EnsureDir(filepath.Dir(pvStateFile), 0777); err != nil {
+		return nodeID, valPubKey, nil
+	}
+
+	valPubKey = privval.LoadOrGenFilePV(pvKeyFile, pvStateFile).GetPubKey()
 
 	return nodeID, valPubKey, nil
 }
@@ -108,5 +108,5 @@ func initializeEmptyGenesis(
 		return nil, fmt.Errorf("genesis.json file already exists: %v", genFile)
 	}
 
-	return codec.MarshalJSONIndent(cdc, NewDefaultGenesisState())
+	return codec.MarshalJSONIndent(cdc, app.NewDefaultGenesisState())
 }

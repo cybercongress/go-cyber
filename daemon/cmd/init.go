@@ -1,10 +1,9 @@
-package init
+package cmd
 
 import (
 	"encoding/json"
 	"fmt"
 	"github.com/cybercongress/cyberd/app"
-	"os"
 	"path/filepath"
 
 	"github.com/cosmos/cosmos-sdk/client"
@@ -30,16 +29,6 @@ type printInfo struct {
 	AppMessage json.RawMessage `json:"app_message"`
 }
 
-// nolint: errcheck
-func displayInfo(cdc *codec.Codec, info printInfo) error {
-	out, err := codec.MarshalJSONIndent(cdc, info)
-	if err != nil {
-		return err
-	}
-	fmt.Fprintf(os.Stderr, "%s\n", string(out))
-	return nil
-}
-
 // get cmd to initialize all files for tendermint and application
 // nolint
 func InitCmd(ctx *server.Context, cdc *codec.Codec) *cobra.Command {
@@ -60,9 +49,7 @@ func InitCmd(ctx *server.Context, cdc *codec.Codec) *cobra.Command {
 				return err
 			}
 
-			if viper.GetString(flagMoniker) != "" {
-				config.Moniker = viper.GetString(flagMoniker)
-			}
+			config.Moniker = viper.GetString(flagMoniker)
 
 			var appState json.RawMessage
 			genFile := config.GenesisFile()
@@ -83,5 +70,7 @@ func InitCmd(ctx *server.Context, cdc *codec.Codec) *cobra.Command {
 	cmd.Flags().BoolP(flagOverwrite, "o", false, "overwrite the genesis.json file")
 	cmd.Flags().String(client.FlagChainID, "", "genesis file chain-id, if left blank will be randomly created")
 	cmd.Flags().String(flagMoniker, "", "set the validator's moniker")
+	cmd.MarkFlagRequired(flagMoniker)
+
 	return cmd
 }
