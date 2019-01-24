@@ -7,7 +7,7 @@ import . "github.com/cybercongress/cyberd/types"
 type Links map[CidNumber]CidLinks
 type CidLinks map[CidNumber]map[AccNumber]struct{}
 
-type Cid string
+type Cid string // 32 byte string
 type CidNumber uint64
 
 func (links Links) Put(from CidNumber, to CidNumber, acc AccNumber) {

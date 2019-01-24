@@ -13,7 +13,7 @@ import (
 	"github.com/cybercongress/cyberd/daemon/rpc"
 	bwtps "github.com/cybercongress/cyberd/x/bandwidth/types"
 	"github.com/cybercongress/cyberd/x/link"
-	cbdlink "github.com/cybercongress/cyberd/x/link/types"
+	. "github.com/cybercongress/cyberd/x/link/types"
 	tdmClient "github.com/tendermint/tendermint/rpc/client"
 	"github.com/tendermint/tendermint/rpc/lib/client"
 	"os"
@@ -89,7 +89,7 @@ func (c HttpCyberdClient) GetChainId() string {
 	return c.chainId
 }
 
-func (c HttpCyberdClient) IsLinkExist(from cbdlink.Cid, to cbdlink.Cid, addr sdk.AccAddress) (result bool, err error) {
+func (c HttpCyberdClient) IsLinkExist(from Cid, to Cid, addr sdk.AccAddress) (result bool, err error) {
 	_, err = c.httpClient.Call("is_link_exist",
 		map[string]interface{}{"from": from, "to": to, "address": addr.String()},
 		&result,
@@ -130,7 +130,7 @@ func (c HttpCyberdClient) SubmitLinksSync(links []Link) error {
 			return err
 		}
 		if !exists {
-			msges = append(msges, link.NewMsg(c.fromAddress, l.From, l.To))
+			msges = append(msges, link.NewMsg(c.fromAddress, []Link{{From: l.From, To: l.To}}))
 		}
 		filter.Put(l.From, l.To)
 	}
