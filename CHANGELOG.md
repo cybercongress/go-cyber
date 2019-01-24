@@ -6,6 +6,8 @@
 
 **Fixed bugs:**
 
+- Fix validator manual [\#189](https://github.com/cybercongress/cyberd/issues/189)
+- Change mint module to default cosmos module [\#181](https://github.com/cybercongress/cyberd/issues/181)
 - Current Bandwidth do not respect price [\#168](https://github.com/cybercongress/cyberd/issues/168)
 - negative bandwidnt  [\#164](https://github.com/cybercongress/cyberd/issues/164)
 - Update docker with 0.1.0 version [\#154](https://github.com/cybercongress/cyberd/issues/154)
@@ -14,10 +16,12 @@
 
 **Closed issues:**
 
+- Update to tendermint v29.0 [\#187](https://github.com/cybercongress/cyberd/issues/187)
 - High bandwidth cost for create validator msg [\#178](https://github.com/cybercongress/cyberd/issues/178)
 - Add rpc endpoint to submit signed link and send messages [\#173](https://github.com/cybercongress/cyberd/issues/173)
 - index entities count  endpoint [\#165](https://github.com/cybercongress/cyberd/issues/165)
 - Add ipfs hashes to release [\#161](https://github.com/cybercongress/cyberd/issues/161)
+- Add more issues templates. [\#153](https://github.com/cybercongress/cyberd/issues/153)
 - Add trust-node by default in cli [\#151](https://github.com/cybercongress/cyberd/issues/151)
 - Numerous small fixes in whitepaper [\#89](https://github.com/cybercongress/cyberd/issues/89)
 - Cyberd landing make up [\#36](https://github.com/cybercongress/cyberd/issues/36)
@@ -25,6 +29,8 @@
 
 **Merged pull requests:**
 
+- Important fixes in validators manual [\#190](https://github.com/cybercongress/cyberd/pull/190) ([xhipster](https://github.com/xhipster))
+- R4R Update cosmos to latest develop [\#186](https://github.com/cybercongress/cyberd/pull/186) ([hleb-albau](https://github.com/hleb-albau))
 - \#153 Add more issues templates. [\#183](https://github.com/cybercongress/cyberd/pull/183) ([hleb-albau](https://github.com/hleb-albau))
 - \#178 \#168 Bandwidth price + Msg cost for non link txes [\#182](https://github.com/cybercongress/cyberd/pull/182) ([hleb-albau](https://github.com/hleb-albau))
 - \#173 Add rpc endpoint to submit signed link and send messages [\#174](https://github.com/cybercongress/cyberd/pull/174) ([hleb-albau](https://github.com/hleb-albau))
