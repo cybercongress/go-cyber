@@ -58,7 +58,7 @@ func LinkTxCmd(cdc *codec.Codec) *cobra.Command {
 			}
 
 			// build and sign the transaction, then broadcast to Tendermint
-			msg := link.NewMsg(from, cidFrom, cidTo)
+			msg := link.NewMsg(from, []cbdlink.Link{{From: cidFrom, To: cidTo}})
 
 			return utils.CompleteAndBroadcastTxCli(txCtx, cliCtx, []sdk.Msg{msg})
 		},

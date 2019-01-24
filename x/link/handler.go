@@ -18,19 +18,39 @@ func NewLinksHandler(cis keeper.CidNumberKeeper, ls *keeper.LinkIndexedKeeper, a
 	return func(ctx sdk.Context, msg sdk.Msg) sdk.Result {
 
 		linkMsg := msg.(Msg)
-		fromCidNumber := cis.GetOrPutCidNumber(ctx, linkMsg.From)
-		toCidNumber := cis.GetOrPutCidNumber(ctx, linkMsg.To)
-		accNumber := cbd.AccNumber(as.GetAccount(ctx, linkMsg.Address).GetAccountNumber())
-		link := cbdlink.NewLink(fromCidNumber, toCidNumber, accNumber)
 
-		if ls.IsLinkExist(ctx, link) {
-			return sdk.Result{Code: cbd.CodeLinkAlreadyExist, Codespace: cbd.CodespaceCbd}
+		//validations
+		//todo: optimize
+		for _, link := range linkMsg.Links {
+			// if cid not exists it automatically means that this is new link
+			fromCidNumber, exists := cis.GetCidNumber(ctx, link.From)
+			if !exists {
+				continue
+			}
+			toCidNumber, exists := cis.GetCidNumber(ctx, link.To)
+			if !exists {
+				continue
+			}
+
+			accNumber := cbd.AccNumber(as.GetAccount(ctx, linkMsg.Address).GetAccountNumber())
+			compactLink := cbdlink.NewLink(fromCidNumber, toCidNumber, accNumber)
+
+			if ls.IsLinkExist(ctx, compactLink) {
+				return sdk.Result{Code: cbd.CodeLinkAlreadyExist, Codespace: cbd.CodespaceCbd}
+			}
 		}
 
-		if !ctx.IsCheckTx() {
-			ls.PutIntoIndex(link)
+		for _, link := range linkMsg.Links {
+			fromCidNumber := cis.GetOrPutCidNumber(ctx, link.From)
+			toCidNumber := cis.GetOrPutCidNumber(ctx, link.To)
+			accNumber := cbd.AccNumber(as.GetAccount(ctx, linkMsg.Address).GetAccountNumber())
+			compactLink := cbdlink.NewLink(fromCidNumber, toCidNumber, accNumber)
+
+			if !ctx.IsCheckTx() {
+				ls.PutIntoIndex(compactLink)
+			}
+			ls.PutLink(ctx, compactLink)
 		}
-		ls.PutLink(ctx, link)
 
 		return sdk.Result{Code: cbd.CodeOK, Codespace: cbd.CodespaceCbd}
 	}

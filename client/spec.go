@@ -3,13 +3,8 @@ package client
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	bwtps "github.com/cybercongress/cyberd/x/bandwidth/types"
-	cbdlink "github.com/cybercongress/cyberd/x/link/types"
+	. "github.com/cybercongress/cyberd/x/link/types"
 )
-
-type Link struct {
-	From cbdlink.Cid
-	To   cbdlink.Cid
-}
 
 type CyberdClient interface {
 	// Cyberd Client Specification
@@ -18,7 +13,7 @@ type CyberdClient interface {
 	GetChainId() string
 
 	// returns, if given link already exists
-	IsLinkExist(from cbdlink.Cid, to cbdlink.Cid, addr sdk.AccAddress) (result bool, err error)
+	IsLinkExist(from Cid, to Cid, addr sdk.AccAddress) (result bool, err error)
 
 	// get current bandwidth credits price
 	// price 1 is price for situation, when all users use all their bandwidth (all blocks are filled for 100%)

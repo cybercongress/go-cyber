@@ -71,6 +71,8 @@ func main() {
 	// todo: hack till we don't handle with all merkle proofs
 	viper.SetDefault(client.FlagTrustNode, true)
 
+	cyberdcli.PersistentFlags().String(client.FlagChainID, "", "Chain ID of cyberd node")
+
 	executor := cli.PrepareMainCmd(cyberdcli, "CBD", os.ExpandEnv("$HOME/.cyberdcli"))
 	err := executor.Execute()
 	if err != nil {
