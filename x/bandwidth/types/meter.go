@@ -18,7 +18,7 @@ type BandwidthMeter interface {
 	// load current bandwidth state after restart
 	Load(ctx sdk.Context)
 	// add value to consumed bandwidth for current block
-	AddToBlockBandwidth(value uint64)
+	AddToBlockBandwidth(value int64)
 	// adjust price based on 24h loading
 	AdjustPrice(ctx sdk.Context)
 	// get current bandwidth price
@@ -32,7 +32,9 @@ type BandwidthMeter interface {
 	// Returns acc max bandwidth
 	GetAccMaxBandwidth(ctx sdk.Context, address sdk.AccAddress) int64
 	// Returns tx bandwidth cost
-	GetTxCost(ctx sdk.Context, tx sdk.Tx) int64
+	GetTxCost(tx sdk.Tx) int64
+	// Return tx bandwidth cost considering the price
+	GetPricedTxCost(tx sdk.Tx) int64
 	//
 	// Performs bw consumption for given acc
 	// To get right number, should be called after tx delivery with bw state obtained prior delivery

@@ -309,7 +309,7 @@ func (app *CyberdApp) CheckTx(txBytes []byte) (res abci.ResponseCheckTx) {
 
 	if err == nil {
 
-		txCost := app.bandwidthMeter.GetTxCost(ctx, tx)
+		txCost := app.bandwidthMeter.GetPricedTxCost(tx)
 		accBw := app.bandwidthMeter.GetCurrentAccBandwidth(ctx, acc)
 
 		if !accBw.HasEnoughRemained(txCost) {
@@ -342,7 +342,7 @@ func (app *CyberdApp) DeliverTx(txBytes []byte) (res abci.ResponseDeliverTx) {
 
 	if err == nil {
 
-		txCost := app.bandwidthMeter.GetTxCost(ctx, tx)
+		txCost := app.bandwidthMeter.GetPricedTxCost(tx)
 		accBw := app.bandwidthMeter.GetCurrentAccBandwidth(ctx, acc)
 
 		if !accBw.HasEnoughRemained(txCost) {
@@ -351,7 +351,7 @@ func (app *CyberdApp) DeliverTx(txBytes []byte) (res abci.ResponseDeliverTx) {
 
 			resp := app.BaseApp.DeliverTx(txBytes)
 			app.bandwidthMeter.ConsumeAccBandwidth(ctx, accBw, txCost)
-			app.bandwidthMeter.AddToBlockBandwidth(uint64(txCost))
+			app.bandwidthMeter.AddToBlockBandwidth(app.bandwidthMeter.GetTxCost(tx))
 
 			return abci.ResponseDeliverTx{
 				Code:      uint32(resp.Code),

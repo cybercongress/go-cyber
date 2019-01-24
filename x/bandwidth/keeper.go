@@ -59,7 +59,11 @@ func (bk BaseBlockSpentBandwidthKeeper) SetBlockSpentBandwidth(ctx sdk.Context, 
 func (bk BaseBlockSpentBandwidthKeeper) GetValuesForPeriod(ctx sdk.Context, period int64) map[uint64]uint64 {
 
 	startKey := make([]byte, 8)
-	binary.LittleEndian.PutUint64(startKey, uint64(ctx.BlockHeight()-period+1))
+	windowStart := ctx.BlockHeight() - period + 1
+	if windowStart < 0 { // check needed cause it will be casted to uint and can cause overflow
+		windowStart = 0
+	}
+	binary.LittleEndian.PutUint64(startKey, uint64(windowStart))
 
 	endKey := make([]byte, 8)
 	binary.LittleEndian.PutUint64(endKey, uint64(ctx.BlockHeight()))
