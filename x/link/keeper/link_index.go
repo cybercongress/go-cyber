@@ -22,8 +22,8 @@ type LinkIndexedKeeper struct {
 	currentBlockLinks []Link
 }
 
-func NewLinkIndexedKeeper(keeper LinkKeeper) LinkIndexedKeeper {
-	return LinkIndexedKeeper{LinkKeeper: keeper}
+func NewLinkIndexedKeeper(keeper LinkKeeper) *LinkIndexedKeeper {
+	return &LinkIndexedKeeper{LinkKeeper: keeper}
 }
 
 func (i *LinkIndexedKeeper) Load(rankCtx sdk.Context, freshCtx sdk.Context) {
