@@ -42,12 +42,12 @@ type RankState struct {
 	mainKeeper        store.MainKeeper
 	stakeIndex        *bank.IndexedKeeper
 	cidNumKeeper      keeper.CidNumberKeeper
-	linkIndexedKeeper keeper.LinkIndexedKeeper
+	linkIndexedKeeper *keeper.LinkIndexedKeeper
 }
 
 func NewRankState(
 	allowSearch bool, mainKeeper store.MainKeeper, stakeIndex *bank.IndexedKeeper,
-	linkIndexedKeeper keeper.LinkIndexedKeeper, cidNumKeeper keeper.CidNumberKeeper,
+	linkIndexedKeeper *keeper.LinkIndexedKeeper, cidNumKeeper keeper.CidNumberKeeper,
 	unit ComputeUnit,
 ) *RankState {
 	return &RankState{

@@ -22,7 +22,7 @@ type CalculationContext struct {
 }
 
 func NewCalcContext(
-	ctx sdk.Context, linkIndex keeper.LinkIndexedKeeper,
+	ctx sdk.Context, linkIndex *keeper.LinkIndexedKeeper,
 	numberKeeper keeper.CidNumberKeeper, indexedKeeper *bank.IndexedKeeper, fullTree bool,
 ) *CalculationContext {
 
