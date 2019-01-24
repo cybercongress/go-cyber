@@ -74,7 +74,7 @@ type CyberdApp struct {
 	mintKeeper          mint.Keeper
 
 	// cyberd storage
-	linkIndexedKeeper keeper.LinkIndexedKeeper
+	linkIndexedKeeper *keeper.LinkIndexedKeeper
 	cidNumKeeper      keeper.CidNumberKeeper
 	stakeIndex        *cbdbank.IndexedKeeper
 	rankState         *rank.RankState
@@ -169,7 +169,7 @@ func NewCyberdApp(
 
 	// register message routes
 	app.Router().
-		AddRoute("link", link.NewLinksHandler(app.cidNumKeeper, &app.linkIndexedKeeper, app.accountKeeper)).
+		AddRoute("link", link.NewLinksHandler(app.cidNumKeeper, app.linkIndexedKeeper, app.accountKeeper)).
 		AddRoute(bank.RouterKey, bank.NewHandler(app.bankKeeper)).
 		AddRoute(staking.RouterKey, staking.NewHandler(app.stakingKeeper)).
 		AddRoute(distr.RouterKey, distr.NewHandler(app.distrKeeper)).
