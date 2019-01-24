@@ -9,14 +9,13 @@ import (
 
 type Msg struct {
 	Address sdk.AccAddress `json:"address"`
-	From    Cid        `json:"cid1"`
-	To      Cid        `json:"cid2"`
+	Links   []Link         `json:"links"`
 }
 
 var _ sdk.Msg = Msg{}
 
-func NewMsg(address sdk.AccAddress, fromCid Cid, toCid Cid) Msg {
-	return Msg{Address: address, From: fromCid, To: toCid}
+func NewMsg(address sdk.AccAddress, links []Link) Msg {
+	return Msg{Address: address, Links: links}
 }
 
 func (msg Msg) Name() string { return "link" }
@@ -30,18 +29,30 @@ func (msg Msg) ValidateBasic() sdk.Error {
 		return sdk.ErrInvalidAddress(msg.Address.String())
 	}
 
-	if _, err := cid.Decode(string(msg.From)); err != nil {
-		return cbd.ErrInvalidCid()
-	}
+	var filter = make(CidsFilter)
 
-	if _, err := cid.Decode(string(msg.To)); err != nil {
-		return cbd.ErrInvalidCid()
+	for _, link := range msg.Links {
+
+		if _, err := cid.Decode(string(link.From)); err != nil {
+			return cbd.ErrInvalidCid()
+		}
+
+		if _, err := cid.Decode(string(link.To)); err != nil {
+			return cbd.ErrInvalidCid()
+		}
+
+		if filter.Contains(link.From, link.To) {
+			return cbd.ErrDuplicatedLink()
+		}
+
+		filter.Put(link.From, link.To)
 	}
 
 	return nil
 }
 
 func (msg Msg) GetSignBytes() []byte {
+
 	b, err := msgCdc.MarshalJSON(msg)
 	if err != nil {
 		panic(err)

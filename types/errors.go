@@ -12,6 +12,7 @@ const (
 	CodeInvalidCid         sdk.CodeType = 2
 	CodeCidNotFound        sdk.CodeType = 3
 	CodeNotEnoughBandwidth sdk.CodeType = 4
+	CodeDuplicatedLink     sdk.CodeType = 5
 
 	// Code space
 	CodespaceCbd sdk.CodespaceType = "cyberd"
@@ -27,6 +28,8 @@ func codeToDefaultMsg(code sdk.CodeType) string {
 		return "link already exists"
 	case CodeNotEnoughBandwidth:
 		return "not enough bandwidth to make transaction"
+	case CodeDuplicatedLink:
+		return "duplicated link"
 	default:
 		return fmt.Sprintf("unknown error: code %d", code)
 	}
@@ -45,6 +48,10 @@ func ErrNotEnoughBandwidth() sdk.Error {
 
 func ErrCidNotFound() sdk.Error {
 	return newError(CodespaceCbd, CodeCidNotFound)
+}
+
+func ErrDuplicatedLink() sdk.Error {
+	return newError(CodespaceCbd, CodeDuplicatedLink)
 }
 
 func newError(codespace sdk.CodespaceType, code sdk.CodeType) sdk.Error {

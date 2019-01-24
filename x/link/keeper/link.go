@@ -9,8 +9,8 @@ import (
 )
 
 type LinkKeeper interface {
-	PutLink(ctx sdk.Context, link Link)
-	IsLinkExist(ctx sdk.Context, link Link) bool
+	PutLink(ctx sdk.Context, link CompactLink)
+	IsLinkExist(ctx sdk.Context, link CompactLink) bool
 	GetAllLinks(ctx sdk.Context) (Links, Links, error)
 	GetLinksCount(ctx sdk.Context) uint64
 }
@@ -27,14 +27,14 @@ func NewBaseLinkKeeper(ms store.MainKeeper, key *sdk.KVStoreKey) LinkKeeper {
 	}
 }
 
-func (lk BaseLinkKeeper) PutLink(ctx sdk.Context, link Link) {
+func (lk BaseLinkKeeper) PutLink(ctx sdk.Context, link CompactLink) {
 	store := ctx.KVStore(lk.key)
 	linkAsBytes := marshalLink(link)
 	store.Set(linkAsBytes, []byte{})
 	lk.ms.IncrementLinksCount(ctx)
 }
 
-func (lk BaseLinkKeeper) IsLinkExist(ctx sdk.Context, link Link) bool {
+func (lk BaseLinkKeeper) IsLinkExist(ctx sdk.Context, link CompactLink) bool {
 	store := ctx.KVStore(lk.key)
 	linkAsBytes := marshalLink(link)
 	return store.Get(linkAsBytes) != nil
@@ -63,7 +63,7 @@ func (lk BaseLinkKeeper) GetLinksCount(ctx sdk.Context) uint64 {
 	return lk.ms.GetLinksCount(ctx)
 }
 
-func unmarshalLink(b []byte) Link {
+func unmarshalLink(b []byte) CompactLink {
 	return NewLink(
 		CidNumber(binary.LittleEndian.Uint64(b[0:8])),
 		CidNumber(binary.LittleEndian.Uint64(b[8:16])),
@@ -71,7 +71,7 @@ func unmarshalLink(b []byte) Link {
 	)
 }
 
-func marshalLink(l Link) []byte {
+func marshalLink(l CompactLink) []byte {
 	b := make([]byte, 24)
 	binary.LittleEndian.PutUint64(b[0:8], uint64(l.From()))
 	binary.LittleEndian.PutUint64(b[8:16], uint64(l.To()))

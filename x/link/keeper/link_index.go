@@ -19,7 +19,7 @@ type LinkIndexedKeeper struct {
 	nextRankInLinks  map[CidNumber]CidLinks
 	nextRankOutLinks map[CidNumber]CidLinks
 
-	currentBlockLinks []Link
+	currentBlockLinks []CompactLink
 }
 
 func NewLinkIndexedKeeper(keeper LinkKeeper) *LinkIndexedKeeper {
@@ -55,10 +55,10 @@ func (i *LinkIndexedKeeper) EndBlocker() {
 		Links(i.nextRankOutLinks).Put(link.From(), link.To(), link.Acc())
 		Links(i.nextRankInLinks).Put(link.To(), link.From(), link.Acc())
 	}
-	i.currentBlockLinks = make([]Link, 0, 1000) // todo: 1000 hardcoded value
+	i.currentBlockLinks = make([]CompactLink, 0, 1000) // todo: 1000 hardcoded value
 }
 
-func (i *LinkIndexedKeeper) PutIntoIndex(link Link) {
+func (i *LinkIndexedKeeper) PutIntoIndex(link CompactLink) {
 	i.currentBlockLinks = append(i.currentBlockLinks, link)
 }
 
@@ -70,6 +70,6 @@ func (i *LinkIndexedKeeper) GetInLinks() map[CidNumber]CidLinks {
 	return i.currentRankInLinks
 }
 
-func (i *LinkIndexedKeeper) GetCurrentBlockLinks() []Link {
+func (i *LinkIndexedKeeper) GetCurrentBlockLinks() []CompactLink {
 	return i.currentBlockLinks
 }
