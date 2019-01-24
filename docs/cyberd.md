@@ -432,7 +432,7 @@ merkle =  18
 
 The scheme motivates developers to release earlier to be less diluted from holding CBD and honour validators if development is going slower than expected.
 
-After Genesis starting inflation rate will become fixed at `2 100 000 000` CYB per block.
+After Genesis starting inflation rate will become fixed at `1 000 000 000` CYB per block.
 
 [Join](/docs/how_to_become_validator.md).
 
