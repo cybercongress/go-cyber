@@ -40,13 +40,12 @@ func main() {
 	}
 
 	rootCmd.AddCommand(initCyberd.InitCmd(ctx, cdc))
-	rootCmd.AddCommand(initCyberd.GenerateAccountCmd())
 	rootCmd.AddCommand(initCyberd.GenerateAccountsCmd(ctx, cdc))
 	rootCmd.AddCommand(initCyberd.CollectGenTxsCmd(ctx, cdc))
 	rootCmd.AddCommand(initCyberd.TestnetFilesCmd(ctx, cdc))
 	rootCmd.AddCommand(initCyberd.GenTxCmd(ctx, cdc))
 	rootCmd.AddCommand(initCyberd.AddGenesisAccountCmd(ctx, cdc))
-	rootCmd.AddCommand(initCyberd.GenerateEulerGenesisFileCmd(ctx, cdc))
+	rootCmd.AddCommand(initCyberd.GenesisCmds(ctx, cdc))
 	server.AddCommands(ctx, cdc, rootCmd, newApp, exportAppStateAndTMValidators)
 
 	for _, c := range rootCmd.Commands() {

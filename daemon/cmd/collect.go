@@ -100,7 +100,7 @@ func genAppStateFromConfig(
 	)
 
 	// process genesis transactions, else create default genesis.json
-	appGenTxs, persistentPeers, err = CollectStdTxs(cdc, config.Moniker, initCfg.GenTxsDir, genDoc)
+	appGenTxs, persistentPeers, err = collectStdTxs(cdc, config.Moniker, initCfg.GenTxsDir, genDoc)
 	if err != nil {
 		return
 	}
