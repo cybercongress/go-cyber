@@ -434,7 +434,7 @@ The scheme motivates developers to release earlier to be less diluted from holdi
 
 After Genesis starting inflation rate will become fixed at `1 000 000 000` CYB per block.
 
-[Join](/docs/how_to_become_validator.md).
+[Join](https://github.com/cybercongress/cyberd/blob/master/docs/run_validator.md).
 
 Once we have validators, we can think about first million web3 agents.
 
