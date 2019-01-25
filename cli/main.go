@@ -1,35 +1,30 @@
 package main
 
 import (
-	"github.com/cosmos/cosmos-sdk/client/tx"
-	"github.com/cybercongress/cyberd/cli/commands/keys"
-	"github.com/spf13/viper"
-	"github.com/tendermint/go-amino"
-	"os"
-
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/rpc"
+	"github.com/cosmos/cosmos-sdk/client/tx"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/version"
-	"github.com/cybercongress/cyberd/app"
-	cyberdcmd "github.com/cybercongress/cyberd/cli/commands"
-	"github.com/spf13/cobra"
-	"github.com/tendermint/tendermint/libs/cli"
-
+	at "github.com/cosmos/cosmos-sdk/x/auth"
 	authcmd "github.com/cosmos/cosmos-sdk/x/auth/client/cli"
 	bankcmd "github.com/cosmos/cosmos-sdk/x/bank/client/cli"
+	dist "github.com/cosmos/cosmos-sdk/x/distribution"
 	distClient "github.com/cosmos/cosmos-sdk/x/distribution/client"
+	gv "github.com/cosmos/cosmos-sdk/x/gov"
 	govClient "github.com/cosmos/cosmos-sdk/x/gov/client"
+	sl "github.com/cosmos/cosmos-sdk/x/slashing"
 	slashingClient "github.com/cosmos/cosmos-sdk/x/slashing/client"
+	st "github.com/cosmos/cosmos-sdk/x/staking"
 	stakingClient "github.com/cosmos/cosmos-sdk/x/staking/client"
-)
-
-const (
-	storeAcc      = "acc"
-	storeGov      = "gov"
-	storeSlashing = "slashing"
-	storeStake    = "stake"
-	storeDist     = "distr"
+	"github.com/cybercongress/cyberd/app"
+	cyberdcmd "github.com/cybercongress/cyberd/cli/commands"
+	"github.com/cybercongress/cyberd/cli/commands/keys"
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+	"github.com/tendermint/go-amino"
+	"github.com/tendermint/tendermint/libs/cli"
+	"os"
 )
 
 func main() {
@@ -46,32 +41,31 @@ func main() {
 	}
 
 	mc := []sdk.ModuleClients{
-		govClient.NewModuleClient(storeGov, cdc),
-		distClient.NewModuleClient(storeDist, cdc),
-		stakingClient.NewModuleClient(storeStake, cdc),
-		slashingClient.NewModuleClient(storeSlashing, cdc),
+		govClient.NewModuleClient(gv.StoreKey, cdc),
+		distClient.NewModuleClient(dist.StoreKey, cdc),
+		stakingClient.NewModuleClient(st.StoreKey, cdc),
+		slashingClient.NewModuleClient(sl.StoreKey, cdc),
 	}
+
+	// todo: hack till we don't handle with all merkle proofs
+	viper.SetDefault(client.FlagTrustNode, true)
+	cyberdcli.PersistentFlags().String(client.FlagChainID, "", "Chain Id of cyberd node")
 
 	// Construct Root Command
 	cyberdcli.AddCommand(
 		rpc.StatusCommand(),
-		client.ConfigCmd(),
 		queryCmd(cdc, mc),
 		txCmd(cdc, mc),
 		keys.Commands(),
 		client.LineBreak,
 		version.VersionCmd,
+		client.NewCompletionCmd(cyberdcli, true),
 	)
 
 	cyberdcli.AddCommand(
 		client.PostCommands(
 			cyberdcmd.LinkTxCmd(cdc),
 		)...)
-
-	// todo: hack till we don't handle with all merkle proofs
-	viper.SetDefault(client.FlagTrustNode, true)
-
-	cyberdcli.PersistentFlags().String(client.FlagChainID, "", "Chain ID of cyberd node")
 
 	executor := cli.PrepareMainCmd(cyberdcli, "CBD", os.ExpandEnv("$HOME/.cyberdcli"))
 	err := executor.Execute()
@@ -94,7 +88,7 @@ func queryCmd(cdc *amino.Codec, mc []sdk.ModuleClients) *cobra.Command {
 		tx.SearchTxCmd(cdc),
 		tx.QueryTxCmd(cdc),
 		client.LineBreak,
-		authcmd.GetAccountCmd(storeAcc, cdc),
+		authcmd.GetAccountCmd(at.StoreKey, cdc),
 	)
 
 	for _, m := range mc {
@@ -114,6 +108,7 @@ func txCmd(cdc *amino.Codec, mc []sdk.ModuleClients) *cobra.Command {
 		bankcmd.SendTxCmd(cdc),
 		client.LineBreak,
 		authcmd.GetSignCommand(cdc),
+		authcmd.GetMultiSignCommand(cdc),
 		bankcmd.GetBroadcastCommand(cdc),
 		client.LineBreak,
 	)
