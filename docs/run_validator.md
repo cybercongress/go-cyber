@@ -157,7 +157,7 @@ So the validator candidate is an account this time.
 To declare a validator candidate, run the following command adjusting stake amount and other fields.
 
 ```bash
-docker exec -ti cyberd cyberdcli tx stake create-validator \
+docker exec -ti cyberd cyberdcli tx staking create-validator \
   --amount=100CBD \
   --pubkey=<your_node_pubkey> \
   --moniker=<your_node_nickname> \

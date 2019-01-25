@@ -16,8 +16,8 @@ github.com/btcsuite/btcd v0.0.0-20180903232927-cff30e1d23fc/go.mod h1:Dmm/EzmjnC
 github.com/btcsuite/btcutil v0.0.0-20180706230648-ab6388e0c60a h1:RQMUrEILyYJEoAT34XS/kLu40vC0+po/UfxrBBA4qZE=
 github.com/btcsuite/btcutil v0.0.0-20180706230648-ab6388e0c60a/go.mod h1:+5NJ2+qvTyV9exUAL/rxXi3DcLg2Ts+ymUAY5y4NvMg=
 github.com/client9/misspell v0.3.4/go.mod h1:qj6jICC3Q7zFZvVWo7KLAzC3yx5G7kyvSDkc90ppPyw=
-github.com/cosmos/cosmos-sdk v0.28.2-0.20190123020839-b2ae4ed57319 h1:T2U3Z5ftqqECTF6y8lHiWS5ld4ZXon2/tYSnc+flWUo=
-github.com/cosmos/cosmos-sdk v0.28.2-0.20190123020839-b2ae4ed57319/go.mod h1:JrX/JpJunJQXBI5PEX2zELHMFzQr/159jDjIhesOh2c=
+github.com/cosmos/cosmos-sdk v0.30.0 h1:DUpcAqHalX2IEvum2wjPIos6sRcOYVd1wNSfiQ+wdfo=
+github.com/cosmos/cosmos-sdk v0.30.0/go.mod h1:JrX/JpJunJQXBI5PEX2zELHMFzQr/159jDjIhesOh2c=
 github.com/cosmos/go-bip39 v0.0.0-20180618194314-52158e4697b8 h1:Iwin12wRQtyZhH6FV3ykFcdGNlYEzoeR0jN8Vn+JWsI=
 github.com/cosmos/go-bip39 v0.0.0-20180618194314-52158e4697b8/go.mod h1:tSxLoYXyBmiFeKpvmq4dzayMdCjCnu8uqmCysIGBT2Y=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
@@ -75,8 +75,6 @@ github.com/minio/blake2b-simd v0.0.0-20160723061019-3f5f724cb5b1 h1:lYpkrQH5ajf0
 github.com/minio/blake2b-simd v0.0.0-20160723061019-3f5f724cb5b1/go.mod h1:pD8RvIylQ358TN4wwqatJ8rNavkEINozVn9DtGI3dfQ=
 github.com/minio/sha256-simd v0.0.0-20181005183134-51976451ce19 h1:d9VfRe71OW+ZtutCBgQ54kXBwFy5Tz5hR0OBIE6qlFo=
 github.com/minio/sha256-simd v0.0.0-20181005183134-51976451ce19/go.mod h1:2FMWW+8GMoPweT6+pI63m9YE3Lmw4J71hV56Chs1E/U=
-github.com/mitchellh/go-homedir v1.0.0 h1:vKb8ShqSby24Yrqr/yDYkuFz8d0WUjys40rvnGC8aR0=
-github.com/mitchellh/go-homedir v1.0.0/go.mod h1:SfyaCUpYCn1Vlf4IUYiD9fPX4A5wJrkLzIz1N1q0pr0=
 github.com/mitchellh/mapstructure v1.0.0 h1:vVpGvMXJPqSDh2VYHF7gsfQj8Ncx+Xw5Y1KHeTRY+7I=
 github.com/mitchellh/mapstructure v1.0.0/go.mod h1:FVVH3fgwuzCH5S8UJGiWEs2h04kUh9fWfEaFds41c1Y=
 github.com/mr-tron/base58 v1.1.0 h1:Y51FGVJ91WBqCEabAi5OPUz38eAx8DakuAm5svLcsfQ=
@@ -133,8 +131,8 @@ github.com/tendermint/go-amino v0.14.1 h1:o2WudxNfdLNBwMyl2dqOJxiro5rfrEaU0Ugs6o
 github.com/tendermint/go-amino v0.14.1/go.mod h1:i/UKE5Uocn+argJJBb12qTZsCDBcAYMbR92AaJVmKso=
 github.com/tendermint/iavl v0.12.0 h1:xcaFAr+ycqCj7WN1RzL2EfcBioRDOHcU1oWcg83K028=
 github.com/tendermint/iavl v0.12.0/go.mod h1:EoKMMv++tDOL5qKKVnoIqtVPshRrEPeJ0WsgDOLAauM=
-github.com/tendermint/tendermint v0.29.0 h1:zaJwtaAQVUC4QxqImtpPlCpMGroVvPU0g75ZTlvmFg8=
-github.com/tendermint/tendermint v0.29.0/go.mod h1:ymcPyWblXCplCPQjbOYbrF1fWnpslATMVqiGgWbZrlc=
+github.com/tendermint/tendermint v0.29.1 h1:9QwXNxtxgfekONjEBvnZp2g3mQH/fS5QiUyEXo7QOGs=
+github.com/tendermint/tendermint v0.29.1/go.mod h1:ymcPyWblXCplCPQjbOYbrF1fWnpslATMVqiGgWbZrlc=
 github.com/whyrusleeping/base32 v0.0.0-20170828182744-c30ac30633cc h1:BCPnHtcboadS0DvysUuJXZ4lWVv5Bh5i7+tbIyi+ck4=
 github.com/whyrusleeping/base32 v0.0.0-20170828182744-c30ac30633cc/go.mod h1:r45hJU7yEoA81k6MWNhpMj/kms0n14dkzkxYHoB96UM=
 github.com/zondax/ledger-cosmos-go v0.1.0 h1:Qf4OrBXabhUrDqTtq47QSBLqWV4QYQDQwJQ2qZCbzT8=
