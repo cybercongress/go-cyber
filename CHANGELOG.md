@@ -17,7 +17,9 @@
 **Closed issues:**
 
 - Update to tendermint v29.0 [\#187](https://github.com/cybercongress/cyberd/issues/187)
+- Change Bandwidth Price to Average for 24h Sliding Window [\#179](https://github.com/cybercongress/cyberd/issues/179)
 - High bandwidth cost for create validator msg [\#178](https://github.com/cybercongress/cyberd/issues/178)
+- Bandwidth Specification Change [\#177](https://github.com/cybercongress/cyberd/issues/177)
 - Add rpc endpoint to submit signed link and send messages [\#173](https://github.com/cybercongress/cyberd/issues/173)
 - index entities count  endpoint [\#165](https://github.com/cybercongress/cyberd/issues/165)
 - Add ipfs hashes to release [\#161](https://github.com/cybercongress/cyberd/issues/161)
@@ -25,11 +27,15 @@
 - Add trust-node by default in cli [\#151](https://github.com/cybercongress/cyberd/issues/151)
 - Numerous small fixes in whitepaper [\#89](https://github.com/cybercongress/cyberd/issues/89)
 - Cyberd landing make up [\#36](https://github.com/cybercongress/cyberd/issues/36)
-- Whitepaper 0.3 [\#25](https://github.com/cybercongress/cyberd/issues/25)
+- Whitepaper 0.4 [\#25](https://github.com/cybercongress/cyberd/issues/25)
 
 **Merged pull requests:**
 
+- Update to cosmos-sdk v0.30.0 [\#198](https://github.com/cybercongress/cyberd/pull/198) ([hleb-albau](https://github.com/hleb-albau))
+- Tx size reduction: switch to more compact links tx encoding [\#192](https://github.com/cybercongress/cyberd/pull/192) ([arturalbov](https://github.com/arturalbov))
+- Fix rank calculation context data [\#191](https://github.com/cybercongress/cyberd/pull/191) ([hleb-albau](https://github.com/hleb-albau))
 - Important fixes in validators manual [\#190](https://github.com/cybercongress/cyberd/pull/190) ([xhipster](https://github.com/xhipster))
+- Change Bandwidth Price to Average for 24h Sliding Window [\#188](https://github.com/cybercongress/cyberd/pull/188) ([arturalbov](https://github.com/arturalbov))
 - R4R Update cosmos to latest develop [\#186](https://github.com/cybercongress/cyberd/pull/186) ([hleb-albau](https://github.com/hleb-albau))
 - \#153 Add more issues templates. [\#183](https://github.com/cybercongress/cyberd/pull/183) ([hleb-albau](https://github.com/hleb-albau))
 - \#178 \#168 Bandwidth price + Msg cost for non link txes [\#182](https://github.com/cybercongress/cyberd/pull/182) ([hleb-albau](https://github.com/hleb-albau))
