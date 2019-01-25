@@ -9,7 +9,7 @@ require (
 	github.com/bgentry/speakeasy v0.1.0 // indirect
 	github.com/btcsuite/btcd v0.0.0-20180903232927-cff30e1d23fc // indirect
 	github.com/btcsuite/btcutil v0.0.0-20180706230648-ab6388e0c60a // indirect
-	github.com/cosmos/cosmos-sdk v0.28.2-0.20190123020839-b2ae4ed57319
+	github.com/cosmos/cosmos-sdk v0.30.0
 	github.com/cosmos/go-bip39 v0.0.0-20180618194314-52158e4697b8
 	github.com/fortytw2/leaktest v1.2.0 // indirect
 	github.com/go-kit/kit v0.7.0 // indirect
@@ -32,11 +32,10 @@ require (
 	github.com/matttproud/golang_protobuf_extensions v1.0.1 // indirect
 	github.com/minio/blake2b-simd v0.0.0-20160723061019-3f5f724cb5b1 // indirect
 	github.com/minio/sha256-simd v0.0.0-20181005183134-51976451ce19 // indirect
-	github.com/mitchellh/go-homedir v1.0.0
 	github.com/mitchellh/mapstructure v1.0.0 // indirect
 	github.com/mr-tron/base58 v1.1.0 // indirect
 	github.com/multiformats/go-multibase v0.3.0 // indirect
-	github.com/multiformats/go-multihash v1.0.8
+	github.com/multiformats/go-multihash v1.0.8 // indirect
 	github.com/onsi/gomega v1.4.2 // indirect
 	github.com/pelletier/go-toml v1.2.0 // indirect
 	github.com/pkg/errors v0.8.0
@@ -59,7 +58,7 @@ require (
 	github.com/tendermint/btcd v0.0.0-20180816174608-e5840949ff4f
 	github.com/tendermint/go-amino v0.14.1
 	github.com/tendermint/iavl v0.12.0 // indirect
-	github.com/tendermint/tendermint v0.29.0
+	github.com/tendermint/tendermint v0.29.1
 	github.com/whyrusleeping/base32 v0.0.0-20170828182744-c30ac30633cc // indirect
 	github.com/zondax/ledger-cosmos-go v0.1.0 // indirect
 	golang.org/x/crypto v0.0.0-20181015023909-0c41d7ab0a0e // indirect
