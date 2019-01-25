@@ -7,6 +7,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	"github.com/cybercongress/cyberd/app"
+	"github.com/spf13/viper"
+	"github.com/tendermint/tendermint/libs/cli"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -94,6 +96,41 @@ func InitializeNodeValidatorFiles(
 	return nodeID, valPubKey, nil
 }
 
+func loadGenesisState(
+	ctx *server.Context, cdc *codec.Codec,
+) (genDoc tmtypes.GenesisDoc, state app.GenesisState, err error) {
+
+	config := ctx.Config
+	config.SetRoot(viper.GetString(cli.HomeFlag))
+
+	genFile := config.GenesisFile()
+	if !common.FileExists(genFile) {
+		err = fmt.Errorf("%s does not exist, run `cyberd init` first", genFile)
+		return
+	}
+	genDoc, err = loadGenesisDoc(cdc, genFile)
+	if err != nil {
+		return
+	}
+
+	err = cdc.UnmarshalJSON(genDoc.AppState, &state)
+	return
+}
+
+func saveGenesisState(ctx *server.Context, cdc *codec.Codec, oldDoc tmtypes.GenesisDoc, state app.GenesisState) error {
+
+	config := ctx.Config
+	config.SetRoot(viper.GetString(cli.HomeFlag))
+	genFile := config.GenesisFile()
+
+	appStateJSON, err := cdc.MarshalJSON(state)
+	if err != nil {
+		return err
+	}
+
+	return ExportGenesisFile(genFile, oldDoc.ChainID, nil, appStateJSON)
+}
+
 func loadGenesisDoc(cdc *amino.Codec, genFile string) (genDoc tmtypes.GenesisDoc, err error) {
 	genContents, err := ioutil.ReadFile(genFile)
 	if err != nil {
@@ -120,7 +157,7 @@ func initializeEmptyGenesis(
 
 // CollectStdTxs processes and validates application's genesis StdTxs and returns
 // the list of appGenTxs, and persistent peers required to generate genesis.json.
-func CollectStdTxs(cdc *codec.Codec, moniker string, genTxsDir string, genDoc tmtypes.GenesisDoc) (
+func collectStdTxs(cdc *codec.Codec, moniker string, genTxsDir string, genDoc tmtypes.GenesisDoc) (
 	appGenTxs []auth.StdTx, persistentPeers string, err error) {
 
 	var fos []os.FileInfo
