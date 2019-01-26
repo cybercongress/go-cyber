@@ -17,7 +17,7 @@
 | Staking     | MaxValidators | 100           | maximum number of active validators set |
 | Staking     | MaxEntries    | 7             | max entries for either unbonding delegation or redelegation per delegator/validator pair(delegator/validator/validator for redelegation)|
 |             |                  |       |                                                    |
-| Consensus   | BlockTime        | 5s    | average block generation time                      |
+| Consensus   | BlockTime        | 1s    | average block generation time                      |
 | Consensus   | MaxBytes         | 1mb   | block max bytes limit                              |
 | Consensus   | RankCalcWindow   | 100   | full rank recalculation window                     |
 |             |                     |     |                                                                        |
