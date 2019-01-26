@@ -1,6 +1,9 @@
 package types
 
-import . "github.com/cybercongress/cyberd/types"
+import (
+	"encoding/binary"
+	. "github.com/cybercongress/cyberd/types"
+)
 
 type Link struct {
 	From Cid
@@ -20,3 +23,19 @@ func NewLink(from CidNumber, to CidNumber, acc AccNumber) CompactLink {
 func (l CompactLink) From() CidNumber { return l.from }
 func (l CompactLink) To() CidNumber   { return l.to }
 func (l CompactLink) Acc() AccNumber  { return l.acc }
+
+func UnmarshalBinaryLink(b []byte) CompactLink {
+	return NewLink(
+		CidNumber(binary.LittleEndian.Uint64(b[0:8])),
+		CidNumber(binary.LittleEndian.Uint64(b[8:16])),
+		AccNumber(binary.LittleEndian.Uint64(b[16:24])),
+	)
+}
+
+func (l CompactLink) MarshalBinary() []byte {
+	b := make([]byte, 24)
+	binary.LittleEndian.PutUint64(b[0:8], uint64(l.From()))
+	binary.LittleEndian.PutUint64(b[8:16], uint64(l.To()))
+	binary.LittleEndian.PutUint64(b[16:24], uint64(l.Acc()))
+	return b
+}
