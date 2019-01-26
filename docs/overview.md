@@ -19,7 +19,7 @@
 |             |                  |       |                                                    |
 | Consensus   | BlockTime        | 5s    | average block generation time                      |
 | Consensus   | MaxBytes         | 1mb   | block max bytes limit                              |
-| Consensus   | RankCalcWindow   | 600   | full rank recalculation window                     |
+| Consensus   | RankCalcWindow   | 100   | full rank recalculation window                     |
 |             |                     |     |                                                                        |
 | Distr       | CommunityTax        | 0%  | community funding tax, not used                                        |
 | Distr       | BaseProposerReward  | 1%  | % of block inflation goes to proposer                                  |
@@ -32,7 +32,7 @@
 | Slashing    | SlashFractionDoubleSign  | 20%               | % of stake reduction for double sign           |
 | Slashing    | SlashFractionDowntime    | 0%                | % of stake reduction for being offline         |
 |             |                 |                   |                              |
-| Mint        | BlockInflation  | 0.317097920 Gcyb  | validators block rewards     |
+| Mint        | BlockInflation  | 1.585489600 Gcyb  | validators block rewards     |
 
 
 
