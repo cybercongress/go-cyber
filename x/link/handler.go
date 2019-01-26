@@ -44,12 +44,8 @@ func NewLinksHandler(cis keeper.CidNumberKeeper, ls *keeper.LinkIndexedKeeper, a
 			fromCidNumber := cis.GetOrPutCidNumber(ctx, link.From)
 			toCidNumber := cis.GetOrPutCidNumber(ctx, link.To)
 			accNumber := cbd.AccNumber(as.GetAccount(ctx, linkMsg.Address).GetAccountNumber())
-			compactLink := cbdlink.NewLink(fromCidNumber, toCidNumber, accNumber)
 
-			if !ctx.IsCheckTx() {
-				ls.PutIntoIndex(compactLink)
-			}
-			ls.PutLink(ctx, compactLink)
+			ls.PutLink(ctx, cbdlink.NewLink(fromCidNumber, toCidNumber, accNumber))
 		}
 
 		return sdk.Result{Code: cbd.CodeOK, Codespace: cbd.CodespaceCbd}

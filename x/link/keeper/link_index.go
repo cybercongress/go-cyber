@@ -62,6 +62,13 @@ func (i *LinkIndexedKeeper) PutIntoIndex(link CompactLink) {
 	i.currentBlockLinks = append(i.currentBlockLinks, link)
 }
 
+func (i *LinkIndexedKeeper) PutLink(ctx sdk.Context, link CompactLink) {
+	if !ctx.IsCheckTx() {
+		i.currentBlockLinks = append(i.currentBlockLinks, link)
+	}
+	i.LinkKeeper.PutLink(ctx, link)
+}
+
 func (i *LinkIndexedKeeper) GetOutLinks() map[CidNumber]CidLinks {
 	return i.currentRankOurLinks
 }

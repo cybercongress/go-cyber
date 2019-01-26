@@ -9,6 +9,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/mint"
 	"github.com/cosmos/cosmos-sdk/x/slashing"
 	"github.com/cosmos/cosmos-sdk/x/staking"
+	"github.com/cybercongress/cyberd/x/link"
 	abci "github.com/tendermint/tendermint/abci/types"
 	tmtypes "github.com/tendermint/tendermint/types"
 )
@@ -41,5 +42,9 @@ func (app *CyberdApp) ExportAppStateAndValidators() (appState json.RawMessage, v
 		return nil, nil, err
 	}
 	validators = staking.WriteValidators(ctx, app.stakingKeeper)
+	err = link.ExportLinks(ctx, app.cidNumKeeper, app.linkIndexedKeeper)
+	if err != nil {
+		return nil, nil, err
+	}
 	return appState, validators, nil
 }
