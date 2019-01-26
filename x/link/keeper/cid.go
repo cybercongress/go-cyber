@@ -13,6 +13,8 @@ type CidNumberKeeper interface {
 	GetOrPutCidNumber(ctx sdk.Context, cid Cid) CidNumber
 	GetFullCidsNumbers(ctx sdk.Context) map[Cid]CidNumber
 	GetCidsCount(ctx sdk.Context) uint64
+	PutCid(ctx sdk.Context, cid Cid, cidNumber CidNumber)
+	Iterate(ctx sdk.Context, process func(Cid, CidNumber))
 }
 
 type BaseCidNumberKeeper struct {
@@ -48,6 +50,18 @@ func (k BaseCidNumberKeeper) GetCid(ctx sdk.Context, num CidNumber) Cid {
 	return Cid(cidAsBytes)
 }
 
+// WARNING: use only for state import. Don't forget to set right cid count after
+func (k BaseCidNumberKeeper) PutCid(ctx sdk.Context, cid Cid, cidNumber CidNumber) {
+	cidsIndex := ctx.KVStore(k.key)
+	cidsReverseIndex := ctx.KVStore(k.reverseKey)
+
+	cidNumberAsBytes := make([]byte, 8)
+	binary.LittleEndian.PutUint64(cidNumberAsBytes, uint64(cidNumber))
+
+	cidsIndex.Set([]byte(cid), cidNumberAsBytes)
+	cidsReverseIndex.Set(cidNumberAsBytes, []byte(cid))
+}
+
 // CIDs index is array of all added CIDs, sorted asc by first link time.
 //   - for given link, CIDs added in order [CID1, CID2] (if they both new to chain)
 // This method performs lookup of CIDs, returns index value, or create and put in index new value if not exists.
@@ -77,18 +91,21 @@ func (k BaseCidNumberKeeper) GetOrPutCidNumber(ctx sdk.Context, cid Cid) CidNumb
 
 // returns all added cids
 func (k BaseCidNumberKeeper) GetFullCidsNumbers(ctx sdk.Context) map[Cid]CidNumber {
-
-	cidsIndex := ctx.KVStore(k.key)
-	iterator := cidsIndex.Iterator(nil, nil)
-
 	index := make(map[Cid]CidNumber)
+	k.Iterate(ctx, func(cid Cid, number CidNumber) {
+		index[cid] = number
+	})
+	return index
+}
+
+func (k BaseCidNumberKeeper) Iterate(ctx sdk.Context, process func(Cid, CidNumber)) {
+	iterator := ctx.KVStore(k.key).Iterator(nil, nil)
+	defer iterator.Close()
 
 	for iterator.Valid() {
-		index[Cid(iterator.Key())] = CidNumber(binary.LittleEndian.Uint64(iterator.Value()))
+		process(Cid(iterator.Key()), CidNumber(binary.LittleEndian.Uint64(iterator.Value())))
 		iterator.Next()
 	}
-	iterator.Close()
-	return index
 }
 
 func (k BaseCidNumberKeeper) GetCidsCount(ctx sdk.Context) uint64 {
