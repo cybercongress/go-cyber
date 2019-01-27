@@ -14,7 +14,7 @@
 | Module      | Param         | Value         | Comment                                 |
 |-------------|---------------|---------------|-----------------------------------------|
 | Staking     | UnbondingTime | 3 weeks       | time duration of unbonding              |
-| Staking     | MaxValidators | 100           | maximum number of active validators set |
+| Staking     | MaxValidators | 146           | maximum number of active validators set |
 | Staking     | MaxEntries    | 7             | max entries for either unbonding delegation or redelegation per delegator/validator pair(delegator/validator/validator for redelegation)|
 |             |                  |       |                                                    |
 | Consensus   | BlockTime        | 1s    | average block generation time                      |
