@@ -17,8 +17,8 @@ type Keeper struct {
 	coinsTransferHooks []CoinsTransferHook
 }
 
-func NewBankKeeper(ak auth.AccountKeeper, sk *staking.Keeper) Keeper {
-	return Keeper{
+func NewBankKeeper(ak auth.AccountKeeper, sk *staking.Keeper) *Keeper {
+	return &Keeper{
 		Keeper:             bank.NewBaseKeeper(ak),
 		ak:                 ak,
 		sk:                 sk,

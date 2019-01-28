@@ -1,5 +1,5 @@
 package coin
 
 const (
-	CYB = "сyb"
+	CYB = "cyb"
 )
