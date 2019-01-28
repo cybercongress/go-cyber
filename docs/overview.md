@@ -2,37 +2,38 @@
 
 ## Params
 
-//todo consider:
-// Consensus.BlockTime
-// Consensus.MaxBytes
-// Staking.UnbondingTime && Slashing.MaxEvidenceAge
-// Distr.BaseProposerReward
-// Distr.BonusProposerReward
-// Slashing.SignedBlocksWindow
-// Slashing.MinSignedPerWindow
-
 | Module      | Param         | Value         | Comment                                 |
 |-------------|---------------|---------------|-----------------------------------------|
 | Staking     | UnbondingTime | 3 weeks       | time duration of unbonding              |
 | Staking     | MaxValidators | 146           | maximum number of active validators set |
 | Staking     | MaxEntries    | 7             | max entries for either unbonding delegation or redelegation per delegator/validator pair(delegator/validator/validator for redelegation)|
-|             |                  |       |                                                    |
-| Consensus   | BlockTime        | 1s    | average block generation time                      |
-| Consensus   | MaxBytes         | 1mb   | block max bytes limit                              |
-| Consensus   | RankCalcWindow   | 100   | full rank recalculation window                     |
+|             |               |       |                                  |
+| Consensus   | BlockTime     | 1s    | average block generation time    |
+| Consensus   | MaxBytes      | 1mb   | block max bytes limit            |
+|             |                  |       |                                 |
+| Rank        | RankCalcWindow   | 100   | full rank recalculation window  |
 |             |                     |     |                                                                        |
 | Distr       | CommunityTax        | 0%  | community funding tax, not used                                        |
 | Distr       | BaseProposerReward  | 1%  | % of block inflation goes to proposer                                  |
 | Distr       | BonusProposerReward | 4%  | addition reward, calculated as % of included votes from validators set |
 |             |                          |                   |                                                |
 | Slashing    | MaxEvidenceAge           | 3weeks            | misbehaviour evidence max age                  |
-| Slashing    | SignedBlocksWindow       | 900               | window to calculate validators liveness        |
-| Slashing    | MinSignedPerWindow       | 5%                | min singed block for window to not be jailed   |
+| Slashing    | SignedBlocksWindow       | 30min             | window to calculate validators liveness        |
+| Slashing    | MinSignedPerWindow       | 65%               | min singed block for window to not be jailed   |
 | Slashing    | DowntimeJailDuration     | 0                 | unjail delay                                   |
 | Slashing    | SlashFractionDoubleSign  | 20%               | % of stake reduction for double sign           |
 | Slashing    | SlashFractionDowntime    | 0%                | % of stake reduction for being offline         |
 |             |                 |                   |                              |
-| Mint        | BlockInflation  | 1.585489600 Gcyb  | validators block rewards     |
+| Mint        | TokensPerBlock  | 0.634195840 Gcyb  | validators block rewards     |
+|             |                               |                             |                                                            |
+| Bandwidth   | RecoveryWindow                | 24h                         | from 0 to max recovery period                              |
+| Bandwidth   | PriceSlidingWindow            | 24h                         | price calculated based on network load for selected period |
+| Bandwidth   | PriceAdjustWindow             | 1m                          | how ofter price is recalculated                            |
+| Bandwidth   | PriceMin                      | 0.01                        | minimum price number (1 means normal price)                |
+| Bandwidth   | LinkCost                      | 100                         | link msg cost                                              |
+| Bandwidth   | NonLinkCost                   | 5 * LinkCost                | link msg cost                                              |
+| Bandwidth   | TxCost                        | 3 * LinkCost                | tx cost                                                    |
+| Bandwidth   | RecoveryWindowTotalBandwidth  | 2000 * 1000* LinkCost       | how much all users in average can spend for recover period |                                                           |
 
 
 
