@@ -61,14 +61,14 @@ type GenesisAccount struct {
 func NewGenesisAccount(acc *auth.BaseAccount) GenesisAccount {
 	return GenesisAccount{
 		Address: acc.Address,
-		Amount:  acc.Coins.AmountOf(coin.CBD).Int64(),
+		Amount:  acc.Coins.AmountOf(coin.CYB).Int64(),
 	}
 }
 
 func NewGenesisAccountI(acc auth.Account) GenesisAccount {
 	return GenesisAccount{
 		Address: acc.GetAddress(),
-		Amount:  acc.GetCoins().AmountOf(coin.CBD).Int64(),
+		Amount:  acc.GetCoins().AmountOf(coin.CYB).Int64(),
 	}
 }
 
@@ -76,7 +76,7 @@ func NewGenesisAccountI(acc auth.Account) GenesisAccount {
 func (ga *GenesisAccount) ToAccount() (acc *auth.BaseAccount) {
 	return &auth.BaseAccount{
 		Address: ga.Address,
-		Coins:   sdk.Coins{sdk.NewInt64Coin(coin.CBD, ga.Amount)},
+		Coins:   sdk.Coins{sdk.NewInt64Coin(coin.CYB, ga.Amount)},
 	}
 }
 
@@ -98,7 +98,7 @@ func NewDefaultGenesisState() GenesisState {
 		},
 		MintData: mint.GenesisState{
 			Params: mint.Params{
-				MintDenom:           coin.CBD,
+				MintDenom:           coin.CYB,
 				InflationRateChange: sdk.NewDecWithPrec(0, 2),
 				InflationMax:        sdk.NewDecWithPrec(200, 2),
 				InflationMin:        sdk.NewDecWithPrec(200, 2),
@@ -111,7 +111,7 @@ func NewDefaultGenesisState() GenesisState {
 			Params: types.Params{
 				UnbondingTime: defaultUnbondingTime,
 				MaxValidators: 146,
-				BondDenom:     coin.CBD,
+				BondDenom:     coin.CYB,
 			},
 		},
 		SlashingData: slashing.DefaultGenesisState(),
