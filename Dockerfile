@@ -46,6 +46,8 @@ ENV GO_VERSION 1.11.2
 ENV GO_ARCH 'linux-amd64'
 ENV GO_BIN_SHA '1dfe664fa3d8ad714bbd15a36627992effd150ddabd7523931f077b3926d736d'
 
+ENV IPGET_VERSION 0.3.0
+ENV IPGET_ARCH 'linux-amd64'
 
 #  Install required dev tools to install go
 ###############################################################################
@@ -60,6 +62,25 @@ RUN url="https://golang.org/dl/go${GO_VERSION}.${GO_ARCH}.tar.gz" && \
 	tar -C /usr/local -xzf go.tgz &&\
 	rm go.tgz
 
+#  Download genesis file and links file from IPFS
+###############################################################################
+RUN url="https://dist.ipfs.io/ipget/v${IPGET_VERSION}/ipget_v${IPGET_VERSION}_${IPGET_ARCH}.tar.gz" && \
+    wget -O ipget.tgz "$url" && \
+    tar -xzf ipget.tgz && \
+    rm ipget.tgz
+
+WORKDIR /ipget
+RUN ls -la
+#replace with valid IPFS hash
+RUN ./ipget QmeeLUVdiSTTKQqhWqsffYDtNvvvcTfJdotkNyi1KDEJtQ -o /genesis.json
+#replace with valid IPFS hash
+RUN ./ipget QmeeLUVdiSTTKQqhWqsffYDtNvvvcTfJdotkNyi1KDEJtQ -o /links
+#replace with valid IPFS hash
+RUN ./ipget QmeeLUVdiSTTKQqhWqsffYDtNvvvcTfJdotkNyi1KDEJtQ -o /config.toml
+
+WORKDIR /
+
+RUN ls  -l
 
 #  Copy compiled kernel and binaries
 ###############################################################################
@@ -69,11 +90,8 @@ COPY --from=build_stage /sources/cyberdcli /usr/bin/cyberdcli
 COPY --from=build_stage /usr/lib/cbdrank.h /usr/lib/cbdrank.h
 COPY --from=build_stage /usr/lib/libcbdrank.so /usr/lib/libcbdrank.so
 
-
-#  Copy configs and startup scripts
+#  Copy startup scripts
 ###############################################################################
-COPY ./testnet/genesis.json /genesis.json
-COPY ./testnet/config.toml /config.toml
 
 COPY start_script.sh start_script.sh
 COPY entrypoint.sh /entrypoint.sh
