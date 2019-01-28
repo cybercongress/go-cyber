@@ -4,7 +4,15 @@ import (
 	"encoding/binary"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cybercongress/cyberd/store"
+	"github.com/cybercongress/cyberd/util"
 	. "github.com/cybercongress/cyberd/x/link/types"
+	"io"
+)
+
+const (
+	CidBytesSize       = uint64(46)
+	CidNumberBytesSize = uint64(8)
+	CidCountBytesSize  = uint64(8)
 )
 
 type CidNumberKeeper interface {
@@ -15,6 +23,8 @@ type CidNumberKeeper interface {
 	GetCidsCount(ctx sdk.Context) uint64
 	PutCid(ctx sdk.Context, cid Cid, cidNumber CidNumber)
 	Iterate(ctx sdk.Context, process func(Cid, CidNumber))
+	WriteCids(ctx sdk.Context, writer io.Writer) (err error)
+	LoadFromReader(ctx sdk.Context, reader io.Reader) (err error)
 }
 
 type BaseCidNumberKeeper struct {
@@ -110,4 +120,59 @@ func (k BaseCidNumberKeeper) Iterate(ctx sdk.Context, process func(Cid, CidNumbe
 
 func (k BaseCidNumberKeeper) GetCidsCount(ctx sdk.Context) uint64 {
 	return k.ms.GetCidsCount(ctx)
+}
+
+// write CIDs to writer in binary format: <n><cid1><cid1_number><cid2><cid2_number>....<cidn><cidn_number>
+func (k BaseCidNumberKeeper) WriteCids(ctx sdk.Context, writer io.Writer) (err error) {
+	uintAsBytes := make([]byte, 8) //common bytes array to convert uints
+
+	cidsCount := k.GetCidsCount(ctx)
+	binary.LittleEndian.PutUint64(uintAsBytes, cidsCount)
+	_, err = writer.Write(uintAsBytes)
+	if err != nil {
+		return
+	}
+
+	k.Iterate(ctx, func(cid Cid, number CidNumber) {
+		_, err = writer.Write([]byte(cid))
+		if err != nil {
+			return
+		}
+		binary.LittleEndian.PutUint64(uintAsBytes, uint64(number))
+		_, err = writer.Write(uintAsBytes)
+		if err != nil {
+			return
+		}
+	})
+	return
+}
+
+func (k BaseCidNumberKeeper) LoadFromReader(ctx sdk.Context, reader io.Reader) (err error) {
+	cidCountBytes, err := util.ReadExactlyNBytes(reader, CidCountBytesSize)
+	if err != nil {
+		return
+	}
+	cidCount := binary.LittleEndian.Uint64(cidCountBytes)
+
+	// Read all CIDs with their numbers
+	for i := uint64(0); i < cidCount; i++ {
+		cidBytes, err := util.ReadExactlyNBytes(reader, CidBytesSize)
+		if err != nil {
+			return err
+		}
+		cid := Cid(cidBytes)
+		cidNumberBytes, err := util.ReadExactlyNBytes(reader, CidNumberBytesSize)
+		if err != nil {
+			return err
+		}
+		cidNumber := CidNumber(binary.LittleEndian.Uint64(cidNumberBytes))
+		k.PutCid(ctx, cid, cidNumber)
+	}
+
+	lastCidIndex := cidCount - 1
+	lastCidIndexBytes := make([]byte, 8)
+	binary.LittleEndian.PutUint64(lastCidIndexBytes, lastCidIndex)
+	k.ms.SetLastCidIndex(ctx, lastCidIndexBytes)
+
+	return
 }

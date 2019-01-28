@@ -297,7 +297,10 @@ func (app *CyberdApp) initChainer(ctx sdk.Context, req abci.RequestInitChain) ab
 		}
 	}
 
-	link.InitGenesis(ctx, app.mainKeeper, app.cidNumKeeper, app.linkIndexedKeeper, app.Logger)
+	err = link.InitGenesis(ctx, app.cidNumKeeper, app.linkIndexedKeeper, app.Logger)
+	if err != nil {
+		panic(err)
+	}
 
 	return abci.ResponseInitChain{
 		Validators: validators,

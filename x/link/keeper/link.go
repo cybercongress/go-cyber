@@ -1,9 +1,17 @@
 package keeper
 
 import (
+	"encoding/binary"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cybercongress/cyberd/store"
+	"github.com/cybercongress/cyberd/util"
 	. "github.com/cybercongress/cyberd/x/link/types"
+	"io"
+)
+
+const (
+	LinkBytesSize       = uint64(24)
+	LinksCountBytesSize = uint64(8)
 )
 
 type LinkKeeper interface {
@@ -12,6 +20,8 @@ type LinkKeeper interface {
 	GetAllLinks(ctx sdk.Context) (Links, Links, error)
 	GetLinksCount(ctx sdk.Context) uint64
 	Iterate(ctx sdk.Context, process func(link CompactLink))
+	WriteLinks(ctx sdk.Context, writer io.Writer) (err error)
+	LoadFromReader(ctx sdk.Context, reader io.Reader) (err error)
 }
 
 type BaseLinkKeeper struct {
@@ -66,3 +76,36 @@ func (lk BaseLinkKeeper) Iterate(ctx sdk.Context, process func(link CompactLink)
 	}
 }
 
+// write links to writer in binary format: <links_count><cid_number_from><cid_number_to><acc_number>...
+func (lk BaseLinkKeeper) WriteLinks(ctx sdk.Context, writer io.Writer) (err error) {
+	uintAsBytes := make([]byte, 8) //common bytes array to convert uints
+
+	linksCount := lk.GetLinksCount(ctx)
+	binary.LittleEndian.PutUint64(uintAsBytes, linksCount)
+	_, err = writer.Write(uintAsBytes)
+	if err != nil {
+		return
+	}
+
+	lk.Iterate(ctx, func(link CompactLink) {
+		_, _ = writer.Write(link.MarshalBinary())
+	})
+	return
+}
+
+func (lk BaseLinkKeeper) LoadFromReader(ctx sdk.Context, reader io.Reader) (err error) {
+	linksCountBytes, err := util.ReadExactlyNBytes(reader, LinksCountBytesSize)
+	if err != nil {
+		return
+	}
+	linksCount := binary.LittleEndian.Uint64(linksCountBytes)
+
+	for j := uint64(0); j < linksCount; j++ {
+		linkBytes, err := util.ReadExactlyNBytes(reader, LinkBytesSize)
+		if err != nil {
+			return err
+		}
+		lk.PutLink(ctx, UnmarshalBinaryLink(linkBytes))
+	}
+	return
+}
