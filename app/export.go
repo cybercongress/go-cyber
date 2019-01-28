@@ -6,10 +6,10 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	distr "github.com/cosmos/cosmos-sdk/x/distribution"
-	"github.com/cosmos/cosmos-sdk/x/mint"
 	"github.com/cosmos/cosmos-sdk/x/slashing"
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	"github.com/cybercongress/cyberd/x/link"
+	"github.com/cybercongress/cyberd/x/mint"
 	abci "github.com/tendermint/tendermint/abci/types"
 	tmtypes "github.com/tendermint/tendermint/types"
 )
@@ -33,7 +33,7 @@ func (app *CyberdApp) ExportAppStateAndValidators() (appState json.RawMessage, v
 		accounts,
 		auth.NewGenesisState(sdk.Coins{}, app.accountKeeper.GetParams(ctx)),
 		staking.ExportGenesis(ctx, app.stakingKeeper),
-		mint.ExportGenesis(ctx, app.mintKeeper),
+		mint.ExportGenesis(ctx, app.minter),
 		distr.ExportGenesis(ctx, app.distrKeeper),
 		slashing.ExportGenesis(ctx, app.slashingKeeper),
 	)

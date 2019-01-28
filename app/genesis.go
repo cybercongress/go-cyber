@@ -7,11 +7,11 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	distr "github.com/cosmos/cosmos-sdk/x/distribution"
-	"github.com/cosmos/cosmos-sdk/x/mint"
 	"github.com/cosmos/cosmos-sdk/x/slashing"
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	"github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/cybercongress/cyberd/types/coin"
+	"github.com/cybercongress/cyberd/x/mint"
 	"github.com/pkg/errors"
 	tmtypes "github.com/tendermint/tendermint/types"
 	"time"
@@ -98,12 +98,7 @@ func NewDefaultGenesisState() GenesisState {
 		},
 		MintData: mint.GenesisState{
 			Params: mint.Params{
-				MintDenom:           coin.CYB,
-				InflationRateChange: sdk.NewDecWithPrec(0, 2),
-				InflationMax:        sdk.NewDecWithPrec(200, 2),
-				InflationMin:        sdk.NewDecWithPrec(200, 2),
-				GoalBonded:          sdk.NewDecWithPrec(99, 2),
-				BlocksPerYear:       uint64(60 * 60 * 24 * 365), // assuming 1 second block times
+				TokensPerBlock: 634195840,
 			},
 		},
 		StakingData: staking.GenesisState{
@@ -170,8 +165,8 @@ func CyberdAppGenStateJSON(cdc *codec.Codec, genDoc tmtypes.GenesisDoc, appGenTx
 	return codec.MarshalJSONIndent(cdc, genesisState)
 }
 
-// CyberdValidateGenesisState ensures that the genesis state obeys the expected invariants
-func CyberdValidateGenesisState(genesisState GenesisState) (err error) {
+// validateGenesisState ensures that the genesis state obeys the expected invariants
+func validateGenesisState(genesisState GenesisState) (err error) {
 
 	err = validateGenesisStateAccounts(genesisState.Accounts)
 	if err != nil {
