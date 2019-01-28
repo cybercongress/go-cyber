@@ -16,6 +16,7 @@
 
 **Closed issues:**
 
+- Update landing for 0.4 whitepaper [\#204](https://github.com/cybercongress/cyberd/issues/204)
 - Update to tendermint v29.0 [\#187](https://github.com/cybercongress/cyberd/issues/187)
 - Change Bandwidth Price to Average for 24h Sliding Window [\#179](https://github.com/cybercongress/cyberd/issues/179)
 - High bandwidth cost for create validator msg [\#178](https://github.com/cybercongress/cyberd/issues/178)
@@ -31,6 +32,7 @@
 
 **Merged pull requests:**
 
+- Fix typos get\_CYB.md [\#206](https://github.com/cybercongress/cyberd/pull/206) ([serejandmyself](https://github.com/serejandmyself))
 - Update to cosmos-sdk v0.30.0 [\#198](https://github.com/cybercongress/cyberd/pull/198) ([hleb-albau](https://github.com/hleb-albau))
 - Tx size reduction: switch to more compact links tx encoding [\#192](https://github.com/cybercongress/cyberd/pull/192) ([arturalbov](https://github.com/arturalbov))
 - Fix rank calculation context data [\#191](https://github.com/cybercongress/cyberd/pull/191) ([hleb-albau](https://github.com/hleb-albau))
