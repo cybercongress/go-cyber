@@ -65,7 +65,7 @@ type CyberdApp struct {
 	mainKeeper          store.MainKeeper
 	accountKeeper       auth.AccountKeeper
 	feeCollectionKeeper auth.FeeCollectionKeeper
-	bankKeeper          cbdbank.Keeper
+	bankKeeper          *cbdbank.Keeper
 	stakingKeeper       staking.Keeper
 	slashingKeeper      slashing.Keeper
 	distrKeeper         distr.Keeper
@@ -78,7 +78,7 @@ type CyberdApp struct {
 	// cyberd storage
 	linkIndexedKeeper *keeper.LinkIndexedKeeper
 	cidNumKeeper      keeper.CidNumberKeeper
-	stakeIndex        *cbdbank.IndexedKeeper
+	stakingIndex      *cbdbank.IndexedKeeper
 	rankState         *rank.RankState
 
 	latestBlockHeight int64
@@ -151,9 +151,9 @@ func NewCyberdApp(
 	// cyberd keepers
 	app.linkIndexedKeeper = keeper.NewLinkIndexedKeeper(keeper.NewBaseLinkKeeper(ms, dbKeys.links))
 	app.cidNumKeeper = keeper.NewBaseCidNumberKeeper(ms, dbKeys.cidNum, dbKeys.cidNumReverse)
-	app.stakeIndex = cbdbank.NewIndexedKeeper(&app.bankKeeper, app.accountKeeper)
+	app.stakingIndex = cbdbank.NewIndexedKeeper(app.bankKeeper, app.accountKeeper)
 	app.rankState = rank.NewRankState(
-		allowSearch, app.mainKeeper, app.stakeIndex,
+		allowSearch, app.mainKeeper, app.stakingIndex,
 		app.linkIndexedKeeper, app.cidNumKeeper, computeUnit,
 	)
 
@@ -209,7 +209,7 @@ func NewCyberdApp(
 	start := time.Now()
 	app.BaseApp.Logger.Info("Loading mem state")
 	app.linkIndexedKeeper.Load(rankCtx, ctx)
-	app.stakeIndex.Load(rankCtx, ctx)
+	app.stakingIndex.Load(rankCtx, ctx)
 	app.BaseApp.Logger.Info("App loaded", "time", time.Since(start))
 
 	// BANDWIDTH LOAD
@@ -242,7 +242,7 @@ func (app *CyberdApp) initChainer(ctx sdk.Context, req abci.RequestInitChain) ab
 		acc := gacc.ToAccount()
 		acc.AccountNumber = app.accountKeeper.GetNextAccountNumber(ctx)
 		app.accountKeeper.SetAccount(ctx, acc)
-		app.stakeIndex.UpdateStake(types.AccNumber(acc.AccountNumber), acc.Coins.AmountOf(coin.CYB).Int64())
+		app.stakingIndex.UpdateStake(types.AccNumber(acc.AccountNumber), acc.Coins.AmountOf(coin.CYB).Int64())
 	}
 
 	// initialize distribution (must happen before staking)
@@ -452,7 +452,7 @@ func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.R
 	app.mainKeeper.StoreLatestBlockNumber(ctx, uint64(ctx.BlockHeight()))
 
 	validatorUpdates, tags := staking.EndBlocker(ctx, app.stakingKeeper)
-	app.stakeIndex.EndBlocker(ctx)
+	app.stakingIndex.EndBlocker(ctx)
 
 	bandwidth.EndBlocker(ctx, app.bandwidthMeter)
 

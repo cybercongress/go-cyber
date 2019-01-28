@@ -179,7 +179,7 @@ func initTestnet(config *tmconfig.Config, cdc *codec.Codec) error {
 
 		accs = append(accs, app.GenesisAccount{
 			Address: addr,
-			Amount:  10000000000000000,
+			Amount:  20000000000000000,
 		})
 
 		msg := staking.NewMsgCreateValidator(

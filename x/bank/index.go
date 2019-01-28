@@ -23,9 +23,6 @@ type IndexedKeeper struct {
 func NewIndexedKeeper(keeper *Keeper, accKeeper auth.AccountKeeper) *IndexedKeeper {
 	index := IndexedKeeper{Keeper: *keeper, accKeeper: accKeeper, accsToUpdate: make([]sdk.AccAddress, 0)}
 	hook := func(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress) {
-		if ctx.IsCheckTx() {
-			return
-		}
 		if from != nil {
 			index.accsToUpdate = append(index.accsToUpdate, from)
 		}
