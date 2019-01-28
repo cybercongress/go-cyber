@@ -8,7 +8,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/bank"
 	distr "github.com/cosmos/cosmos-sdk/x/distribution"
-	"github.com/cosmos/cosmos-sdk/x/mint"
 	"github.com/cosmos/cosmos-sdk/x/params"
 	"github.com/cosmos/cosmos-sdk/x/slashing"
 	"github.com/cosmos/cosmos-sdk/x/staking"
@@ -22,6 +21,7 @@ import (
 	cbdbank "github.com/cybercongress/cyberd/x/bank"
 	"github.com/cybercongress/cyberd/x/link"
 	"github.com/cybercongress/cyberd/x/link/keeper"
+	"github.com/cybercongress/cyberd/x/mint"
 	"github.com/cybercongress/cyberd/x/rank"
 	abci "github.com/tendermint/tendermint/abci/types"
 	cmn "github.com/tendermint/tendermint/libs/common"
@@ -64,14 +64,16 @@ type CyberdApp struct {
 	// manage getting and setting app data
 	mainKeeper          store.MainKeeper
 	accountKeeper       auth.AccountKeeper
-	feeCollectionKeeper NoopFeeCollectionKeeper
+	feeCollectionKeeper auth.FeeCollectionKeeper
 	bankKeeper          cbdbank.Keeper
 	stakingKeeper       staking.Keeper
 	slashingKeeper      slashing.Keeper
 	distrKeeper         distr.Keeper
 	paramsKeeper        params.Keeper
 	accBandwidthKeeper  bw.Keeper
-	mintKeeper          mint.Keeper
+
+	//inflation
+	minter mint.Minter
 
 	// cyberd storage
 	linkIndexedKeeper *keeper.LinkIndexedKeeper
@@ -110,7 +112,7 @@ func NewCyberdApp(
 		mainKeeper: ms,
 	}
 
-	app.feeCollectionKeeper = NoopFeeCollectionKeeper{}
+	app.feeCollectionKeeper = auth.NewFeeCollectionKeeper(app.cdc, dbKeys.fees)
 	app.paramsKeeper = params.NewKeeper(app.cdc, dbKeys.params, dbKeys.tParams)
 	app.accBandwidthKeeper = bandwidth.NewAccBandwidthKeeper(dbKeys.accBandwidth)
 	app.blockBandwidthKeeper = bandwidth.NewBlockSpentBandwidthKeeper(dbKeys.blockBandwidth)
@@ -141,9 +143,9 @@ func NewCyberdApp(
 		app.bankKeeper, stakingKeeper, app.feeCollectionKeeper,
 		distr.DefaultCodespace,
 	)
-	app.mintKeeper = mint.NewKeeper(app.cdc, dbKeys.mint,
+	app.minter = mint.NewMinter(
+		app.feeCollectionKeeper, stakingKeeper,
 		app.paramsKeeper.Subspace(mint.DefaultParamspace),
-		&stakingKeeper, app.feeCollectionKeeper,
 	)
 
 	// cyberd keepers
@@ -256,10 +258,10 @@ func (app *CyberdApp) initChainer(ctx sdk.Context, req abci.RequestInitChain) ab
 	app.accountKeeper.SetParams(ctx, genesisState.AuthData.Params)
 
 	slashing.InitGenesis(ctx, app.slashingKeeper, genesisState.SlashingData, genesisState.StakingData)
-	mint.InitGenesis(ctx, app.mintKeeper, genesisState.MintData)
+	mint.InitGenesis(ctx, app.minter, genesisState.MintData)
 	bandwidth.InitGenesis(ctx, app.bandwidthMeter, app.accBandwidthKeeper, genesisState.GetAddresses())
 
-	err = CyberdValidateGenesisState(genesisState)
+	err = validateGenesisState(genesisState)
 	if err != nil {
 		panic(err)
 	}
@@ -427,7 +429,7 @@ func getSignersTags(tx sdk.Tx) sdk.Tags {
 func (app *CyberdApp) BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock) abci.ResponseBeginBlock {
 
 	// mint new tokens for the previous block
-	mint.BeginBlocker(ctx, app.mintKeeper)
+	mint.BeginBlocker(ctx, app.minter)
 	// distribute rewards for the previous block
 	distr.BeginBlocker(ctx, req, app.distrKeeper)
 
