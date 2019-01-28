@@ -38,8 +38,10 @@ func InitCmd(ctx *server.Context, cdc *codec.Codec) *cobra.Command {
 		Long:  `Initialize validators's and node's configuration files.`,
 		Args:  cobra.NoArgs,
 		RunE: func(_ *cobra.Command, _ []string) error {
+
 			config := ctx.Config
 			config.SetRoot(viper.GetString(cli.HomeFlag))
+
 			chainID := viper.GetString(client.FlagChainID)
 			if chainID == "" {
 				chainID = fmt.Sprintf("test-chain-%v", common.RandStr(6))
@@ -53,8 +55,7 @@ func InitCmd(ctx *server.Context, cdc *codec.Codec) *cobra.Command {
 
 			var appState json.RawMessage
 			genFile := config.GenesisFile()
-			if appState, err = initializeEmptyGenesis(cdc, genFile, chainID,
-				viper.GetBool(flagOverwrite)); err != nil {
+			if appState, err = initializeEmptyGenesis(cdc, genFile, chainID, viper.GetBool(flagOverwrite)); err != nil {
 				return err
 			}
 			if err = ExportGenesisFile(genFile, chainID, nil, appState); err != nil {

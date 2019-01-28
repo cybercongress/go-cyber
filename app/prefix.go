@@ -5,12 +5,12 @@ import (
 )
 
 var (
-	AccountAddressPrefix   = "cbd"
-	AccountPubKeyPrefix    = "cbdpub"
-	ValidatorAddressPrefix = "cbdvaloper"
-	ValidatorPubKeyPrefix  = "cbdvaloperpub"
-	ConsNodeAddressPrefix  = "cbdvalcons"
-	ConsNodePubKeyPrefix   = "cbdvalconspub"
+	AccountAddressPrefix   = "cyber"
+	AccountPubKeyPrefix    = "cyberpub"
+	ValidatorAddressPrefix = "cybervaloper"
+	ValidatorPubKeyPrefix  = "cybervaloperpub"
+	ConsNodeAddressPrefix  = "cybervalcons"
+	ConsNodePubKeyPrefix   = "cybervalconspub"
 )
 
 func SetPrefix() {

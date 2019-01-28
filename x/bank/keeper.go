@@ -95,7 +95,7 @@ func (k Keeper) GetAccountUnboundedStake(ctx sdk.Context, addr sdk.AccAddress) i
 	if acc == nil {
 		return 0
 	}
-	return acc.GetCoins().AmountOf(coin.CBD).Int64()
+	return acc.GetCoins().AmountOf(coin.CYB).Int64()
 }
 
 func (k Keeper) GetAccountBoundedStake(ctx sdk.Context, addr sdk.AccAddress) int64 {
