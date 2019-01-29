@@ -8,7 +8,8 @@ import (
 func MsgBandwidthCosts(msg sdk.Msg) int64 {
 	switch msg.(type) {
 	case link.Msg:
-		return LinkMsgCost
+		linkMsg := msg.(link.Msg)
+		return int64(len(linkMsg.Links)) * LinkMsgCost
 	default:
 		return NonLinkMsgCost
 	}
