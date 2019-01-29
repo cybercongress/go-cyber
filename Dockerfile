@@ -70,7 +70,6 @@ RUN url="https://dist.ipfs.io/ipget/v${IPGET_VERSION}/ipget_v${IPGET_VERSION}_${
     rm ipget.tgz
 
 WORKDIR /ipget
-RUN ls -la
 #replace with valid IPFS hash
 RUN ./ipget QmeeLUVdiSTTKQqhWqsffYDtNvvvcTfJdotkNyi1KDEJtQ -o /genesis.json
 #replace with valid IPFS hash
@@ -79,8 +78,6 @@ RUN ./ipget QmeeLUVdiSTTKQqhWqsffYDtNvvvcTfJdotkNyi1KDEJtQ -o /links
 RUN ./ipget QmeeLUVdiSTTKQqhWqsffYDtNvvvcTfJdotkNyi1KDEJtQ -o /config.toml
 
 WORKDIR /
-
-RUN ls  -l
 
 #  Copy compiled kernel and binaries
 ###############################################################################
