@@ -17,4 +17,9 @@ then
     cp /config.toml /root/.cyberd/config/
 fi
 
+if [ ! -f "/root/.cyberd/config/links" ]
+then
+    cp /links /root/.cyberd/config/
+fi
+
 exec "$@"
