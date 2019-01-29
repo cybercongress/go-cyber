@@ -75,7 +75,7 @@ RUN ./ipget Qmdxny6h8ntcMQjs9FH5F4YPXm6qTBBqBQ2fpgUy72U4bJ -o /genesis.json
 #replace with actual IPFS hash
 RUN ./ipget QmeupYarwzd7kZzg7faEXZZPPk5cbzbwC71YXJvTHFoUXe -o /links
 #replace with actual IPFS hash
-RUN ./ipget QmYUoLfMiXkgHsJicQmgLPUJCxf7t4DJKbQ4JBk1394CXT -o /config.toml
+RUN ./ipget QmdFQTmeUswfeDRsKw1MrqLmTapkV4sks1Q3ZtBVG8uec6 -o /config.toml
 
 WORKDIR /
 
