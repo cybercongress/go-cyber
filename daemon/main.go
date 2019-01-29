@@ -9,6 +9,7 @@ import (
 	"github.com/cybercongress/cyberd/app"
 	"github.com/cybercongress/cyberd/daemon/cmd"
 	"github.com/cybercongress/cyberd/daemon/rpc"
+	"github.com/cybercongress/cyberd/util"
 	"github.com/cybercongress/cyberd/x/rank"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -34,23 +35,12 @@ func main() {
 
 	cdc := app.MakeCodec()
 	ctx := server.NewDefaultContext()
-	ctx.Config.RootDir = rootDir
 
 	cobra.EnableCommandSorting = false
 	rootCmd := &cobra.Command{
 		Use:               "cyberd",
 		Short:             "Cyberd Daemon (server)",
-		PersistentPreRunE: server.PersistentPreRunEFn(ctx),
-	}
-
-	rootCmd.PersistentPreRunE = func(_ *cobra.Command, args []string) error {
-		for _, arg := range args {
-			if arg == flagNotToSealAccPrefix {
-				return nil
-			}
-		}
-		app.SetPrefix()
-		return nil
+		PersistentPreRunE: util.ConcatCobraCmdFuncs(server.PersistentPreRunEFn(ctx), setAppPrefix),
 	}
 
 	rootCmd.AddCommand(cmd.InitCmd(ctx, cdc))
@@ -95,4 +85,14 @@ func exportAppStateAndTMValidators(
 
 	capp := app.NewCyberdApp(logger, db, rank.CPU, false)
 	return capp.ExportAppStateAndValidators()
+}
+
+func setAppPrefix(_ *cobra.Command, args []string) error {
+	for _, arg := range args {
+		if arg == flagNotToSealAccPrefix {
+			return nil
+		}
+	}
+	app.SetPrefix()
+	return nil
 }
