@@ -19,10 +19,10 @@
 |             |                          |                   |                                                |
 | Slashing    | MaxEvidenceAge           | 3weeks            | misbehaviour evidence max age                  |
 | Slashing    | SignedBlocksWindow       | 30min             | window to calculate validators liveness        |
-| Slashing    | MinSignedPerWindow       | 65%               | min singed block for window to not be jailed   |
+| Slashing    | MinSignedPerWindow       | 70%               | min singed block for window to not be jailed   |
 | Slashing    | DowntimeJailDuration     | 0                 | unjail delay                                   |
 | Slashing    | SlashFractionDoubleSign  | 20%               | % of stake reduction for double sign           |
-| Slashing    | SlashFractionDowntime    | 0%                | % of stake reduction for being offline         |
+| Slashing    | SlashFractionDowntime    | 0.1%                | % of stake reduction for being offline         |
 |             |                 |                   |                              |
 | Mint        | TokensPerBlock  | 0.634195840 Gcyb  | validators block rewards     |
 |             |                               |                             |                                                            |
