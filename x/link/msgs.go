@@ -29,6 +29,10 @@ func (msg Msg) ValidateBasic() sdk.Error {
 		return sdk.ErrInvalidAddress(msg.Address.String())
 	}
 
+	if len(msg.Links) == 0 {
+		return cbd.ErrZeroLinks()
+	}
+
 	var filter = make(CidsFilter)
 
 	for _, link := range msg.Links {
