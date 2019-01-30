@@ -33,6 +33,7 @@ html, body {width: 100%;background: rgb(34, 34, 34);font-family: 'Play';font-siz
 .header .bar.animate:before {bottom: 0;transform: rotate(-45deg);transition: bottom 300ms cubic-bezier(0.23, 1, 0.32, 1), transform 300ms 300ms cubic-bezier(0.23, 1, 0.32, 1);}
 .main-content section {padding: 60px 0;color: white;}
 h2 { font-size: 26px; padding-bottom: 40px; color: #94ff4b;}
+p {text-align: justify; text-justify: inter-word;}
 section { line-height: 32px;letter-spacing: 0;text-aling: justify;}
 .contact {width: 92%;border-top: dashed 1px rgba(248, 247, 247, 0.3);}
 .abstract {border-top: dashed 1px rgba(248, 247, 247, 0.3);margin-top: 60px;padding-top: 60px;}
