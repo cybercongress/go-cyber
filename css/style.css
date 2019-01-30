@@ -88,8 +88,8 @@ ul.disc {list-style-type: disc;}
     .imgfour {width: 0px;height: 0px;object-fit: contain;background: none;}
     .imgfive {width: 300px;height: 286px;background: url(../images/3m.png);}
     .imgone {width: 300px;height: 256px;background: url(../images/boll2.png);margin-left: 0%;margin-top: 5%;}
-    .imgscrin {width: 300px;height: 164px;background: url(../images/lllm.png);margin: 5% auto;}
-    .imgscrinn {width: 300px;height: 200px;background: url(../images/lllllml.png);margin: 5% auto; }
+    .imgscrin {width: 300px;height: 164px;background: url(../images/lllllml.png);margin: 5% auto;}
+    .imgscrinn {width: 300px;height: 200px;background: url(../images/lllm.png);margin: 5% auto; }
     .textimg {color: white;position: absolute;width: auto;height: auto;font-size: 25px;line-height: 31px;letter-spacing: 1.45px;top: 220px;left: 15%;text-transform: uppercase;}
     .contacte {color: white;width: 90%;margin-left: 0%;line-height: 2;margin-top: 50px;margin-bottom: 70px;}
     .header .mobile-bar {background: none;color: #FFF;height: 60px;right: -59px;position: absolute;width: 60px;z-index: 3;}
