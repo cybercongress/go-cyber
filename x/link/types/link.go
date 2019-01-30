@@ -6,8 +6,8 @@ import (
 )
 
 type Link struct {
-	From Cid
-	To   Cid
+	From Cid `json:"from"`
+	To   Cid `json:"to"`
 }
 
 type CompactLink struct {
