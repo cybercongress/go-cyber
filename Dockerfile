@@ -71,7 +71,7 @@ RUN url="https://dist.ipfs.io/ipget/v${IPGET_VERSION}/ipget_v${IPGET_VERSION}_${
 
 WORKDIR /ipget
 #replace with actual IPFS hash
-RUN ./ipget QmWL1fbriKgjqQ9bKr5hDAdif1aw2o8Dq2r34rh3FrBQB7 -o /genesis.json
+RUN ./ipget QmNjMpRMyw98rKtQWQXNEFC5sfCsXqpB9GA6dMz7QschLz -o /genesis.json
 #replace with actual IPFS hash
 RUN ./ipget QmeupYarwzd7kZzg7faEXZZPPk5cbzbwC71YXJvTHFoUXe -o /links
 #replace with actual IPFS hash
