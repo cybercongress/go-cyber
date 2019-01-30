@@ -30,7 +30,7 @@ func GenerateEulerGenesisFileCmd(ctx *server.Context, cdc *codec.Codec) *cobra.C
 		RunE: func(_ *cobra.Command, args []string) error {
 
 			// proof of use accs
-			pouAccs, err := readPouAccounts()
+			pouAccs, err := getPouGenesisAccounts()
 			if err != nil {
 				return err
 			}
@@ -75,12 +75,12 @@ func GenerateEulerGenesisFileCmd(ctx *server.Context, cdc *codec.Codec) *cobra.C
 	return cmd
 }
 
-func readPouAccounts() ([]app.GenesisAccount, error) {
-
-	accs := make([]app.GenesisAccount, 0)
+func readPouAccounts() ([]sdk.AccAddress, []float64, error) {
+	accs := make([]sdk.AccAddress, 0)
+	shares := make([]float64, 0)
 	pocFile, err := os.Open("/home/hlb/.cyberd/proof-of-code")
 	if err != nil {
-		return nil, err
+		return accs, shares, err
 	}
 
 	reader := csv.NewReader(bufio.NewReader(pocFile))
@@ -92,26 +92,40 @@ func readPouAccounts() ([]app.GenesisAccount, error) {
 		if err == io.EOF {
 			break
 		} else if err != nil {
-			return nil, err
+			return accs, shares, err
 		}
 
 		accAddress, err := sdk.AccAddressFromBech32(line[0])
 		if err != nil {
-			return nil, err
+			return accs, shares, err
 		}
 
-		accAmtPercent, err := strconv.ParseFloat(line[1], 64)
+		accShare, err := strconv.ParseFloat(line[1], 64)
 		if err != nil {
-			return nil, err
+			return accs, shares, err
 		}
-
-		accs = append(accs, app.GenesisAccount{
-			Address: accAddress,
-			Amount:  amt(accAmtPercent),
-		})
+		accs = append(accs, accAddress)
+		shares = append(shares, accShare)
 	}
 
-	return accs, nil
+	return accs, shares, nil
+}
+
+func getPouGenesisAccounts() ([]app.GenesisAccount, error) {
+
+	gacc := make([]app.GenesisAccount, 0)
+	accs, shares, err := readPouAccounts()
+	if err != nil {
+		return gacc, err
+	}
+
+	for i := range accs {
+		gacc = append(gacc, app.GenesisAccount{
+			Address: accs[i],
+			Amount:  pouPercentageToAmt(shares[i]),
+		})
+	}
+	return gacc, nil
 }
 
 // Returns all, except genesis poc accs
