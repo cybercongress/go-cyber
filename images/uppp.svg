@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="55px" height="55px" viewBox="0 0 55 55" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg width="100px" height="100px" viewBox="0 0 55 55" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <!-- Generator: sketchtool 52.5 (67469) - http://www.bohemiancoding.com/sketch -->
     <title>11EA6DCF-6A36-4CF1-8F1E-033C4C6393C9</title>
     <desc>Created with sketchtool.</desc>
     <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
         <g id="ic/arrow_up">
             <g id="Group-3">
-                <circle id="Oval" fill="#3F3F3F" fill-rule="nonzero" cx="0" cy="0" r=""></circle>
+                <circle id="Oval" fill="#3F3F3F" fill-rule="nonzero" cx="27.5" cy="27.5" r="27.5"></circle>
                 <g id="Arrow" transform="translate(27.698188, 27.887730) rotate(-89.727212) translate(-27.698188, -27.887730) translate(21.198188, 16.887730)" fill="#FFFFFF" opacity="0.362141927">
                     <g id="Ebene_1" transform="translate(0.996506, 0.943477)">
                         <path d="M1.79795559,0.286397875 C1.36600469,-0.115648181 0.695404762,-0.0915077576 0.2927035,0.340584316 C-0.109997762,0.772676389 -0.0953874478,1.45240243 0.325498322,1.8663212 L9.15166244,10.3125 L0.325498322,18.7586788 C-0.0953874478,19.1725976 -0.109997762,19.8523236 0.2927035,20.2844157 C0.695404762,20.7165078 1.36600469,20.7406482 1.79795559,20.3386021 L11.4498969,11.1024617 C11.6642559,10.8971118 11.7857143,10.6113985 11.7857143,10.3125 C11.7857143,10.0136015 11.6642559,9.72788818 11.4498969,9.52253834 L1.79795559,0.286397875 Z" id="Path"></path>

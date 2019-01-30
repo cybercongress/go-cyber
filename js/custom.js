@@ -17,7 +17,7 @@
     });
 
    
-    $(".resume-download").tooltip();
+   
 
    
       $(".customer-carousel").owlCarousel({
@@ -31,7 +31,7 @@
    
 
    
-    $("#welcome").css({'height':($(window).height())+'px'});
+    
     $(".header").css({'height':($(window).height())+'px'});
 
     $(document).ready(function () {
