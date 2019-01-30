@@ -24,7 +24,7 @@ func (app *CyberdApp) ExportAppStateAndValidators() (appState json.RawMessage, v
 	// iterate to get the accounts
 	var accounts []GenesisAccount
 	appendAccount := func(acc auth.Account) (stop bool) {
-		account := NewGenesisAccountI(acc)
+		account := NewGenesisAccount(acc)
 		accounts = append(accounts, account)
 		return false
 	}
