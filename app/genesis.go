@@ -54,29 +54,25 @@ func NewGenesisState(
 }
 
 type GenesisAccount struct {
-	Address sdk.AccAddress `json:"addr"`
-	Amount  int64          `json:"amt"`
+	Address   sdk.AccAddress `json:"addr"`
+	Amount    int64          `json:"amt"`
+	AccNumber uint64         `json:"nmb"`
 }
 
-func NewGenesisAccount(acc *auth.BaseAccount) GenesisAccount {
+func NewGenesisAccount(acc auth.Account) GenesisAccount {
 	return GenesisAccount{
-		Address: acc.Address,
-		Amount:  acc.Coins.AmountOf(coin.CYB).Int64(),
-	}
-}
-
-func NewGenesisAccountI(acc auth.Account) GenesisAccount {
-	return GenesisAccount{
-		Address: acc.GetAddress(),
-		Amount:  acc.GetCoins().AmountOf(coin.CYB).Int64(),
+		Address:   acc.GetAddress(),
+		Amount:    acc.GetCoins().AmountOf(coin.CYB).Int64(),
+		AccNumber: acc.GetAccountNumber(),
 	}
 }
 
 // convert GenesisAccount to auth.BaseAccount
 func (ga *GenesisAccount) ToAccount() (acc *auth.BaseAccount) {
 	return &auth.BaseAccount{
-		Address: ga.Address,
-		Coins:   sdk.Coins{sdk.NewInt64Coin(coin.CYB, ga.Amount)},
+		Address:       ga.Address,
+		Coins:         sdk.Coins{sdk.NewInt64Coin(coin.CYB, ga.Amount)},
+		AccountNumber: ga.AccNumber,
 	}
 }
 
@@ -111,7 +107,7 @@ func NewDefaultGenesisState() GenesisState {
 		},
 		SlashingData: slashing.DefaultGenesisState(),
 		DistrData:    distr.DefaultGenesisState(),
-		GenTxs:       nil,
+		GenTxs:       []json.RawMessage{},
 	}
 }
 
@@ -154,7 +150,7 @@ func CyberdAppGenState(cdc *codec.Codec, genDoc tmtypes.GenesisDoc, appGenTxs []
 	return genesisState, nil
 }
 
-// CyberdAppGenState but with JSON
+//todo should be here?
 func CyberdAppGenStateJSON(cdc *codec.Codec, genDoc tmtypes.GenesisDoc, appGenTxs []json.RawMessage) (
 	appState json.RawMessage, err error) {
 	// create the final app state

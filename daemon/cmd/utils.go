@@ -123,12 +123,12 @@ func saveGenesisState(ctx *server.Context, cdc *codec.Codec, oldDoc tmtypes.Gene
 	config.SetRoot(viper.GetString(cli.HomeFlag))
 	genFile := config.GenesisFile()
 
-	appStateJSON, err := cdc.MarshalJSON(state)
+	appStateJSON, err := cdc.MarshalJSON(&state)
 	if err != nil {
 		return err
 	}
 
-	return ExportGenesisFile(genFile, oldDoc.ChainID, nil, appStateJSON)
+	return ExportGenesisFile(genFile, oldDoc.ChainID, oldDoc.Validators, appStateJSON)
 }
 
 func loadGenesisDoc(cdc *amino.Codec, genFile string) (genDoc tmtypes.GenesisDoc, err error) {

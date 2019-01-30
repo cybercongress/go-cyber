@@ -2,35 +2,31 @@ package cmd
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
-	"io"
-	"io/ioutil"
-	"os"
-	"path/filepath"
-
+	"github.com/cybercongress/cyberd/app"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-
-	cfg "github.com/tendermint/tendermint/config"
-	"github.com/tendermint/tendermint/crypto"
-	tmcli "github.com/tendermint/tendermint/libs/cli"
-	"github.com/tendermint/tendermint/libs/common"
+	"io"
+	"io/ioutil"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/client/keys"
 	"github.com/cosmos/cosmos-sdk/client/utils"
-	"github.com/cosmos/cosmos-sdk/cmd/gaia/app"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/server"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	authtxb "github.com/cosmos/cosmos-sdk/x/auth/client/txbuilder"
 	"github.com/cosmos/cosmos-sdk/x/staking/client/cli"
+	cfg "github.com/tendermint/tendermint/config"
+	"github.com/tendermint/tendermint/crypto"
+	tmcli "github.com/tendermint/tendermint/libs/cli"
 )
 
 const (
-	defaultAmount                  = "100CBD"
+	defaultAmount                  = "100cyb"
 	defaultCommissionRate          = "0.1"
 	defaultCommissionMaxRate       = "0.2"
 	defaultCommissionMaxChangeRate = "0.01"
@@ -41,7 +37,7 @@ const (
 func GenTxCmd(ctx *server.Context, cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "gentx",
-		Short: "Generate a genesis tx carrying a self delegation",
+		Short: "Generate a genesis tx carrying a self delegation and add it to genesis.json",
 		Long: fmt.Sprintf(`This command is an alias of the 'cyberdcli create-validator' command'.
 
 It creates a genesis piece carrying a self delegation with the
@@ -65,13 +61,8 @@ following delegation and commission default parameters:
 				return err
 			}
 
-			genDoc, err := loadGenesisDoc(cdc, config.GenesisFile())
+			doc, state, err := loadGenesisState(ctx, cdc)
 			if err != nil {
-				return err
-			}
-
-			genesisState := app.GenesisState{}
-			if err = cdc.UnmarshalJSON(genDoc.AppState, &genesisState); err != nil {
 				return err
 			}
 
@@ -94,20 +85,8 @@ following delegation and commission default parameters:
 				}
 			}
 
-			var chainId string
-
-			if id := viper.GetString(client.FlagChainID); id != "" {
-				chainId = id
-			} else {
-				genDoc, err := loadGenesisDoc(cdc, config.GenesisFile())
-				if err != nil {
-					return err
-				}
-				chainId = genDoc.ChainID
-			}
-
 			// Set flags for creating gentx
-			prepareFlagsForTxCreateValidator(config, nodeID, ip, chainId, valPubKey)
+			prepareFlagsForTxCreateValidator(config, nodeID, ip, doc.ChainID, valPubKey)
 
 			// Fetch the amount of coins staked
 			amount := viper.GetString(cli.FlagAmount)
@@ -116,7 +95,7 @@ following delegation and commission default parameters:
 				return err
 			}
 
-			err = accountInGenesis(genesisState, key.GetAddress(), coins)
+			err = accountInGenesis(state, key.GetAddress(), coins)
 			if err != nil {
 				return err
 			}
@@ -147,21 +126,21 @@ following delegation and commission default parameters:
 				return err
 			}
 
-			// Fetch output file name
-			outputDocument := viper.GetString(client.FlagOutputDocument)
-			if outputDocument == "" {
-				outputDocument, err = makeOutputFilepath(config.RootDir, nodeID)
-				if err != nil {
-					return err
-				}
-			}
-
-			if err := writeSignedGenTx(cdc, outputDocument, signedTx); err != nil {
+			txAsJson, err := cdc.MarshalJSON(signedTx)
+			if err != nil {
 				return err
 			}
 
-			fmt.Fprintf(os.Stderr, "Genesis transaction written to %q\n", outputDocument)
-			return nil
+			if len(state.GenTxs) == 0 {
+				state.GenTxs = []json.RawMessage{}
+			}
+			state.GenTxs = append(state.GenTxs, txAsJson)
+			stateJson, err := app.CyberdAppGenStateJSON(cdc, doc, state.GenTxs)
+			if err != nil {
+				return err
+			}
+
+			return ExportGenesisFile(config.GenesisFile(), doc.ChainID, doc.Validators, stateJson)
 		},
 	}
 
@@ -170,29 +149,28 @@ following delegation and commission default parameters:
 	cmd.Flags().String(client.FlagName, "", "name of private key with which to sign the gentx")
 	cmd.Flags().String(client.FlagOutputDocument, "",
 		"write the genesis transaction JSON document to the given file instead of the default location")
-	cmd.Flags().String(client.FlagChainID, "euler-dev", "current chain-id")
-	cmd.Flags().String(cli.FlagMoniker, "anonymous", "validator display name")
+	cmd.Flags().String(cli.FlagMoniker, "", "validator display name")
 	cmd.Flags().AddFlagSet(cli.FsCommissionCreate)
 	cmd.Flags().AddFlagSet(cli.FsAmount)
 	cmd.Flags().AddFlagSet(cli.FsPk)
 	cmd.MarkFlagRequired(client.FlagName)
+	cmd.MarkFlagRequired(cli.FlagMoniker)
 	return cmd
 }
 
 func accountInGenesis(genesisState app.GenesisState, key sdk.AccAddress, coins sdk.Coins) error {
+
 	accountIsInGenesis := false
 	bondDenom := genesisState.StakingData.Params.BondDenom
 
-	// Check if the account is in genesis
 	for _, acc := range genesisState.Accounts {
-		// Ensure that account is in genesis
 		if acc.Address.Equals(key) {
 
 			// Ensure account contains enough funds of default bond denom
-			if coins.AmountOf(bondDenom).GT(acc.Coins.AmountOf(bondDenom)) {
+			if coins.AmountOf(bondDenom).GT(sdk.NewInt(acc.Amount)) {
 				return fmt.Errorf(
 					"account %v is in genesis, but it only has %v%v available to stake, not %v%v",
-					key.String(), acc.Coins.AmountOf(bondDenom), bondDenom, coins.AmountOf(bondDenom), bondDenom,
+					key.String(), acc.Amount, bondDenom, coins.AmountOf(bondDenom), bondDenom,
 				)
 			}
 			accountIsInGenesis = true
@@ -234,14 +212,6 @@ func prepareFlagsForTxCreateValidator(config *cfg.Config, nodeID, ip, chainID st
 	}
 }
 
-func makeOutputFilepath(rootDir, nodeID string) (string, error) {
-	writePath := filepath.Join(rootDir, "config", "gentx")
-	if err := common.EnsureDir(writePath, 0700); err != nil {
-		return "", err
-	}
-	return filepath.Join(writePath, fmt.Sprintf("gentx-%v.json", nodeID)), nil
-}
-
 func readUnsignedGenTxFile(cdc *codec.Codec, r io.Reader) (auth.StdTx, error) {
 	var stdTx auth.StdTx
 	bytes, err := ioutil.ReadAll(r)
@@ -250,19 +220,4 @@ func readUnsignedGenTxFile(cdc *codec.Codec, r io.Reader) (auth.StdTx, error) {
 	}
 	err = cdc.UnmarshalJSON(bytes, &stdTx)
 	return stdTx, err
-}
-
-// nolint: errcheck
-func writeSignedGenTx(cdc *codec.Codec, outputDocument string, tx auth.StdTx) error {
-	outputFile, err := os.OpenFile(outputDocument, os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0644)
-	if err != nil {
-		return err
-	}
-	defer outputFile.Close()
-	json, err := cdc.MarshalJSON(tx)
-	if err != nil {
-		return err
-	}
-	_, err = fmt.Fprintf(outputFile, "%s\n", json)
-	return err
 }
