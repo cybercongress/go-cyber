@@ -82,7 +82,6 @@ const (
 	defaultUnbondingTime = 60 * 60 * 24 * 3 * time.Second
 )
 
-// todo set params for each module
 // NewDefaultGenesisState generates the default state for cyberd.
 func NewDefaultGenesisState() GenesisState {
 	return GenesisState{
@@ -105,9 +104,25 @@ func NewDefaultGenesisState() GenesisState {
 				BondDenom:     coin.CYB,
 			},
 		},
-		SlashingData: slashing.DefaultGenesisState(),
-		DistrData:    distr.DefaultGenesisState(),
-		GenTxs:       []json.RawMessage{},
+		SlashingData: slashing.GenesisState{
+			Params: slashing.Params{
+				MaxEvidenceAge:          defaultUnbondingTime,
+				SignedBlocksWindow:      60 * 30, // ~30min
+				DowntimeJailDuration:    0,
+				MinSignedPerWindow:      sdk.NewDecWithPrec(70, 1),
+				SlashFractionDoubleSign: sdk.NewDec(1).Quo(sdk.NewDec(5)),    // 20%
+				SlashFractionDowntime:   sdk.NewDec(1).Quo(sdk.NewDec(1000)), // 0.1%
+			},
+		},
+		DistrData: distr.GenesisState{
+			FeePool:             distr.InitialFeePool(),
+			CommunityTax:        sdk.NewDecWithPrec(0, 2), // 0%
+			BaseProposerReward:  sdk.NewDecWithPrec(1, 2), // 1%
+			BonusProposerReward: sdk.NewDecWithPrec(4, 2), // 4%
+			WithdrawAddrEnabled: true,
+			PreviousProposer:    nil,
+		},
+		GenTxs: []json.RawMessage{},
 	}
 }
 
