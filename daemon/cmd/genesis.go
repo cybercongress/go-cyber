@@ -8,7 +8,6 @@ import (
 	"github.com/cybercongress/cyberd/app"
 	cbd "github.com/cybercongress/cyberd/types"
 	"github.com/spf13/cobra"
-	"strconv"
 )
 
 func GenesisCmds(ctx *server.Context, cdc *codec.Codec) *cobra.Command {
@@ -35,6 +34,24 @@ const pouFileCoefficient float64 = 0.7 // means 70%
 
 const tokensToBurnPercentage float64 = 11.8000 // 0x3b6ce0d5fd5f6de16fb6b687207efe86702a6e76
 const proofOfUsePercentage float64 = 70.0000   // 0xccf0e5a05bf5c0fb7c2d91737b176b4a2d2fd7f0
+
+var pocvEulerAccs = map[string]float64{
+	"cbd1f9yjqmxh6prsmgpcaqj8lmjnxg644n50qjl4vw": 8.288000001,              // 0x9f4062f6153ff4dbf93f6a6f686ed3c906bf0684
+	"cbd1hlu0kqwvxmhjjsezr00jdrvs2k537mqhrv02ja": 3.045611111,              // 0x7c4401ae98f12ef6de39ae24cf9fc51f80eba16b
+	"cbd1myeyqp96pz3tayjdctflrxpwf45dq3xyj56yk0": 2.1153,                   // 0xf2cb7985a5c3fdd8d7742a73d5dc001bbd32caf8
+	"cbd1gannk6qt3s5mnm5smx6xjqqvecu08666hpazlz": 1.5328,                   // 0x002f9caf40a444f20813da783d152bdfaf42852f
+	"cbd1sjedcfmqupxcnxudq9w0rxrf87r3c6tvep5fnj": 1.428,                    // 0x00b8fe1a1a2b899418702e32a96e276ff56a4d05
+	"cbd1ch4dpd8jxkl7w4wnzdx02utmw4j0xatfks6ulv": 1,                        // 0x8b788b444ca3203bba0fdcae1c482110494e81f1
+	"cbd1s3748ghvcwvrws3kxsdc8xnan3qhv77740gnnl": 0.568211111,              // 0x00cff8cf7bff03a9a2a81c01920ffd8cfa7ae9d0
+	"cbd14d92r4svhl4qa3g6q48tjekarw2kt67njlaeht": 0.083811111,              // 0x63e65bc441334b27d2178f81f2d701e4e58c158a
+	"cbd1up7dk03v4d898vqgmc2y32y7duuylgx8ra7jjj": 0.043511111,              // 0x9d7d6e753f055e40d3767337300e722e934086c1
+	"cbd1rqudjcrdwqedffxufmqgsleuguhm7pka6snns3": 0.028,                    // 0x00725d89a2a2fb3b21fd1035b579cbcde4a0991b
+	"cbd1hmkqhy8ygl6tnl5g8tc503rwrmmrkjcqtqrsx6": 0.023311111,              // 0x00ca47db1be92c1072e973fd8dc4a082f7d70214
+	"cbd1gs92s58t6rkallnml8ufdzrz3038dcylal0nlc": 0.023311111,              // 0x4585c7eaa2cb96d4b59e868929efabeeb8e65b07
+	"cbd1h7u5zvduvc3dqrfq9hejm35ktfxh3ha7fra64a": 0.0132800000000000911111, // 0x002b9c5b537a1b6004ed720f32cc808fd6210f26
+	"cbd1rl3xnsrkpjfwejqfy7v4kntu64hzxy8dgafh6j": 0.003111111,              // 0x00d3c9033570b8adea9c18780325a45635c55805
+	"cbd1xege0g92p6exmzjv58u7vh3s5zkz75v48mlnev": 0.003111111,              // 0x5d01f31f6eda95489ca1e3c6357a9627fa2983de
+}
 
 var pocvAccs = map[string]float64{
 	"cyber1f9yjqmxh6prsmgpcaqj8lmjnxg644n5074zznm": 8.288000001,              // 0x9f4062f6153ff4dbf93f6a6f686ed3c906bf0684
@@ -77,24 +94,48 @@ func AddMissingEulerTokensCmd(ctx *server.Context, cdc *codec.Codec) *cobra.Comm
 		Use: "add-missing-euler-tokens",
 		RunE: func(cmd *cobra.Command, args []string) error {
 
+			fmt.Println("")
+			fmt.Println("Fixing euler 0.1.0 network genesis distribution")
+
+			sdk.GetConfig().SetBech32PrefixForAccount("cbd", "cbdpub")
+			sdk.GetConfig().SetBech32PrefixForValidator("cbdvaloper", "cbdvaloperpub")
+			sdk.GetConfig().SetBech32PrefixForConsensusNode("cbdvalcons", "cbdvalconspub")
 			doc, state, err := loadGenesisState(ctx, cdc)
 			if err != nil {
 				return err
 			}
 
 			addrWithMissingTokens := make(map[string]int64, len(state.Accounts))
-			for pocvAddr, percentage := range pocvAccs {
-				addrWithMissingTokens[pocvAddr] = percentageToAmt(percentage) - pouPercentageToAmt(percentage)
+			//pocv accs
+			totalPocvAddition := int64(0)
+			for pocvAddr, percentage := range pocvEulerAccs {
+				tokensToAdd := percentageToAmt(percentage) - pouPercentageToAmt(percentage)
+				totalPocvAddition += tokensToAdd
+				addrWithMissingTokens[pocvAddr] += tokensToAdd
 			}
+			fmt.Printf("%v added to pocv\n", totalPocvAddition)
+
+			//pou accs
+			totalPouAddition := int64(0)
+			pouEulerAccs, shares, err := readPouAccounts()
+			if err != nil {
+				return err
+			}
+			for i := range pouEulerAccs {
+				tokensToAdd := pouShareToAmt(shares[i]) - pouPercentageToAmt(shares[i])
+				totalPouAddition += tokensToAdd
+				addrWithMissingTokens[pouEulerAccs[i].String()] += tokensToAdd
+			}
+			fmt.Printf("%v added to pou\n", totalPouAddition)
+
+			// burn addr acc
 			addrWithMissingTokens[cbd.GetBurnAddress().String()] = percentageToAmt(tokensToBurnPercentage)
 
-			fmt.Println("")
-			fmt.Println("Fixing euler 0.1.0 network genesis distribution")
+			// add tokens
 			for accIndex, acc := range state.Accounts {
 				tokensToAdd, ok := addrWithMissingTokens[acc.Address.String()]
 				if ok {
 					acc.Amount += tokensToAdd
-					fmt.Println(strconv.Itoa(int(tokensToAdd)) + " tokens added to " + acc.Address.String())
 					delete(addrWithMissingTokens, acc.Address.String())
 					state.Accounts[accIndex] = acc
 				}
@@ -145,6 +186,10 @@ func ChangeGenesisAccsPrefixCmd(ctx *server.Context, cdc *codec.Codec) *cobra.Co
 // So to get overall network percentage multiply it on pouFileCoefficient (0.7)
 func pouPercentageToAmt(pouPercentage float64) int64 {
 	return int64(pouPercentage / 100 * pouFileCoefficient * float64(genesisSupply))
+}
+
+func pouShareToAmt(share float64) int64 {
+	return int64(share * pouFileCoefficient * float64(genesisSupply))
 }
 
 func percentageToAmt(percentage float64) int64 {
