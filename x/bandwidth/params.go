@@ -10,10 +10,10 @@ const (
 	NonLinkMsgCost       = LinkMsgCost * 5
 
 	// Number of blocks to recover full bandwidth
-	RecoveryPeriod = 60 * 60 * 24
+	RecoveryPeriod = 60 * 60 * 24 // ~24h
 	// Number of blocks before next adjust price
-	AdjustPricePeriod                     = 60 * 10
+	AdjustPricePeriod                     = 60 // ~1m
 	BaseCreditPrice               float64 = 1.0
-	SlidingWindowSize                     = RecoveryPeriod / 2
-	ShouldBeSpentPerSlidingWindow         = float64(DesirableNetworkBandwidthForRecoveryPeriod) / (float64(RecoveryPeriod) / float64(SlidingWindowSize))
+	SlidingWindowSize                     = RecoveryPeriod
+	ShouldBeSpentPerSlidingWindow         = float64(DesirableNetworkBandwidthForRecoveryPeriod)
 )
