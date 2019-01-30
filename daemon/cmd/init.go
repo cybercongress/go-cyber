@@ -22,13 +22,6 @@ const (
 	flagMoniker    = "moniker"
 )
 
-type printInfo struct {
-	Moniker    string          `json:"moniker"`
-	ChainID    string          `json:"chain_id"`
-	NodeID     string          `json:"node_id"`
-	AppMessage json.RawMessage `json:"app_message"`
-}
-
 // get cmd to initialize all files for tendermint and application
 // nolint
 func InitCmd(ctx *server.Context, cdc *codec.Codec) *cobra.Command {

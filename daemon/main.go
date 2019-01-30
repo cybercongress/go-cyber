@@ -44,8 +44,6 @@ func main() {
 	}
 
 	rootCmd.AddCommand(cmd.InitCmd(ctx, cdc))
-	rootCmd.AddCommand(cmd.GenerateAccountsCmd(ctx, cdc))
-	rootCmd.AddCommand(cmd.CollectGenTxsCmd(ctx, cdc))
 	rootCmd.AddCommand(cmd.TestnetFilesCmd(ctx, cdc))
 	rootCmd.AddCommand(cmd.GenTxCmd(ctx, cdc))
 	rootCmd.AddCommand(cmd.AddGenesisAccountCmd(ctx, cdc))

@@ -17,6 +17,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	cfg "github.com/tendermint/tendermint/config"
 	tmconfig "github.com/tendermint/tendermint/config"
 	"github.com/tendermint/tendermint/crypto"
 	cmn "github.com/tendermint/tendermint/libs/common"
@@ -34,6 +35,14 @@ var (
 	flagNodeCliHome       = "node-cli-home"
 	flagStartingIPAddress = "starting-ip-address"
 )
+
+type initConfig struct {
+	ChainID   string
+	GenTxsDir string
+	Name      string
+	NodeID    string
+	ValPubKey crypto.PubKey
+}
 
 const nodeDirPerm = 0755
 
@@ -360,4 +369,44 @@ func calculateIP(ip string, i int) (string, error) {
 	}
 
 	return ipv4.String(), nil
+}
+
+func genAppStateFromConfig(
+	cdc *codec.Codec, config *cfg.Config, initCfg initConfig, genDoc types.GenesisDoc,
+) (appState json.RawMessage, err error) {
+
+	genFile := config.GenesisFile()
+	var (
+		appGenTxs       []auth.StdTx
+		persistentPeers string
+		genTxs          []json.RawMessage
+		jsonRawTx       json.RawMessage
+	)
+
+	// process genesis transactions, else create default genesis.json
+	appGenTxs, persistentPeers, err = collectStdTxs(cdc, config.Moniker, initCfg.GenTxsDir, genDoc)
+	if err != nil {
+		return
+	}
+
+	genTxs = make([]json.RawMessage, len(appGenTxs))
+	config.P2P.PersistentPeers = persistentPeers
+
+	for i, stdTx := range appGenTxs {
+		jsonRawTx, err = cdc.MarshalJSON(stdTx)
+		if err != nil {
+			return
+		}
+		genTxs[i] = jsonRawTx
+	}
+
+	cfg.WriteConfigFile(filepath.Join(config.RootDir, "config", "config.toml"), config)
+
+	appState, err = app.CyberdAppGenStateJSON(cdc, genDoc, genTxs)
+	if err != nil {
+		return
+	}
+
+	err = ExportGenesisFile(genFile, initCfg.ChainID, nil, appState)
+	return
 }
