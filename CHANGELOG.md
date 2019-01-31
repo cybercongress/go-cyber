@@ -2,7 +2,22 @@
 
 ## [Unreleased](https://github.com/cybercongress/cyberd/tree/HEAD)
 
-[Full Changelog](https://github.com/cybercongress/cyberd/compare/euler-1...HEAD)
+[Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.1.1...HEAD)
+
+**Fixed bugs:**
+
+- CI: Cyberd docker image building. Include genesis file [\#160](https://github.com/cybercongress/cyberd/issues/160)
+
+**Closed issues:**
+
+- Launch 0.1.1 testnet [\#205](https://github.com/cybercongress/cyberd/issues/205)
+
+**Merged pull requests:**
+
+- upd run-validator.md [\#225](https://github.com/cybercongress/cyberd/pull/225) ([SaveTheAles](https://github.com/SaveTheAles))
+
+## [v0.1.1](https://github.com/cybercongress/cyberd/tree/v0.1.1) (2019-01-31)
+[Full Changelog](https://github.com/cybercongress/cyberd/compare/euler-1...v0.1.1)
 
 **Fixed bugs:**
 
