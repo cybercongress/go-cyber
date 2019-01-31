@@ -6,7 +6,7 @@
 
 First, you have to setup a server.
 You are supposed to run your validator node all time, so you will need a reliable server to keep it running.
-Also, you may consider to use any cloud services like AWS or DigitalOcean.
+Also, you may consider to use any cloud services like AWS.
 
 Cyberd is based on Cosmos SDK written in Go.
 It should work on any platform which can compile and run programs in Go.
@@ -158,7 +158,7 @@ To declare a validator candidate, run the following command adjusting stake amou
 
 ```bash
 docker exec -ti cyberd cyberdcli tx staking create-validator \
-  --amount=100CBD \
+  --amount=10000000cyb \
   --pubkey=<your_node_pubkey> \
   --moniker=<your_node_nickname> \
   --trust-node \
