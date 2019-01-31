@@ -2,7 +2,37 @@
 
 ## [Unreleased](https://github.com/cybercongress/cyberd/tree/HEAD)
 
-[Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.1.0...HEAD)
+[Full Changelog](https://github.com/cybercongress/cyberd/compare/euler-1.1-dev1...HEAD)
+
+**Merged pull requests:**
+
+- Euler 0.1.1 [\#223](https://github.com/cybercongress/cyberd/pull/223) ([arturalbov](https://github.com/arturalbov))
+- Fix import reader [\#222](https://github.com/cybercongress/cyberd/pull/222) ([arturalbov](https://github.com/arturalbov))
+- Landing update [\#220](https://github.com/cybercongress/cyberd/pull/220) ([asadovka](https://github.com/asadovka))
+- DISCUSS: Chain params for 0.1.1 network [\#202](https://github.com/cybercongress/cyberd/pull/202) ([hleb-albau](https://github.com/hleb-albau))
+
+## [euler-1.1-dev1](https://github.com/cybercongress/cyberd/tree/euler-1.1-dev1) (2019-01-30)
+[Full Changelog](https://github.com/cybercongress/cyberd/compare/euler-1.1-dev0...euler-1.1-dev1)
+
+**Implemented enhancements:**
+
+- Docker image  with possibility to select compute unit [\#211](https://github.com/cybercongress/cyberd/issues/211)
+
+**Fixed bugs:**
+
+- Link msg bandwidth cost doesn't take into account links count  [\#216](https://github.com/cybercongress/cyberd/issues/216)
+
+**Merged pull requests:**
+
+- \#215 Fix pou distribution uses share not percentage [\#221](https://github.com/cybercongress/cyberd/pull/221) ([hleb-albau](https://github.com/hleb-albau))
+- \#215 Fix gentx commands. [\#218](https://github.com/cybercongress/cyberd/pull/218) ([hleb-albau](https://github.com/hleb-albau))
+
+## [euler-1.1-dev0](https://github.com/cybercongress/cyberd/tree/euler-1.1-dev0) (2019-01-29)
+[Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.1.0...euler-1.1-dev0)
+
+**Implemented enhancements:**
+
+- Links Exporter [\#184](https://github.com/cybercongress/cyberd/issues/184)
 
 **Fixed bugs:**
 
@@ -10,20 +40,24 @@
 - Change mint module to default cosmos module [\#181](https://github.com/cybercongress/cyberd/issues/181)
 - Current Bandwidth do not respect price [\#168](https://github.com/cybercongress/cyberd/issues/168)
 - negative bandwidnt  [\#164](https://github.com/cybercongress/cyberd/issues/164)
+- Wrong CYB allocation in Genesis [\#156](https://github.com/cybercongress/cyberd/issues/156)
 - Update docker with 0.1.0 version [\#154](https://github.com/cybercongress/cyberd/issues/154)
 - Move import\_private command to keys subcomand [\#152](https://github.com/cybercongress/cyberd/issues/152)
 - Handle import of ethereum privkeys with 0x [\#150](https://github.com/cybercongress/cyberd/issues/150)
 
 **Closed issues:**
 
+- Fix typos [\#207](https://github.com/cybercongress/cyberd/issues/207)
 - Update landing for 0.4 whitepaper [\#204](https://github.com/cybercongress/cyberd/issues/204)
 - Update to tendermint v29.0 [\#187](https://github.com/cybercongress/cyberd/issues/187)
 - Change Bandwidth Price to Average for 24h Sliding Window [\#179](https://github.com/cybercongress/cyberd/issues/179)
 - High bandwidth cost for create validator msg [\#178](https://github.com/cybercongress/cyberd/issues/178)
 - Bandwidth Specification Change [\#177](https://github.com/cybercongress/cyberd/issues/177)
 - Add rpc endpoint to submit signed link and send messages [\#173](https://github.com/cybercongress/cyberd/issues/173)
+- Tx size reduction: switch to more compact links tx encoding. [\#171](https://github.com/cybercongress/cyberd/issues/171)
 - index entities count  endpoint [\#165](https://github.com/cybercongress/cyberd/issues/165)
 - Add ipfs hashes to release [\#161](https://github.com/cybercongress/cyberd/issues/161)
+- Change token name from CBD to CYB in the testnetwork [\#157](https://github.com/cybercongress/cyberd/issues/157)
 - Add more issues templates. [\#153](https://github.com/cybercongress/cyberd/issues/153)
 - Add trust-node by default in cli [\#151](https://github.com/cybercongress/cyberd/issues/151)
 - Numerous small fixes in whitepaper [\#89](https://github.com/cybercongress/cyberd/issues/89)
@@ -32,7 +66,14 @@
 
 **Merged pull requests:**
 
+- CI: testnet ipfs files hashes   [\#217](https://github.com/cybercongress/cyberd/pull/217) ([arturalbov](https://github.com/arturalbov))
+- WIP: CI Cyberd docker image building. Include genesis file [\#214](https://github.com/cybercongress/cyberd/pull/214) ([arturalbov](https://github.com/arturalbov))
+- \#197 Error on replay with wrong app hash calculation [\#213](https://github.com/cybercongress/cyberd/pull/213) ([hleb-albau](https://github.com/hleb-albau))
+- Links exporter [\#210](https://github.com/cybercongress/cyberd/pull/210) ([arturalbov](https://github.com/arturalbov))
+- R4R \#181 Constant Block Reward [\#209](https://github.com/cybercongress/cyberd/pull/209) ([hleb-albau](https://github.com/hleb-albau))
+- 157 change token protocol name [\#208](https://github.com/cybercongress/cyberd/pull/208) ([hleb-albau](https://github.com/hleb-albau))
 - Fix typos get\_CYB.md [\#206](https://github.com/cybercongress/cyberd/pull/206) ([serejandmyself](https://github.com/serejandmyself))
+- R4R: \#156 Add Missing euler tokens cmd [\#200](https://github.com/cybercongress/cyberd/pull/200) ([hleb-albau](https://github.com/hleb-albau))
 - Update to cosmos-sdk v0.30.0 [\#198](https://github.com/cybercongress/cyberd/pull/198) ([hleb-albau](https://github.com/hleb-albau))
 - Tx size reduction: switch to more compact links tx encoding [\#192](https://github.com/cybercongress/cyberd/pull/192) ([arturalbov](https://github.com/arturalbov))
 - Fix rank calculation context data [\#191](https://github.com/cybercongress/cyberd/pull/191) ([hleb-albau](https://github.com/hleb-albau))
