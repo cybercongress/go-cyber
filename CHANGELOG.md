@@ -2,7 +2,20 @@
 
 ## [Unreleased](https://github.com/cybercongress/cyberd/tree/HEAD)
 
-[Full Changelog](https://github.com/cybercongress/cyberd/compare/euler-1.1-dev1...HEAD)
+[Full Changelog](https://github.com/cybercongress/cyberd/compare/euler-1...HEAD)
+
+**Fixed bugs:**
+
+- Error on replay with wrong app hash calculation \(block \#914381\) [\#197](https://github.com/cybercongress/cyberd/issues/197)
+
+**Closed issues:**
+
+- Mass testing of cyberd-testnet 0.1.1 [\#219](https://github.com/cybercongress/cyberd/issues/219)
+- Export 0.1.1 genesis from 0.1.0 testnet. [\#215](https://github.com/cybercongress/cyberd/issues/215)
+- Setup 0.1.1 chain params for staking, distr, slashing, mint modules. [\#201](https://github.com/cybercongress/cyberd/issues/201)
+
+## [euler-1](https://github.com/cybercongress/cyberd/tree/euler-1) (2019-01-31)
+[Full Changelog](https://github.com/cybercongress/cyberd/compare/euler-1.1-dev1...euler-1)
 
 **Merged pull requests:**
 
