@@ -109,8 +109,8 @@ func NewDefaultGenesisState() GenesisState {
 				MaxEvidenceAge:          defaultUnbondingTime,
 				SignedBlocksWindow:      60 * 30, // ~30min
 				DowntimeJailDuration:    0,
-				MinSignedPerWindow:      sdk.NewDecWithPrec(70, 1),
-				SlashFractionDoubleSign: sdk.NewDec(1).Quo(sdk.NewDec(5)),    // 20%
+				MinSignedPerWindow:      sdk.NewDecWithPrec(70, 2),           // 70%
+				SlashFractionDoubleSign: sdk.NewDecWithPrec(20, 2),           // 20%
 				SlashFractionDowntime:   sdk.NewDec(1).Quo(sdk.NewDec(1000)), // 0.1%
 			},
 		},
