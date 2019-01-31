@@ -79,7 +79,7 @@ func (ga *GenesisAccount) ToAccount() (acc *auth.BaseAccount) {
 const (
 	// defaultUnbondingTime reflects three weeks in seconds as the default
 	// unbonding time.
-	defaultUnbondingTime = 60 * 60 * 24 * 3 * time.Second
+	defaultUnbondingTime = 60 * 60 * 24 * 3 * 7 * time.Second
 )
 
 // NewDefaultGenesisState generates the default state for cyberd.
