@@ -70,12 +70,9 @@ RUN url="https://dist.ipfs.io/ipget/v${IPGET_VERSION}/ipget_v${IPGET_VERSION}_${
     rm ipget.tgz
 
 WORKDIR /ipget
-#replace with actual IPFS hash
-RUN ./ipget QmNjMpRMyw98rKtQWQXNEFC5sfCsXqpB9GA6dMz7QschLz -o /genesis.json
-#replace with actual IPFS hash
-RUN ./ipget QmeupYarwzd7kZzg7faEXZZPPk5cbzbwC71YXJvTHFoUXe -o /links
-#replace with actual IPFS hash
-RUN ./ipget QmdTSB3GNUyshDYSZuno1BhpjtkXqdbdCJ7wXyB66TuBYv -o /config.toml
+RUN ./ipget QmSFTpNaXB3FhB4EWjsrUydupZXTL8Z44c2j18o5CGnN5h -o /genesis.json
+RUN ./ipget QmepwmLe7vQcK2W6WmvfEk46de3cJ4Jp6jXRXNhuR2AfJ9 -o /links
+RUN ./ipget QmdHeSsjkuThTe6VVDD4FUUfpQFH79R8tYrC2bgWwHC2bh -o /config.toml
 
 WORKDIR /
 
