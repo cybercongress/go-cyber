@@ -18,12 +18,17 @@ func RootifyPath(path string) string {
 
 func ReadExactlyNBytes(reader io.Reader, n uint64) ([]byte, error) {
 	data := make([]byte, n)
-	bytesReaded, err := reader.Read(data)
-	if err != nil {
-		return nil, err
+	currentlyReadedBytes := uint64(0)
+	for currentlyReadedBytes < n {
+		readedBytes, err := reader.Read(data[currentlyReadedBytes:n])
+		if err != nil {
+			return nil, err
+		}
+		if readedBytes == 0 {
+			return nil, errors.New("not enough bytes tor read")
+		}
+		currentlyReadedBytes += uint64(readedBytes)
 	}
-	if uint64(bytesReaded) != n {
-		return nil, errors.New("not enough bytes tor read")
-	}
+
 	return data, nil
 }
