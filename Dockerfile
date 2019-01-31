@@ -72,7 +72,7 @@ RUN url="https://dist.ipfs.io/ipget/v${IPGET_VERSION}/ipget_v${IPGET_VERSION}_${
 WORKDIR /ipget
 RUN ./ipget QmSFTpNaXB3FhB4EWjsrUydupZXTL8Z44c2j18o5CGnN5h -o /genesis.json
 RUN ./ipget QmepwmLe7vQcK2W6WmvfEk46de3cJ4Jp6jXRXNhuR2AfJ9 -o /links
-RUN ./ipget QmdHeSsjkuThTe6VVDD4FUUfpQFH79R8tYrC2bgWwHC2bh -o /config.toml
+RUN ./ipget QmVKoU5E4MWkSDmkVqGRwZwDzY9Jgfi4jv16SwiMQTufmy -o /config.toml
 
 WORKDIR /
 
