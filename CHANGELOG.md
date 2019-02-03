@@ -6,6 +6,7 @@
 
 **Fixed bugs:**
 
+- Update cyberd.ai [\#185](https://github.com/cybercongress/cyberd/issues/185)
 - CI: Cyberd docker image building. Include genesis file [\#160](https://github.com/cybercongress/cyberd/issues/160)
 
 **Closed issues:**
@@ -14,6 +15,7 @@
 
 **Merged pull requests:**
 
+- Fix docs [\#228](https://github.com/cybercongress/cyberd/pull/228) ([arturalbov](https://github.com/arturalbov))
 - upd run-validator.md [\#225](https://github.com/cybercongress/cyberd/pull/225) ([SaveTheAles](https://github.com/SaveTheAles))
 
 ## [v0.1.1](https://github.com/cybercongress/cyberd/tree/v0.1.1) (2019-01-31)
