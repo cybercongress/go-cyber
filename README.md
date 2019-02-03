@@ -12,6 +12,7 @@
 [![contribute](https://img.shields.io/badge/contributions-welcome-orange.svg?style=flat-square)](https://github.com/cybercongress/cyberd/blob/master/CONTRIBUTING.md)
 
 **WARNING**: Project status: **testnet**. We are at research state at the moment.
+Read [whitepaper](./docs/cyberd.md)
 
 ## cyberd Public Testnets
 
