@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/lcd"
 	"github.com/cosmos/cosmos-sdk/client/rpc"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -25,6 +26,12 @@ import (
 	"github.com/tendermint/go-amino"
 	"github.com/tendermint/tendermint/libs/cli"
 	"os"
+
+	auth "github.com/cosmos/cosmos-sdk/x/auth/client/rest"
+	bank "github.com/cosmos/cosmos-sdk/x/bank/client/rest"
+	gov "github.com/cosmos/cosmos-sdk/x/gov/client/rest"
+	slashing "github.com/cosmos/cosmos-sdk/x/slashing/client/rest"
+	staking "github.com/cosmos/cosmos-sdk/x/staking/client/rest"
 )
 
 func main() {
@@ -58,6 +65,8 @@ func main() {
 		txCmd(cdc, mc),
 		keys.Commands(),
 		client.LineBreak,
+		lcd.ServeCommand(cdc, registerRoutes),
+		client.LineBreak,
 		version.VersionCmd,
 		client.NewCompletionCmd(cyberdcli, true),
 	)
@@ -73,6 +82,16 @@ func main() {
 		// Note: Handle with #870
 		panic(err)
 	}
+}
+
+func registerRoutes(rs *lcd.RestServer) {
+	rpc.RegisterRoutes(rs.CliCtx, rs.Mux)
+	tx.RegisterRoutes(rs.CliCtx, rs.Mux, rs.Cdc)
+	auth.RegisterRoutes(rs.CliCtx, rs.Mux, rs.Cdc, at.StoreKey)
+	bank.RegisterRoutes(rs.CliCtx, rs.Mux, rs.Cdc, rs.KeyBase)
+	staking.RegisterRoutes(rs.CliCtx, rs.Mux, rs.Cdc, rs.KeyBase)
+	slashing.RegisterRoutes(rs.CliCtx, rs.Mux, rs.Cdc, rs.KeyBase)
+	gov.RegisterRoutes(rs.CliCtx, rs.Mux, rs.Cdc)
 }
 
 func queryCmd(cdc *amino.Codec, mc []sdk.ModuleClients) *cobra.Command {
