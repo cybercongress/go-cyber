@@ -95,6 +95,6 @@ RUN chmod +x /entrypoint.sh
 
 #  Start
 ###############################################################################
-EXPOSE 26656 26657 26660
+EXPOSE 26656 26657 1317
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["./start_script.sh"]

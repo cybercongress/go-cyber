@@ -100,8 +100,10 @@ jobs:
           command: |
             docker build -t build/cyberd .
             docker login -u $DOCKER_USER -p $DOCKER_PASS
-            docker tag build/cyberd cyberd/cyberd:$CIRCLE_TAG
-            docker push cyberd/cyberd:$CIRCLE_TAG
+            docker tag build/cyberd cyberd/cyberd:euler-$CIRCLE_TAG
+            docker push cyberd/cyberd:euler-$CIRCLE_TAG
+            docker tag build/cyberd cyberd/cyberd:euler-1
+            docker push cyberd/cyberd:euler-1
 
 
   release_cyberdcli_binaries:
