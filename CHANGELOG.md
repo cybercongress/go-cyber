@@ -19,6 +19,7 @@
 **Merged pull requests:**
 
 - UPD run validator md [\#232](https://github.com/cybercongress/cyberd/pull/232) ([SaveTheAles](https://github.com/SaveTheAles))
+- Add cyberd rest light-client to docker image [\#231](https://github.com/cybercongress/cyberd/pull/231) ([arturalbov](https://github.com/arturalbov))
 - Fix docs [\#228](https://github.com/cybercongress/cyberd/pull/228) ([arturalbov](https://github.com/arturalbov))
 - upd run-validator.md [\#225](https://github.com/cybercongress/cyberd/pull/225) ([SaveTheAles](https://github.com/SaveTheAles))
 
