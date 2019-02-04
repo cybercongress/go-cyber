@@ -6,15 +6,19 @@
 
 **Fixed bugs:**
 
+- Cannot interact with node [\#203](https://github.com/cybercongress/cyberd/issues/203)
 - Update cyberd.ai [\#185](https://github.com/cybercongress/cyberd/issues/185)
 - CI: Cyberd docker image building. Include genesis file [\#160](https://github.com/cybercongress/cyberd/issues/160)
 
 **Closed issues:**
 
 - Launch 0.1.1 testnet [\#205](https://github.com/cybercongress/cyberd/issues/205)
+- Cyberd release scheme. [\#180](https://github.com/cybercongress/cyberd/issues/180)
+- Ranking research [\#24](https://github.com/cybercongress/cyberd/issues/24)
 
 **Merged pull requests:**
 
+- UPD run validator md [\#232](https://github.com/cybercongress/cyberd/pull/232) ([SaveTheAles](https://github.com/SaveTheAles))
 - Fix docs [\#228](https://github.com/cybercongress/cyberd/pull/228) ([arturalbov](https://github.com/arturalbov))
 - upd run-validator.md [\#225](https://github.com/cybercongress/cyberd/pull/225) ([SaveTheAles](https://github.com/SaveTheAles))
 
