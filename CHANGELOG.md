@@ -4,6 +4,10 @@
 
 [Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.1.1...HEAD)
 
+**Implemented enhancements:**
+
+- Add cyberd rest light-client to docker image [\#230](https://github.com/cybercongress/cyberd/issues/230)
+
 **Fixed bugs:**
 
 - Cannot interact with node [\#203](https://github.com/cybercongress/cyberd/issues/203)
@@ -18,6 +22,7 @@
 
 **Merged pull requests:**
 
+- Rest server blocks cli keystore file [\#234](https://github.com/cybercongress/cyberd/pull/234) ([arturalbov](https://github.com/arturalbov))
 - UPD run validator md [\#232](https://github.com/cybercongress/cyberd/pull/232) ([SaveTheAles](https://github.com/SaveTheAles))
 - Add cyberd rest light-client to docker image [\#231](https://github.com/cybercongress/cyberd/pull/231) ([arturalbov](https://github.com/arturalbov))
 - Fix docs [\#228](https://github.com/cybercongress/cyberd/pull/228) ([arturalbov](https://github.com/arturalbov))
