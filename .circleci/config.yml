@@ -104,6 +104,7 @@ jobs:
             docker push cyberd/cyberd:euler-$CIRCLE_TAG
             docker tag build/cyberd cyberd/cyberd:euler-1
             docker push cyberd/cyberd:euler-1
+          no_output_timeout: 30m
 
 
   release_cyberdcli_binaries:
