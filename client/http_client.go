@@ -36,7 +36,7 @@ type HttpCyberdClient struct {
 	txBuilder   *authtxb.TxBuilder
 }
 
-func NewHttpCyberdClient(nodeUrl string, passphrase string, singAddr string) CyberdClient {
+func NewHttpCyberdClient(nodeUrl string, passphrase string, singAddr string) *HttpCyberdClient {
 
 	tdmHttpClient := tdmClient.NewHTTP(nodeUrl, "/websocket")
 	httpClient := rpcclient.NewJSONRPCClient(nodeUrl)
@@ -72,7 +72,7 @@ func NewHttpCyberdClient(nodeUrl string, passphrase string, singAddr string) Cyb
 		"", sdk.Coins{}, sdk.NewDecCoins(sdk.Coins{}),
 	)
 
-	return HttpCyberdClient{
+	return &HttpCyberdClient{
 		tdmClient:  tdmHttpClient,
 		httpClient: *httpClient,
 
@@ -85,11 +85,11 @@ func NewHttpCyberdClient(nodeUrl string, passphrase string, singAddr string) Cyb
 	}
 }
 
-func (c HttpCyberdClient) GetChainId() string {
+func (c *HttpCyberdClient) GetChainId() string {
 	return c.chainId
 }
 
-func (c HttpCyberdClient) IsLinkExist(from Cid, to Cid, addr sdk.AccAddress) (result bool, err error) {
+func (c *HttpCyberdClient) IsLinkExist(from Cid, to Cid, addr sdk.AccAddress) (result bool, err error) {
 	_, err = c.httpClient.Call("is_link_exist",
 		map[string]interface{}{"from": from, "to": to, "address": addr.String()},
 		&result,
@@ -97,23 +97,23 @@ func (c HttpCyberdClient) IsLinkExist(from Cid, to Cid, addr sdk.AccAddress) (re
 	return
 }
 
-func (c HttpCyberdClient) GetCurrentBandwidthCreditPrice() (float64, error) {
+func (c *HttpCyberdClient) GetCurrentBandwidthCreditPrice() (float64, error) {
 	result := &rpc.ResultBandwidthPrice{}
 	_, err := c.httpClient.Call("current_bandwidth_price", map[string]interface{}{}, &result)
 	return result.Price, err
 }
 
-func (c HttpCyberdClient) GetAccountBandwidth() (result bwtps.AcсBandwidth, err error) {
+func (c *HttpCyberdClient) GetAccountBandwidth() (result bwtps.AcсBandwidth, err error) {
 	_, err = c.httpClient.Call("account_bandwidth",
 		map[string]interface{}{"address": c.fromAddress.String()}, &result)
 	return
 }
 
-func (c HttpCyberdClient) SubmitLinkSync(link Link) error {
+func (c *HttpCyberdClient) SubmitLinkSync(link Link) error {
 	return c.SubmitLinksSync([]Link{link})
 }
 
-func (c HttpCyberdClient) SubmitLinksSync(links []Link) error {
+func (c *HttpCyberdClient) SubmitLinksSync(links []Link) error {
 
 	// used to remove duplicated items
 	var filter = make(CidsFilter)
@@ -137,7 +137,7 @@ func (c HttpCyberdClient) SubmitLinksSync(links []Link) error {
 	return c.BroadcastTx(msges)
 }
 
-func (c HttpCyberdClient) BroadcastTx(msgs []sdk.Msg) error {
+func (c *HttpCyberdClient) BroadcastTx(msgs []sdk.Msg) error {
 
 	if len(msgs) == 0 {
 		return nil
