@@ -10,6 +10,7 @@
 
 **Fixed bugs:**
 
+- Rest server  blocks cli keystore file [\#233](https://github.com/cybercongress/cyberd/issues/233)
 - Cannot interact with node [\#203](https://github.com/cybercongress/cyberd/issues/203)
 - Update cyberd.ai [\#185](https://github.com/cybercongress/cyberd/issues/185)
 - CI: Cyberd docker image building. Include genesis file [\#160](https://github.com/cybercongress/cyberd/issues/160)
@@ -22,6 +23,7 @@
 
 **Merged pull requests:**
 
+- Add staking/validators endpoint to node RPC [\#236](https://github.com/cybercongress/cyberd/pull/236) ([arturalbov](https://github.com/arturalbov))
 - Rest server blocks cli keystore file [\#234](https://github.com/cybercongress/cyberd/pull/234) ([arturalbov](https://github.com/arturalbov))
 - UPD run validator md [\#232](https://github.com/cybercongress/cyberd/pull/232) ([SaveTheAles](https://github.com/SaveTheAles))
 - Add cyberd rest light-client to docker image [\#231](https://github.com/cybercongress/cyberd/pull/231) ([arturalbov](https://github.com/arturalbov))
