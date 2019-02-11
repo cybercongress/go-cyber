@@ -97,6 +97,14 @@ func (c *HttpCyberdClient) IsLinkExist(from Cid, to Cid, addr sdk.AccAddress) (r
 	return
 }
 
+func (c *HttpCyberdClient) IsAnyLinkExist(from Cid, to Cid) (result bool, err error) {
+	_, err = c.httpClient.Call("is_link_exist",
+		map[string]interface{}{"from": from, "to": to},
+		&result,
+	)
+	return
+}
+
 func (c *HttpCyberdClient) GetCurrentBandwidthCreditPrice() (float64, error) {
 	result := &rpc.ResultBandwidthPrice{}
 	_, err := c.httpClient.Call("current_bandwidth_price", map[string]interface{}{}, &result)

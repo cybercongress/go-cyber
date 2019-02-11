@@ -15,6 +15,9 @@ type CyberdClient interface {
 	// returns, if given link already exists
 	IsLinkExist(from Cid, to Cid, addr sdk.AccAddress) (result bool, err error)
 
+	// returns, if given link already exists
+	IsAnyLinkExist(from Cid, to Cid) (result bool, err error)
+
 	// get current bandwidth credits price
 	// price 1 is price for situation, when all users use all their bandwidth (all blocks are filled for 100%)
 	// if price < 1, that means blocks filled partially, thus allow more active users to do more transactions
