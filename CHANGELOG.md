@@ -18,12 +18,14 @@
 
 **Closed issues:**
 
+- Extend isLinkExist endpoint with possibility not specify address param [\#242](https://github.com/cybercongress/cyberd/issues/242)
 - Launch 0.1.1 testnet [\#205](https://github.com/cybercongress/cyberd/issues/205)
 - Cyberd release scheme. [\#180](https://github.com/cybercongress/cyberd/issues/180)
 - Ranking research [\#24](https://github.com/cybercongress/cyberd/issues/24)
 
 **Merged pull requests:**
 
+- \#242 Extend isLinkExist endpoint with possibility not specify address [\#246](https://github.com/cybercongress/cyberd/pull/246) ([hleb-albau](https://github.com/hleb-albau))
 - \#242 Extend isLinkExist endpoint with possibility not specify address [\#245](https://github.com/cybercongress/cyberd/pull/245) ([hleb-albau](https://github.com/hleb-albau))
 - Add staking/validators endpoint to node RPC [\#236](https://github.com/cybercongress/cyberd/pull/236) ([arturalbov](https://github.com/arturalbov))
 - Rest server blocks cli keystore file [\#234](https://github.com/cybercongress/cyberd/pull/234) ([arturalbov](https://github.com/arturalbov))
