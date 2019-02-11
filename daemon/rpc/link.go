@@ -10,6 +10,10 @@ import (
 
 func IsLinkExist(from string, to string, address string) (bool, error) {
 
+	if len(address) == 0 {
+		return cyberdApp.IsLinkExist(cbd.Cid(from), cbd.Cid(to), nil), nil
+	}
+
 	accAddress, err := types.AccAddressFromBech32(address)
 	if err != nil {
 		return false, err
