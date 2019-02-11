@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- Add staking/validators endpoint to node RPC [\#235](https://github.com/cybercongress/cyberd/issues/235)
 - Add cyberd rest light-client to docker image [\#230](https://github.com/cybercongress/cyberd/issues/230)
 
 **Fixed bugs:**
@@ -23,6 +24,7 @@
 
 **Merged pull requests:**
 
+- \#242 Extend isLinkExist endpoint with possibility not specify address [\#245](https://github.com/cybercongress/cyberd/pull/245) ([hleb-albau](https://github.com/hleb-albau))
 - Add staking/validators endpoint to node RPC [\#236](https://github.com/cybercongress/cyberd/pull/236) ([arturalbov](https://github.com/arturalbov))
 - Rest server blocks cli keystore file [\#234](https://github.com/cybercongress/cyberd/pull/234) ([arturalbov](https://github.com/arturalbov))
 - UPD run validator md [\#232](https://github.com/cybercongress/cyberd/pull/232) ([SaveTheAles](https://github.com/SaveTheAles))
