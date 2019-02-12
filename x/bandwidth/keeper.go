@@ -67,7 +67,7 @@ func (bk BaseBlockSpentBandwidthKeeper) GetValuesForPeriod(ctx sdk.Context, peri
 
 	key := make([]byte, 8)
 	result := make(map[uint64]uint64)
-	for blockNumber := windowStart; blockNumber < ctx.BlockHeight(); blockNumber++ {
+	for blockNumber := windowStart; blockNumber <= ctx.BlockHeight(); blockNumber++ {
 		binary.LittleEndian.PutUint64(key, uint64(blockNumber))
 		value := binary.LittleEndian.Uint64(store.Get(key))
 		result[uint64(blockNumber)] = value
