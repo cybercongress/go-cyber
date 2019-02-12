@@ -11,6 +11,7 @@
 
 **Fixed bugs:**
 
+- Different bandwidth price on same block height [\#247](https://github.com/cybercongress/cyberd/issues/247)
 - Rest server  blocks cli keystore file [\#233](https://github.com/cybercongress/cyberd/issues/233)
 - Cannot interact with node [\#203](https://github.com/cybercongress/cyberd/issues/203)
 - Update cyberd.ai [\#185](https://github.com/cybercongress/cyberd/issues/185)
@@ -25,6 +26,7 @@
 
 **Merged pull requests:**
 
+- \#247 Different bandwidth price on same block height [\#248](https://github.com/cybercongress/cyberd/pull/248) ([hleb-albau](https://github.com/hleb-albau))
 - \#242 Extend isLinkExist endpoint with possibility not specify address [\#246](https://github.com/cybercongress/cyberd/pull/246) ([hleb-albau](https://github.com/hleb-albau))
 - \#242 Extend isLinkExist endpoint with possibility not specify address [\#245](https://github.com/cybercongress/cyberd/pull/245) ([hleb-albau](https://github.com/hleb-albau))
 - Add staking/validators endpoint to node RPC [\#236](https://github.com/cybercongress/cyberd/pull/236) ([arturalbov](https://github.com/arturalbov))
