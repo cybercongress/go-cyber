@@ -27,6 +27,7 @@
 
 **Merged pull requests:**
 
+- \#250 Add fail at height debug flag [\#251](https://github.com/cybercongress/cyberd/pull/251) ([hleb-albau](https://github.com/hleb-albau))
 - \#247 Different bandwidth price on same block height [\#248](https://github.com/cybercongress/cyberd/pull/248) ([hleb-albau](https://github.com/hleb-albau))
 - \#242 Extend isLinkExist endpoint with possibility not specify address [\#246](https://github.com/cybercongress/cyberd/pull/246) ([hleb-albau](https://github.com/hleb-albau))
 - \#242 Extend isLinkExist endpoint with possibility not specify address [\#245](https://github.com/cybercongress/cyberd/pull/245) ([hleb-albau](https://github.com/hleb-albau))
