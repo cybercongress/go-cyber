@@ -82,6 +82,9 @@ type CyberdApp struct {
 	rankState         *rank.RankState
 
 	latestBlockHeight int64
+
+	// debug values
+	failBeforeHeight int64
 }
 
 // NewBasecoinApp returns a reference to a new CyberdApp given a
@@ -91,16 +94,13 @@ type CyberdApp struct {
 // registered, and finally the stores being mounted along with any necessary
 // chain initialization.
 func NewCyberdApp(
-	logger log.Logger, db dbm.DB, computeUnit rank.ComputeUnit, allowSearch bool, baseAppOptions ...func(*baseapp.BaseApp),
+	logger log.Logger, db dbm.DB, opts Options, baseAppOptions ...func(*baseapp.BaseApp),
 ) *CyberdApp {
 
 	// create and register app-level codec for TXs and accounts
 	cdc := MakeCodec()
-
 	dbKeys := NewCyberdAppDbKeys()
-
 	ms := store.NewMainKeeper(dbKeys.main)
-
 	var txDecoder = auth.DefaultTxDecoder(cdc)
 
 	// create your application type
@@ -153,8 +153,8 @@ func NewCyberdApp(
 	app.cidNumKeeper = keeper.NewBaseCidNumberKeeper(ms, dbKeys.cidNum, dbKeys.cidNumReverse)
 	app.stakingIndex = cbdbank.NewIndexedKeeper(app.bankKeeper, app.accountKeeper)
 	app.rankState = rank.NewRankState(
-		allowSearch, app.mainKeeper, app.stakingIndex,
-		app.linkIndexedKeeper, app.cidNumKeeper, computeUnit,
+		opts.AllowSearch, app.mainKeeper, app.stakingIndex,
+		app.linkIndexedKeeper, app.cidNumKeeper, opts.ComputeUnit,
 	)
 
 	// register the staking hooks
@@ -217,7 +217,7 @@ func NewCyberdApp(
 
 	// RANK PARAMS
 	app.rankState.Load(ctx, app.latestBlockHeight, app.Logger)
-
+	app.failBeforeHeight = opts.FailBeforeHeight
 	app.Seal()
 	return app
 }
@@ -427,6 +427,11 @@ func getSignersTags(tx sdk.Tx) sdk.Tags {
 }
 
 func (app *CyberdApp) BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock) abci.ResponseBeginBlock {
+
+	if app.failBeforeHeight != 0 && req.Header.Height == app.failBeforeHeight {
+		app.Logger.Info("Forced panic at begin blocker", "height", app.failBeforeHeight)
+		os.Exit(1)
+	}
 
 	// mint new tokens for the previous block
 	mint.BeginBlocker(ctx, app.minter)
