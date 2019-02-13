@@ -11,21 +11,12 @@ import (
 	"github.com/cybercongress/cyberd/x/link/keeper"
 	. "github.com/cybercongress/cyberd/x/link/types"
 	"github.com/tendermint/tendermint/libs/log"
-	"sort"
 )
 
-type RankedCidNumber struct {
-	number CidNumber
-	rank   float64
-}
-
-func (c RankedCidNumber) GetNumber() CidNumber { return c.number }
-func (c RankedCidNumber) GetRank() float64     { return c.rank }
-
 type RankState struct {
-	cidRankedLinksIndex []cidRankedLinks
-	networkCidRank      Rank // array index is cid number
-	nextCidRank         Rank // array index is cid number
+	// todo: remove rank Values, store only merkle tree (or even root hash). Move values to link_index
+	networkCidRank Rank // array linksIndex is cid number
+	nextCidRank    Rank // array linksIndex is cid number
 
 	lastCalculatedRankHash []byte
 
@@ -43,6 +34,9 @@ type RankState struct {
 	stakeIndex        *bank.IndexedKeeper
 	cidNumKeeper      keeper.CidNumberKeeper
 	linkIndexedKeeper *keeper.LinkIndexedKeeper
+
+	// index
+	index *SearchIndex
 }
 
 func NewRankState(
@@ -67,6 +61,14 @@ func (s *RankState) Load(ctx sdk.Context, latestBlockHeight int64, log log.Logge
 
 	s.cidCount = int64(s.mainKeeper.GetCidsCount(ctx))
 
+	if s.allowSearch {
+		s.index = NewSearchIndex(log)
+		s.index.Load(s.linkIndexedKeeper)
+
+		go s.index.startListenNewLinks()
+		go s.index.startListenNewRank()
+	}
+
 	// if we have fallen and need to start new rank calculation
 	// todo: what if rank didn't changed in new calculation???
 	if latestBlockHeight != 0 && !s.nextRankReady() {
@@ -77,6 +79,21 @@ func (s *RankState) Load(ctx sdk.Context, latestBlockHeight int64, log log.Logge
 
 func (s *RankState) EndBlocker(ctx sdk.Context, log log.Logger) {
 	currentCidsCount := s.mainKeeper.GetCidsCount(ctx)
+
+	if s.allowSearch {
+		for _, link := range s.linkIndexedKeeper.GetCurrentBlockLinks() {
+			outLinks := s.linkIndexedKeeper.GetNextOutLinks()
+			toCids, exists := outLinks[link.From()]
+			if exists {
+				_, exists := toCids[link.To()]
+				if exists {
+					continue
+				}
+			}
+			s.index.LinksChan <- link
+		}
+	}
+
 	s.linkIndexedKeeper.EndBlocker()
 	if ctx.BlockHeight()%CalculationPeriod == 0 || ctx.BlockHeight() == 1 {
 
@@ -92,10 +109,6 @@ func (s *RankState) EndBlocker(ctx sdk.Context, log log.Logger) {
 		}
 
 		s.applyNextRank()
-		// Recalculate index
-		// todo state copied
-		outLinksCopy := Links(s.linkIndexedKeeper.GetOutLinks()).Copy()
-		go s.buildCidRankedLinksIndexInParallel(s.cidCount, outLinksCopy)
 
 		s.mainKeeper.StoreLastCalculatedRankHash(ctx, s.GetNetworkRankHash())
 
@@ -119,41 +132,24 @@ func (s *RankState) EndBlocker(ctx sdk.Context, log log.Logger) {
 		}
 
 	}
-	//CHECK INDEX BUILDING FOR ERROR:
 	s.addNewCids(currentCidsCount)
 	s.mainKeeper.StoreLatestMerkleTree(ctx, s.getNetworkMerkleTreeAsBytes())
-	s.checkBuildIndexError(log)
+
+	if s.allowSearch {
+		// Check search index for error
+		err := s.index.checkIndexError()
+		if err != nil {
+			log.Error("Search index failed!", "error", err)
+			panic(err)
+		}
+	}
 }
 
-func (s *RankState) GetCidRankedLinks(cidNumber CidNumber, page, perPage int) ([]RankedCidNumber, int, error) {
-
-	if !s.allowSearch {
-		return nil, 0, errors.New("search on this node is not allowed")
+func (s *RankState) Search(cidNumber CidNumber, page, perPage int) ([]RankedCidNumber, int, error) {
+	if s.allowSearch {
+		return s.index.Search(cidNumber, page, perPage)
 	}
-
-	if s.cidRankedLinksIndex == nil {
-		return nil, 0, errors.New("index currently unavailable after node restart")
-	}
-
-	cidRankedLinks := s.cidRankedLinksIndex[cidNumber]
-	if len(cidRankedLinks) == 0 {
-		return nil, 0, errors.New("no links for this cid")
-	}
-
-	totalSize := len(cidRankedLinks)
-	startIndex := page * perPage
-	if startIndex >= totalSize {
-		return nil, totalSize, errors.New("page not found")
-	}
-
-	endIndex := startIndex + perPage
-	if endIndex > totalSize {
-		endIndex = startIndex + (totalSize % perPage)
-	}
-
-	resultSet := cidRankedLinks[startIndex:endIndex]
-
-	return resultSet, totalSize, nil
+	return nil, 0, errors.New("search is not allowed on this node")
 }
 
 func (s *RankState) startRankCalculation(ctx sdk.Context, log log.Logger) {
@@ -175,61 +171,14 @@ func (s *RankState) applyNextRank() {
 	s.networkCidRank = s.nextCidRank
 	s.lastCalculatedRankHash = s.nextCidRank.MerkleTree.RootHash()
 	s.nextCidRank.Reset()
+	if s.allowSearch {
+		s.index.RankChan <- s.networkCidRank
+	}
 }
 
 // add new cids to rank with 0 value
 func (s *RankState) addNewCids(cidCount uint64) {
 	s.networkCidRank.AddNewCids(cidCount)
-}
-
-func (s *RankState) buildCidRankedLinksIndex(cidsCount int64, outLinks Links) {
-	// If search on this node is not allowed then we don't need to build index
-	if !s.allowSearch || s.networkCidRank.Values == nil {
-		return
-	}
-
-	newIndex := make([]cidRankedLinks, cidsCount)
-
-	for cidNumber := CidNumber(0); cidNumber < CidNumber(cidsCount); cidNumber++ {
-		cidOutLinks := outLinks[cidNumber]
-		cidSortedByRankLinkedCids := s.getLinksSortedByRank(cidOutLinks)
-		newIndex[cidNumber] = cidSortedByRankLinkedCids
-	}
-
-	s.cidRankedLinksIndex = newIndex
-}
-
-// Used for building index in parallel
-func (s *RankState) buildCidRankedLinksIndexInParallel(cidsCount int64, outLinks Links) {
-	defer func() {
-		if r := recover(); r != nil {
-			s.indexErrChan <- r.(error)
-		}
-	}()
-
-	s.buildCidRankedLinksIndex(cidsCount, outLinks)
-}
-
-func (s *RankState) checkBuildIndexError(logger log.Logger) {
-	if s.allowSearch {
-		select {
-		case err := <-s.indexErrChan:
-			// DUMB ERROR HANDLING
-			logger.Error("Error during building rank index " + err.Error())
-			panic(err)
-		default:
-		}
-	}
-}
-
-func (s *RankState) getLinksSortedByRank(cidOutLinks CidLinks) cidRankedLinks {
-	cidRankedLinks := make(cidRankedLinks, 0, len(cidOutLinks))
-	for linkedCidNumber := range cidOutLinks {
-		rankedCid := RankedCidNumber{number: linkedCidNumber, rank: s.networkCidRank.Values[linkedCidNumber]}
-		cidRankedLinks = append(cidRankedLinks, rankedCid)
-	}
-	sort.Stable(sort.Reverse(cidRankedLinks))
-	return cidRankedLinks
 }
 
 //
@@ -254,14 +203,3 @@ func (s *RankState) nextRankReady() bool {
 func (s *RankState) GetLastCidNum() CidNumber {
 	return CidNumber(len(s.networkCidRank.Values) - 1)
 }
-
-//
-// Local type for sorting
-type cidRankedLinks []RankedCidNumber
-
-// Sort Interface functions
-func (links cidRankedLinks) Len() int { return len(links) }
-
-func (links cidRankedLinks) Less(i, j int) bool { return links[i].rank < links[j].rank }
-
-func (links cidRankedLinks) Swap(i, j int) { links[i], links[j] = links[j], links[i] }

@@ -76,6 +76,7 @@ type CyberdApp struct {
 	minter mint.Minter
 
 	// cyberd storage
+	// todo: move all processes with this storages to another file
 	linkIndexedKeeper *keeper.LinkIndexedKeeper
 	cidNumKeeper      keeper.CidNumberKeeper
 	stakingIndex      *cbdbank.IndexedKeeper

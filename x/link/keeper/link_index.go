@@ -13,14 +13,14 @@ type LinkIndexedKeeper struct {
 	LinkKeeper
 
 	// Actual links for current rank calculated state.
-	currentRankInLinks  map[CidNumber]CidLinks
-	currentRankOurLinks map[CidNumber]CidLinks
+	currentRankInLinks  Links
+	currentRankOurLinks Links
 
 	// New links for the next rank calculation.
 	// Actually, do we need them in memory?
 	// TODO: optimize to not store whole index (store just new links)
-	nextRankInLinks  map[CidNumber]CidLinks
-	nextRankOutLinks map[CidNumber]CidLinks
+	nextRankInLinks  Links
+	nextRankOutLinks Links
 
 	currentBlockLinks []CompactLink
 }
@@ -72,12 +72,16 @@ func (i *LinkIndexedKeeper) PutLink(ctx sdk.Context, link CompactLink) {
 	i.LinkKeeper.PutLink(ctx, link)
 }
 
-func (i *LinkIndexedKeeper) GetOutLinks() map[CidNumber]CidLinks {
+func (i *LinkIndexedKeeper) GetOutLinks() Links {
 	return i.currentRankOurLinks
 }
 
-func (i *LinkIndexedKeeper) GetInLinks() map[CidNumber]CidLinks {
+func (i *LinkIndexedKeeper) GetInLinks() Links {
 	return i.currentRankInLinks
+}
+
+func (i *LinkIndexedKeeper) GetNextOutLinks() Links {
+	return i.nextRankOutLinks
 }
 
 func (i *LinkIndexedKeeper) GetCurrentBlockLinks() []CompactLink {

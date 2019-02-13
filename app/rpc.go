@@ -27,7 +27,7 @@ func (app *CyberdApp) Search(cid string, page, perPage int) ([]RankedCid, int, e
 		return nil, 0, errors.New("no such cid found")
 	}
 
-	rankedCidNumbers, size, err := app.rankState.GetCidRankedLinks(cidNumber, page, perPage)
+	rankedCidNumbers, size, err := app.rankState.Search(cidNumber, page, perPage)
 
 	if err != nil {
 		return nil, size, err
