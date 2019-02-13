@@ -1,8 +1,8 @@
 FROM nvidia/cuda:10.0-devel-ubuntu18.04 as build_stage
 
-ENV GO_VERSION 1.11.2
+ENV GO_VERSION 1.11.5
 ENV GO_ARCH 'linux-amd64'
-ENV GO_BIN_SHA '1dfe664fa3d8ad714bbd15a36627992effd150ddabd7523931f077b3926d736d'
+ENV GO_BIN_SHA 'ff54aafedff961eb94792487e827515da683d61a5f9482f668008832631e5d25'
 
 
 #  Install required dev tools to compile cyberd
