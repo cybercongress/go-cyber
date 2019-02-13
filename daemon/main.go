@@ -25,6 +25,7 @@ import (
 
 const (
 	flagGpuEnabled            = "compute-rank-on-gpu"
+	flagFailBeforeHeight      = "fail-before-height"
 	flagSearchRpcQueryEnabled = "allow-search-rpc-query"
 	flagNotToSealAccPrefix    = "not-to-seal-acc-prefix"
 )
@@ -54,6 +55,7 @@ func main() {
 	for _, c := range rootCmd.Commands() {
 		if c.Use == "start" {
 			c.Flags().Bool(flagGpuEnabled, true, "Run cyberd with cuda calculations")
+			c.Flags().Int64(flagFailBeforeHeight, 0, "Forced node shutdown before specified height")
 			c.Flags().Bool(flagSearchRpcQueryEnabled, true, "Build index of links with ranks and allow to query search through RPC")
 		}
 	}
@@ -68,11 +70,18 @@ func main() {
 func newApp(logger log.Logger, db dbm.DB, storeTracer io.Writer) abci.Application {
 	// todo use constant here
 	pruning := baseapp.SetPruning(sdk.NewPruningOptions(60*60*24, 0))
+
 	computeUnit := rank.CPU
 	if viper.GetBool(flagGpuEnabled) {
 		computeUnit = rank.GPU
 	}
-	cyberdApp := app.NewCyberdApp(logger, db, computeUnit, viper.GetBool(flagSearchRpcQueryEnabled), pruning)
+
+	opts := app.Options{
+		ComputeUnit:      computeUnit,
+		AllowSearch:      viper.GetBool(flagSearchRpcQueryEnabled),
+		FailBeforeHeight: viper.GetInt64(flagFailBeforeHeight),
+	}
+	cyberdApp := app.NewCyberdApp(logger, db, opts, pruning)
 	rpc.SetCyberdApp(cyberdApp)
 	return cyberdApp
 }
@@ -81,7 +90,7 @@ func exportAppStateAndTMValidators(
 	logger log.Logger, db dbm.DB, traceStore io.Writer, height int64, forZeroHeight bool,
 ) (json.RawMessage, []tmtypes.GenesisValidator, error) {
 
-	capp := app.NewCyberdApp(logger, db, rank.CPU, false)
+	capp := app.NewCyberdApp(logger, db, app.Options{})
 	return capp.ExportAppStateAndValidators()
 }
 
