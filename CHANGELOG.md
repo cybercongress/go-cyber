@@ -6,8 +6,10 @@
 
 **Implemented enhancements:**
 
+- Extend isLinkExist endpoint with possibility not specify address param [\#242](https://github.com/cybercongress/cyberd/issues/242)
 - Add staking/validators endpoint to node RPC [\#235](https://github.com/cybercongress/cyberd/issues/235)
 - Add cyberd rest light-client to docker image [\#230](https://github.com/cybercongress/cyberd/issues/230)
+- Webscoket API [\#76](https://github.com/cybercongress/cyberd/issues/76)
 
 **Fixed bugs:**
 
@@ -19,7 +21,6 @@
 
 **Closed issues:**
 
-- Extend isLinkExist endpoint with possibility not specify address param [\#242](https://github.com/cybercongress/cyberd/issues/242)
 - Launch 0.1.1 testnet [\#205](https://github.com/cybercongress/cyberd/issues/205)
 - Cyberd release scheme. [\#180](https://github.com/cybercongress/cyberd/issues/180)
 - Ranking research [\#24](https://github.com/cybercongress/cyberd/issues/24)
