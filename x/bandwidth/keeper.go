@@ -61,8 +61,8 @@ func (bk BaseBlockSpentBandwidthKeeper) GetValuesForPeriod(ctx sdk.Context, peri
 	store := ctx.KVStore(bk.key)
 
 	windowStart := ctx.BlockHeight() - period + 1
-	if windowStart < 0 { // check needed cause it will be casted to uint and can cause overflow
-		windowStart = 0
+	if windowStart <= 0 { // check needed cause it will be casted to uint and can cause overflow
+		windowStart = 1
 	}
 
 	key := make([]byte, 8)
