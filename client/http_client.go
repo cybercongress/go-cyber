@@ -19,6 +19,8 @@ import (
 	"os"
 )
 
+var _ CyberdClient = &HttpCyberdClient{}
+
 type HttpCyberdClient struct {
 	// tdm client
 	tdmClient tdmClient.Client
@@ -90,10 +92,12 @@ func (c *HttpCyberdClient) GetChainId() string {
 }
 
 func (c *HttpCyberdClient) IsLinkExist(from Cid, to Cid, addr sdk.AccAddress) (result bool, err error) {
+
 	_, err = c.httpClient.Call("is_link_exist",
 		map[string]interface{}{"from": from, "to": to, "address": addr.String()},
 		&result,
 	)
+
 	return
 }
 
@@ -118,10 +122,10 @@ func (c *HttpCyberdClient) GetAccountBandwidth() (result bwtps.AcсBandwidth, er
 }
 
 func (c *HttpCyberdClient) SubmitLinkSync(link Link) error {
-	return c.SubmitLinksSync([]Link{link})
+	return c.SubmitLinksSync([]Link{link}, false)
 }
 
-func (c *HttpCyberdClient) SubmitLinksSync(links []Link) error {
+func (c *HttpCyberdClient) SubmitLinksSync(links []Link, submitOnlyNew bool) error {
 
 	// used to remove duplicated items
 	var filter = make(CidsFilter)
@@ -133,7 +137,14 @@ func (c *HttpCyberdClient) SubmitLinksSync(links []Link) error {
 			continue
 		}
 
-		exists, err := c.IsLinkExist(l.From, l.To, c.fromAddress)
+		var err error
+		var exists bool
+		if submitOnlyNew {
+			exists, err = c.IsAnyLinkExist(l.From, l.To)
+		} else {
+			exists, err = c.IsLinkExist(l.From, l.To, c.fromAddress)
+		}
+
 		if err != nil {
 			return err
 		}

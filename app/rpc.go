@@ -55,17 +55,18 @@ func (app *CyberdApp) IsLinkExist(from cbdlink.Cid, to cbdlink.Cid, address sdk.
 	fromNumber, fromExist := app.cidNumKeeper.GetCidNumber(ctx, from)
 	toNumber, toExists := app.cidNumKeeper.GetCidNumber(ctx, to)
 
-	if address != nil {
-		acc := app.accountKeeper.GetAccount(ctx, address)
-		if fromExist && toExists && acc != nil {
-			accNumber := cbd.AccNumber(acc.GetAccountNumber())
-			return app.linkIndexedKeeper.IsLinkExist(ctx, cbdlink.NewLink(fromNumber, toNumber, accNumber))
+	if fromExist && toExists {
+		if address != nil {
+			acc := app.accountKeeper.GetAccount(ctx, address)
+			if acc != nil {
+				accNumber := cbd.AccNumber(acc.GetAccountNumber())
+				return app.linkIndexedKeeper.IsLinkExist(ctx, cbdlink.NewLink(fromNumber, toNumber, accNumber))
+			}
+		} else {
+			return app.linkIndexedKeeper.IsAnyLinkExist(ctx, fromNumber, toNumber)
 		}
-		return false
 	}
-
-	// link created by someone. used for request with not specified address
-	return fromExist && toExists
+	return false
 }
 
 func (app *CyberdApp) CurrentBandwidthPrice() float64 {
