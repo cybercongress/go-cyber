@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- Add fail at height debug flags [\#250](https://github.com/cybercongress/cyberd/issues/250)
 - Extend isLinkExist endpoint with possibility not specify address param [\#242](https://github.com/cybercongress/cyberd/issues/242)
 - Add staking/validators endpoint to node RPC [\#235](https://github.com/cybercongress/cyberd/issues/235)
 - Add cyberd rest light-client to docker image [\#230](https://github.com/cybercongress/cyberd/issues/230)
@@ -27,6 +28,7 @@
 
 **Merged pull requests:**
 
+- \#244 Add moon as seed node [\#253](https://github.com/cybercongress/cyberd/pull/253) ([hleb-albau](https://github.com/hleb-albau))
 - \#250 Add fail at height debug flag [\#251](https://github.com/cybercongress/cyberd/pull/251) ([hleb-albau](https://github.com/hleb-albau))
 - \#247 Different bandwidth price on same block height [\#248](https://github.com/cybercongress/cyberd/pull/248) ([hleb-albau](https://github.com/hleb-albau))
 - \#242 Extend isLinkExist endpoint with possibility not specify address [\#246](https://github.com/cybercongress/cyberd/pull/246) ([hleb-albau](https://github.com/hleb-albau))
