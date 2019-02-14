@@ -22,12 +22,14 @@
 
 **Closed issues:**
 
+- Add more seeds into initial config [\#244](https://github.com/cybercongress/cyberd/issues/244)
 - Launch 0.1.1 testnet [\#205](https://github.com/cybercongress/cyberd/issues/205)
 - Cyberd release scheme. [\#180](https://github.com/cybercongress/cyberd/issues/180)
 - Ranking research [\#24](https://github.com/cybercongress/cyberd/issues/24)
 
 **Merged pull requests:**
 
+- Improve building of links index for search queries [\#255](https://github.com/cybercongress/cyberd/pull/255) ([arturalbov](https://github.com/arturalbov))
 - \#244 Add moon as seed node [\#253](https://github.com/cybercongress/cyberd/pull/253) ([hleb-albau](https://github.com/hleb-albau))
 - \#250 Add fail at height debug flag [\#251](https://github.com/cybercongress/cyberd/pull/251) ([hleb-albau](https://github.com/hleb-albau))
 - \#247 Different bandwidth price on same block height [\#248](https://github.com/cybercongress/cyberd/pull/248) ([hleb-albau](https://github.com/hleb-albau))
