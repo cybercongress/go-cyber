@@ -7,8 +7,15 @@ else
   COMPUTE_GPU="${COMPUTE_RANK_ON_GPU}"
 fi
 
+if [ -z "${ALLOW_SEARCH}" ]
+then
+  ALLOW_SEARCH_FLAG=false
+else
+  ALLOW_SEARCH_FLAG="${ALLOW_SEARCH}"
+fi
+
 # Start the first process
-cyberd start --compute-rank-on-gpu=${COMPUTE_GPU} . &
+cyberd start --compute-rank-on-gpu=${COMPUTE_GPU} --allow-search=${ALLOW_SEARCH_FLAG} . &
 status=$?
 if [ $status -ne 0 ]; then
   echo "Failed to start cyberd: $status"

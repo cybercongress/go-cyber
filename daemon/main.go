@@ -24,10 +24,10 @@ import (
 )
 
 const (
-	flagGpuEnabled            = "compute-rank-on-gpu"
-	flagFailBeforeHeight      = "fail-before-height"
-	flagSearchRpcQueryEnabled = "allow-search-rpc-query"
-	flagNotToSealAccPrefix    = "not-to-seal-acc-prefix"
+	flagGpuEnabled         = "compute-rank-on-gpu"
+	flagFailBeforeHeight   = "fail-before-height"
+	flagSearchEnabled      = "allow-search"
+	flagNotToSealAccPrefix = "not-to-seal-acc-prefix"
 )
 
 func main() {
@@ -56,7 +56,7 @@ func main() {
 		if c.Use == "start" {
 			c.Flags().Bool(flagGpuEnabled, true, "Run cyberd with cuda calculations")
 			c.Flags().Int64(flagFailBeforeHeight, 0, "Forced node shutdown before specified height")
-			c.Flags().Bool(flagSearchRpcQueryEnabled, true, "Build index of links with ranks and allow to query search through RPC")
+			c.Flags().Bool(flagSearchEnabled, false, "Build index of links with ranks and allow to query search through RPC")
 		}
 	}
 
@@ -78,7 +78,7 @@ func newApp(logger log.Logger, db dbm.DB, storeTracer io.Writer) abci.Applicatio
 
 	opts := app.Options{
 		ComputeUnit:      computeUnit,
-		AllowSearch:      viper.GetBool(flagSearchRpcQueryEnabled),
+		AllowSearch:      viper.GetBool(flagSearchEnabled),
 		FailBeforeHeight: viper.GetInt64(flagFailBeforeHeight),
 	}
 	cyberdApp := app.NewCyberdApp(logger, db, opts, pruning)

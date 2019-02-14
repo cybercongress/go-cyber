@@ -46,7 +46,6 @@ func (links cidLinks) Unlock() {
 	links.unlockSignal <- struct{}{}
 }
 
-//todo: put rank values here
 type SearchIndex struct {
 	links []cidLinks
 	rank  Rank
@@ -182,13 +181,8 @@ func (i *SearchIndex) startListenNewLinks() {
 
 	i.logger.Info("Search index starting listen new links")
 	for {
-		select {
-		case link := <-i.LinksChan:
-			i.handleLink(link)
-			break
-		default:
-			time.Sleep(100 * time.Millisecond)
-		}
+		link := <-i.LinksChan
+		i.handleLink(link)
 	}
 }
 
@@ -202,15 +196,9 @@ func (i *SearchIndex) startListenNewRank() {
 
 	i.logger.Info("Search index starting listen new rank")
 	for {
-		select {
-		case rank := <-i.RankChan: //todo: could be problems if recalculation lasts more than rank period
-			i.rank = rank
-			i.recalculateIndices()
-			break
-		default:
-			time.Sleep(100 * time.Millisecond)
-		}
-
+		rank := <-i.RankChan //todo: could be problems if recalculation lasts more than rank period
+		i.rank = rank
+		i.recalculateIndices()
 	}
 }
 

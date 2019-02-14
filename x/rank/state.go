@@ -102,8 +102,6 @@ func (s *RankState) EndBlocker(ctx sdk.Context, log log.Logger) {
 	}
 	s.addNewCids(currentCidsCount)
 	s.mainKeeper.StoreLatestMerkleTree(ctx, s.getNetworkMerkleTreeAsBytes())
-
-	s.checkIndexFailure(log)
 }
 
 func (s *RankState) Search(cidNumber CidNumber, page, perPage int) ([]RankedCidNumber, int, error) {
