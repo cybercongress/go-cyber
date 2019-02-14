@@ -22,9 +22,19 @@ func NewRank(values []float64, fullTree bool) Rank {
 	return Rank{Values: values, MerkleTree: merkleTree}
 }
 
-func (r *Rank) Reset() {
+func (r *Rank) Clear() {
 	r.Values = nil
 	r.MerkleTree = nil
+}
+
+func (r *Rank) CopyWithoutTree() Rank {
+	copiedValues := make([]float64, len(r.Values))
+	n := copy(copiedValues, r.Values)
+	// SHOULD NOT HAPPEN
+	if n != len(r.Values) {
+		panic("Not all rank values have been copied")
+	}
+	return Rank{Values: copiedValues, MerkleTree: nil}
 }
 
 // TODO: optimize. Possible solution: adjust capacity of rank values slice after rank calculation

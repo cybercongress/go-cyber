@@ -20,26 +20,26 @@ func (c RankedCidNumber) GetRank() float64     { return c.rank }
 //
 // Local type for sorting
 type cidLinks struct {
-	sortedLinks sortedCidNumbers
+	sortedLinks sortableCidNumbers
 
 	unlockSignal chan struct{}
 }
 
 func NewCidLinks() cidLinks {
 	return cidLinks{
-		sortedLinks:  make(sortedCidNumbers, 0),
+		sortedLinks:  make(sortableCidNumbers, 0),
 		unlockSignal: make(chan struct{}, 1),
 	}
 }
 
-type sortedCidNumbers []RankedCidNumber
+type sortableCidNumbers []RankedCidNumber
 
 // Sort Interface functions
-func (links sortedCidNumbers) Len() int { return len(links) }
+func (links sortableCidNumbers) Len() int { return len(links) }
 
-func (links sortedCidNumbers) Less(i, j int) bool { return links[i].rank < links[j].rank }
+func (links sortableCidNumbers) Less(i, j int) bool { return links[i].rank < links[j].rank }
 
-func (links sortedCidNumbers) Swap(i, j int) { links[i], links[j] = links[j], links[i] }
+func (links sortableCidNumbers) Swap(i, j int) { links[i], links[j] = links[j], links[i] }
 
 // Send unlock signal so others could operate on this index
 func (links cidLinks) Unlock() {
@@ -48,8 +48,8 @@ func (links cidLinks) Unlock() {
 
 //todo: put rank values here
 type SearchIndex struct {
-	linksIndex []cidLinks
-	rank       Rank
+	links []cidLinks
+	rank  Rank
 
 	LinksChan chan CompactLink
 	RankChan  chan Rank
@@ -81,7 +81,7 @@ func (i *SearchIndex) Unlock() {
 // Load links with zero rank values. No sorting. Index should be unavailable for read
 func (i *SearchIndex) Load(linkIndexedKeeper *keeper.LinkIndexedKeeper) {
 	i.Lock() // lock index for read
-	i.linksIndex = make([]cidLinks, 0, 1000000)
+	i.links = make([]cidLinks, 0, 1000000)
 	startTime := time.Now()
 	for from, toCids := range linkIndexedKeeper.GetNextOutLinks() {
 		i.extendIndex(uint64(from))
@@ -98,19 +98,19 @@ func (i *SearchIndex) Search(cidNumber CidNumber, page, perPage int) ([]RankedCi
 	i.logger.Info("Search query", "cid", cidNumber, "page", page, "perPage", perPage)
 
 	if i.locked {
-		return nil, 0, errors.New("linksIndex currently unavailable after node restart")
+		return nil, 0, errors.New("search index currently unavailable after node restart")
 	}
 
-	if uint64(cidNumber) >= uint64(len(i.linksIndex)) {
+	if uint64(cidNumber) >= uint64(len(i.links)) {
 		return []RankedCidNumber{}, 0, nil
 	}
 
-	cidRankedLinks := i.linksIndex[cidNumber]
-	if len(cidRankedLinks.sortedLinks) == 0 {
+	cidLinks := i.links[cidNumber]
+	if cidLinks.sortedLinks == nil || len(cidLinks.sortedLinks) == 0 {
 		return []RankedCidNumber{}, 0, nil
 	}
 
-	totalSize := len(cidRankedLinks.sortedLinks)
+	totalSize := len(cidLinks.sortedLinks)
 	startIndex := page * perPage
 	if startIndex >= totalSize {
 		return nil, totalSize, errors.New("page not found")
@@ -121,7 +121,7 @@ func (i *SearchIndex) Search(cidNumber CidNumber, page, perPage int) ([]RankedCi
 		endIndex = startIndex + (totalSize % perPage)
 	}
 
-	resultSet := cidRankedLinks.sortedLinks[startIndex:endIndex]
+	resultSet := cidLinks.sortedLinks[startIndex:endIndex]
 
 	return resultSet, totalSize, nil
 }
@@ -131,7 +131,7 @@ func (i *SearchIndex) handleLink(link CompactLink) {
 
 	i.extendIndex(uint64(link.From()))
 
-	fromIndex := i.linksIndex[link.From()]
+	fromIndex := i.links[link.From()]
 	// in case unlock signal received we could operate on this index otherwise put link in the end of queue and finish
 	select {
 	case _ = <-fromIndex.unlockSignal:
@@ -151,25 +151,25 @@ func (i *SearchIndex) getRankValue(cid CidNumber) float64 {
 }
 
 func (i *SearchIndex) extendIndex(fromCidNumber uint64) {
-	indexLen := uint64(len(i.linksIndex))
+	indexLen := uint64(len(i.links))
 	if fromCidNumber >= indexLen {
 		for j := indexLen; j <= fromCidNumber; j++ {
 			links := NewCidLinks()
 			links.Unlock() // allow operations on this index
-			i.linksIndex = append(i.linksIndex, links)
+			i.links = append(i.links, links)
 		}
 	}
 }
 
 func (i *SearchIndex) putLinkIntoIndex(from CidNumber, to CidNumber) {
-	index := i.linksIndex[uint64(from)].sortedLinks
+	fromLinks := i.links[uint64(from)].sortedLinks
 	// todo: not optimal. replace with some another implementation. may be AVL tree
 	rankedTo := RankedCidNumber{to, i.getRankValue(to)}
-	pos := sort.Search(len(index), func(i int) bool { return index[i].rank < rankedTo.rank })
-	index = append(index, RankedCidNumber{})
-	copy(index[pos+1:], index[pos:])
-	index[pos] = rankedTo
-	i.linksIndex[uint64(from)].sortedLinks = index
+	pos := sort.Search(len(fromLinks), func(i int) bool { return fromLinks[i].rank < rankedTo.rank })
+	fromLinks = append(fromLinks, RankedCidNumber{})
+	copy(fromLinks[pos+1:], fromLinks[pos:])
+	fromLinks[pos] = rankedTo
+	i.links[uint64(from)].sortedLinks = fromLinks
 }
 
 // for parallel usage
@@ -183,8 +183,7 @@ func (i *SearchIndex) startListenNewLinks() {
 	i.logger.Info("Search index starting listen new links")
 	for {
 		select {
-		case link := <-i.LinksChan: //todo: channel should be buffered
-			i.logger.Info("New link to index")
+		case link := <-i.LinksChan:
 			i.handleLink(link)
 			break
 		default:
@@ -205,7 +204,6 @@ func (i *SearchIndex) startListenNewRank() {
 	for {
 		select {
 		case rank := <-i.RankChan: //todo: could be problems if recalculation lasts more than rank period
-			i.logger.Info("New rank to index")
 			i.rank = rank
 			i.recalculateIndices()
 			break
@@ -218,22 +216,22 @@ func (i *SearchIndex) startListenNewRank() {
 
 func (i *SearchIndex) recalculateIndices() {
 	defer i.Unlock()
-	n := len(i.linksIndex) // fix index length to avoid concurrency modification
+	n := len(i.links) // fix index length to avoid concurrency modification
 
 	// todo: run in parallel
 	for j := 0; j < n; j++ {
 
-		<-i.linksIndex[j].unlockSignal // wait till some operations done on this index
+		<-i.links[j].unlockSignal // wait till some operations done on this index
 
-		currentSortedLinks := i.linksIndex[j].sortedLinks
-		newSortedLinks := make(sortedCidNumbers, 0, len(currentSortedLinks))
+		currentSortedLinks := i.links[j].sortedLinks
+		newSortedLinks := make(sortableCidNumbers, 0, len(currentSortedLinks))
 		for _, cidNumber := range currentSortedLinks {
 			newRankedCid := RankedCidNumber{cidNumber.number, i.getRankValue(cidNumber.number)}
 			newSortedLinks = append(newSortedLinks, newRankedCid)
 		}
 		sort.Stable(sort.Reverse(newSortedLinks))
-		i.linksIndex[j].sortedLinks = newSortedLinks
-		i.linksIndex[j].Unlock()
+		i.links[j].sortedLinks = newSortedLinks
+		i.links[j].Unlock()
 	}
 }
 
