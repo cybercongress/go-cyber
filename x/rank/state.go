@@ -1,7 +1,6 @@
 package rank
 
 import (
-	"bytes"
 	"crypto/sha256"
 	"errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -11,10 +10,10 @@ import (
 	"github.com/cybercongress/cyberd/x/link/keeper"
 	. "github.com/cybercongress/cyberd/x/link/types"
 	"github.com/tendermint/tendermint/libs/log"
+	"time"
 )
 
 type RankState struct {
-	// todo: remove rank Values, store only merkle tree (or even root hash). Move values to link_index
 	networkCidRank Rank // array linksIndex is cid number
 	nextCidRank    Rank // array linksIndex is cid number
 
@@ -26,7 +25,6 @@ type RankState struct {
 	rankCalcChan chan Rank
 	rankErrChan  chan error
 	allowSearch  bool
-	indexErrChan chan error
 	computeUnit  ComputeUnit
 
 	// keepers
@@ -45,7 +43,7 @@ func NewRankState(
 	unit ComputeUnit,
 ) *RankState {
 	return &RankState{
-		allowSearch: allowSearch, indexErrChan: make(chan error), rankCalcChan: make(chan Rank, 1),
+		allowSearch: allowSearch, rankCalcChan: make(chan Rank, 1),
 		rankErrChan: make(chan error), rankCalculationFinished: true, mainKeeper: mainKeeper,
 		stakeIndex: stakeIndex, linkIndexedKeeper: linkIndexedKeeper, cidNumKeeper: cidNumKeeper,
 		computeUnit: unit,
@@ -69,9 +67,8 @@ func (s *RankState) Load(ctx sdk.Context, latestBlockHeight int64, log log.Logge
 		go s.index.startListenNewRank()
 	}
 
-	// if we have fallen and need to start new rank calculation
-	// todo: what if rank didn't changed in new calculation???
-	if latestBlockHeight != 0 && !s.nextRankReady() {
+	// if we fell down and need to start new rank calculation
+	if !s.mainKeeper.GetRankCalculationFinished(ctx) {
 		s.startRankCalculation(ctx, log)
 		s.rankCalculationFinished = false
 	}
@@ -81,68 +78,32 @@ func (s *RankState) EndBlocker(ctx sdk.Context, log log.Logger) {
 	currentCidsCount := s.mainKeeper.GetCidsCount(ctx)
 
 	if s.allowSearch {
-		for _, link := range s.linkIndexedKeeper.GetCurrentBlockLinks() {
-			outLinks := s.linkIndexedKeeper.GetNextOutLinks()
-			toCids, exists := outLinks[link.From()]
-			if exists {
-				_, exists := toCids[link.To()]
-				if exists {
-					continue
-				}
-			}
-			s.index.LinksChan <- link
-		}
+		s.submitNewLinksToIndex()
+		s.checkIndexFailure(log)
 	}
 
 	s.linkIndexedKeeper.EndBlocker()
 	if ctx.BlockHeight()%CalculationPeriod == 0 || ctx.BlockHeight() == 1 {
 
-		if !s.rankCalculationFinished {
-			select {
-			case newRank := <-s.rankCalcChan:
-				s.handleNewRank(ctx, newRank)
-			case err := <-s.rankErrChan:
-				// DUMB ERROR HANDLING
-				log.Error("Error during rank calculation " + err.Error())
-				panic(err.Error())
-			}
-		}
-
+		s.checkRankCalcFinished(ctx, true, log)
 		s.applyNextRank()
 
 		s.mainKeeper.StoreLastCalculatedRankHash(ctx, s.GetNetworkRankHash())
 
 		// start new calculation
 		s.rankCalculationFinished = false
+		s.mainKeeper.StoreRankCalculationFinished(ctx, false)
 		s.cidCount = int64(currentCidsCount)
 		s.linkIndexedKeeper.FixLinks()
 		s.stakeIndex.FixUserStake()
 		s.startRankCalculation(ctx, log)
-
-	} else if !s.rankCalculationFinished {
-
-		select {
-		case newRank := <-s.rankCalcChan:
-			s.handleNewRank(ctx, newRank)
-		case err := <-s.rankErrChan:
-			// DUMB ERROR HANDLING
-			log.Error("Error during rank calculation " + err.Error())
-			panic(err.Error())
-		default:
-		}
-
+	} else {
+		s.checkRankCalcFinished(ctx, false, log)
 	}
 	s.addNewCids(currentCidsCount)
 	s.mainKeeper.StoreLatestMerkleTree(ctx, s.getNetworkMerkleTreeAsBytes())
 
-	if s.allowSearch {
-		// Check search index for error
-		err := s.index.checkIndexError()
-		if err != nil {
-			log.Error("Search index failed!", "error", err)
-			panic(err)
-		}
-	}
+	s.checkIndexFailure(log)
 }
 
 func (s *RankState) Search(cidNumber CidNumber, page, perPage int) ([]RankedCidNumber, int, error) {
@@ -157,22 +118,40 @@ func (s *RankState) startRankCalculation(ctx sdk.Context, log log.Logger) {
 	go CalculateRankInParallel(calcCtx, s.rankCalcChan, s.rankErrChan, s.computeUnit, log)
 }
 
-func (s *RankState) handleNewRank(ctx sdk.Context, newRank Rank) {
-	s.setNextRank(newRank)
-	s.mainKeeper.StoreNextMerkleTree(ctx, s.getNextMerkleTreeAsBytes())
-	s.rankCalculationFinished = true
+func (s *RankState) checkRankCalcFinished(ctx sdk.Context, block bool, log log.Logger) {
+
+	if !s.rankCalculationFinished {
+		for {
+			select {
+			case newRank := <-s.rankCalcChan:
+				s.handleNextRank(ctx, newRank)
+			case err := <-s.rankErrChan:
+				// DUMB ERROR HANDLING
+				log.Error("Error during rank calculation " + err.Error())
+				panic(err.Error())
+			default:
+				if !block {
+					return
+				}
+			}
+			time.Sleep(100 * time.Millisecond)
+		}
+	}
 }
 
-func (s *RankState) setNextRank(newRank Rank) {
+func (s *RankState) handleNextRank(ctx sdk.Context, newRank Rank) {
 	s.nextCidRank = newRank
+	s.mainKeeper.StoreNextMerkleTree(ctx, s.getNextMerkleTreeAsBytes())
+	s.rankCalculationFinished = true
+	s.mainKeeper.StoreRankCalculationFinished(ctx, true)
 }
 
 func (s *RankState) applyNextRank() {
 	s.networkCidRank = s.nextCidRank
 	s.lastCalculatedRankHash = s.nextCidRank.MerkleTree.RootHash()
-	s.nextCidRank.Reset()
+	s.nextCidRank.Clear()
 	if s.allowSearch {
-		s.index.RankChan <- s.networkCidRank
+		s.index.RankChan <- s.networkCidRank.CopyWithoutTree()
 	}
 }
 
@@ -182,7 +161,35 @@ func (s *RankState) addNewCids(cidCount uint64) {
 }
 
 //
+// SEARCH INDEX METHODS
+//
+
+func (s *RankState) submitNewLinksToIndex() {
+	for _, link := range s.linkIndexedKeeper.GetCurrentBlockLinks() {
+		outLinks := s.linkIndexedKeeper.GetNextOutLinks()
+		toCids, exists := outLinks[link.From()]
+		if exists {
+			_, exists := toCids[link.To()]
+			if exists {
+				continue
+			}
+		}
+		s.index.LinksChan <- link
+	}
+}
+
+func (s *RankState) checkIndexFailure(logger log.Logger) {
+	// Check search index for error
+	err := s.index.checkIndexError()
+	if err != nil {
+		logger.Error("Search index failed!", "error", err)
+		panic(err)
+	}
+}
+
+//
 // GETTERS
+//
 
 func (s *RankState) GetNetworkRankHash() []byte {
 	return s.networkCidRank.MerkleTree.RootHash()
@@ -194,10 +201,6 @@ func (s *RankState) getNetworkMerkleTreeAsBytes() []byte {
 
 func (s *RankState) getNextMerkleTreeAsBytes() []byte {
 	return s.nextCidRank.MerkleTree.ExportSubtreesRoots()
-}
-
-func (s *RankState) nextRankReady() bool {
-	return s.lastCalculatedRankHash != nil && !bytes.Equal(s.nextCidRank.MerkleTree.RootHash(), s.lastCalculatedRankHash)
 }
 
 func (s *RankState) GetLastCidNum() CidNumber {

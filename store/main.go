@@ -15,6 +15,7 @@ var spentBandwidth = []byte("cyberd_spent_bandwidth")
 var latestBlockNumber = []byte("cyberd_latest_block_number")
 var latestMerkleTree = []byte("cyberd_latest_merkle_tree")
 var nextMerkleTree = []byte("cyberd_next_merkle_tree")
+var rankCalculationFinished = []byte("cyberd_rank_calc_finished")
 
 type MainKeeper struct {
 	key *sdk.KVStoreKey
@@ -152,4 +153,22 @@ func (ms MainKeeper) GetNextMerkleTree(ctx sdk.Context) []byte {
 func (ms MainKeeper) StoreNextMerkleTree(ctx sdk.Context, treeAsBytes []byte) {
 	store := ctx.KVStore(ms.key)
 	store.Set(nextMerkleTree, treeAsBytes)
+}
+
+func (ms MainKeeper) StoreRankCalculationFinished(ctx sdk.Context, finished bool) {
+	store := ctx.KVStore(ms.key)
+	var byteFlag byte
+	if finished {
+		byteFlag = 1
+	}
+	store.Set(rankCalculationFinished, []byte{byteFlag})
+}
+
+func (ms MainKeeper) GetRankCalculationFinished(ctx sdk.Context) bool {
+	store := ctx.KVStore(ms.key)
+	bytes := store.Get(rankCalculationFinished)
+	if bytes == nil || bytes[0] == 1 {
+		return true
+	}
+	return false
 }
