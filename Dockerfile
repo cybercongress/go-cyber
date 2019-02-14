@@ -64,15 +64,10 @@ RUN url="https://golang.org/dl/go${GO_VERSION}.${GO_ARCH}.tar.gz" && \
 
 #  Download genesis file and links file from IPFS
 ###############################################################################
-RUN url="https://dist.ipfs.io/ipget/v${IPGET_VERSION}/ipget_v${IPGET_VERSION}_${IPGET_ARCH}.tar.gz" && \
-    wget -O ipget.tgz "$url" && \
-    tar -xzf ipget.tgz && \
-    rm ipget.tgz
-
-WORKDIR /ipget
-RUN ./ipget QmSFTpNaXB3FhB4EWjsrUydupZXTL8Z44c2j18o5CGnN5h -o /genesis.json
-RUN ./ipget QmepwmLe7vQcK2W6WmvfEk46de3cJ4Jp6jXRXNhuR2AfJ9 -o /links
-RUN ./ipget QmVKoU5E4MWkSDmkVqGRwZwDzY9Jgfi4jv16SwiMQTufmy -o /config.toml
+# To slow using ipget, currently we use gateway
+RUN wget -O /genesis.json https://ipfs.io/ipfs/QmSFTpNaXB3FhB4EWjsrUydupZXTL8Z44c2j18o5CGnN5h
+RUN wget -O /links https://ipfs.io/ipfs/QmepwmLe7vQcK2W6WmvfEk46de3cJ4Jp6jXRXNhuR2AfJ9
+RUN wget -O /config.toml https://ipfs.io/ipfs/QmVVVnAM8TuheEq1gu3nNhz3MxcjB3XAEEzQgzyerp967c
 
 WORKDIR /
 
