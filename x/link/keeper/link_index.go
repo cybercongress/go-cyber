@@ -88,6 +88,29 @@ func (i *LinkIndexedKeeper) GetCurrentBlockLinks() []CompactLink {
 	return i.currentBlockLinks
 }
 
+func (i *LinkIndexedKeeper) IsAnyLinkExist(ctx sdk.Context, from CidNumber, to CidNumber) bool {
+
+	cidLinks, toExists := i.nextRankInLinks[to]
+	links, fromExists := cidLinks[from]
+
+	if toExists && fromExists && len(links) != 0 {
+		return true
+	}
+	return false
+}
+
+func (i *LinkIndexedKeeper) IsLinkExist(ctx sdk.Context, link CompactLink) bool {
+
+	cidLinks, toExists := i.nextRankInLinks[link.To()]
+	links, fromExists := cidLinks[link.From()]
+
+	if toExists && fromExists {
+		_, exists := links[link.Acc()]
+		return exists
+	}
+	return false
+}
+
 //todo: remove duplicated method (BaseLinksKeeper)
 func (i *LinkIndexedKeeper) LoadFromReader(ctx sdk.Context, reader io.Reader) (err error) {
 	linksCountBytes, err := util.ReadExactlyNBytes(reader, LinksCountBytesSize)

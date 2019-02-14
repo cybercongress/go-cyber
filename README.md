@@ -3,7 +3,7 @@
 ![banner](logo.png)
 
 [![testnet](https://img.shields.io/badge/testnet-euler--1-green.svg?style=flat-square)](https://github.com/cybercongress/cyberd/blob/master/docs/run_validator.md)
-[![version](https://img.shields.io/github/release/cybercongress/cyberd.svg?style=flat-square)](https://github.com/cosmos/cosmos-sdk/releases/latest)
+[![version](https://img.shields.io/github/release/cybercongress/cyberd.svg?style=flat-square)](https://github.com/cybercongress/cyberd/releases/latest)
 [![CircleCI](https://img.shields.io/circleci/project/github/cybercongress/cyberd.svg?style=flat-square)](https://circleci.com/gh/cybercongress/cyberd/tree/master)
 [![license](https://img.shields.io/badge/License-Cyber-brightgreen.svg?style=flat-square)](https://github.com/cybercongress/cyberd/blob/master/LICENSE)
 [![LoC](https://tokei.rs/b1/github/cybercongress/cyberd)](https://github.com/cybercongress/cyberd)
@@ -21,7 +21,7 @@ To run a full-node or validator in the latest public testnet of the cyberd follo
 ## Issues
 
 If you have any problems with or questions about search, please contact us through a
- [GitHub issue](https://github.com/cybercongress/cyber-search/issues).
+ [GitHub issue](https://github.com/cybercongress/cyberd/issues).
 
 ## Contribute
 
@@ -37,5 +37,5 @@ Stay tuned with our [Changelog](./CHANGELOG.md).
 <div align="center">
   <sub>Built by
   <a href="https://twitter.com/cyber_devs">cyber•Congress</a> and
-  <a href="https://github.com/cybercongress/cyber-search/graphs/contributors">contributors</a>
+  <a href="https://github.com/cybercongress/cyberd/graphs/contributors">contributors</a>
 </div>

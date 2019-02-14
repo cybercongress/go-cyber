@@ -33,5 +33,6 @@ type CyberdClient interface {
 	SubmitLinkSync(link Link) error
 
 	// see `SubmitLinkAsync`. Links will be submitted as single tx with multiple msges.
-	SubmitLinksSync(links []Link) error
+	// `submitOnlyNew` - if true, only links not exists before(no one do the same link) will be submitted.
+	SubmitLinksSync(links []Link, submitOnlyNew bool) error
 }
