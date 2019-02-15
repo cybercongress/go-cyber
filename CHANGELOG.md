@@ -34,6 +34,7 @@
 
 **Merged pull requests:**
 
+- Do not calculate rank, if there is no new links on last window. [\#261](https://github.com/cybercongress/cyberd/pull/261) ([arturalbov](https://github.com/arturalbov))
 - Client submit only new links flag [\#260](https://github.com/cybercongress/cyberd/pull/260) ([hleb-albau](https://github.com/hleb-albau))
 - Improve building of links index for search queries [\#255](https://github.com/cybercongress/cyberd/pull/255) ([arturalbov](https://github.com/arturalbov))
 - \#244 Add moon as seed node [\#253](https://github.com/cybercongress/cyberd/pull/253) ([hleb-albau](https://github.com/hleb-albau))
