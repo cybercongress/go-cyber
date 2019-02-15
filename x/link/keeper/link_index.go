@@ -53,12 +53,15 @@ func (i *LinkIndexedKeeper) FixLinks() {
 	i.currentRankOurLinks = Links(i.nextRankOutLinks).Copy()
 }
 
-func (i *LinkIndexedKeeper) EndBlocker() {
+// return true if this block has new links
+func (i *LinkIndexedKeeper) EndBlocker() bool {
+	hasNewLinks := len(i.currentBlockLinks) > 0
 	for _, link := range i.currentBlockLinks {
 		Links(i.nextRankOutLinks).Put(link.From(), link.To(), link.Acc())
 		Links(i.nextRankInLinks).Put(link.To(), link.From(), link.Acc())
 	}
 	i.currentBlockLinks = make([]CompactLink, 0, 1000) // todo: 1000 hardcoded value
+	return hasNewLinks
 }
 
 func (i *LinkIndexedKeeper) PutIntoIndex(link CompactLink) {
@@ -88,25 +91,30 @@ func (i *LinkIndexedKeeper) GetCurrentBlockLinks() []CompactLink {
 	return i.currentBlockLinks
 }
 
-func (i *LinkIndexedKeeper) IsAnyLinkExist(ctx sdk.Context, from CidNumber, to CidNumber) bool {
+func (i *LinkIndexedKeeper) IsAnyLinkExist(from CidNumber, to CidNumber) bool {
 
 	cidLinks, toExists := i.nextRankInLinks[to]
-	links, fromExists := cidLinks[from]
 
-	if toExists && fromExists && len(links) != 0 {
-		return true
+	if toExists {
+		links, fromExists := cidLinks[from]
+
+		if fromExists && len(links) != 0 {
+			return true
+		}
 	}
 	return false
 }
 
-func (i *LinkIndexedKeeper) IsLinkExist(ctx sdk.Context, link CompactLink) bool {
+func (i *LinkIndexedKeeper) IsLinkExist(link CompactLink) bool {
 
 	cidLinks, toExists := i.nextRankInLinks[link.To()]
-	links, fromExists := cidLinks[link.From()]
+	if toExists {
+		links, fromExists := cidLinks[link.From()]
 
-	if toExists && fromExists {
-		_, exists := links[link.Acc()]
-		return exists
+		if fromExists && len(links) != 0 {
+			_, exists := links[link.Acc()]
+			return exists
+		}
 	}
 	return false
 }

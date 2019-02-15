@@ -22,6 +22,10 @@ func NewRank(values []float64, fullTree bool) Rank {
 	return Rank{Values: values, MerkleTree: merkleTree}
 }
 
+func (r Rank) IsEmpty() bool {
+	return r.Values == nil || len(r.Values) == 0
+}
+
 func (r *Rank) Clear() {
 	r.Values = nil
 	r.MerkleTree = nil

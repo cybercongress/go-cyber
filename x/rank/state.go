@@ -17,10 +17,10 @@ type RankState struct {
 	networkCidRank Rank // array linksIndex is cid number
 	nextCidRank    Rank // array linksIndex is cid number
 
-	lastCalculatedRankHash []byte
-
 	rankCalculationFinished bool
 	cidCount                int64
+
+	hasNewLinksForPeriod bool // indicates if new links where submitted for rank calc period
 
 	rankCalcChan chan Rank
 	rankErrChan  chan error
@@ -46,12 +46,11 @@ func NewRankState(
 		allowSearch: allowSearch, rankCalcChan: make(chan Rank, 1),
 		rankErrChan: make(chan error), rankCalculationFinished: true, mainKeeper: mainKeeper,
 		stakeIndex: stakeIndex, linkIndexedKeeper: linkIndexedKeeper, cidNumKeeper: cidNumKeeper,
-		computeUnit: unit,
+		computeUnit: unit, hasNewLinksForPeriod: true,
 	}
 }
 
 func (s *RankState) Load(ctx sdk.Context, latestBlockHeight int64, log log.Logger) {
-	s.lastCalculatedRankHash = s.mainKeeper.GetLastCalculatedRankHash(ctx)
 	s.networkCidRank = Rank{Values: nil, MerkleTree: merkle.NewTree(sha256.New(), false)}
 	s.nextCidRank = Rank{Values: nil, MerkleTree: merkle.NewTree(sha256.New(), false)}
 	s.networkCidRank.MerkleTree.ImportSubtreesRoots(s.mainKeeper.GetLatestMerkleTree(ctx))
@@ -82,21 +81,24 @@ func (s *RankState) EndBlocker(ctx sdk.Context, log log.Logger) {
 		s.checkIndexFailure(log)
 	}
 
-	s.linkIndexedKeeper.EndBlocker()
+	blockHasNewLinks := s.linkIndexedKeeper.EndBlocker()
+	s.hasNewLinksForPeriod = s.hasNewLinksForPeriod || blockHasNewLinks
 	if ctx.BlockHeight()%CalculationPeriod == 0 || ctx.BlockHeight() == 1 {
 
 		s.checkRankCalcFinished(ctx, true, log)
 		s.applyNextRank()
 
-		s.mainKeeper.StoreLastCalculatedRankHash(ctx, s.GetNetworkRankHash())
-
-		// start new calculation
-		s.rankCalculationFinished = false
-		s.mainKeeper.StoreRankCalculationFinished(ctx, false)
 		s.cidCount = int64(currentCidsCount)
 		s.linkIndexedKeeper.FixLinks()
-		s.stakeIndex.FixUserStake()
-		s.startRankCalculation(ctx, log)
+		stakeChanged := s.stakeIndex.FixUserStake()
+
+		// start new calculation
+		if s.hasNewLinksForPeriod || stakeChanged {
+			s.rankCalculationFinished = false
+			s.hasNewLinksForPeriod = false
+			s.mainKeeper.StoreRankCalculationFinished(ctx, false)
+			s.startRankCalculation(ctx, log)
+		}
 	} else {
 		s.checkRankCalcFinished(ctx, false, log)
 	}
@@ -145,12 +147,15 @@ func (s *RankState) handleNextRank(ctx sdk.Context, newRank Rank) {
 }
 
 func (s *RankState) applyNextRank() {
-	s.networkCidRank = s.nextCidRank
-	s.lastCalculatedRankHash = s.nextCidRank.MerkleTree.RootHash()
-	s.nextCidRank.Clear()
-	if s.allowSearch {
-		s.index.RankChan <- s.networkCidRank.CopyWithoutTree()
+
+	if !s.nextCidRank.IsEmpty() {
+
+		s.networkCidRank = s.nextCidRank
+		if s.allowSearch {
+			s.index.RankChan <- s.networkCidRank.CopyWithoutTree()
+		}
 	}
+	s.nextCidRank.Clear()
 }
 
 // add new cids to rank with 0 value
@@ -164,15 +169,9 @@ func (s *RankState) addNewCids(cidCount uint64) {
 
 func (s *RankState) submitNewLinksToIndex() {
 	for _, link := range s.linkIndexedKeeper.GetCurrentBlockLinks() {
-		outLinks := s.linkIndexedKeeper.GetNextOutLinks()
-		toCids, exists := outLinks[link.From()]
-		if exists {
-			_, exists := toCids[link.To()]
-			if exists {
-				continue
-			}
+		if !s.linkIndexedKeeper.IsAnyLinkExist(link.From(), link.To()) {
+			s.index.LinksChan <- link
 		}
-		s.index.LinksChan <- link
 	}
 }
 

@@ -35,7 +35,7 @@ func NewLinksHandler(cis keeper.CidNumberKeeper, ls *keeper.LinkIndexedKeeper, a
 			accNumber := cbd.AccNumber(as.GetAccount(ctx, linkMsg.Address).GetAccountNumber())
 			compactLink := cbdlink.NewLink(fromCidNumber, toCidNumber, accNumber)
 
-			if ls.IsLinkExist(ctx, compactLink) {
+			if ls.IsLinkExist(compactLink) {
 				return sdk.Result{Code: cbd.CodeLinkAlreadyExist, Codespace: cbd.CodespaceCbd}
 			}
 		}
