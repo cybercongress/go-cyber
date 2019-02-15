@@ -8,7 +8,6 @@ import (
 
 var lastCidNumberKey = []byte("cyberd_last_cid_number")
 var linksCountKey = []byte("cyberd_links_count")
-var lastCalculatedRankHashKey = []byte("cyberd_last_calculated_rank_hash")
 var genesisSupplyKey = []byte("cyberd_genesis_supply")
 var lastBandwidthPrice = []byte("cyberd_last_bandwidth_price")
 var spentBandwidth = []byte("cyberd_spent_bandwidth")
@@ -74,16 +73,6 @@ func (ms MainKeeper) SetLastCidIndex(ctx sdk.Context, cidsCount []byte) {
 
 	mainStore := ctx.KVStore(ms.key)
 	mainStore.Set(lastCidNumberKey, cidsCount)
-}
-
-func (ms MainKeeper) GetLastCalculatedRankHash(ctx sdk.Context) []byte {
-	store := ctx.KVStore(ms.key)
-	return store.Get(lastCalculatedRankHashKey)
-}
-
-func (ms MainKeeper) StoreLastCalculatedRankHash(ctx sdk.Context, hash []byte) {
-	store := ctx.KVStore(ms.key)
-	store.Set(lastCalculatedRankHashKey, hash)
 }
 
 func (ms MainKeeper) GetBandwidthPrice(ctx sdk.Context, basePrice float64) uint64 {

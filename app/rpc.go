@@ -60,10 +60,10 @@ func (app *CyberdApp) IsLinkExist(from cbdlink.Cid, to cbdlink.Cid, address sdk.
 			acc := app.accountKeeper.GetAccount(ctx, address)
 			if acc != nil {
 				accNumber := cbd.AccNumber(acc.GetAccountNumber())
-				return app.linkIndexedKeeper.IsLinkExist(ctx, cbdlink.NewLink(fromNumber, toNumber, accNumber))
+				return app.linkIndexedKeeper.IsLinkExist(cbdlink.NewLink(fromNumber, toNumber, accNumber))
 			}
 		} else {
-			return app.linkIndexedKeeper.IsAnyLinkExist(ctx, fromNumber, toNumber)
+			return app.linkIndexedKeeper.IsAnyLinkExist(fromNumber, toNumber)
 		}
 	}
 	return false

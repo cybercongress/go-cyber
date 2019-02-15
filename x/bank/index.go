@@ -52,10 +52,16 @@ func (s *IndexedKeeper) getCollectFunc(ctx sdk.Context, userStake map[cbd.AccNum
 	}
 }
 
-func (s *IndexedKeeper) FixUserStake() {
+// return true if some stake changed
+func (s *IndexedKeeper) FixUserStake() bool {
+	stakeChanged := false
 	for k, v := range s.userNewTotalStake {
-		s.userTotalStake[k] = v
+		if s.userTotalStake[k] != v {
+			stakeChanged = true
+			s.userTotalStake[k] = v
+		}
 	}
+	return stakeChanged
 }
 
 func (s *IndexedKeeper) UpdateStake(acc cbd.AccNumber, stake int64) {
