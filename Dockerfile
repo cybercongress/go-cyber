@@ -42,25 +42,9 @@ RUN go build -o cyberdcli ./cli
 ###############################################################################
 FROM nvidia/cuda:10.0-runtime-ubuntu18.04
 
-ENV GO_VERSION 1.11.2
-ENV GO_ARCH 'linux-amd64'
-ENV GO_BIN_SHA '1dfe664fa3d8ad714bbd15a36627992effd150ddabd7523931f077b3926d736d'
-
-ENV IPGET_VERSION 0.3.0
-ENV IPGET_ARCH 'linux-amd64'
-
-#  Install required dev tools to install go
+#  Install useful dev tools
 ###############################################################################
 RUN apt-get update && apt-get install -y --no-install-recommends wget curl
-
-
-#  Install golang
-###############################################################################
-RUN url="https://golang.org/dl/go${GO_VERSION}.${GO_ARCH}.tar.gz" && \
-	wget -O go.tgz "$url" && \
-	echo "${GO_BIN_SHA} *go.tgz" | sha256sum -c - && \
-	tar -C /usr/local -xzf go.tgz &&\
-	rm go.tgz
 
 #  Download genesis file and links file from IPFS
 ###############################################################################
