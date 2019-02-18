@@ -30,10 +30,14 @@
 - Add more seeds into initial config [\#244](https://github.com/cybercongress/cyberd/issues/244)
 - Launch 0.1.1 testnet [\#205](https://github.com/cybercongress/cyberd/issues/205)
 - Cyberd release scheme. [\#180](https://github.com/cybercongress/cyberd/issues/180)
+- Genesis state generator [\#92](https://github.com/cybercongress/cyberd/issues/92)
+- Distribution [\#27](https://github.com/cybercongress/cyberd/issues/27)
 - Ranking research [\#24](https://github.com/cybercongress/cyberd/issues/24)
+- Define distribution in paper [\#5](https://github.com/cybercongress/cyberd/issues/5)
 
 **Merged pull requests:**
 
+- Consensus failure after node restart [\#263](https://github.com/cybercongress/cyberd/pull/263) ([arturalbov](https://github.com/arturalbov))
 - Do not calculate rank, if there is no new links on last window. [\#261](https://github.com/cybercongress/cyberd/pull/261) ([arturalbov](https://github.com/arturalbov))
 - Client submit only new links flag [\#260](https://github.com/cybercongress/cyberd/pull/260) ([hleb-albau](https://github.com/hleb-albau))
 - Improve building of links index for search queries [\#255](https://github.com/cybercongress/cyberd/pull/255) ([arturalbov](https://github.com/arturalbov))
