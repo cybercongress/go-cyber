@@ -217,7 +217,7 @@ func NewCyberdApp(
 	app.bandwidthMeter.Load(ctx)
 
 	// RANK PARAMS
-	app.rankState.Load(ctx, app.latestBlockHeight, app.Logger)
+	app.rankState.Load(ctx, app.Logger)
 	app.failBeforeHeight = opts.FailBeforeHeight
 	app.Seal()
 	return app

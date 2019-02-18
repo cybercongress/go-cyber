@@ -15,6 +15,7 @@ var latestBlockNumber = []byte("cyberd_latest_block_number")
 var latestMerkleTree = []byte("cyberd_latest_merkle_tree")
 var nextMerkleTree = []byte("cyberd_next_merkle_tree")
 var rankCalculationFinished = []byte("cyberd_rank_calc_finished")
+var nextRankCidCount = []byte("cyberd_next_rank_cid_count")
 
 type MainKeeper struct {
 	key *sdk.KVStoreKey
@@ -160,4 +161,20 @@ func (ms MainKeeper) GetRankCalculationFinished(ctx sdk.Context) bool {
 		return true
 	}
 	return false
+}
+
+func (ms MainKeeper) GetNextRankCidCount(ctx sdk.Context) uint64 {
+	store := ctx.KVStore(ms.key)
+	numberAsBytes := store.Get(nextRankCidCount)
+	if numberAsBytes == nil {
+		return ms.GetCidsCount(ctx)
+	}
+	return binary.LittleEndian.Uint64(numberAsBytes)
+}
+
+func (ms MainKeeper) StoreNextRankCidCount(ctx sdk.Context, number uint64) {
+	store := ctx.KVStore(ms.key)
+	numberAsBytes := make([]byte, 8)
+	binary.LittleEndian.PutUint64(numberAsBytes, number)
+	store.Set(nextRankCidCount, numberAsBytes)
 }

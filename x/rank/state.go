@@ -50,9 +50,17 @@ func NewRankState(
 	}
 }
 
-func (s *RankState) Load(ctx sdk.Context, latestBlockHeight int64, log log.Logger) {
-	s.networkCidRank = Rank{Values: nil, MerkleTree: merkle.NewTree(sha256.New(), false)}
-	s.nextCidRank = Rank{Values: nil, MerkleTree: merkle.NewTree(sha256.New(), false)}
+func (s *RankState) Load(ctx sdk.Context, log log.Logger) {
+	s.networkCidRank = Rank{
+		Values:     nil,
+		MerkleTree: merkle.NewTree(sha256.New(), false),
+		CidCount:   s.mainKeeper.GetCidsCount(ctx),
+	}
+	s.nextCidRank = Rank{
+		Values:     nil,
+		MerkleTree: merkle.NewTree(sha256.New(), false),
+		CidCount:   s.mainKeeper.GetNextRankCidCount(ctx),
+	}
 	s.networkCidRank.MerkleTree.ImportSubtreesRoots(s.mainKeeper.GetLatestMerkleTree(ctx))
 	s.nextCidRank.MerkleTree.ImportSubtreesRoots(s.mainKeeper.GetNextMerkleTree(ctx))
 
@@ -89,11 +97,11 @@ func (s *RankState) EndBlocker(ctx sdk.Context, log log.Logger) {
 		s.applyNextRank()
 
 		s.cidCount = int64(currentCidsCount)
-		s.linkIndexedKeeper.FixLinks()
 		stakeChanged := s.stakeIndex.FixUserStake()
 
 		// start new calculation
 		if s.hasNewLinksForPeriod || stakeChanged {
+			s.linkIndexedKeeper.FixLinks()
 			s.rankCalculationFinished = false
 			s.hasNewLinksForPeriod = false
 			s.mainKeeper.StoreRankCalculationFinished(ctx, false)
@@ -102,7 +110,10 @@ func (s *RankState) EndBlocker(ctx sdk.Context, log log.Logger) {
 	} else {
 		s.checkRankCalcFinished(ctx, false, log)
 	}
-	s.addNewCids(currentCidsCount)
+	// todo: hardcode. remove after next relaunch
+	if ctx.BlockHeight() >= CalculationPeriod  {
+		s.addNewCids(currentCidsCount)
+	}
 	s.mainKeeper.StoreLatestMerkleTree(ctx, s.getNetworkMerkleTreeAsBytes())
 }
 
@@ -142,6 +153,7 @@ func (s *RankState) checkRankCalcFinished(ctx sdk.Context, block bool, log log.L
 func (s *RankState) handleNextRank(ctx sdk.Context, newRank Rank) {
 	s.nextCidRank = newRank
 	s.mainKeeper.StoreNextMerkleTree(ctx, s.getNextMerkleTreeAsBytes())
+	s.mainKeeper.StoreNextRankCidCount(ctx, newRank.CidCount)
 	s.rankCalculationFinished = true
 	s.mainKeeper.StoreRankCalculationFinished(ctx, true)
 }
