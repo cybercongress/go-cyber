@@ -429,9 +429,9 @@ docker exec -ti cyberd cyberdcli tx slashing unjail --from=<your_key_name> --cha
 Updating is easy as pulling the new docker container and launching it again
 
 ```bash
+docker pull cyberd/cyberd:<testnet_chain_id>
 docker stop cyberd
 docker rm cyberd
-docker pull cyberd/cyberd:<testnet_chain_id>
 
 docker run -d --name=cyberd --restart always --runtime=nvidia \
  -p 26656:26656 -p 26657:26657 -p 26660:26660 \
