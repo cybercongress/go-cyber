@@ -19,6 +19,7 @@
 **Fixed bugs:**
 
 - Different bandwidth price on same block height [\#247](https://github.com/cybercongress/cyberd/issues/247)
+- Consensus failure after node restart [\#243](https://github.com/cybercongress/cyberd/issues/243)
 - Search returns 500 error when previously unexisted "from" CID added [\#241](https://github.com/cybercongress/cyberd/issues/241)
 - Rest server  blocks cli keystore file [\#233](https://github.com/cybercongress/cyberd/issues/233)
 - Cannot interact with node [\#203](https://github.com/cybercongress/cyberd/issues/203)
