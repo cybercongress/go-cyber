@@ -119,6 +119,7 @@ void getCompressedInLinksCount(
     for (uint64_t i = index; i < cidsSize; i += stride) {
 
         if(inLinksCount[i] == 0) {
+            compressedInLinksCount[i]=0;
             continue;
         }
 
@@ -227,6 +228,7 @@ extern "C" {
         double *rank                                              /* array index - cid index*/
     ) {
 
+        // setbuf(stdout, NULL);
         int CUDA_BLOCKS_NUMBER = (cidsSize + CUDA_THREAD_BLOCK_SIZE - 1) / CUDA_THREAD_BLOCK_SIZE;
 
 
@@ -310,6 +312,7 @@ extern "C" {
         cudaMemcpy(d_compressedInLinksStartIndex, compressedInLinksStartIndex, cidsSize*sizeof(uint64_t), cudaMemcpyHostToDevice);
         free(compressedInLinksStartIndex);
         /*-------------------------------------------------------------------*/
+
 
 
         // STEP4: Calculate compressed in links
