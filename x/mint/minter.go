@@ -36,12 +36,12 @@ func NewMinter(fck auth.FeeCollectionKeeper, stakeKeeper keeper.Keeper, paramSpa
 	return Minter{
 		fck:         fck,
 		stakeKeeper: stakeKeeper,
-		paramSpace:  paramSpace.WithTypeTable(ParamTypeTable()),
+		paramSpace:  paramSpace.WithKeyTable(ParamTypeTable()),
 	}
 }
 
-func ParamTypeTable() params.TypeTable {
-	return params.NewTypeTable(
+func ParamTypeTable() params.KeyTable {
+	return params.NewKeyTable(
 		ParamStoreKeyParams, Params{},
 	)
 }

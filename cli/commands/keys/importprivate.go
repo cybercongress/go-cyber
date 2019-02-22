@@ -26,7 +26,7 @@ func importPrivateKeyCmd() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 
 			rootDir := viper.GetString(cli.HomeFlag)
-			kb, _ := keys.GetKeyBaseFromDirWithWritePerm(rootDir)
+			kb, _ := keys.NewKeyBaseFromDir(rootDir)
 
 			name := args[0]
 
@@ -81,9 +81,7 @@ func importPrivateKeyCmd() *cobra.Command {
 
 			armorStr := mintkey.ArmorInfoBytes(bufRes.Bytes())
 			// import armored bytesm
-			kb.Import(name, armorStr)
-
-			return nil
+			return kb.Import(name, armorStr)
 		},
 	}
 

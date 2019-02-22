@@ -46,13 +46,10 @@ func LinkTxCmd(cdc *codec.Codec) *cobra.Command {
 				return cbd.ErrInvalidCid()
 			}
 
-			from, err := cliCtx.GetFromAddress()
-			if err != nil {
-				return err
-			}
+			from := cliCtx.GetFromAddress()
 
 			// ensure that account exists in chain
-			_, err = cliCtx.GetAccount(from)
+			_, err := cliCtx.GetAccount(from)
 			if err != nil {
 				return err
 			}
@@ -60,7 +57,7 @@ func LinkTxCmd(cdc *codec.Codec) *cobra.Command {
 			// build and sign the transaction, then broadcast to Tendermint
 			msg := link.NewMsg(from, []cbdlink.Link{{From: cidFrom, To: cidTo}})
 
-			return utils.CompleteAndBroadcastTxCli(txCtx, cliCtx, []sdk.Msg{msg})
+			return utils.CompleteAndBroadcastTxCLI(txCtx, cliCtx, []sdk.Msg{msg})
 		},
 	}
 

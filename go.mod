@@ -9,8 +9,9 @@ require (
 	github.com/bgentry/speakeasy v0.1.0 // indirect
 	github.com/btcsuite/btcd v0.0.0-20180903232927-cff30e1d23fc // indirect
 	github.com/btcsuite/btcutil v0.0.0-20180706230648-ab6388e0c60a // indirect
-	github.com/cosmos/cosmos-sdk v0.30.0
+	github.com/cosmos/cosmos-sdk v0.32.0
 	github.com/cosmos/go-bip39 v0.0.0-20180618194314-52158e4697b8 // indirect
+	github.com/ethereum/go-ethereum v1.8.23 // indirect
 	github.com/fortytw2/leaktest v1.2.0 // indirect
 	github.com/go-kit/kit v0.7.0 // indirect
 	github.com/go-logfmt/logfmt v0.3.0 // indirect
@@ -58,8 +59,8 @@ require (
 	github.com/syndtr/goleveldb v0.0.0-20181128100959-b001fa50d6b2 // indirect
 	github.com/tendermint/btcd v0.0.0-20180816174608-e5840949ff4f
 	github.com/tendermint/go-amino v0.14.1
-	github.com/tendermint/iavl v0.12.0 // indirect
-	github.com/tendermint/tendermint v0.29.1
+	github.com/tendermint/iavl v0.12.1 // indirect
+	github.com/tendermint/tendermint v0.30.1
 	github.com/whyrusleeping/base32 v0.0.0-20170828182744-c30ac30633cc // indirect
 	github.com/zondax/ledger-cosmos-go v0.1.0 // indirect
 	golang.org/x/crypto v0.0.0-20181015023909-0c41d7ab0a0e // indirect

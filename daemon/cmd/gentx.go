@@ -66,7 +66,7 @@ following delegation and commission default parameters:
 				return err
 			}
 
-			kb, err := keys.GetKeyBaseFromDir(viper.GetString(flagClientHome))
+			kb, err := keys.NewKeyBaseFromDir(viper.GetString(flagClientHome))
 			if err != nil {
 				return err
 			}
@@ -110,7 +110,8 @@ following delegation and commission default parameters:
 
 			// write the unsigned transaction to the buffer
 			w := bytes.NewBuffer([]byte{})
-			if err := utils.PrintUnsignedStdTx(w, txBldr, cliCtx, []sdk.Msg{msg}, true); err != nil {
+			cliCtx = cliCtx.WithOutput(w)
+			if err = utils.PrintUnsignedStdTx(txBldr, cliCtx, []sdk.Msg{msg}, true); err != nil {
 				return err
 			}
 
