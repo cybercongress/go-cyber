@@ -42,7 +42,7 @@ func (app *CyberdApp) ExportAppStateAndValidators() (appState json.RawMessage, v
 		return nil, nil, err
 	}
 	validators = staking.WriteValidators(ctx, app.stakingKeeper)
-	err = link.WriteGenesis(ctx, app.cidNumKeeper, app.linkIndexedKeeper, app.Logger)
+	err = link.WriteGenesis(ctx, app.cidNumKeeper, app.linkIndexedKeeper, app.Logger())
 	if err != nil {
 		return nil, nil, err
 	}

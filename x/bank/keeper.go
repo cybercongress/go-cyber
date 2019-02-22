@@ -3,13 +3,14 @@ package bank
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
-	"github.com/cosmos/cosmos-sdk/x/bank"
+	sdkbank "github.com/cosmos/cosmos-sdk/x/bank"
+	"github.com/cosmos/cosmos-sdk/x/params"
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	"github.com/cybercongress/cyberd/types/coin"
 )
 
 type Keeper struct {
-	bank.Keeper
+	sdkbank.Keeper
 
 	ak auth.AccountKeeper
 	sk *staking.Keeper
@@ -17,9 +18,9 @@ type Keeper struct {
 	coinsTransferHooks []CoinsTransferHook
 }
 
-func NewBankKeeper(ak auth.AccountKeeper, sk *staking.Keeper) *Keeper {
+func NewBankKeeper(ak auth.AccountKeeper, sk *staking.Keeper, subspace params.Subspace) *Keeper {
 	return &Keeper{
-		Keeper:             bank.NewBaseKeeper(ak),
+		Keeper:             sdkbank.NewBaseKeeper(ak, subspace, sdkbank.DefaultCodespace),
 		ak:                 ak,
 		sk:                 sk,
 		coinsTransferHooks: make([]CoinsTransferHook, 0),
@@ -68,7 +69,7 @@ func (k Keeper) SendCoins(
 }
 
 func (k Keeper) InputOutputCoins(
-	ctx sdk.Context, inputs []bank.Input, outputs []bank.Output,
+	ctx sdk.Context, inputs []sdkbank.Input, outputs []sdkbank.Output,
 ) (sdk.Tags, sdk.Error) {
 	tags, err := k.Keeper.InputOutputCoins(ctx, inputs, outputs)
 	if err == nil {

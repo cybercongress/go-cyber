@@ -3,6 +3,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/cosmos/cosmos-sdk/client/keys"
 	"github.com/cybercongress/cyberd/app"
 	"github.com/cybercongress/cyberd/types/coin"
 	"net"
@@ -195,11 +196,18 @@ func initTestnet(config *tmconfig.Config, cdc *codec.Codec) error {
 			sdk.ValAddress(addr),
 			valPubKeys[i],
 			sdk.NewInt64Coin(coin.CYB, 10000000000000000),
-			staking.NewDescription(nodeDirName, "", "", ""),
+			staking.NewDescription(nodeDirName, "tst", "com.com", "det"),
 			staking.NewCommissionMsg(sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec()),
+			sdk.OneInt(),
 		)
+
+		kb, err := keys.NewKeyBaseFromDir(clientDir)
+		if err != nil {
+			return err
+		}
+
 		tx := auth.NewStdTx([]sdk.Msg{msg}, auth.StdFee{}, []auth.StdSignature{}, memo)
-		txBldr := authtx.NewTxBuilderFromCLI().WithChainID(chainID).WithMemo(memo)
+		txBldr := authtx.NewTxBuilderFromCLI().WithChainID(chainID).WithMemo(memo).WithKeybase(kb)
 
 		signedTx, err := txBldr.SignStdTx(nodeDirName, keyPass, tx, false)
 		if err != nil {

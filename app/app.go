@@ -124,7 +124,10 @@ func NewCyberdApp(
 	)
 
 	var stakingKeeper staking.Keeper
-	app.bankKeeper = cbdbank.NewBankKeeper(app.accountKeeper, &stakingKeeper)
+	app.bankKeeper = cbdbank.NewBankKeeper(
+		app.accountKeeper, &stakingKeeper,
+		app.paramsKeeper.Subspace(bank.DefaultParamspace),
+	)
 	app.bankKeeper.AddHook(bandwidth.CollectAddressesWithStakeChange())
 
 	stakingKeeper = staking.NewKeeper(
@@ -184,8 +187,11 @@ func NewCyberdApp(
 		AddRoute(staking.QuerierRoute, staking.NewQuerier(app.stakingKeeper, app.cdc))
 
 	// mount the multistore and load the latest state
-	app.MountStores(dbKeys.GetStoreKeys()...)
-	app.MountStoresTransient(dbKeys.GetTransientStoreKeys()...)
+	app.MountStores(
+		dbKeys.main, dbKeys.acc, dbKeys.cidNum, dbKeys.cidNumReverse, dbKeys.links, dbKeys.rank, dbKeys.stake,
+		dbKeys.slashing, dbKeys.params, dbKeys.distr, dbKeys.fees, dbKeys.accBandwidth, dbKeys.blockBandwidth,
+		dbKeys.tDistr, dbKeys.tParams, dbKeys.tStake,
+	)
 
 	app.SetInitChainer(app.initChainer)
 	app.SetBeginBlocker(app.BeginBlocker)
@@ -208,16 +214,16 @@ func NewCyberdApp(
 
 	// load in-memory data
 	start := time.Now()
-	app.BaseApp.Logger.Info("Loading mem state")
+	app.BaseApp.Logger().Info("Loading mem state")
 	app.linkIndexedKeeper.Load(rankCtx, ctx)
 	app.stakingIndex.Load(rankCtx, ctx)
-	app.BaseApp.Logger.Info("App loaded", "time", time.Since(start))
+	app.BaseApp.Logger().Info("App loaded", "time", time.Since(start))
 
 	// BANDWIDTH LOAD
 	app.bandwidthMeter.Load(ctx)
 
 	// RANK PARAMS
-	app.rankState.Load(ctx, app.Logger)
+	app.rankState.Load(ctx, app.Logger())
 	app.failBeforeHeight = opts.FailBeforeHeight
 	app.Seal()
 	return app
@@ -258,7 +264,10 @@ func (app *CyberdApp) initChainer(ctx sdk.Context, req abci.RequestInitChain) ab
 	// auth.InitGenesis, but without collected fee
 	app.accountKeeper.SetParams(ctx, genesisState.AuthData.Params)
 
-	slashing.InitGenesis(ctx, app.slashingKeeper, genesisState.SlashingData, genesisState.StakingData)
+	slashing.InitGenesis(
+		ctx, app.slashingKeeper, genesisState.SlashingData,
+		genesisState.StakingData.Validators.ToSDKValidators(),
+	)
 	mint.InitGenesis(ctx, app.minter, genesisState.MintData)
 	bandwidth.InitGenesis(ctx, app.bandwidthMeter, app.accBandwidthKeeper, genesisState.GetAddresses())
 
@@ -300,7 +309,7 @@ func (app *CyberdApp) initChainer(ctx sdk.Context, req abci.RequestInitChain) ab
 		}
 	}
 
-	err = link.InitGenesis(ctx, app.cidNumKeeper, app.linkIndexedKeeper, app.Logger)
+	err = link.InitGenesis(ctx, app.cidNumKeeper, app.linkIndexedKeeper, app.Logger())
 	if err != nil {
 		panic(err)
 	}
@@ -422,7 +431,7 @@ func getSignersTags(tx sdk.Tx) sdk.Tags {
 
 	var tags = make(sdk.Tags, 0)
 	for signer := range signers {
-		tags.AppendTag("signer", []byte(signer))
+		tags.AppendTag("signer", signer)
 	}
 	return tags
 }
@@ -430,7 +439,7 @@ func getSignersTags(tx sdk.Tx) sdk.Tags {
 func (app *CyberdApp) BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock) abci.ResponseBeginBlock {
 
 	if app.failBeforeHeight != 0 && req.Header.Height == app.failBeforeHeight {
-		app.Logger.Info("Forced panic at begin blocker", "height", app.failBeforeHeight)
+		app.Logger().Info("Forced panic at begin blocker", "height", app.failBeforeHeight)
 		os.Exit(1)
 	}
 
@@ -463,7 +472,7 @@ func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.R
 	bandwidth.EndBlocker(ctx, app.bandwidthMeter)
 
 	// RANK CALCULATION
-	app.rankState.EndBlocker(ctx, app.Logger)
+	app.rankState.EndBlocker(ctx, app.Logger())
 
 	return abci.ResponseEndBlock{
 		ValidatorUpdates: validatorUpdates,

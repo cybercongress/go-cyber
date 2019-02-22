@@ -178,7 +178,7 @@ func (c *HttpCyberdClient) BroadcastTx(msgs []sdk.Msg) error {
 	if result.Code != 0 {
 		return errors.New(string(result.Log))
 	}
-	newBuilder := c.txBuilder.WithSequence(c.txBuilder.GetSequence() + 1)
+	newBuilder := c.txBuilder.WithSequence(c.txBuilder.Sequence() + 1)
 	c.txBuilder = &newBuilder
 	return nil
 }
@@ -188,7 +188,7 @@ func accountFromAddress(from string) (fromAddr sdk.AccAddress, fromName string) 
 		return nil, ""
 	}
 
-	keybase, err := keys.GetKeyBase()
+	keybase, err := keys.NewKeyBaseFromHomeFlag()
 	if err != nil {
 		fmt.Println("no keybase found")
 		os.Exit(1)
