@@ -38,30 +38,32 @@ func (h Hooks) AfterValidatorBonded(ctx sdk.Context, consAddr sdk.ConsAddress, v
 	h.dh.AfterValidatorBonded(ctx, consAddr, valAddr)
 	h.sh.AfterValidatorBonded(ctx, consAddr, valAddr)
 }
-func (h Hooks) AfterValidatorPowerDidChange(ctx sdk.Context, consAddr sdk.ConsAddress, valAddr sdk.ValAddress) {
-	h.dh.AfterValidatorPowerDidChange(ctx, consAddr, valAddr)
-	h.sh.AfterValidatorPowerDidChange(ctx, consAddr, valAddr)
-}
+
 func (h Hooks) AfterValidatorBeginUnbonding(ctx sdk.Context, consAddr sdk.ConsAddress, valAddr sdk.ValAddress) {
 	h.dh.AfterValidatorBeginUnbonding(ctx, consAddr, valAddr)
 	h.sh.AfterValidatorBeginUnbonding(ctx, consAddr, valAddr)
 }
+
 func (h Hooks) BeforeDelegationCreated(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) {
 	h.dh.BeforeDelegationCreated(ctx, delAddr, valAddr)
 	h.sh.BeforeDelegationCreated(ctx, delAddr, valAddr)
 }
+
 func (h Hooks) BeforeDelegationSharesModified(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) {
 	h.dh.BeforeDelegationSharesModified(ctx, delAddr, valAddr)
 	h.sh.BeforeDelegationSharesModified(ctx, delAddr, valAddr)
 }
+
 func (h Hooks) BeforeDelegationRemoved(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) {
 	h.dh.BeforeDelegationRemoved(ctx, delAddr, valAddr)
 	h.sh.BeforeDelegationRemoved(ctx, delAddr, valAddr)
 }
+
 func (h Hooks) AfterDelegationModified(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) {
 	h.dh.AfterDelegationModified(ctx, delAddr, valAddr)
 	h.sh.AfterDelegationModified(ctx, delAddr, valAddr)
 }
+
 func (h Hooks) BeforeValidatorSlashed(ctx sdk.Context, valAddr sdk.ValAddress, fraction sdk.Dec) {
 	h.dh.BeforeValidatorSlashed(ctx, valAddr, fraction)
 	h.sh.BeforeValidatorSlashed(ctx, valAddr, fraction)

@@ -5,7 +5,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/server"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/store/types"
 	"github.com/cybercongress/cyberd/app"
 	"github.com/cybercongress/cyberd/daemon/cmd"
 	"github.com/cybercongress/cyberd/daemon/rpc"
@@ -69,7 +69,7 @@ func main() {
 
 func newApp(logger log.Logger, db dbm.DB, storeTracer io.Writer) abci.Application {
 	// todo use constant here
-	pruning := baseapp.SetPruning(sdk.NewPruningOptions(60*60*24, 0))
+	pruning := baseapp.SetPruning(types.NewPruningOptions(60*60*24, 0))
 
 	computeUnit := rank.CPU
 	if viper.GetBool(flagGpuEnabled) {
@@ -87,7 +87,7 @@ func newApp(logger log.Logger, db dbm.DB, storeTracer io.Writer) abci.Applicatio
 }
 
 func exportAppStateAndTMValidators(
-	logger log.Logger, db dbm.DB, traceStore io.Writer, height int64, forZeroHeight bool,
+	logger log.Logger, db dbm.DB, traceStore io.Writer, height int64, forZeroHeight bool, jailWhiteList []string,
 ) (json.RawMessage, []tmtypes.GenesisValidator, error) {
 
 	capp := app.NewCyberdApp(logger, db, app.Options{})
