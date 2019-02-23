@@ -62,7 +62,7 @@ func step(ctx *CalculationContext, defaultRankWithCorrection float64, prevrank [
 			_, sortedCids, ok := ctx.GetSortedInLinks(i)
 
 			if !ok {
-				rank[i] = defaultRankWithCorrection
+				return
 			} else {
 				ksum := float64(0)
 				for _, j := range sortedCids {
