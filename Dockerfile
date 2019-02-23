@@ -50,7 +50,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends wget curl
 ###############################################################################
 # To slow using ipget, currently we use gateway
 RUN wget -O /genesis.json https://ipfs.io/ipfs/QmQ88ZGztF7QvZc9nHnXZ161jn8WWDzfaAQyxPtAm8TDfh
-RUN wget -O /links https://ipfs.io/ipfs/QmaXGhTQx3qBkcq5QBS6Se61bsqd8hjgivsRzGRKpzoqvE
+RUN wget -O /links https://ipfs.io/ipfs/QmWMF9e4vJdz4UES4w6nJAnN8yfFP2qCugpVM6sRJ3hNVp
 RUN wget -O /config.toml https://ipfs.io/ipfs/QmWDdNUvVtzAgeQnAFcWohQe3DozKBVzhESnhzniwxqeQ3
 
 WORKDIR /
