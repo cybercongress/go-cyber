@@ -23,7 +23,7 @@ if [ $status -ne 0 ]; then
 fi
 
 # Start the second process
-cyberdcli rest-server --cors=* --trust-node --chain-id=euler-1 --laddr=tcp://0.0.0.0:1317 --indent --insecure --home=/root/.cyberdcli_fakepath . &
+cyberdcli rest-server --cors=* --trust-node --chain-id=euler-2 --laddr=tcp://0.0.0.0:1317 --indent --insecure --home=/root/.cyberdcli_fakepath . &
 status=$?
 if [ $status -ne 0 ]; then
   echo "Failed to start cyberd light-client: $status"

@@ -131,7 +131,7 @@ addr_book_strict = true
 max_num_inbound_peers = 40
 
 # Maximum number of outbound peers to connect to, excluding persistent peers
-max_num_outbound_peers = 10
+max_num_outbound_peers = 40
 
 # Time to wait before flushing messages out on the connection
 flush_throttle_timeout = "100ms"
@@ -140,10 +140,10 @@ flush_throttle_timeout = "100ms"
 max_packet_msg_payload_size = 1024
 
 # Rate at which packets can be sent, in bytes/second
-send_rate = 5120000
+send_rate = 40960000
 
 # Rate at which packets can be received, in bytes/second
-recv_rate = 5120000
+recv_rate = 40960000
 
 # Set true to enable the peer-exchange reactor
 pex = true

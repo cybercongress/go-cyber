@@ -1,6 +1,7 @@
 package rank
 
 import (
+	"encoding/hex"
 	"github.com/tendermint/tendermint/libs/log"
 	"time"
 )
@@ -22,6 +23,7 @@ func CalculateRank(ctx *CalculationContext, unit ComputeUnit, logger log.Logger)
 	}
 	logger.Info(
 		"Rank calculated", "time", time.Since(start), "links", ctx.linksCount, "cids", ctx.cidsCount,
+		"hash", hex.EncodeToString(rank.MerkleTree.RootHash()),
 	)
 	return
 }
