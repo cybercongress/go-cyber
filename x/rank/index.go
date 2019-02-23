@@ -2,56 +2,18 @@ package rank
 
 import (
 	"errors"
-	"github.com/cybercongress/cyberd/x/link/keeper"
 	. "github.com/cybercongress/cyberd/x/link/types"
 	"github.com/tendermint/tendermint/libs/log"
 	"sort"
 	"time"
 )
 
-type RankedCidNumber struct {
-	number CidNumber
-	rank   float64
-}
-
-func (c RankedCidNumber) GetNumber() CidNumber { return c.number }
-func (c RankedCidNumber) GetRank() float64     { return c.rank }
-
-//
-// Local type for sorting
-type cidLinks struct {
-	sortedLinks sortableCidNumbers
-
-	unlockSignal chan struct{}
-}
-
-func NewCidLinks() cidLinks {
-	return cidLinks{
-		sortedLinks:  make(sortableCidNumbers, 0),
-		unlockSignal: make(chan struct{}, 1),
-	}
-}
-
-type sortableCidNumbers []RankedCidNumber
-
-// Sort Interface functions
-func (links sortableCidNumbers) Len() int { return len(links) }
-
-func (links sortableCidNumbers) Less(i, j int) bool { return links[i].rank < links[j].rank }
-
-func (links sortableCidNumbers) Swap(i, j int) { links[i], links[j] = links[j], links[i] }
-
-// Send unlock signal so others could operate on this index
-func (links cidLinks) Unlock() {
-	links.unlockSignal <- struct{}{}
-}
-
-type SearchIndex struct {
+type BaseSearchIndex struct {
 	links []cidLinks
 	rank  Rank
 
-	LinksChan chan CompactLink
-	RankChan  chan Rank
+	linksChan chan CompactLink
+	rankChan  chan Rank
 	errChan   chan error
 
 	locked bool
@@ -59,30 +21,30 @@ type SearchIndex struct {
 	logger log.Logger
 }
 
-func NewSearchIndex(log log.Logger) *SearchIndex {
-	return &SearchIndex{
-		LinksChan: make(chan CompactLink, 1000),
-		RankChan:  make(chan Rank, 1),
+func NewBaseSearchIndex(log log.Logger) *BaseSearchIndex {
+	return &BaseSearchIndex{
+		linksChan: make(chan CompactLink, 1000),
+		rankChan:  make(chan Rank, 1),
 		errChan:   make(chan error),
 		locked:    true,
 		logger:    log,
 	}
 }
 
-func (i *SearchIndex) Lock() {
-	i.locked = true
-}
+func (i *BaseSearchIndex) Run() GetError {
+	go i.startListenNewLinks()
+	go i.startListenNewRank()
 
-func (i *SearchIndex) Unlock() {
-	i.locked = false
+	return i.checkIndexError
 }
 
 // Load links with zero rank values. No sorting. Index should be unavailable for read
-func (i *SearchIndex) Load(linkIndexedKeeper *keeper.LinkIndexedKeeper) {
-	i.Lock() // lock index for read
-	i.links = make([]cidLinks, 0, 1000000)
+func (i *BaseSearchIndex) Load(links Links) {
+
 	startTime := time.Now()
-	for from, toCids := range linkIndexedKeeper.GetNextOutLinks() {
+	i.lock() // lock index for read
+	i.links = make([]cidLinks, 0, 1000000)
+	for from, toCids := range links {
 		i.extendIndex(uint64(from))
 
 		for to := range toCids {
@@ -92,7 +54,17 @@ func (i *SearchIndex) Load(linkIndexedKeeper *keeper.LinkIndexedKeeper) {
 	i.logger.Info("Search index loaded!", "time", time.Since(startTime))
 }
 
-func (i *SearchIndex) Search(cidNumber CidNumber, page, perPage int) ([]RankedCidNumber, int, error) {
+func (i *BaseSearchIndex) PutNewLinks(links []CompactLink) {
+	for _, link := range links {
+		i.linksChan <- link
+	}
+}
+
+func (i *BaseSearchIndex) PutNewRank(rank Rank) {
+	i.rankChan <- rank.CopyWithoutTree()
+}
+
+func (i *BaseSearchIndex) Search(cidNumber CidNumber, page, perPage int) ([]RankedCidNumber, int, error) {
 
 	i.logger.Info("Search query", "cid", cidNumber, "page", page, "perPage", perPage)
 
@@ -126,7 +98,7 @@ func (i *SearchIndex) Search(cidNumber CidNumber, page, perPage int) ([]RankedCi
 }
 
 // make sure that this link (from-to) is new
-func (i *SearchIndex) handleLink(link CompactLink) {
+func (i *BaseSearchIndex) handleLink(link CompactLink) {
 
 	i.extendIndex(uint64(link.From()))
 
@@ -138,18 +110,18 @@ func (i *SearchIndex) handleLink(link CompactLink) {
 		fromIndex.Unlock()
 		break
 	default:
-		i.LinksChan <- link
+		i.linksChan <- link
 	}
 }
 
-func (i *SearchIndex) getRankValue(cid CidNumber) float64 {
+func (i *BaseSearchIndex) getRankValue(cid CidNumber) float64 {
 	if i.rank.Values == nil || uint64(len(i.rank.Values)) <= uint64(cid) {
 		return 0
 	}
 	return i.rank.Values[cid]
 }
 
-func (i *SearchIndex) extendIndex(fromCidNumber uint64) {
+func (i *BaseSearchIndex) extendIndex(fromCidNumber uint64) {
 	indexLen := uint64(len(i.links))
 	if fromCidNumber >= indexLen {
 		for j := indexLen; j <= fromCidNumber; j++ {
@@ -160,7 +132,7 @@ func (i *SearchIndex) extendIndex(fromCidNumber uint64) {
 	}
 }
 
-func (i *SearchIndex) putLinkIntoIndex(from CidNumber, to CidNumber) {
+func (i *BaseSearchIndex) putLinkIntoIndex(from CidNumber, to CidNumber) {
 	fromLinks := i.links[uint64(from)].sortedLinks
 	// todo: not optimal. replace with some another implementation. may be AVL tree
 	rankedTo := RankedCidNumber{to, i.getRankValue(to)}
@@ -172,7 +144,7 @@ func (i *SearchIndex) putLinkIntoIndex(from CidNumber, to CidNumber) {
 }
 
 // for parallel usage
-func (i *SearchIndex) startListenNewLinks() {
+func (i *BaseSearchIndex) startListenNewLinks() {
 	defer func() {
 		if r := recover(); r != nil {
 			i.errChan <- r.(error)
@@ -181,13 +153,13 @@ func (i *SearchIndex) startListenNewLinks() {
 
 	i.logger.Info("Search index starting listen new links")
 	for {
-		link := <-i.LinksChan
+		link := <-i.linksChan
 		i.handleLink(link)
 	}
 }
 
 // for parallel usage
-func (i *SearchIndex) startListenNewRank() {
+func (i *BaseSearchIndex) startListenNewRank() {
 	defer func() {
 		if r := recover(); r != nil {
 			i.errChan <- r.(error)
@@ -196,14 +168,14 @@ func (i *SearchIndex) startListenNewRank() {
 
 	i.logger.Info("Search index starting listen new rank")
 	for {
-		rank := <-i.RankChan //todo: could be problems if recalculation lasts more than rank period
+		rank := <-i.rankChan //todo: could be problems if recalculation lasts more than rank period
 		i.rank = rank
 		i.recalculateIndices()
 	}
 }
 
-func (i *SearchIndex) recalculateIndices() {
-	defer i.Unlock()
+func (i *BaseSearchIndex) recalculateIndices() {
+	defer i.unlock()
 	n := len(i.links) // fix index length to avoid concurrency modification
 
 	// todo: run in parallel
@@ -223,7 +195,15 @@ func (i *SearchIndex) recalculateIndices() {
 	}
 }
 
-func (i *SearchIndex) checkIndexError() error {
+func (i *BaseSearchIndex) lock() {
+	i.locked = true
+}
+
+func (i *BaseSearchIndex) unlock() {
+	i.locked = false
+}
+
+func (i *BaseSearchIndex) checkIndexError() error {
 	select {
 	case err := <-i.errChan:
 		return err

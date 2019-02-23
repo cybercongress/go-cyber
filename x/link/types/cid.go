@@ -1,6 +1,8 @@
 package types
 
-import . "github.com/cybercongress/cyberd/types"
+import (
+	. "github.com/cybercongress/cyberd/types"
+)
 
 // map of map, where first key is cid, second key is account.String()
 // second map is used as set for fast contains check
@@ -40,4 +42,31 @@ func (links Links) Copy() Links {
 		linksCopy[from] = fromLinks
 	}
 	return linksCopy
+}
+
+func (links Links) IsAnyLinkExist(from CidNumber, to CidNumber) bool {
+
+	toLinks, fromExists := links[from]
+	if fromExists {
+		linkAccs, toExists := toLinks[to]
+
+		if toExists && len(linkAccs) != 0 {
+			return true
+		}
+	}
+	return false
+}
+
+func (links Links) IsLinkExist(from CidNumber, to CidNumber, acc AccNumber) bool {
+
+	toLinks, fromExists := links[from]
+	if fromExists {
+		linkAccs, toExists := toLinks[to]
+
+		if toExists && len(linkAccs) != 0 {
+			_, exists := linkAccs[acc]
+			return exists
+		}
+	}
+	return false
 }
