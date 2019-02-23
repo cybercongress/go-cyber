@@ -101,6 +101,7 @@ func NewDefaultGenesisState() GenesisState {
 			Params: types.Params{
 				UnbondingTime: defaultUnbondingTime,
 				MaxValidators: 146,
+				MaxEntries:    7,
 				BondDenom:     coin.CYB,
 			},
 		},

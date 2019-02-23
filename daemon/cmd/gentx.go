@@ -30,6 +30,7 @@ const (
 	defaultCommissionRate          = "0.1"
 	defaultCommissionMaxRate       = "0.2"
 	defaultCommissionMaxChangeRate = "0.01"
+	defaultMinSelfDelegation       = "1"
 )
 
 // GenTxCmd builds the cyberd gentx command.
@@ -210,6 +211,9 @@ func prepareFlagsForTxCreateValidator(config *cfg.Config, nodeID, ip, chainID st
 	}
 	if viper.GetString(cli.FlagCommissionMaxChangeRate) == "" {
 		viper.Set(cli.FlagCommissionMaxChangeRate, defaultCommissionMaxChangeRate)
+	}
+	if viper.GetString(cli.FlagMinSelfDelegation) == "" {
+		viper.Set(cli.FlagMinSelfDelegation, defaultMinSelfDelegation)
 	}
 }
 

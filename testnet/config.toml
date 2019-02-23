@@ -112,7 +112,7 @@ laddr = "tcp://0.0.0.0:26656"
 external_address = ""
 
 # Comma separated list of seed nodes to connect to
-seeds = "be8abfd40b22c253180136df5cf56c0dbedee20c@86.57.254.202:26656,20ed708df6c30183e384bbdd65ee27f60bbb0df4@93.125.26.210:34656"
+seeds = "be8abfd40b22c253180136df5cf56c0dbedee20c@86.57.254.202:26656,880e8eb37fd0fa3aaeb82778d273d5beb5bb9fa8@93.125.26.210:34656"
 
 # Comma separated list of nodes to keep persistent connections to
 persistent_peers = ""
@@ -131,7 +131,7 @@ addr_book_strict = true
 max_num_inbound_peers = 40
 
 # Maximum number of outbound peers to connect to, excluding persistent peers
-max_num_outbound_peers = 10
+max_num_outbound_peers = 40
 
 # Time to wait before flushing messages out on the connection
 flush_throttle_timeout = "100ms"
@@ -140,10 +140,10 @@ flush_throttle_timeout = "100ms"
 max_packet_msg_payload_size = 1024
 
 # Rate at which packets can be sent, in bytes/second
-send_rate = 5120000
+send_rate = 40960000
 
 # Rate at which packets can be received, in bytes/second
-recv_rate = 5120000
+recv_rate = 40960000
 
 # Set true to enable the peer-exchange reactor
 pex = true

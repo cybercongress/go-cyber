@@ -102,8 +102,8 @@ jobs:
             docker login -u $DOCKER_USER -p $DOCKER_PASS
             docker tag build/cyberd cyberd/cyberd:euler-$CIRCLE_TAG
             docker push cyberd/cyberd:euler-$CIRCLE_TAG
-            docker tag build/cyberd cyberd/cyberd:euler-1
-            docker push cyberd/cyberd:euler-1
+            docker tag build/cyberd cyberd/cyberd:euler-2
+            docker push cyberd/cyberd:euler-2
           no_output_timeout: 30m
 
 
