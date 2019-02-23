@@ -23,6 +23,17 @@ func NewRank(values []float64, fullTree bool) Rank {
 	return Rank{Values: values, MerkleTree: merkleTree, CidCount: uint64(len(values))}
 }
 
+func NewFromMerkle(cidCount uint64, treeBytes []byte) Rank {
+	rank := Rank{
+		Values:     nil,
+		MerkleTree: merkle.NewTree(sha256.New(), false),
+		CidCount:   cidCount,
+	}
+
+	rank.MerkleTree.ImportSubtreesRoots(treeBytes)
+	return rank
+}
+
 func (r Rank) IsEmpty() bool {
 	return (r.Values == nil || len(r.Values) == 0) && r.MerkleTree == nil
 }

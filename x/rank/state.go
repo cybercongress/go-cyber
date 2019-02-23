@@ -1,10 +1,7 @@
 package rank
 
 import (
-	"crypto/sha256"
-	"errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cybercongress/cyberd/merkle"
 	"github.com/cybercongress/cyberd/store"
 	"github.com/cybercongress/cyberd/x/bank"
 	"github.com/cybercongress/cyberd/x/link/keeper"
@@ -34,7 +31,8 @@ type RankState struct {
 	linkIndexedKeeper *keeper.LinkIndexedKeeper
 
 	// index
-	index *SearchIndex
+	index         SearchIndex
+	getIndexError GetError
 }
 
 func NewRankState(
@@ -51,28 +49,13 @@ func NewRankState(
 }
 
 func (s *RankState) Load(ctx sdk.Context, log log.Logger) {
-	s.networkCidRank = Rank{
-		Values:     nil,
-		MerkleTree: merkle.NewTree(sha256.New(), false),
-		CidCount:   s.mainKeeper.GetCidsCount(ctx),
-	}
-	s.nextCidRank = Rank{
-		Values:     nil,
-		MerkleTree: merkle.NewTree(sha256.New(), false),
-		CidCount:   s.mainKeeper.GetNextRankCidCount(ctx),
-	}
-	s.networkCidRank.MerkleTree.ImportSubtreesRoots(s.mainKeeper.GetLatestMerkleTree(ctx))
-	s.nextCidRank.MerkleTree.ImportSubtreesRoots(s.mainKeeper.GetNextMerkleTree(ctx))
-
+	s.networkCidRank = NewFromMerkle(s.mainKeeper.GetCidsCount(ctx), s.mainKeeper.GetLatestMerkleTree(ctx))
+	s.nextCidRank = NewFromMerkle(s.mainKeeper.GetNextRankCidCount(ctx), s.mainKeeper.GetNextMerkleTree(ctx))
 	s.cidCount = int64(s.mainKeeper.GetCidsCount(ctx))
 
-	if s.allowSearch {
-		s.index = NewSearchIndex(log)
-		s.index.Load(s.linkIndexedKeeper)
-
-		go s.index.startListenNewLinks()
-		go s.index.startListenNewRank()
-	}
+	s.index = s.BuildSearchIndex(log)
+	s.index.Load(s.linkIndexedKeeper.GetNextOutLinks())
+	s.getIndexError = s.index.Run()
 
 	// if we fell down and need to start new rank calculation
 	if !s.mainKeeper.GetRankCalculationFinished(ctx) {
@@ -81,13 +64,19 @@ func (s *RankState) Load(ctx sdk.Context, log log.Logger) {
 	}
 }
 
+func (s *RankState) BuildSearchIndex(logger log.Logger) SearchIndex {
+	if s.allowSearch {
+		return NewBaseSearchIndex(logger)
+	}  else {
+		return NoopSearchIndex{}
+	}
+}
+
 func (s *RankState) EndBlocker(ctx sdk.Context, log log.Logger) {
 	currentCidsCount := s.mainKeeper.GetCidsCount(ctx)
 
-	if s.allowSearch {
-		s.submitNewLinksToIndex()
-		s.checkIndexFailure(log)
-	}
+	s.index.PutNewLinks(s.linkIndexedKeeper.GetCurrentBlockNewLinks())
+	s.checkIndexFailure(log)
 
 	blockHasNewLinks := s.linkIndexedKeeper.EndBlocker()
 	s.hasNewLinksForPeriod = s.hasNewLinksForPeriod || blockHasNewLinks
@@ -110,18 +99,12 @@ func (s *RankState) EndBlocker(ctx sdk.Context, log log.Logger) {
 	} else {
 		s.checkRankCalcFinished(ctx, false, log)
 	}
-	// todo: hardcode. remove after next relaunch
-	if ctx.BlockHeight() >= CalculationPeriod  {
-		s.addNewCids(currentCidsCount)
-	}
+	s.networkCidRank.AddNewCids(currentCidsCount)
 	s.mainKeeper.StoreLatestMerkleTree(ctx, s.getNetworkMerkleTreeAsBytes())
 }
 
 func (s *RankState) Search(cidNumber CidNumber, page, perPage int) ([]RankedCidNumber, int, error) {
-	if s.allowSearch {
-		return s.index.Search(cidNumber, page, perPage)
-	}
-	return nil, 0, errors.New("search is not allowed on this node")
+	return s.index.Search(cidNumber, page, perPage)
 }
 
 func (s *RankState) startRankCalculation(ctx sdk.Context, log log.Logger) {
@@ -161,35 +144,15 @@ func (s *RankState) handleNextRank(ctx sdk.Context, newRank Rank) {
 func (s *RankState) applyNextRank() {
 
 	if !s.nextCidRank.IsEmpty() {
-
 		s.networkCidRank = s.nextCidRank
-		if s.allowSearch {
-			s.index.RankChan <- s.networkCidRank.CopyWithoutTree()
-		}
+		s.index.PutNewRank(s.networkCidRank)
 	}
 	s.nextCidRank.Clear()
 }
 
-// add new cids to rank with 0 value
-func (s *RankState) addNewCids(cidCount uint64) {
-	s.networkCidRank.AddNewCids(cidCount)
-}
-
-//
-// SEARCH INDEX METHODS
-//
-
-func (s *RankState) submitNewLinksToIndex() {
-	for _, link := range s.linkIndexedKeeper.GetCurrentBlockLinks() {
-		if !s.linkIndexedKeeper.IsAnyLinkExist(link.From(), link.To()) {
-			s.index.LinksChan <- link
-		}
-	}
-}
-
 func (s *RankState) checkIndexFailure(logger log.Logger) {
 	// Check search index for error
-	err := s.index.checkIndexError()
+	err := s.getIndexError()
 	if err != nil {
 		logger.Error("Search index failed!", "error", err)
 		panic(err)

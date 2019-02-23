@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"encoding/binary"
+	"errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cybercongress/cyberd/store"
 	"github.com/cybercongress/cyberd/util"
@@ -10,7 +11,7 @@ import (
 )
 
 const (
-	CidBytesSize       = uint64(46)
+	CidLengthBytesSize = uint64(1)
 	CidNumberBytesSize = uint64(8)
 	CidCountBytesSize  = uint64(8)
 )
@@ -122,7 +123,7 @@ func (k BaseCidNumberKeeper) GetCidsCount(ctx sdk.Context) uint64 {
 	return k.ms.GetCidsCount(ctx)
 }
 
-// write CIDs to writer in binary format: <n><cid1><cid1_number><cid2><cid2_number>....<cidn><cidn_number>
+// write CIDs to writer in binary format: <n><cid1_size><cid1><cid1_number><cid2_size><cid2><cid2_number>....<cidn_size><cidn><cidn_number>
 func (k BaseCidNumberKeeper) WriteCids(ctx sdk.Context, writer io.Writer) (err error) {
 	uintAsBytes := make([]byte, 8) //common bytes array to convert uints
 
@@ -134,6 +135,16 @@ func (k BaseCidNumberKeeper) WriteCids(ctx sdk.Context, writer io.Writer) (err e
 	}
 
 	k.Iterate(ctx, func(cid Cid, number CidNumber) {
+		cidLength := len(cid)
+		if cidLength > 255 {
+			err = errors.New("cid length cannot be over 255")
+			return
+		}
+
+		_, err = writer.Write([]byte{byte(cidLength)})
+		if err != nil {
+			return
+		}
 		_, err = writer.Write([]byte(cid))
 		if err != nil {
 			return
@@ -156,7 +167,12 @@ func (k BaseCidNumberKeeper) LoadFromReader(ctx sdk.Context, reader io.Reader) (
 
 	// Read all CIDs with their numbers
 	for i := uint64(0); i < cidCount; i++ {
-		cidBytes, err := util.ReadExactlyNBytes(reader, CidBytesSize)
+		cidLengthBytes, err := util.ReadExactlyNBytes(reader, CidLengthBytesSize)
+		if err != nil {
+			return err
+		}
+
+		cidBytes, err := util.ReadExactlyNBytes(reader, uint64(cidLengthBytes[0]))
 		if err != nil {
 			return err
 		}
