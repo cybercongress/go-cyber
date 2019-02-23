@@ -14,7 +14,7 @@ type LinkIndexedKeeper struct {
 
 	// Actual links for current rank calculated state.
 	currentRankInLinks  Links
-	currentRankOurLinks Links
+	currentRankOutLinks Links
 
 	// New links for the next rank calculation.
 	// Actually, do we need them in memory?
@@ -36,7 +36,7 @@ func (i *LinkIndexedKeeper) Load(rankCtx sdk.Context, freshCtx sdk.Context) {
 	}
 
 	i.currentRankInLinks = inLinks
-	i.currentRankOurLinks = outLinks
+	i.currentRankOutLinks = outLinks
 
 	newInLinks, newOutLinks, err := i.LinkKeeper.GetAllLinks(freshCtx)
 	if err != nil {
@@ -50,7 +50,7 @@ func (i *LinkIndexedKeeper) Load(rankCtx sdk.Context, freshCtx sdk.Context) {
 func (i *LinkIndexedKeeper) FixLinks() {
 	// todo state copied
 	i.currentRankInLinks = Links(i.nextRankInLinks).Copy()
-	i.currentRankOurLinks = Links(i.nextRankOutLinks).Copy()
+	i.currentRankOutLinks = Links(i.nextRankOutLinks).Copy()
 }
 
 // return true if this block has new links
@@ -76,7 +76,7 @@ func (i *LinkIndexedKeeper) PutLink(ctx sdk.Context, link CompactLink) {
 }
 
 func (i *LinkIndexedKeeper) GetOutLinks() Links {
-	return i.currentRankOurLinks
+	return i.currentRankOutLinks
 }
 
 func (i *LinkIndexedKeeper) GetInLinks() Links {
@@ -91,32 +91,22 @@ func (i *LinkIndexedKeeper) GetCurrentBlockLinks() []CompactLink {
 	return i.currentBlockLinks
 }
 
-func (i *LinkIndexedKeeper) IsAnyLinkExist(from CidNumber, to CidNumber) bool {
-
-	cidLinks, toExists := i.nextRankInLinks[to]
-
-	if toExists {
-		links, fromExists := cidLinks[from]
-
-		if fromExists && len(links) != 0 {
-			return true
+func (i *LinkIndexedKeeper) GetCurrentBlockNewLinks() []CompactLink {
+	result := make([]CompactLink, 0, len(i.currentBlockLinks))
+	for _, link := range i.currentBlockLinks {
+		if !i.IsAnyLinkExist(link.From(), link.To()) {
+			result = append(result, link)
 		}
 	}
-	return false
+	return result
+}
+
+func (i *LinkIndexedKeeper) IsAnyLinkExist(from CidNumber, to CidNumber) bool {
+	return i.nextRankOutLinks.IsAnyLinkExist(from, to)
 }
 
 func (i *LinkIndexedKeeper) IsLinkExist(link CompactLink) bool {
-
-	cidLinks, toExists := i.nextRankInLinks[link.To()]
-	if toExists {
-		links, fromExists := cidLinks[link.From()]
-
-		if fromExists && len(links) != 0 {
-			_, exists := links[link.Acc()]
-			return exists
-		}
-	}
-	return false
+	return i.nextRankOutLinks.IsLinkExist(link.From(), link.To(), link.Acc())
 }
 
 //todo: remove duplicated method (BaseLinksKeeper)
