@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- Update  to cosmos 0.32.0 [\#265](https://github.com/cybercongress/cyberd/issues/265)
 - Download golang only once during docker build. [\#259](https://github.com/cybercongress/cyberd/issues/259)
 - Do not calculate rank, if there is no new links on last window. [\#258](https://github.com/cybercongress/cyberd/issues/258)
 - Http client only new links option for submit endpoint [\#254](https://github.com/cybercongress/cyberd/issues/254)
@@ -18,6 +19,7 @@
 
 **Fixed bugs:**
 
+- Rank calculation failed: out of memory [\#264](https://github.com/cybercongress/cyberd/issues/264)
 - Different bandwidth price on same block height [\#247](https://github.com/cybercongress/cyberd/issues/247)
 - Consensus failure after node restart [\#243](https://github.com/cybercongress/cyberd/issues/243)
 - Search returns 500 error when previously unexisted "from" CID added [\#241](https://github.com/cybercongress/cyberd/issues/241)
@@ -29,6 +31,7 @@
 **Closed issues:**
 
 - Add more seeds into initial config [\#244](https://github.com/cybercongress/cyberd/issues/244)
+- Create awesome gif for readme [\#239](https://github.com/cybercongress/cyberd/issues/239)
 - Launch 0.1.1 testnet [\#205](https://github.com/cybercongress/cyberd/issues/205)
 - Cyberd release scheme. [\#180](https://github.com/cybercongress/cyberd/issues/180)
 - Genesis state generator [\#92](https://github.com/cybercongress/cyberd/issues/92)
@@ -38,6 +41,10 @@
 
 **Merged pull requests:**
 
+- 0.1.2 [\#269](https://github.com/cybercongress/cyberd/pull/269) ([hleb-albau](https://github.com/hleb-albau))
+- Refactoring  of search index. Fix links export [\#268](https://github.com/cybercongress/cyberd/pull/268) ([arturalbov](https://github.com/arturalbov))
+- Launch euler-2 testnet [\#267](https://github.com/cybercongress/cyberd/pull/267) ([hleb-albau](https://github.com/hleb-albau))
+- \#265 Update to cosmos 0.32.0 [\#266](https://github.com/cybercongress/cyberd/pull/266) ([hleb-albau](https://github.com/hleb-albau))
 - Consensus failure after node restart [\#263](https://github.com/cybercongress/cyberd/pull/263) ([arturalbov](https://github.com/arturalbov))
 - Do not calculate rank, if there is no new links on last window. [\#261](https://github.com/cybercongress/cyberd/pull/261) ([arturalbov](https://github.com/arturalbov))
 - Client submit only new links flag [\#260](https://github.com/cybercongress/cyberd/pull/260) ([hleb-albau](https://github.com/hleb-albau))
