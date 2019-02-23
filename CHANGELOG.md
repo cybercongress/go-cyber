@@ -1,8 +1,7 @@
 # Change Log
 
-## [Unreleased](https://github.com/cybercongress/cyberd/tree/HEAD)
-
-[Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.1.1...HEAD)
+## [v0.1.2](https://github.com/cybercongress/cyberd/tree/v0.1.2) (2019-02-23)
+[Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.1.1...v0.1.2)
 
 **Implemented enhancements:**
 
