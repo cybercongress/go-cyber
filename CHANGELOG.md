@@ -6,6 +6,7 @@
 
 **Merged pull requests:**
 
+- add folder removing [\#271](https://github.com/cybercongress/cyberd/pull/271) ([SaveTheAles](https://github.com/SaveTheAles))
 - Docs ci upd [\#270](https://github.com/cybercongress/cyberd/pull/270) ([SaveTheAles](https://github.com/SaveTheAles))
 
 ## [v0.1.2](https://github.com/cybercongress/cyberd/tree/v0.1.2) (2019-02-23)
