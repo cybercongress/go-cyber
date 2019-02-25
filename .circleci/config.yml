@@ -85,6 +85,7 @@ jobs:
               git config user.email "cybercongress42@gmail.com"
               git config user.name "Cyber Admin"
               git add wiki/docs/cyberd/
+              git add wiki/docs/help/cyberd/
               git commit -m "Circle CI: Update Docs"
               # Push quietly to prevent showing the token in log
               git push -q https://${DOCS_GITHUB_TOKEN}@github.com/cybercongress/library.git master
