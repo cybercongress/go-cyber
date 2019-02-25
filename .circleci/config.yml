@@ -73,6 +73,7 @@ jobs:
             # We need to remove current files in folder to avoid duplicating renamed files
             rm -rf ./wiki/docs/cyberd/*
             cp -r ~/build/docs/. ./wiki/docs/cyberd/
+            cp -r ~/build/docs/help/. ./wiki/docs/help/cyberd/
             cp ~/build/CHANGELOG.md ./wiki/docs/cyberd/Changelog.md
             cp ~/build/CONTRIBUTING.md ./wiki/docs/cyberd/Contributing.md
             git add -N wiki/docs/cyberd
