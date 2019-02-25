@@ -78,8 +78,10 @@ jobs:
             cp ~/build/CHANGELOG.md ./wiki/docs/cyberd/Changelog.md
             cp ~/build/CONTRIBUTING.md ./wiki/docs/cyberd/Contributing.md
             git add -N wiki/docs/cyberd
+            git add -N wiki/docs/help/cyberd
             diff=$(git diff wiki/docs/cyberd/)
-            if [[  -n  "$diff" ]]; then
+            diff2=$(git diff wiki/docs/help/cyberd/)
+            if [[  -n  "$diff" ]] || [[  -n  "$diff2" ]]; then
               git config user.email "cybercongress42@gmail.com"
               git config user.name "Cyber Admin"
               git add wiki/docs/cyberd/
