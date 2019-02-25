@@ -1,4 +1,4 @@
-# Join Cyberd Network As Validator test!
+# Join Cyberd Network As Validator
 
 **Note**. Currently active dev testnet is `euler-2` (substitute <testnet_chain_id> with that value).
 
