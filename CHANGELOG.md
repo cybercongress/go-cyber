@@ -6,6 +6,7 @@
 
 **Merged pull requests:**
 
+- add staging [\#272](https://github.com/cybercongress/cyberd/pull/272) ([SaveTheAles](https://github.com/SaveTheAles))
 - add folder removing [\#271](https://github.com/cybercongress/cyberd/pull/271) ([SaveTheAles](https://github.com/SaveTheAles))
 - Docs ci upd [\#270](https://github.com/cybercongress/cyberd/pull/270) ([SaveTheAles](https://github.com/SaveTheAles))
 
