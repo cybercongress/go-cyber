@@ -1,5 +1,13 @@
 # Change Log
 
+## [Unreleased](https://github.com/cybercongress/cyberd/tree/HEAD)
+
+[Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.1.2...HEAD)
+
+**Merged pull requests:**
+
+- Docs ci upd [\#270](https://github.com/cybercongress/cyberd/pull/270) ([SaveTheAles](https://github.com/SaveTheAles))
+
 ## [v0.1.2](https://github.com/cybercongress/cyberd/tree/v0.1.2) (2019-02-23)
 [Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.1.1...v0.1.2)
 
