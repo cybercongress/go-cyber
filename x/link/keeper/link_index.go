@@ -17,8 +17,6 @@ type LinkIndexedKeeper struct {
 	currentRankOutLinks Links
 
 	// New links for the next rank calculation.
-	// Actually, do we need them in memory?
-	// TODO: optimize to not store whole index (store just new links)
 	nextRankInLinks  Links
 	nextRankOutLinks Links
 
@@ -38,7 +36,10 @@ func (i *LinkIndexedKeeper) Load(rankCtx sdk.Context, freshCtx sdk.Context) {
 	i.currentRankInLinks = inLinks
 	i.currentRankOutLinks = outLinks
 
-	newInLinks, newOutLinks, err := i.LinkKeeper.GetAllLinks(freshCtx)
+	newInLinks, newOutLinks, err := i.LinkKeeper.GetAllLinksFiltered(freshCtx, func(l CompactLink) bool {
+		return !i.currentRankOutLinks.IsLinkExist(l.From(), l.To(), l.Acc())
+	})
+
 	if err != nil {
 		cmn.Exit(err.Error())
 	}
@@ -48,17 +49,18 @@ func (i *LinkIndexedKeeper) Load(rankCtx sdk.Context, freshCtx sdk.Context) {
 }
 
 func (i *LinkIndexedKeeper) FixLinks() {
-	// todo state copied
-	i.currentRankInLinks = Links(i.nextRankInLinks).Copy()
-	i.currentRankOutLinks = Links(i.nextRankOutLinks).Copy()
+	i.currentRankInLinks.PutAll(i.nextRankInLinks)
+	i.currentRankOutLinks.PutAll(i.nextRankOutLinks)
+	i.nextRankInLinks = make(Links)
+	i.nextRankOutLinks = make(Links)
 }
 
 // return true if this block has new links
 func (i *LinkIndexedKeeper) EndBlocker() bool {
 	hasNewLinks := len(i.currentBlockLinks) > 0
 	for _, link := range i.currentBlockLinks {
-		Links(i.nextRankOutLinks).Put(link.From(), link.To(), link.Acc())
-		Links(i.nextRankInLinks).Put(link.To(), link.From(), link.Acc())
+		i.nextRankOutLinks.Put(link.From(), link.To(), link.Acc())
+		i.nextRankInLinks.Put(link.To(), link.From(), link.Acc())
 	}
 	i.currentBlockLinks = make([]CompactLink, 0, 1000) // todo: 1000 hardcoded value
 	return hasNewLinks
@@ -102,11 +104,12 @@ func (i *LinkIndexedKeeper) GetCurrentBlockNewLinks() []CompactLink {
 }
 
 func (i *LinkIndexedKeeper) IsAnyLinkExist(from CidNumber, to CidNumber) bool {
-	return i.nextRankOutLinks.IsAnyLinkExist(from, to)
+	return i.currentRankOutLinks.IsAnyLinkExist(from, to) || i.nextRankOutLinks.IsAnyLinkExist(from, to)
 }
 
 func (i *LinkIndexedKeeper) IsLinkExist(link CompactLink) bool {
-	return i.nextRankOutLinks.IsLinkExist(link.From(), link.To(), link.Acc())
+	return i.currentRankOutLinks.IsLinkExist(link.From(), link.To(), link.Acc()) ||
+		i.nextRankOutLinks.IsLinkExist(link.From(), link.To(), link.Acc())
 }
 
 //todo: remove duplicated method (BaseLinksKeeper)

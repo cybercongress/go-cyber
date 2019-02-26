@@ -26,6 +26,16 @@ func (links Links) Put(from CidNumber, to CidNumber, acc AccNumber) {
 	links[from] = cidLinks
 }
 
+func (links Links) PutAll(newLinks Links) {
+	for from := range newLinks {
+		for to := range newLinks[from] {
+			for u := range newLinks[from][to] {
+				links.Put(from, to, u)
+			}
+		}
+	}
+}
+
 func (links Links) Copy() Links {
 
 	linksCopy := make(Links, len(links))
