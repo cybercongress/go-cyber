@@ -49,6 +49,7 @@ func main() {
 	rootCmd.AddCommand(cmd.GenTxCmd(ctx, cdc))
 	rootCmd.AddCommand(cmd.AddGenesisAccountCmd(ctx, cdc))
 	rootCmd.AddCommand(cmd.GenesisCmds(ctx, cdc))
+	rootCmd.AddCommand(cmd.LotteryBalancesCmd(ctx, cdc))
 	rootCmd.AddCommand(client.NewCompletionCmd(rootCmd, true))
 	server.AddCommands(ctx, cdc, rootCmd, newApp, exportAppStateAndTMValidators)
 
