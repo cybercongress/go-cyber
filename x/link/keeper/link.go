@@ -14,10 +14,15 @@ const (
 	LinksCountBytesSize = uint64(8)
 )
 
+type LinkFilter func(l CompactLink) bool
+
+var DefaultLinkFilter = func(l CompactLink) bool { return true }
+
 type LinkKeeper interface {
 	PutLink(ctx sdk.Context, link CompactLink)
 	IsLinkExist(ctx sdk.Context, link CompactLink) bool
 	GetAllLinks(ctx sdk.Context) (Links, Links, error)
+	GetAllLinksFiltered(ctx sdk.Context, filter LinkFilter) (Links, Links, error)
 	GetLinksCount(ctx sdk.Context) uint64
 	Iterate(ctx sdk.Context, process func(link CompactLink))
 	WriteLinks(ctx sdk.Context, writer io.Writer) (err error)
@@ -50,13 +55,19 @@ func (lk BaseLinkKeeper) IsLinkExist(ctx sdk.Context, link CompactLink) bool {
 }
 
 func (lk BaseLinkKeeper) GetAllLinks(ctx sdk.Context) (Links, Links, error) {
+	return lk.GetAllLinksFiltered(ctx, DefaultLinkFilter)
+}
+
+func (lk BaseLinkKeeper) GetAllLinksFiltered(ctx sdk.Context, filter LinkFilter) (Links, Links, error) {
 
 	inLinks := make(map[CidNumber]CidLinks)
 	outLinks := make(map[CidNumber]CidLinks)
 
 	lk.Iterate(ctx, func(link CompactLink) {
-		Links(outLinks).Put(link.From(), link.To(), link.Acc())
-		Links(inLinks).Put(link.To(), link.From(), link.Acc())
+		if filter(link) {
+			Links(outLinks).Put(link.From(), link.To(), link.Acc())
+			Links(inLinks).Put(link.To(), link.From(), link.Acc())
+		}
 	})
 
 	return inLinks, outLinks, nil
