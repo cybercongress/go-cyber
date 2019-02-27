@@ -218,8 +218,8 @@ func collectStdTxs(cdc *codec.Codec, moniker string, genTxsDir string, genDoc tm
 
 		msg := msgs[0].(staking.MsgCreateValidator)
 		// validate delegator and validator addresses and funds against the accounts in the state
-		delAddr := msg.DelegatorAddr.String()
-		valAddr := sdk.AccAddress(msg.ValidatorAddr).String()
+		delAddr := msg.DelegatorAddress.String()
+		valAddr := sdk.AccAddress(msg.ValidatorAddress).String()
 
 		delAcc, delOk := addrMap[delAddr]
 		_, valOk := addrMap[valAddr]

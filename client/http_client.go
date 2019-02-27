@@ -176,7 +176,7 @@ func (c *HttpCyberdClient) BroadcastTx(msgs []sdk.Msg) error {
 	}
 
 	if result.Code != 0 {
-		return errors.New(string(result.Log))
+		return errors.New(string(result.Logs.String()))
 	}
 	newBuilder := c.txBuilder.WithSequence(c.txBuilder.Sequence() + 1)
 	c.txBuilder = &newBuilder

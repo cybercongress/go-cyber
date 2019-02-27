@@ -7,6 +7,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	distr "github.com/cosmos/cosmos-sdk/x/distribution"
+	"github.com/cosmos/cosmos-sdk/x/gov"
 	"github.com/cosmos/cosmos-sdk/x/slashing"
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	"github.com/cosmos/cosmos-sdk/x/staking/types"
@@ -25,6 +26,7 @@ type GenesisState struct {
 	MintData     mint.GenesisState     `json:"mint"`
 	StakingData  staking.GenesisState  `json:"staking"`
 	SlashingData slashing.GenesisState `json:"slashing"`
+	GovData      gov.GenesisState      `json:"gov"`
 	GenTxs       []json.RawMessage     `json:"gentxs"`
 }
 
@@ -39,7 +41,7 @@ func (gs *GenesisState) GetAddresses() []sdk.AccAddress {
 func NewGenesisState(
 	accounts []GenesisAccount, authData auth.GenesisState,
 	stakingData staking.GenesisState, mintData mint.GenesisState,
-	distrData distr.GenesisState,
+	distrData distr.GenesisState, govData gov.GenesisState,
 	slashingData slashing.GenesisState,
 ) GenesisState {
 
@@ -50,6 +52,7 @@ func NewGenesisState(
 		MintData:     mintData,
 		DistrData:    distrData,
 		SlashingData: slashingData,
+		GovData:      govData,
 	}
 }
 
@@ -123,6 +126,22 @@ func NewDefaultGenesisState() GenesisState {
 			WithdrawAddrEnabled: true,
 			PreviousProposer:    nil,
 		},
+		GovData: gov.GenesisState{
+			StartingProposalID: 1,
+			DepositParams: gov.DepositParams{
+				MinDeposit:       sdk.Coins{coin.NewCybCoin(500 * coin.Giga)}, //top 50 of current network
+				MaxDepositPeriod: gov.DefaultPeriod,
+			},
+			VotingParams: gov.VotingParams{
+				VotingPeriod: gov.DefaultPeriod,
+			},
+			TallyParams: gov.TallyParams{
+				Quorum:            sdk.NewDecWithPrec(334, 3),
+				Threshold:         sdk.NewDecWithPrec(5, 1),
+				Veto:              sdk.NewDecWithPrec(334, 3),
+				GovernancePenalty: sdk.NewDecWithPrec(1, 2),
+			},
+		},
 		GenTxs: []json.RawMessage{},
 	}
 }
@@ -192,6 +211,9 @@ func validateGenesisState(genesisState GenesisState) (err error) {
 		return err
 	}
 	if err := distr.ValidateGenesis(genesisState.DistrData); err != nil {
+		return err
+	}
+	if err := gov.ValidateGenesis(genesisState.GovData); err != nil {
 		return err
 	}
 
