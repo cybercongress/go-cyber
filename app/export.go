@@ -6,6 +6,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	distr "github.com/cosmos/cosmos-sdk/x/distribution"
+	"github.com/cosmos/cosmos-sdk/x/gov"
 	"github.com/cosmos/cosmos-sdk/x/slashing"
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	"github.com/cybercongress/cyberd/x/link"
@@ -35,7 +36,8 @@ func (app *CyberdApp) ExportAppStateAndValidators() (appState json.RawMessage, v
 		staking.ExportGenesis(ctx, app.stakingKeeper),
 		mint.ExportGenesis(ctx, app.minter),
 		distr.ExportGenesis(ctx, app.distrKeeper),
-		slashing.ExportGenesis(ctx, app.slashingKeeper),
+		gov.GenesisState{},
+		slashing.GenesisState{},
 	)
 	appState, err = codec.MarshalJSONIndent(app.cdc, genState)
 	if err != nil {

@@ -5,6 +5,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	distr "github.com/cosmos/cosmos-sdk/x/distribution"
+	"github.com/cosmos/cosmos-sdk/x/gov"
 	"github.com/cosmos/cosmos-sdk/x/params"
 	"github.com/cosmos/cosmos-sdk/x/slashing"
 	"github.com/cosmos/cosmos-sdk/x/staking"
@@ -22,6 +23,7 @@ type CyberdAppDbKeys struct {
 	tStake         *sdk.TransientStoreKey
 	distr          *sdk.KVStoreKey
 	tDistr         *sdk.TransientStoreKey
+	gov            *sdk.KVStoreKey
 	slashing       *sdk.KVStoreKey
 	fees           *sdk.KVStoreKey
 	params         *sdk.KVStoreKey
@@ -40,6 +42,7 @@ func NewCyberdAppDbKeys() CyberdAppDbKeys {
 		fees:     sdk.NewKVStoreKey(auth.FeeStoreKey),
 		distr:    sdk.NewKVStoreKey(distr.StoreKey),
 		tDistr:   sdk.NewTransientStoreKey(distr.TStoreKey),
+		gov:      sdk.NewKVStoreKey(gov.StoreKey),
 		slashing: sdk.NewKVStoreKey(slashing.StoreKey),
 		params:   sdk.NewKVStoreKey(params.StoreKey),
 		tParams:  sdk.NewTransientStoreKey(params.TStoreKey),

@@ -8,6 +8,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/bank"
 	distr "github.com/cosmos/cosmos-sdk/x/distribution"
+	"github.com/cosmos/cosmos-sdk/x/gov"
 	"github.com/cosmos/cosmos-sdk/x/params"
 	"github.com/cosmos/cosmos-sdk/x/slashing"
 	"github.com/cosmos/cosmos-sdk/x/staking"
@@ -69,6 +70,7 @@ type CyberdApp struct {
 	stakingKeeper       staking.Keeper
 	slashingKeeper      slashing.Keeper
 	distrKeeper         distr.Keeper
+	govKeeper           gov.Keeper
 	paramsKeeper        params.Keeper
 	accBandwidthKeeper  bw.Keeper
 
@@ -147,6 +149,13 @@ func NewCyberdApp(
 		app.bankKeeper, stakingKeeper, app.feeCollectionKeeper,
 		distr.DefaultCodespace,
 	)
+
+	app.govKeeper = gov.NewKeeper(
+		app.cdc, dbKeys.gov,
+		app.paramsKeeper, app.paramsKeeper.Subspace(gov.DefaultParamspace), app.bankKeeper, &stakingKeeper,
+		gov.DefaultCodespace,
+	)
+
 	app.minter = mint.NewMinter(
 		app.feeCollectionKeeper, stakingKeeper,
 		app.paramsKeeper.Subspace(mint.DefaultParamspace),
@@ -179,18 +188,20 @@ func NewCyberdApp(
 		AddRoute(bank.RouterKey, bank.NewHandler(app.bankKeeper)).
 		AddRoute(staking.RouterKey, staking.NewHandler(app.stakingKeeper)).
 		AddRoute(distr.RouterKey, distr.NewHandler(app.distrKeeper)).
-		AddRoute(slashing.RouterKey, slashing.NewHandler(app.slashingKeeper))
+		AddRoute(slashing.RouterKey, slashing.NewHandler(app.slashingKeeper)).
+		AddRoute(gov.RouterKey, gov.NewHandler(app.govKeeper))
 
 	app.QueryRouter().
 		AddRoute(distr.QuerierRoute, distr.NewQuerier(app.distrKeeper)).
+		AddRoute(gov.QuerierRoute, gov.NewQuerier(app.govKeeper)).
 		AddRoute(slashing.QuerierRoute, slashing.NewQuerier(app.slashingKeeper, app.cdc)).
 		AddRoute(staking.QuerierRoute, staking.NewQuerier(app.stakingKeeper, app.cdc))
 
 	// mount the multistore and load the latest state
 	app.MountStores(
 		dbKeys.main, dbKeys.acc, dbKeys.cidNum, dbKeys.cidNumReverse, dbKeys.links, dbKeys.rank, dbKeys.stake,
-		dbKeys.slashing, dbKeys.params, dbKeys.distr, dbKeys.fees, dbKeys.accBandwidth, dbKeys.blockBandwidth,
-		dbKeys.tDistr, dbKeys.tParams, dbKeys.tStake,
+		dbKeys.slashing, dbKeys.gov, dbKeys.params, dbKeys.distr, dbKeys.fees, dbKeys.accBandwidth,
+		dbKeys.blockBandwidth, dbKeys.tDistr, dbKeys.tParams, dbKeys.tStake,
 	)
 
 	app.SetInitChainer(app.initChainer)
@@ -268,6 +279,7 @@ func (app *CyberdApp) initChainer(ctx sdk.Context, req abci.RequestInitChain) ab
 		ctx, app.slashingKeeper, genesisState.SlashingData,
 		genesisState.StakingData.Validators.ToSDKValidators(),
 	)
+	gov.InitGenesis(ctx, app.govKeeper, genesisState.GovData)
 	mint.InitGenesis(ctx, app.minter, genesisState.MintData)
 	bandwidth.InitGenesis(ctx, app.bandwidthMeter, app.accBandwidthKeeper, genesisState.GetAddresses())
 
@@ -466,7 +478,8 @@ func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.R
 	app.latestBlockHeight = ctx.BlockHeight()
 	app.mainKeeper.StoreLatestBlockNumber(ctx, uint64(ctx.BlockHeight()))
 
-	validatorUpdates, tags := staking.EndBlocker(ctx, app.stakingKeeper)
+	tags := gov.EndBlocker(ctx, app.govKeeper)
+	validatorUpdates, stakingTags := staking.EndBlocker(ctx, app.stakingKeeper)
 	app.stakingIndex.EndBlocker(ctx)
 
 	bandwidth.EndBlocker(ctx, app.bandwidthMeter)
@@ -476,7 +489,7 @@ func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.R
 
 	return abci.ResponseEndBlock{
 		ValidatorUpdates: validatorUpdates,
-		Tags:             tags,
+		Tags:             append(tags, stakingTags...),
 	}
 }
 
