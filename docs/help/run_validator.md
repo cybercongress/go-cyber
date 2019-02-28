@@ -297,17 +297,17 @@ Your machine is ready to launch fullnode.
 
 ## Cyberd fullnode launching
 
-1. Create folders for keys and data storing where you want:
+1. Create folders for keys and data storing where you want for example:
 
 ``` bash
-mkdir cyberd
-mkdir cyberdcli
+mkdir /cyberd/daemon
+mkdir /cyberd/cli
 ```
 
 2. Run fullnode
 
 ```bash
-docker run -d --name=cyberd --restart always --runtime=nvidia  -p 26656:26656 -p 26657:26657 -p 1317:1317  -v /<path_to_cyberd>/cyberd:/root/.cyberd  -v /<path_to_cyberdcli>/cyberdcli:/root/.cyberdcli  cyberd/cyberd:<testnet_chain_id>
+docker run -d --name=cyberd --restart always --runtime=nvidia  -p 26656:26656 -p 26657:26657 -p 1317:1317  -v /cyberd/daemon:/root/.cyberd  -v /cyberd/cli:/root/.cyberdcli  cyberd/cyberd:<testnet_chain_id>
 ```
 3. After successful container pulling and launch run to check if your node is connected to the testnet:
 
@@ -435,8 +435,8 @@ docker rm cyberd
 
 docker run -d --name=cyberd --restart always --runtime=nvidia \
  -p 26656:26656 -p 26657:26657 -p 26660:26660 \
- -v /root/cyberd:/root/.cyberd \
- -v /root/cyberdcli:/root/.cyberdcli \
+ -v /cyberd/daemon:/root/.cyberd \
+ -v /cyberd/cli:/root/.cyberdcli \
  cyberd/cyberd:<testnet_chain_id>
 ```
 
