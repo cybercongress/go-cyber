@@ -5,7 +5,7 @@ aliases:
   - &defaults
     working_directory: ~/build
     docker:
-      - image: circleci/openjdk:8-jdk
+      - image: circleci/golang:1.12
   - &release_filter
     filters:
       tags:
@@ -20,9 +20,7 @@ aliases:
 jobs:
 
   build_daemon_and_cli:
-    working_directory: ~/cyberd
-    docker:
-      - image: circleci/golang:1.12
+    <<: *defaults
     steps:
       - checkout
       - setup_remote_docker:
@@ -87,9 +85,7 @@ jobs:
 
 
   build_and_deploy_images_to_dockerhub:
-    working_directory: ~/cyberd
-    docker:
-      - image: circleci/golang:1.12
+    <<: *defaults
     steps:
       - checkout
       - setup_remote_docker:
@@ -107,9 +103,7 @@ jobs:
 
 
   release_cyberdcli_binaries:
-    docker:
-      - image: circleci/golang:1.12
-    working_directory: /go/src/github.com/cybercongress/cyberd
+    <<: *defaults
     steps:
       - checkout
       - run:
