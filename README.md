@@ -16,7 +16,7 @@ Read [whitepaper](./docs/cyberd.md)
 
 ## cyberd Public Testnets
 
-To run a full-node or validator in the latest public testnet of the cyberd follow [the guide](./docs/run_validator.md).
+To run a full-node or validator in the latest public testnet of the cyberd follow [the guide](./docs/help/run_validator.md).
 
 ## Issues
 
