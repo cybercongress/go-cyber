@@ -396,6 +396,7 @@ To declare a validator candidate, run the following command adjusting stake amou
 ```bash
 docker exec -ti cyberd cyberdcli tx staking create-validator \
   --amount=10000000cyb \
+  --min-self-delegation "1000000" \
   --pubkey=<your_node_pubkey> \
   --moniker=<your_node_nickname> \
   --trust-node \
