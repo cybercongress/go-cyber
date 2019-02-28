@@ -4,8 +4,19 @@
 
 [Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.1.2...HEAD)
 
+**Implemented enhancements:**
+
+- Remove full index loading for next rank in link index [\#275](https://github.com/cybercongress/cyberd/issues/275)
+
+**Closed issues:**
+
+- Generate lottery results cmd [\#273](https://github.com/cybercongress/cyberd/issues/273)
+
 **Merged pull requests:**
 
+- \#193 Enable governance module [\#278](https://github.com/cybercongress/cyberd/pull/278) ([hleb-albau](https://github.com/hleb-albau))
+- Remove full index loading for next rank in link index [\#277](https://github.com/cybercongress/cyberd/pull/277) ([arturalbov](https://github.com/arturalbov))
+- \#273 Generate lottery results cmd [\#274](https://github.com/cybercongress/cyberd/pull/274) ([hleb-albau](https://github.com/hleb-albau))
 - add staging [\#272](https://github.com/cybercongress/cyberd/pull/272) ([SaveTheAles](https://github.com/SaveTheAles))
 - add folder removing [\#271](https://github.com/cybercongress/cyberd/pull/271) ([SaveTheAles](https://github.com/SaveTheAles))
 - Docs ci upd [\#270](https://github.com/cybercongress/cyberd/pull/270) ([SaveTheAles](https://github.com/SaveTheAles))
