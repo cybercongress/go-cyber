@@ -2,7 +2,14 @@
 
 ## [Unreleased](https://github.com/cybercongress/cyberd/tree/HEAD)
 
-[Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.1.2...HEAD)
+[Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.1.3...HEAD)
+
+**Merged pull requests:**
+
+- minor docs reorg fixes [\#279](https://github.com/cybercongress/cyberd/pull/279) ([SaveTheAles](https://github.com/SaveTheAles))
+
+## [v0.1.3](https://github.com/cybercongress/cyberd/tree/v0.1.3) (2019-02-28)
+[Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.1.2...v0.1.3)
 
 **Implemented enhancements:**
 
