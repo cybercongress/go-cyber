@@ -7,3 +7,5 @@
     - Bandwidth Specification: cyberd/bandwidth.md
     - Contributing: cyberd/Contributing.md
     - Changelog: cyberd/Changelog.md
+    - Help:
+      - Run validator: cyberd/help/run_validator.md
