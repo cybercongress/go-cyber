@@ -50,8 +50,8 @@ func main() {
 	rootCmd.AddCommand(cmd.AddGenesisAccountCmd(ctx, cdc))
 	rootCmd.AddCommand(cmd.GenesisCmds(ctx, cdc))
 	rootCmd.AddCommand(cmd.LotteryBalancesCmd(ctx, cdc))
-	rootCmd.AddCommand(client.NewCompletionCmd(rootCmd, true))
 	server.AddCommands(ctx, cdc, rootCmd, newApp, exportAppStateAndTMValidators)
+	rootCmd.AddCommand(client.NewCompletionCmd(rootCmd, true))
 
 	for _, c := range rootCmd.Commands() {
 		if c.Use == "start" {

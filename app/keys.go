@@ -58,7 +58,7 @@ func NewCyberdAppDbKeys() CyberdAppDbKeys {
 
 func (k CyberdAppDbKeys) GetStoreKeys() []*sdk.KVStoreKey {
 	return []*sdk.KVStoreKey{
-		k.main, k.acc, k.cidNum, k.cidNumReverse, k.links, k.rank, k.stake,
+		k.main, k.acc, k.cidNum, k.cidNumReverse, k.links, k.rank, k.stake, k.gov,
 		k.slashing, k.params, k.distr, k.fees, k.accBandwidth, k.blockBandwidth,
 	}
 }
