@@ -1,26 +1,22 @@
 # Change Log
 
-## [Unreleased](https://github.com/cybercongress/cyberd/tree/HEAD)
-
-[Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.1.3...HEAD)
-
-**Merged pull requests:**
-
-- minor docs reorg fixes [\#279](https://github.com/cybercongress/cyberd/pull/279) ([SaveTheAles](https://github.com/SaveTheAles))
-
-## [v0.1.3](https://github.com/cybercongress/cyberd/tree/v0.1.3) (2019-02-28)
+## [v0.1.3](https://github.com/cybercongress/cyberd/tree/v0.1.3) (2019-03-01)
 [Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.1.2...v0.1.3)
 
 **Implemented enhancements:**
 
 - Remove full index loading for next rank in link index [\#275](https://github.com/cybercongress/cyberd/issues/275)
+- Enable governance module [\#193](https://github.com/cybercongress/cyberd/issues/193)
 
 **Closed issues:**
 
 - Generate lottery results cmd [\#273](https://github.com/cybercongress/cyberd/issues/273)
+- Can not explore existing account if it have not any outgoing transactions [\#238](https://github.com/cybercongress/cyberd/issues/238)
+- distribution validator slashes don't work in cybercli [\#237](https://github.com/cybercongress/cyberd/issues/237)
 
 **Merged pull requests:**
 
+- minor docs reorg fixes [\#279](https://github.com/cybercongress/cyberd/pull/279) ([SaveTheAles](https://github.com/SaveTheAles))
 - \#193 Enable governance module [\#278](https://github.com/cybercongress/cyberd/pull/278) ([hleb-albau](https://github.com/hleb-albau))
 - Remove full index loading for next rank in link index [\#277](https://github.com/cybercongress/cyberd/pull/277) ([arturalbov](https://github.com/arturalbov))
 - \#273 Generate lottery results cmd [\#274](https://github.com/cybercongress/cyberd/pull/274) ([hleb-albau](https://github.com/hleb-albau))
