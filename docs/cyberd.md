@@ -4,65 +4,6 @@ Notes on [`euler`](https://github.com/cybercongress/cyberd/releases/tag/v0.1.0) 
 
 [cyber•Congress](https://cybercongress.ai/): @xhipster, @litvintech, @hleb-albau, @arturalbov, @belya
 
-```
-cyb:
-- nick. a friendly software robot who helps you explore universes
-
-cyber:
-- noun. a superintelligent network computer for answers
-- verb. to do something intelligent, to be very smart
-
-cyber://
-- web3 protocol for computing answers and knowledge exchange
-
-CYB:
-- ticker. transferable token expressing a will to become smarter
-
-CYBER:
-- ticker. non-transferable token measuring intelligence
-
-CBD:
-- ticker. ERC-20 proto token representing substance from which CYB emerge
-
-cyberlink:
-- link type. expressing connection from one link to another as link-x.link-y
-
-```
-
-## Content
-<!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
-<!-- code_chunk_output -->
-
-* [cyberd: Computing the knowledge from web3](#cyberd-computing-the-knowledge-from-web3)
-	* [Content](#content)
-	* [Abstract](#abstract)
-	* [Introduction to web3](#introduction-to-web3)
-	* [On adversarial examples problem](#on-adversarial-examples-problem)
-	* [Cyber protocol at `euler`](#cyber-protocol-at-euler)
-	* [Knowledge graph](#knowledge-graph)
-	* [Cyberlinks](#cyberlinks)
-	* [Notion of consensus computer](#notion-of-consensus-computer)
-	* [Relevance machine](#relevance-machine)
-	* [cyber•Rank](#cyberrank)
-	* [Proof of relevance](#proof-of-relevance)
-	* [Speed and scalability](#speed-and-scalability)
-	* [Implementation in a browser](#implementation-in-a-browser)
-	* [From Inception to Genesis](#from-inception-to-genesis)
-	* [Validators incentive](#validators-incentive)
-	* [Satoshi Lottery](#satoshi-lottery)
-	* [Inception](#inception)
-	* [Possible applications](#possible-applications)
-	* [Economic protection is `smith`](#economic-protection-is-smith)
-	* [Ability to evolve is `darwin`](#ability-to-evolve-is-darwin)
-	* [`turing` is about computing more](#turing-is-about-computing-more)
-	* [In a search for equilibria is `nash`](#in-a-search-for-equilibria-is-nash)
-	* [On faster evolution at `weiner`](#on-faster-evolution-at-weiner)
-	* [Genesis is secure as `merkle`](#genesis-is-secure-as-merkle)
-	* [Conclusion](#conclusion)
-	* [References](#references)
-
-<!-- /code_chunk_output -->
-
 ## Abstract
 
 A consensus computer allows computing of provably relevant answers without opinionated blackbox intermediaries such as Google, Youtube, Amazon or Facebook. Stateless content-addressable peer-to-peer communication networks such as IPFS and stateful consensus computers such as Ethereum provide part of the solution, but there are at least three problems associated with implementation. Of course, the first problem is the subjective nature of relevance. The second problem is that it is hard to scale consensus computer for a huge knowledge graph. The third problem is that the quality of such a knowledge graph will suffer from different attack surfaces such as sybil, selfish behaviour of interacting agents. In this paper, we (1) define a protocol for provable consensus computing of relevance between IPFS objects based on Tendermint consensus of cyber•rank computed on GPU, (2) discuss implementation details and (3) design distribution and incentive scheme based on our experience. We believe the minimalistic architecture of the protocol is critical for the formation of a network of domain-specific knowledge consensus computers. As a result of our work some applications never existed before emerge. We expand the work including our vision on features we expect to work up to Genesis.
