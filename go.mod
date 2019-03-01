@@ -12,11 +12,9 @@ require (
 	github.com/gorilla/context v1.1.1 // indirect
 	github.com/gorilla/mux v1.6.2 // indirect
 	github.com/hleb-albau/ethereum-pubkey-collector v0.1.1-0.20190225072122-8f45df369725
-	github.com/ipfs/go-cid v0.9.0
+	github.com/ipfs/go-cid v0.0.1
 	github.com/kr/pretty v0.1.0 // indirect
 	github.com/mattn/go-isatty v0.0.3 // indirect
-	github.com/multiformats/go-multibase v0.0.0-20190219024939-f25b77813c0a // indirect
-	github.com/multiformats/go-multihash v0.0.1 // indirect
 	github.com/pkg/errors v0.8.0
 	github.com/rakyll/statik v0.1.5 // indirect
 	github.com/spf13/afero v1.2.1 // indirect
