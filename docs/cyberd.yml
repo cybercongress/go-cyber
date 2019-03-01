@@ -1,11 +1,11 @@
 #cyberd table of content. Observe the correct tabulation. Do not change the tabulation of the header.
-  - cyberd:
+  - cyber:
     - Whitepaper: cyberd/cyberd.md
+    - Run validator: cyberd/help/run_validator.md
     - Overview: cyberd/overview.md
     - Get CYB: cyberd/get_CYB.md
     - RPC: cyberd/rpc.md
     - Bandwidth Specification: cyberd/bandwidth.md
     - Contributing: cyberd/Contributing.md
     - Changelog: cyberd/Changelog.md
-    - Help:
-      - Run validator: cyberd/help/run_validator.md
+      
