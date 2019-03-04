@@ -8,6 +8,10 @@
 
 - Get supply [\#158](https://github.com/cybercongress/cyberd/issues/158)
 
+**Fixed bugs:**
+
+- Infinity loop in rank end blocker if node was restarted before x00 blocks. [\#283](https://github.com/cybercongress/cyberd/issues/283)
+
 **Merged pull requests:**
 
 - \#158 Get supply [\#285](https://github.com/cybercongress/cyberd/pull/285) ([hleb-albau](https://github.com/hleb-albau))
