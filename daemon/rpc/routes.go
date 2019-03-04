@@ -20,7 +20,9 @@ var Routes = map[string]*rpcserver.RPCFunc{
 	"is_link_exist":           rpcserver.NewRPCFunc(IsLinkExist, "from,to,address"),
 	"current_bandwidth_price": rpcserver.NewRPCFunc(CurrentBandwidthPrice, ""),
 	"index_stats":             rpcserver.NewRPCFunc(IndexStats, ""),
-	"staking/validators":      rpcserver.NewRPCFunc(StakingValidators, ""),
+
+	"staking/validators": rpcserver.NewRPCFunc(StakingValidators, ""),
+	"staking/pool":       rpcserver.NewRPCFunc(StakingPool, ""),
 
 	// routes required cuz of amino.js not exists yet.
 	"submit_signed_link": rpcserver.NewRPCFunc(SignedMsgHandler(UnmarshalLinkRequestFn), "data"),

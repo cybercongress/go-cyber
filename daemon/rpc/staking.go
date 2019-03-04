@@ -1,6 +1,7 @@
 package rpc
 
 import (
+	"github.com/cosmos/cosmos-sdk/x/staking"
 	sdk "github.com/cosmos/cosmos-sdk/x/staking/types"
 	abci "github.com/tendermint/tendermint/abci/types"
 )
@@ -19,4 +20,20 @@ func StakingValidators() ([]sdk.Validator, error) {
 	}
 
 	return validators, nil
+}
+
+func StakingPool() (staking.Pool, error) {
+
+	respQuery := cyberdApp.Query(abci.RequestQuery{
+		Path:  "custom/staking/pool",
+		Prove: false,
+	})
+
+	pool := staking.Pool{}
+	err := codec.UnmarshalJSON(respQuery.Value, &pool)
+	if err != nil {
+		return pool, err
+	}
+
+	return pool, nil
 }
