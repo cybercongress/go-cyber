@@ -1,5 +1,17 @@
 # Change Log
 
+## [Unreleased](https://github.com/cybercongress/cyberd/tree/HEAD)
+
+[Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.1.3...HEAD)
+
+**Implemented enhancements:**
+
+- Get supply [\#158](https://github.com/cybercongress/cyberd/issues/158)
+
+**Merged pull requests:**
+
+- \#158 Get supply [\#285](https://github.com/cybercongress/cyberd/pull/285) ([hleb-albau](https://github.com/hleb-albau))
+
 ## [v0.1.3](https://github.com/cybercongress/cyberd/tree/v0.1.3) (2019-03-01)
 [Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.1.2...v0.1.3)
 
