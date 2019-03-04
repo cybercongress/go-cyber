@@ -2,10 +2,10 @@
   - cyber:
     - Whitepaper: cyberd/cyberd.md
     - Run validator: cyberd/help/run_validator.md
+    - Cyberdcli help: cyberd/help/ultimate-commands-guide_v2.md
     - Overview: cyberd/overview.md
     - Get CYB: cyberd/get_CYB.md
     - RPC: cyberd/rpc.md
     - Bandwidth Specification: cyberd/bandwidth.md
     - Contributing: cyberd/Contributing.md
     - Changelog: cyberd/Changelog.md
-      
