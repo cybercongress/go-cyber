@@ -67,7 +67,7 @@ func (s *RankState) Load(ctx sdk.Context, log log.Logger) {
 func (s *RankState) BuildSearchIndex(logger log.Logger) SearchIndex {
 	if s.allowSearch {
 		return NewBaseSearchIndex(logger)
-	}  else {
+	} else {
 		return NoopSearchIndex{}
 	}
 }
@@ -119,6 +119,7 @@ func (s *RankState) checkRankCalcFinished(ctx sdk.Context, block bool, log log.L
 			select {
 			case newRank := <-s.rankCalcChan:
 				s.handleNextRank(ctx, newRank)
+				return
 			case err := <-s.rankErrChan:
 				// DUMB ERROR HANDLING
 				log.Error("Error during rank calculation " + err.Error())
