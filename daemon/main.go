@@ -10,6 +10,7 @@ import (
 	"github.com/cybercongress/cyberd/daemon/cmd"
 	"github.com/cybercongress/cyberd/daemon/rpc"
 	"github.com/cybercongress/cyberd/util"
+	"github.com/cybercongress/cyberd/x/debug"
 	"github.com/cybercongress/cyberd/x/rank"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -24,10 +25,11 @@ import (
 )
 
 const (
-	flagGpuEnabled         = "compute-rank-on-gpu"
-	flagFailBeforeHeight   = "fail-before-height"
-	flagSearchEnabled      = "allow-search"
-	flagNotToSealAccPrefix = "not-to-seal-acc-prefix"
+	flagGpuEnabled                = "compute-rank-on-gpu"
+	flagFailBeforeHeight          = "fail-before-height"
+	flagFailRandomlyInNextNBlocks = "fail-randomly-in-next-n-blocks"
+	flagSearchEnabled             = "allow-search"
+	flagNotToSealAccPrefix        = "not-to-seal-acc-prefix"
 )
 
 func main() {
@@ -57,6 +59,7 @@ func main() {
 		if c.Use == "start" {
 			c.Flags().Bool(flagGpuEnabled, true, "Run cyberd with cuda calculations")
 			c.Flags().Int64(flagFailBeforeHeight, 0, "Forced node shutdown before specified height")
+			c.Flags().Int64(flagFailRandomlyInNextNBlocks, 0, "Forced node shutdown at random heights")
 			c.Flags().Bool(flagSearchEnabled, false, "Build index of links with ranks and allow to query search through RPC")
 		}
 	}
@@ -78,9 +81,9 @@ func newApp(logger log.Logger, db dbm.DB, storeTracer io.Writer) abci.Applicatio
 	}
 
 	opts := app.Options{
-		ComputeUnit:      computeUnit,
-		AllowSearch:      viper.GetBool(flagSearchEnabled),
-		FailBeforeHeight: viper.GetInt64(flagFailBeforeHeight),
+		ComputeUnit: computeUnit,
+		AllowSearch: viper.GetBool(flagSearchEnabled),
+		Debug:       getDebugOptsFromFlags(),
 	}
 	cyberdApp := app.NewCyberdApp(logger, db, opts, pruning)
 	rpc.SetCyberdApp(cyberdApp)
@@ -103,4 +106,10 @@ func setAppPrefix(_ *cobra.Command, args []string) error {
 	}
 	app.SetPrefix()
 	return nil
+}
+
+func getDebugOptsFromFlags() (opts debug.Options) {
+	opts.FailRandomlyInNextNBlocks = viper.GetInt64(flagFailRandomlyInNextNBlocks)
+	opts.FailBeforeBlock = viper.GetInt64(flagFailBeforeHeight)
+	return
 }

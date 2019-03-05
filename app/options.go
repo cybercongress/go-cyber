@@ -1,12 +1,13 @@
 package app
 
-import "github.com/cybercongress/cyberd/x/rank"
+import (
+	"github.com/cybercongress/cyberd/x/debug"
+	"github.com/cybercongress/cyberd/x/rank"
+)
 
 type Options struct {
-	// main options
 	ComputeUnit rank.ComputeUnit
 	AllowSearch bool
 
-	// debug options
-	FailBeforeHeight int64
+	Debug debug.Options
 }

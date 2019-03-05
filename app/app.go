@@ -20,6 +20,7 @@ import (
 	"github.com/cybercongress/cyberd/x/bandwidth"
 	bw "github.com/cybercongress/cyberd/x/bandwidth/types"
 	cbdbank "github.com/cybercongress/cyberd/x/bank"
+	"github.com/cybercongress/cyberd/x/debug"
 	"github.com/cybercongress/cyberd/x/link"
 	"github.com/cybercongress/cyberd/x/link/keeper"
 	"github.com/cybercongress/cyberd/x/mint"
@@ -86,8 +87,7 @@ type CyberdApp struct {
 
 	latestBlockHeight int64
 
-	// debug values
-	failBeforeHeight int64
+	debugState *debug.State
 }
 
 // NewBasecoinApp returns a reference to a new CyberdApp given a
@@ -235,7 +235,7 @@ func NewCyberdApp(
 
 	// RANK PARAMS
 	app.rankState.Load(ctx, app.Logger())
-	app.failBeforeHeight = opts.FailBeforeHeight
+	app.debugState = &debug.State{Opts: opts.Debug, StartupBlock: app.latestBlockHeight}
 	app.Seal()
 	return app
 }
@@ -450,10 +450,7 @@ func getSignersTags(tx sdk.Tx) sdk.Tags {
 
 func (app *CyberdApp) BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock) abci.ResponseBeginBlock {
 
-	if app.failBeforeHeight != 0 && req.Header.Height == app.failBeforeHeight {
-		app.Logger().Info("Forced panic at begin blocker", "height", app.failBeforeHeight)
-		os.Exit(1)
-	}
+	debug.BeginBlocker(app.debugState, req, app.Logger())
 
 	// mint new tokens for the previous block
 	mint.BeginBlocker(ctx, app.minter)
