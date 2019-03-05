@@ -1,5 +1,105 @@
 # Ultimate cyberd CLI guide. Testnet: Euler-3
 
+## If something wrong...
+
+  First of all I would like to encourage you to use  `--help` feature if you want to get better experience of using cyberdcli. This is really easy way to find all necessary commands with options and flags.
+
+  For example you can enter:
+
+  ```bash
+  docker exec cyberd cyberdcli --help
+  ```
+
+  You should see this message:
+
+  ```bash
+  Command line interface for interacting with cyberd
+
+  Usage:
+    cyberdcli [command]
+
+  Available Commands:
+    status      Query remote node for status
+    query       Querying subcommands
+    tx          Transactions subcommands
+
+    keys        Add or view local private keys
+
+    rest-server Start LCD (light-client daemon), a local REST server
+
+    version     Print the app version
+    link        Create and sign a link tx
+    help        Help about any command
+
+  Flags:
+        --chain-id string   Chain Id of cyberd node
+    -e, --encoding string   Binary encoding (hex|b64|btc) (default "hex")
+    -h, --help              help for cyberdcli
+        --home string       directory for config and data (default "/root/.cyberdcli")
+    -o, --output string     Output format (text|json) (default "text")
+        --trace             print out full stack trace on errors
+  ```
+
+  Help feature working as a stairs - you can use it with any command to find available options, subcommands and flags. For example lets explore `query` subcommands:
+
+  ```bash
+  docker exec cyberd cyberdcli query --help
+  ```
+
+  now, you can see subcommand structure:
+
+  ```bash
+  Usage:
+  cyberdcli query [command]
+  ```
+  and available subcommands and flags:
+
+  ```bash
+  Available Commands:
+  tendermint-validator-set Get the full tendermint validator set at given height
+  block                    Get verified data for a the block at given height
+  txs                      Search for all transactions that match the given tags.
+  tx                       Matches this txhash over all committed blocks
+
+  account                  Query account balance
+  gov                      Querying commands for the governance module
+  distr                    Querying commands for the distribution module
+  staking                  Querying commands for the staking module
+  slashing                 Querying commands for the slashing module
+
+Flags:
+  -h, --help   help for query
+
+Global Flags:
+      --chain-id string   Chain Id of cyberd node
+  -e, --encoding string   Binary encoding (hex|b64|btc) (default "hex")
+      --home string       directory for config and data (default "/root/.cyberdcli")
+  -o, --output string     Output format (text|json) (default "text")
+      --trace             print out full stack trace on errors
+  ```
+
+  Alright, lets explore `account` subcommand:
+
+  ```bash
+  docker exec cyberd cyberdcli query account --help
+  ```
+
+  Now we see all options available at this subcommands, namely, account address and flags:
+
+  ```bash
+  Usage:
+  cyberdcli query account [address] [flags]
+  ```
+
+  In most cases you need just two extra flags:
+
+  ```bash
+  --from=<your_key_name> \
+  --chain-id=<testnet_chain_id>
+  ```
+
+  That it. This is very useful ability for using cyberdcli and troubleshooting.
+
 ## Glossary
 
   **Bandwidth** - The recovered unit of your account. Used to complete transactions in the cyberd blockchain. The amount of your bandwidth calculates like:
