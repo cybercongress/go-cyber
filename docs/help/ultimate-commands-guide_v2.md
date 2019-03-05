@@ -52,6 +52,7 @@
   Usage:
   cyberdcli query [command]
   ```
+
   and available subcommands and flags:
 
   ```bash
@@ -67,15 +68,15 @@
   staking                  Querying commands for the staking module
   slashing                 Querying commands for the slashing module
 
-Flags:
-  -h, --help   help for query
+  Flags:
+    -h, --help   help for query
 
-Global Flags:
-      --chain-id string   Chain Id of cyberd node
-  -e, --encoding string   Binary encoding (hex|b64|btc) (default "hex")
-      --home string       directory for config and data (default "/root/.cyberdcli")
-  -o, --output string     Output format (text|json) (default "text")
-      --trace             print out full stack trace on errors
+  Global Flags:
+        --chain-id string   Chain Id of cyberd node
+    -e, --encoding string   Binary encoding (hex|b64|btc) (default "hex")
+        --home string       directory for config and data (default "/root/.cyberdcli")
+    -o, --output string     Output format (text|json) (default "text")
+        --trace             print out full stack trace on errors
   ```
 
   Alright, lets explore `account` subcommand:
