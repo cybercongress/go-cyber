@@ -14,6 +14,7 @@
 
 **Closed issues:**
 
+- move debug logic to x/debug module [\#288](https://github.com/cybercongress/cyberd/issues/288)
 - Add doc of using help feature of cli [\#287](https://github.com/cybercongress/cyberd/issues/287)
 
 **Merged pull requests:**
