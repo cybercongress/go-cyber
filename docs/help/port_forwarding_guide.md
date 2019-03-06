@@ -17,7 +17,7 @@ Enabling inbound connections requires two steps:
 3. Editing cyberd configuration file.  
 
 
- ## Configuring DHCP
+## Configuring DHCP
 
 In order for your router to direct incoming port `26656` connections to your computer, it needs to know your computer’s internal IP address. However, routers usually give computers dynamic IP addresses that change frequently, so we need to ensure your router always gives your computer the same internal IP address.
 
