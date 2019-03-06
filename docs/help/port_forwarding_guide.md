@@ -71,7 +71,7 @@ Go to cyberd daemon folder, then go to `config` folder and open `config.toml` fi
 
 Find `peer to peer configuration options` section and edit `external_address` variable with your IP address and port `26656`
 
-![peer_to_peer_config](http://ipfs.io/ipfs/QmQRqM4PbPt8cbDN49nAktT23XWfCixbfzfyUEkSyDUWYP)
+![peer_to_peer_config](../img/guide.jpg)
 
 Restart cyberd container.
 
