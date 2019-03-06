@@ -12,8 +12,13 @@
 
 - Infinity loop in rank end blocker if node was restarted before x00 blocks. [\#283](https://github.com/cybercongress/cyberd/issues/283)
 
+**Closed issues:**
+
+- Add doc of using help feature of cli [\#287](https://github.com/cybercongress/cyberd/issues/287)
+
 **Merged pull requests:**
 
+- \#288 Move debug code to x/debug [\#289](https://github.com/cybercongress/cyberd/pull/289) ([hleb-albau](https://github.com/hleb-albau))
 - \#158 Get supply [\#285](https://github.com/cybercongress/cyberd/pull/285) ([hleb-albau](https://github.com/hleb-albau))
 
 ## [v0.1.3](https://github.com/cybercongress/cyberd/tree/v0.1.3) (2019-03-01)
