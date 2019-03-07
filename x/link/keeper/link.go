@@ -3,8 +3,8 @@ package keeper
 import (
 	"encoding/binary"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	cbdio "github.com/cybercongress/cyberd/io"
 	"github.com/cybercongress/cyberd/store"
-	"github.com/cybercongress/cyberd/util"
 	. "github.com/cybercongress/cyberd/x/link/types"
 	"io"
 )
@@ -20,38 +20,43 @@ var DefaultLinkFilter = func(l CompactLink) bool { return true }
 
 type LinkKeeper interface {
 	PutLink(ctx sdk.Context, link CompactLink)
-	IsLinkExist(ctx sdk.Context, link CompactLink) bool
 	GetAllLinks(ctx sdk.Context) (Links, Links, error)
 	GetAllLinksFiltered(ctx sdk.Context, filter LinkFilter) (Links, Links, error)
 	GetLinksCount(ctx sdk.Context) uint64
 	Iterate(ctx sdk.Context, process func(link CompactLink))
 	WriteLinks(ctx sdk.Context, writer io.Writer) (err error)
 	LoadFromReader(ctx sdk.Context, reader io.Reader) (err error)
+	Commit(blockHeight uint64) (err error)
 }
 
 type BaseLinkKeeper struct {
-	ms  store.MainKeeper
-	key *sdk.KVStoreKey
+	ms      store.MainKeeper
+	key     *sdk.KVStoreKey
+	storage store.Storage
 }
 
 func NewBaseLinkKeeper(ms store.MainKeeper, key *sdk.KVStoreKey) LinkKeeper {
+	storage, err := store.NewBaseStorage(key.Name(), cbdio.RootifyPath("data/"), LinkBytesSize)
+	if err != nil {
+		panic("Failed to load links DB")
+	}
 	return BaseLinkKeeper{
-		key: key,
-		ms:  ms,
+		key:     key,
+		ms:      ms,
+		storage: storage,
 	}
 }
 
 func (lk BaseLinkKeeper) PutLink(ctx sdk.Context, link CompactLink) {
-	store := ctx.KVStore(lk.key)
+	if ctx.BlockHeight() == lk.storage.LastVersion() {
+		return
+	}
 	linkAsBytes := link.MarshalBinary()
-	store.Set(linkAsBytes, []byte{})
+	err := lk.storage.Put(linkAsBytes)
+	if err != nil {
+		panic(err)
+	}
 	lk.ms.IncrementLinksCount(ctx)
-}
-
-func (lk BaseLinkKeeper) IsLinkExist(ctx sdk.Context, link CompactLink) bool {
-	store := ctx.KVStore(lk.key)
-	linkAsBytes := link.MarshalBinary()
-	return store.Get(linkAsBytes) != nil
 }
 
 func (lk BaseLinkKeeper) GetAllLinks(ctx sdk.Context) (Links, Links, error) {
@@ -78,12 +83,13 @@ func (lk BaseLinkKeeper) GetLinksCount(ctx sdk.Context) uint64 {
 }
 
 func (lk BaseLinkKeeper) Iterate(ctx sdk.Context, process func(link CompactLink)) {
-	iterator := ctx.KVStore(lk.key).Iterator(nil, nil)
-	defer iterator.Close()
 
-	for iterator.Valid() {
-		process(UnmarshalBinaryLink(iterator.Key()))
-		iterator.Next()
+	err := lk.storage.IterateTillVersion(func(bytes []byte) {
+		process(UnmarshalBinaryLink(bytes))
+	}, ctx.BlockHeight())
+
+	if err != nil {
+		panic("Error during links iterating")
 	}
 }
 
@@ -105,18 +111,22 @@ func (lk BaseLinkKeeper) WriteLinks(ctx sdk.Context, writer io.Writer) (err erro
 }
 
 func (lk BaseLinkKeeper) LoadFromReader(ctx sdk.Context, reader io.Reader) (err error) {
-	linksCountBytes, err := util.ReadExactlyNBytes(reader, LinksCountBytesSize)
+	linksCountBytes, err := cbdio.ReadExactlyNBytes(reader, LinksCountBytesSize)
 	if err != nil {
 		return
 	}
 	linksCount := binary.LittleEndian.Uint64(linksCountBytes)
 
 	for j := uint64(0); j < linksCount; j++ {
-		linkBytes, err := util.ReadExactlyNBytes(reader, LinkBytesSize)
+		linkBytes, err := cbdio.ReadExactlyNBytes(reader, LinkBytesSize)
 		if err != nil {
 			return err
 		}
 		lk.PutLink(ctx, UnmarshalBinaryLink(linkBytes))
 	}
 	return
+}
+
+func (lk BaseLinkKeeper) Commit(blockHeight uint64) error {
+	return lk.storage.Commit(blockHeight)
 }

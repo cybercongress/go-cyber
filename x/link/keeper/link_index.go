@@ -3,7 +3,7 @@ package keeper
 import (
 	"encoding/binary"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cybercongress/cyberd/util"
+	cbdio "github.com/cybercongress/cyberd/io"
 	. "github.com/cybercongress/cyberd/x/link/types"
 	cmn "github.com/tendermint/tendermint/libs/common"
 	"io"
@@ -114,14 +114,14 @@ func (i *LinkIndexedKeeper) IsLinkExist(link CompactLink) bool {
 
 //todo: remove duplicated method (BaseLinksKeeper)
 func (i *LinkIndexedKeeper) LoadFromReader(ctx sdk.Context, reader io.Reader) (err error) {
-	linksCountBytes, err := util.ReadExactlyNBytes(reader, LinksCountBytesSize)
+	linksCountBytes, err := cbdio.ReadExactlyNBytes(reader, LinksCountBytesSize)
 	if err != nil {
 		return
 	}
 	linksCount := binary.LittleEndian.Uint64(linksCountBytes)
 
 	for j := uint64(0); j < linksCount; j++ {
-		linkBytes, err := util.ReadExactlyNBytes(reader, LinkBytesSize)
+		linkBytes, err := cbdio.ReadExactlyNBytes(reader, LinkBytesSize)
 		if err != nil {
 			return err
 		}

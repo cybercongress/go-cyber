@@ -221,6 +221,9 @@ func NewCyberdApp(
 
 	// build context for current rank calculation round
 	rankRoundBlockNumber := (app.latestBlockHeight / rank.CalculationPeriod) * rank.CalculationPeriod
+	if rankRoundBlockNumber == 0 && app.latestBlockHeight >= 1 {
+		rankRoundBlockNumber = 1 // special case cause tendermint blocks start from 1
+	}
 	rankCtx, err := util.NewContextWithMSVersion(db, rankRoundBlockNumber, dbKeys.GetStoreKeys()...)
 
 	// load in-memory data
@@ -248,6 +251,8 @@ func NewCyberdApp(
 // application's account mapper.
 func (app *CyberdApp) initChainer(ctx sdk.Context, req abci.RequestInitChain) abci.ResponseInitChain {
 
+	start := time.Now()
+	app.Logger().Info("Applying genesis")
 	stateJSON := req.AppStateBytes
 	var genesisState GenesisState
 	err := app.cdc.UnmarshalJSON(stateJSON, &genesisState)
@@ -326,6 +331,7 @@ func (app *CyberdApp) initChainer(ctx sdk.Context, req abci.RequestInitChain) ab
 		panic(err)
 	}
 
+	app.Logger().Info("Genesis applied", "time", time.Since(start))
 	return abci.ResponseInitChain{
 		Validators: validators,
 	}
@@ -492,7 +498,10 @@ func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.R
 
 // Implements ABCI
 func (app *CyberdApp) Commit() (res abci.ResponseCommit) {
-
+	err := app.linkIndexedKeeper.Commit(uint64(app.latestBlockHeight))
+	if err != nil {
+		panic(err)
+	}
 	app.BaseApp.Commit()
 	return abci.ResponseCommit{Data: app.rankState.GetNetworkRankHash()}
 }

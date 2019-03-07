@@ -4,8 +4,8 @@ import (
 	"encoding/binary"
 	"errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	cbdio "github.com/cybercongress/cyberd/io"
 	"github.com/cybercongress/cyberd/store"
-	"github.com/cybercongress/cyberd/util"
 	. "github.com/cybercongress/cyberd/x/link/types"
 	"io"
 )
@@ -159,7 +159,7 @@ func (k BaseCidNumberKeeper) WriteCids(ctx sdk.Context, writer io.Writer) (err e
 }
 
 func (k BaseCidNumberKeeper) LoadFromReader(ctx sdk.Context, reader io.Reader) (err error) {
-	cidCountBytes, err := util.ReadExactlyNBytes(reader, CidCountBytesSize)
+	cidCountBytes, err := cbdio.ReadExactlyNBytes(reader, CidCountBytesSize)
 	if err != nil {
 		return
 	}
@@ -167,17 +167,17 @@ func (k BaseCidNumberKeeper) LoadFromReader(ctx sdk.Context, reader io.Reader) (
 
 	// Read all CIDs with their numbers
 	for i := uint64(0); i < cidCount; i++ {
-		cidLengthBytes, err := util.ReadExactlyNBytes(reader, CidLengthBytesSize)
+		cidLengthBytes, err := cbdio.ReadExactlyNBytes(reader, CidLengthBytesSize)
 		if err != nil {
 			return err
 		}
 
-		cidBytes, err := util.ReadExactlyNBytes(reader, uint64(cidLengthBytes[0]))
+		cidBytes, err := cbdio.ReadExactlyNBytes(reader, uint64(cidLengthBytes[0]))
 		if err != nil {
 			return err
 		}
 		cid := Cid(cidBytes)
-		cidNumberBytes, err := util.ReadExactlyNBytes(reader, CidNumberBytesSize)
+		cidNumberBytes, err := cbdio.ReadExactlyNBytes(reader, CidNumberBytesSize)
 		if err != nil {
 			return err
 		}
