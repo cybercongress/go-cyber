@@ -6,6 +6,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
+	"github.com/cosmos/cosmos-sdk/x/bank"
 	distr "github.com/cosmos/cosmos-sdk/x/distribution"
 	"github.com/cosmos/cosmos-sdk/x/gov"
 	"github.com/cosmos/cosmos-sdk/x/slashing"
@@ -18,10 +19,15 @@ import (
 	"time"
 )
 
+const (
+	defaultUnbondingTime = 60 * 60 * 24 * 3 * 7 * time.Second // 3 weeks
+)
+
 // State to Unmarshal
 type GenesisState struct {
 	Accounts     []GenesisAccount      `json:"accounts"`
 	AuthData     auth.GenesisState     `json:"auth"`
+	BankData     bank.GenesisState     `json:"bank"`
 	DistrData    distr.GenesisState    `json:"distr"`
 	MintData     mint.GenesisState     `json:"mint"`
 	StakingData  staking.GenesisState  `json:"staking"`
@@ -79,12 +85,6 @@ func (ga *GenesisAccount) ToAccount() (acc *auth.BaseAccount) {
 	}
 }
 
-const (
-	// defaultUnbondingTime reflects three weeks in seconds as the default
-	// unbonding time.
-	defaultUnbondingTime = 60 * 60 * 24 * 3 * 7 * time.Second
-)
-
 // NewDefaultGenesisState generates the default state for cyberd.
 func NewDefaultGenesisState() GenesisState {
 	return GenesisState{
@@ -93,6 +93,9 @@ func NewDefaultGenesisState() GenesisState {
 			Params: auth.Params{
 				MaxMemoCharacters: 256,
 			},
+		},
+		BankData: bank.GenesisState{
+			SendEnabled: true,
 		},
 		MintData: mint.GenesisState{
 			Params: mint.Params{
@@ -214,6 +217,9 @@ func validateGenesisState(genesisState GenesisState) (err error) {
 		return err
 	}
 	if err := gov.ValidateGenesis(genesisState.GovData); err != nil {
+		return err
+	}
+	if err := bank.ValidateGenesis(genesisState.BankData); err != nil {
 		return err
 	}
 

@@ -8,10 +8,10 @@ import (
 )
 
 type SendRequest struct {
-	Fee        auth.StdFee    `json:"fee"`
-	Msgs       []bank.MsgSend `json:"msgs"`
-	Signatures []Signature    `json:"signatures"`
-	Memo       string         `json:"memo"`
+	Fee        auth.StdFee         `json:"fee"`
+	Msgs       []bank.MsgMultiSend `json:"msgs"`
+	Signatures []Signature         `json:"signatures"`
+	Memo       string              `json:"memo"`
 }
 
 func (r SendRequest) GetFee() auth.StdFee        { return r.Fee }
