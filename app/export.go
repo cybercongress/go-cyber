@@ -3,7 +3,6 @@ package app
 import (
 	"encoding/json"
 	"github.com/cosmos/cosmos-sdk/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	distr "github.com/cosmos/cosmos-sdk/x/distribution"
 	"github.com/cosmos/cosmos-sdk/x/gov"
@@ -32,10 +31,10 @@ func (app *CyberdApp) ExportAppStateAndValidators() (appState json.RawMessage, v
 	app.accountKeeper.IterateAccounts(ctx, appendAccount)
 	genState := NewGenesisState(
 		accounts,
-		auth.NewGenesisState(sdk.Coins{}, app.accountKeeper.GetParams(ctx)),
-		staking.ExportGenesis(ctx, app.stakingKeeper),
-		mint.ExportGenesis(ctx, app.minter),
-		distr.ExportGenesis(ctx, app.distrKeeper),
+		auth.GenesisState{},
+		staking.GenesisState{},
+		mint.GenesisState{},
+		distr.GenesisState{},
 		gov.GenesisState{},
 		slashing.GenesisState{},
 	)
