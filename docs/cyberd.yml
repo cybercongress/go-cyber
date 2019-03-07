@@ -9,4 +9,5 @@
     - RPC: cyberd/rpc.md
     - Bandwidth Specification: cyberd/bandwidth.md
     - Contributing: cyberd/Contributing.md
+    - Setup Dev Environment: cyberd/help/setup_dev_env.md
     - Changelog: cyberd/Changelog.md

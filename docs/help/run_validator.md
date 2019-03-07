@@ -124,7 +124,7 @@ docker run -d --restart always -p 9000:9000 -v /var/run/docker.sock:/var/run/doc
 localhost:9000
 ```
 
-![](img/portainer_start.png)
+![](../img/portainer_start.png)
 
 4. Set password, chose `local` tab and click `connect`. All containers will be available at `containers` tab.
 
@@ -326,7 +326,7 @@ docker logs cyberd --follow
 
 Or go to `localhost:9000` and open logs at cyberd container:
 
-![](img/cyberd_logs.jpg)
+![](../img/cyberd_logs.jpg)
 
 Syncing has started. Syncing time depends on your internet bandwidth, connection and blockchain height. As at 2019/02/03 syncing time approximately 15-20 minutes. Once you see in logs that blocks syncing for 1 second your node is synced.
 
