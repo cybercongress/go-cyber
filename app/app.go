@@ -192,6 +192,7 @@ func NewCyberdApp(
 		AddRoute(gov.RouterKey, gov.NewHandler(app.govKeeper))
 
 	app.QueryRouter().
+		AddRoute(auth.QuerierRoute, auth.NewQuerier(app.accountKeeper)).
 		AddRoute(distr.QuerierRoute, distr.NewQuerier(app.distrKeeper)).
 		AddRoute(gov.QuerierRoute, gov.NewQuerier(app.govKeeper)).
 		AddRoute(slashing.QuerierRoute, slashing.NewQuerier(app.slashingKeeper, app.cdc)).

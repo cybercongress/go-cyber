@@ -139,10 +139,9 @@ func NewDefaultGenesisState() GenesisState {
 				VotingPeriod: gov.DefaultPeriod,
 			},
 			TallyParams: gov.TallyParams{
-				Quorum:            sdk.NewDecWithPrec(334, 3),
-				Threshold:         sdk.NewDecWithPrec(5, 1),
-				Veto:              sdk.NewDecWithPrec(334, 3),
-				GovernancePenalty: sdk.NewDecWithPrec(1, 2),
+				Quorum:    sdk.NewDecWithPrec(334, 3),
+				Threshold: sdk.NewDecWithPrec(5, 1),
+				Veto:      sdk.NewDecWithPrec(334, 3),
 			},
 		},
 		GenTxs: []json.RawMessage{},

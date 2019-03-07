@@ -5,8 +5,9 @@ require (
 	github.com/arturalbov/atomicf v0.1.1
 	github.com/bartekn/go-bip39 v0.0.0-20171116152956-a05967ea095d // indirect
 	github.com/bgentry/speakeasy v0.1.0 // indirect
-	github.com/cosmos/cosmos-sdk v0.33.0-0.20190227001305-3804d0dbb44d
+	github.com/cosmos/cosmos-sdk v0.33.0-0.20190227001305-4c5038018163fbb51ad882c0505df4958dec2ea8
 	github.com/cosmos/go-bip39 v0.0.0-20180618194314-52158e4697b8 // indirect
+	github.com/cosmos/ledger-cosmos-go v0.9.8 // indirect
 	github.com/ethereum/go-ethereum v1.8.20
 	github.com/gogo/protobuf v1.2.1 // indirect
 	github.com/golang/protobuf v1.3.0 // indirect
@@ -25,8 +26,9 @@ require (
 	github.com/syndtr/goleveldb v1.0.0 // indirect
 	github.com/tendermint/btcd v0.0.0-20180816174608-e5840949ff4f
 	github.com/tendermint/go-amino v0.14.1
-	github.com/tendermint/tendermint v0.30.1
-	github.com/zondax/ledger-cosmos-go v0.1.0 // indirect
+	github.com/tendermint/tendermint v0.31.0-dev0
+	github.com/zondax/hid v0.9.0 // indirect
+	github.com/zondax/ledger-go v0.8.0 // indirect
 	golang.org/x/net v0.0.0-20190227022144-312bce6e941f // indirect
 	google.golang.org/grpc v1.19.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127 // indirect

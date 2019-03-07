@@ -1,7 +1,6 @@
 package app
 
 import (
-	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 )
@@ -24,7 +23,7 @@ func NewAnteHandler(ak auth.AccountKeeper) sdk.AnteHandler {
 			return newCtx, err.Result(), true
 		}
 
-		if res := validateMemo(stdTx, params); !res.IsOK() {
+		if res := auth.ValidateMemo(stdTx, params); !res.IsOK() {
 			return newCtx, res, true
 		}
 
@@ -56,20 +55,6 @@ func NewAnteHandler(ak auth.AccountKeeper) sdk.AnteHandler {
 	}
 }
 
-func validateMemo(stdTx auth.StdTx, params auth.Params) sdk.Result {
-	memoLength := len(stdTx.GetMemo())
-	if uint64(memoLength) > params.MaxMemoCharacters {
-		return sdk.ErrMemoTooLarge(
-			fmt.Sprintf(
-				"maximum number of characters is %d but received %d characters",
-				params.MaxMemoCharacters, memoLength,
-			),
-		).Result()
-	}
-
-	return sdk.Result{}
-}
-
 // verify the signature and increment the sequence. If the account doesn't have a pubkey, set it.
 func processSig(
 	acc auth.Account, sig auth.StdSignature, signBytes []byte, simulate bool,
@@ -89,9 +74,7 @@ func processSig(
 		return nil, sdk.ErrUnauthorized("signature verification failed").Result()
 	}
 
-	err = acc.SetSequence(acc.GetSequence() + 1)
-	if err != nil {
-		// Handle w/ #870
+	if err := acc.SetSequence(acc.GetSequence() + 1); err != nil {
 		panic(err)
 	}
 
