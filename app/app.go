@@ -204,7 +204,7 @@ func NewCyberdApp(
 		dbKeys.blockBandwidth, dbKeys.tDistr, dbKeys.tParams, dbKeys.tStake,
 	)
 
-	app.SetInitChainer(app.initChainer)
+	app.SetInitChainer(app.applyGenesis)
 	app.SetBeginBlocker(app.BeginBlocker)
 	app.SetEndBlocker(app.EndBlocker)
 	app.SetAnteHandler(NewAnteHandler(app.accountKeeper))
@@ -240,13 +240,7 @@ func NewCyberdApp(
 	return app
 }
 
-// todo check staking pool has corrected values
-// initChainer implements the custom application logic that the BaseApp will
-// invoke upon initialization. In this case, it will take the application's
-// state provided by 'req' and attempt to deserialize said state. The state
-// should contain all the genesis accounts. These accounts will be added to the
-// application's account mapper.
-func (app *CyberdApp) initChainer(ctx sdk.Context, req abci.RequestInitChain) abci.ResponseInitChain {
+func (app *CyberdApp) applyGenesis(ctx sdk.Context, req abci.RequestInitChain) abci.ResponseInitChain {
 
 	stateJSON := req.AppStateBytes
 	var genesisState GenesisState
@@ -263,17 +257,16 @@ func (app *CyberdApp) initChainer(ctx sdk.Context, req abci.RequestInitChain) ab
 		app.stakingIndex.UpdateStake(types.AccNumber(acc.AccountNumber), acc.Coins.AmountOf(coin.CYB).Int64())
 	}
 
+	bank.InitGenesis(ctx, app.bankKeeper, genesisState.BankData)
 	// initialize distribution (must happen before staking)
 	distr.InitGenesis(ctx, app.distrKeeper, genesisState.DistrData)
 
-	// load the initial stake information
 	validators, err := staking.InitGenesis(ctx, app.stakingKeeper, genesisState.StakingData)
 	if err != nil {
 		panic(err)
 	}
 
-	// auth.InitGenesis, but without collected fee
-	app.accountKeeper.SetParams(ctx, genesisState.AuthData.Params)
+	auth.InitGenesis(ctx, app.accountKeeper, app.feeCollectionKeeper, genesisState.AuthData)
 
 	slashing.InitGenesis(
 		ctx, app.slashingKeeper, genesisState.SlashingData,
