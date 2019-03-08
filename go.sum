@@ -7,8 +7,6 @@ github.com/aead/siphash v1.0.1/go.mod h1:Nywa3cDsYNNK3gaciGTWPwHt0wlpNV15vwmswBA
 github.com/allegro/bigcache v1.1.0 h1:MLuIKTjdxDc+qsG2rhjsYjsHQC5LUGjIWzutg7M+W68=
 github.com/allegro/bigcache v1.1.0/go.mod h1:Cb/ax3seSYIx7SuZdm2G2xzfwmv3TPSk2ucNfQESPXM=
 github.com/aristanetworks/goarista v0.0.0-20181220211322-0ca71131d8f7/go.mod h1:D/tb0zPVXnP7fmsLZjtdUhSsumbK/ij54UXjjVgMGxQ=
-github.com/arturalbov/atomicf v0.1.0 h1:0HIy5Up+3ZWtHjFGjWuCCLBUmKQpMkRhVTrMFNbxKCY=
-github.com/arturalbov/atomicf v0.1.0/go.mod h1:9YJWSVIJGlczi2b4HSWul016jK8yQsfIm/tFrbyThZ0=
 github.com/arturalbov/atomicf v0.1.1 h1:ccGx5acFqmaaimc4o/CU9tcw/fB4xLSO7jrloBdod6E=
 github.com/arturalbov/atomicf v0.1.1/go.mod h1:9YJWSVIJGlczi2b4HSWul016jK8yQsfIm/tFrbyThZ0=
 github.com/bartekn/go-bip39 v0.0.0-20171116152956-a05967ea095d h1:1aAija9gr0Hyv4KfQcRcwlmFIrhkDmIj2dz5bkg/s/8=
@@ -29,8 +27,8 @@ github.com/btcsuite/websocket v0.0.0-20150119174127-31079b680792/go.mod h1:ghJtE
 github.com/btcsuite/winsvc v1.0.0/go.mod h1:jsenWakMcC0zFBFurPLEAyrnc/teJEM1O46fmI40EZs=
 github.com/client9/misspell v0.3.4/go.mod h1:qj6jICC3Q7zFZvVWo7KLAzC3yx5G7kyvSDkc90ppPyw=
 github.com/cosmos/cosmos-sdk v0.29.0/go.mod h1:JrX/JpJunJQXBI5PEX2zELHMFzQr/159jDjIhesOh2c=
-github.com/cosmos/cosmos-sdk v0.33.0-0.20190227001305-4c5038018163fbb51ad882c0505df4958dec2ea8 h1:kf+WVOeNzkqxSFDqaLcYY+n2PMqoJ7BXx+KS1m8O+co=
-github.com/cosmos/cosmos-sdk v0.33.0-0.20190227001305-4c5038018163fbb51ad882c0505df4958dec2ea8/go.mod h1:JrX/JpJunJQXBI5PEX2zELHMFzQr/159jDjIhesOh2c=
+github.com/cosmos/cosmos-sdk v0.33.0 h1:GcWGjCjIZQ2wvRfBm8Nix4bMAmFxSC8o/J4bslM3KSY=
+github.com/cosmos/cosmos-sdk v0.33.0/go.mod h1:JrX/JpJunJQXBI5PEX2zELHMFzQr/159jDjIhesOh2c=
 github.com/cosmos/go-bip39 v0.0.0-20180618194314-52158e4697b8 h1:Iwin12wRQtyZhH6FV3ykFcdGNlYEzoeR0jN8Vn+JWsI=
 github.com/cosmos/go-bip39 v0.0.0-20180618194314-52158e4697b8/go.mod h1:tSxLoYXyBmiFeKpvmq4dzayMdCjCnu8uqmCysIGBT2Y=
 github.com/cosmos/ledger-cosmos-go v0.9.8 h1:HHNAO8ubD9ekexJFMuRynCef24GA0FR8cTBhteMkSJY=
@@ -170,8 +168,6 @@ github.com/tendermint/go-amino v0.14.1/go.mod h1:i/UKE5Uocn+argJJBb12qTZsCDBcAYM
 github.com/tendermint/iavl v0.12.1 h1:JDfyhM/Hhrumu1CL1Nxrypm8sNTPYqmeHo1IZLiJoXM=
 github.com/tendermint/iavl v0.12.1/go.mod h1:EoKMMv++tDOL5qKKVnoIqtVPshRrEPeJ0WsgDOLAauM=
 github.com/tendermint/tendermint v0.27.4/go.mod h1:ymcPyWblXCplCPQjbOYbrF1fWnpslATMVqiGgWbZrlc=
-github.com/tendermint/tendermint v0.30.1 h1:PqGXWDomu6SmICQgcwvCstfvTqxsOn/tn+w9is4FcxI=
-github.com/tendermint/tendermint v0.30.1/go.mod h1:ymcPyWblXCplCPQjbOYbrF1fWnpslATMVqiGgWbZrlc=
 github.com/tendermint/tendermint v0.31.0-dev0 h1:SggTDR0UtPjqXaFmulEdUJ2X1y2fCXfTpc8utnJwb08=
 github.com/tendermint/tendermint v0.31.0-dev0/go.mod h1:ymcPyWblXCplCPQjbOYbrF1fWnpslATMVqiGgWbZrlc=
 github.com/zondax/hid v0.9.0 h1:eiT3P6vNxAEVxXMw66eZUAAnU2zD33JBkfG/EnfAKl8=
