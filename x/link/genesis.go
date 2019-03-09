@@ -3,7 +3,7 @@ package link
 import (
 	"bufio"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cybercongress/cyberd/io"
+	"github.com/cybercongress/cyberd/util"
 	"github.com/cybercongress/cyberd/x/link/keeper"
 	"github.com/tendermint/tendermint/libs/log"
 	"os"
@@ -17,7 +17,7 @@ func InitGenesis(
 	ctx sdk.Context, cidNumKeeper keeper.CidNumberKeeper, linkIndexedKeeper *keeper.LinkIndexedKeeper, logger log.Logger,
 ) (err error) {
 
-	linksFilePath := io.RootifyPath(LinksFileName)
+	linksFilePath := util.RootifyPath(LinksFileName)
 	linksFile, err := os.Open(linksFilePath)
 	if err != nil {
 		if os.IsNotExist(err) {
@@ -47,7 +47,7 @@ func WriteGenesis(
 	ctx sdk.Context, cidNumKeeper keeper.CidNumberKeeper, linkIndexedKeeper *keeper.LinkIndexedKeeper, logger log.Logger,
 ) (err error) {
 
-	linksFilePath := io.RootifyPath(LinksFileName)
+	linksFilePath := util.RootifyPath(LinksFileName)
 	linksFile, err := os.Create(linksFilePath)
 	if err != nil {
 		return

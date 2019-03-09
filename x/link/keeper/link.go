@@ -3,8 +3,8 @@ package keeper
 import (
 	"encoding/binary"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	cbdio "github.com/cybercongress/cyberd/io"
 	"github.com/cybercongress/cyberd/store"
+	"github.com/cybercongress/cyberd/util"
 	. "github.com/cybercongress/cyberd/x/link/types"
 	"io"
 )
@@ -36,7 +36,7 @@ type BaseLinkKeeper struct {
 }
 
 func NewBaseLinkKeeper(ms store.MainKeeper, key *sdk.KVStoreKey) LinkKeeper {
-	storage, err := store.NewBaseStorage(key.Name(), cbdio.RootifyPath("data/"), LinkBytesSize)
+	storage, err := store.NewBaseStorage(key.Name(), util.RootifyPath("data/"), LinkBytesSize)
 	if err != nil {
 		panic("Failed to load links DB")
 	}
@@ -111,14 +111,14 @@ func (lk BaseLinkKeeper) WriteLinks(ctx sdk.Context, writer io.Writer) (err erro
 }
 
 func (lk BaseLinkKeeper) LoadFromReader(ctx sdk.Context, reader io.Reader) (err error) {
-	linksCountBytes, err := cbdio.ReadExactlyNBytes(reader, LinksCountBytesSize)
+	linksCountBytes, err := util.ReadExactlyNBytes(reader, LinksCountBytesSize)
 	if err != nil {
 		return
 	}
 	linksCount := binary.LittleEndian.Uint64(linksCountBytes)
 
 	for j := uint64(0); j < linksCount; j++ {
-		linkBytes, err := cbdio.ReadExactlyNBytes(reader, LinkBytesSize)
+		linkBytes, err := util.ReadExactlyNBytes(reader, LinkBytesSize)
 		if err != nil {
 			return err
 		}

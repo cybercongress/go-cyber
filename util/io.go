@@ -1,4 +1,4 @@
-package io
+package util
 
 import (
 	"errors"
@@ -32,3 +32,4 @@ func ReadExactlyNBytes(reader io.Reader, n uint64) ([]byte, error) {
 
 	return data, nil
 }
+
