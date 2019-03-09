@@ -5,11 +5,12 @@ import (
 	"bytes"
 	"encoding/binary"
 	"errors"
-	cbdio "github.com/cybercongress/cyberd/io"
+	"github.com/cybercongress/cyberd/util"
 	"io"
 	"os"
 	"path/filepath"
 	"sync"
+	"github.com/arturalbov/atomicf"
 )
 
 const DbFileFormat = ".cbdata"
@@ -103,7 +104,7 @@ func (bs *BaseStorage) getReader() (io.ReadCloser, error) {
 }
 
 func (bs *BaseStorage) getWriter() (io.WriteCloser, error) {
-	writer, err := os.OpenFile(bs.dbFilePath, os.O_WRONLY|os.O_APPEND|os.O_SYNC, 0666)
+	writer, err := atomicf.OpenFile(bs.dbFilePath, os.O_WRONLY|os.O_APPEND|os.O_SYNC, 0666)
 	if err != nil {
 		return nil, err
 	}
@@ -126,21 +127,21 @@ func (bs *BaseStorage) IterateTillVersion(process func(bytes []byte), ver int64)
 	bufr := bufio.NewReader(reader)
 	for {
 
-		elementsCountBytes, err := cbdio.ReadExactlyNBytes(bufr, 8)
+		elementsCountBytes, err := util.ReadExactlyNBytes(bufr, 8)
 		if err != nil {
 			return err
 		}
 		elementsCount := binary.LittleEndian.Uint64(elementsCountBytes)
 
 		for i := uint64(0); i < elementsCount; i++ {
-			elementBytes, err := cbdio.ReadExactlyNBytes(bufr, bs.elementLen)
+			elementBytes, err := util.ReadExactlyNBytes(bufr, bs.elementLen)
 			if err != nil {
 				return err
 			}
 			process(elementBytes)
 		}
 
-		versionBytes, err := cbdio.ReadExactlyNBytes(bufr, 8)
+		versionBytes, err := util.ReadExactlyNBytes(bufr, 8)
 		if err != nil {
 			return err
 		}
