@@ -2,7 +2,7 @@ module github.com/cybercongress/cyberd
 
 require (
 	github.com/ZondaX/hid-go v0.0.0-20180905224704-48b08affede2 // indirect
-	github.com/arturalbov/atomicf v0.1.0
+	github.com/arturalbov/atomicf v0.1.1
 	github.com/bartekn/go-bip39 v0.0.0-20171116152956-a05967ea095d // indirect
 	github.com/bgentry/speakeasy v0.1.0 // indirect
 	github.com/cosmos/cosmos-sdk v0.33.0-0.20190227001305-3804d0dbb44d
