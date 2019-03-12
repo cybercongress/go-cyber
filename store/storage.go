@@ -44,10 +44,15 @@ func NewBaseStorage(name string, dir string, elementLen uint64) (*BaseStorage, e
 func NewBaseStorageBuf(name string, dir string, elementLen uint64, bufferSize uint) (*BaseStorage, error) {
 
 	dbFilePath := filepath.Join(dir, name+DbFileFormat)
-	file, err := os.OpenFile(dbFilePath, os.O_RDWR|os.O_CREATE|os.O_SYNC, 0666)
+	file, err := atomicf.OpenFile(dbFilePath, os.O_RDWR|os.O_CREATE|os.O_SYNC, 0666)
 	defer file.Close()
 
 	if err != nil {
+		return nil, err
+	}
+
+	// Try to recover file if it was corrupted
+	if err = file.Recover(); err != nil {
 		return nil, err
 	}
 
@@ -65,7 +70,7 @@ func NewBaseStorageBuf(name string, dir string, elementLen uint64, bufferSize ui
 	}, nil
 }
 
-func getLastVersion(file *os.File) (ver int64, err error) {
+func getLastVersion(file *atomicf.AtomicFile) (ver int64, err error) {
 	ver = int64(-1)
 	fileStat, _ := file.Stat()
 	if fileStat.Size() > 8 {
