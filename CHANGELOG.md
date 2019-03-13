@@ -18,9 +18,11 @@
 - move debug logic to x/debug module [\#288](https://github.com/cybercongress/cyberd/issues/288)
 - Add doc of using help feature of cli [\#287](https://github.com/cybercongress/cyberd/issues/287)
 - Add doc about editing moniker and openning 26656 port. [\#282](https://github.com/cybercongress/cyberd/issues/282)
+- Development start guide [\#78](https://github.com/cybercongress/cyberd/issues/78)
 
 **Merged pull requests:**
 
+- 138 links storage [\#295](https://github.com/cybercongress/cyberd/pull/295) ([hleb-albau](https://github.com/hleb-albau))
 - \#78 Dev Env docs [\#292](https://github.com/cybercongress/cyberd/pull/292) ([hleb-albau](https://github.com/hleb-albau))
 - \#290 Enable send [\#291](https://github.com/cybercongress/cyberd/pull/291) ([hleb-albau](https://github.com/hleb-albau))
 - \#288 Move debug code to x/debug [\#289](https://github.com/cybercongress/cyberd/pull/289) ([hleb-albau](https://github.com/hleb-albau))
