@@ -10,6 +10,7 @@
 
 **Fixed bugs:**
 
+- Consensus Failure [\#293](https://github.com/cybercongress/cyberd/issues/293)
 - Infinity loop in rank end blocker if node was restarted before x00 blocks. [\#283](https://github.com/cybercongress/cyberd/issues/283)
 
 **Closed issues:**
@@ -22,6 +23,7 @@
 
 **Merged pull requests:**
 
+- \#293 Handle bank delegation method in inmem index update mechanism [\#297](https://github.com/cybercongress/cyberd/pull/297) ([hleb-albau](https://github.com/hleb-albau))
 - 138 links storage [\#295](https://github.com/cybercongress/cyberd/pull/295) ([hleb-albau](https://github.com/hleb-albau))
 - \#78 Dev Env docs [\#292](https://github.com/cybercongress/cyberd/pull/292) ([hleb-albau](https://github.com/hleb-albau))
 - \#290 Enable send [\#291](https://github.com/cybercongress/cyberd/pull/291) ([hleb-albau](https://github.com/hleb-albau))
