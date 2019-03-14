@@ -83,6 +83,22 @@ func (k Keeper) InputOutputCoins(
 	return tags, err
 }
 
+func (k Keeper) DelegateCoins(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coins) (sdk.Tags, sdk.Error) {
+	tags, err := k.Keeper.DelegateCoins(ctx, addr, amt)
+	if err == nil {
+		k.onCoinsTransfer(ctx, nil, addr)
+	}
+	return tags, err
+}
+
+func (k Keeper) UndelegateCoins(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coins) (sdk.Tags, sdk.Error) {
+	tags, err := k.Keeper.UndelegateCoins(ctx, addr, amt)
+	if err == nil {
+		k.onCoinsTransfer(ctx, nil, addr)
+	}
+	return tags, err
+}
+
 func (k Keeper) onCoinsTransfer(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress) {
 	for _, hook := range k.coinsTransferHooks {
 		hook(ctx, from, to)
