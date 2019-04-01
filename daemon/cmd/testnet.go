@@ -6,6 +6,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/keys"
 	"github.com/cybercongress/cyberd/app"
 	"github.com/cybercongress/cyberd/types/coin"
+	"github.com/cybercongress/cyberd/util"
 	"net"
 	"os"
 	"path/filepath"
@@ -250,10 +251,14 @@ func initGenFiles(
 	genFiles []string, numValidators int,
 ) error {
 
-	appGenState := app.NewDefaultGenesisState()
-	appGenState.Accounts = accs
+	state := app.NewDefaultGenesisState()
+	state.Accounts = accs
+	state.StakingData.Pool.NotBondedTokens = sdk.ZeroInt()
+	for _, acc := range accs {
+		state.StakingData.Pool.NotBondedTokens = state.StakingData.Pool.NotBondedTokens.Add(sdk.NewInt(acc.Amount))
+	}
 
-	appGenStateJSON, err := codec.MarshalJSONIndent(cdc, appGenState)
+	appGenStateJSON, err := codec.MarshalJSONIndent(cdc, state)
 	if err != nil {
 		return err
 	}
@@ -301,7 +306,7 @@ func collectGenFiles(
 			ValPubKey: valPubKey,
 		}
 
-		genDoc, err := loadGenesisDoc(cdc, config.GenesisFile())
+		genDoc, err := app.LoadGenesisDoc(cdc, config.GenesisFile())
 		if err != nil {
 			return err
 		}
@@ -319,7 +324,7 @@ func collectGenFiles(
 		genFile := config.GenesisFile()
 
 		// overwrite each validator's genesis file to have a canonical genesis time
-		err = ExportGenesisFileWithTime(genFile, chainID, nil, appState, genTime)
+		err = util.ExportGenesisFileWithTime(genFile, chainID, nil, appState, genTime)
 		if err != nil {
 			return err
 		}
@@ -415,6 +420,6 @@ func genAppStateFromConfig(
 		return
 	}
 
-	err = ExportGenesisFile(genFile, initCfg.ChainID, nil, appState)
+	err = util.ExportGenesisFile(genFile, initCfg.ChainID, nil, appState)
 	return
 }

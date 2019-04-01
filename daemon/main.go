@@ -52,7 +52,7 @@ func main() {
 	rootCmd.AddCommand(cmd.AddGenesisAccountCmd(ctx, cdc))
 	rootCmd.AddCommand(cmd.GenesisCmds(ctx, cdc))
 	rootCmd.AddCommand(cmd.LotteryBalancesCmd(ctx, cdc))
-	server.AddCommands(ctx, cdc, rootCmd, newApp, exportAppStateAndTMValidators)
+	server.AddCommands(ctx, cdc, rootCmd, newApp, exportFunc(ctx))
 	rootCmd.AddCommand(client.NewCompletionCmd(rootCmd, true))
 
 	for _, c := range rootCmd.Commands() {
@@ -90,12 +90,14 @@ func newApp(logger log.Logger, db dbm.DB, storeTracer io.Writer) abci.Applicatio
 	return cyberdApp
 }
 
-func exportAppStateAndTMValidators(
-	logger log.Logger, db dbm.DB, traceStore io.Writer, height int64, forZeroHeight bool, jailWhiteList []string,
-) (json.RawMessage, []tmtypes.GenesisValidator, error) {
+func exportFunc(ctx *server.Context) server.AppExporter {
+	return func(
+		logger log.Logger, db dbm.DB, traceStore io.Writer, height int64, forZeroHeight bool, jailWhiteList []string,
+	) (json.RawMessage, []tmtypes.GenesisValidator, error) {
 
-	capp := app.NewCyberdApp(logger, db, app.Options{ComputeUnit: rank.GPU})
-	return capp.ExportAppStateAndValidators()
+		capp := app.NewCyberdApp(logger, db, app.Options{ComputeUnit: rank.GPU})
+		return capp.ExportAppStateAndValidators(ctx)
+	}
 }
 
 func setAppPrefix(_ *cobra.Command, args []string) error {

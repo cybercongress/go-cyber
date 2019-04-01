@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/cybercongress/cyberd/app"
+	"github.com/cybercongress/cyberd/util"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"io"
@@ -62,7 +63,7 @@ following delegation and commission default parameters:
 				return err
 			}
 
-			doc, state, err := loadGenesisState(ctx, cdc)
+			doc, state, err := app.LoadGenesisState(ctx, cdc)
 			if err != nil {
 				return err
 			}
@@ -142,7 +143,7 @@ following delegation and commission default parameters:
 				return err
 			}
 
-			return ExportGenesisFile(config.GenesisFile(), doc.ChainID, doc.Validators, stateJson)
+			return util.ExportGenesisFile(config.GenesisFile(), doc.ChainID, doc.Validators, stateJson)
 		},
 	}
 

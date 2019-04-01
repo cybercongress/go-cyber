@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/cosmos/cosmos-sdk/server"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/bank"
@@ -13,9 +14,15 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	"github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/cybercongress/cyberd/types/coin"
+	"github.com/cybercongress/cyberd/util"
 	"github.com/cybercongress/cyberd/x/mint"
 	"github.com/pkg/errors"
+	"github.com/spf13/viper"
+	"github.com/tendermint/go-amino"
+	"github.com/tendermint/tendermint/libs/cli"
+	"github.com/tendermint/tendermint/libs/common"
 	tmtypes "github.com/tendermint/tendermint/types"
+	"io/ioutil"
 	"time"
 )
 
@@ -162,7 +169,6 @@ func CyberdAppGenState(cdc *codec.Codec, genDoc tmtypes.GenesisDoc, appGenTxs []
 		return genesisState, errors.New("there must be at least one genesis tx")
 	}
 
-	stakeData := genesisState.StakingData
 	for i, genTx := range appGenTxs {
 		var tx auth.StdTx
 		if err := cdc.UnmarshalJSON(genTx, &tx); err != nil {
@@ -179,10 +185,6 @@ func CyberdAppGenState(cdc *codec.Codec, genDoc tmtypes.GenesisDoc, appGenTxs []
 		}
 	}
 
-	for _, acc := range genesisState.Accounts {
-		stakeData.Pool.NotBondedTokens = stakeData.Pool.NotBondedTokens.Add(sdk.NewInt(acc.Amount))
-	}
-	genesisState.StakingData = stakeData
 	genesisState.GenTxs = appGenTxs
 	return genesisState, nil
 }
@@ -237,4 +239,52 @@ func validateGenesisStateAccounts(accs []GenesisAccount) (err error) {
 		addrMap[strAddr] = true
 	}
 	return
+}
+
+func LoadGenesisState(
+	ctx *server.Context, cdc *codec.Codec,
+) (genDoc tmtypes.GenesisDoc, state GenesisState, err error) {
+
+	config := ctx.Config
+	config.SetRoot(viper.GetString(cli.HomeFlag))
+
+	genFile := config.GenesisFile()
+	if !common.FileExists(genFile) {
+		err = fmt.Errorf("%s does not exist, run `cyberd init` first", genFile)
+		return
+	}
+	genDoc, err = LoadGenesisDoc(cdc, genFile)
+	if err != nil {
+		return
+	}
+
+	err = cdc.UnmarshalJSON(genDoc.AppState, &state)
+	return
+}
+
+func SaveGenesisState(ctx *server.Context, cdc *codec.Codec, oldDoc tmtypes.GenesisDoc, state GenesisState) error {
+
+	config := ctx.Config
+	config.SetRoot(viper.GetString(cli.HomeFlag))
+	genFile := config.GenesisFile()
+
+	appStateJSON, err := cdc.MarshalJSON(&state)
+	if err != nil {
+		return err
+	}
+
+	return util.ExportGenesisFile(genFile, oldDoc.ChainID, oldDoc.Validators, appStateJSON)
+}
+
+func LoadGenesisDoc(cdc *amino.Codec, genFile string) (genDoc tmtypes.GenesisDoc, err error) {
+	genContents, err := ioutil.ReadFile(genFile)
+	if err != nil {
+		return genDoc, err
+	}
+
+	if err := cdc.UnmarshalJSON(genContents, &genDoc); err != nil {
+		return genDoc, err
+	}
+
+	return genDoc, err
 }

@@ -7,10 +7,12 @@ import (
 	"github.com/cybercongress/cyberd/x/link/keeper"
 	"github.com/tendermint/tendermint/libs/log"
 	"os"
+	"path/filepath"
 )
 
 const (
-	LinksFileName = "config/links"
+	LinksFileName       = "config/links"
+	LinksExportFileName = "export/links"
 )
 
 func InitGenesis(
@@ -47,7 +49,14 @@ func WriteGenesis(
 	ctx sdk.Context, cidNumKeeper keeper.CidNumberKeeper, linkIndexedKeeper *keeper.LinkIndexedKeeper, logger log.Logger,
 ) (err error) {
 
-	linksFilePath := util.RootifyPath(LinksFileName)
+	linksFilePath := util.RootifyPath(LinksExportFileName)
+	dirName := filepath.Dir(linksFilePath)
+	if _, err := os.Stat(dirName); err != nil {
+		if err = os.MkdirAll(dirName, os.ModePerm); err != nil {
+			return err
+		}
+	}
+
 	linksFile, err := os.Create(linksFilePath)
 	if err != nil {
 		return

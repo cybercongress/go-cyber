@@ -3,70 +3,25 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/server"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	"github.com/cybercongress/cyberd/app"
-	"github.com/spf13/viper"
-	"github.com/tendermint/tendermint/libs/cli"
-	"io/ioutil"
-	"os"
-	"path/filepath"
-	"sort"
-	"strings"
-	"time"
-
-	"github.com/cosmos/cosmos-sdk/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/pkg/errors"
-	"github.com/tendermint/go-amino"
 	cfg "github.com/tendermint/tendermint/config"
 	"github.com/tendermint/tendermint/crypto"
 	"github.com/tendermint/tendermint/libs/common"
 	"github.com/tendermint/tendermint/p2p"
 	"github.com/tendermint/tendermint/privval"
 	tmtypes "github.com/tendermint/tendermint/types"
+	"io/ioutil"
+	"os"
+	"path/filepath"
+	"sort"
+	"strings"
 )
-
-// ExportGenesisFile creates and writes the genesis configuration to disk. An
-// error is returned if building or writing the configuration to file fails.
-func ExportGenesisFile(
-	genFile, chainID string, validators []tmtypes.GenesisValidator, appState json.RawMessage,
-) error {
-
-	genDoc := tmtypes.GenesisDoc{
-		ChainID:    chainID,
-		Validators: validators,
-		AppState:   appState,
-	}
-
-	if err := genDoc.ValidateAndComplete(); err != nil {
-		return err
-	}
-
-	return genDoc.SaveAs(genFile)
-}
-
-// ExportGenesisFileWithTime creates and writes the genesis configuration to disk.
-// An error is returned if building or writing the configuration to file fails.
-func ExportGenesisFileWithTime(
-	genFile, chainID string, validators []tmtypes.GenesisValidator,
-	appState json.RawMessage, genTime time.Time,
-) error {
-
-	genDoc := tmtypes.GenesisDoc{
-		GenesisTime: genTime,
-		ChainID:     chainID,
-		Validators:  validators,
-		AppState:    appState,
-	}
-
-	if err := genDoc.ValidateAndComplete(); err != nil {
-		return err
-	}
-
-	return genDoc.SaveAs(genFile)
-}
 
 // InitializeNodeValidatorFiles creates private validator and p2p configuration files.
 func InitializeNodeValidatorFiles(
@@ -94,54 +49,6 @@ func InitializeNodeValidatorFiles(
 	valPubKey = privval.LoadOrGenFilePV(pvKeyFile, pvStateFile).GetPubKey()
 
 	return nodeID, valPubKey, nil
-}
-
-func loadGenesisState(
-	ctx *server.Context, cdc *codec.Codec,
-) (genDoc tmtypes.GenesisDoc, state app.GenesisState, err error) {
-
-	config := ctx.Config
-	config.SetRoot(viper.GetString(cli.HomeFlag))
-
-	genFile := config.GenesisFile()
-	if !common.FileExists(genFile) {
-		err = fmt.Errorf("%s does not exist, run `cyberd init` first", genFile)
-		return
-	}
-	genDoc, err = loadGenesisDoc(cdc, genFile)
-	if err != nil {
-		return
-	}
-
-	err = cdc.UnmarshalJSON(genDoc.AppState, &state)
-	return
-}
-
-func saveGenesisState(ctx *server.Context, cdc *codec.Codec, oldDoc tmtypes.GenesisDoc, state app.GenesisState) error {
-
-	config := ctx.Config
-	config.SetRoot(viper.GetString(cli.HomeFlag))
-	genFile := config.GenesisFile()
-
-	appStateJSON, err := cdc.MarshalJSON(&state)
-	if err != nil {
-		return err
-	}
-
-	return ExportGenesisFile(genFile, oldDoc.ChainID, oldDoc.Validators, appStateJSON)
-}
-
-func loadGenesisDoc(cdc *amino.Codec, genFile string) (genDoc tmtypes.GenesisDoc, err error) {
-	genContents, err := ioutil.ReadFile(genFile)
-	if err != nil {
-		return genDoc, err
-	}
-
-	if err := cdc.UnmarshalJSON(genContents, &genDoc); err != nil {
-		return genDoc, err
-	}
-
-	return genDoc, err
 }
 
 func initializeEmptyGenesis(

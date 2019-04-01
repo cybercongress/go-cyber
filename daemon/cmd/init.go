@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/cybercongress/cyberd/app"
+	"github.com/cybercongress/cyberd/util"
 	"path/filepath"
 
 	"github.com/cosmos/cosmos-sdk/client"
@@ -51,7 +52,7 @@ func InitCmd(ctx *server.Context, cdc *codec.Codec) *cobra.Command {
 			if appState, err = initializeEmptyGenesis(cdc, genFile, chainID, viper.GetBool(flagOverwrite)); err != nil {
 				return err
 			}
-			if err = ExportGenesisFile(genFile, chainID, nil, appState); err != nil {
+			if err = util.ExportGenesisFile(genFile, chainID, nil, appState); err != nil {
 				return err
 			}
 

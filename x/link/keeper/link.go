@@ -104,10 +104,11 @@ func (lk BaseLinkKeeper) WriteLinks(ctx sdk.Context, writer io.Writer) (err erro
 		return
 	}
 
-	lk.Iterate(ctx, func(link CompactLink) {
-		_, _ = writer.Write(link.MarshalBinary())
-	})
-	return
+	err = lk.storage.IterateTillVersion(func(bytes []byte) {
+		_, _ = writer.Write(bytes)
+	}, lk.storage.LastVersion())
+
+	return err
 }
 
 func (lk BaseLinkKeeper) LoadFromReader(ctx sdk.Context, reader io.Reader) (err error) {

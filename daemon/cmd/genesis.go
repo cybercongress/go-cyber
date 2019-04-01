@@ -100,7 +100,7 @@ func AddMissingEulerTokensCmd(ctx *server.Context, cdc *codec.Codec) *cobra.Comm
 			sdk.GetConfig().SetBech32PrefixForAccount("cbd", "cbdpub")
 			sdk.GetConfig().SetBech32PrefixForValidator("cbdvaloper", "cbdvaloperpub")
 			sdk.GetConfig().SetBech32PrefixForConsensusNode("cbdvalcons", "cbdvalconspub")
-			doc, state, err := loadGenesisState(ctx, cdc)
+			doc, state, err := app.LoadGenesisState(ctx, cdc)
 			if err != nil {
 				return err
 			}
@@ -146,7 +146,7 @@ func AddMissingEulerTokensCmd(ctx *server.Context, cdc *codec.Codec) *cobra.Comm
 				return fmt.Errorf("%v does not included in genesis.json file. Reverting", addrWithMissingTokens)
 			}
 			fmt.Println("Fixed!")
-			return saveGenesisState(ctx, cdc, doc, state)
+			return app.SaveGenesisState(ctx, cdc, doc, state)
 
 		},
 	}
@@ -163,7 +163,7 @@ func ChangeGenesisAccsPrefixCmd(ctx *server.Context, cdc *codec.Codec) *cobra.Co
 			sdk.GetConfig().SetBech32PrefixForAccount("cbd", "cbdpub")
 			sdk.GetConfig().SetBech32PrefixForValidator("cbdvaloper", "cbdvaloperpub")
 			sdk.GetConfig().SetBech32PrefixForConsensusNode("cbdvalcons", "cbdvalconspub")
-			doc, state, err := loadGenesisState(ctx, cdc)
+			doc, state, err := app.LoadGenesisState(ctx, cdc)
 			if err != nil {
 				return err
 			}
@@ -173,7 +173,7 @@ func ChangeGenesisAccsPrefixCmd(ctx *server.Context, cdc *codec.Codec) *cobra.Co
 
 			// set new prefix to persis file
 			app.SetPrefix()
-			return saveGenesisState(ctx, cdc, doc, state)
+			return app.SaveGenesisState(ctx, cdc, doc, state)
 		},
 	}
 	return cmd

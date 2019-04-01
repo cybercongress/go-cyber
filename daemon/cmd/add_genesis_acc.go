@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"github.com/cybercongress/cyberd/app"
+	"github.com/cybercongress/cyberd/util"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/server"
@@ -38,7 +39,7 @@ func AddGenesisAccountCmd(ctx *server.Context, cdc *codec.Codec) *cobra.Command 
 			if !common.FileExists(genFile) {
 				return fmt.Errorf("%s does not exist, run `cyberd init` first", genFile)
 			}
-			genDoc, err := loadGenesisDoc(cdc, genFile)
+			genDoc, err := app.LoadGenesisDoc(cdc, genFile)
 			if err != nil {
 				return err
 			}
@@ -57,7 +58,7 @@ func AddGenesisAccountCmd(ctx *server.Context, cdc *codec.Codec) *cobra.Command 
 				return err
 			}
 
-			return ExportGenesisFile(genFile, genDoc.ChainID, nil, appStateJSON)
+			return util.ExportGenesisFile(genFile, genDoc.ChainID, nil, appStateJSON)
 		},
 	}
 
