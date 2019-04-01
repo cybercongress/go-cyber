@@ -1,5 +1,14 @@
 # Change Log
 
+## [Unreleased](https://github.com/cybercongress/cyberd/tree/HEAD)
+
+[Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.1.4...HEAD)
+
+**Closed issues:**
+
+- Cyberadmin telegram-bot for cyberd [\#281](https://github.com/cybercongress/cyberd/issues/281)
+- Slow node start-up. [\#138](https://github.com/cybercongress/cyberd/issues/138)
+
 ## [v0.1.4](https://github.com/cybercongress/cyberd/tree/v0.1.4) (2019-03-15)
 [Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.1.3...v0.1.4)
 
