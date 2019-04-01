@@ -8,8 +8,8 @@
 [![license](https://img.shields.io/badge/License-Cyber-brightgreen.svg?style=flat-square)](https://github.com/cybercongress/cyberd/blob/master/LICENSE)
 [![LoC](https://tokei.rs/b1/github/cybercongress/cyberd)](https://github.com/cybercongress/cyberd)
 [![contributors](https://img.shields.io/github/contributors/cybercongress/cyberd.svg?style=flat-square)](https://github.com/cybercongress/cyberd/graphs/contributors)
+[![Coverage Status](https://coveralls.io/repos/github/cybercongress/cyberd/badge.svg?branch=master)](https://coveralls.io/github/cybercongress/cyberd?branch=master)
 [![discuss](https://img.shields.io/badge/Join%20Us%20On-Telegram-2599D2.svg?style=flat-square)](https://t.me/fuckgoogle)
-[![contribute](https://img.shields.io/badge/contributions-welcome-orange.svg?style=flat-square)](https://github.com/cybercongress/cyberd/blob/master/CONTRIBUTING.md)
 
 **WARNING**: Project status: **testnet**. We are at research state at the moment.
 Read [whitepaper](./docs/cyberd.md)

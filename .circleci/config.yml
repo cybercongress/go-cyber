@@ -30,7 +30,9 @@ jobs:
           command: |
             go build -o cyberd ./daemon
             go build -o cyberdcli ./cli
-
+            go get github.com/mattn/goveralls
+            go test -v -race -cover -coverprofile=./coverage.out ./...
+            $GOPATH/bin/goveralls -service=circle-ci -coverprofile=./coverage.out -repotoken=$COVERALLS_TOKEN
 
   update_changelog:
     <<: *defaults
