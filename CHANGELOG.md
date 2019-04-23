@@ -4,6 +4,10 @@
 
 [Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.1.4...HEAD)
 
+**Fixed bugs:**
+
+- Error during rewards withdrawal  [\#302](https://github.com/cybercongress/cyberd/issues/302)
+
 **Closed issues:**
 
 - Cyberadmin telegram-bot for cyberd [\#281](https://github.com/cybercongress/cyberd/issues/281)
