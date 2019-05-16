@@ -4,9 +4,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	sdk "github.com/cosmos/cosmos-sdk/x/staking/types"
 	abci "github.com/tendermint/tendermint/abci/types"
+	"github.com/tendermint/tendermint/rpc/lib/types"
 )
 
-func StakingValidators() ([]sdk.Validator, error) {
+func StakingValidators(ctx *rpctypes.Context) ([]sdk.Validator, error) {
 
 	respQuery := cyberdApp.Query(abci.RequestQuery{
 		Path:  "custom/staking/validators",
@@ -22,7 +23,7 @@ func StakingValidators() ([]sdk.Validator, error) {
 	return validators, nil
 }
 
-func StakingPool() (staking.Pool, error) {
+func StakingPool(ctx *rpctypes.Context) (staking.Pool, error) {
 
 	respQuery := cyberdApp.Query(abci.RequestQuery{
 		Path:  "custom/staking/pool",
