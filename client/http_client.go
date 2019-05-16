@@ -57,7 +57,6 @@ func NewHttpCyberdClient(nodeUrl string, passphrase string, singAddr string) *Ht
 		AccountStore:  "acc",
 		From:          cliAddrName,
 		TrustNode:     true,
-		Async:         false,
 		PrintResponse: true,
 		Verifier:      verifier,
 	}.WithCodec(cdc).WithAccountDecoder(cdc)
