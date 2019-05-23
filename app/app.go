@@ -140,13 +140,13 @@ func NewCyberdApp(
 	)
 	app.slashingKeeper = slashing.NewKeeper(
 		app.cdc, dbKeys.slashing,
-		stakingKeeper, app.paramsKeeper.Subspace(slashing.DefaultParamspace),
+		&stakingKeeper, app.paramsKeeper.Subspace(slashing.DefaultParamspace),
 		slashing.DefaultCodespace,
 	)
 	app.distrKeeper = distr.NewKeeper(
 		app.cdc, dbKeys.distr,
 		app.paramsKeeper.Subspace(distr.DefaultParamspace),
-		app.bankKeeper, stakingKeeper, app.feeCollectionKeeper,
+		app.bankKeeper, &stakingKeeper, app.feeCollectionKeeper,
 		distr.DefaultCodespace,
 	)
 
@@ -157,7 +157,7 @@ func NewCyberdApp(
 	)
 
 	app.minter = mint.NewMinter(
-		app.feeCollectionKeeper, stakingKeeper,
+		app.feeCollectionKeeper, &stakingKeeper,
 		app.paramsKeeper.Subspace(mint.DefaultParamspace),
 	)
 

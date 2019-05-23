@@ -17,7 +17,7 @@ var (
 // mint new CYB tokens for every block
 type Minter struct {
 	fck         auth.FeeCollectionKeeper
-	stakeKeeper keeper.Keeper
+	stakeKeeper *keeper.Keeper
 	paramSpace  params.Subspace
 }
 
@@ -32,7 +32,7 @@ func (m Minter) SetParams(ctx sdk.Context, p Params) {
 	m.paramSpace.Set(ctx, ParamStoreKeyParams, &p)
 }
 
-func NewMinter(fck auth.FeeCollectionKeeper, stakeKeeper keeper.Keeper, paramSpace params.Subspace) Minter {
+func NewMinter(fck auth.FeeCollectionKeeper, stakeKeeper *keeper.Keeper, paramSpace params.Subspace) Minter {
 	return Minter{
 		fck:         fck,
 		stakeKeeper: stakeKeeper,
