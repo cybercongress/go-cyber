@@ -230,6 +230,7 @@ github.com/tendermint/tendermint v0.31.3/go.mod h1:ymcPyWblXCplCPQjbOYbrF1fWnpsl
 github.com/tendermint/tendermint v0.31.4 h1:F/vZ/fMHZJriAkDLjf9ZrReJQsuELiTmJLqigmbE5NU=
 github.com/tendermint/tendermint v0.31.4/go.mod h1:ymcPyWblXCplCPQjbOYbrF1fWnpslATMVqiGgWbZrlc=
 github.com/tendermint/tendermint v0.31.5 h1:vTet8tCq3B9/J9Yo11dNZ8pOB7NtSy++bVSfkP4KzR4=
+github.com/tendermint/tendermint v0.31.5/go.mod h1:ymcPyWblXCplCPQjbOYbrF1fWnpslATMVqiGgWbZrlc=
 github.com/zondax/hid v0.9.0 h1:eiT3P6vNxAEVxXMw66eZUAAnU2zD33JBkfG/EnfAKl8=
 github.com/zondax/hid v0.9.0/go.mod h1:l5wttcP0jwtdLjqjMMWFVEE7d1zO0jvSPA9OPZxWpEM=
 github.com/zondax/ledger-go v0.8.0 h1:QU2VXfwq2hSfgOMRDbJfPZLs8PyhdcuASIAyLSL5ewo=

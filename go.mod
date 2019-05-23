@@ -20,7 +20,7 @@ require (
 	github.com/syndtr/goleveldb v1.0.0 // indirect
 	github.com/tendermint/btcd v0.1.1
 	github.com/tendermint/go-amino v0.14.1
-	github.com/tendermint/tendermint v0.31.4
+	github.com/tendermint/tendermint v0.31.5
 	github.com/zondax/ledger-go v0.8.0 // indirect
 	golang.org/x/net v0.0.0-20190227022144-312bce6e941f // indirect
 	gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127 // indirect
