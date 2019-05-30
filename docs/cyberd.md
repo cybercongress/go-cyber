@@ -1,29 +1,27 @@
-<!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
-<!-- code_chunk_output -->
-
-* [cyberd: Computing the knowledge from web3](#cyberd-computing-the-knowledge-from-web3)
-	* [Abstract](#abstract)
-	* [Introduction to web3](#introduction-to-web3)
-	* [On adversarial examples problem](#on-adversarial-examples-problem)
-	* [Cyber protocol at `euler`](#cyber-protocol-at-euler)
-	* [Knowledge graph](#knowledge-graph)
-	* [Cyberlinks](#cyberlinks)
-	* [Notion of consensus computer](#notion-of-consensus-computer)
-	* [Bandwidth](#bandwidth)
-	* [Relevance machine](#relevance-machine)
-	* [cyber•Rank](#cyberrank)
-	* [Proof of relevance](#proof-of-relevance)
-	* [Speed and scalability](#speed-and-scalability)
-	* [In-browser implementation](#in-browser-implementation)
-	* [Approach to distribution](#approach-to-distribution)
-	* [Distribution of CYB](#distribution-of-cyb)
-	* [CBD tokens and the role of cyber•Foundation](#cbd-tokens-and-the-role-of-cyberfoundation)
-	* [Applications of knowledge graph](#applications-of-knowledge-graph)
-	* [Apps on top of knowledge graph](#apps-on-top-of-knowledge-graph)
-	* [Conclusion](#conclusion)
-	* [References](#references)
-
-<!-- /code_chunk_output -->
+<!-- TOC START min:1 max:3 link:true asterisk:false update:true -->
+- [cyberd: Computing the knowledge from web3](#cyberd-computing-the-knowledge-from-web3)
+	- [Abstract](#abstract)
+	- [Introduction to web3](#introduction-to-web3)
+	- [On adversarial examples problem](#on-adversarial-examples-problem)
+	- [Cyber protocol at `euler`](#cyber-protocol-at-euler)
+	- [Knowledge graph](#knowledge-graph)
+	- [Cyberlinks](#cyberlinks)
+	- [Notion of consensus computer](#notion-of-consensus-computer)
+	- [Bandwidth](#bandwidth)
+	- [Relevance machine](#relevance-machine)
+	- [cyber•Rank](#cyberrank)
+	- [Proof of relevance](#proof-of-relevance)
+	- [Speed and scalability](#speed-and-scalability)
+	- [In-browser implementation](#in-browser-implementation)
+	- [Approach to distribution](#approach-to-distribution)
+	- [Distribution of CYB](#distribution-of-cyb)
+	- [Genesis auction of CBD tokens and the role of cyber•Foundation](#genesis-auction-of-cbd-tokens-and-the-role-of-cyberfoundation)
+	- [Role of ATOMs](#role-of-atoms)
+	- [Applications of knowledge graph](#applications-of-knowledge-graph)
+	- [Apps on top of knowledge graph](#apps-on-top-of-knowledge-graph)
+	- [Conclusion](#conclusion)
+	- [References](#references)
+<!-- TOC END -->
 
 # cyberd: Computing the knowledge from web3
 
