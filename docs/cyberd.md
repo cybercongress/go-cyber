@@ -413,7 +413,7 @@ There is no currently such thing as maximum amount of CYB due to continuous infl
 CYB tokens under manned distribution multisig will not delegate its stake and as result will remain as passive stake until become distributed.
 
 ## Genesis auction of CBD tokens and the role of cyber•Foundation
-
+Aragon organization 
 The role of Genesis auction is twofold:
 - It creates non-exlusive long lasting and provable game of initial distribution without necessity to spend energy on proof of work. It is crucial that early knowledge graph were created in some sense fairly by engaged community which was formed during a non-exclusive game.
 - As a result of auction community will has access to all raised resources under Aragon organisation. We believe in a true decentralized nature of the thing we created so we do not want to grab all the money from the funding as we already funded the creation of the system ourselves and we ask fair 10% cut for pregenesis investors and founders. Competing with Google is challenging and will be more viable if community will sits on the bag of ever-growing ETH. Given current growth rate of ETH this bag can be very compelling in some years after launch. Also this bag can be the source of alternative implementation of the protocol if Cosmos based system will fail, or in the cased the community just want to diversify technology involved, e.g. ETH2, Polkadot or whatever.
