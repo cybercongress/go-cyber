@@ -14,9 +14,9 @@
 	- [Speed and scalability](#speed-and-scalability)
 	- [In-browser implementation](#in-browser-implementation)
 	- [Approach to distribution](#approach-to-distribution)
+	- [Game of ATOMs](#game-of-atoms)
+	- [cyber Genesis Game on CBD tokens and the formation of cyber•Foundation](#cyber-genesis-game-on-cbd-tokens-and-the-formation-of-cyberfoundation)
 	- [Distribution of CYB](#distribution-of-cyb)
-	- [Genesis auction of CBD tokens and the role of cyber•Foundation](#genesis-auction-of-cbd-tokens-and-the-role-of-cyberfoundation)
-	- [Role of ATOMs](#role-of-atoms)
 	- [Applications of knowledge graph](#applications-of-knowledge-graph)
 	- [Apps on top of knowledge graph](#apps-on-top-of-knowledge-graph)
 	- [Conclusion](#conclusion)
@@ -375,9 +375,19 @@ While designing the distribution of Cyber protocol we tried to balance the follo
 
 Remember that the goal of creating alternative to a Google-like structure requires extraordinary involvement of different groups. No one said it would be easy.
 
+## Game of ATOMs
+
+15% of CYB will be distributed based on funding in ATOMs during 2 rounds:
+-  50 000 000 000 000 CYB for genesis ATOM contributors
+- 100 000 000 000 000 CYB for ATOM contributors at the start of Smith Epoch
+
+The role of funding in ATOMs is also twofold:
+- Thanks to ATOM we want to secure lifetime commitment of cyber•Congress in the development of Cosmos and Cyber ecosystems. ATOM donations to cyber•Congress will allow us to use staking rewards for continuous funding of the Cyber protocol without necessity to dump CYBs
+- We want add to a distribution game significant discount to ATOM holders because we need provably professional validators and delegators at the beginning and basically for free. We can describe the discount in the following terms: Currently buying power of all ATOMs against all ETHs based on current caps is about 1/24. Given that 15% of CYB will be distributed based on donation in ATOMs and 60% of CYB will be distributed based on donations in ETHs the discount for every ATOM donation is about 6x which is significant enough to encourage participation based on arbitrage opportunity during the first 21 days of Genesis auction.
+
 In order to solve everything mentioned above we decide to create 2 tokens: CBD and CYB. Both tokens remains functional and will track value independently due to very different utility nature:
 - CBD is Ethereum ERC-20 compatible token for control of cyber•Foundation's ETH from auction proceeds. CBD was emitted during the creation of cyber•Foundation as Aragon organization. 90% of CBD distributed to auction participants.
-- CYB is native token of sovereign Cyber protocol under Tendermint consensus algorithm. 70% of CYB is distributed based on CBD snapshots during genesis auction. 25% of CYB are airdroped for targeted audience in genesis and 5% is based on ATOM contributions based on a round for validators before Genesis.
+- CYB is native token of sovereign Cyber protocol under Tendermint consensus algorithm. 70% of CYB is distributed based on CBD snapshots during genesis auction. 25% of CYB are airdroped for targeted audience in genesis and 5% is for a Game of Atoms before Genesis.
 
 Overall the flow is the following:
 1. Start of contributions in ATOMs for genesis validators: 15 June 2019
@@ -386,33 +396,7 @@ Overall the flow is the following:
 4. Euler epoch distribution: 1 Jule 2019
 5. Smith to Merkle epoch distributions: Every 100 days
 
-## Distribution of CYB
-
-Genesis `euler` will contains 1 000 000 000 000 000 CYB (One Quadrillion CYB):
--  50 000 000 000 000 CYB for genesis ATOM contributors
--  50 000 000 000 000 CYB for contributors in ATOMs
-- 100 000 000 000 000 CYB for CBD holders
-- 100 000 000 000 000 CYB for Top 20% ETH holders excluding contracts
-- 700 000 000 000 000 CYB under cyberCongress multisig for manned distributions
-
-cyber•Congress will execute the following manned distributions:
-- 100 000 000 000 000 CYB for ATOM contributors at the start of Smith Epoch
-- 100 000 000 000 000 CYB for CBD holders at the start of Smith Epoch
-- 100 000 000 000 000 CYB for CBD holders at the start of Darwin Epoch
-- 100 000 000 000 000 CYB for CBD holders at the start of Turing Epoch
-- 100 000 000 000 000 CYB for CBD holders at the start of Nash Epoch
-- 100 000 000 000 000 CYB for CBD holders at the start of Weiner Epoch
-- 100 000 000 000 000 CYB for CDB holders at the start of Merkle Epoch
-
-After genesis CYB tokens can be created only by validators based on staking and slashing parameters. The basic consensus is that newly created CYB tokens are distributed to validators as they do the essential work to make relevance machine run both regarding energy consumed for computation and cost for storage capacity. So validators decide where the tokens can flow further.
-
-After Genesis inflation adjusted using `TokensPerBlock` parameter. Given that the network has 1 second target block and ~7% target inflation the starting parameter will be 50 MCYB.
-
-There is no currently such thing as maximum amount of CYB due to continuous inflation paid to validators. Currently CYB is implemented using 64int so creation of more CYB make significantly more expensive compute state changes and rank. We expect that lifetime monetary strategy must be established by governance system after complete initial distribution of CYB and activation of smart contract functionality.
-
-CYB tokens under manned distribution multisig will not delegate its stake and as result will remain as passive stake until become distributed.
-
-## Genesis auction of CBD tokens and the role of cyber•Foundation
+## cyber Genesis Game on CBD tokens and the formation of cyber•Foundation
 
 The role of Genesis auction is twofold:
 - It creates non-exlusive long lasting and provable game of initial distribution without necessity to spend energy on proof of work. It is crucial that early knowledge graph were created in some sense fairly by engaged community which was formed during a non-exclusive game.
@@ -424,14 +408,31 @@ So 100 CBD ERC-20 tokens [are issued](https://etherscan.io/token/0x136c1121f21c2
 
 Based on CBD balances snapshot balances are computed 7 times. Undistributed CBD tokens accounted on auction contract will be excluded from distribution. Based on this snapshots CYB manned distribution will be executed by cyberCongress.
 
-## Role of ATOMs
-15% of CYB will be distributed based on funding in ATOMs during 2 rounds:
--  50 000 000 000 000 CYB for genesis ATOM contributors
-- 100 000 000 000 000 CYB for ATOM contributors at the start of Smith Epoch
+## Distribution of CYB
 
-The role of funding in ATOMs is also twofold:
-- Thanks to ATOM we want to secure lifetime commitment of cyber•Congress in the development of Cosmos and Cyber ecosystems. ATOM donations to cyber•Congress will allow us to use staking rewards for continuous funding of the Cyber protocol without necessity to dump CYBs
-- We want add to a distribution game significant discount to ATOM holders because we need provably professional validators and delegators at the beginning and basically for free. We can describe the discount in the following terms: Currently buying power of all ATOMs against all ETHs based on current caps is about 1/24. Given that 15% of CYB will be distributed based on donation in ATOMs and 60% of CYB will be distributed based on donations in ETHs the discount for every ATOM donation is about 6x which is significant enough to encourage participation based on arbitrage opportunity during the first 21 days of Genesis auction.
+Genesis `euler` will contains 1 000 000 000 000 000 CYB (One Quadrillion CYB):
+-  50 000 000 000 000 CYB for genesis ATOM contributors
+-  50 000 000 000 000 CYB for contributors in ATOMs
+- 100 000 000 000 000 CYB for CBD holders
+- 100 000 000 000 000 CYB for Top 20% ETH holders excluding contracts
+- 700 000 000 000 000 CYB under cyberCongress multisig for manned distributions
+
+cyber•Congress will execute the following manned distributions:
+- 100 000 000 000 000 CYB for ATOM contributors after start of Euler epoch
+- 100 000 000 000 000 CYB for CBD holders after start of Euler epoch
+- 100 000 000 000 000 CYB for CBD holders after start of Smith epoch
+- 100 000 000 000 000 CYB for CBD holders after start of Darwin
+- 100 000 000 000 000 CYB for CBD holders after start of Turing epoch
+- 100 000 000 000 000 CYB for CBD holders after start of Nash epoch
+- 100 000 000 000 000 CYB for CBD holders after start of Weiner Epoch
+
+After genesis CYB tokens can be created only by validators based on staking and slashing parameters. The basic consensus is that newly created CYB tokens are distributed to validators as they do the essential work to make relevance machine run both regarding energy consumed for computation and cost for storage capacity. So stakeholders decide where the tokens can flow further.
+
+After Genesis inflation adjusted using `TokensPerBlock` parameter. Given that the network has 1 second target block and ~7% target inflation the starting parameter will be 50 MCYB.
+
+There is no currently such thing as maximum amount of CYB due to continuous inflation paid to validators. Currently CYB is implemented using 64int so creation of more CYB make significantly more expensive compute state changes and rank. We expect that lifetime monetary strategy must be established by governance system after complete initial distribution of CYB and activation of smart contract functionality.
+
+CYB tokens under manned distribution multisig will not delegate its stake and as result will remain as passive stake until become distributed.
 
 ## Applications of knowledge graph
 
