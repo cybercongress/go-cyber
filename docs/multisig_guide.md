@@ -2,6 +2,8 @@
 
 `Cyberd` uses docker container technology for usability. If you don't use docker container and use `gaiacli` or you've installed `cyberd` from binaries this guide is useful for you too. Just skip some docker features, because this guide focused on docker users. Remind: this guide covers all types of transactions, not only send. Also, this guide actual for Cosmos Hub Gaiacli users excepted bandwidth in Cosmos we pay a fee with tokens.
 
+Do not forget about `--chain-id` flag in `cyberd` and even `Cosmos Hub` networks. Current `<chain-id>` you can always get in master branch of product repo.
+
 Multisig account creating and sending transaction is simple and clear but a little bit long.
 
 1. Go inside docker container:
@@ -43,7 +45,7 @@ cyberdcli tx send <recipient_address> <amount>cyb --from=<multisig_address> --ch
 
 7. Sign this transaction with the following command and store signed file in `sign1.json`:
 ```bash
-cyberdcli tx sign unsigned.json --multisig=<multisig_address> --from=<your_account_name> --output-document sign1.json --chain-id euler-4
+cyberdcli tx sign unsigned.json --multisig=<multisig_address> --from=<your_account_name> --output-document sign1.json --chain-id=<chain_id>
 ```
 
 8. Now you need to send the resulting file to remote thresholders for signing. You can see the content of the transaction file with
@@ -76,7 +78,7 @@ cyberdcli tx multisign unsigned.json multitest1 sign1.json sign2.json --chain-id
 12. Finally we need to broadcast this transaction to network
 
 ```bash
-cyberdcli tx broadcast signed.json
+cyberdcli tx broadcast signed.json --chain-id=<chain_id>
 ```
 
 If multisig account has enough bandwidth transaction should be broadcasted.
