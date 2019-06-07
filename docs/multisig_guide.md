@@ -1,6 +1,6 @@
 # 2 of 3 multisig account creation and sending transaction guide
 
-`Cyberd` uses docker container technology for usability. If you don't use docker container and use `gaiacli` or you've installed `cyberd` from binaries this guide is useful for you too. Just skip some docker features, because this guide focused on docker users.
+`Cyberd` uses docker container technology for usability. If you don't use docker container and use `gaiacli` or you've installed `cyberd` from binaries this guide is useful for you too. Just skip some docker features, because this guide focused on docker users. Remind: this guide covers all types of transactions, not only send. Also, this guide actual for Cosmos Hub Gaiacli users excepted bandwidth in Cosmos we pay a fee with tokens.
 
 Multisig account creating and sending transaction is simple and clear but a little bit long.
 
