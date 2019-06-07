@@ -140,7 +140,12 @@ sudo add-apt-repository ppa:graphics-drivers/ppa
 sudo apt update
 ```
 
-2. Next, identify your graphic card model and recommended driver:
+2. Install Ubuntu-drivers
+```bash
+sudo apt install -y ubuntu-drivers-common
+```
+
+3. Next, identify your graphic card model and recommended driver:
 
 ```bash
 ubuntu-drivers devices
@@ -158,7 +163,7 @@ driver   : nvidia-driver-396 - third-party free
 driver   : nvidia-driver-415 - third-party free recommended
 driver   : xserver-xorg-video-nouveau - distro free builtin
 ```
-3. We need **410+** drivers release. As we see v415 is recommended. The command below will install the recommended version of drivers.
+4. We need **410+** drivers release. As we see v415 is recommended. The command below will install the recommended version of drivers.
 
 ```bash
 sudo ubuntu-drivers autoinstall
@@ -187,9 +192,9 @@ Processing triggers for initramfs-tools (0.130ubuntu3.1) ...
 update-initramfs: Generating /boot/initrd.img-4.15.0-45-generic
 ```
 
-4. Reboot the system for the changes to take effect.
+5. Reboot the system for the changes to take effect.
 
-5. Check installed drivers
+6. Check installed drivers
 
 ```bash
 nvidia-smi
@@ -198,21 +203,20 @@ You should see this:
 
 ```
 +-----------------------------------------------------------------------------+
-| NVIDIA-SMI 415.27       Driver Version: 415.27       CUDA Version: 10.0     |
+| NVIDIA-SMI 430.14       Driver Version: 430.14       CUDA Version: 10.2     |
 |-------------------------------+----------------------+----------------------+
 | GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
 | Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
 |===============================+======================+======================|
-|   0  GeForce GTX 1070    Off  | 00000000:01:00.0  On |                  N/A |
-| N/A   54C    P0    36W /  N/A |    445MiB /  8117MiB |      0%      Default |
+|   0  GeForce GTX 1070    Off  | 00000000:01:00.0 Off |                  N/A |
+| 26%   36C    P5    26W / 180W |      0MiB /  8119MiB |      2%      Default |
 +-------------------------------+----------------------+----------------------+
-
+                                                                               
 +-----------------------------------------------------------------------------+
 | Processes:                                                       GPU Memory |
 |  GPU       PID   Type   Process name                             Usage      |
 |=============================================================================|
-|    0       882      G   /usr/lib/xorg/Xorg                           302MiB |
-|    0      1046      G   /usr/bin/gnome-shell                         139MiB |
+|  No running processes found                                                 |
 +-----------------------------------------------------------------------------+
 ```
 
