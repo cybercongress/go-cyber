@@ -4,6 +4,8 @@
 
 Do not forget about `--chain-id` flag in `cyberd` and even `Cosmos Hub` networks. Current `<chain-id>` you can always get in master branch of product repo.
 
+## Creating multisig
+
 Multisig account creating and sending transaction is simple and clear but a little bit long.
 
 1. Go inside docker container:
@@ -37,6 +39,8 @@ cyberdcli keys add multitest1 --multisig=test1,test2,test3 --multisig-threshold 
 ```
 
 5. You should top up your balance of your multisig account. Make sure if you have enough bandwidth to make transaction later.
+
+## Spending from multisig
 
 6. Create unsigned transaction from multisig account and store it in `unsigned.json` file:
 ```bash
