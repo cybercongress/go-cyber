@@ -13,9 +13,7 @@
 	- [Proof of relevance](#proof-of-relevance)
 	- [Speed and scalability](#speed-and-scalability)
 	- [In-browser implementation](#in-browser-implementation)
-	- [Approach to distribution](#approach-to-distribution)
-	- [Game of ATOMs](#game-of-atoms)
-	- [cyber Genesis Game on CBD tokens and the formation of cyber•Foundation](#cyber-genesis-game-on-cbd-tokens-and-the-formation-of-cyberfoundation)
+	- [Philosophical approach toward distribution](#philosophical-approach-toward-distribution)
 	- [Distribution of CYB](#distribution-of-cyb)
 	- [Applications of knowledge graph](#applications-of-knowledge-graph)
 	- [Apps on top of knowledge graph](#apps-on-top-of-knowledge-graph)
@@ -359,22 +357,22 @@ We wanted to imagine how that could work in a web3 browser. To our disappointmen
 
 ![search-results](https://ipfs.io/ipfs/QmSSyqEqh9oSC4voDDYwEAuQczeJCyRfsx4gqecSyTcVWs)
 
-## Approach to distribution
+## Philosophical approach toward distribution
 
-While designing the distribution of Cyber protocol we tried to balance the following goals:
-- Launch provable and transparent distribution in accordance with highest standards of the blockchain development
-- Enable contribution for everybody independently on country or whatever else
-- Prevent privacy-bribery attacks such as KYC requirements
-- Spread distribution in time to maximise access of agents to initial distribution without hard caps
-- Honour genesis Cosmos investors for development of technology which make possible simplified development of cyber protocol
+While designing the initial distribution structure for Cyber protocol we aimed to achieve the following goals:
+- Develop provable and transparent distribution in accordance with best industry practices
+- Allow equal participation irrespectively of political, regulatory or any other restrictions which may be imposed by outside agents
+- Prevent attacks on privacy such as instalment of KYC requirements
+- Spread distribution in time to grant equal access to all agents to initial distribution without any limitations such as hard caps or any other restrictions
+- Honour genesis Cosmos investors for development of technology which made possible simplified development of Cyber protocol
 - Attract the most professional validators from Cosmos ecosystem for bootstrapping the network
-- Maximize attraction of existing well educated agents from Ethereum ecosystem for bootstraping the Knowledge Graph
-- Create decentralized fund in ETH managed by agents who participated in initial distribution in order to remove necessity of dumping CYB in the first years of network existence
+- Allow easy early access for active users of Ethereum ecosystem in order to accelerate growth of the Knowledge graph
+- Decentralize management of auction donations starting from day 0
 - Honour 30 months of cyber•Congress R&D and community behind it
-- Distribution has to be involving and gamified
 
-Remember that the goal of creating alternative to a Google-like structure requires extraordinary involvement of different groups. No one said it would be easy.
+The goal of creating alternative to a Google-like structure requires extraordinary effort of different groups.
 
+While choosing token for donations we followed three main criteria: the token must be (1) one of the most liquid, (2) the most promising and (3) have technical ability to execute auction and resulting organization without relying on any third party. So the only system matches this criteria is Ethereum, hence the primary token of donations will be ETH.
 ## Game of ATOMs
 
 15% of CYB will be distributed based on funding in ATOMs during 2 rounds:
@@ -389,12 +387,22 @@ In order to solve everything mentioned above we decide to create 2 tokens: CBD a
 - CBD is Ethereum ERC-20 compatible token for control of cyber•Foundation's ETH from auction proceeds. CBD was emitted during the creation of cyber•Foundation as Aragon organization. 90% of CBD distributed to auction participants.
 - CYB is native token of sovereign Cyber protocol under Tendermint consensus algorithm. 70% of CYB is distributed based on CBD snapshots during genesis auction. 25% of CYB are airdroped for targeted audience in genesis and 5% is for a Game of Atoms before Genesis.
 
-Overall the flow is the following:
-1. Start of contributions in ATOMs for genesis validators: 15 June 2019
-2. Launch of mainnet: 25 June 2019
-3. Start of contributions in ETH and ATOMs: 9 June 2019
-4. Euler epoch distribution: 1 Jule 2019
-5. Smith to Merkle epoch distributions: Every 100 days
+In order to meet designated criteria we will create 2 tokens: CBD and CYB. Both tokens will remain functional and will track value independently due to different utility nature:
+- CBD is Ethereum ERC-20 compatible token for control of cyber•Foundation's ETH from auction proceeds.
+- [add technological limitations of eth and atom fundraising and market value depth]
+
+CBD utility value: management and control of Aragon DAO fund a.k.a. Cyber Foundation.
+
+- CYB is native token of sovereign Cyber protocol.
+
+CYB utility value: Cyber protocol staking token allowing to participate in ranking.
+
+Distribution happens
+1. Pre-genesis: Auction for ATOM holders and initial CBD distribution
+2. Genesis: Launch of mainnet and Game of Thrones
+3. Post Genesis: 6 batch of CYB transactions after every 100 rounds of cyber•Auction
+
+- Create fund managed via decentralized engine such as Aragon DAO filled with ETH and managed by agents who participated in initial distribution. This approach will allows to safeguard from excessive market dumping of native platform CYB tokens in the first years of work, whereby ensuring stable development. Additionally this allows to diversify underlying platform and migrate from Cosmos to other engines should the need arise.  
 
 ## cyber Genesis Game on CBD tokens and the formation of cyber•Foundation
 
@@ -410,21 +418,22 @@ Based on CBD balances snapshot balances are computed 7 times. Undistributed CBD 
 
 ## Distribution of CYB
 
-Genesis `euler` will contains 1 000 000 000 000 000 CYB (One Quadrillion CYB):
--  50 000 000 000 000 CYB for genesis ATOM contributors
--  50 000 000 000 000 CYB for contributors in ATOMs
-- 100 000 000 000 000 CYB for CBD holders
+Genesis of `cyber` protocol will contains 1 000 000 000 000 000 CYB (One Quadrillion CYB) broken down as follows:
+-  50 000 000 000 000 CYB as drop for all ATOM stakeholders
+-  50 000 000 000 000 CYB for pre-genesis contributors in ATOMs
+- 100 000 000 000 000 CYB for CBD holders at Genesis
 - 100 000 000 000 000 CYB for Top 20% ETH holders excluding contracts
-- 700 000 000 000 000 CYB under cyberCongress multisig for manned distributions
+- 200 000 000 000 000 CYB under multisig managed by cyberCongress for manual distribution after Game of Thrones
+- 500 000 000 000 000 CYB under multisig managed by cyberCongress for manual distributions during cyber•Auction.
 
-cyber•Congress will execute the following manned distributions:
-- 100 000 000 000 000 CYB for ATOM contributors after start of Euler epoch
-- 100 000 000 000 000 CYB for CBD holders after start of Euler epoch
-- 100 000 000 000 000 CYB for CBD holders after start of Smith epoch
-- 100 000 000 000 000 CYB for CBD holders after start of Darwin
-- 100 000 000 000 000 CYB for CBD holders after start of Turing epoch
-- 100 000 000 000 000 CYB for CBD holders after start of Nash epoch
-- 100 000 000 000 000 CYB for CBD holders after start of Weiner Epoch
+Cyber•Congress will execute the following manual batch transactions after each of respective CBD balances:
+- 100 000 000 000 000 CYB for ATOM contributors at the start of Smith era
+- 100 000 000 000 000 CYB for CBD holders at the start of Smith era
+- 100 000 000 000 000 CYB for CBD holders at the start of Darwin era
+- 100 000 000 000 000 CYB for CBD holders at the start of Turing era
+- 100 000 000 000 000 CYB for CBD holders at the start of Nash era
+- 100 000 000 000 000 CYB for CBD holders at the start of Weiner era
+- 100 000 000 000 000 CYB for CDB holders at the start of Merkle era
 
 After genesis CYB tokens can be created only by validators based on staking and slashing parameters. The basic consensus is that newly created CYB tokens are distributed to validators as they do the essential work to make relevance machine run both regarding energy consumed for computation and cost for storage capacity. So stakeholders decide where the tokens can flow further.
 
@@ -432,7 +441,8 @@ After Genesis inflation adjusted using `TokensPerBlock` parameter. Given that th
 
 There is no currently such thing as maximum amount of CYB due to continuous inflation paid to validators. Currently CYB is implemented using 64int so creation of more CYB make significantly more expensive compute state changes and rank. We expect that lifetime monetary strategy must be established by governance system after complete initial distribution of CYB and activation of smart contract functionality.
 
-CYB tokens under manned distribution multisig will not delegate its stake and as result will remain as passive stake until become distributed.
+CYB tokens under
+distribution multisig will not delegate its stake and as result will remain as passive stake until become distributed.
 
 ## Applications of knowledge graph
 
