@@ -15,8 +15,6 @@
 	- [In-browser implementation](#in-browser-implementation)
 	- [Philosophical approach toward distribution](#philosophical-approach-toward-distribution)
 	- [Distribution of CYB](#distribution-of-cyb)
-	- [Genesis auction of CBD tokens and the role of cyber•Foundation](#genesis-auction-of-cbd-tokens-and-the-role-of-cyberfoundation)
-	- [Role of ATOMs](#role-of-atoms)
 	- [Applications of knowledge graph](#applications-of-knowledge-graph)
 	- [Apps on top of knowledge graph](#apps-on-top-of-knowledge-graph)
 	- [Conclusion](#conclusion)
@@ -375,6 +373,19 @@ While designing the initial distribution structure for Cyber protocol we aimed t
 The goal of creating alternative to a Google-like structure requires extraordinary effort of different groups.
 
 While choosing token for donations we followed three main criteria: the token must be (1) one of the most liquid, (2) the most promising and (3) have technical ability to execute auction and resulting organization without relying on any third party. So the only system matches this criteria is Ethereum, hence the primary token of donations will be ETH.
+## Game of ATOMs
+
+15% of CYB will be distributed based on funding in ATOMs during 2 rounds:
+-  50 000 000 000 000 CYB for genesis ATOM contributors
+- 100 000 000 000 000 CYB for ATOM contributors at the start of Smith Epoch
+
+The role of funding in ATOMs is also twofold:
+- Thanks to ATOM we want to secure lifetime commitment of cyber•Congress in the development of Cosmos and Cyber ecosystems. ATOM donations to cyber•Congress will allow us to use staking rewards for continuous funding of the Cyber protocol without necessity to dump CYBs
+- We want add to a distribution game significant discount to ATOM holders because we need provably professional validators and delegators at the beginning and basically for free. We can describe the discount in the following terms: Currently buying power of all ATOMs against all ETHs based on current caps is about 1/24. Given that 15% of CYB will be distributed based on donation in ATOMs and 60% of CYB will be distributed based on donations in ETHs the discount for every ATOM donation is about 6x which is significant enough to encourage participation based on arbitrage opportunity during the first 21 days of Genesis auction.
+
+In order to solve everything mentioned above we decide to create 2 tokens: CBD and CYB. Both tokens remains functional and will track value independently due to very different utility nature:
+- CBD is Ethereum ERC-20 compatible token for control of cyber•Foundation's ETH from auction proceeds. CBD was emitted during the creation of cyber•Foundation as Aragon organization. 90% of CBD distributed to auction participants.
+- CYB is native token of sovereign Cyber protocol under Tendermint consensus algorithm. 70% of CYB is distributed based on CBD snapshots during genesis auction. 25% of CYB are airdroped for targeted audience in genesis and 5% is for a Game of Atoms before Genesis.
 
 In order to meet designated criteria we will create 2 tokens: CBD and CYB. Both tokens will remain functional and will track value independently due to different utility nature:
 - CBD is Ethereum ERC-20 compatible token for control of cyber•Foundation's ETH from auction proceeds.
@@ -392,6 +403,18 @@ Distribution happens
 3. Post Genesis: 6 batch of CYB transactions after every 100 rounds of cyber•Auction
 
 - Create fund managed via decentralized engine such as Aragon DAO filled with ETH and managed by agents who participated in initial distribution. This approach will allows to safeguard from excessive market dumping of native platform CYB tokens in the first years of work, whereby ensuring stable development. Additionally this allows to diversify underlying platform and migrate from Cosmos to other engines should the need arise.  
+
+## cyber Genesis Game on CBD tokens and the formation of cyber•Foundation
+
+The role of Genesis auction is twofold:
+- It creates non-exlusive long lasting and provable game of initial distribution without necessity to spend energy on proof of work. It is crucial that early knowledge graph were created in some sense fairly by engaged community which was formed during a non-exclusive game.
+- As a result of auction community will has access to all raised resources under Aragon organisation. We believe in a true decentralized nature of the thing we created so we do not want to grab all the money from the funding as we already funded the creation of the system ourselves and we ask fair 10% cut for pregenesis investors and founders. Competing with Google is challenging and will be more viable if community will sits on the bag of ever-growing ETH. Given current growth rate of ETH this bag can be very compelling in some years after launch. Also this bag can be the source of alternative implementation of the protocol if Cosmos based system will fail, or in the cased the community just want to diversify technology involved, e.g. ETH2, Polkadot or whatever.
+
+So 100 CBD ERC-20 tokens [are issued](https://etherscan.io/token/0x136c1121f21c29415D8cd71F8Bb140C7fF187033) by [cyberFoundation](https://mainnet.aragon.org/#/cyberfoundation.aragonid.eth/0xf4d85b5a1650a335b30072d178f6dcb611f05a3e).
+
+90% оf CBD will be distributed by genesis auction Ethereum contract and 10% of CBD is allocated to cyber•Congress.
+
+Based on CBD balances snapshot balances are computed 7 times. Undistributed CBD tokens accounted on auction contract will be excluded from distribution. Based on this snapshots CYB manned distribution will be executed by cyberCongress.
 
 ## Distribution of CYB
 
@@ -412,7 +435,7 @@ Cyber•Congress will execute the following manual batch transactions after each
 - 100 000 000 000 000 CYB for CBD holders at the start of Weiner era
 - 100 000 000 000 000 CYB for CDB holders at the start of Merkle era
 
-After genesis CYB tokens can be created only by validators based on staking and slashing parameters. The basic consensus is that newly created CYB tokens are distributed to validators as they do the essential work to make relevance machine run both regarding energy consumed for computation and cost for storage capacity. So validators decide where the tokens can flow further.
+After genesis CYB tokens can be created only by validators based on staking and slashing parameters. The basic consensus is that newly created CYB tokens are distributed to validators as they do the essential work to make relevance machine run both regarding energy consumed for computation and cost for storage capacity. So stakeholders decide where the tokens can flow further.
 
 After Genesis inflation adjusted using `TokensPerBlock` parameter. Given that the network has 1 second target block and ~7% target inflation the starting parameter will be 50 MCYB.
 
@@ -420,27 +443,6 @@ There is no currently such thing as maximum amount of CYB due to continuous infl
 
 CYB tokens under
 distribution multisig will not delegate its stake and as result will remain as passive stake until become distributed.
-
-## Genesis auction of CBD tokens and the role of cyber•Foundation
-
-The role of Genesis auction is twofold:
-- It creates non-exlusive long lasting and provable game of initial distribution without necessity to spend energy on proof of work. It is crucial that early knowledge graph were created in some sense fairly by engaged community which was formed during a non-exclusive game.
-- As a result of auction community will has access to all raised resources under Aragon organisation. We believe in a true decentralized nature of the thing we created so we do not want to grab all the money from the funding as we already funded the creation of the system ourselves and we ask fair 10% cut for pregenesis investors and founders. Competing with Google is challenging and will be more viable if community will sits on the bag of ever-growing ETH. Given current growth rate of ETH this bag can be very compelling in some years after launch. Also this bag can be the source of alternative implementation of the protocol if Cosmos based system will fail, or in the cased the community just want to diversify technology involved, e.g. ETH2, Polkadot or whatever.
-
-So 100 CBD ERC-20 tokens [are issued](https://etherscan.io/token/0x136c1121f21c29415D8cd71F8Bb140C7fF187033) by [cyberFoundation](https://mainnet.aragon.org/#/cyberfoundation.aragonid.eth/0xf4d85b5a1650a335b30072d178f6dcb611f05a3e).
-
-90% оf CBD will be distributed by genesis auction Ethereum contract and 10% of CBD is allocated to cyber•Congress.
-
-Based on CBD balances snapshot balances are computed 7 times. Undistributed CBD tokens accounted on auction contract will be excluded from distribution. Based on this snapshots CYB manned distribution will be executed by cyberCongress.
-
-## Role of ATOMs
-15% of CYB will be distributed based on funding in ATOMs during 2 rounds:
--  50 000 000 000 000 CYB for genesis ATOM contributors
-- 100 000 000 000 000 CYB for ATOM contributors at the start of Smith Epoch
-
-The role of funding in ATOMs is also twofold:
-- Thanks to ATOM we want to secure lifetime commitment of cyber•Congress in the development of Cosmos and Cyber ecosystems. ATOM donations to cyber•Congress will allow us to use staking rewards for continuous funding of the Cyber protocol without necessity to dump CYBs
-- We want add to a distribution game significant discount to ATOM holders because we need provably professional validators and delegators at the beginning and basically for free. We can describe the discount in the following terms: Currently buying power of all ATOMs against all ETHs based on current caps is about 1/24. Given that 15% of CYB will be distributed based on donation in ATOMs and 60% of CYB will be distributed based on donations in ETHs the discount for every ATOM donation is about 6x which is significant enough to encourage participation based on arbitrage opportunity during the first 21 days of Genesis auction.
 
 ## Applications of knowledge graph
 
