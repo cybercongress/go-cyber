@@ -213,14 +213,7 @@ If rank computed inside consensus computer, you have an easy content distributio
 
 Eventually, relevance machine needs to find (1) deterministic algorithm that allows computing a rank for a continuously appended network to scale the consensus computer to orders of magnitude that of Google. Perfect algorithm (2) must have linear memory and computation complexity. The most importantly it must have (3) highest provable prediction capabilities for the existence of relevant links.                   
 
-After some research, we found that we can not find silver bullet here. We find an algorithm that probably satisfies our criteria: [SpringRank](https://ipfs.io/ipfs/QmNvxWTXQaAqjEouZQXTV4wDB5ryW4PGcaxe2Lukv1BxuM). An original idea of the algorithm came to Caterina from physics. Links represented as a system of springs with some energy, and the task of computing the ranks is the task of finding a relaxed state of springs.
-
-However, we got at least 3 problems with SpringRank:
-1. We were not able to implement it on-chain fast using Go in `euler`.
-2. We were not able to prove it for knowledge graph because we did not have provable knowledge graph yet.
-3. Also, we were not able to prove it by applying it for the Ethereum blockchain during computing the genesis file for first itteration of `euler`.
-
-So we decided to find some more basic bulletproof way to bootstrap the network: a rank from which Larry and Sergey have bootstrapped a previous network. The problem with original PageRank is that it is not resistant to sybil attacks.
+After some research, we found that we can not find silver bullet here. So we decided to find some more basic bulletproof way to bootstrap the network: a rank from which Larry and Sergey have bootstrapped a previous network. The problem with original PageRank is that it is not resistant to sybil attacks.
 
 Token weighted [PageRank](http://ilpubs.stanford.edu:8090/422/1/1999-66.pdf) limited by token-weighted bandwidth do not have inherent problems of naive PageRank and is resistant to sybil attacks. For the time being, we will call it cyber•Rank until something better emerge.
 
