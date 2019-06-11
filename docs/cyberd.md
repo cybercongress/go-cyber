@@ -14,7 +14,10 @@
 	- [Speed and scalability](#speed-and-scalability)
 	- [In-browser implementation](#in-browser-implementation)
 	- [Philosophical approach toward distribution](#philosophical-approach-toward-distribution)
-	- [Distribution of CYB](#distribution-of-cyb)
+	- [Pre-genesis](#pre-genesis)
+	- [Genesis](#genesis)
+	- [Post-genesis](#post-genesis)
+	- [Role of ATOMs](#role-of-atoms)
 	- [Applications of knowledge graph](#applications-of-knowledge-graph)
 	- [Apps on top of knowledge graph](#apps-on-top-of-knowledge-graph)
 	- [Conclusion](#conclusion)
@@ -370,70 +373,49 @@ While designing the initial distribution structure for Cyber protocol we aimed t
 - Decentralize management of auction donations starting from day 0
 - Honour 30 months of cyber•Congress R&D and community behind it
 
-The goal of creating alternative to a Google-like structure requires extraordinary effort of different groups.
+The goal of creating alternative to a Google-like structure requires extraordinary effort of different groups. Create fund managed via decentralized engine such as Aragon DAO filled with ETH and managed by agents who participated in initial distribution. This approach will allows to safeguard from excessive market dumping of native platform CYB tokens in the first years of work, whereby ensuring stable development. Additionally this allows to diversify underlying platform and migrate from Cosmos to other engines should the need arise.
 
-While choosing token for donations we followed three main criteria: the token must be (1) one of the most liquid, (2) the most promising and (3) have technical ability to execute auction and resulting organization without relying on any third party. So the only system matches this criteria is Ethereum, hence the primary token of donations will be ETH.
-## Game of ATOMs
+While choosing token for donations we followed three main criteria: the token must be (1) one of the most liquid, (2) the most promising, so a community can secure a solid investment bag for be competitive even comparing to giants like Google and (3) have technical ability to execute auction and resulting organization without relying on any third party. So the only system matches this criteria is Ethereum, hence the primary token of donations will be ETH. That is why we decide to create 2 tokens: THK and CYB:
+- THK is a creative cyber proto substance. THK being an Ethereum ERC-20 compatible token have utility value in form of control cyber•Foundation (Aragon DAO) ETH from auction proceeds. THK was emitted during the creation of cyber•Foundation as Aragon organization. 90% of CBD distributed to auction participants. Creative power of THK came from ability to receive 1 CYB per each 1 THK for locking it during cyber•Auction.
+- CYB is native token of sovereign Cyber protocol under Tendermint consensus algorithm. It's also has 2 primary uses: (1) is a staking for consensus and (2) is bandwidth limiting for submitting links and computing the rank.
 
-15% of CYB will be distributed based on funding in ATOMs during 2 rounds:
--  50 000 000 000 000 CYB for genesis ATOM contributors
-- 100 000 000 000 000 CYB for ATOM contributors at the start of Smith Epoch
+Both tokens remains functional and will track value independently due to very different utility nature.
 
-The role of funding in ATOMs is also twofold:
-- Thanks to ATOM we want to secure lifetime commitment of cyber•Congress in the development of Cosmos and Cyber ecosystems. ATOM donations to cyber•Congress will allow us to use staking rewards for continuous funding of the Cyber protocol without necessity to dump CYBs
-- We want add to a distribution game significant discount to ATOM holders because we need provably professional validators and delegators at the beginning and basically for free. We can describe the discount in the following terms: Currently buying power of all ATOMs against all ETHs based on current caps is about 1/24. Given that 15% of CYB will be distributed based on donation in ATOMs and 60% of CYB will be distributed based on donations in ETHs the discount for every ATOM donation is about 6x which is significant enough to encourage participation based on arbitrage opportunity during the first 21 days of Genesis auction.
+Initial distribution happens in a 3 different by nature and goals epochs and is spread in time for almost 2 years:
+1. Pre-genesis: 5% CYB auction for ATOM holders is needed to launch cyber protocol on top of
+2. Genesis: Launch of main net and Game of Thrones: needed to involve the most active Ethereum and Cosmos crypto players into an engaging game with ability to fully understand and test a software using real network and incentives. Game of Thrones is a kind of distribution game with some discount for attraction of necessary critical mass in order to make possible of learning the early knowledge graph by the most intelligent community.
+3. Post Genesis: Continuous distribution of CYB based on cyber•Auction proceeds: needed in order to involve into initial distribution existing crypto community and beyond.
 
-In order to solve everything mentioned above we decide to create 2 tokens: CBD and CYB. Both tokens remains functional and will track value independently due to very different utility nature:
-- CBD is Ethereum ERC-20 compatible token for control of cyber•Foundation's ETH from auction proceeds. CBD was emitted during the creation of cyber•Foundation as Aragon organization. 90% of CBD distributed to auction participants.
-- CYB is native token of sovereign Cyber protocol under Tendermint consensus algorithm. 70% of CYB is distributed based on CBD snapshots during genesis auction. 25% of CYB are airdroped for targeted audience in genesis and 5% is for a Game of Atoms before Genesis.
+## Pre-genesis
 
-In order to meet designated criteria we will create 2 tokens: CBD and CYB. Both tokens will remain functional and will track value independently due to different utility nature:
-- CBD is Ethereum ERC-20 compatible token for control of cyber•Foundation's ETH from auction proceeds.
-- [add technological limitations of eth and atom fundraising and market value depth]
+Only 2 distribution events happens happens prior to Genesis:
+1. 700 000 000 000 000 THK tokens are minted by cyber•Foundation. Allocations of THK tokens is the following:
+- 100 000 000 000 000 THK is allocated to cyber•Congress
+- 600 000 000 000 000 THK is allocated to cyber•Auction contract
+2. At the start of `euler-5` donation round in ATOMs started. Purpose of this round is to involve real validators at a genesis. 5% of CYB will be allocated to participants of this donation round.
 
-CBD utility value: management and control of Aragon DAO fund a.k.a. Cyber Foundation.
-
-- CYB is native token of sovereign Cyber protocol.
-
-CYB utility value: Cyber protocol staking token allowing to participate in ranking.
-
-Distribution happens
-1. Pre-genesis: Auction for ATOM holders and initial CBD distribution
-2. Genesis: Launch of mainnet and Game of Thrones
-3. Post Genesis: 6 batch of CYB transactions after every 100 rounds of cyber•Auction
-
-- Create fund managed via decentralized engine such as Aragon DAO filled with ETH and managed by agents who participated in initial distribution. This approach will allows to safeguard from excessive market dumping of native platform CYB tokens in the first years of work, whereby ensuring stable development. Additionally this allows to diversify underlying platform and migrate from Cosmos to other engines should the need arise.  
-
-## cyber Genesis Game on CBD tokens and the formation of cyber•Foundation
-
-The role of Genesis auction is twofold:
-- It creates non-exlusive long lasting and provable game of initial distribution without necessity to spend energy on proof of work. It is crucial that early knowledge graph were created in some sense fairly by engaged community which was formed during a non-exclusive game.
-- As a result of auction community will has access to all raised resources under Aragon organisation. We believe in a true decentralized nature of the thing we created so we do not want to grab all the money from the funding as we already funded the creation of the system ourselves and we ask fair 10% cut for pregenesis investors and founders. Competing with Google is challenging and will be more viable if community will sits on the bag of ever-growing ETH. Given current growth rate of ETH this bag can be very compelling in some years after launch. Also this bag can be the source of alternative implementation of the protocol if Cosmos based system will fail, or in the cased the community just want to diversify technology involved, e.g. ETH2, Polkadot or whatever.
-
-So 100 CBD ERC-20 tokens [are issued](https://etherscan.io/token/0x136c1121f21c29415D8cd71F8Bb140C7fF187033) by [cyberFoundation](https://mainnet.aragon.org/#/cyberfoundation.aragonid.eth/0xf4d85b5a1650a335b30072d178f6dcb611f05a3e).
-
-90% оf CBD will be distributed by genesis auction Ethereum contract and 10% of CBD is allocated to cyber•Congress.
-
-Based on CBD balances snapshot balances are computed 7 times. Undistributed CBD tokens accounted on auction contract will be excluded from distribution. Based on this snapshots CYB manned distribution will be executed by cyberCongress.
-
-## Distribution of CYB
+## Genesis
 
 Genesis of `cyber` protocol will contains 1 000 000 000 000 000 CYB (One Quadrillion CYB) broken down as follows:
 -  50 000 000 000 000 CYB as drop for all ATOM stakeholders
+- 100 000 000 000 000 CYB for top 80% ETH holders by stake excluding contracts
 -  50 000 000 000 000 CYB for pre-genesis contributors in ATOMs
-- 100 000 000 000 000 CYB for CBD holders at Genesis
-- 100 000 000 000 000 CYB for Top 20% ETH holders excluding contracts
-- 200 000 000 000 000 CYB under multisig managed by cyberCongress for manual distribution after Game of Thrones
-- 500 000 000 000 000 CYB under multisig managed by cyberCongress for manual distributions during cyber•Auction.
+- 100 000 000 000 000 CYB for THK holders at Genesis
+- 100 000 000 000 000 CYB under multisig managed by cyberCongress for manual distribution after Game of Thrones for ATOM donors
+- 100 000 000 000 000 CYB under multisig managed by cyberCongress for manual distribution after Game of Thrones for those who stake THK until the end of cyber•Auction
+- 500 000 000 000 000 CYB under multisig managed by cyberCongress for manual distributions during cyber•Auction for those who stake THK until the end of cyber•Auction
 
-Cyber•Congress will execute the following manual batch transactions after each of respective CBD balances:
-- 100 000 000 000 000 CYB for ATOM contributors at the start of Smith era
-- 100 000 000 000 000 CYB for CBD holders at the start of Smith era
-- 100 000 000 000 000 CYB for CBD holders at the start of Darwin era
-- 100 000 000 000 000 CYB for CBD holders at the start of Turing era
-- 100 000 000 000 000 CYB for CBD holders at the start of Nash era
-- 100 000 000 000 000 CYB for CBD holders at the start of Weiner era
-- 100 000 000 000 000 CYB for CDB holders at the start of Merkle era
+Game of Thrones - is a game between ATOM and ETH holders for being the greatest. As a result of 21 day auction after Genesis every community earn 10% of CYB. In order to make the game run smoothly we concisely adding arbitrage opportunity in the form of significant discount to ATOM holders, because the system needs provably professional validators and delegators at the beginning and basically for free.
+
+We can describe the discount in the following terms: Currently buying power of all ATOMs against all ETHs based on current caps is about 1/24. Given that 10% of CYB will be distributed based on donation in ATOMs and 10% of CYB will be distributed based on donations in ETHs the discount for every ATOM donation during Game of Thrones is about 24x which is significant enough to encourage participation based on arbitrage opportunity during the first 21 days of Genesis auction and stimulate the price of ATOMs as appreciation for all cosmic community.
+
+## Post-genesis
+
+Post Genesis stage called cyber•Auction starts after the end of the Game of Thrones and lasts 600 rounds 23 hours each. During this phase CYBs are continuously distributed based on locked THK bough in continuous auction.
+
+The role of cyber•Auction is twofold:
+- It creates non-exlusive long lasting and provable game of initial distribution without necessity to spend energy on proof of work. It is crucial that early knowledge graph were created in some sense fairly by engaged community which was formed during a non-exclusive game.
+- As a result of auction community will has access to all raised resources under Aragon organisation. We believe in a true decentralized nature of the thing we created so we do not want to grab all the money from the funding as we already funded the creation of the system ourselves and we kindly ask fair 10% CYB cut for pre-genesis investors, founders and developers. Competing with Google is challenging and will be more viable if community will sits on the bag of ever-growing ETH. Given current growth rate of ETH this bag can be very compelling in some years after launch. Also this bag can be the source of alternative implementation of the protocol if Cosmos based system will fail, or in the cased the community just want to diversify technology involved, e.g. ETH2, Polkadot or whatever.
 
 After genesis CYB tokens can be created only by validators based on staking and slashing parameters. The basic consensus is that newly created CYB tokens are distributed to validators as they do the essential work to make relevance machine run both regarding energy consumed for computation and cost for storage capacity. So stakeholders decide where the tokens can flow further.
 
@@ -441,8 +423,17 @@ After Genesis inflation adjusted using `TokensPerBlock` parameter. Given that th
 
 There is no currently such thing as maximum amount of CYB due to continuous inflation paid to validators. Currently CYB is implemented using 64int so creation of more CYB make significantly more expensive compute state changes and rank. We expect that lifetime monetary strategy must be established by governance system after complete initial distribution of CYB and activation of smart contract functionality.
 
-CYB tokens under
-distribution multisig will not delegate its stake and as result will remain as passive stake until become distributed.
+The following rules apply for CYBs under cyber•Auction multisig:
+- will not delegate its stake and as result will remain as passive stake until become distributed
+- after the end of cyber•Auction all remaining CYBs will be provably burned
+
+## Role of ATOMs
+
+Overall 15% of CYB will be distributed based on donations in ATOMs during 2 rounds:
+-  50 000 000 000 000 CYB for genesis ATOM contributors
+- 100 000 000 000 000 CYB for ATOM contributors at the start of Smith Epoch
+
+All ATOM donations goes to cyber•Congress multisig. The role of ATOM donations is the following: thanks to ATOM we want to secure lifetime commitment of cyber•Congress in the development of Cosmos and Cyber ecosystems. ATOM donations to cyber•Congress will allow us to use staking rewards for continuous funding of the Cyber protocol without necessity to dump CYBs
 
 ## Applications of knowledge graph
 
