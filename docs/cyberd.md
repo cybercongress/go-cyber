@@ -375,8 +375,8 @@ While designing the initial distribution structure for Cyber protocol we aimed t
 
 The goal of creating alternative to a Google-like structure requires extraordinary effort of different groups. Create fund managed via decentralized engine such as Aragon DAO filled with ETH and managed by agents who participated in initial distribution. This approach will allows to safeguard from excessive market dumping of native platform CYB tokens in the first years of work, whereby ensuring stable development. Additionally this allows to diversify underlying platform and migrate from Cosmos to other engines should the need arise.
 
-While choosing token for donations we followed three main criteria: the token must be (1) one of the most liquid, (2) the most promising, so a community can secure a solid investment bag for be competitive even comparing to giants like Google and (3) have technical ability to execute auction and resulting organization without relying on any third party. So the only system matches this criteria is Ethereum, hence the primary token of donations will be ETH. That is why we decide to create 2 tokens: THK and CYB:
-- THK is a creative cyber proto substance. THK being an Ethereum ERC-20 compatible token have utility value in form of control cyber•Foundation (Aragon DAO) ETH from auction proceeds. THK was emitted during the creation of cyber•Foundation as Aragon organization. 90% of CBD distributed to auction participants. Creative power of THK came from ability to receive 1 CYB per each 1 THK for locking it during cyber•Auction.
+While choosing token for donations we followed three main criteria: the token must be (1) one of the most liquid, (2) the most promising, so a community can secure a solid investment bag for be competitive even comparing to giants like Google and (3) have technical ability to execute auction and resulting organization without relying on any third party. So the only system matches this criteria is Ethereum, hence the primary token of donations will be ETH. That is why we decide to create 2 tokens: THC and CYB:
+- THC is a creative cyber proto substance. THC being an Ethereum ERC-20 compatible token have utility value in form of control cyber•Foundation (Aragon DAO) ETH from auction proceeds. THC was emitted during the creation of cyber•Foundation as Aragon organization. 90% of CBD distributed to auction participants. Creative power of THC came from ability to receive 1 CYB per each 1 THC for locking it during cyber•Auction.
 - CYB is native token of sovereign Cyber protocol under Tendermint consensus algorithm. It's also has 2 primary uses: (1) is a staking for consensus and (2) is bandwidth limiting for submitting links and computing the rank.
 
 Both tokens remains functional and will track value independently due to very different utility nature.
@@ -389,9 +389,9 @@ Initial distribution happens in a 3 different by nature and goals epochs and is 
 ## Pre-genesis
 
 Only 2 distribution events happens happens prior to Genesis:
-1. 700 000 000 000 000 THK tokens are minted by cyber•Foundation. Allocations of THK tokens is the following:
-- 100 000 000 000 000 THK is allocated to cyber•Congress
-- 600 000 000 000 000 THK is allocated to cyber•Auction contract
+1. 700 000 000 000 000 THC tokens are minted by cyber•Foundation. Allocations of THC tokens is the following:
+- 100 000 000 000 000 THC is allocated to cyber•Congress
+- 600 000 000 000 000 THC is allocated to cyber•Auction contract
 2. At the start of `euler-5` donation round in ATOMs started. Purpose of this round is to involve real validators at a genesis. 5% of CYB will be allocated to participants of this donation round.
 
 ## Genesis
@@ -400,10 +400,10 @@ Genesis of `cyber` protocol will contains 1 000 000 000 000 000 CYB (One Quadril
 -  50 000 000 000 000 CYB as drop for all ATOM stakeholders
 - 100 000 000 000 000 CYB for top 80% ETH holders by stake excluding contracts
 -  50 000 000 000 000 CYB for pre-genesis contributors in ATOMs
-- 100 000 000 000 000 CYB for THK holders at Genesis
+- 100 000 000 000 000 CYB for THC holders at Genesis
 - 100 000 000 000 000 CYB under multisig managed by cyberCongress for manual distribution after Game of Thrones for ATOM donors
-- 100 000 000 000 000 CYB under multisig managed by cyberCongress for manual distribution after Game of Thrones for those who stake THK until the end of cyber•Auction
-- 500 000 000 000 000 CYB under multisig managed by cyberCongress for manual distributions during cyber•Auction for those who stake THK until the end of cyber•Auction
+- 100 000 000 000 000 CYB under multisig managed by cyberCongress for manual distribution after Game of Thrones for those who stake THC until the end of cyber•Auction
+- 500 000 000 000 000 CYB under multisig managed by cyberCongress for manual distributions during cyber•Auction for those who stake THC until the end of cyber•Auction
 
 Game of Thrones - is a game between ATOM and ETH holders for being the greatest. As a result of 21 day auction after Genesis every community earn 10% of CYB. In order to make the game run smoothly we concisely adding arbitrage opportunity in the form of significant discount to ATOM holders, because the system needs provably professional validators and delegators at the beginning and basically for free.
 
@@ -411,7 +411,7 @@ We can describe the discount in the following terms: Currently buying power of a
 
 ## Post-genesis
 
-Post Genesis stage called cyber•Auction starts after the end of the Game of Thrones and lasts 600 rounds 23 hours each. During this phase CYBs are continuously distributed based on locked THK bough in continuous auction.
+Post Genesis stage called cyber•Auction starts after the end of the Game of Thrones and lasts 600 rounds 23 hours each. During this phase CYBs are continuously distributed based on locked THC bough in continuous auction.
 
 The role of cyber•Auction is twofold:
 - It creates non-exlusive long lasting and provable game of initial distribution without necessity to spend energy on proof of work. It is crucial that early knowledge graph were created in some sense fairly by engaged community which was formed during a non-exclusive game.
