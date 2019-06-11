@@ -3,7 +3,7 @@
   - [Abstract](#abstract)
   - [Introduction to web3](#introduction-to-web3)
   - [On adversarial examples problem](#on-adversarial-examples-problem)
-  - [Cyber protocol at `euler`](#cyber-protocol-at-euler)
+  - [Cyber protocol at `cyber`](#cyber-protocol-at-cyber)
   - [Knowledge graph](#knowledge-graph)
   - [Cyberlinks](#cyberlinks)
   - [Notion of consensus computer](#notion-of-consensus-computer)
@@ -26,7 +26,7 @@
 
 # cyberd: Computing the knowledge from web3
 
-Notes on [`euler`](https://github.com/cybercongress/cyberd/releases/tag/v0.1.0) release of `cyber://` protocol [reference implementation](https://github.com/cybercongress/cyberd) using Go.
+Notes on [`cyber`](https://github.com/cybercongress/cyberd/releases/tag/v0.1.0) release of `cyber://` protocol [reference implementation](https://github.com/cybercongress/cyberd) using Go.
 
 [cyber•Congress](https://cybercongress.ai/): @xhipster, @litvintech, @hleb-albau, @arturalbov
 
@@ -46,9 +46,9 @@ The emergence of a [web3 stack](https://github.com/w3f/Web3-wiki/wiki) creates a
 
 [Conventional architecture of search engines](https://ipfs.io/ipfs/QmeS4LjoL1iMNRGuyYSx78RAtubTT2bioSGnsvoaupcHR6) there one entity process and rank all the shit suffers from one hard but the particular problem that still has not been solved even by brilliant Google scientists: [adversarial examples problem](https://ipfs.io/ipfs/QmNrAFz34SLqkzhSg4wAYYJeokfJU5hBEpkT4hPRi226y9). The problem Google acknowledge is that it is rather hard to algorithmically reason either this particular sample is adversarial or not independently on how cool the learning technology is. Obviously, a cryptoeconomic approach can change beneficiaries in this game effectively removing possible sybil attack vectors and removing the necessity to make a decision on example crawling and meaning extraction from one entity to the whole world. Learning sybil-resistant model will probably lead to orders of magnitude more predictive results.
 
-## Cyber protocol at `euler`
+## Cyber protocol at `cyber`
 
-- compute `euler` inception of cyber protocol based on the Genesis distribution rules
+- compute `cyber` inception of cyber protocol based on the Genesis distribution rules
 - def knowledge graph state
 - take cyberlinks
 - check the validity of signatures
@@ -82,7 +82,7 @@ Using content addresses for building a knowledge graph we get [so much needed](h
 
 Web3 agents generate our knowledge graph. Web3 agents include itself to the knowledge graph by transacting only once. Thereby they prove the existence of private keys for content addresses of revealed public keys. Using this basic proof mechanics consensus computer could have provable differentiation between subjects and objects in a knowledge grapth.
 
-Our `euler` implementation is based on [`cosmos-sdk`](https://github.com/cosmos/cosmos-sdk) identities and [cidv0](https://github.com/multiformats/cid#cidv0) content addresses.
+Our `cyber` implementation is based on [`cosmos-sdk`](https://github.com/cosmos/cosmos-sdk) identities and [cidv0](https://github.com/multiformats/cid#cidv0) content addresses.
 
 Web 3 agents generate knowledge graph by applying cyberlinks.
 
@@ -121,7 +121,7 @@ Also using the following link: `QmNedUe2wktW65xXxWqcR8EWWssHVMXm3Ly4GKiRRSEBkn` 
 
 If web3 agents expand native IPFS links with something semantically richer as [DURA](https://github.com/cybercongress/cyb/blob/master/docs/dura.md) links than web3 agents can easier reach consensus on the rules for program execution. Indeed, DURA protocol is a proper implementation of a cyberlinks concept.
 
-`euler` implementation of cyberlinks based on DURA specification is available in `.cyber` app of browser `cyb`.
+`cyber` implementation of cyberlinks based on DURA specification is available in `.cyber` app of browser `cyb`.
 
 Based on cyberlinks we can compute the relevance of subjects and objects in a knowledge graph. That is why we need a consensus computer.
 
@@ -151,7 +151,7 @@ However, this theory can work as a performance indicator of a consensus computer
 
 Tendermint is the following
 
-The `euler` implementation is a 64-bit consensus computer of the relevance for 64-byte string space that is as far from ideal at least as 1/146, because we have 146 validators who verify the same computation using the knowledge graph of the same size.
+The `cyber` implementation is a 64-bit consensus computer of the relevance for 64-byte string space that is as far from ideal at least as 1/146, because we have 146 validators who verify the same computation using the knowledge graph of the same size.
 
 We must bind computational, storage and bandwidth supply of relevance machine with maximized demand of queries. Computation and storage in case of basic relevance machine can be easily predicted based on bandwidth, but bandwidth requires a limiting mechanism.
 
@@ -203,7 +203,7 @@ Also, one useful property of relevance machine is that it needs to store neither
 
 So relevance machine can implement [aggressive pruning strategies](QmP81EcuNDZHQutvdcDjbQEqiTYUzU315aYaTyrVj6gtJb) such as pruning all history of knowledge graph formation or forgetting links that become non-relevant.
 
-`euler` implementation of relevance machine is based on the most straightforward mechanism which is called cyber•Rank.
+`cyber` implementation of relevance machine is based on the most straightforward mechanism which is called cyber•Rank.
 
 ## cyber•Rank
 
@@ -335,7 +335,7 @@ Using this type of proof any two [IBC compatible](https://ipfs.io/ipfs/QmdCeixQU
 
 ![rm-network.png](https://ipfs.io/ipfs/QmdfgdkaU8CKXD7ow983vZ2LjJjz8Um9JA5buwQ1aaXT6Q)
 
-In our relevance for commons `euler` implementation proof of relevance root hash is computed on Cuda GPUs every round.
+In our relevance for commons `cyber` implementation proof of relevance root hash is computed on Cuda GPUs every round.
 
 ## Speed and scalability
 
@@ -493,7 +493,7 @@ _Private cyberlinks_. Privacy is foundational. While we are committed to privacy
 
 ## Conclusion
 
-We define and implement a protocol for provable communications of consensus computers on relevance. The protocol is based on a simple idea of content defined knowledge graphs which are generated by web3 agents using cyberlinks. Cyberlinks are processed by a consensus computer using a concept we call relevance machine. `euler` consensus computer is based on `CIDv0` and uses `go-ipfs` and `cosmos-sdk` as a foundation. IPFS provide significant benefits regarding resources consumption. CIDv0 as primary objects are robust in its simplicity. For every CIDv0 cyber•rank is computed by a consensus computer with no single point of failure. Cyber•rank is CYB weighted PageRank with economic protection from sybil attacks and selfish voting. Every round merkle root of the rank tree is published so every computer can prove to any computer a relevance value for a given CID. Sybil resistance is based on bandwidth limiting. Embedded ability to execute programs offer inspiring apps. Starting primary goal is indexing of peer-to-peer systems with self-authenticated data either stateless, such as IPFS, Swarm, DAT, Git, BitTorrent, or stateful such as Bitcoin, Ethereum and other blockchains and tangles. Proposed semantics of linking offers a robust mechanism for predicting meaningful relations between objects by a consensus computer itself. The source code of a relevance machine is open source. Every bit of data accumulated by a consensus computer is available for everybody if the one has resources to process it. The performance of proposed software implementation is sufficient for seamless user interactions. Scalability of proposed implementation is enough to index all self-authenticated data that exist today and serve it to millions of web3 agents. The blockchain is managed by a decentralized autonomous organization which functions under Tendermint consensus algorithm with standard governance module. Thought a system provide necessary utility to offer an alternative for conventional search engines it is not limited to this use case either. The system is extendable for numerous applications and, e.g. makes it possible to design economically rational self-owned robots that can autonomously understand objects around them.
+We define and implement a protocol for provable communications of consensus computers on relevance. The protocol is based on a simple idea of content defined knowledge graphs which are generated by web3 agents using cyberlinks. Cyberlinks are processed by a consensus computer using a concept we call relevance machine. `cyber` consensus computer is based on `CIDv0` and uses `go-ipfs` and `cosmos-sdk` as a foundation. IPFS provide significant benefits regarding resources consumption. CIDv0 as primary objects are robust in its simplicity. For every CIDv0 cyber•rank is computed by a consensus computer with no single point of failure. Cyber•rank is CYB weighted PageRank with economic protection from sybil attacks and selfish voting. Every round merkle root of the rank tree is published so every computer can prove to any computer a relevance value for a given CID. Sybil resistance is based on bandwidth limiting. Embedded ability to execute programs offer inspiring apps. Starting primary goal is indexing of peer-to-peer systems with self-authenticated data either stateless, such as IPFS, Swarm, DAT, Git, BitTorrent, or stateful such as Bitcoin, Ethereum and other blockchains and tangles. Proposed semantics of linking offers a robust mechanism for predicting meaningful relations between objects by a consensus computer itself. The source code of a relevance machine is open source. Every bit of data accumulated by a consensus computer is available for everybody if the one has resources to process it. The performance of proposed software implementation is sufficient for seamless user interactions. Scalability of proposed implementation is enough to index all self-authenticated data that exist today and serve it to millions of web3 agents. The blockchain is managed by a decentralized autonomous organization which functions under Tendermint consensus algorithm with standard governance module. Thought a system provide necessary utility to offer an alternative for conventional search engines it is not limited to this use case either. The system is extendable for numerous applications and, e.g. makes it possible to design economically rational self-owned robots that can autonomously understand objects around them.
 
 ## References
 
