@@ -475,9 +475,7 @@ This is sure not the exhaustive list of possible applications but very exciting,
 
 ## Apps on top of knowledge graph
 
-https://medium.com/@karpathy/software-2-0-a64152b37c35
-
-Our approach to the economics of consensus computer is that users buy an amount of RAM, CPU, and GPU as they want to execute programs. OpenCypher or GraphQL like language can be provided to explore semantics of the knowledge graph. The following list is simple programs we can envision that can be built on top of simple relevance machine with support of onchain WASM-like VM.
+Our approach to the economics of consensus computer is that users buy an amount of RAM, CPU, and GPU as they want to execute programs. OpenCypher or GraphQL like language can be provided to explore semantics of the knowledge graph. The following list is simple programs [we can envision](https://medium.com/@karpathy/software-2-0-a64152b37c35) that can be built on top of simple relevance machine with support of onchain WASM-like VM.
 
 _Self prediction_. A consensus computer can continuously build a knowledge graph by itself predicting the existence of cyberlinks and applying these predictions to a state of itself. Hence a consensus computer can participate in the economic consensus of the cyber protocol.
 
@@ -530,3 +528,4 @@ We define and implement a protocol for provable communications of consensus comp
 - [Coda](https://ipfs.io/ipfs/Qmdje3AmtsfjX9edWAxo3LFhV9CTAXoUvwGR7wHJXnc2Gk)
 - [Mimblewimble](https://ipfs.io/ipfs/Qmd99xmraYip9cVv8gRMy6Y97Bkij8qUYArGDME7CzFasg)
 - [Tezos](https://ipfs.io/ipfs/QmdSQ1AGTizWjSRaVLJ8Bw9j1xi6CGLptNUcUodBwCkKNS)
+- [Software 2.0](https://medium.com/@karpathy/software-2-0-a64152b37c35)
