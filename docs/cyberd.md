@@ -15,8 +15,8 @@
   - [In-browser implementation](#in-browser-implementation)
   - [Philosophical approach toward distribution](#philosophical-approach-toward-distribution)
   - [Pre-genesis](#pre-genesis)
-  - [Genesis](#genesis)
-  - [Post-genesis](#post-genesis)
+  - [Genesis and Game of Thrones](#genesis-and-game-of-thrones)
+  - [Post-genesis and cyber•Auction](#post-genesis-and-cyberauction)
   - [Role of ATOMs](#role-of-atoms)
   - [Applications of knowledge graph](#applications-of-knowledge-graph)
   - [Apps on top of knowledge graph](#apps-on-top-of-knowledge-graph)
@@ -387,7 +387,7 @@ Only 2 distribution events happens happens prior to Genesis:
 - 600 000 000 000 000 THC is allocated to cyber•Auction contract
 2. At the start of `euler-5` donation round in ATOMs started. Purpose of this round is to involve real validators at a genesis. 5% of CYB will be allocated to participants of this donation round.
 
-## Genesis
+## Genesis and Game of Thrones
 
 Genesis of `cyber` protocol will contains 1 000 000 000 000 000 CYB (One Quadrillion CYB) broken down as follows:
 -  50 000 000 000 000 CYB as drop for all ATOM stakeholders
@@ -402,7 +402,7 @@ Game of Thrones - is a game between ATOM and ETH holders for being the greatest.
 
 We can describe the discount in the following terms: Currently buying power of all ATOMs against all ETHs based on current caps is about 1/24. Given that 10% of CYB will be distributed based on donation in ATOMs and 10% of CYB will be distributed based on donations in ETHs the discount for every ATOM donation during Game of Thrones is about 24x which is significant enough to encourage participation based on arbitrage opportunity during the first 21 days of Genesis auction and stimulate the price of ATOMs as appreciation for all cosmic community.
 
-## Post-genesis
+## Post-genesis and cyber•Auction
 
 Post Genesis stage called cyber•Auction starts after the end of the Game of Thrones and lasts 600 rounds 23 hours each. During this phase CYBs are continuously distributed based on locked THC bough in continuous auction.
 
