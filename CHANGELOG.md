@@ -10,12 +10,15 @@
 
 **Closed issues:**
 
+- New distribution [\#316](https://github.com/cybercongress/cyberd/issues/316)
 - Cyberadmin telegram-bot for cyberd [\#281](https://github.com/cybercongress/cyberd/issues/281)
 - Slow node start-up. [\#138](https://github.com/cybercongress/cyberd/issues/138)
 
 **Merged pull requests:**
 
 - update run\_validator [\#325](https://github.com/cybercongress/cyberd/pull/325) ([wimel](https://github.com/wimel))
+- Some Dan's fixes [\#323](https://github.com/cybercongress/cyberd/pull/323) ([marzipanstar](https://github.com/marzipanstar))
+- Proposal of the new distribution [\#322](https://github.com/cybercongress/cyberd/pull/322) ([xhipster](https://github.com/xhipster))
 - Add goveralls support for test coverage [\#305](https://github.com/cybercongress/cyberd/pull/305) ([arturalbov](https://github.com/arturalbov))
 
 ## [v0.1.4](https://github.com/cybercongress/cyberd/tree/v0.1.4) (2019-03-15)
