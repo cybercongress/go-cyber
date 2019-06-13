@@ -15,6 +15,7 @@
 
 **Merged pull requests:**
 
+- update run\_validator [\#325](https://github.com/cybercongress/cyberd/pull/325) ([wimel](https://github.com/wimel))
 - Add goveralls support for test coverage [\#305](https://github.com/cybercongress/cyberd/pull/305) ([arturalbov](https://github.com/arturalbov))
 
 ## [v0.1.4](https://github.com/cybercongress/cyberd/tree/v0.1.4) (2019-03-15)
