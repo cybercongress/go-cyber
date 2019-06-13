@@ -1,29 +1,3 @@
-<!-- TOC START min:1 max:3 link:true asterisk:false update:true -->
-- [cyberd: Computing the knowledge from web3](#cyberd-computing-the-knowledge-from-web3)
-  - [Abstract](#abstract)
-  - [Introduction to web3](#introduction-to-web3)
-  - [On adversarial examples problem](#on-adversarial-examples-problem)
-  - [Cyber protocol at `cyber`](#cyber-protocol-at-cyber)
-  - [Knowledge graph](#knowledge-graph)
-  - [Cyberlinks](#cyberlinks)
-  - [Notion of consensus computer](#notion-of-consensus-computer)
-  - [Bandwidth](#bandwidth)
-  - [Relevance machine](#relevance-machine)
-  - [cyber•Rank](#cyberrank)
-  - [Proof of relevance](#proof-of-relevance)
-  - [Speed and scalability](#speed-and-scalability)
-  - [In-browser implementation](#in-browser-implementation)
-  - [Philosophical approach toward distribution](#philosophical-approach-toward-distribution)
-  - [Pre-genesis](#pre-genesis)
-  - [Genesis and Game of Thrones](#genesis-and-game-of-thrones)
-  - [Post-genesis and cyber•Auction](#post-genesis-and-cyberauction)
-  - [Role of ATOMs](#role-of-atoms)
-  - [Applications of knowledge graph](#applications-of-knowledge-graph)
-  - [Apps on top of knowledge graph](#apps-on-top-of-knowledge-graph)
-  - [Conclusion](#conclusion)
-  - [References](#references)
-<!-- TOC END -->
-
 # cyberd: Computing the knowledge from web3
 
 Notes on [`cyber`](https://github.com/cybercongress/cyberd/releases/tag/v0.1.0) release of `cyber://` protocol [reference implementation](https://github.com/cybercongress/cyberd) using Go.
