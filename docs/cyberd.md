@@ -29,7 +29,7 @@ The emergence of a [web3 stack](https://github.com/w3f/Web3-wiki/wiki) creates a
 - check bandwidth limit
 - check the validity of CIDv0
 - if signatures, bandwidth limit, and CIDv0 are valid than cyberlink is valid
-- every round calculate cyber•rank deltas for the knowledge graph and distribute CYB
+- every round calculate cyber•rank deltas for the knowledge graph
 
 ## Knowledge graph
 
@@ -131,7 +131,7 @@ We must bind computational, storage and bandwidth supply of relevance machine wi
 
 ## Bandwidth
 
-`Bounded stake` - stake, that deducted from your acc coins and put as depositto take part in consensus. Due to passive inflation model and slashing, deposit not match 1-to-1 to final reward. So, for example, stakeholders may wish to set up a script, that will periodically withdraw and rebound rewards to increase their bounded stake. `Active stake` - currently available for direct transfer, not-bounded stake.
+`Bounded stake` - stake, that deducted from your acc coins and put as deposit to take part in consensus. Due to passive inflation model and slashing, deposit not match 1-to-1 to final reward. So, for example, stakeholders may wish to set up a script, that will periodically withdraw and rebound rewards to increase their bounded stake. `Active stake` - currently available for direct transfer, not-bounded stake.
 
 `Bandwidth stake` = `active stake + bounded stake`.
 
@@ -173,7 +173,7 @@ Also, thanks to content addressing the relevance machine following the blackbox 
 
 Human intelligence organized in a way to prune none-relevant and none-important memories with time has passed. The same way can do relevance machine.
 
-Also, one useful property of relevance machine is that it needs to store neither past state nor full current state to remain useful, or more precisely: _relevant_.
+Also, one useful property of relevance machine is that it needs to store neither past state, nor full current state to remain useful, or more precisely: _relevant_.
 
 So relevance machine can implement [aggressive pruning strategies](QmP81EcuNDZHQutvdcDjbQEqiTYUzU315aYaTyrVj6gtJb) such as pruning all history of knowledge graph formation or forgetting links that become non-relevant.
 
@@ -367,9 +367,11 @@ Only 2 distribution events happens happens prior to Genesis:
 - 100 000 000 000 000 THC is allocated to cyber•Congress
 - 600 000 000 000 000 THC is allocated to cyber•Auction contract
 
-2. At the start of `euler-5` donation round in ATOMs started. Purpose of this round is to involve real validators at a genesis. 5% of CYB will be allocated to participants of this donation round.
+2. 4 July 2019 donation round in ATOMs will be started for validators who want participate in the Genesis of the network. Purpose of this round is to involve real validators at a genesis. 5% of CYB will be allocated to participants of this donation round in Genesis.
 
 ## Genesis and Game of Thrones
+
+Genesis of the network and contracts for Game of Thrones will be launched at 04 September 2019
 
 Genesis of `cyber` protocol will contains 1 000 000 000 000 000 CYB (One Quadrillion CYB) broken down as follows:
 
@@ -414,10 +416,9 @@ All ATOM donations goes to cyber•Congress multisig. The role of ATOM donations
 
 ## Roadmap
 
-We forssee the demand for the following features community could work on after launch
+We foresee the demand for the following features community could work on after launch:
 
 - Parametrization
-- KV
 - IBC
 - WASM VM
 - Onchain upgrades
