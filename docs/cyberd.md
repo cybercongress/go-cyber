@@ -1,29 +1,3 @@
-<!-- TOC START min:1 max:3 link:true asterisk:false update:true -->
-- [cyberd: Computing the knowledge from web3](#cyberd-computing-the-knowledge-from-web3)
-  - [Abstract](#abstract)
-  - [Introduction to web3](#introduction-to-web3)
-  - [On adversarial examples problem](#on-adversarial-examples-problem)
-  - [Cyber protocol at `cyber`](#cyber-protocol-at-cyber)
-  - [Knowledge graph](#knowledge-graph)
-  - [Cyberlinks](#cyberlinks)
-  - [Notion of consensus computer](#notion-of-consensus-computer)
-  - [Bandwidth](#bandwidth)
-  - [Relevance machine](#relevance-machine)
-  - [cyber•Rank](#cyberrank)
-  - [Proof of relevance](#proof-of-relevance)
-  - [Speed and scalability](#speed-and-scalability)
-  - [In-browser implementation](#in-browser-implementation)
-  - [Philosophical approach toward distribution](#philosophical-approach-toward-distribution)
-  - [Pre-genesis](#pre-genesis)
-  - [Genesis and Game of Thrones](#genesis-and-game-of-thrones)
-  - [Post-genesis and cyber•Auction](#post-genesis-and-cyberauction)
-  - [Role of ATOMs](#role-of-atoms)
-  - [Applications of knowledge graph](#applications-of-knowledge-graph)
-  - [Apps on top of knowledge graph](#apps-on-top-of-knowledge-graph)
-  - [Conclusion](#conclusion)
-  - [References](#references)
-<!-- TOC END -->
-
 # cyberd: Computing the knowledge from web3
 
 Notes on [`cyber`](https://github.com/cybercongress/cyberd/releases/tag/v0.1.0) release of `cyber://` protocol [reference implementation](https://github.com/cybercongress/cyberd) using Go.
@@ -149,9 +123,9 @@ Hence we will not be able to achieve an ideal consensus computer ever. CAP theor
 
 However, this theory can work as a performance indicator of a consensus computer.
 
-Tendermint is the following
+After 6 years of investments into consensus systems we find out that Tendermint consensus has a good balance between coolness for our task and readiness for production. So we decide to implement cyber protocol using Tendermint which is very close to Cosmos Hub setting.
 
-The `cyber` implementation is a 64-bit consensus computer of the relevance for 64-byte string space that is as far from ideal at least as 1/146, because we have 146 validators who verify the same computation using the knowledge graph of the same size.
+So the `cyber` implementation is a 64-bit tendermint consensus computer of the relevance for 64-byte string space that is as far from ideal at least as 1/146, because we have 146 validators who verify the same computation using the knowledge graph of the same size.
 
 We must bind computational, storage and bandwidth supply of relevance machine with maximized demand of queries. Computation and storage in case of basic relevance machine can be easily predicted based on bandwidth, but bandwidth requires a limiting mechanism.
 
@@ -356,47 +330,54 @@ We wanted to imagine how that could work in a web3 browser. To our disappointmen
 ## Philosophical approach toward distribution
 
 While designing the initial distribution structure for Cyber protocol we aimed to achieve the following goals:
+
 - Develop provable and transparent distribution in accordance with best industry practices
 - Allow equal participation irrespectively of political, regulatory or any other restrictions which may be imposed by outside agents
 - Prevent attacks on privacy such as instalment of KYC requirements
 - Spread distribution in time to grant equal access to all agents to initial distribution without any limitations such as hard caps or any other restrictions
 - Honour genesis Cosmos investors for development of technology which made possible simplified development of Cyber protocol
 - Attract the most professional validators from Cosmos ecosystem for bootstrapping the network
-- Allow easy early access for active users of Ethereum ecosystem in order to accelerate growth of the Knowledge graph
+- Allow easy early access for active users of Ethereum ecosystem in order to accelerate growth of the Knowledge graph and solve chicken and egg problem
 - Decentralize management of auction donations starting from day 0
 - Honour 30 months of cyber•Congress R&D and community behind it
 
-The goal of creating alternative to a Google-like structure requires extraordinary effort of different groups. Create fund managed via decentralized engine such as Aragon DAO filled with ETH and managed by agents who participated in initial distribution. This approach will allows to safeguard from excessive market dumping of native platform CYB tokens in the first years of work, whereby ensuring stable development. Additionally this allows to diversify underlying platform and migrate from Cosmos to other engines should the need arise.
+The goal of creating alternative to a Google-like structure requires extraordinary effort of different groups. So we decide to setup cyber•Foundation as a fund managed via decentralized engine such as Aragon DAO filled with ETH and managed by agents who participated in initial distribution. This approach will allows to safeguard from excessive market dumping of native platform CYB tokens in the first years of work, whereby ensuring stable development. Additionally this allows to diversify underlying platform and extend the protocol to other consensus computing architecture should the need arise.
 
-While choosing token for donations we followed three main criteria: the token must be (1) one of the most liquid, (2) the most promising, so a community can secure a solid investment bag for be competitive even comparing to giants like Google and (3) have technical ability to execute auction and resulting organization without relying on any third party. So the only system matches this criteria is Ethereum, hence the primary token of donations will be ETH. That is why we decide to create 2 tokens: THC and CYB:
-- THC is a creative cyber proto substance. THC being an Ethereum ERC-20 compatible token have utility value in form of control cyber•Foundation (Aragon DAO) ETH from auction proceeds. THC was emitted during the creation of cyber•Foundation as Aragon organization. 90% of CBD distributed to auction participants. Creative power of THC came from ability to receive 1 CYB per each 1 THC for locking it during cyber•Auction.
+While choosing token for donations we followed three main criteria: the token must be (1) one of the most liquid, (2) the most promising, so a community can secure a solid investment bag to be competitive even comparing to giants like Google and (3) have technical ability to execute auction and resulting organization without relying on any third party. So the only system matches this criteria is Ethereum, hence the primary token of donations will be ETH. That is why we decide to create 2 tokens: THC and CYB:
+
+- THC is a creative cyber proto substance. THC being an Ethereum ERC-20 compatible token have utility value in form of control cyber•Foundation (Aragon DAO) ETH from auction proceeds. THC was emitted during the creation of cyber•Foundation as Aragon organization. Creative power of THC came from ability to receive 1 CYB per each 1 THC for locking it during Game of Thrones and cyber•Auction.
 - CYB is native token of sovereign Cyber protocol under Tendermint consensus algorithm. It's also has 2 primary uses: (1) is a staking for consensus and (2) is bandwidth limiting for submitting links and computing the rank.
 
 Both tokens remains functional and will track value independently due to very different utility nature.
 
 Initial distribution happens in a 3 different by nature and goals epochs and is spread in time for almost 2 years:
-1. Pre-genesis: 5% CYB auction for ATOM holders is needed to launch cyber protocol on top of
-2. Genesis: Launch of main net and Game of Thrones: needed to involve the most active Ethereum and Cosmos crypto players into an engaging game with ability to fully understand and test a software using real network and incentives. Game of Thrones is a kind of distribution game with some discount for attraction of necessary critical mass in order to make possible of learning the early knowledge graph by the most intelligent community.
+
+1. Pre-genesis: 5% CYB auction for ATOM holders is needed to launch cyber protocol in a decentralized fashion with independent genesis validators
+
+2. Genesis: Launch of main net and Game of Thrones lasts for 21 day: needed to involve the most active Ethereum and Cosmos crypto players into an engaging game with ability to fully understand and test a software using real network and incentives. Game of Thrones is a kind of distribution game with some discount for attraction of necessary critical mass in order to make possible of learning the early knowledge graph by the most intelligent community.
+
 3. Post Genesis: Continuous distribution of CYB based on cyber•Auction proceeds: needed in order to involve into initial distribution existing crypto community and beyond.
 
 ## Pre-genesis
 
 Only 2 distribution events happens happens prior to Genesis:
+
 1. 700 000 000 000 000 THC tokens are minted by cyber•Foundation. Allocations of THC tokens is the following:
+
 - 100 000 000 000 000 THC is allocated to cyber•Congress
 - 600 000 000 000 000 THC is allocated to cyber•Auction contract
+
 2. At the start of `euler-5` donation round in ATOMs started. Purpose of this round is to involve real validators at a genesis. 5% of CYB will be allocated to participants of this donation round.
 
 ## Genesis and Game of Thrones
 
 Genesis of `cyber` protocol will contains 1 000 000 000 000 000 CYB (One Quadrillion CYB) broken down as follows:
--  50 000 000 000 000 CYB as drop for all ATOM stakeholders
+
+- 600 000 000 000 000 CYB under multisig managed by cyberCongress for manual distributions during cyber•Auction for those who stake THC until the end of cyber•Auction
+- 200 000 000 000 000 CYB under multisig managed by cyberCongress: the Game of Thrones for ATOM and ETH holders, 100 TCYB for each.
 - 100 000 000 000 000 CYB for top 80% ETH holders by stake excluding contracts
--  50 000 000 000 000 CYB for pre-genesis contributors in ATOMs
-- 100 000 000 000 000 CYB for THC holders at Genesis
-- 100 000 000 000 000 CYB under multisig managed by cyberCongress for manual distribution after Game of Thrones for ATOM donors
-- 100 000 000 000 000 CYB under multisig managed by cyberCongress for manual distribution after Game of Thrones for those who stake THC until the end of cyber•Auction
-- 500 000 000 000 000 CYB under multisig managed by cyberCongress for manual distributions during cyber•Auction for those who stake THC until the end of cyber•Auction
+-  50 000 000 000 000 CYB as drop for all ATOM stakeholders
+-  50 000 000 000 000 CYB for pre-genesis contributors in ATOM
 
 Game of Thrones - is a game between ATOM and ETH holders for being the greatest. As a result of 21 day auction after Genesis every community earn 10% of CYB. In order to make the game run smoothly we concisely adding arbitrage opportunity in the form of significant discount to ATOM holders, because the system needs provably professional validators and delegators at the beginning and basically for free.
 
@@ -407,6 +388,7 @@ We can describe the discount in the following terms: Currently buying power of a
 Post Genesis stage called cyber•Auction starts after the end of the Game of Thrones and lasts 600 rounds 23 hours each. During this phase CYBs are continuously distributed based on locked THC bough in continuous auction.
 
 The role of cyber•Auction is twofold:
+
 - It creates non-exlusive long lasting and provable game of initial distribution without necessity to spend energy on proof of work. It is crucial that early knowledge graph were created in some sense fairly by engaged community which was formed during a non-exclusive game.
 - As a result of auction community will has access to all raised resources under Aragon organisation. We believe in a true decentralized nature of the thing we created so we do not want to grab all the money from the funding as we already funded the creation of the system ourselves and we kindly ask fair 10% CYB cut for pre-genesis investors, founders and developers. Competing with Google is challenging and will be more viable if community will sits on the bag of ever-growing ETH. Given current growth rate of ETH this bag can be very compelling in some years after launch. Also this bag can be the source of alternative implementation of the protocol if Cosmos based system will fail, or in the cased the community just want to diversify technology involved, e.g. ETH2, Polkadot or whatever.
 
@@ -417,16 +399,29 @@ After Genesis inflation adjusted using `TokensPerBlock` parameter. Given that th
 There is no currently such thing as maximum amount of CYB due to continuous inflation paid to validators. Currently CYB is implemented using 64int so creation of more CYB make significantly more expensive compute state changes and rank. We expect that lifetime monetary strategy must be established by governance system after complete initial distribution of CYB and activation of smart contract functionality.
 
 The following rules apply for CYBs under cyber•Auction multisig:
+
 - will not delegate its stake and as result will remain as passive stake until become distributed
 - after the end of cyber•Auction all remaining CYBs will be provably burned
 
 ## Role of ATOMs
 
 Overall 15% of CYB will be distributed based on donations in ATOMs during 2 rounds:
+
 -  50 000 000 000 000 CYB for genesis ATOM contributors
 - 100 000 000 000 000 CYB for ATOM contributors at the start of Smith Epoch
 
 All ATOM donations goes to cyber•Congress multisig. The role of ATOM donations is the following: thanks to ATOM we want to secure lifetime commitment of cyber•Congress in the development of Cosmos and Cyber ecosystems. ATOM donations to cyber•Congress will allow us to use staking rewards for continuous funding of the Cyber protocol without necessity to dump CYBs
+
+## Roadmap
+
+We forssee the demand for the following features community could work on after launch
+
+- Parametrization
+- KV
+- IBC
+- WASM VM
+- Onchain upgrades
+- CUDA VM
 
 ## Applications of knowledge graph
 
@@ -519,7 +514,6 @@ We define and implement a protocol for provable communications of consensus comp
 - [Tendermint](https://ipfs.io/ipfs/QmaMtD7xDgghqgjN62zWZ5TBGFiEjGQtuZBjJ9sMh816KJ)
 - [Comparison of web3 browsers](https://github.com/cybercongress/cyb/blob/master/docs/comparison.md)
 - [Cyb](https://github.com/cybercongress/cyb/blob/master/docs/cyb.md)
-- [CBD](https://etherscan.io/token/0x136c1121f21c29415D8cd71F8Bb140C7fF187033)
 - [cyberFoundation in Aragon](https://mainnet.aragon.org/#/cyberfoundation.aragonid.eth/0xf4d85b5a1650a335b30072d178f6dcb611f05a3e)
 - [How to become validator in cyber protocol](/docs/how_to_become_validator.md)
 - [Top 10000 english words](https://github.com/first20hours/google-10000-english)
