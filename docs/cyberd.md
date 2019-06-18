@@ -327,6 +327,8 @@ We wanted to imagine how that could work in a web3 browser. To our disappointmen
 
 ![search-results](https://ipfs.io/ipfs/QmSSyqEqh9oSC4voDDYwEAuQczeJCyRfsx4gqecSyTcVWs)
 
+As another good example, we created Chrome extension that allow anybody to pin any web page to ipfs and index it by the any keywords, thus make it searchable.
+
 ## Philosophical approach toward distribution
 
 While designing the initial distribution structure for Cyber protocol we aimed to achieve the following goals:
@@ -367,7 +369,7 @@ Only 2 distribution events happens happens prior to Genesis:
 - 100 000 000 000 000 THC is allocated to cyber•Congress
 - 600 000 000 000 000 THC is allocated to cyber•Auction contract
 
-2. 4 July 2019 donation round in ATOMs will be started for validators who want participate in the Genesis of the network. Purpose of this round is to involve real validators at a genesis. 5% of CYB will be allocated to participants of this donation round in Genesis.
+2. 4 July 2019 donation round in ATOMs will be started for validators who want participate in the Genesis of the network. This round is necessary because the network must be started by independent validators. 5% of CYB will be allocated to participants of this donation round in Genesis.
 
 ## Genesis and Game of Thrones
 
