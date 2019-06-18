@@ -335,7 +335,7 @@ While designing the initial distribution structure for Cyber protocol we aimed t
 
 - Develop provable and transparent distribution in accordance with best industry practices
 - Allow equal participation irrespectively of political, regulatory or any other restrictions which may be imposed by outside agents
-- Prevent attacks on privacy such as instalment of KYC requirements
+- Prevent attacks on privacy such as installment of KYC requirements
 - Spread distribution in time to grant equal access to all agents to initial distribution without any limitations such as hard caps or any other restrictions
 - Honour genesis Cosmos investors for development of technology which made possible simplified development of Cyber protocol
 - Attract the most professional validators from Cosmos ecosystem for bootstrapping the network
@@ -369,7 +369,7 @@ Only 2 distribution events happens happens prior to Genesis:
 - 100 000 000 000 000 THC is allocated to cyber•Congress
 - 600 000 000 000 000 THC is allocated to cyber•Auction contract
 
-2. 4 July 2019 donation round in ATOMs will be started for validators who want participate in the Genesis of the network. This round is necessary because the network must be started by independent validators. 5% of CYB will be allocated to participants of this donation round in Genesis.
+2. 4 July 2019 donation round in ATOMs will be started for validators who want participate in the Genesis of the network. The round will be limited with either 21 days or 100000 ATOMs. All excess ATOMs will be counted as Game of Thrones contribution. This round is necessary because the network must be started by independent validators. 5% of CYB will be allocated to participants of this donation round in Genesis.
 
 ## Genesis and Game of Thrones
 
