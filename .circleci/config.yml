@@ -75,7 +75,7 @@ jobs:
             cp ~/build/CHANGELOG.md ./site/content/docs/cyberd/Changelog.md
             cp ~/build/CONTRIBUTING.md ./site/content/docs/cyberd/Contributing.md
             git add -N site/content/docs/cyberd
-            diff=$(git site/content/docs/cyberd/)
+            diff=$(git diff site/content/docs/cyberd/)
             if [[  -n  "$diff" ]]; then
               git config user.email "cybercongress42@gmail.com"
               git config user.name "Cyber Admin"
