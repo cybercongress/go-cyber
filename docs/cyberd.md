@@ -6,15 +6,15 @@ Notes on [`cyber`](https://github.com/cybercongress/cyberd/releases/tag/v0.1.0) 
 
 ## Abstract
 
-A consensus computer allows computing of provably relevant answers without opinionated blackbox intermediaries such as Google, Youtube, Amazon or Facebook. Stateless content-addressable peer-to-peer communication networks such as IPFS and stateful consensus computers such as Ethereum provide part of the solution, but there are at least three problems associated with implementation. Of course, the first problem is the subjective nature of relevance. The second problem is that it is hard to scale consensus computer for a huge knowledge graph. The third problem is that the quality of such a knowledge graph will suffer from different attack surfaces such as sybil, selfish behaviour of interacting agents. In this paper, we (1) define a protocol for provable consensus computing of relevance between IPFS objects based on Tendermint consensus of cyber•rank computed on GPU, (2) discuss implementation details and (3) design distribution and incentive scheme based on our experience. We believe the minimalistic architecture of the protocol is critical for the formation of a network of domain-specific knowledge consensus computers. As a result of our work some applications never existed before emerge. We expand the work including our vision on features we expect to work up to Genesis.
+A consensus computer allows computing of provably relevant answers without opinionated blackbox intermediaries such as Google, Youtube, Amazon or Facebook. Stateless content-addressable peer-to-peer communication networks such as IPFS and stateful consensus computers such as Ethereum provide part of the solution, but there are at least three problems associated with implementation. Of course, the first problem is the subjective nature of relevance. The second problem is that it is hard to scale consensus computer for a huge knowledge graph. The third problem is that the quality of such a knowledge graph will suffer from different attack surfaces such as sybil, selfish behaviour of interacting agents. In this paper, we (1) define a protocol for provable consensus computing of relevance between IPFS objects based on Tendermint consensus of cyber•rank computed on GPU, (2) discuss implementation details and (3) design distribution and incentive scheme based on our experience. We believe the minimalistic architecture of the protocol is critical for the formation of a network of domain-specific knowledge consensus computers. As a result of our work some applications never existed before emerge. We expand the work with our "after Genesis vision" on features and apps.
 
 ## Introduction to web3
 
-Original protocols of the Internet such as TCP/IP, DNS, URL, and HTTPS brought a web into the point where it is now. Along with all the benefits they have created they brought more problem to the table. Globality being a vital property of the web since inception is under real threat. The speed of connections degrades with network grow and from ubiquitous government interventions into privacy and security of web users. One property, not evident in the beginning, become important with everyday usage of the Internet: its ability to exchange permanent hyperlinks thus they [would not break after time has passed](https://ipfs.io/ipfs/QmNhaUrhM7KcWzFYdBeyskoNyihrpHvUEBQnaddwPZigcN). Reliance on "one at a time ISP" architecture allows governments effectively censor packets. It is the last straw in a conventional web stack for every engineer who is concerned about the future of our children.
+Original protocols of the Internet such as TCP/IP, DNS, URL, and HTTPS brought a web into the point where it is now. Along with all the benefits they have created they brought more problem to the table. Globality being a vital property of the web since inception is under real threat. The speed of connections degrades with network grow and from ubiquitous government interventions into privacy and security of web users. One property, not evident in the beginning, become important with everyday usage of the Internet: it's ability to exchange permanent hyperlinks thus they [would not break after time has passed](https://ipfs.io/ipfs/QmNhaUrhM7KcWzFYdBeyskoNyihrpHvUEBQnaddwPZigcN). Reliance on "one at a time ISP" architecture allows governments effectively censor packets. It is the last straw in a conventional web stack for every engineer who is concerned about the future of our children.
 
 Other properties while being not so critical are very desirable: offline and real-time. Average internet user being offline must have the ability to work with the state it has and after acquiring connection being able to sync with global state and continue to verify state's validity in realtime while having a connection. Now, these properties offered on the app level while such properties must be integrated into lower level protocols.
 
-The emergence of a [web3 stack](https://github.com/w3f/Web3-wiki/wiki) creates an opportunity for a new kind of Internet. Community call it web3. We call it "The Great Web" as it is expected that some low level conventions must become immutable and not being changed for decades. e.g. immutable content links. It has a promise to remove problems of a conventional protocol stack and add to the web better speed and more accessible connection. However, as usual in a story with a new stack, new problems emerge. One of such problem is general-purpose search. Existing general-purpose search engines are restrictive centralized databases everybody forced to trust. These search engines were designed primarily for client-server architecture based on TCP/IP, DNS, URL and HTTPS protocols. Web3 creates a challenge and opportunity for a search engine based on developing technologies and specifically designed for them. Surprisingly the permission-less blockchain architecture itself allows organizing general purpose search engine in a way inaccessible for previous architectures.
+The emergence of a [web3 stack](https://ipfs.io/ipfs/Qmf3eHU9idMUZgx6MKhCsFPWL24X9pDUi2ECqyH8UtBAMQ) creates an opportunity for a new kind of Internet. Community call it web3. We call it "The Great Web" as it is expected that some low level conventions must become immutable and not being changed for decades. e.g. immutable content links. It has a promise to remove problems of a conventional protocol stack and add to the web better speed and more accessible connection. However, as usual in a story with a new stack, new problems emerge. One of such problem is general-purpose search. Existing general-purpose search engines are restrictive centralized databases everybody forced to trust. These search engines were designed primarily for client-server architecture based on TCP/IP, DNS, URL and HTTPS protocols. Web3 creates a challenge and opportunity for a search engine based on developing technologies and specifically designed for them. Surprisingly the permission-less blockchain architecture itself allows organizing general purpose search engine in a way inaccessible for previous architectures.
 
 ## On adversarial examples problem
 
@@ -33,7 +33,7 @@ The emergence of a [web3 stack](https://github.com/w3f/Web3-wiki/wiki) creates a
 
 ## Knowledge graph
 
-We represent a knowledge graph as a weighted graph of directed links between content addresses or content identifications or CIDs. In this paper, we will use them as synonyms.
+We represent a knowledge graph as a weighted graph of directed links between content addresses, or content identifications, or CIDs, or simply ipfs hashes. In this paper, we will use them as synonyms.
 
 ![knowledge_graph.png](https://ipfs.io/ipfs/QmejVRS9irYb6eXGDZNM9YEuFyb3a5jn4EWh3MRC3LVRij)
 
@@ -43,7 +43,7 @@ https://github.com/cosmos/cosmos/blob/master/WHITEPAPER.md
 ```
 we can use pretty much exact thing:
 ```
-Qme4z71Zea9xaXScUi6pbsuTKCCNFp5TAv8W5tjdfH7yuHhttps
+Qme4z71Zea9xaXScUi6pbsuTKCCNFp5TAv8W5tjdfH7yuH
 ```
 
 Using content addresses for building a knowledge graph we get [so much needed](https://steemit.com/web3/@hipster/an-idea-of-decentralized-search-for-web3-ce860d61defe5est) superpowers of [ipfs](https://ipfs.io/ipfs/QmV9tSDx9UiPeWExXEeH6aoDvmihvx6jD5eLb4jbTaKGps)-[like](https://ipfs.io/ipfs/QmXHGmfo4sjdHVW2MAxczAfs44RCpSeva2an4QvkzqYgfR) p2p protocols for a search engine:
@@ -56,48 +56,46 @@ Using content addresses for building a knowledge graph we get [so much needed](h
 
 Web3 agents generate our knowledge graph. Web3 agents include itself to the knowledge graph by transacting only once. Thereby they prove the existence of private keys for content addresses of revealed public keys. Using this basic proof mechanics consensus computer could have provable differentiation between subjects and objects in a knowledge grapth.
 
-Our `cyber` implementation is based on [`cosmos-sdk`](https://github.com/cosmos/cosmos-sdk) identities and [cidv0](https://github.com/multiformats/cid#cidv0) content addresses.
+Our `cyber` implementation is based on [`cosmos-sdk`](https://github.com/cosmos/cosmos-sdk) identities and [`cidv0`](https://github.com/multiformats/cid#cidv0) content addresses.
 
-Web 3 agents generate knowledge graph by applying cyberlinks.
+Web 3 agents generate knowledge graph by applying `cyberlinks`.
 
 ## Cyberlinks
 
-To understand cyberlinks, we need to understand the difference between URL link and IPFS link. URL link points to the location of content, but IPFS link point to the content itself. The difference in web architecture based on location links and content links is drastical, hence require new approaches.
+To understand cyberlinks, we need to understand the difference between `URL link` aka hyperlink and `IPFS link`. `URL link` points to the location of content, but `IPFS link` point to the content itself. The difference in web architecture based on location links and content links is drastical, hence require new approaches.
 
-Cyberlink is an approach to link two content addresses semantically:
-
-```
-QmdvsvrVqdkzx8HnowpXGLi88tXZDsoNrGhGvPvHBQB6sH.QmdSQ1AGTizWjSRaVLJ8Bw9j1xi6CGLptNUcUodBwCkKNS
-```
-
-This cyberlink means that cyberd presentation on cyberc0n is referencing Tezos whitepaper.
-
-A concept of cyberlink is a convention around simple semantics of communication format in any peer to peer network:
-
-`<content-address x>.<content-address y>`
-
-You can see that cyberlink represents a link between two links. Easy peasy!
-
-Cyberlink is a simple yet powerful semantic construction for building a predictive model of the universe.
-
-Cyberlinks can form link chains if exist a series of two cyberlinks from one agent in which the second link in the first cyberlink is equal to the first link in the second cyberlink:
+`Cyberlink` is an approach to link two content addresses or `IPFS links` semantically:
 
 ```
-<content-address x>.<content-address y>
-<content-address y>.<content-address z>
+QmdvsvrVqdkzx8HnowpXGLi88tXZDsoNrGhGvPvHBQB6sH.Qme4z71Zea9xaXScUi6pbsuTKCCNFp5TAv8W5tjdfH7yuH
+```
+
+This `cyberlink` means that cyberd presentation on cyberc0n is referencing Cosmos whitepaper. A concept of `cyberlink` is a convention around simple semantics of communication format in any peer to peer network:
+
+`<content-address x>.<content-address z>`
+
+You can see that `cyberlink` represents a link between two links. Easy peasy!
+
+Cyberlink is a simple yet powerful semantic construction for building a predictive model of the universe. That is, using `cyberlinks` instead of `hyperlinks` gives us superpowers inaccessible for previous architectures of general purpose search engines.
+
+Cyberlinks can be extended, e.g. can form link chains if exist a series of two cyberlinks from one agent in which the second link in the first cyberlink is equal to the first link in the second cyberlink:
+
+```
+<content-address x>.<content-address z>
+<content-address z>.<content-address z>
 ```
 
 Using this simple principle, all interacting agents can reach consensus around interpreting clauses. So link chains are helpful for interpreting rich communications around relevance.
 
 ![link_chains.png](https://ipfs.io/ipfs/QmNd15Pa1pzFVv98jmf1uuvPGLxRpptQMVoMidYkj1YvDC)
 
-Also using the following link: `QmNedUe2wktW65xXxWqcR8EWWssHVMXm3Ly4GKiRRSEBkn` the one can signal the start and stop of execution in the knowledge graph.
+Also using the following link: `QmNedUe2wktW65xXxWqcR8EWWssHVMXm3Ly4GKiRRSEBkn` the one can signal the start and stop of execution in the knowledge graph. A lot of cool stuff can be done using cyberlinks.
 
-If web3 agents expand native IPFS links with something semantically richer as [DURA](https://github.com/cybercongress/cyb/blob/master/docs/dura.md) links than web3 agents can easier reach consensus on the rules for program execution. Indeed, DURA protocol is a proper implementation of a cyberlinks concept.
+If web3 agents expand native `IPFS links` with something semantically richer as [`DURA`](https://github.com/cybercongress/cyb/blob/dev/docs/dura.md) links than web3 agents can easier reach consensus on the rules for program execution. Indeed, `DURA` protocol is a proper implementation of a cyberlink concept.
 
-`cyber` implementation of cyberlinks based on DURA specification is available in `.cyber` app of browser `cyb`.
+[`cyber`](https://github.com/cybercongress/cyberd) implementation of `cyberlinks` based on [`DURA`](https://github.com/cybercongress/cyb/blob/dev/docs/dura.md) specification is available in [`.cyber`](https://github.com/cybercongress/.cyber) app of browser [`cyb`](https://github.com/cybercongress/cyb).
 
-Based on cyberlinks we can compute the relevance of subjects and objects in a knowledge graph. That is why we need a consensus computer.
+Based on `cyberlinks` we can compute the relevance of subjects and objects in a knowledge graph. That is why we need a consensus computer.
 
 ## Notion of consensus computer
 
@@ -123,17 +121,19 @@ Hence we will not be able to achieve an ideal consensus computer ever. CAP theor
 
 However, this theory can work as a performance indicator of a consensus computer.
 
-After 6 years of investments into consensus systems we find out that Tendermint consensus has a good balance between coolness for our task and readiness for production. So we decide to implement cyber protocol using Tendermint which is very close to Cosmos Hub setting.
+After 6 years of investments into consensus computers we find out that [Tendermint](https://ipfs.io/ipfs/QmaMtD7xDgghqgjN62zWZ5TBGFiEjGQtuZBjJ9sMh816KJ) consensus has a good balance between coolness for our task and readiness for production. So we decide to implement cyber protocol using Tendermint which is very close to Cosmos Hub setting.
 
-So the `cyber` implementation is a 64-bit tendermint consensus computer of the relevance for 64-byte string space that is as far from ideal at least as 1/146, because we have 146 validators who verify the same computation using the knowledge graph of the same size.
+The `cyber` implementation is a 64-bit tendermint consensus computer of the relevance for 64-byte string space that is as far from ideal at least as 1/146, because we have 146 validators who verify the same computation using the knowledge graph of the same size.
 
-We must bind computational, storage and bandwidth supply of relevance machine with maximized demand of queries. Computation and storage in case of basic relevance machine can be easily predicted based on bandwidth, but bandwidth requires a limiting mechanism.
+We must bind computational, storage and bandwidth supply of consensus computer with maximized demand on queries. Computation and storage in case of basic relevance machine can be easily predicted based on bandwidth, but bandwidth requires a limiting mechanism.
 
 ## Bandwidth
 
-`Bounded stake` - stake, that deducted from your acc coins and put as deposit to take part in consensus. Due to passive inflation model and slashing, deposit not match 1-to-1 to final reward. So, for example, stakeholders may wish to set up a script, that will periodically withdraw and rebound rewards to increase their bounded stake. `Active stake` - currently available for direct transfer, not-bounded stake.
+`Bonded stake` - stake, that deducted from your acc coins and put as deposit to take part in consensus. Due to passive inflation model and slashing, deposit not match 1-to-1 to final reward. So, for example, stakeholders may wish to set up a script, that will periodically withdraw and rebound rewards to increase their bonded stake.
 
-`Bandwidth stake` = `active stake + bounded stake`.
+`Active stake` - currently available for direct transfer, not-bonded stake.
+
+`Bandwidth stake` = `active stake + bonded stake`.
 
 Cyberd use a very simple bandwidth model. Main goal of that model is to reduce daily network growth to given constant, say 3gb per day.
 
@@ -146,36 +146,32 @@ There is period `AdjustPricePeriod` summing how much RS was spent for that perio
 `AdjustPricePeriodTotalSpent / AdjustPricePeriodDesiredSpent` ratio is called fractional reserve ratio. If network usage is low, fractional reserve ratio adjust message cost (by simple multiplication) to allow user with lower stake to do more transactions.
 If resource demand increase, fractional reserve ratio goes `>1` thus increase messages cost and limiting final tx count for some long-term period (RC recovery will be `<` then RC spending).
 
-There are only few ways to change acc bandwidth stake:
+There are only two ways to change acc bandwidth stake:
 
 1. Direct coins transfer.
-2. When distribution payouts occurs. For example, when validator change his commission rates, all delegations will be automatically unbounded. Another example, delegator itself unbound some part or full share.
+2. When distribution payouts occurs. For example, when validator change his commission rates, all delegations will be automatically unbounded. Another example, delegator itself unbond some part or full share.
 
-So agents must have CYB tokens in accordance to their will of learning the knowledge graph. The more agents will learn the knowledge graph the more valuable the graph become. However, proposed mechanics of CYB tokens work not only as spam protection but as the economic regulation mechanism to align the ability of validators to process knowledge graph and market demand for processing.
+So agents must have CYB tokens in accordance to their will of learning the knowledge graph. However, proposed mechanics of CYB tokens work not only as spam protection but as the economic regulation mechanism to align the ability of validators to process knowledge graph and market demand for processing.
 
 ## Relevance machine
 
-We define relevance machine is a machine that transition knowledge graph state based on the will of agents to learn the knowledge graph. This machine enables simple construction for search question querying and answers delivering.
+We define relevance machine as a machine that transition knowledge graph state based on the will of agents to learn the knowledge graph. The more agents will learn the knowledge graph the more valuable the graph become. This machine enables simple construction for search question querying and answers delivering.
 
-The will is projected on every agent's cyberlink. A simple rule prevents abuse by agents: one content address can be voted by a token only once. So it does not matter for ranking from how much accounts you voted. The only sum of their balances matters.
+The will is projected on every agent's cyberlink. A simple rule prevents abuse by agents: one content address can be voted by a coin only once. So it does not matter for ranking from how much accounts you voted. The only sum of their balances matters.
 
 A useful property of a relevance machine is that it must have inductive reasoning property or follows the blackbox principle.
 
 ```
 She must be able to interfere predictions
 without any knowledge about objects
-except who linked, when linked and what was linked.
+except who cyberlinked, when cyberlinked and what was cyberlinked.
 ```
 
 If we assume that a consensus computer must have some information about linked objects the complexity of such model growth unpredictably, hence a requirement for a computer for memory and computations. That is, deduction of meaning inside consensus computer is expensive thus our design depends on the blindness assumption. Instead of deducting a meaning inside consensus computer we design a system in which meaning extraction is incentivized because agents need CYB to compute relevance.
 
 Also, thanks to content addressing the relevance machine following the blackbox principle do not need to store the data but can effectively operate on it.
 
-Human intelligence organized in a way to prune none-relevant and none-important memories with time has passed. The same way can do relevance machine.
-
-Also, one useful property of relevance machine is that it needs to store neither past state, nor full current state to remain useful, or more precisely: _relevant_.
-
-So relevance machine can implement [aggressive pruning strategies](QmP81EcuNDZHQutvdcDjbQEqiTYUzU315aYaTyrVj6gtJb) such as pruning all history of knowledge graph formation or forgetting links that become non-relevant.
+Human intelligence organized in a way to prune none-relevant and none-important memories with time has passed. The same way can do relevance machine. Also, one useful property of relevance machine is that it needs to store neither past state, nor full current state to remain useful, or more precisely: _relevant_. So relevance machine can implement [aggressive pruning strategies](QmP81EcuNDZHQutvdcDjbQEqiTYUzU315aYaTyrVj6gtJb) such as pruning all history of knowledge graph formation or forgetting links that become non-relevant.
 
 `cyber` implementation of relevance machine is based on the most straightforward mechanism which is called cyber•Rank.
 
@@ -185,21 +181,21 @@ Ranking using consensus computer is hard because consensus computers bring serio
 
 If rank computed inside consensus computer, you have an easy content distribution of the rank as well as an easy way to build provable applications on top of the rank. Hence we decided to follow more cosmic architecture. In the next section, we describe the proof of relevance mechanism which allows the network to scale with the help of domain-specific relevance machines that works in parallel thanks to IBC protocol.
 
-Eventually, relevance machine needs to find (1) deterministic algorithm that allows computing a rank for a continuously appended network to scale the consensus computer to orders of magnitude that of Google. Perfect algorithm (2) must have linear memory and computation complexity. The most importantly it must have (3) highest provable prediction capabilities for the existence of relevant links.                   
+Eventually, relevance machine needs to find (1) deterministic algorithm that allows computing a rank for a continuously appended network to scale the consensus computer to orders of magnitude that of Google. Perfect algorithm (2) must have linear memory and computation complexity. The most importantly it must have (3) highest provable prediction capabilities for the existence of relevant cyberlinks.                   
 
-After some research, we found that we can not find silver bullet here. So we decided to find some more basic bulletproof way to bootstrap the network: a rank from which Larry and Sergey have bootstrapped a previous network. The problem with original PageRank is that it is not resistant to sybil attacks.
+After [some research](https://arxiv.org/pdf/1709.09002.pdf), we found that we can not find silver bullet here. So we decided to find some more basic bulletproof way to bootstrap the network: [the rank](http://ilpubs.stanford.edu:8090/422/1/1999-66.pdf) from which Larry and Sergey have bootstrapped a previous network. The key problem with original PageRank is that it is not resistant to sybil attacks.
 
 Token weighted [PageRank](http://ilpubs.stanford.edu:8090/422/1/1999-66.pdf) limited by token-weighted bandwidth do not have inherent problems of naive PageRank and is resistant to sybil attacks. For the time being, we will call it cyber•Rank until something better emerge.
 
 In the centre of spam protection system is an assumption that write operations can be executed only by those who have a vested interest in the evolutionary success of a relevance machine. Every 1% of stake in consensus computer gives the ability to use 1% of possible network bandwidth and computing capabilities.
 
-As nobody uses all possessed bandwidth, we can safely use up to 100x fractional reserves with 2-minute recalculation target.
+As nobody uses all possessed bandwidth, we can safely use up to 100x fractional reserves with 2-minute recalculation target. This mechanics offers a discount for cyberlinking thus effectively maximazing demand for it.
 
 We would love to discuss the problem of vote buying mainly. Vote buying by itself is not such bad. The problem with vote buying appears in the systems where voting affects the allocation of inflation in the system like [Steem](QmepU77tqMAHHuiSASUvUnu8f8ENuPF2Kfs97WjLn8vAS3) or any state-based system. So vote buying can become easily profitable for adversary employing a zero-sum game without a necessity to add value. Our original idea of a decentralized search was based on this approach, but we reject this idea removing incentive on consensus level for knowledge graph formation completely. In our setting in which every participant must bring some value to the system to affect predictive model vote buying become NP-hard problem hence is useful for the system.
 
 We understand that the ranking mechanism will always remain red herring. That is why we expect to rely on on-chain governance mechanism to define the wining one. We would love to switch from one algorithm to another, based on economic a/b testing through hard spoons of domain specific relevance machines though.  
 
-Consensus computer based on relevance machine for cyber•Rank can answer and deliver relevant results for any given search request in the 64 byte CID space. However, to build a network of domain-specific relevance machines, it is not enough. Consensus computers must have the ability to prove relevance for each other.
+Current implementation of consensus computer based on relevance machine for cyber•Rank can answer and deliver relevant results for any given search request in the 64 byte CID space. However, to build a network of domain-specific relevance machines, it is not enough. Consensus computers must have the ability to prove relevance for each other.
 
 ## Proof of relevance
 
@@ -315,7 +311,7 @@ In our relevance for commons `cyber` implementation proof of relevance root hash
 
 We need speedy confirmation times to feels like the usual web app. It is a strong architecture requirement that shape an economic topology and scalability of the cyber protocol.
 
-Proposed blockchain design is based on [Tendermint consensus](https://ipfs.io/ipfs/QmaMtD7xDgghqgjN62zWZ5TBGFiEjGQtuZBjJ9sMh816KJ) algorithm with 146 validators and has very fast 1 second finality time. Average confirmation timeframe at half the second with asynchronous interaction make complex blockchain search almost invisible for agents.
+Proposed blockchain design is based on [Tendermint consensus](https://ipfs.io/ipfs/QmaMtD7xDgghqgjN62zWZ5TBGFiEjGQtuZBjJ9sMh816KJ) algorithm with 146 validators and has very fast 2 second finality time. Average confirmation timeframe at half the second with asynchronous interaction make complex blockchain search almost invisible for agents.
 
 Let us say that our node implementation based on `cosmos-sdk` can process 10k transactions per second. Thus every day at least 8.64 million agents can submit 100 cyberlinks each and impact results simultaneously. That is enough to verify all assumptions in the wild. As blockchain technology evolves we want to check that every hypothesis work before scale it further. Moreover, proposed design needs demand for full bandwidth in order the relevance become valuable. That is why we strongly focus on accessible, but provable distribution from inception.
 
@@ -328,6 +324,13 @@ We wanted to imagine how that could work in a web3 browser. To our disappointmen
 ![search-results](https://ipfs.io/ipfs/QmSSyqEqh9oSC4voDDYwEAuQczeJCyRfsx4gqecSyTcVWs)
 
 As another good example, we created Chrome extension that allow anybody to pin any web page to ipfs and index it by the any keywords, thus make it searchable.
+
+Current search snippets are ugly, but we expect they can be easily extended using IPLD for different types of content so they can be even more beautiful than that of Google.
+
+During implementation of proposed architecture we realize at least 3 key benefits a Google probab;y would not be able to deliver with conventiaon  approach:
+- search result can be easily delivered from p2p network right into search results: eg. .cyber can play video.
+- payment buttons can be embedded right into search snippets, so web3 agent can interact with search results, eg. agents can buy an items right in `.cyber`. Also so e-commerce can flourish because of transparent conversion attribution.
+- search snippets must not be static but can be interactive, eg. `.cyber` eventually can answer location based answers.
 
 ## Philosophical approach toward distribution
 
@@ -354,11 +357,11 @@ Both tokens remains functional and will track value independently due to very di
 
 Initial distribution happens in a 3 different by nature and goals epochs and is spread in time for almost 2 years:
 
-1. Pre-genesis: 5% CYB auction for ATOM holders is needed to launch cyber protocol in a decentralized fashion with independent genesis validators
+1. Pre-genesis: 21 days. Is needed to launch cyber protocol in a decentralized fashion with independent genesis validators.
 
-2. Genesis: Launch of main net and Game of Thrones lasts for 21 day: needed to involve the most active Ethereum and Cosmos crypto players into an engaging game with ability to fully understand and test a software using real network and incentives. Game of Thrones is a kind of distribution game with some discount for attraction of necessary critical mass in order to make possible of learning the early knowledge graph by the most intelligent community.
+2. Genesis: 21 days. Launch of main net and Game of Thrones: needed to involve the most active Ethereum and Cosmos crypto players into an engaging game with ability to fully understand and test a software using real network and incentives. Game of Thrones is a kind of distribution game with some discount for attraction of necessary critical mass in order to make possible of learning the early knowledge graph by the most intelligent community.
 
-3. Post Genesis: Continuous distribution of CYB based on cyber•Auction proceeds: needed in order to involve into initial distribution existing crypto community and beyond.
+3. Post Genesis: 600 days. Continuous distribution of CYB based on cyber•Auction proceeds: needed in order to involve into initial distribution existing crypto community and beyond.
 
 ## Pre-genesis
 
@@ -394,7 +397,7 @@ Post Genesis stage called cyber•Auction starts after the end of the Game of Th
 The role of cyber•Auction is twofold:
 
 - It creates non-exlusive long lasting and provable game of initial distribution without necessity to spend energy on proof of work. It is crucial that early knowledge graph were created in some sense fairly by engaged community which was formed during a non-exclusive game.
-- As a result of auction community will has access to all raised resources under Aragon organisation. We believe in a true decentralized nature of the thing we created so we do not want to grab all the money from the funding as we already funded the creation of the system ourselves and we kindly ask fair 10% CYB cut for pre-genesis investors, founders and developers. Competing with Google is challenging and will be more viable if community will sits on the bag of ever-growing ETH. Given current growth rate of ETH this bag can be very compelling in some years after launch. Also this bag can be the source of alternative implementation of the protocol if Cosmos based system will fail, or in the cased the community just want to diversify technology involved, e.g. ETH2, Polkadot or whatever.
+- As a result of auction community will has access to all raised resources under Aragon organisation. We believe in a true decentralized nature of the thing we created so we do not want to grab all the money from the funding as we already funded the creation of the system ourselves and we kindly ask fair 10% CYB cut for pre-genesis investors, founders and developers. Competing with Google is challenging and will be more viable if community will sits on the bag of ever-growing ETH. Given current growth rate of ETH this bag can be very compelling in some years after launch. Also this bag can be the source of alternative implementation of the protocol in the cased the community will want to diversify technology involved, e.g. ETH2, Polkadot or whatever.
 
 After genesis CYB tokens can be created only by validators based on staking and slashing parameters. The basic consensus is that newly created CYB tokens are distributed to validators as they do the essential work to make relevance machine run both regarding energy consumed for computation and cost for storage capacity. So stakeholders decide where the tokens can flow further.
 
@@ -421,16 +424,18 @@ All ATOM donations goes to cyber•Congress multisig. The role of ATOM donations
 We foresee the demand for the following features community could work on after launch:
 
 - Parametrization
+- KV
 - IBC
-- WASM VM
+- WASM VM for gas
 - Onchain upgrades
-- CUDA VM
+- CUDA VM for gas
+- Privacy by default
 
 ## Applications of knowledge graph
 
 A lot of cool applications can be built on top of proposed architecture:
 
-_Web3 browsers_. It easy to imagine the emergence of a full-blown blockchain browser. Currently, there are several efforts for developing browsers around blockchains and distributed tech. Among them are Beaker, Mist, Brave, and Metamask. All of them suffer from trying to embed web2 in web3. Our approach is a bit different. We consider web2 as the unsafe subset of web3. That is why we decide to develop a web3 browser that can showcase the cyber approach to answer questions better.
+_Web3 browsers_. It easy to imagine the emergence of a full-blown blockchain browser. Currently, there are several efforts for developing browsers around blockchains and distributed tech. Among them are Beaker, ~~Mist~~, Brave, and Metamask. All of them suffer from trying to embed web2 in web3. Our approach is a bit different. We consider web2 as the unsafe subset of web3. That is why we decide to develop a web3 browser that can showcase the cyber approach to answer questions better.
 
 _Programmable semantic cores_. Currently, the most popular keywords in a gigantic semantic core of Google are keywords of apps such as youtube, facebook, github, etc. However, developers have very limited possibility to explain Google how to better structure results. The cyber approach brings this power back to developers. On any given user input string in any application relevant answer can be computed either globally, in the context of an app, a user, a geo or in all of them combined.
 
@@ -497,7 +502,7 @@ We define and implement a protocol for provable communications of consensus comp
 
 - [cyberd](https://github.com/cybercongress/cyberd)
 - [Scholarly context adrift](https://ipfs.io/ipfs/QmNhaUrhM7KcWzFYdBeyskoNyihrpHvUEBQnaddwPZigcN)
-- [Web3 stack](https://github.com/w3f/Web3-wiki/wiki)
+- [Web3 stack](https://ipfs.io/ipfs/Qmf3eHU9idMUZgx6MKhCsFPWL24X9pDUi2ECqyH8UtBAMQ)
 - [Search engines information retrieval in practice](https://ipfs.io/ipfs/QmeS4LjoL1iMNRGuyYSx78RAtubTT2bioSGnsvoaupcHR6)
 - [Motivating game for adversarial example research](https://ipfs.io/ipfs/QmNrAFz34SLqkzhSg4wAYYJeokfJU5hBEpkT4hPRi226y9.ifps)
 - [An idea of decentralized search](https://steemit.com/web3/@hipster/an-idea-of-decentralized-search-for-web3-ce860d61defe5est)
@@ -506,7 +511,7 @@ We define and implement a protocol for provable communications of consensus comp
 - [cosmos-sdk](https://github.com/cosmos/cosmos-sdk)
 - [CIDv0](https://github.com/multiformats/cid#cidv0)
 - [Thermodynamics of predictions](https://ipfs.io/ipfs/QmP81EcuNDZHQutvdcDjbQEqiTYUzU315aYaTyrVj6gtJb)
-- [DURA](https://github.com/cybercongress/cyb/blob/master/docs/web3-vision.md)
+- [DURA](https://github.com/cybercongress/cyb/blob/dev/docs/dura.md)
 - [Nebulas](https://ipfs.io/ipfs/QmWTZjDZNbBqcJ5b6VhWGXBQ5EQavKKDteHsdoYqB5CBjh)
 - [Colony](https://ipfs.io/ipfs/QmZo7eY5UdJYotf3Z9GNVBGLjkCnE1j2fMdW2PgGCmvGPj)
 - [Truebit](https://ipfs.io/ipfs/QmTrxXp2xhB2zWGxhNoLgsztevqKLwpy5HwKjLjzFa7rnD)
@@ -517,7 +522,7 @@ We define and implement a protocol for provable communications of consensus comp
 - [Tendermint](https://ipfs.io/ipfs/QmaMtD7xDgghqgjN62zWZ5TBGFiEjGQtuZBjJ9sMh816KJ)
 - [Comparison of web3 browsers](https://github.com/cybercongress/cyb/blob/master/docs/comparison.md)
 - [Cyb](https://github.com/cybercongress/cyb/blob/master/docs/cyb.md)
-- [cyberFoundation in Aragon](https://mainnet.aragon.org/#/cyberfoundation.aragonid.eth/0xf4d85b5a1650a335b30072d178f6dcb611f05a3e)
+- [SpringRank](https://arxiv.org/pdf/1709.09002.pdf)
 - [How to become validator in cyber protocol](/docs/how_to_become_validator.md)
 - [Top 10000 english words](https://github.com/first20hours/google-10000-english)
 - [Multilingual neural machine translation](https://ipfs.io/ipfs/QmQUWBhDMfPKgFt3NfbxM1VU22oU8CRepUzGPBDtopwap1)
