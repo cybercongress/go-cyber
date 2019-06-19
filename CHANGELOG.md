@@ -10,6 +10,7 @@
 
 **Closed issues:**
 
+-  Exclude at the current stage the consideration of the behavioural factor in the search for ordinary users [\#327](https://github.com/cybercongress/cyberd/issues/327)
 - New distribution [\#316](https://github.com/cybercongress/cyberd/issues/316)
 - Cyberadmin telegram-bot for cyberd [\#281](https://github.com/cybercongress/cyberd/issues/281)
 - Slow node start-up. [\#138](https://github.com/cybercongress/cyberd/issues/138)
