@@ -64,9 +64,13 @@ jobs:
           name: Update Docs
           working_directory: ~/workdir
           command: |
-            cd ~build
-            ./script.sh
+            ls
+            pwd
             cd ..
+            ls
+            pwd
+            ./script.sh
+            cd ~/workdir
             git clone -q --depth 1 https://${DOCS_GITHUB_TOKEN}@github.com/cybercongress/congress.git
       - deploy:
           name: Update docs from cyberd repo
