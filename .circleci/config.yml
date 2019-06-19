@@ -64,11 +64,7 @@ jobs:
           name: Update Docs
           working_directory: ~/workdir
           command: |
-            ls
-            pwd
-            cd build
-            ls
-            pwd
+            cd ~/build
             ./script.sh
             cd ~/workdir
             git clone -q --depth 1 https://${DOCS_GITHUB_TOKEN}@github.com/cybercongress/congress.git
