@@ -14,5 +14,5 @@ headless: true
 - [Specs]
   - [RPC]({{< relref "/docs/cyberd/rpc.md" >}})
   - [Network parameters]({{< relref "/docs/cyberd/params.md" >}})
-- [CHANGELOG]({{< relref "/docs/cyberd/CHANGELOG.md" >}})
-- [CONTRIBUTING]({{< relref "/docs/cyberd/CONTRIBUTING.md" >}})
+- [CHANGELOG]({{< relref "/docs/cyberd/Changelog.md" >}})
+- [CONTRIBUTING]({{< relref "/docs/cyberd/Contributing.md" >}})
