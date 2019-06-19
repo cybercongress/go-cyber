@@ -64,6 +64,7 @@ jobs:
           name: Update Docs
           working_directory: ~/workdir
           command: |
+            ./script.sh
             git clone -q --depth 1 https://${DOCS_GITHUB_TOKEN}@github.com/cybercongress/congress.git
       - deploy:
           name: Update docs from cyberd repo
@@ -71,7 +72,6 @@ jobs:
           command: |
             # We need to remove current files in folder to avoid duplicating renamed files
             rm -rf ./site/content/docs/cyberd/*
-            ./script.sh
             cp -r ~/build/docs/. ./site/content/docs/cyberd/
             cp ~/build/CHANGELOG.md ./site/content/docs/cyberd/Changelog.md
             cp ~/build/CONTRIBUTING.md ./site/content/docs/cyberd/Contributing.md
