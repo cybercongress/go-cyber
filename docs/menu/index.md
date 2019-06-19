@@ -2,16 +2,16 @@
 headless: true
 ---
 - [Whitepaper]({{< relref "/docs/cyberd/cyberd.md" >}})
-- [Usage]
+- Usage:
   - [Run the validator]({{< relref "/docs/cyberd/run_validator.md" >}})
   - [Supported GPUs]({{< relref "/docs/cyberd/supported_gpu_list.md" >}})
   - [CLI guide]({{< relref "/docs/cyberd/ultimate-commands-guide_v2.md" >}})
   - [Get CYBs]({{< relref "/docs/cyberd/get_CYB.md" >}})
   - [Port forwarding]({{< relref "/docs/cyberd/port_forwarding_guide.md" >}})
-- [Dev environment]
+- Dev environment:
   - [Setup development environment]({{< relref "/docs/cyberd/setup_dev_env.md" >}})
   - [Network launch]({{< relref "/docs/cyberd/launch_network.md" >}})
-- [Specs]
+- Specs:
   - [RPC]({{< relref "/docs/cyberd/rpc.md" >}})
   - [Network parameters]({{< relref "/docs/cyberd/params.md" >}})
 - [CHANGELOG]({{< relref "/docs/cyberd/Changelog.md" >}})
