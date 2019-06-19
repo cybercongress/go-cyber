@@ -124,7 +124,7 @@ docker run -d --restart always -p 9000:9000 -v /var/run/docker.sock:/var/run/doc
 localhost:9000
 ```
 
-![](../img/portainer_start.png)
+![](https://ipfs.io/ipfs/QmS42MJxjUB7Cu1GoJeE6eBmWkjHTZdgiAUcX4Qqy9NR3M)
 
 4. Set password, chose `local` tab and click `connect`. All containers will be available at `containers` tab.
 
@@ -211,7 +211,7 @@ You should see this:
 |   0  GeForce GTX 1070    Off  | 00000000:01:00.0 Off |                  N/A |
 | 26%   36C    P5    26W / 180W |      0MiB /  8119MiB |      2%      Default |
 +-------------------------------+----------------------+----------------------+
-                                                                               
+
 +-----------------------------------------------------------------------------+
 | Processes:                                                       GPU Memory |
 |  GPU       PID   Type   Process name                             Usage      |
@@ -330,7 +330,7 @@ docker logs cyberd --follow
 
 Or go to `localhost:9000` and open logs at cyberd container:
 
-![](../img/cyberd_logs.jpg)
+![](https://ipfs.io/ipfs/QmbfRjyBjBZpJSTQuusBayBZU53G4kEDB7fMEFsbQZ2477)
 
 Syncing has started. Syncing time depends on your internet bandwidth, connection and blockchain height. As at 2019/02/03 syncing time approximately 15-20 minutes. Once you see in logs that blocks syncing for 1 second your node is synced.
 
