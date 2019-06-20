@@ -7,12 +7,16 @@
 **Fixed bugs:**
 
 - Error during rewards withdrawal  [\#302](https://github.com/cybercongress/cyberd/issues/302)
+- Finish Proof of Code genesis drop [\#294](https://github.com/cybercongress/cyberd/issues/294)
 
 **Closed issues:**
 
+- Adjusting of link weight [\#330](https://github.com/cybercongress/cyberd/issues/330)
+- Answer why CyberD is better for Web3 then Google [\#328](https://github.com/cybercongress/cyberd/issues/328)
 -  Exclude at the current stage the consideration of the behavioural factor in the search for ordinary users [\#327](https://github.com/cybercongress/cyberd/issues/327)
 - New distribution [\#316](https://github.com/cybercongress/cyberd/issues/316)
 - Cyberadmin telegram-bot for cyberd [\#281](https://github.com/cybercongress/cyberd/issues/281)
+- Align current network capabilities with cyberCongress pricing model [\#262](https://github.com/cybercongress/cyberd/issues/262)
 - Slow node start-up. [\#138](https://github.com/cybercongress/cyberd/issues/138)
 
 **Merged pull requests:**
