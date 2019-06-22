@@ -497,7 +497,7 @@ func (app *CyberdApp) Commit() (res abci.ResponseCommit) {
 		panic(err)
 	}
 	app.BaseApp.Commit()
-	return abci.ResponseCommit{Data: app.rankState.GetNetworkRankHash()}
+	return abci.ResponseCommit{Data: app.appHash()}
 }
 
 // Implements ABCI
@@ -515,5 +515,15 @@ func (app *CyberdApp) appHash() []byte {
 	if app.LastBlockHeight() == 0 {
 		return make([]byte, 0)
 	}
-	return app.rankState.GetNetworkRankHash()
+
+	linkHash := app.linkIndexedKeeper.GetNetworkLinkHash()
+	rankHash := app.rankState.GetNetworkRankHash()
+
+	result := make([]byte, len(linkHash))
+
+	for i := 0; i < len(linkHash); i++ {
+		result[i] = (byte)(linkHash[i] ^ rankHash[i])
+	}
+
+	return result
 }
