@@ -1,6 +1,6 @@
 # Supported GPU list for cyberd validators
 
-We use GPUs for parallel rank calculations.
+In our `cyber protocol` implementation on `GO` proof of relevance root hash is computed on Cuda GPUs every round as the best way to calculate merkle tree faster. We need to load the whole graph in memory for calculating that's why memory volume is important. Currently, with `~2,5 M` links GPU memory loaded for `150 Mb`, that's mean 1 link is 60 bytes of GPU memory. Accordingly, GPU with 6Gb memory can calculate graph with 100 M links. Under a load of network with 10 M links in a day, this GPU will reach its limit in 10 days.
 
 |GPU|Supported|Tested|CUDA cores|Memory|Year of production|
 |-|-|-|-|-|-|
@@ -26,3 +26,5 @@ We use GPUs for parallel rank calculations.
 |[GeForce GTX TITAN Z](https://www.geforce.com/hardware/desktop-gpus/geforce-gtx-titan-z/specifications)|:white_check_mark:|:x:|5760|12 GB GDDR5|2014|
 |[GeForce GTX TITAN Black](https://www.geforce.com/hardware/desktop-gpus/geforce-gtx-titan-black/specifications)|:white_check_mark:|:x:|2880|6 GB GDDR5|2014|
 |[GeForce GTX 770](https://www.geforce.com/hardware/desktop-gpus/geforce-gtx-770/specifications)|:white_check_mark:|:x:|1536|4 GB GDDR5|2013|
+
+If you have used some GPU from `column` supported but without :white_check_mark: at `tested` column please submit a pull request with corrections. If you have tested GPU and it's not contained in that list submit PR too.
