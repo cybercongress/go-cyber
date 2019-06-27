@@ -336,6 +336,20 @@ During the implementation of proposed architecture, we realize at least 3 key be
 - payment buttons can be embedded right into search snippets, so web3 agent can interact with search results, eg. an agent can buy an item right in `.cyber`. So e-commerce can flourish because of transparent conversion attribution.
 - search snippets must not be static but can be interactive, eg. `.cyber` eventually can answer location-based answers.
 
+## Learning the Graph
+We assume that the proposed algorithms do not guarantee high quality search by default. Protocol itself provides only two simple tools: the ability to create a link with a certain weight between two content addresses and the ranking calculation. Such a simple architecture is necessary to preserve the personal data of users only on their devices.
+
+Analysis of the semantic core, behavioral factors, anonymous data about the interests of users and other tools that determine the quality of the search should be placed in smart contracts and off-chain applications, such as web3 browsers, decentralized social networks and content platforms. And the goal of the community and users - to build an initial search index and maintain it to provide the most relevant search.
+
+We suggest creating search indexes using the following methods:
+- by using different application (like cyb.virus chrome extension and others) users save their content or content they like (web pages, articles, images, videos, etc) to IPFS and link it with relevant keywords;
+- validators and search enthusiasts use automatic scripts to create and index for popular resources, like Wikipedia or transfer and edit current search result from Google and other search engines;
+- In the process of information search by user in open source application (like cyb web3 browser or any other), application itself analyzes the semantic core of the content, the behavior of the user when searching and viewing content,  such as user transitions between content, bounce rate, viewing time and others. Based on this data and using the balance of user's CYB tokens, the application automatically or with user input links content. Users will choose which open source application to use for search and how it will affect the index. In this case, creating a search index ceases to be a black box and becomes absolutely transparent. Data about the user's search queries and their behavior remain on the user's device, ensuring anonymity. This data can be synced between user devices by user's private CYBER chain.
+ - validators can voluntarily allocate part of their commission in CYB tokens on smart contract to pay to professional search assessors, as they have the maximum economic interest in the entire protocol. Each validator will provide an application for assessor to make a search more relevant. Application index all transactions and stores information about changes in weights in the search graph. Assessors receive assignments to check the relevance of links and, if necessary, they increase links weight. The quality of assessors work can be checked algorithmically or manually by validators and with the help of prediction market, created on particular link weight. Validator use smart contract to pay to assessors.
+ 
+We are confident that the measures described above will allow us to build an effective search, created by users for users without the need to transfer their personal data to intermediaries like Google and Facebook.
+
+
 ## Approach toward distribution
 
 While designing the initial distribution structure for Cyber protocol we aimed to achieve the following goals:
@@ -434,6 +448,7 @@ We foresee the demand for the following features community could work on after l
 - Onchain upgrades
 - CUDA VM for gas
 - Privacy by default
+- Application for search assessors
 
 ## Applications of knowledge graph
 
@@ -479,6 +494,7 @@ What is needed is a simple yet powerful state reality tool with the ability to f
 _Language convergence_. A programmer should not care about what language do an agent use. We don't need to know about what language agent is searching in. Entire UTF-8 spectrum is at work. A semantic core is open so competition for answering can become distributed across different domain-specific areas, including semantic cores of different languages. The unified approach creates an opportunity for cyber•Bahasa. Since the Internet, we observe a process of rapid language convergence. We use more truly global words across the entire planet independently of our nationality, language and race, Name the Internet. The dream of truly global language is hard to deploy because it is hard to agree on what means what. However, we have the tools to make that dream come true. It is not hard to predict that the shorter a word, the more its cyber•rank will be. Global publicly available list of symbols, words, and phrases sorted by cyber•rank with corresponding links provided by cyberd can be the foundation for the emergence of genuinely global language everybody can accept. Recent [scientific advances](https://ipfs.io/ipfs/QmQUWBhDMfPKgFt3NfbxM1VU22oU8CRepUzGPBDtopwap1) in machine translation are breathtaking but meaningless for those who wish to apply them without Google scale trained model. Proposed cyber•rank offers precisely this.
 
 This is sure not the exhaustive list of possible applications but very exciting, though.
+
 
 ## Apps on top of knowledge graph
 
