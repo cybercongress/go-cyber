@@ -16,7 +16,7 @@ Read [whitepaper](./docs/cyberd.md)
 
 ## cyberd Public Testnets
 
-To run a full-node or validator in the latest public testnet of the cyberd follow [the guide](./docs/help/run_validator.md).
+To run a full-node or validator in the latest public testnet of the cyberd follow [the guide](./docs/run_validator.md).
 
 ## Issues
 
@@ -27,7 +27,7 @@ If you have any problems with or questions about search, please contact us throu
 
 You are invited to contribute new features, fixes, or updates, large or small; We are always thrilled to receive pull
  requests, and do our best to process them as fast as We can. You can find detailed information in our
- [contribution guide](./docs/contributing/contributing.md).
+ [contribution guide](./CONTRIBUTING.md).
 
 
 ## Changelog

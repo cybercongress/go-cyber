@@ -4,17 +4,36 @@
 
 [Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.1.4...HEAD)
 
+**Implemented enhancements:**
+
+- Rank calculation period automatic adjustment [\#142](https://github.com/cybercongress/cyberd/issues/142)
+- RPC get cid rank endpoint [\#116](https://github.com/cybercongress/cyberd/issues/116)
+
 **Fixed bugs:**
 
 - Error during rewards withdrawal  [\#302](https://github.com/cybercongress/cyberd/issues/302)
+- Finish Proof of Code genesis drop [\#294](https://github.com/cybercongress/cyberd/issues/294)
 
 **Closed issues:**
 
+- Adjusting of link weight [\#330](https://github.com/cybercongress/cyberd/issues/330)
+- Answer why CyberD is better for Web3 then Google [\#328](https://github.com/cybercongress/cyberd/issues/328)
+-  Exclude at the current stage the consideration of the behavioural factor in the search for ordinary users [\#327](https://github.com/cybercongress/cyberd/issues/327)
+- New distribution [\#316](https://github.com/cybercongress/cyberd/issues/316)
+- Create list of supported and tested GPUs [\#315](https://github.com/cybercongress/cyberd/issues/315)
+- Fix pictures in whitepaper [\#303](https://github.com/cybercongress/cyberd/issues/303)
 - Cyberadmin telegram-bot for cyberd [\#281](https://github.com/cybercongress/cyberd/issues/281)
+- Align current network capabilities with cyberCongress pricing model [\#262](https://github.com/cybercongress/cyberd/issues/262)
 - Slow node start-up. [\#138](https://github.com/cybercongress/cyberd/issues/138)
 
 **Merged pull requests:**
 
+- Edit GPU list according to @litvintech comments [\#345](https://github.com/cybercongress/cyberd/pull/345) ([SaveTheAles](https://github.com/SaveTheAles))
+- Change get-cyb description [\#344](https://github.com/cybercongress/cyberd/pull/344) ([SaveTheAles](https://github.com/SaveTheAles))
+- update run\_validator [\#325](https://github.com/cybercongress/cyberd/pull/325) ([wimel](https://github.com/wimel))
+- \#320 add multisig guide create and send [\#324](https://github.com/cybercongress/cyberd/pull/324) ([SaveTheAles](https://github.com/SaveTheAles))
+- Some Dan's fixes [\#323](https://github.com/cybercongress/cyberd/pull/323) ([marzipanstar](https://github.com/marzipanstar))
+- Proposal of the new distribution [\#322](https://github.com/cybercongress/cyberd/pull/322) ([xhipster](https://github.com/xhipster))
 - Add goveralls support for test coverage [\#305](https://github.com/cybercongress/cyberd/pull/305) ([arturalbov](https://github.com/arturalbov))
 
 ## [v0.1.4](https://github.com/cybercongress/cyberd/tree/v0.1.4) (2019-03-15)

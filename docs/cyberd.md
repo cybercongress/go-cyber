@@ -337,8 +337,10 @@ The goal of creating an alternative to a Google-like structure requires extraord
 
 While choosing token for donations we followed three main criteria: the token must be (1) one of the most liquid, (2) the most promising, so a community can secure a solid investment bag to be competitive even comparing to giants like Google and (3) have technical ability to execute auction and resulting organization without relying on any third party. So the only system matches these criteria is Ethereum, hence the primary token of donations will be ETH. That is why we decide to create 2 tokens: THC and CYB:
 
-- THC is a creative cyber proto substance. THC being an Ethereum ERC-20 compatible token have utility value in form of control cyber•Foundation (Aragon DAO) ETH from auction proceeds. THC was emitted during the creation of cyber•Foundation as Aragon organization. The creative power of THC came from the ability to receive 1 CYB per each 1 THC for locking it during Game of Thrones and cyber•Auction.
-- CYB is a native token of sovereign Cyber protocol under Tendermint consensus algorithm. It also has 2 primary uses: (1) is staking for consensus and (2) is bandwidth limiting for submitting links and computing the rank.
+While choosing token for donations we followed three main criteria: the token must be (1) one of the most liquid, (2) the most promising, so a community can secure a solid investment bag for be competitive even comparing to giants like Google and (3) have technical ability to execute auction and resulting organization without relying on any third party. So the only system matches this criteria is Ethereum, hence the primary token of donations will be ETH. That is why we decide to create 2 tokens: THC and CYB:
+
+- THC is a creative cyber proto substance. THC being an Ethereum ERC-20 compatible token have utility value in form of control cyber•Foundation (Aragon DAO) ETH from auction proceeds. THC was emitted during the creation of cyber•Foundation as Aragon organization. Creative power of THC came from ability to receive 1 CYB per each 1 THC for locking it during cyber•Auction.
+- CYB is native token of sovereign Cyber protocol under Tendermint consensus algorithm. It's also has 2 primary uses: (1) is a staking for consensus and (2) is bandwidth limiting for submitting links and computing the rank.
 
 Both tokens remain functional and will track value independently due to very different utility nature.
 
@@ -352,23 +354,20 @@ Initial distribution happens in a 3 different by nature and goals epochs and is 
 
 ## Pre-genesis
 
-Only 2 distribution events happens prior to Genesis:
+Only 2 distribution events happens happens prior to Genesis:
 
-1. 700 000 000 000 000 THC tokens are minted by cyber•Foundation. Allocations of THC tokens are the following:
+1. 700 000 000 000 000 THC tokens are minted by cyber•Foundation. Allocations of THC tokens is the following:
 
 - 100 000 000 000 000 THC is allocated to cyber•Congress
 - 600 000 000 000 000 THC is allocated to cyber•Auction contract
 
-2. 4 July 2019 donation round in ATOMs will be started for validators who want to participate in the Genesis of the network. The round will be limited with either 21 days or 100000 ATOMs. All excess ATOMs will be counted as Game of Thrones contribution. This round is necessary because the network must be started by independent validators. 5% of CYB will be allocated to participants of this donation round in Genesis.
+2. At the start of `euler-5` donation round in ATOMs started. Purpose of this round is to involve real validators at a genesis. 5% of CYB will be allocated to participants of this donation round.
 
 ## Genesis and Game of Thrones
 
-The Genesis of the network and contracts for Game of Thrones will be launched at 04 September 2019
+Genesis of `cyber` protocol will contains 1 000 000 000 000 000 CYB (One Quadrillion CYB) broken down as follows:
 
-Genesis of `cyber` protocol will contain 1 000 000 000 000 000 CYB (One Quadrillion CYB) broken down as follows:
-
-- 600 000 000 000 000 CYB under multisig managed by cyberCongress for manual distributions during cyber•Auction for those who stake THC until the end of cyber•Auction
-- 200 000 000 000 000 CYB under multisig managed by cyberCongress: the Game of Thrones for ATOM and ETH holders, 100 TCYB for each.
+-  50 000 000 000 000 CYB as drop for all ATOM stakeholders
 - 100 000 000 000 000 CYB for top 80% ETH holders by stake excluding contracts
 -  50 000 000 000 000 CYB as the drop for all ATOM stakeholders
 -  50 000 000 000 000 CYB for pre-genesis contributors in ATOM
@@ -383,8 +382,8 @@ Post Genesis stage called cyber•Auction starts after the end of the Game of Th
 
 The role of cyber•Auction is twofold:
 
-- It creates non-exclusive long lasting and provable game of initial distribution without the necessity to spend energy on proof of work. It is crucial that early knowledge graph was created in some sense fairly by an engaged community which was formed during a non-exclusive game.
-- As a result of auction community, will has access to all raised resources under Aragon organization. We believe in true decentralized nature of the thing we created so we do not want to grab all the money from the funding as we already funded the creation of the system ourselves and we kindly ask fair 10% CYB cut for pre-genesis investors, founders and developers. Competing with Google is challenging and will be more viable if the community will sit on the bag of ever-growing ETH. Given the current growth rate of ETH this bag can be very compelling in some years after launch. Also, this bag can be the source of an alternative implementation of the protocol in a case the community will want to diversify technology involved, e.g. ETH2, Polkadot or whatever.
+- It creates non-exlusive long lasting and provable game of initial distribution without necessity to spend energy on proof of work. It is crucial that early knowledge graph were created in some sense fairly by engaged community which was formed during a non-exclusive game.
+- As a result of auction community will has access to all raised resources under Aragon organisation. We believe in a true decentralized nature of the thing we created so we do not want to grab all the money from the funding as we already funded the creation of the system ourselves and we kindly ask fair 10% CYB cut for pre-genesis investors, founders and developers. Competing with Google is challenging and will be more viable if community will sits on the bag of ever-growing ETH. Given current growth rate of ETH this bag can be very compelling in some years after launch. Also this bag can be the source of alternative implementation of the protocol if Cosmos based system will fail, or in the cased the community just want to diversify technology involved, e.g. ETH2, Polkadot or whatever.
 
 After genesis CYB tokens can be created only by validators based on staking and slashing parameters. The basic consensus is that newly created CYB tokens are distributed to validators as they do the essential work to make relevance machine run both regarding energy consumed for computation and cost for storage capacity. So stakeholders decide where the tokens can flow further.
 
