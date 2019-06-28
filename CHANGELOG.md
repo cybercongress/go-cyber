@@ -28,6 +28,7 @@
 
 **Merged pull requests:**
 
+- Fixes fatal mistake in distribution [\#348](https://github.com/cybercongress/cyberd/pull/348) ([xhipster](https://github.com/xhipster))
 - Format hotfix [\#347](https://github.com/cybercongress/cyberd/pull/347) ([xhipster](https://github.com/xhipster))
 - Edit GPU list according to @litvintech comments [\#345](https://github.com/cybercongress/cyberd/pull/345) ([SaveTheAles](https://github.com/SaveTheAles))
 - Change get-cyb description [\#344](https://github.com/cybercongress/cyberd/pull/344) ([SaveTheAles](https://github.com/SaveTheAles))
