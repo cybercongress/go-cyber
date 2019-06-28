@@ -431,6 +431,7 @@ As another good example, we created [a Chrome extension](https://github.com/cybe
 Current search snippets are ugly, but we expect they can be easily extended using IPLD for different types of content so they can be even more beautiful than that of Google.
 
 During the implementation of proposed architecture, we realize at least 3 key benefits a Google probably would not be able to deliver with conventional approach:
+
 - the search result can be easily delivered from a p2p network right into search results: eg. .cyber can play video.
 - payment buttons can be embedded right into search snippets, so web3 agent can interact with search results, eg. an agent can buy an item right in `.cyber`. So e-commerce can flourish because of transparent conversion attribution.
 - search snippets must not be static but can be interactive, eg. `.cyber` eventually can answer location-based answers.
