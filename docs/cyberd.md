@@ -2,7 +2,7 @@
 
 Notes on [`cyber`](https://github.com/cybercongress/cyberd/releases/tag/v0.1.0) release of `cyber://` protocol [reference implementation](https://github.com/cybercongress/cyberd) using Go.
 
-[cyber•Congress](https://cybercongress.ai/): @xhipster, @litvintech, @hleb-albau, @arturalbov
+[cyber•Congress](https://cybercongress.ai/): @xhipster, @litvintech, @hleb-albau, @arturalbov, @npopeka
 
 ## Abstract
 
