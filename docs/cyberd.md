@@ -319,37 +319,6 @@ Proposed blockchain design is based on [Tendermint consensus](https://ipfs.io/ip
 
 Let us say that our node implementation based on `cosmos-sdk` can process 10k transactions per second. Thus every day at least 8.64 million agents can submit 100 cyberlinks each and impact results simultaneously. That is enough to verify all assumptions in the wild. As blockchain technology evolves we want to check that every hypothesis work before scale it further. Moreover, the proposed design needs demand for full bandwidth in order the relevance becomes valuable. That is why we strongly focus on accessible, but provable distribution from inception.
 
-## In-browser implementation
-
-We wanted to imagine how that could work in a web3 browser. To our disappointment we [were not able](https://github.com/cybercongress/cyb/blob/master/docs/comparison.md) to find the web3 browser that can showcase the coolness of the proposed approach in action. That is why we decide to develop the web3 browser [cyb](https://github.com/cybercongress/cyb/blob/master/docs/cyb.md) that has sample application .cyber for interacting with `cyber://` protocol.
-
-![search-main](https://ipfs.io/ipfs/QmbyeY5ySyWiP5XtMSnaiNpJZuzFz3trGxjRJSBQzFehoC)
-
-![search-results](https://ipfs.io/ipfs/QmSSyqEqh9oSC4voDDYwEAuQczeJCyRfsx4gqecSyTcVWs)
-
-As another good example, we created [a Chrome extension](https://github.com/cybercongress/cyb-virus) that allows anybody to pin any web page to ipfs and index it by any keywords, thus make it searchable.
-
-Current search snippets are ugly, but we expect they can be easily extended using IPLD for different types of content so they can be even more beautiful than that of Google.
-
-During the implementation of proposed architecture, we realize at least 3 key benefits a Google probably would not be able to deliver with conventional approach:
-- the search result can be easily delivered from a p2p network right into search results: eg. .cyber can play video.
-- payment buttons can be embedded right into search snippets, so web3 agent can interact with search results, eg. an agent can buy an item right in `.cyber`. So e-commerce can flourish because of transparent conversion attribution.
-- search snippets must not be static but can be interactive, eg. `.cyber` eventually can answer location-based answers.
-
-## Learning the Graph
-We assume that the proposed algorithms do not guarantee high quality search by default. Protocol itself provides only two simple tools: the ability to create a cyberlink with a certain weight between two content addresses and the ranking calculation. Such a simple architecture is necessary to preserve the personal data of agents only on their devices.
-
-Analysis of the semantic core, behavioral factors, anonymous data about the interests of agents and other tools that determine the quality of the search should be placed in smart contracts and off-chain applications, such as web3 browsers, decentralized social networks and content platforms. And the goal of the community and agents - to build an initial search rank and maintain it to provide the most relevant search.
-
-We suggest creating search rank using the following methods:
-- by using different application (like cyb.virus chrome extension and others) agents save their content or content they like (web pages, articles, images, videos, etc) to IPFS and link it with relevant keywords;
-- validators and search enthusiasts use automatic scripts to create and index for popular resources, like Wikipedia or transfer and edit current search result from Google and other search engines;
-- In the process of information search by agent in open source application (like cyb web3 browser or any other), application itself analyzes current rank, the semantic core of the content, the behavior of the agent, when searching and viewing content  (agent transitions between content, bounce rate, viewing time and others). Based on this data and using the balance of agent CYB tokens, the application automatically or with agent input links content. Agents will choose which open source application to use for search and how it will affect the rank. In this case, creating a search rank ceases to be a black box and becomes absolutely transparent. Data about the agents search queries and their behavior remain on their devices, ensuring anonymity. This data can be synced between devices by agent private CYBER chain.
- - Existing search engines, such as Google, use thousands of professional assessors to improve the quality of search rank. Validators have the maximum economic interest in the entire protocol and can voluntarily allocate part of their commission in CYB tokens on smart contract to pay to professional search assessors. Each validator will provide an application for assessor to make a search more relevant. Application index all transactions and stores information about changes in weights in the knowledge graph. Assessors receive assignments to check the relevance of cyberlinks and, if necessary, they increase cyberlinks weight. The validator automatically checks for increased or decreased cyberlink weights with which assessor has worked. If the assessor increased the weight of the link and the final weight due to the actions of the other agents also increased, then the cyberlink was more relevant and the assessor receives a reward from validator.
- 
-We are confident that the measures described above will allow us to build an effective search, created by people for people, without the need to transfer their personal data to intermediaries like Google and Facebook.
-
-
 ## Approach toward distribution
 
 While designing the initial distribution structure for Cyber protocol we aimed to achieve the following goals:
@@ -437,18 +406,46 @@ Overall 15% of CYB will be distributed based on donations in ATOMs during 2 roun
 
 All ATOM donations go to cyber•Congress multisig. The role of ATOM donations is the following: thanks to ATOM we want to secure lifetime commitment of cyber•Congress in the development of Cosmos and Cyber ecosystems. ATOM donations to cyber•Congress will allow us to use staking rewards for continuous funding of the Cyber protocol without the necessity to dump CYBs
 
+## Learning the Graph
+
+We assume that the proposed algorithms do not guarantee high quality knowledge by default. Like a child it needs to be learned in order to live well. Protocol itself provides only one simple tool: the ability to create a cyberlink with a certain weight between two content addresses.
+
+Analysis of the semantic core, behavioral factors, anonymous data about the interests of agents and other tools that determine the quality of the search can be done in smart contracts and off-chain applications, such as web3 browsers, decentralized social networks and content platforms. So it is the goal of the community and agents to build an initial knowledge graph and maintain it to provide the most relevant search.
+
+We suggest that the knowledge graph could be created using the following methods:
+- agents can use different applications, like [cyb.virus](https://github.com/cybercongress/cyb-virus) chrome extension, in which agents save their content or content they like to IPFS and link it with relevant keywords
+- validators and search enthusiasts use automatic scripts to create and index for popular resources, like Wikipedia or transfer and edit current search result from Google and other search engines
+- In the process of information search by agent in open source application (like cyb web3 browser or any other), application itself analyzes current rank, the semantic core of the content, the behavior of the agent, when searching and viewing content  (agent transitions between content, bounce rate, viewing time and others). Based on this data and using the balance of agent CYB tokens, the application automatically or with agent input links content. Agents will choose which open source application to use for search and how it will affect the rank. In this case, creating a knowledge graph ceases to be a black box and becomes absolutely transparent. Data about the agents search queries and their behavior remain on their devices, ensuring anonymity. This data can be synced between devices by agent's private instance of the `cyber` chain.
+- Existing search engines, such as Google, use thousands of professional assessors to improve the quality of search rank. Validators have the maximum economic interest in the entire protocol and can voluntarily allocate part of their commission in CYB tokens on smart contract to pay for professional search assessors. Each validator can provide an application for assessor to make a search more relevant. Application index all transactions and stores information about changes of weights in the knowledge graph. Assessors receive assignments to check the relevance of cyberlinks and, if necessary, they increase cyberlinks weight. The validator automatically checks for increased or decreased cyberlink weights with which assessor has worked. If the assessor increased the weight of the link and the final weight due to the actions of the other agents also increased, then the cyberlink was more relevant and the assessor receives a reward from validator.
+
+We are confident that the measures described above will allow us to build an effective search, created by people for people, without the need to transfer their personal data to intermediaries like Google and Facebook.
+
+## In-browser implementation
+
+We wanted to imagine how that could work in a web3 browser. To our disappointment we [were not able](https://github.com/cybercongress/cyb/blob/master/docs/comparison.md) to find the web3 browser that can showcase the coolness of the proposed approach in action. That is why we decide to develop the web3 browser [cyb](https://github.com/cybercongress/cyb/blob/master/docs/cyb.md) that has sample application .cyber for interacting with `cyber://` protocol.
+
+![search-main](https://user-images.githubusercontent.com/410789/60329155-151be200-9990-11e9-8d78-e32e72285abc.png)
+
+As another good example, we created [a Chrome extension](https://github.com/cybercongress/cyb-virus) that allows anybody to pin any web page to ipfs and index it by any keywords, thus make it searchable.
+
+Current search snippets are ugly, but we expect they can be easily extended using IPLD for different types of content so they can be even more beautiful than that of Google.
+
+During the implementation of proposed architecture, we realize at least 3 key benefits a Google probably would not be able to deliver with conventional approach:
+- the search result can be easily delivered from a p2p network right into search results: eg. .cyber can play video.
+- payment buttons can be embedded right into search snippets, so web3 agent can interact with search results, eg. an agent can buy an item right in `.cyber`. So e-commerce can flourish because of transparent conversion attribution.
+- search snippets must not be static but can be interactive, eg. `.cyber` eventually can answer location-based answers.
+
 ## Roadmap
 
-We foresee the demand for the following features community could work on after launch:
+We foresee the demand for the following protocol features community could work on after launch:
 
 - Parametrization
-- KV
+- Universal oracle
 - IBC
 - WASM VM for gas
 - Onchain upgrades
 - CUDA VM for gas
 - Privacy by default
-- Application for search assessors
 
 ## Applications of knowledge graph
 
