@@ -4,9 +4,9 @@ import "github.com/cybercongress/cyberd/app"
 
 type ResultSearch struct {
 	Cids       []app.RankedCid `json:"cids"`
-	TotalCount int                 `json:"total"`
-	Page       int                 `json:"page"`
-	PerPage    int                 `json:"perPage"`
+	TotalCount int             `json:"total"`
+	Page       int             `json:"page"`
+	PerPage    int             `json:"perPage"`
 }
 
 func Search(cid string, page, perPage int) (*ResultSearch, error) {
@@ -16,3 +16,4 @@ func Search(cid string, page, perPage int) (*ResultSearch, error) {
 	links, totalSize, err := cyberdApp.Search(cid, page, perPage)
 	return &ResultSearch{links, totalSize, page, perPage}, err
 }
+

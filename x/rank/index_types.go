@@ -48,6 +48,7 @@ type SearchIndex interface {
 	Run() GetError
 	Load(links Links)
 	Search(cidNumber CidNumber, page, perPage int) ([]RankedCidNumber, int, error)
+	GetRankValue(cidNumber CidNumber) float64
 	PutNewLinks(links []CompactLink)
 	PutNewRank(rank Rank)
 }
@@ -66,3 +67,6 @@ func (i NoopSearchIndex) Search(cidNumber CidNumber, page, perPage int) ([]Ranke
 }
 func (i NoopSearchIndex) PutNewLinks(links []CompactLink) {}
 func (i NoopSearchIndex) PutNewRank(rank Rank) {}
+func (i NoopSearchIndex) GetRankValue(cidNumber CidNumber) float64 {
+	return 0
+}

@@ -2,10 +2,11 @@ package rank
 
 import (
 	"errors"
-	. "github.com/cybercongress/cyberd/x/link/types"
-	"github.com/tendermint/tendermint/libs/log"
 	"sort"
 	"time"
+
+	. "github.com/cybercongress/cyberd/x/link/types"
+	"github.com/tendermint/tendermint/libs/log"
 )
 
 type BaseSearchIndex struct {
@@ -114,7 +115,7 @@ func (i *BaseSearchIndex) handleLink(link CompactLink) {
 	}
 }
 
-func (i *BaseSearchIndex) getRankValue(cid CidNumber) float64 {
+func (i *BaseSearchIndex) GetRankValue(cid CidNumber) float64 {
 	if i.rank.Values == nil || uint64(len(i.rank.Values)) <= uint64(cid) {
 		return 0
 	}
@@ -135,7 +136,7 @@ func (i *BaseSearchIndex) extendIndex(fromCidNumber uint64) {
 func (i *BaseSearchIndex) putLinkIntoIndex(from CidNumber, to CidNumber) {
 	fromLinks := i.links[uint64(from)].sortedLinks
 	// todo: not optimal. replace with some another implementation. may be AVL tree
-	rankedTo := RankedCidNumber{to, i.getRankValue(to)}
+	rankedTo := RankedCidNumber{to, i.GetRankValue(to)}
 	pos := sort.Search(len(fromLinks), func(i int) bool { return fromLinks[i].rank < rankedTo.rank })
 	fromLinks = append(fromLinks, RankedCidNumber{})
 	copy(fromLinks[pos+1:], fromLinks[pos:])
@@ -186,7 +187,7 @@ func (i *BaseSearchIndex) recalculateIndices() {
 		currentSortedLinks := i.links[j].sortedLinks
 		newSortedLinks := make(sortableCidNumbers, 0, len(currentSortedLinks))
 		for _, cidNumber := range currentSortedLinks {
-			newRankedCid := RankedCidNumber{cidNumber.number, i.getRankValue(cidNumber.number)}
+			newRankedCid := RankedCidNumber{cidNumber.number, i.GetRankValue(cidNumber.number)}
 			newSortedLinks = append(newSortedLinks, newRankedCid)
 		}
 		sort.Stable(sort.Reverse(newSortedLinks))
