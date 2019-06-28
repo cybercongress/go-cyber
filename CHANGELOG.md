@@ -30,6 +30,7 @@
 
 - Edit GPU list according to @litvintech comments [\#345](https://github.com/cybercongress/cyberd/pull/345) ([SaveTheAles](https://github.com/SaveTheAles))
 - Change get-cyb description [\#344](https://github.com/cybercongress/cyberd/pull/344) ([SaveTheAles](https://github.com/SaveTheAles))
+- Final fixes of paper [\#334](https://github.com/cybercongress/cyberd/pull/334) ([xhipster](https://github.com/xhipster))
 - update run\_validator [\#325](https://github.com/cybercongress/cyberd/pull/325) ([wimel](https://github.com/wimel))
 - \#320 add multisig guide create and send [\#324](https://github.com/cybercongress/cyberd/pull/324) ([SaveTheAles](https://github.com/SaveTheAles))
 - Some Dan's fixes [\#323](https://github.com/cybercongress/cyberd/pull/323) ([marzipanstar](https://github.com/marzipanstar))
