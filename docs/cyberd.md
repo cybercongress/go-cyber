@@ -367,9 +367,10 @@ Only 2 distribution events happens happens prior to Genesis:
 
 Genesis of `cyber` protocol will contains 1 000 000 000 000 000 CYB (One Quadrillion CYB) broken down as follows:
 
--  50 000 000 000 000 CYB as drop for all ATOM stakeholders
+- 600 000 000 000 000 CYB under multisig managed by cyberCongress for manual distributions during cyber•Auction for those who stake THC until the end of cyber•Auction
+- 200 000 000 000 000 CYB under multisig managed by cyberCongress: the Game of Thrones for ATOM and ETH holders, 100 TCYB for each.
 - 100 000 000 000 000 CYB for top 80% ETH holders by stake excluding contracts
--  50 000 000 000 000 CYB as the drop for all ATOM stakeholders
+-  50 000 000 000 000 CYB as drop for all ATOM stakeholders
 -  50 000 000 000 000 CYB for pre-genesis contributors in ATOM
 
 Game of Thrones - is a game between ATOM and ETH holders for being the greatest. As a result of 21-day auction after Genesis, every community earn 10% of CYB. In order to make the game run smoothly we concisely adding arbitrage opportunity in the form of significant discount to ATOM holders because the system needs provably professional validators and delegators at the beginning and basically for free.
