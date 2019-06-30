@@ -6,19 +6,19 @@ Notes on [`cyber`](https://github.com/cybercongress/cyberd/releases/tag/v0.1.0) 
 
 ## Abstract
 
-A consensus computer allows computing of provably relevant answers without opinionated blackbox intermediaries such as Google, Youtube, Amazon or Facebook. Stateless content-addressable peer-to-peer communication networks such as IPFS and stateful consensus computers such as Ethereum provide part of the solution, but there are at least three problems associated with implementation. Of course, the first problem is the subjective nature of relevance. The second problem is that it is hard to scale consensus computer for a huge knowledge graph. The third problem is that the quality of such a knowledge graph will suffer from different attack surfaces such as sybil, selfish behaviour of interacting agents. In this paper, we (1) define a protocol for provable consensus computing of relevance between IPFS objects based on Tendermint consensus of cyber•rank computed on GPU, (2) discuss implementation details and (3) design distribution and incentive scheme based on our experience. We believe the minimalistic architecture of the protocol is critical for the formation of a network of domain-specific knowledge consensus computers. As a result of our work some applications never existed before emerge. We expand the work with our "after Genesis vision" on features and apps.
+A consensus computer that allows for computing of provably relevant answers, without opinionated blackbox intermediaries such as Google, Youtube, Amazon or Facebook. Stateless, content-addressable, peer-to-peer communication networks, such as IPFS, and stateful consensus computers, such as Ethereum, provide part of the solution. But there are at least three problems associated with that implementation: Of course, the first problem is the subjective nature of relevance. The second problem, is that it is hard to scale consensus computers for an over-sized knowledge graph. The third problem, is that the quality of such knowledge graph will suffer from different surface attacks such as: sybil attacks and  selfish behaviour of the interacting agents. In this paper, we (1) define a protocol for provable consensus computing of relevance, between IPFS objects based on Tendermint consensus of cyber•rank, which is computed on GPU, (2) discuss the  implementation details and (3) design a distribution and an incentive scheme, based on our experience. We believe that the minimalistic architecture of the protocol is critical for the formation of a network of a domain-specific knowledge in consensus computers. As a result of our work, some applications that never existed before - emerge. We expand the work with our "after Genesis vision" on features and apps.
 
 ## Introduction to web3
 
-Original protocols of the Internet such as TCP/IP, DNS, URL, and HTTPS brought a web into the point where it is now. Along with all the benefits they have created they brought more problem to the table. Globality being a vital property of the web since inception is under real threat. The speed of connections degrades with network grow and from ubiquitous government interventions into privacy and security of web users. One property, not evident in the beginning, become important with everyday usage of the Internet: it's ability to exchange permanent hyperlinks thus they [would not break after time has passed](https://ipfs.io/ipfs/QmNhaUrhM7KcWzFYdBeyskoNyihrpHvUEBQnaddwPZigcN). Reliance on "one at a time ISP" architecture allows governments effectively censor packets. It is the last straw in a conventional web stack for every engineer who is concerned about the future of our children.
+Original protocols of the Internet such as TCP/IP, DNS, URL, and HTTPS brought the web into a point where it is now located. Along with all the benefits the protocols have created, they brought more problems to the table. Globality - being a vital property of the web since its inception, is under a real threat. The speed of the connection degrades while the network grows. Ubiquitous government interventions into privacy and security of web usersare also a reason. One property, not evident in the beginning, becomes important with everyday usage of the Internet: it's ability to exchange permanent hyperlinks - thus they [would not break after time had passed](https://ipfs.io/ipfs/QmNhaUrhM7KcWzFYdBeyskoNyihrpHvUEBQnaddwPZigcN). Reliance on "one at a time ISP" architecture, allows governments to effectively censor packets. It is the last straw in a conventional web stack for every engineer who is concerned about the future of our children.
 
-Other properties while being not so critical are very desirable: offline and real-time. Average internet user being offline must have the ability to work with the state it has and after acquiring connection being able to sync with global state and continue to verify state's validity in realtime while having a connection. Now, these properties offered on the app level while such properties must be integrated into lower level protocols.
+Other properties, while being not so critical are very desirable: offline and real-time. The average internet user that is in an offline mode, must have the ability to work with the state he has, and after acquiring connection to be able to sync with the global state and continue to verify the validity of the state in realtime while establishing a connection. Currently, these properties are only offered on the application level, while such properties must be integrated into lower level protocols.
 
-The emergence of a [web3 stack](https://ipfs.io/ipfs/Qmf3eHU9idMUZgx6MKhCsFPWL24X9pDUi2ECqyH8UtBAMQ) creates an opportunity for a new kind of Internet. Community calls it web3. We call it "The Great Web" as it is expected that some low-level conventions must become immutable and not being changed for decades. e.g. immutable content links. It has a promise to remove problems of a conventional protocol stack and add to the web better speed and more accessible connection. However, as usual in a story with a new stack, new problems emerge. One of such problem is general-purpose search. Existing general-purpose search engines are restrictive centralized databases everybody forced to trust. These search engines were designed primarily for client-server architecture based on TCP/IP, DNS, URL, and HTTPS protocols. Web3 creates a challenge and opportunity for a search engine based on developing technologies and specifically designed for them. Surprisingly the permission-less blockchain architecture itself allows organizing general purpose search engine in a way inaccessible for previous architectures.
+The emergence of a [web3 stack](https://ipfs.io/ipfs/Qmf3eHU9idMUZgx6MKhCsFPWL24X9pDUi2ECqyH8UtBAMQ) creates an opportunity for a new kind of Internet. Community calls it web3. We call it - "The Great Web", as it is expected that some low-level conventions will become immutable and havent been changed for decades. i.e. immutable content links. They seem promising at removing problems of a conventional protocol stack, and add to the web - better speed and a more accessible connection. However, as usual, with a story thta offers a new stack, new problems begin to emerge. One of such problems, is general-purpose search. The existing general-purpose search engines are: restrictive centralized databases everybody is forced to trust. These search engines were designed primarily for client-server architecture based on TCP/IP, DNS, URL, and HTTPS protocols. Web3 creates a challenge and an opportunity for a search engine based on developing technologies and is specifically designed for them. Surprisingly, the permissionless blockchain architecture itself allows organizing general purpose search engine in a way inaccessible to previous architectures.
 
 ## On adversarial examples problem
 
-[Conventional architecture of search engines](https://ipfs.io/ipfs/QmeS4LjoL1iMNRGuyYSx78RAtubTT2bioSGnsvoaupcHR6) there one entity process and rank all the shit suffers from one hard but the particular problem that still has not been solved even by brilliant Google scientists: [adversarial examples problem](https://ipfs.io/ipfs/QmNrAFz34SLqkzhSg4wAYYJeokfJU5hBEpkT4hPRi226y9). The problem Google acknowledge is that it is rather hard to algorithmically reason either this particular sample is adversarial or not independently on how cool the learning technology is. Obviously, a cryptoeconomic approach can change beneficiaries in this game effectively removing possible sybil attack vectors and removing the necessity to make a decision on example crawling and meaning extraction from one entity to the whole world. Learning sybil-resistant model will probably lead to orders of magnitude more predictive results.
+[The conventional architecture of search engines](https://ipfs.io/ipfs/QmeS4LjoL1iMNRGuyYSx78RAtubTT2bioSGnsvoaupcHR6) is a one entity process, and - to rank all the shit that suffers from one difficult, but a particular problem, that is still has not been solved, even by the brilliant scientists from Google: [examples of the adversarial problem](https://ipfs.io/ipfs/QmNrAFz34SLqkzhSg4wAYYJeokfJU5hBEpkT4hPRi226y9). The problem that Google acknowledges, is that it is rather hard to algorithmically reason, wether or not this particular sample is adversarial, that is - independently of how cool the learning technology itself is. Obviously, a cryptoeconomic approach can change beneficiaries in this game effectively, by removing possible sybil attack vectors, and by removing the necessity to make a decision on example crawling and meaning extraction from one entity to the whole world. A learning sybil-resistant model will probably lead to orders of magnitude more predictive results.
 
 ## Cyber protocol at `cyber`
 
@@ -37,16 +37,16 @@ We represent a knowledge graph as a weighted graph of directed links between con
 
 ![knowledge_graph.png](https://ipfs.io/ipfs/QmejVRS9irYb6eXGDZNM9YEuFyb3a5jn4EWh3MRC3LVRij)
 
-Content addresses are essentially web3 links. Instead of using non-obvious and mutable thing:
+Content addresses are essentially web3 links. Instead of using non-obvious and mutable things:
 ```
 https://github.com/cosmos/cosmos/blob/master/WHITEPAPER.md
 ```
-we can use pretty much exact thing:
+we can use pretty much the exact thing:
 ```
 Qme4z71Zea9xaXScUi6pbsuTKCCNFp5TAv8W5tjdfH7yuH
 ```
 
-Using content addresses for building a knowledge graph we get [so much needed](https://steemit.com/web3/@hipster/an-idea-of-decentralized-search-for-web3-ce860d61defe5est) superpowers of [ipfs](https://ipfs.io/ipfs/QmV9tSDx9UiPeWExXEeH6aoDvmihvx6jD5eLb4jbTaKGps)-[like](https://ipfs.io/ipfs/QmXHGmfo4sjdHVW2MAxczAfs44RCpSeva2an4QvkzqYgfR) p2p protocols for a search engine:
+Using content addresses for building a knowledge graph we get [the so much needed](https://steemit.com/web3/@hipster/an-idea-of-decentralized-search-for-web3-ce860d61defe5est) superpowers of [ipfs](https://ipfs.io/ipfs/QmV9tSDx9UiPeWExXEeH6aoDvmihvx6jD5eLb4jbTaKGps)-[like](https://ipfs.io/ipfs/QmXHGmfo4sjdHVW2MAxczAfs44RCpSeva2an4QvkzqYgfR) p2p protocols for a search engine:
 
 - mesh-network future proof
 - interplanetary
@@ -54,7 +54,7 @@ Using content addresses for building a knowledge graph we get [so much needed](h
 - accessible
 - technology agnostic
 
-Web3 agents generate our knowledge graph. Web3 agents include itself to the knowledge graph by transacting only once. Thereby they prove the existence of private keys for content addresses of revealed public keys. Using this basic proof mechanics consensus computer could have provable differentiation between subjects and objects in a knowledge graph.
+Web3 agents generate our knowledge graph. Web3 agents includes itself in the knowledge graph by transacting only once. Thereby, they prove the existence of private keys for content addresses of revealed public keys. Using this basic proof mechanics consensus computer could have provable differentiation between subjects and objects in a knowledge graph.
 
 Our `cyber` implementation is based on [`cosmos-sdk`](https://github.com/cosmos/cosmos-sdk) identities and [`cidv0`](https://github.com/multiformats/cid#cidv0) content addresses.
 
@@ -62,7 +62,7 @@ Web 3 agents generate knowledge graph by applying `cyberlinks`.
 
 ## Cyberlinks
 
-To understand cyberlinks, we need to understand the difference between `URL link` aka hyperlink and `IPFS link`. `URL link` points to the location of content, but `IPFS link` point to the content itself. The difference in web architecture based on location links and content links is drastical, hence require new approaches.
+To understand cyberlinks, we need to understand the difference between a `URL link`, aka hyperlinks, and an `IPFS link`. A `URL link` points to the location of content, but an `IPFS link` points to the content itself. The difference of web architecture that is based on location links and content links is drastical, hence it requires a new approach.
 
 `Cyberlink` is an approach to link two content addresses or `IPFS links` semantically:
 
@@ -72,15 +72,15 @@ QmdvsvrVqdkzx8HnowpXGLi88tXZDsoNrGhGvPvHBQB6sH
 Qme4z71Zea9xaXScUi6pbsuTKCCNFp5TAv8W5tjdfH7yuH
 ```
 
-This `cyberlink` means that cyberd presentation on cyberc0n is referencing Cosmos whitepaper. A concept of `cyberlink` is a convention around simple semantics of communication format in any peer to peer network:
+This `cyberlink` means that cyberd presentation on cyberc0n is referencing to the Cosmos whitepaper. A concept of `cyberlink` is a convention around simple semantics of communication format in any peer to peer network:
 
 `<content-address x>.<content-address z>`
 
 You can see that `cyberlink` represents a link between two links. Easy peasy!
 
-Cyberlink is a simple yet powerful semantic construction for building a predictive model of the universe. That is, using `cyberlinks` instead of `hyperlinks` gives us superpowers inaccessible for previous architectures of general purpose search engines.
+Cyberlink is a simple, yet a powerful semantic construction for building a predictive model of the universe. That is: using `cyberlinks` instead of `hyperlinks` gives us superpowers inaccessible to previous architectures of general purpose search engines.
 
-Cyberlinks can be extended, e.g. can form link chains if exist a series of two cyberlinks from one agent in which the second link in the first cyberlink is equal to the first link in the second cyberlink:
+Cyberlinks can be extended, i.e. can form link chains, if exist a series of two cyberlinks from one agent in which the second link in the first cyberlink is equal to the first link in the second cyberlink:
 
 ```
 <content-address x>.<content-address z>
