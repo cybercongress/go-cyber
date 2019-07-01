@@ -23,6 +23,8 @@ There are three types of key representations that are used:
   - Get this value with `cyberdcli tendermint show-validator`
   - e.g. `cybervalconspub1zcjduepq0ms2738680y72v44tfyqm3c9ppduku8fs6sr73fx7m666sjztznqzp2emf`
 
+- ``
+
 ## Generate keys
 
 You'll need an account private and public key pair \(a.k.a. `sk, pk` respectively\) to be able to receive funds, send txs, bond tx, etc.
@@ -83,7 +85,9 @@ We strongly recommend _NOT_ using the same passphrase for multiple keys. The cyb
 
 All user keypairs stored locally at `PATH_TO_CYBERD/cli/keys` folder. You can backup this folder for easy migrating between testnets.
 
-The node keypair stored in `priv_validator_key.json` at `PATH_TO_CYBERD/daemon/config` folder. You can delete it and restart docker if you want to change this keypair. The new pair will create automatically. Or you can backup it too and insert in the same folder at new testnet if you want same validator pubkey.
+The node keypair stored in `node_key.json` at `PATH_TO_CYBERD/daemon/config` folder. You can delete it and restart docker if you want to change this keypair. The new pair will create automatically. Or you can backup it too and insert in the same folder at new testnet if you want same node pubkey.
+
+Also, you can change your validator keypairs by removing `priv_validator_key.json` file from `PATH_TO_CYBERD/daemon/config` folder. Do not forget to restart container for applying changes. Or you can backup this file for easy migrating between testnets.
 
 ## Generate Multisig Public Keys
 
