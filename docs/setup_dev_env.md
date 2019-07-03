@@ -6,18 +6,18 @@
 
 ## Import project to GoLand
 Open Project in GoLand by selecting: Open Project -> selecting cloned repository root folder
-![Open project](../img/open-project.png)
+![Open project](https://ipfs.io/ipfs/QmYQxSKzQkkpCofuHmbJZqYoTo4cuvHQuUNYkJRBKgSduL)
 
 Enable **go mod** package management
-![Enable go mod](../img/enable-go-mod.png)
+![Enable go mod](https://ipfs.io/ipfs/Qmaz3o7LjAG9bNhE8VkHSUokM8EqgfcVXT9R5qB3XxLZSe)
 Wait for dependency downloading and indexation
 
 ## Add Run Configurations
 ###Add testnet configuration
-![Generate testnet](../img/generate-testnet.png)
+![Generate testnet](./img/generate-testnet.png)
 
 ### Add run configuration with GPU
-![Run node](../img/run-node.png)
+![Run node](./img/run-node.png)
 
 #### Notes about GPU dev environment
 
@@ -26,14 +26,15 @@ TO DO
 ```
 
 ### Add run configuration with CPU
-![Run node CPU](../img/run-node-cpu.png)
+![Run node CPU](./img/run-node-cpu.png)
 
 ```
 start --allow-search=true --compute-rank-on-gpu=false --home=./mytestnet/node0/cyberd
 ```
 
 ### Add reset configuration
-![Reset node data](../img/reset-node-data.png)
+![Reset node data](./img/reset-node-data.png)
+
 
 ## Running Node
 ### Generate testnet
@@ -297,5 +298,4 @@ curl -X GET 'localhost:26657/search?cid="QmbTARMsUw9X2ZEbBaFXRu9JEqNN2g4VZ6DPgtg
 ```
 
 # #fuckgoogle
-
 
