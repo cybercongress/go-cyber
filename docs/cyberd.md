@@ -315,7 +315,7 @@ In our relevance for commons `cyber` implementation proof of relevance root hash
 
 We need speedy confirmation times to feels like the usual web app. It is a strong architecture requirement that shapes an economic topology and scalability of the cyber protocol.
 
-Proposed blockchain design is based on [Tendermint consensus](https://ipfs.io/ipfs/QmaMtD7xDgghqgjN62zWZ5TBGFiEjGQtuZBjJ9sMh816KJ) algorithm with 146 validators and has very fast 2 second finality time. Average confirmation timeframe at half the second with asynchronous interaction make complex blockchain search almost invisible for agents.
+Proposed blockchain design is based on [Tendermint consensus](https://ipfs.io/ipfs/QmaMtD7xDgghqgjN62zWZ5TBGFiEjGQtuZBjJ9sMh816KJ) algorithm with 146 validators and has very fast near 3 second finality time. Average confirmation timeframe at half the second with asynchronous interaction make complex blockchain search almost invisible for agents.
 
 Let us say that our node implementation based on `cosmos-sdk` can process 10k transactions per second. Thus every day at least 8.64 million agents can submit 100 cyberlinks each and impact results simultaneously. That is enough to verify all assumptions in the wild. As blockchain technology evolves we want to check that every hypothesis work before scale it further. Moreover, the proposed design needs demand for full bandwidth in order the relevance becomes valuable. That is why we strongly focus on accessible, but provable distribution from inception.
 
@@ -386,7 +386,7 @@ The role of cyber•Auction is twofold:
 
 After genesis CYB tokens can be created only by validators based on staking and slashing parameters. The basic consensus is that newly created CYB tokens are distributed to validators as they do the essential work to make relevance machine run both regarding energy consumed for computation and cost for storage capacity. So stakeholders decide where the tokens can flow further.
 
-After Genesis inflation adjusted using `TokensPerBlock` parameter. Given that the network has 2 second target block and ~7% target inflation the starting parameter will be 50 MCYB.
+After Genesis inflation adjusted using `TokensPerBlock` parameter. Given that the network has 2 second target block and ~7% target inflation the starting parameter will be 5 MCYB.
 
 There is no currently such thing as the maximum amount of CYB due to continuous inflation paid to validators. Currently, CYB is implemented using 64int so the creation of more CYB makes significantly more expensive compute state changes and rank. We expect that lifetime monetary strategy must be established by the governance system after complete initial distribution of CYB and activation of smart contract functionality.
 
