@@ -21,8 +21,16 @@ Wait for dependency downloading and indexation
 
 #### Notes about GPU dev environment
 
+```
+TO DO
+```
+
 ### Add run configuration with CPU
 ![Run node CPU](../img/run-node-cpu.png)
+
+```
+start --allow-search=true --compute-rank-on-gpu=false --home=./mytestnet/node0/cyberd
+```
 
 ### Add reset configuration
 ![Reset node data](../img/reset-node-data.png)
