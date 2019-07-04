@@ -2,6 +2,7 @@ package app
 
 import (
 	"errors"
+	"math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
@@ -53,8 +54,8 @@ func (app *CyberdApp) Rank(cid string, proof bool) (float64, []merkle.Proof, err
 	rankValue := app.rankState.GetRankValue(cidNumber)
 
 	if proof {
-		merkleTree := app.rankState.GetMerkelTree();
-		proofs := merkleTree.GetIndexProofs(cidNumber)
+		proofs := make([]merkle.Proof, 0, int64(math.Log2(float64(app.CidsCount()))))
+		proofs = app.rankState.GetMerkleTree().GetIndexProofs(int(cidNumber))
 		return rankValue, proofs, nil
 	}
 	return rankValue, nil, nil

@@ -18,12 +18,12 @@ func (n *Node) GetIndexProofs(i int) []Proof {
 
 	if n.left != nil && i >= n.left.firstIndex && i <= n.left.lastIndex {
 		proofs = n.left.GetIndexProofs(i)
-		proofs = append(proofs, Proof{hash: n.right.hash, leftSide: false})
+		proofs = append(proofs, Proof{Hash: n.right.hash, LeftSide: false})
 	}
 
 	if n.right != nil && i >= n.right.firstIndex && i <= n.right.lastIndex {
 		proofs = n.right.GetIndexProofs(i)
-		proofs = append(proofs, Proof{hash: n.left.hash, leftSide: true})
+		proofs = append(proofs, Proof{Hash: n.left.hash, LeftSide: true})
 	}
 
 	return proofs

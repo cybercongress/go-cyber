@@ -6,7 +6,7 @@ import (
 
 type RankAndProofResult struct {
 	Proofs []merkle.Proof `json:"proofs"`
-	rankval float64  `json:"rankvalue"`
+	Rank float64  `amino:"unsafe" json:"rank"`
 }
 
 func Rank(cid string, proof bool) (*RankAndProofResult, error) {

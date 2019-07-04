@@ -186,6 +186,6 @@ func (s *RankState) GetLastCidNum() CidNumber {
 	return CidNumber(len(s.networkCidRank.Values) - 1)
 }
 
-func (s *RankState) GetMerkleTree() *Tree {
+func (s *RankState) GetMerkleTree() *merkle.Tree {
 	return s.networkCidRank.MerkleTree
 }
