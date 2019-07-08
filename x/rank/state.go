@@ -1,13 +1,15 @@
 package rank
 
 import (
+	"time"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cybercongress/cyberd/store"
 	"github.com/cybercongress/cyberd/x/bank"
 	"github.com/cybercongress/cyberd/x/link/keeper"
 	. "github.com/cybercongress/cyberd/x/link/types"
 	"github.com/tendermint/tendermint/libs/log"
-	"time"
+	"github.com/cybercongress/cyberd/merkle"
 )
 
 type RankState struct {
@@ -107,6 +109,10 @@ func (s *RankState) Search(cidNumber CidNumber, page, perPage int) ([]RankedCidN
 	return s.index.Search(cidNumber, page, perPage)
 }
 
+func (s *RankState) GetRankValue(cidNumber CidNumber) float64 {
+	return s.index.GetRankValue(cidNumber)
+}
+
 func (s *RankState) startRankCalculation(ctx sdk.Context, log log.Logger) {
 	calcCtx := NewCalcContext(ctx, s.linkIndexedKeeper, s.cidNumKeeper, s.stakeIndex, s.allowSearch)
 	go CalculateRankInParallel(calcCtx, s.rankCalcChan, s.rankErrChan, s.computeUnit, log)
@@ -178,4 +184,8 @@ func (s *RankState) getNextMerkleTreeAsBytes() []byte {
 
 func (s *RankState) GetLastCidNum() CidNumber {
 	return CidNumber(len(s.networkCidRank.Values) - 1)
+}
+
+func (s *RankState) GetMerkleTree() *merkle.Tree {
+	return s.networkCidRank.MerkleTree
 }

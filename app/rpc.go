@@ -2,8 +2,11 @@ package app
 
 import (
 	"errors"
+	"math"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
+	"github.com/cybercongress/cyberd/merkle"
 	cbd "github.com/cybercongress/cyberd/types"
 	bdwth "github.com/cybercongress/cyberd/x/bandwidth/types"
 	cbdlink "github.com/cybercongress/cyberd/x/link/types"
@@ -39,6 +42,23 @@ func (app *CyberdApp) Search(cid string, page, perPage int) ([]RankedCid, int, e
 	}
 
 	return result, size, nil
+}
+
+func (app *CyberdApp) Rank(cid string, proof bool) (float64, []merkle.Proof, error) {
+
+	cidNumber, exists := app.cidNumKeeper.GetCidNumber(app.RpcContext(), cbdlink.Cid(cid))
+	if !exists || cidNumber > app.rankState.GetLastCidNum() {
+		return 0, nil, errors.New("no such cid found")
+	}
+
+	rankValue := app.rankState.GetRankValue(cidNumber)
+
+	if proof {
+		proofs := make([]merkle.Proof, 0, int64(math.Log2(float64(app.CidsCount()))))
+		proofs = app.rankState.GetMerkleTree().GetIndexProofs(int(cidNumber))
+		return rankValue, proofs, nil
+	}
+	return rankValue, nil, nil
 }
 
 func (app *CyberdApp) Account(address sdk.AccAddress) auth.Account {
