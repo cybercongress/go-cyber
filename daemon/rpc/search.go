@@ -1,6 +1,9 @@
 package rpc
 
-import "github.com/cybercongress/cyberd/app"
+import (
+	"github.com/cybercongress/cyberd/app"
+	"github.com/tendermint/tendermint/rpc/lib/types"
+)
 
 type ResultSearch struct {
 	Cids       []app.RankedCid `json:"cids"`
@@ -9,7 +12,7 @@ type ResultSearch struct {
 	PerPage    int             `json:"perPage"`
 }
 
-func Search(cid string, page, perPage int) (*ResultSearch, error) {
+func Search(ctx *rpctypes.Context, cid string, page, perPage int) (*ResultSearch, error) {
 	if perPage == 0 {
 		perPage = 100
 	}

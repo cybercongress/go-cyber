@@ -6,10 +6,13 @@
 [![version](https://img.shields.io/github/release/cybercongress/cyberd.svg?style=flat-square)](https://github.com/cybercongress/cyberd/releases/latest)
 [![CircleCI](https://img.shields.io/circleci/project/github/cybercongress/cyberd.svg?style=flat-square)](https://circleci.com/gh/cybercongress/cyberd/tree/master)
 [![license](https://img.shields.io/badge/License-Cyber-brightgreen.svg?style=flat-square)](https://github.com/cybercongress/cyberd/blob/master/LICENSE)
+![Cosmos-SDK](https://img.shields.io/static/v1.svg?label=cosmos-sdk&message=0.34.4&color=blue&style=flat-square)
+![Tendermint](https://img.shields.io/static/v1.svg?label=tendermint&message=0.31.5&color=blue&style=flat-square)
 [![LoC](https://tokei.rs/b1/github/cybercongress/cyberd)](https://github.com/cybercongress/cyberd)
 [![contributors](https://img.shields.io/github/contributors/cybercongress/cyberd.svg?style=flat-square)](https://github.com/cybercongress/cyberd/graphs/contributors)
 [![Coverage Status](https://coveralls.io/repos/github/cybercongress/cyberd/badge.svg?branch=master)](https://coveralls.io/github/cybercongress/cyberd?branch=master)
 [![discuss](https://img.shields.io/badge/Join%20Us%20On-Telegram-2599D2.svg?style=flat-square)](https://t.me/fuckgoogle)
+
 
 **WARNING**: Project status: **testnet**. We are at research state at the moment.
 Read [whitepaper](./docs/cyberd.md)

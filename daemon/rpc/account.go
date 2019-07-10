@@ -5,13 +5,14 @@ import (
 	"github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	bdwth "github.com/cybercongress/cyberd/x/bandwidth/types"
+	"github.com/tendermint/tendermint/rpc/lib/types"
 )
 
 type ResultAccount struct {
 	Account auth.BaseAccount `json:"account"`
 }
 
-func Account(address string) (*ResultAccount, error) {
+func Account(ctx *rpctypes.Context, address string) (*ResultAccount, error) {
 	accAddress, err := types.AccAddressFromBech32(address)
 	if err != nil {
 		return nil, err
@@ -32,7 +33,7 @@ func Account(address string) (*ResultAccount, error) {
 	}, nil
 }
 
-func AccountBandwidth(address string) (*bdwth.AcсBandwidth, error) {
+func AccountBandwidth(ctx *rpctypes.Context, address string) (*bdwth.AcсBandwidth, error) {
 
 	accAddress, err := types.AccAddressFromBech32(address)
 	if err != nil {

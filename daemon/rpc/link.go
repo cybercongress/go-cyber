@@ -6,9 +6,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cybercongress/cyberd/x/link"
 	cbd "github.com/cybercongress/cyberd/x/link/types"
+	"github.com/tendermint/tendermint/rpc/lib/types"
 )
 
-func IsLinkExist(from string, to string, address string) (bool, error) {
+func IsLinkExist(ctx *rpctypes.Context, from string, to string, address string) (bool, error) {
 
 	if len(address) == 0 {
 		return cyberdApp.IsLinkExist(cbd.Cid(from), cbd.Cid(to), nil), nil

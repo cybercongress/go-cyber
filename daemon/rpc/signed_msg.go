@@ -7,6 +7,7 @@ import (
 	"github.com/tendermint/tendermint/crypto/secp256k1"
 	"github.com/tendermint/tendermint/rpc/core"
 	ctypes "github.com/tendermint/tendermint/rpc/core/types"
+	rpctypes "github.com/tendermint/tendermint/rpc/lib/types"
 )
 
 type Signature struct {
@@ -52,6 +53,6 @@ func SignedMsgHandler(unmarshal UnmarshalTxRequestFn) func(dataHex string) (*cty
 			return nil, err
 		}
 
-		return core.BroadcastTxSync(stdTxBytes)
+		return core.BroadcastTxSync(&rpctypes.Context{}, stdTxBytes)
 	}
 }
