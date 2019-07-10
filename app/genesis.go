@@ -15,7 +15,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/cybercongress/cyberd/types/coin"
 	"github.com/cybercongress/cyberd/util"
-	"github.com/cybercongress/cyberd/x/mint"
+	"github.com/cosmos/cosmos-sdk/x/mint"
 	"github.com/pkg/errors"
 	"github.com/spf13/viper"
 	"github.com/tendermint/go-amino"
@@ -105,8 +105,17 @@ func NewDefaultGenesisState() GenesisState {
 			SendEnabled: true,
 		},
 		MintData: mint.GenesisState{
+			Minter: mint.Minter{
+				Inflation: sdk.NewDecWithPrec(13, 2),
+				AnnualProvisions: sdk.NewDec(0),
+			},
 			Params: mint.Params{
-				TokensPerBlock: 634195840,
+				MintDenom:           coin.CYB,
+				InflationRateChange: sdk.NewDecWithPrec(13, 2),
+				InflationMax:        sdk.NewDecWithPrec(20, 2),
+				InflationMin:        sdk.NewDecWithPrec(7, 2),
+				GoalBonded:          sdk.NewDecWithPrec(67, 2),
+				BlocksPerYear:       uint64(60 * 60 * 8766 / 5), // assuming 5 second block times
 			},
 		},
 		StakingData: staking.GenesisState{
@@ -221,6 +230,9 @@ func validateGenesisState(genesisState GenesisState) (err error) {
 		return err
 	}
 	if err := bank.ValidateGenesis(genesisState.BankData); err != nil {
+		return err
+	}
+	if err := mint.ValidateGenesis(genesisState.MintData); err != nil {
 		return err
 	}
 
