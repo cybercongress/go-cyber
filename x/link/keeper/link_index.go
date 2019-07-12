@@ -2,7 +2,9 @@ package keeper
 
 import (
 	"encoding/binary"
+	"crypto/sha256"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cybercongress/cyberd/merkle"
 	"github.com/cybercongress/cyberd/util"
 	. "github.com/cybercongress/cyberd/x/link/types"
 	cmn "github.com/tendermint/tendermint/libs/common"
@@ -21,10 +23,13 @@ type LinkIndexedKeeper struct {
 	nextRankOutLinks Links
 
 	currentBlockLinks []CompactLink
+	MerkleTree        *merkle.Tree
 }
 
 func NewLinkIndexedKeeper(keeper LinkKeeper) *LinkIndexedKeeper {
-	return &LinkIndexedKeeper{LinkKeeper: keeper}
+	merkleTree := merkle.NewTree(sha256.New(), true)
+
+	return &LinkIndexedKeeper{LinkKeeper: keeper, MerkleTree: merkleTree}
 }
 
 func (i *LinkIndexedKeeper) Load(rankCtx sdk.Context, freshCtx sdk.Context) {
@@ -46,6 +51,11 @@ func (i *LinkIndexedKeeper) Load(rankCtx sdk.Context, freshCtx sdk.Context) {
 
 	i.nextRankInLinks = newInLinks
 	i.nextRankOutLinks = newOutLinks
+
+	i.Iterate(freshCtx, func(link CompactLink) {
+		linkAsBytes := link.MarshalBinary()
+		i.MerkleTree.Push(linkAsBytes)
+	})
 }
 
 func (i *LinkIndexedKeeper) FixLinks() {
@@ -74,6 +84,10 @@ func (i *LinkIndexedKeeper) PutLink(ctx sdk.Context, link CompactLink) {
 	if !ctx.IsCheckTx() {
 		i.currentBlockLinks = append(i.currentBlockLinks, link)
 	}
+
+	linkAsBytes := link.MarshalBinary()
+	i.MerkleTree.Push(linkAsBytes)
+
 	i.LinkKeeper.PutLink(ctx, link)
 }
 
@@ -101,6 +115,10 @@ func (i *LinkIndexedKeeper) GetCurrentBlockNewLinks() []CompactLink {
 		}
 	}
 	return result
+}
+
+func (i *LinkIndexedKeeper) GetNetworkLinkHash() []byte {
+	return i.MerkleTree.RootHash()
 }
 
 func (i *LinkIndexedKeeper) IsAnyLinkExist(from CidNumber, to CidNumber) bool {

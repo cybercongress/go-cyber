@@ -25,7 +25,6 @@ type LinkKeeper interface {
 	GetLinksCount(ctx sdk.Context) uint64
 	Iterate(ctx sdk.Context, process func(link CompactLink))
 	WriteLinks(ctx sdk.Context, writer io.Writer) (err error)
-	LoadFromReader(ctx sdk.Context, reader io.Reader) (err error)
 	Commit(blockHeight uint64) (err error)
 }
 
@@ -109,23 +108,6 @@ func (lk BaseLinkKeeper) WriteLinks(ctx sdk.Context, writer io.Writer) (err erro
 	}, lk.storage.LastVersion())
 
 	return err
-}
-
-func (lk BaseLinkKeeper) LoadFromReader(ctx sdk.Context, reader io.Reader) (err error) {
-	linksCountBytes, err := util.ReadExactlyNBytes(reader, LinksCountBytesSize)
-	if err != nil {
-		return
-	}
-	linksCount := binary.LittleEndian.Uint64(linksCountBytes)
-
-	for j := uint64(0); j < linksCount; j++ {
-		linkBytes, err := util.ReadExactlyNBytes(reader, LinkBytesSize)
-		if err != nil {
-			return err
-		}
-		lk.PutLink(ctx, UnmarshalBinaryLink(linkBytes))
-	}
-	return
 }
 
 func (lk BaseLinkKeeper) Commit(blockHeight uint64) error {
