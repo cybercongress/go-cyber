@@ -50,8 +50,6 @@ func main() {
 	rootCmd.AddCommand(cmd.TestnetFilesCmd(ctx, cdc))
 	rootCmd.AddCommand(cmd.GenTxCmd(ctx, cdc))
 	rootCmd.AddCommand(cmd.AddGenesisAccountCmd(ctx, cdc))
-	rootCmd.AddCommand(cmd.GenesisCmds(ctx, cdc))
-	rootCmd.AddCommand(cmd.LotteryBalancesCmd(ctx, cdc))
 	server.AddCommands(ctx, cdc, rootCmd, newApp, exportFunc(ctx))
 	rootCmd.AddCommand(client.NewCompletionCmd(rootCmd, true))
 

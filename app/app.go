@@ -12,6 +12,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/params"
 	"github.com/cosmos/cosmos-sdk/x/slashing"
 	"github.com/cosmos/cosmos-sdk/x/staking"
+	"github.com/cosmos/cosmos-sdk/x/mint"
 	"github.com/cybercongress/cyberd/store"
 	"github.com/cybercongress/cyberd/types"
 	cbd "github.com/cybercongress/cyberd/types"
@@ -23,7 +24,6 @@ import (
 	"github.com/cybercongress/cyberd/x/debug"
 	"github.com/cybercongress/cyberd/x/link"
 	"github.com/cybercongress/cyberd/x/link/keeper"
-	"github.com/cybercongress/cyberd/x/mint"
 	"github.com/cybercongress/cyberd/x/rank"
 	abci "github.com/tendermint/tendermint/abci/types"
 	cmn "github.com/tendermint/tendermint/libs/common"
@@ -74,9 +74,7 @@ type CyberdApp struct {
 	govKeeper           gov.Keeper
 	paramsKeeper        params.Keeper
 	accBandwidthKeeper  bw.Keeper
-
-	//inflation
-	minter mint.Minter
+	mintKeeper     		mint.Keeper
 
 	// cyberd storage
 	// todo: move all processes with this storages to another file
@@ -156,9 +154,9 @@ func NewCyberdApp(
 		gov.DefaultCodespace,
 	)
 
-	app.minter = mint.NewMinter(
-		app.feeCollectionKeeper, &stakingKeeper,
-		app.paramsKeeper.Subspace(mint.DefaultParamspace),
+	app.mintKeeper = mint.NewKeeper(
+		app.cdc, dbKeys.mint, app.paramsKeeper.Subspace(mint.DefaultParamspace), &stakingKeeper,
+		app.feeCollectionKeeper,
 	)
 
 	// cyberd keepers
@@ -202,7 +200,7 @@ func NewCyberdApp(
 	app.MountStores(
 		dbKeys.main, dbKeys.acc, dbKeys.cidNum, dbKeys.cidNumReverse, dbKeys.links, dbKeys.rank, dbKeys.stake,
 		dbKeys.slashing, dbKeys.gov, dbKeys.params, dbKeys.distr, dbKeys.fees, dbKeys.accBandwidth,
-		dbKeys.blockBandwidth, dbKeys.tDistr, dbKeys.tParams, dbKeys.tStake,
+		dbKeys.blockBandwidth, dbKeys.tDistr, dbKeys.tParams, dbKeys.tStake, dbKeys.mint,
 	)
 
 	app.SetInitChainer(app.applyGenesis)
@@ -279,7 +277,7 @@ func (app *CyberdApp) applyGenesis(ctx sdk.Context, req abci.RequestInitChain) a
 		genesisState.StakingData.Validators.ToSDKValidators(),
 	)
 	gov.InitGenesis(ctx, app.govKeeper, genesisState.GovData)
-	mint.InitGenesis(ctx, app.minter, genesisState.MintData)
+	mint.InitGenesis(ctx, app.mintKeeper, genesisState.MintData)
 	bandwidth.InitGenesis(ctx, app.bandwidthMeter, app.accBandwidthKeeper, genesisState.GetAddresses())
 
 	err = validateGenesisState(genesisState)
@@ -453,7 +451,7 @@ func (app *CyberdApp) BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock) 
 	debug.BeginBlocker(app.debugState, req, app.Logger())
 
 	// mint new tokens for the previous block
-	mint.BeginBlocker(ctx, app.minter)
+	mint.BeginBlocker(ctx, app.mintKeeper)
 	// distribute rewards for the previous block
 	distr.BeginBlocker(ctx, req, app.distrKeeper)
 
@@ -497,7 +495,7 @@ func (app *CyberdApp) Commit() (res abci.ResponseCommit) {
 		panic(err)
 	}
 	app.BaseApp.Commit()
-	return abci.ResponseCommit{Data: app.rankState.GetNetworkRankHash()}
+	return abci.ResponseCommit{Data: app.appHash()}
 }
 
 // Implements ABCI
@@ -515,5 +513,15 @@ func (app *CyberdApp) appHash() []byte {
 	if app.LastBlockHeight() == 0 {
 		return make([]byte, 0)
 	}
-	return app.rankState.GetNetworkRankHash()
+
+	linkHash := app.linkIndexedKeeper.GetNetworkLinkHash()
+	rankHash := app.rankState.GetNetworkRankHash()
+
+	result := make([]byte, len(linkHash))
+
+	for i := 0; i < len(linkHash); i++ {
+		result[i] = (byte)(linkHash[i] ^ rankHash[i])
+	}
+
+	return result
 }

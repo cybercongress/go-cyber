@@ -1,6 +1,5 @@
 .DS_Store
 node_modules/
-.lotion_node*/
 
 *_blocks_data*
 
@@ -9,9 +8,6 @@ node_modules/
 *.iml
 *.pyc
 
-initial-rank
-initial_guess_impact_results
-*/ethereum/result/
 *enwiki*
 *.so
 *.o
