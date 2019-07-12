@@ -106,15 +106,15 @@ func NewDefaultGenesisState() GenesisState {
 		},
 		MintData: mint.GenesisState{
 			Minter: mint.Minter{
-				Inflation: sdk.NewDecWithPrec(13, 2),
+				Inflation: sdk.NewDecWithPrec(7, 2),
 				AnnualProvisions: sdk.NewDec(0),
 			},
 			Params: mint.Params{
 				MintDenom:           coin.CYB,
 				InflationRateChange: sdk.NewDecWithPrec(13, 2),
-				InflationMax:        sdk.NewDecWithPrec(20, 2),
-				InflationMin:        sdk.NewDecWithPrec(7, 2),
-				GoalBonded:          sdk.NewDecWithPrec(67, 2),
+				InflationMax:        sdk.NewDecWithPrec(18, 2),
+				InflationMin:        sdk.NewDecWithPrec(5, 2),
+				GoalBonded:          sdk.NewDecWithPrec(88, 2),
 				BlocksPerYear:       uint64(60 * 60 * 8766 / 5), // assuming 5 second block times
 			},
 		},
