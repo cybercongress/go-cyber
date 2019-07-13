@@ -62,6 +62,8 @@ by ETH private key
 cyberdcli keys add <account_name> --recover 
 ```
 
+cyberdcli provides compatibility of Cosmos and ETH public keys with Cyber addresses.
+
 You can check your application account details by account name:
 
 ```bash
