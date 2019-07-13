@@ -56,16 +56,16 @@ cyberdcli keys add import_private <account_name>
 ```
 by ETH private key
 
-If you check your private keys, you'll now see `<account_name>`:
+... and Cosmos account by seed phrase:
+
+```bash
+cyberdcli keys add <account_name> --recover 
+```
+
+You can check your application account details by account name:
 
 ```bash
 cyberdcli keys show <account_name>
-```
-
-View the validator operator's address via:
-
-```shell
-cyberdcli keys show <account_name> --bech=val
 ```
 
 You can see all your available keys by typing:
