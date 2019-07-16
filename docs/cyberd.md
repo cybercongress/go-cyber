@@ -25,7 +25,7 @@ The emergence of a [web3 stack](https://ipfs.io/ipfs/Qmf3eHU9idMUZgx6MKhCsFPWL24
 
 In the [conventional architecture of search engines](https://ipfs.io/ipfs/QmeS4LjoL1iMNRGuyYSx78RAtubTT2bioSGnsvoaupcHR6), where search request processing and result ranking is performed by a major company's software, there is a problem of a great concern that still has not been solved even by brilliant Google scientists – [Adversarial examples](https://ipfs.io/ipfs/QmNrAFz34SLqkzhSg4wAYYJeokfJU5hBEpkT4hPRi226y9). 
 Google acknowledges that it is rather difficult to algorithmically reason whether this particular sample is adversarial or not, which makes it difficult to understand how effective this learning technology is. 
-Obviously, the cryptoeconomic approach can change beneficiaries in this game. Thus it effectively removes possible sybil attack vectors and eradicates the necessity to make a decision such as centralized ranking of web pages on the basis of analysis of their content and user behavior. Learning sybil-resilient model will probably lead to more predictive results.
+Obviously, the cryptoeconomic approach can change beneficiaries in this game. Thus it effectively removes possible sybil attack vectors and eradicates the necessity to make centralized decisions on ranking search results based on content analysis and user behavior. Learning sybil-resilient model will probably lead to more predictive results.
 
 ## Cyber protocol at `cyber`
 
