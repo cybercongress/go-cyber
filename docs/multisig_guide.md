@@ -1,15 +1,15 @@
-# 2 of 3 multisig account creation and sending transaction guide
+# A guide for 2 of 3 multisig account creation and for sending transactions
+`Cyberd` uses docker container technology for usability. 
+If you are not using a docker container, and are using a `gaiacli`, or you have installed `cyberd` from binaries, then this guide can be also useful for you. Just skip some of the docker features, because this guide is focused more on the docker users. 
+A reminder: this guide covers all types of transactions, not only send transactions. This guide is also actual for Cosmos Hub Gaiacli users excepted bandwidth in Cosmos we pay a fee with tokens.
 
-`Cyberd` uses docker container technology for usability. If you don't use docker container and use `gaiacli` or you've installed `cyberd` from binaries this guide is useful for you too. Just skip some docker features, because this guide focused on docker users. Remind: this guide covers all types of transactions, not only send. Also, this guide actual for Cosmos Hub Gaiacli users excepted bandwidth in Cosmos we pay a fee with tokens.
+Do not forget about the `--chain-id` flag in `cyberd`, and in the `Cosmos Hub` networks. 
+You can always het the current `<chain-id>` in the master branch of the product repository.
 
-Do not forget about `--chain-id` flag in `cyberd` and even `Cosmos Hub` networks. Current `<chain-id>` you can always get in master branch of product repo.
+## Creating a multisig
+Multisig account creation and sending transactions is simple and clear, but can be a little long.
 
-## Creating multisig
-
-Multisig account creating and sending transaction is simple and clear but a little bit long.
-
-1. Go inside docker container:
-
+1. Go inside the docker container:
   1.1 Detect `<container_id>`
       ```bash
       docker ps
@@ -24,65 +24,67 @@ Multisig account creating and sending transaction is simple and clear but a litt
 cyberdcli keys add test1
 cyberdcli keys add test2
 ```
+
 3. Add pubkeys of remote thresholders accounts:
 ```bash
 cyberdcli keys add test3 --pubkey=<thresholder_pub_key>
 ```
-Now we have 3 accounts for multisig account generating: `test1` and `test2` on the local machine and we have access to them. `test3` from remote thresholder and we haven't access to it. All created and imported accounts you can check with:
+We now have 3 accounts for multisig account generating: 
+`test1` and `test2` on the local machine that we have access to. 
+`test3` from a remote thresholder that we do not have access to. 
+All created and imported accounts can be checked with:
 ```bash
 cyberdcli keys list
 ```
 
-4. Now we can create test 2-of-3 multisig account named, for example, `multitest1` with keys `test1`,`test2` on local machine and `test3` by remote thresholder:
+4. Now we can create and test 2-of-3 multisig account named for example: `multitest1` with keys `test1`,`test2` on local machine and `test3` on a remote thresholder:
 ```bash
 cyberdcli keys add multitest1 --multisig=test1,test2,test3 --multisig-threshold 2
 ```
 
-5. You should top up your balance of your multisig account. Make sure if you have enough bandwidth to make transaction later.
+5. You should top up the balance of your multisig account. Make sure that you have enough bandwidth in order to execute transactions later.
 
-## Spending from multisig
-
-6. Create unsigned transaction from multisig account and store it in `unsigned.json` file:
+## Spending from a multisig account
+6. Create an unsigned transaction from the multisig account and store it in the `unsigned.json` file:
 ```bash
 cyberdcli tx send <recipient_address> <amount>cyb --from=<multisig_address> --chain-id=<chain_id> --generate-only > unsigned.json
 ```
 
-7. Sign this transaction with the following command and store signed file in `sign1.json`:
+7. Sign this transaction with the following command, and then store the signed file in `sign1.json`:
 ```bash
 cyberdcli tx sign unsigned.json --multisig=<multisig_address> --from=<your_account_name> --output-document sign1.json --chain-id=<chain_id>
 ```
 
-8. Now you need to send the resulting file to remote thresholders for signing. You can see the content of the transaction file with
+8. You now need to send the obtained file to a remote thresholders for signing. You can see the content of the file containing the transaction with:
  ```bash
 cat unsigned.json
 ```
-command and copy content to convenient for you `.json` file and send it. Also, you can copy this file from docker container to local machine by following command
+command, and you may now copy the content that is convenient to your `.json` file and send it. 
+Also, you can copy this file from the docker container to a local machine via the following command:
 ```bash
 docker cp <container_id>:/unsigned.json .
 ```
-File will been copied to current repo.
+The file has been copied to current repo.
 
-9. Remote thresholder should to sign it too like it was two steps below and send you signed file back. For example `sign2.json`
+9. You should aslo sign the remote thresholder like you did two steps above, and send your signed file back. 
+For example `sign2.json`
 
-
-10. Copy signed file from remote thresholder in a docker container by the following command:
-
+10. Copy the signed file from the remote thresholder in a docker container via the following command:
 ```bash
 docker cp sign2.json <container_id>:/sign2.json
 ```
 
-Your docker container should content 3 `.json` files: `unsigned.json`, `sign1.json`, and `sign2.json` at least. This is necessary and sufficient condition because we've set up 2 of 3 multisig account
+Your docker container should content 3 `.json` files: 
+`unsigned.json`, `sign1.json`, and `sign2.json` (at least). This is the necessary and sufficient conditions because we've set up a     2-out-of 3 multisig account.
 
-11. Go bask inside a docker container and generate multisig transaction with all signs.
-
+11. Go bask inside the docker container and generate a multisig transaction with all the signatures:
 ```bash
 cyberdcli tx multisign unsigned.json multitest1 sign1.json sign2.json --chain-id=<chain_id> > signed.json
 ```
 
-12. Finally we need to broadcast this transaction to network
-
+12. Finally we need to broadcast this transaction to the network:
 ```bash
 cyberdcli tx broadcast signed.json --chain-id=<chain_id>
 ```
 
-If multisig account has enough bandwidth transaction should be broadcasted.
+If the multisig account has enough bandwidth, the transaction should be broadcasted to the network.
