@@ -36,6 +36,7 @@
 
 **Merged pull requests:**
 
+- Update multisig\_guide.md [\#366](https://github.com/cybercongress/cyberd/pull/366) ([serejandmyself](https://github.com/serejandmyself))
 - Upgrade to cosmos-sdk  [\#362](https://github.com/cybercongress/cyberd/pull/362) ([litvintech](https://github.com/litvintech))
 - Merkle tree for links [\#361](https://github.com/cybercongress/cyberd/pull/361) ([litvintech](https://github.com/litvintech))
 - Removed old distribution [\#358](https://github.com/cybercongress/cyberd/pull/358) ([litvintech](https://github.com/litvintech))
