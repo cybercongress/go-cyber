@@ -6,6 +6,8 @@
 
 **Implemented enhancements:**
 
+- RPC endpoint for cid rank proofs [\#309](https://github.com/cybercongress/cyberd/issues/309)
+- Merkle proofs for link storage [\#299](https://github.com/cybercongress/cyberd/issues/299)
 - Rank calculation period automatic adjustment [\#142](https://github.com/cybercongress/cyberd/issues/142)
 - RPC get cid rank endpoint [\#116](https://github.com/cybercongress/cyberd/issues/116)
 
@@ -16,28 +18,41 @@
 
 **Closed issues:**
 
+- Upgrade mint module [\#356](https://github.com/cybercongress/cyberd/issues/356)
+- Remove old distribution [\#353](https://github.com/cybercongress/cyberd/issues/353)
 - Adjusting of link weight [\#330](https://github.com/cybercongress/cyberd/issues/330)
 - Answer why CyberD is better for Web3 then Google [\#328](https://github.com/cybercongress/cyberd/issues/328)
 -  Exclude at the current stage the consideration of the behavioural factor in the search for ordinary users [\#327](https://github.com/cybercongress/cyberd/issues/327)
 - New distribution [\#316](https://github.com/cybercongress/cyberd/issues/316)
 - Create list of supported and tested GPUs [\#315](https://github.com/cybercongress/cyberd/issues/315)
+- Upgrade to cosmos-sdk 0.34.4 [\#313](https://github.com/cybercongress/cyberd/issues/313)
 - Update development environment documentation [\#311](https://github.com/cybercongress/cyberd/issues/311)
 - Fix pictures in whitepaper [\#303](https://github.com/cybercongress/cyberd/issues/303)
+- Add backup and restore validator keys guide. [\#286](https://github.com/cybercongress/cyberd/issues/286)
 - Cyberadmin telegram-bot for cyberd [\#281](https://github.com/cybercongress/cyberd/issues/281)
 - Align current network capabilities with cyberCongress pricing model [\#262](https://github.com/cybercongress/cyberd/issues/262)
+- Add keystore doc [\#256](https://github.com/cybercongress/cyberd/issues/256)
 - Slow node start-up. [\#138](https://github.com/cybercongress/cyberd/issues/138)
 
 **Merged pull requests:**
 
+- Upgrade to cosmos-sdk  [\#362](https://github.com/cybercongress/cyberd/pull/362) ([litvintech](https://github.com/litvintech))
+- Merkle tree for links [\#361](https://github.com/cybercongress/cyberd/pull/361) ([litvintech](https://github.com/litvintech))
+- Removed old distribution [\#358](https://github.com/cybercongress/cyberd/pull/358) ([litvintech](https://github.com/litvintech))
+- Upgrade to cosmos-hub mint module [\#357](https://github.com/cybercongress/cyberd/pull/357) ([litvintech](https://github.com/litvintech))
+- 309 rank proof [\#355](https://github.com/cybercongress/cyberd/pull/355) ([janus](https://github.com/janus))
 - Fixes fatal mistake in distribution [\#348](https://github.com/cybercongress/cyberd/pull/348) ([xhipster](https://github.com/xhipster))
 - Format hotfix [\#347](https://github.com/cybercongress/cyberd/pull/347) ([xhipster](https://github.com/xhipster))
 - Edit GPU list according to @litvintech comments [\#345](https://github.com/cybercongress/cyberd/pull/345) ([SaveTheAles](https://github.com/SaveTheAles))
 - Change get-cyb description [\#344](https://github.com/cybercongress/cyberd/pull/344) ([SaveTheAles](https://github.com/SaveTheAles))
+- Add keystore managment guide \#256 [\#343](https://github.com/cybercongress/cyberd/pull/343) ([SaveTheAles](https://github.com/SaveTheAles))
+- Merkle tree for links [\#340](https://github.com/cybercongress/cyberd/pull/340) ([litvintech](https://github.com/litvintech))
 - Final fixes of paper [\#334](https://github.com/cybercongress/cyberd/pull/334) ([xhipster](https://github.com/xhipster))
 - update run\_validator [\#325](https://github.com/cybercongress/cyberd/pull/325) ([wimel](https://github.com/wimel))
 - \#320 add multisig guide create and send [\#324](https://github.com/cybercongress/cyberd/pull/324) ([SaveTheAles](https://github.com/SaveTheAles))
 - Some Dan's fixes [\#323](https://github.com/cybercongress/cyberd/pull/323) ([marzipanstar](https://github.com/marzipanstar))
 - Proposal of the new distribution [\#322](https://github.com/cybercongress/cyberd/pull/322) ([xhipster](https://github.com/xhipster))
+- Cosmos-sdk upgrade to 0.34.4 [\#314](https://github.com/cybercongress/cyberd/pull/314) ([litvintech](https://github.com/litvintech))
 - Updated docs for dev env setup [\#312](https://github.com/cybercongress/cyberd/pull/312) ([litvintech](https://github.com/litvintech))
 - Add goveralls support for test coverage [\#305](https://github.com/cybercongress/cyberd/pull/305) ([arturalbov](https://github.com/arturalbov))
 
