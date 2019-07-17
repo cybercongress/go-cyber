@@ -10,10 +10,12 @@ You can always het the current `<chain-id>` in the master branch of the product 
 Multisig account creation and sending transactions is simple and clear, but can be a little long.
 
 1. Go inside the docker container:
+
   1.1 Detect `<container_id>`
       ```bash
       docker ps
       ```
+      
   1.2 ... and go inside it
     ```bash
     docker exec -ti <container_id> bash
