@@ -6,7 +6,7 @@ The Cyberd as the Cosmos Hub has launched and one of its core features is the ab
 
 In the current Cyber governance implementation anyone can submit a text proposal to the system. A minimum deposit is required for a proposal to enter the voting period during which CYB holders will be able to vote on whether the proposal is accepted or not. The numbers used in the following are based on the parameters implemented on the Cyberd at the time of writing (18th July 2019).
 
-![governance2](https://ipfs.io/ipfs/QmRR3jeAdW8mpkxFoinrMRzMRmARgmz1hKCtHEvLSTiJ2u)
+![governance](https://ipfs.io/ipfs/QmTYkpGPb4f6cmUwSwTPawfarcojgmkN18i3sNm2kJ9xW6)
 
 <p align="center">An Illustration of the Governance Process on the Cyber</p>
 
