@@ -10,7 +10,7 @@ In the current Cyber governance implementation anyone can submit a text proposal
 
 ![governance2](https://ipfs.io/ipfs/QmdzCLm7YQyvQJZfFmWxTzv4gECcaBNFsL6YJdzetESd13)
 
-<p align="center">An Illustration of the Governance Process on the Cosmos Hub.</p>
+<p align="center">An Illustration of the Governance Process on the Cyber</p>
 
 ## Phase 1: The Deposit Period
 
