@@ -1,14 +1,12 @@
 # An Overview of Cyber Governance
 
-![governance](https://ipfs.io/ipfs/QmYAe4UDkTEtXJaEXveuXNArWgWWrWt6Sa54KozfzfuBsu)
-
 The Cyberd as the Cosmos Hub has launched and one of its core features is the ability for CYB holders to collectively govern the blockchain. CYB holders can submit proposals and signal their approval or disapproval to proposals submitted to the network by signing a special type of transaction. The following article will cover the governance procedure on the Cyber and introduce our governance tool that allows any CYB holder to participate in the on-chain governance mechanism.
 
 ## The Governance Procedure
 
 In the current Cyber governance implementation anyone can submit a text proposal to the system. A minimum deposit is required for a proposal to enter the voting period during which CYB holders will be able to vote on whether the proposal is accepted or not. The numbers used in the following are based on the parameters implemented on the Cyberd at the time of writing (18th July 2019).
 
-![governance2](https://ipfs.io/ipfs/QmdzCLm7YQyvQJZfFmWxTzv4gECcaBNFsL6YJdzetESd13)
+![governance2](https://ipfs.io/ipfs/QmRR3jeAdW8mpkxFoinrMRzMRmARgmz1hKCtHEvLSTiJ2u)
 
 <p align="center">An Illustration of the Governance Process on the Cyber</p>
 
