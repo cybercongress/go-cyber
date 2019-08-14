@@ -33,40 +33,58 @@
 
 The Great Web is coming. New search systems will drive their growth. Google is the most powerful religion ever and now time to go out of that.
 
-![cyber_vs_google](./docs/img/cyber.png)
+<div align="center">
+ <img src="./docs/img/cyber.png"/>
+</div>
 
 ## What is Cyberd
+
+Cyberd is knowledge consensus computer or search engine which computes cyber•Rank like token weighted Page Rank of knowledge graph of Content IDentificators (CIDs) linked with each other with cyberlinks: 
+
 ```
-Cyberd is knowledge consensus computer (search engine) which computes cyber•Rank (token weighted Page Rank) of knowledge graph of CIDs (Content IDentificators) linked with each other with cyberlinks (CID -> CID) committed by Web3 agents. Tendermint consensus. Bandwidth transaction model. NVIDIA GPUs with CUDA. IPFS.
+CID1 -----> CID2
 ```
+
+The cyberlinks committed by Web3 agents. It is link between two CIDs. In current implementation the CID is IPFS hash CIDv0 or CIDv1 version. Web3 agent can link any keyword with CID and cyberd will wrap keyword in IPFS hash and create link between two hashes with a weight according to user stake.
+
+All cyberlinks with weight store in the knowledge graph. It's re-computed by validators every number of blocks. For these calculations, we've implemented the proof of relevance root hash is computed on Cuda GPUs every round as the best way to calculate merkle tree faster. We need to load the whole graph in memory for calculating that’s why memory volume is important.
+
+Cyberd is the first implementation of the cyber protocol based on cosmos-SDK and tendermint BFT Consensus. 
+
+This implementation use a very simple bandwidth model. Main goal of that model is to reduce daily network growth to given constant.
+
+Thus, here we introduce resource credits(RS). Each message type of transaction like the link or send have assigned RS cost. We call it Bandwidth. The user's bandwidth depends on its balance as the sum of liquid and staked tokens. The user's bandwidth is recoverable value. Full recovery of bandwidth quantity from 0 to max value is 24 h.
+
+There is period `AdjustPricePeriod` summing how much RS or bandwidth was spent for that period (`AdjustPricePeriodTotalSpent`). Also, there is constant `AdjustPricePeriodDesiredSpent`, used to calculate network loading. The `AdjustPricePeriodTotalSpent/AdjustPricePeriodDesiredSpent` ratio defined so called current `price multiplier`. If network usage is low, `price multiplier` adjust message cost (by simply multiplying) to allow user with lower stake to do more transactions. If resource demand increase, `price multiplier` goes `>1` thus increase messages cost and limiting final tx count for some long-term period (RC recovery will be `<` then RC spending).
+
 
 ## For validators
-```
+
 Each validator participates in tendermint consensus and compute/validate cyber•Rank of the knowledge graph.
-```
+
 
 ## For rank providers
-```
+
 Rank providers crawlers/index web and cyberlink CIDs of given data to cyberd consuming their bandwidth.
-```
+
 
 ## For search users
-```
+
 Valuable, censorship-resistant and provable search in web for all species. Search is transaction-based and allowed if the agent has enough bandwidth.
-```
+
 
 ## For developers
-```
-```
+
+The chance to create new decentralized Google with related services as SEO, crawlers, indexers, decentralized platforms and so on. You can be the first. 
 
 ## For data/content producers
-```
-```
+
+The opportunity to move their content to web3 and save it from any kind of censorship. Your content is yours. Make shure user will find it.
 
 ## For miners / GPUs holders
-```
+
 With network grow we will need cards, a lot of cards. Come to us, guys.
-```
+
 
 ## cyber•Rank
 ```
@@ -132,7 +150,15 @@ To run a full-node or validator in the latest public testnet of the cyberd follo
 
 ## Explorers
 
+[Cyberd](https://cyberd.ai/) explorer based on [bigDipper](https://cosmos.bigdipper.live) by Forbole(https://www.forbole.com/)
+
 ## Game of Links
+
+Game of links is a game between cyber•Congress and Cosmos stakehodlers for the place in Genesis. It should bootstrap and load network at Euler-5 testnet. The great project will come with significant number of followers. The game is finished if both of the following criteria met:
+
+**\>** 146 validators in consensus during 10k blocks
+**\>** 500000 ATOM donated or 90 days passed
+
 
 #### Goals:
 ```
@@ -155,7 +181,15 @@ To run a full-node or validator in the latest public testnet of the cyberd follo
 
 ## Docs
 
+Explore the docs in our [knowledge base](https://cybercongress.ai/docs/cyberd/cyberd/).
+
 ## Community
+
+**\>** [devChat](https://t.me/fuckgoogle) for web3 agnets
+**\>** [TG channel](https://t.me/cybercongress) with hot updates
+**\>** [Twitter](https://twitter.com/cyber_devs) for updates and memes
+**\>** [Steemit blog](https://steemit.com/@cybercongress)
+**\>** [Own blog](https://cybercongress.ai/post/) with rss and useful articles
 
 ## 10 min Development Setup
 
@@ -199,16 +233,21 @@ We want to pay you for your contribution! We constantly fund our issues on [gitc
 
 ## Team
 
+
 ## Linked Projects
+
+**\>** Cosmos-SDK
+**\>** Tendermint
+**\>** IPFS
 
 ## GIFs
 
 ## License
-```
+
 Cyber License - Don’t believe, don’t fear, don’t ask.
 
 We will happy if you fork and launch your own network. And setup knowledge graph. These guys will meet each other with IBC.
-```
+
 
 ## The End of Google
 
