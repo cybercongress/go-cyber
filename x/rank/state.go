@@ -56,7 +56,7 @@ func (s *RankState) Load(ctx sdk.Context, log log.Logger) {
 	s.cidCount = int64(s.mainKeeper.GetCidsCount(ctx))
 
 	s.index = s.BuildSearchIndex(log)
-	s.index.Load(s.linkIndexedKeeper.GetNextOutLinks())
+	s.index.Load(s.linkIndexedKeeper.GetOutLinks())
 	s.getIndexError = s.index.Run()
 
 	// if we fell down and need to start new rank calculation
