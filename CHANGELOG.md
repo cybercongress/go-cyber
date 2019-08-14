@@ -4,22 +4,11 @@
 
 [Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.1.4...HEAD)
 
-**Implemented enhancements:**
-
-- RPC endpoint for cid rank proofs [\#309](https://github.com/cybercongress/cyberd/issues/309)
-- Merkle proofs for link storage [\#299](https://github.com/cybercongress/cyberd/issues/299)
-- Rank calculation period automatic adjustment [\#142](https://github.com/cybercongress/cyberd/issues/142)
-- RPC get cid rank endpoint [\#116](https://github.com/cybercongress/cyberd/issues/116)
-
-**Fixed bugs:**
-
-- Error during rewards withdrawal  [\#302](https://github.com/cybercongress/cyberd/issues/302)
-- Finish Proof of Code genesis drop [\#294](https://github.com/cybercongress/cyberd/issues/294)
-
 **Closed issues:**
 
 - Upgrade mint module [\#356](https://github.com/cybercongress/cyberd/issues/356)
 - Remove old distribution [\#353](https://github.com/cybercongress/cyberd/issues/353)
+- Add validate-genesis command to CLI [\#335](https://github.com/cybercongress/cyberd/issues/335)
 - Adjusting of link weight [\#330](https://github.com/cybercongress/cyberd/issues/330)
 - Answer why CyberD is better for Web3 then Google [\#328](https://github.com/cybercongress/cyberd/issues/328)
 -  Exclude at the current stage the consideration of the behavioural factor in the search for ordinary users [\#327](https://github.com/cybercongress/cyberd/issues/327)
@@ -27,15 +16,26 @@
 - Create list of supported and tested GPUs [\#315](https://github.com/cybercongress/cyberd/issues/315)
 - Upgrade to cosmos-sdk 0.34.4 [\#313](https://github.com/cybercongress/cyberd/issues/313)
 - Update development environment documentation [\#311](https://github.com/cybercongress/cyberd/issues/311)
+- RPC endpoint for cid rank proofs [\#309](https://github.com/cybercongress/cyberd/issues/309)
 - Fix pictures in whitepaper [\#303](https://github.com/cybercongress/cyberd/issues/303)
+- Error during rewards withdrawal  [\#302](https://github.com/cybercongress/cyberd/issues/302)
+- Merkle proofs for link storage [\#299](https://github.com/cybercongress/cyberd/issues/299)
+- Finish Proof of Code genesis drop [\#294](https://github.com/cybercongress/cyberd/issues/294)
 - Add backup and restore validator keys guide. [\#286](https://github.com/cybercongress/cyberd/issues/286)
 - Cyberadmin telegram-bot for cyberd [\#281](https://github.com/cybercongress/cyberd/issues/281)
 - Align current network capabilities with cyberCongress pricing model [\#262](https://github.com/cybercongress/cyberd/issues/262)
 - Add keystore doc [\#256](https://github.com/cybercongress/cyberd/issues/256)
+- Full validating quorum [\#195](https://github.com/cybercongress/cyberd/issues/195)
+- Rank calculation period automatic adjustment [\#142](https://github.com/cybercongress/cyberd/issues/142)
 - Slow node start-up. [\#138](https://github.com/cybercongress/cyberd/issues/138)
+- RPC get cid rank endpoint [\#116](https://github.com/cybercongress/cyberd/issues/116)
+- CheckTx doesn't include coins that will be minted in current block [\#113](https://github.com/cybercongress/cyberd/issues/113)
 
 **Merged pull requests:**
 
+- Search index fix [\#375](https://github.com/cybercongress/cyberd/pull/375) ([litvintech](https://github.com/litvintech))
+- Awesome README [\#374](https://github.com/cybercongress/cyberd/pull/374) ([litvintech](https://github.com/litvintech))
+- add governance overview article [\#367](https://github.com/cybercongress/cyberd/pull/367) ([SaveTheAles](https://github.com/SaveTheAles))
 - Update multisig\_guide.md [\#366](https://github.com/cybercongress/cyberd/pull/366) ([serejandmyself](https://github.com/serejandmyself))
 - Upgrade to cosmos-sdk  [\#362](https://github.com/cybercongress/cyberd/pull/362) ([litvintech](https://github.com/litvintech))
 - Merkle tree for links [\#361](https://github.com/cybercongress/cyberd/pull/361) ([litvintech](https://github.com/litvintech))
@@ -60,22 +60,16 @@
 ## [v0.1.4](https://github.com/cybercongress/cyberd/tree/v0.1.4) (2019-03-15)
 [Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.1.3...v0.1.4)
 
-**Implemented enhancements:**
-
-- Get supply [\#158](https://github.com/cybercongress/cyberd/issues/158)
-
-**Fixed bugs:**
-
-- Consensus Failure [\#293](https://github.com/cybercongress/cyberd/issues/293)
-- Infinity loop in rank end blocker if node was restarted before x00 blocks. [\#283](https://github.com/cybercongress/cyberd/issues/283)
-- Centralized network communication [\#257](https://github.com/cybercongress/cyberd/issues/257)
-
 **Closed issues:**
 
+- Consensus Failure [\#293](https://github.com/cybercongress/cyberd/issues/293)
 - Enabled send [\#290](https://github.com/cybercongress/cyberd/issues/290)
 - move debug logic to x/debug module [\#288](https://github.com/cybercongress/cyberd/issues/288)
 - Add doc of using help feature of cli [\#287](https://github.com/cybercongress/cyberd/issues/287)
+- Infinity loop in rank end blocker if node was restarted before x00 blocks. [\#283](https://github.com/cybercongress/cyberd/issues/283)
 - Add doc about editing moniker and openning 26656 port. [\#282](https://github.com/cybercongress/cyberd/issues/282)
+- Centralized network communication [\#257](https://github.com/cybercongress/cyberd/issues/257)
+- Get supply [\#158](https://github.com/cybercongress/cyberd/issues/158)
 - Development start guide [\#78](https://github.com/cybercongress/cyberd/issues/78)
 
 **Merged pull requests:**
@@ -91,16 +85,13 @@
 ## [v0.1.3](https://github.com/cybercongress/cyberd/tree/v0.1.3) (2019-03-01)
 [Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.1.2...v0.1.3)
 
-**Implemented enhancements:**
-
-- Remove full index loading for next rank in link index [\#275](https://github.com/cybercongress/cyberd/issues/275)
-- Enable governance module [\#193](https://github.com/cybercongress/cyberd/issues/193)
-
 **Closed issues:**
 
+- Remove full index loading for next rank in link index [\#275](https://github.com/cybercongress/cyberd/issues/275)
 - Generate lottery results cmd [\#273](https://github.com/cybercongress/cyberd/issues/273)
 - Can not explore existing account if it have not any outgoing transactions [\#238](https://github.com/cybercongress/cyberd/issues/238)
 - distribution validator slashes don't work in cybercli [\#237](https://github.com/cybercongress/cyberd/issues/237)
+- Enable governance module [\#193](https://github.com/cybercongress/cyberd/issues/193)
 
 **Merged pull requests:**
 
@@ -115,37 +106,33 @@
 ## [v0.1.2](https://github.com/cybercongress/cyberd/tree/v0.1.2) (2019-02-23)
 [Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.1.1...v0.1.2)
 
-**Implemented enhancements:**
+**Closed issues:**
 
 - Update  to cosmos 0.32.0 [\#265](https://github.com/cybercongress/cyberd/issues/265)
+- Rank calculation failed: out of memory [\#264](https://github.com/cybercongress/cyberd/issues/264)
 - Download golang only once during docker build. [\#259](https://github.com/cybercongress/cyberd/issues/259)
 - Do not calculate rank, if there is no new links on last window. [\#258](https://github.com/cybercongress/cyberd/issues/258)
 - Http client only new links option for submit endpoint [\#254](https://github.com/cybercongress/cyberd/issues/254)
 - Add fail at height debug flags [\#250](https://github.com/cybercongress/cyberd/issues/250)
-- Extend isLinkExist endpoint with possibility not specify address param [\#242](https://github.com/cybercongress/cyberd/issues/242)
-- Add staking/validators endpoint to node RPC [\#235](https://github.com/cybercongress/cyberd/issues/235)
-- Add cyberd rest light-client to docker image [\#230](https://github.com/cybercongress/cyberd/issues/230)
-- Improve building of links index for search queries [\#145](https://github.com/cybercongress/cyberd/issues/145)
-- Webscoket API [\#76](https://github.com/cybercongress/cyberd/issues/76)
-
-**Fixed bugs:**
-
-- Rank calculation failed: out of memory [\#264](https://github.com/cybercongress/cyberd/issues/264)
 - Different bandwidth price on same block height [\#247](https://github.com/cybercongress/cyberd/issues/247)
+- Add more seeds into initial config [\#244](https://github.com/cybercongress/cyberd/issues/244)
 - Consensus failure after node restart [\#243](https://github.com/cybercongress/cyberd/issues/243)
+- Extend isLinkExist endpoint with possibility not specify address param [\#242](https://github.com/cybercongress/cyberd/issues/242)
 - Search returns 500 error when previously unexisted "from" CID added [\#241](https://github.com/cybercongress/cyberd/issues/241)
+- Create awesome gif for readme [\#239](https://github.com/cybercongress/cyberd/issues/239)
+- Add staking/validators endpoint to node RPC [\#235](https://github.com/cybercongress/cyberd/issues/235)
 - Rest server  blocks cli keystore file [\#233](https://github.com/cybercongress/cyberd/issues/233)
+- Add cyberd rest light-client to docker image [\#230](https://github.com/cybercongress/cyberd/issues/230)
+- Losе token on testnet  [\#227](https://github.com/cybercongress/cyberd/issues/227)
+- Launch 0.1.1 testnet [\#205](https://github.com/cybercongress/cyberd/issues/205)
 - Cannot interact with node [\#203](https://github.com/cybercongress/cyberd/issues/203)
 - Update cyberd.ai [\#185](https://github.com/cybercongress/cyberd/issues/185)
-- CI: Cyberd docker image building. Include genesis file [\#160](https://github.com/cybercongress/cyberd/issues/160)
-
-**Closed issues:**
-
-- Add more seeds into initial config [\#244](https://github.com/cybercongress/cyberd/issues/244)
-- Create awesome gif for readme [\#239](https://github.com/cybercongress/cyberd/issues/239)
-- Launch 0.1.1 testnet [\#205](https://github.com/cybercongress/cyberd/issues/205)
 - Cyberd release scheme. [\#180](https://github.com/cybercongress/cyberd/issues/180)
+- CI: Cyberd docker image building. Include genesis file [\#160](https://github.com/cybercongress/cyberd/issues/160)
+- Improve building of links index for search queries [\#145](https://github.com/cybercongress/cyberd/issues/145)
+- Store initial supply from genesis file \(used by mint\) [\#115](https://github.com/cybercongress/cyberd/issues/115)
 - Genesis state generator [\#92](https://github.com/cybercongress/cyberd/issues/92)
+- Webscoket API [\#76](https://github.com/cybercongress/cyberd/issues/76)
 - Distribution [\#27](https://github.com/cybercongress/cyberd/issues/27)
 - Ranking research [\#24](https://github.com/cybercongress/cyberd/issues/24)
 - Define distribution in paper [\#5](https://github.com/cybercongress/cyberd/issues/5)
@@ -175,15 +162,12 @@
 ## [v0.1.1](https://github.com/cybercongress/cyberd/tree/v0.1.1) (2019-01-31)
 [Full Changelog](https://github.com/cybercongress/cyberd/compare/euler-1...v0.1.1)
 
-**Fixed bugs:**
-
-- Error on replay with wrong app hash calculation \(block \#914381\) [\#197](https://github.com/cybercongress/cyberd/issues/197)
-
 **Closed issues:**
 
 - Mass testing of cyberd-testnet 0.1.1 [\#219](https://github.com/cybercongress/cyberd/issues/219)
 - Export 0.1.1 genesis from 0.1.0 testnet. [\#215](https://github.com/cybercongress/cyberd/issues/215)
 - Setup 0.1.1 chain params for staking, distr, slashing, mint modules. [\#201](https://github.com/cybercongress/cyberd/issues/201)
+- Error on replay with wrong app hash calculation \(block \#914381\) [\#197](https://github.com/cybercongress/cyberd/issues/197)
 
 ## [euler-1](https://github.com/cybercongress/cyberd/tree/euler-1) (2019-01-31)
 [Full Changelog](https://github.com/cybercongress/cyberd/compare/euler-1.1-dev1...euler-1)
@@ -198,13 +182,10 @@
 ## [euler-1.1-dev1](https://github.com/cybercongress/cyberd/tree/euler-1.1-dev1) (2019-01-30)
 [Full Changelog](https://github.com/cybercongress/cyberd/compare/euler-1.1-dev0...euler-1.1-dev1)
 
-**Implemented enhancements:**
-
-- Docker image  with possibility to select compute unit [\#211](https://github.com/cybercongress/cyberd/issues/211)
-
-**Fixed bugs:**
+**Closed issues:**
 
 - Link msg bandwidth cost doesn't take into account links count  [\#216](https://github.com/cybercongress/cyberd/issues/216)
+- Docker image  with possibility to select compute unit [\#211](https://github.com/cybercongress/cyberd/issues/211)
 
 **Merged pull requests:**
 
@@ -214,36 +195,30 @@
 ## [euler-1.1-dev0](https://github.com/cybercongress/cyberd/tree/euler-1.1-dev0) (2019-01-29)
 [Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.1.0...euler-1.1-dev0)
 
-**Implemented enhancements:**
-
-- Links Exporter [\#184](https://github.com/cybercongress/cyberd/issues/184)
-
-**Fixed bugs:**
-
-- Fix validator manual [\#189](https://github.com/cybercongress/cyberd/issues/189)
-- Change mint module to default cosmos module [\#181](https://github.com/cybercongress/cyberd/issues/181)
-- Current Bandwidth do not respect price [\#168](https://github.com/cybercongress/cyberd/issues/168)
-- negative bandwidnt  [\#164](https://github.com/cybercongress/cyberd/issues/164)
-- Wrong CYB allocation in Genesis [\#156](https://github.com/cybercongress/cyberd/issues/156)
-- Update docker with 0.1.0 version [\#154](https://github.com/cybercongress/cyberd/issues/154)
-- Move import\_private command to keys subcomand [\#152](https://github.com/cybercongress/cyberd/issues/152)
-- Handle import of ethereum privkeys with 0x [\#150](https://github.com/cybercongress/cyberd/issues/150)
-
 **Closed issues:**
 
 - Fix typos [\#207](https://github.com/cybercongress/cyberd/issues/207)
 - Update landing for 0.4 whitepaper [\#204](https://github.com/cybercongress/cyberd/issues/204)
+- Fix validator manual [\#189](https://github.com/cybercongress/cyberd/issues/189)
 - Update to tendermint v29.0 [\#187](https://github.com/cybercongress/cyberd/issues/187)
+- Links Exporter [\#184](https://github.com/cybercongress/cyberd/issues/184)
+- Change mint module to default cosmos module [\#181](https://github.com/cybercongress/cyberd/issues/181)
 - Change Bandwidth Price to Average for 24h Sliding Window [\#179](https://github.com/cybercongress/cyberd/issues/179)
 - High bandwidth cost for create validator msg [\#178](https://github.com/cybercongress/cyberd/issues/178)
 - Bandwidth Specification Change [\#177](https://github.com/cybercongress/cyberd/issues/177)
 - Add rpc endpoint to submit signed link and send messages [\#173](https://github.com/cybercongress/cyberd/issues/173)
 - Tx size reduction: switch to more compact links tx encoding. [\#171](https://github.com/cybercongress/cyberd/issues/171)
+- Current Bandwidth do not respect price [\#168](https://github.com/cybercongress/cyberd/issues/168)
 - index entities count  endpoint [\#165](https://github.com/cybercongress/cyberd/issues/165)
+- negative bandwidnt  [\#164](https://github.com/cybercongress/cyberd/issues/164)
 - Add ipfs hashes to release [\#161](https://github.com/cybercongress/cyberd/issues/161)
 - Change token name from CBD to CYB in the testnetwork [\#157](https://github.com/cybercongress/cyberd/issues/157)
+- Wrong CYB allocation in Genesis [\#156](https://github.com/cybercongress/cyberd/issues/156)
+- Update docker with 0.1.0 version [\#154](https://github.com/cybercongress/cyberd/issues/154)
 - Add more issues templates. [\#153](https://github.com/cybercongress/cyberd/issues/153)
+- Move import\_private command to keys subcomand [\#152](https://github.com/cybercongress/cyberd/issues/152)
 - Add trust-node by default in cli [\#151](https://github.com/cybercongress/cyberd/issues/151)
+- Handle import of ethereum privkeys with 0x [\#150](https://github.com/cybercongress/cyberd/issues/150)
 - Numerous small fixes in whitepaper [\#89](https://github.com/cybercongress/cyberd/issues/89)
 - Cyberd landing make up [\#36](https://github.com/cybercongress/cyberd/issues/36)
 - Whitepaper 0.4 [\#25](https://github.com/cybercongress/cyberd/issues/25)
@@ -275,28 +250,23 @@
 ## [v0.1.0](https://github.com/cybercongress/cyberd/tree/v0.1.0) (2019-01-06)
 [Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.0.8...v0.1.0)
 
-**Implemented enhancements:**
-
-- CID rank merkle proofs [\#133](https://github.com/cybercongress/cyberd/issues/133)
-- Simple go cyberd client [\#122](https://github.com/cybercongress/cyberd/issues/122)
-- Add remainig bandwidth endpoint [\#109](https://github.com/cybercongress/cyberd/issues/109)
-- Get rid of RPC proxy [\#94](https://github.com/cybercongress/cyberd/issues/94)
-
-**Fixed bugs:**
-
-- Cannot check balance using cli [\#149](https://github.com/cybercongress/cyberd/issues/149)
-- Index out of range for cids with not calculated rank yet. [\#139](https://github.com/cybercongress/cyberd/issues/139)
-- Account inmem balances should be updated by wrapping accountKeeper [\#99](https://github.com/cybercongress/cyberd/issues/99)
-
 **Closed issues:**
 
+- Cannot check balance using cli [\#149](https://github.com/cybercongress/cyberd/issues/149)
 - Cli: Add possibility to restore acc from priv keys [\#146](https://github.com/cybercongress/cyberd/issues/146)
+- Index out of range for cids with not calculated rank yet. [\#139](https://github.com/cybercongress/cyberd/issues/139)
+- CID rank merkle proofs [\#133](https://github.com/cybercongress/cyberd/issues/133)
 - Go mod Ci dependency error  [\#128](https://github.com/cybercongress/cyberd/issues/128)
 - Update to cosmos 29 [\#126](https://github.com/cybercongress/cyberd/issues/126)
+- Simple go cyberd client [\#122](https://github.com/cybercongress/cyberd/issues/122)
 - Write down bandwidth specification [\#114](https://github.com/cybercongress/cyberd/issues/114)
+- Consensus hash [\#112](https://github.com/cybercongress/cyberd/issues/112)
+- Add remainig bandwidth endpoint [\#109](https://github.com/cybercongress/cyberd/issues/109)
 - Make docker container based on  nvidia-gpu image. [\#104](https://github.com/cybercongress/cyberd/issues/104)
 - Index transactions by addresses. [\#103](https://github.com/cybercongress/cyberd/issues/103)
 - Calculate rank in ||, post results each 600 blocks. [\#101](https://github.com/cybercongress/cyberd/issues/101)
+- Account inmem balances should be updated by wrapping accountKeeper [\#99](https://github.com/cybercongress/cyberd/issues/99)
+- Get rid of RPC proxy [\#94](https://github.com/cybercongress/cyberd/issues/94)
 - Linkchains support [\#91](https://github.com/cybercongress/cyberd/issues/91)
 - Include addresses into knowledge graph [\#90](https://github.com/cybercongress/cyberd/issues/90)
 - Graphics for whitepaper [\#88](https://github.com/cybercongress/cyberd/issues/88)
@@ -341,19 +311,16 @@
 ## [v0.0.8](https://github.com/cybercongress/cyberd/tree/v0.0.8) (2018-12-11)
 [Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.0.7...v0.0.8)
 
-**Implemented enhancements:**
-
-- Cid validation [\#93](https://github.com/cybercongress/cyberd/issues/93)
-- Update to cosmos-sdk version 0.26.1 [\#79](https://github.com/cybercongress/cyberd/issues/79)
-- Build node releases with cleveldb [\#59](https://github.com/cybercongress/cyberd/issues/59)
-- Remove 'cosmosaccaddr' prefix from cyberd address [\#39](https://github.com/cybercongress/cyberd/issues/39)
-
 **Closed issues:**
 
+- Cid validation [\#93](https://github.com/cybercongress/cyberd/issues/93)
 - Make up cyberd landing [\#87](https://github.com/cybercongress/cyberd/issues/87)
+- Update to cosmos-sdk version 0.26.1 [\#79](https://github.com/cybercongress/cyberd/issues/79)
 - Add possibility to join for new validators. [\#75](https://github.com/cybercongress/cyberd/issues/75)
 - Calculate rank using GPU [\#74](https://github.com/cybercongress/cyberd/issues/74)
 - Create basic wiki cyberd indexer [\#71](https://github.com/cybercongress/cyberd/issues/71)
+- Build node releases with cleveldb [\#59](https://github.com/cybercongress/cyberd/issues/59)
+- Remove 'cosmosaccaddr' prefix from cyberd address [\#39](https://github.com/cybercongress/cyberd/issues/39)
 - Create cyberd PoC based on Cosmos SDK [\#37](https://github.com/cybercongress/cyberd/issues/37)
 - Draw logo for cyberd [\#16](https://github.com/cybercongress/cyberd/issues/16)
 - Build basic economic model [\#1](https://github.com/cybercongress/cyberd/issues/1)
@@ -380,19 +347,13 @@
 ## [v0.0.7](https://github.com/cybercongress/cyberd/tree/v0.0.7) (2018-10-25)
 [Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.0.6...v0.0.7)
 
-**Implemented enhancements:**
-
-- Proxy service. Add search pagination [\#69](https://github.com/cybercongress/cyberd/issues/69)
-- Add send tokens endpoint to proxy [\#62](https://github.com/cybercongress/cyberd/issues/62)
-
-**Fixed bugs:**
-
-- Proxy service. Search request with "spaces" fails [\#67](https://github.com/cybercongress/cyberd/issues/67)
-- Non-deterministic rank calculation [\#66](https://github.com/cybercongress/cyberd/issues/66)
-
 **Closed issues:**
 
+- Proxy service. Add search pagination [\#69](https://github.com/cybercongress/cyberd/issues/69)
+- Proxy service. Search request with "spaces" fails [\#67](https://github.com/cybercongress/cyberd/issues/67)
+- Non-deterministic rank calculation [\#66](https://github.com/cybercongress/cyberd/issues/66)
 - Claim service: increment tx sequence manually [\#64](https://github.com/cybercongress/cyberd/issues/64)
+- Add send tokens endpoint to proxy [\#62](https://github.com/cybercongress/cyberd/issues/62)
 
 **Merged pull requests:**
 
@@ -407,7 +368,7 @@
 ## [v0.0.5](https://github.com/cybercongress/cyberd/tree/v0.0.5) (2018-10-23)
 [Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.0.4...v0.0.5)
 
-**Implemented enhancements:**
+**Closed issues:**
 
 - \[RPC\] Fix small finding  [\#57](https://github.com/cybercongress/cyberd/issues/57)
 
@@ -430,16 +391,10 @@
 ## [v0.0.3](https://github.com/cybercongress/cyberd/tree/v0.0.3) (2018-10-19)
 [Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.0.2...v0.0.3)
 
-**Implemented enhancements:**
-
-- CLI: Add "wait\_for\_confirmation" Flag [\#47](https://github.com/cybercongress/cyberd/issues/47)
-
-**Fixed bugs:**
-
-- RPC Client: /search on non existing cid return first added cid [\#48](https://github.com/cybercongress/cyberd/issues/48)
-
 **Closed issues:**
 
+- RPC Client: /search on non existing cid return first added cid [\#48](https://github.com/cybercongress/cyberd/issues/48)
+- CLI: Add "wait\_for\_confirmation" Flag [\#47](https://github.com/cybercongress/cyberd/issues/47)
 - Write validation logic of IPFS hash for Losion Zeronet [\#18](https://github.com/cybercongress/cyberd/issues/18)
 - Genesis Zeronet [\#17](https://github.com/cybercongress/cyberd/issues/17)
 - Performance testing of Zeronet [\#4](https://github.com/cybercongress/cyberd/issues/4)
@@ -452,13 +407,10 @@
 ## [v0.0.2](https://github.com/cybercongress/cyberd/tree/v0.0.2) (2018-10-05)
 [Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.0.1...v0.0.2)
 
-**Implemented enhancements:**
+**Closed issues:**
 
 - Cosmos PoC: Integrate Rank Calculation [\#43](https://github.com/cybercongress/cyberd/issues/43)
 - Cosmos PoC: Extenend Standart Tendermint RPC API  [\#42](https://github.com/cybercongress/cyberd/issues/42)
-
-**Closed issues:**
-
 - Implement persistent storage for links. [\#40](https://github.com/cybercongress/cyberd/issues/40)
 - run extra node for cyberd [\#20](https://github.com/cybercongress/cyberd/issues/20)
 
