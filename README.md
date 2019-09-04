@@ -31,7 +31,7 @@
 
 ## Why
 
-The Great Web is coming. New search systems will drive their growth. Google is the most powerful religion ever and now time to go out of that.
+The Great Web is coming. New search systems will drive its growth. Google is the most powerful religion ever, and now is the time to abandon it.
 
 <div align="center">
  <img src="./docs/img/cyber.png"/>
@@ -39,79 +39,79 @@ The Great Web is coming. New search systems will drive their growth. Google is t
 
 ## What is Cyberd
 
-Cyberd is knowledge consensus computer or search engine which computes cyber•Rank like token weighted Page Rank of knowledge graph of Content IDentificators (CIDs) linked with each other with cyberlinks: 
+Cyberd is a knowledge consensus computer or a search engine, which computes the [cyber•Rank]() like token, that is a weighted [Page Rank]() of a knowledge graph of the [Content IDentificators (CIDs)](), that are linked to each other with the help of [cyberlinks](): 
 
 ```
 CID1 -----> CID2
 ```
 
-The cyberlinks committed by Web3 agents. It is link between two CIDs. In current implementation the CID is IPFS hash CIDv0 or CIDv1 version. Web3 agent can link any keyword with CID and cyberd will wrap keyword in IPFS hash and create link between two hashes with a weight according to user stake.
+Cyberlinks are committed by Web3 agents. They are links between two CIDs. In its current implementation, a CID is an IPFS hash of the CIDv0 or of the CIDv1 versions. A web3 agent can link any keyword with a CID and cyberd will wrap these keywords in an IPFS hash; and then, create a link between the two hashes, with a weight corresponding to the users' stake.
 
-All cyberlinks with weight store in the knowledge graph. It's re-computed by validators every number of blocks. For these calculations, we've implemented the proof of relevance root hash is computed on Cuda GPUs every round as the best way to calculate merkle tree faster. We need to load the whole graph in memory for calculating that’s why memory volume is important.
+All the cyberlinks with a given weight are stored within the knowledge graph. The graph is re-computed by the validators every given number of blocks. For the calculations, we've implemented "the proof of relevance" root-hash, which is computed on the Cuda GPUs every round. As this is the best way to calculate a Merkle tree - faster. The volume is important because we must load the whole graph into the memory to do the calculations.
 
-Cyberd is the first implementation of the cyber protocol based on cosmos-SDK and tendermint BFT Consensus. 
+Cyberd is the first implementation of the cyber protocol. It is based on the [cosmos-SDK](https://github.com/cosmos/cosmos-sdk) and [tendermint BFT Consensus](https://github.com/tendermint/tendermint). 
 
-This implementation use a very simple bandwidth model. Main goal of that model is to reduce daily network growth to given constant.
+This implementation uses a very simple bandwidth model. The main goal of the model is to reduce the daily networks growth to a given constant.
 
-Thus, here we introduce resource credits(RS). Each message type of transaction like the link or send have assigned RS cost. We call it Bandwidth. The user's bandwidth depends on its balance as the sum of liquid and staked tokens. The user's bandwidth is recoverable value. Full recovery of bandwidth quantity from 0 to max value is 24 h.
+Thus, here we introduce [resource credits(RS)](). Each message, of a transaction type - for example, a "link" or a "send" have been assigned an RS cost. We call this "Bandwidth". A users bandwidth depends on its balance and is equal to the sum of their liquid and staked tokens. The users' bandwidth is a recoverable value. Full recovery of the bandwidths quantity, from 0 to maximum value - takes 24 hours.
 
-There is period `AdjustPricePeriod` summing how much RS or bandwidth was spent for that period (`AdjustPricePeriodTotalSpent`). Also, there is constant `AdjustPricePeriodDesiredSpent`, used to calculate network loading. The `AdjustPricePeriodTotalSpent/AdjustPricePeriodDesiredSpent` ratio defined so called current `price multiplier`. If network usage is low, `price multiplier` adjust message cost (by simply multiplying) to allow user with lower stake to do more transactions. If resource demand increase, `price multiplier` goes `>1` thus increase messages cost and limiting final tx count for some long-term period (RC recovery will be `<` then RC spending).
+There is a period `AdjustPricePeriod`, summing how much RS or bandwidth was spent during that period (`AdjustPricePeriodTotalSpent`). Also, there is a constant `AdjustPricePeriodDesiredSpent`, which is used to calculate the network load. The `AdjustPricePeriodTotalSpent/AdjustPricePeriodDesiredSpent` ratio defines the so-called current `price multiplier`. If the network usage is low, the `price multiplier` adjusts the message cost (simply by multiplying) to allow a user with a lower stake to make more transactions. If the demand for resources increases, the `price multiplier` goes `>1` thus, increasing message cost and limiting final tx count for a long-term period (RC recovery will be `<` then RC spending).
 
 
 ## For validators
 
-Each validator participates in tendermint consensus and compute/validate cyber•Rank of the knowledge graph.
+Each validator participates in the tendermint consensus and computes/validates cyber•Rank within the knowledge graph.
 
 
 ## For rank providers
 
-Rank providers crawlers/index web and cyberlink CIDs of given data to cyberd consuming their bandwidth.
+Rank providers crawls/indexes the web, and then cyberlinks CIDs of any given data to cyberd by consuming its bandwidth.
 
 
 ## For search users
 
-Valuable, censorship-resistant and provable search in web for all species. Search is transaction-based and allowed if the agent has enough bandwidth.
+A valuable, censorship-resistant and a provable search of the web for any kind of species. A search is transactionally-based, and only possible if the agent has enough bandwidth.
 
 
 ## For developers
 
-The chance to create new decentralized Google with related services as SEO, crawlers, indexers, decentralized platforms and so on. You can be the first. 
+The chance to create a new and a decentralized Google with affiliated services like: SEO, crawlers, web indexers, decentralized platforms and so on. You can be the first to do so. 
 
 ## For data/content producers
 
-The opportunity to move their content to web3 and save it from any kind of censorship. Your content is yours. Make shure user will find it.
+The opportunity to move their content to web3 and save it from any type of censorship. Your content is yours. Make sure others will be able to see it.
 
 ## For miners / GPUs holders
 
-With network grow we will need cards, a lot of cards. Come to us, guys.
+With the growth of the network, we will need cards, a lot of cards. Join us.
 
 
 ## cyber•Rank
 ```
-0. cyber•Rank - token weighted Page Rank (first implementation)
-1. Knowledge graph consists of CIDs which connected with cyberlinks. 
-2. Cyberlink may be cast only one time between given CIDs. 
-3. Weight of cyberlink is the token balance of agent which cyber linked given CIDs. 
-4. Rank computes with current network rank's calculation window on CUDA kernel.
-5. After cyber•Rank's computation, each CID take given rank.
-6. [Very important] Rank computes based on current (computation window) agent balances.
+0. cyber•Rank - a token weighted Page Rank (initial implementation).
+1. A knowledge graph consists of CIDs, which are connected with cyberlinks. 
+2. A cyberlink may be cast once only; between any given CIDs. 
+3. The weight of cyberlink is the token balance of the agent, which cyber linked given CIDs. 
+4. A rank computes within the current ranks calculation of the networks window on CUDA kernel.
+5. After cyber•Ranks computation, each CID take a given rank.
+6. [Very important] A rank computation is based on the current (computation window) agents balances.
 ```
 
 ## Bandwidth
 ```
-0. The network has desirable network bandwidth (max bandwidth)
-1. Agent's bandwidth is proportional to the stake he has to whole network's supply.
-2. Linking and other chain's operations consume bandwidth.
-3. It takes 24 hours for full agent's bandwidth recovery.
-4. Network gives a discount to incentivize load up to 100X for operation's cost.
+0. The network has a desirable network bandwidth (max bandwidth).
+1. An agent's bandwidth is proportional to the stake that he owns against the total network supply.
+2. Linking and other chain operations consume bandwidth.
+3. It takes 24 hours for a full recovery of an agent's bandwidth.
+4. The network gives a discount of up to 100X of the operational costs for incentivized loads.
 ```
 
 ## Search index and proofs
 ```
-0. A node may be run in ALLOW SEARCH mode which allows search with this node in the knowledge graph.
-1. A node in the search mode also constructs full Merkle trees for cyberlinks and calculated ranks of links.
-2. Proof of rank of given CID provide Merkle path which allows the client to validate returned rank of given CID and existence of given cyberlink.
-3. Merkle roots of rank's and link's Merkle trees used for calculating of app hash for each block and are part of protocol/consensus.
+0. A node can be launched in an "ALLOW SEARCH" mode, which allows searching with this node, within the knowledge graph.
+1. A node that is in search mode, also constructs a full Merkle tree for cyberlinks and calculates link ranks.
+2. Proof of rank of a given CID provides a Merkle path, which allows the client to validate the returned rank of a given CID and the existence of a given cyberlink.
+3. The Merkle root of rank and the Merke roots of the link Merkle trees are used for calculating the app hash for each block, and are part of the protocol/consensus.
 ```
 
 ## Technologies
@@ -142,38 +142,38 @@ Current state: Community Preview (Euler-5/Mainnet)
 ## Status
 
 **WARNING**: Project status: **testnet**. We are at research state at the moment.
-Read [whitepaper](./docs/cyberd.md)
+Read our [whitepaper](./docs/cyberd.md)
 
 ## cyberd Public Testnets
 
-To run a full-node or validator in the latest public testnet of the cyberd follow [the guide](./docs/help/run_validator.md).
+To run a full-node or a validator node on the latest public testnet of cyberd, please follow [this guide](./docs/help/run_validator.md).
 
 ## Explorers
 
-[Cyberd](https://cyberd.ai/) explorer based on [bigDipper](https://cosmos.bigdipper.live) by Forbole(https://www.forbole.com/)
+The [cyberd](https://cyberd.ai/) explorer is based on [bigDipper](https://cosmos.bigdipper.live) by Forbole(https://www.forbole.com/)
 
 ## Game of Links
 
-Game of links is a game between cyber•Congress and Cosmos stakehodlers for the place in Genesis. It should bootstrap and load network at Euler-5 testnet. The great project will come with significant number of followers. The game is finished if both of the following criteria met:
+The "game of links" is a game between cyber•Congress and between Cosmos stakeholders for a place in Genesis. It should bootstrap and load the network at Euler-5 testnet. The greatest project will come on top with the significant number of followers. The game is finished if both of the following criteria are met:
 
-**\>** 146 validators in consensus during 10k blocks
-**\>** 500000 ATOM donated or 90 days passed
+**\>** 146 validators are in consensus for a period of 10k blocks
+**\>** 500000 ATOM donated or 90 days have passed
 
 
 #### Goals:
 ```
-0. Intentiavize professional and long-term committed validators
-1. Bootstrap full validator set which will drive and grow the network and knowledge graph and have strong community and delegators behind
-2. Initialize knowledge graph with valuable knowledge domains and develop tooling for crawling and indexing specific knowledge domains
-3. Start to form responsibility and activity with the network’s governance and decisions
-4. Distribute tokens the most valuable way and play the game with cyber•Congress on this
+0. Intentiavize professional and long-term committed validators.
+1. Bootstrap a full validator set, which will drive and grow the network, the knowledge graph, and will build a strong community and have the delegators backing it.
+2. Initialize the knowledge graph with valuable knowledge domains; and develop tools for crawling and indexing specific knowledge domains
+3. Start to form responsibility and activity within the governance of the network and within decision-making mechanisms.
+4. Distribute tokens in the most valuable form and play the game with cyber•Congress.
 ```
 
 #### Rewards for:
 ```
 0. Summary uptime of every validator
-1. A load of an agent (consumed network's bandwidth)
-2. Amount of delegated to the validator (Game of Stakes)
+1. A load of an agent (consumed networks bandwidth)
+2. Amount of delegated tokens to the validator (Game of Stakes)
 3. The relevance of links submitted (TOP-1000 CIDs)
 ```
 
@@ -191,9 +191,9 @@ Explore the docs in our [knowledge base](https://cybercongress.ai/docs/cyberd/cy
 **\>** [Steemit blog](https://steemit.com/@cybercongress)
 **\>** [Own blog](https://cybercongress.ai/post/) with rss and useful articles
 
-## 10 min Development Setup
+##  The 10 min. Development Setup
 
-Take a part with [set up dev environment](https://cybercongress.ai/docs/cyberd/setup_dev_env/) in 10 minutes challenge
+Take a part with [set up dev environment](https://cybercongress.ai/docs/cyberd/setup_dev_env/) in the "10 minutes challenge".
 
 ## Research and Development
 ```
@@ -217,17 +217,17 @@ Bring your PRs and text us to take on board.
 
 ## Issues
 
-If you have any problems with or questions about search, please contact us through a
- [GitHub issue](https://github.com/cybercongress/cyberd/issues).
+If you have any problems with, or questions, about search - please contact us via
+a [GitHub issue](https://github.com/cybercongress/cyberd/issues).
 
 ## Contribute
 
-You are invited to contribute new features, fixes, or updates, large or small; We are always thrilled to receive pull requests and do our best to process them as fast as we can. You can find detailed information in our
- [contribution guide](./docs/contributing/contributing.md).
+You are invited to contribute new features, fixes, or updates - large or small; we are always thrilled to receive pull requests and do our best to process them as fast as we can. You can find detailed information in our
+[contribution guide](./docs/contributing/contributing.md).
 
 ## Gitcoin program
 
-We want to pay you for your contribution! We constantly fund our issues on [gitcoin](https://gitcoin.co/profile/cybercongress) and attach good description for them with project state and user stories. We try to answer to comments regular in issues and in our [devChat](https://t.me/fuckgoogle).
+We want to reward you for your contributions! We constantly fund our issues on [gitcoin](https://gitcoin.co/profile/cybercongress) and attach good descriptions to them, along with the current project state and along with user stories. We try to answer comments regularly in issues and in our [devChat](https://t.me/fuckgoogle).
 
 <a href="https://gitcoin.co/explorer?q=cyberd">
  <img src="https://gitcoin.co/funding/embed?repo=https://github.com/cybercongress/cyberd">
@@ -255,7 +255,7 @@ We want to pay you for your contribution! We constantly fund our issues on [gitc
 
 Cyber License - Don’t believe, don’t fear, don’t ask.
 
-We will happy if you fork and launch your own network. And setup knowledge graph. These guys will meet each other with IBC.
+We will be happy if you fork and launch your own network and set up a knowledge graph. Eventually, we will meet each other with the help of IBC.
 
 
 ## The End of Google
@@ -273,4 +273,3 @@ Stay tuned with our [Changelog](./CHANGELOG.md).
  <a href="https://twitter.com/cyber_devs">cyber•Congress</a> and
  <a href="https://github.com/cybercongress/cyberd/graphs/contributors">contributors</a>
 </div>
-
