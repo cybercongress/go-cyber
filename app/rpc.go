@@ -2,6 +2,7 @@ package app
 
 import (
 	"errors"
+	"github.com/cybercongress/cyberd/x/rank"
 	"math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -14,8 +15,9 @@ import (
 )
 
 type RankedCid struct {
-	Cid  cbdlink.Cid `json:"cid"`
-	Rank float64     `amino:"unsafe" json:"rank"`
+	Cid      cbdlink.Cid      `json:"cid"`
+	Rank     float64          `amino:"unsafe" json:"rank"`
+	Accounts []sdk.AccAddress `json:"accounts"`
 }
 
 func (app *CyberdApp) RpcContext() sdk.Context {
@@ -31,14 +33,38 @@ func (app *CyberdApp) Search(cid string, page, perPage int) ([]RankedCid, int, e
 	}
 
 	rankedCidNumbers, size, err := app.rankState.Search(cidNumber, page, perPage)
-
 	if err != nil {
 		return nil, size, err
 	}
 
+	accNumbers := make(map[rank.RankedCidNumber][]cbd.AccNumber)
+	app.linkIndexedKeeper.Iterate(ctx, func(link cbdlink.CompactLink) {
+		for _, c := range rankedCidNumbers {
+			if link.From() == cidNumber && link.To() == c.GetNumber() {
+				accNumbers[c] = append(accNumbers[c], link.Acc())
+				break
+			}
+		}
+	})
+
 	result := make([]RankedCid, 0, len(rankedCidNumbers))
-	for _, c := range rankedCidNumbers {
-		result = append(result, RankedCid{Cid: app.cidNumKeeper.GetCid(ctx, c.GetNumber()), Rank: c.GetRank()})
+	for c, an := range accNumbers {
+		rc := RankedCid{
+			Cid:      app.cidNumKeeper.GetCid(ctx, c.GetNumber()),
+			Rank:     c.GetRank(),
+			Accounts: make([]sdk.AccAddress, 0, len(an)),
+		}
+
+		app.accountKeeper.IterateAccounts(ctx, func(account auth.Account) (stop bool) {
+			for _, an := range an {
+				if cbd.AccNumber(account.GetAccountNumber()) == an {
+					rc.Accounts = append(rc.Accounts, account.GetAddress())
+					return true
+				}
+			}
+			return false
+		})
+		result = append(result, rc)
 	}
 
 	return result, size, nil
