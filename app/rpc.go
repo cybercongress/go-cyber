@@ -2,7 +2,6 @@ package app
 
 import (
 	"errors"
-	"github.com/cybercongress/cyberd/x/rank"
 	"math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -37,26 +36,18 @@ func (app *CyberdApp) Search(cid string, page, perPage int) ([]RankedCid, int, e
 		return nil, size, err
 	}
 
-	accNumbers := make(map[rank.RankedCidNumber][]cbd.AccNumber)
-	app.linkIndexedKeeper.Iterate(ctx, func(link cbdlink.CompactLink) {
-		for _, c := range rankedCidNumbers {
-			if link.From() == cidNumber && link.To() == c.GetNumber() {
-				accNumbers[c] = append(accNumbers[c], link.Acc())
-				break
-			}
-		}
-	})
-
 	result := make([]RankedCid, 0, len(rankedCidNumbers))
-	for c, an := range accNumbers {
+	links := app.linkIndexedKeeper.GetOutLinks()
+	for _, c := range rankedCidNumbers {
+		accs := links[cidNumber][c.GetNumber()]
 		rc := RankedCid{
 			Cid:      app.cidNumKeeper.GetCid(ctx, c.GetNumber()),
 			Rank:     c.GetRank(),
-			Accounts: make([]sdk.AccAddress, 0, len(an)),
+			Accounts: make([]sdk.AccAddress, 0, len(accs)),
 		}
 
 		app.accountKeeper.IterateAccounts(ctx, func(account auth.Account) (stop bool) {
-			for _, an := range an {
+			for an, _ := range accs {
 				if cbd.AccNumber(account.GetAccountNumber()) == an {
 					rc.Accounts = append(rc.Accounts, account.GetAddress())
 					return true
