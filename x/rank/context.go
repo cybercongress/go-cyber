@@ -2,7 +2,7 @@ package rank
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	. "github.com/cybercongress/cyberd/types"
+	"github.com/cybercongress/cyberd/x/acc/types"
 	"github.com/cybercongress/cyberd/x/bank"
 	"github.com/cybercongress/cyberd/x/link/keeper"
 	. "github.com/cybercongress/cyberd/x/link/types"
@@ -16,7 +16,7 @@ type CalculationContext struct {
 	inLinks  map[CidNumber]CidLinks
 	outLinks map[CidNumber]CidLinks
 
-	stakes map[AccNumber]uint64
+	stakes map[types.AccNumber]uint64
 
 	fullTree bool
 }
@@ -51,7 +51,7 @@ func (c *CalculationContext) GetCidsCount() int64 {
 	return c.cidsCount
 }
 
-func (c *CalculationContext) GetStakes() map[AccNumber]uint64 {
+func (c *CalculationContext) GetStakes() map[types.AccNumber]uint64 {
 	return c.stakes
 }
 

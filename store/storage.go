@@ -45,11 +45,10 @@ func NewBaseStorageBuf(name string, dir string, elementLen uint64, bufferSize ui
 
 	dbFilePath := filepath.Join(dir, name+DbFileFormat)
 	file, err := atomicf.OpenFile(dbFilePath, os.O_RDWR|os.O_CREATE|os.O_SYNC, 0666)
-	defer file.Close()
-
 	if err != nil {
 		return nil, err
 	}
+	defer file.Close()
 
 	// Try to recover file if it was corrupted
 	if err = file.Recover(); err != nil {

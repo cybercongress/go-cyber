@@ -2,12 +2,12 @@ package app
 
 import (
 	"errors"
+	acc "github.com/cybercongress/cyberd/x/acc/types"
 	"math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cybercongress/cyberd/merkle"
-	cbd "github.com/cybercongress/cyberd/types"
 	bdwth "github.com/cybercongress/cyberd/x/bandwidth/types"
 	cbdlink "github.com/cybercongress/cyberd/x/link/types"
 	abci "github.com/tendermint/tendermint/abci/types"
@@ -46,15 +46,13 @@ func (app *CyberdApp) Search(cid string, page, perPage int) ([]RankedCid, int, e
 			Accounts: make([]sdk.AccAddress, 0, len(accs)),
 		}
 
-		app.accountKeeper.IterateAccounts(ctx, func(account auth.Account) (stop bool) {
-			for an, _ := range accs {
-				if cbd.AccNumber(account.GetAccountNumber()) == an {
-					rc.Accounts = append(rc.Accounts, account.GetAddress())
-					return true
-				}
+		for accNum := range accs {
+			addr, ok := app.accountKeeper.GetAccountAddress(accNum)
+			if ok {
+				rc.Accounts = append(rc.Accounts, addr)
 			}
-			return false
-		})
+		}
+
 		result = append(result, rc)
 	}
 
@@ -94,9 +92,9 @@ func (app *CyberdApp) IsLinkExist(from cbdlink.Cid, to cbdlink.Cid, address sdk.
 
 	if fromExist && toExists {
 		if address != nil {
-			acc := app.accountKeeper.GetAccount(ctx, address)
-			if acc != nil {
-				accNumber := cbd.AccNumber(acc.GetAccountNumber())
+			account := app.accountKeeper.GetAccount(ctx, address)
+			if account != nil {
+				accNumber := acc.AccNumber(account.GetAccountNumber())
 				return app.linkIndexedKeeper.IsLinkExist(cbdlink.NewLink(fromNumber, toNumber, accNumber))
 			}
 		} else {
