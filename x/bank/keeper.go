@@ -152,6 +152,5 @@ func (k Keeper) GetAccStakePercentage(ctx sdk.Context, addr sdk.AccAddress) floa
 
 func (k Keeper) GetTotalSupply(ctx sdk.Context) int64 {
 	keeperSupply := k.supplyKeeper.GetSupply(ctx)
-	total := keeperSupply.GetTotal()
-	return int64(len(total))
+	return keeperSupply.GetTotal().AmountOf("cyb").Int64()
 }

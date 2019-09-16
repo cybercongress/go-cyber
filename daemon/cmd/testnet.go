@@ -189,12 +189,10 @@ func initTestnet(config *tmconfig.Config, cdc *codec.Codec) error {
 			return err
 		}
 
-		accTokens := sdk.TokensFromConsensusPower(20000000000000000)
 		accStakingTokens := sdk.TokensFromConsensusPower(200000000)
 		accs = append(accs, app.GenesisAccount{
 			Address: addr,
 			Coins: sdk.Coins{
-				sdk.NewCoin(fmt.Sprintf("%stoken", nodeDirName), accTokens),
 				sdk.NewCoin(coin.CYB, accStakingTokens),
 			},
 		})
@@ -261,9 +259,13 @@ func initGenFiles(
 	state := app.NewDefaultGenesisState()
 	state.Accounts = accs
 	state.Pool.NotBondedTokens = sdk.ZeroInt()
+	supply := sdk.ZeroInt()
 	for _, acc := range accs {
-		state.Pool.NotBondedTokens = state.Pool.NotBondedTokens.Add(sdk.NewInt(acc.Coins.AmountOf(coin.CYB).Int64()))
+		supply = state.Pool.NotBondedTokens.Add(sdk.NewInt(acc.Coins.AmountOf(coin.CYB).Int64()))
 	}
+	state.Pool.NotBondedTokens = supply
+	cybSupply := sdk.NewCoin(coin.CYB, supply)
+	state.SupplyData.Supply = sdk.NewCoins(cybSupply)
 
 	appGenStateJSON, err := codec.MarshalJSONIndent(cdc, state)
 	if err != nil {
