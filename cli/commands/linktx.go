@@ -2,10 +2,10 @@ package commands
 
 import (
 	"github.com/cosmos/cosmos-sdk/client/context"
-	"github.com/cosmos/cosmos-sdk/client/utils"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	authtxb "github.com/cosmos/cosmos-sdk/x/auth/client/txbuilder"
+	"github.com/cosmos/cosmos-sdk/x/auth/client/utils"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	cbd "github.com/cybercongress/cyberd/types"
 	"github.com/cybercongress/cyberd/x/link"
 	cbdlink "github.com/cybercongress/cyberd/x/link/types"
@@ -26,14 +26,9 @@ func LinkTxCmd(cdc *codec.Codec) *cobra.Command {
 		Short: "Create and sign a link tx",
 		RunE: func(cmd *cobra.Command, args []string) error {
 
-			txCtx := authtxb.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
+			txCtx := authtypes.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
 			cliCtx := context.NewCLIContext().
-				WithCodec(cdc).
-				WithAccountDecoder(cdc)
-
-			if err := cliCtx.EnsureAccountExists(); err != nil {
-				return err
-			}
+				WithCodec(cdc)
 
 			cidFrom := cbdlink.Cid(viper.GetString(flagCidFrom))
 			cidTo := cbdlink.Cid(viper.GetString(flagCidTo))
@@ -46,16 +41,16 @@ func LinkTxCmd(cdc *codec.Codec) *cobra.Command {
 				return cbd.ErrInvalidCid()
 			}
 
-			from := cliCtx.GetFromAddress()
+			signAddr := cliCtx.GetFromAddress()
 
 			// ensure that account exists in chain
-			_, err := cliCtx.GetAccount(from)
+			_, err := authtypes.NewAccountRetriever(cliCtx).GetAccount(signAddr)
 			if err != nil {
 				return err
 			}
 
 			// build and sign the transaction, then broadcast to Tendermint
-			msg := link.NewMsg(from, []cbdlink.Link{{From: cidFrom, To: cidTo}})
+			msg := link.NewMsg(signAddr, []cbdlink.Link{{From: cidFrom, To: cidTo}})
 
 			return utils.CompleteAndBroadcastTxCLI(txCtx, cliCtx, []sdk.Msg{msg})
 		},

@@ -5,10 +5,10 @@ import (
 	"fmt"
 	cli "github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/client/keys"
-	"github.com/cosmos/cosmos-sdk/client/utils"
 	cskeys "github.com/cosmos/cosmos-sdk/crypto/keys"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	authtxb "github.com/cosmos/cosmos-sdk/x/auth/client/txbuilder"
+	"github.com/cosmos/cosmos-sdk/x/auth/client/utils"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cybercongress/cyberd/app"
 	"github.com/cybercongress/cyberd/daemon/rpc"
 	bwtps "github.com/cybercongress/cyberd/x/bandwidth/types"
@@ -31,15 +31,14 @@ type HttpCyberdClient struct {
 	nodeUrl string
 	chainId string
 
-	// fields used by local keys store to sing transactions
+	// fields used by local keys store to sign transactions
 	passphrase  string
 	fromAddress sdk.AccAddress
 	cliCtx      *cli.CLIContext
-	txBuilder   *authtxb.TxBuilder
+	txBuilder   *authtypes.TxBuilder
 }
 
-func NewHttpCyberdClient(nodeUrl string, passphrase string, singAddr string) *HttpCyberdClient {
-
+func NewHttpCyberdClient(nodeUrl string, passphrase string, signAddr string) *HttpCyberdClient {
 	tdmHttpClient := tdmClient.NewHTTP(nodeUrl, "/websocket")
 	httpClient := rpcclient.NewJSONRPCClient(nodeUrl)
 	status, err := tdmHttpClient.Status()
@@ -49,27 +48,24 @@ func NewHttpCyberdClient(nodeUrl string, passphrase string, singAddr string) *Ht
 
 	cdc := app.MakeCodec()
 	app.SetPrefix()
-	addr, cliAddrName := accountFromAddress(singAddr)
+	addr, cliAddrName := accountFromAddress(signAddr)
 	verifier := &NoopVerifier{ChainId: status.NodeInfo.Network}
 	cliCtx := cli.CLIContext{
-		Client:        tdmHttpClient,
-		NodeURI:       nodeUrl,
-		AccountStore:  "acc",
-		From:          cliAddrName,
-		TrustNode:     true,
-		PrintResponse: true,
-		Verifier:      verifier,
-	}.WithCodec(cdc).WithAccountDecoder(cdc)
+		Client:    tdmHttpClient,
+		NodeURI:   nodeUrl,
+		From:      cliAddrName,
+		TrustNode: true,
+		Verifier:  verifier,
+	}.WithCodec(cdc)
 
-	accountNumber, _ := cliCtx.GetAccountNumber(addr)
-	seq, err := cliCtx.GetAccountSequence(addr)
+	accountNumber, accountSequence, err := authtypes.NewAccountRetriever(cliCtx).GetAccountNumberSequence(addr)
 
 	if err != nil {
 		panic(err)
 	}
 
-	txBuilder := authtxb.NewTxBuilder(
-		utils.GetTxEncoder(cdc), accountNumber, seq, 0, 0.0, false, status.NodeInfo.Network,
+	txBuilder := authtypes.NewTxBuilder(
+		utils.GetTxEncoder(cdc), accountNumber, accountSequence, 0, 0.0, false, status.NodeInfo.Network,
 		"", sdk.Coins{}, sdk.NewDecCoins(sdk.Coins{}),
 	)
 

@@ -10,6 +10,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/params"
 	"github.com/cosmos/cosmos-sdk/x/slashing"
 	"github.com/cosmos/cosmos-sdk/x/staking"
+	"github.com/cosmos/cosmos-sdk/x/supply"
 )
 
 type CyberdAppDbKeys struct {
@@ -22,8 +23,8 @@ type CyberdAppDbKeys struct {
 	rank           *sdk.KVStoreKey
 	stake          *sdk.KVStoreKey
 	tStake         *sdk.TransientStoreKey
+	supply         *sdk.KVStoreKey
 	distr          *sdk.KVStoreKey
-	tDistr         *sdk.TransientStoreKey
 	gov            *sdk.KVStoreKey
 	slashing       *sdk.KVStoreKey
 	fees           *sdk.KVStoreKey
@@ -41,9 +42,9 @@ func NewCyberdAppDbKeys() CyberdAppDbKeys {
 		acc:      sdk.NewKVStoreKey(auth.StoreKey),
 		stake:    sdk.NewKVStoreKey(staking.StoreKey),
 		tStake:   sdk.NewTransientStoreKey(staking.TStoreKey),
-		fees:     sdk.NewKVStoreKey(auth.FeeStoreKey),
+		supply:   sdk.NewKVStoreKey(supply.StoreKey),
+		fees:     sdk.NewKVStoreKey(auth.FeeCollectorName),
 		distr:    sdk.NewKVStoreKey(distr.StoreKey),
-		tDistr:   sdk.NewTransientStoreKey(distr.TStoreKey),
 		gov:      sdk.NewKVStoreKey(gov.StoreKey),
 		slashing: sdk.NewKVStoreKey(slashing.StoreKey),
 		params:   sdk.NewKVStoreKey(params.StoreKey),
@@ -61,13 +62,13 @@ func NewCyberdAppDbKeys() CyberdAppDbKeys {
 
 func (k CyberdAppDbKeys) GetStoreKeys() []*sdk.KVStoreKey {
 	return []*sdk.KVStoreKey{
-		k.main, k.acc, k.cidNum, k.cidNumReverse, k.links, k.rank, k.stake, k.gov,
+		k.main, k.acc, k.cidNum, k.cidNumReverse, k.links, k.rank, k.stake, k.supply, k.gov,
 		k.slashing, k.params, k.distr, k.fees, k.accBandwidth, k.blockBandwidth, k.mint,
 	}
 }
 
 func (k CyberdAppDbKeys) GetTransientStoreKeys() []*sdk.TransientStoreKey {
 	return []*sdk.TransientStoreKey{
-		k.tStake, k.tParams, k.tDistr,
+		k.tStake, k.tParams,
 	}
 }

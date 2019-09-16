@@ -34,13 +34,13 @@ func NewBaseMeter(
 ) *BaseBandwidthMeter {
 
 	return &BaseBandwidthMeter{
-		mainKeeper:                 mainKeeper,
-		blockBandwidthKeeper:       blockBandwidthKeeper,
-		accKeeper:                  ak,
-		stakeProvider:              sp,
-		bwKeeper:                   bwKeeper,
-		msgCost:                    msgCost,
-		bandwidthSpent:             make(map[uint64]uint64),
+		mainKeeper:           mainKeeper,
+		blockBandwidthKeeper: blockBandwidthKeeper,
+		accKeeper:            ak,
+		stakeProvider:        sp,
+		bwKeeper:             bwKeeper,
+		msgCost:              msgCost,
+		bandwidthSpent:       make(map[uint64]uint64),
 	}
 }
 

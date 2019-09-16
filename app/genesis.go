@@ -10,12 +10,13 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/bank"
 	distr "github.com/cosmos/cosmos-sdk/x/distribution"
 	"github.com/cosmos/cosmos-sdk/x/gov"
+	"github.com/cosmos/cosmos-sdk/x/mint"
 	"github.com/cosmos/cosmos-sdk/x/slashing"
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	"github.com/cosmos/cosmos-sdk/x/staking/types"
+	"github.com/cosmos/cosmos-sdk/x/supply"
 	"github.com/cybercongress/cyberd/types/coin"
 	"github.com/cybercongress/cyberd/util"
-	"github.com/cosmos/cosmos-sdk/x/mint"
 	"github.com/pkg/errors"
 	"github.com/spf13/viper"
 	"github.com/tendermint/go-amino"
@@ -38,6 +39,8 @@ type GenesisState struct {
 	DistrData    distr.GenesisState    `json:"distr"`
 	MintData     mint.GenesisState     `json:"mint"`
 	StakingData  staking.GenesisState  `json:"staking"`
+	Pool         staking.Pool          `json:"pool"`
+	SupplyData   supply.GenesisState   `json:"supply"`
 	SlashingData slashing.GenesisState `json:"slashing"`
 	GovData      gov.GenesisState      `json:"gov"`
 	GenTxs       []json.RawMessage     `json:"gentxs"`
@@ -53,15 +56,17 @@ func (gs *GenesisState) GetAddresses() []sdk.AccAddress {
 
 func NewGenesisState(
 	accounts []GenesisAccount, authData auth.GenesisState,
-	stakingData staking.GenesisState, mintData mint.GenesisState,
+	stakingData staking.GenesisState, pool staking.Pool, mintData mint.GenesisState,
 	distrData distr.GenesisState, govData gov.GenesisState,
-	slashingData slashing.GenesisState,
+	supplyData supply.GenesisState, slashingData slashing.GenesisState,
 ) GenesisState {
 
 	return GenesisState{
 		Accounts:     accounts,
 		AuthData:     authData,
 		StakingData:  stakingData,
+		Pool:         pool,
+		SupplyData:   supplyData,
 		MintData:     mintData,
 		DistrData:    distrData,
 		SlashingData: slashingData,
@@ -70,26 +75,59 @@ func NewGenesisState(
 }
 
 type GenesisAccount struct {
-	Address   sdk.AccAddress `json:"addr"`
-	Amount    int64          `json:"amt"`
-	AccNumber uint64         `json:"nmb"`
+	Address       sdk.AccAddress `json:"address" yaml:"address"`
+	Coins         sdk.Coins      `json:"coins" yaml:"coins"`
+	Sequence      uint64         `json:"sequence_number" yaml:"sequence_number"`
+	AccountNumber uint64         `json:"account_number" yaml:"account_number"`
+
+	OriginalVesting  sdk.Coins `json:"original_vesting" yaml:"original_vesting"`
+	DelegatedFree    sdk.Coins `json:"delegated_free" yaml:"delegated_free"`
+	DelegatedVesting sdk.Coins `json:"delegated_vesting" yaml:"delegated_vesting"`
+	StartTime        int64     `json:"start_time" yaml:"start_time"`
+	EndTime          int64     `json:"end_time" yaml:"end_time"`
+
+	ModuleName        string   `json:"module_name" yaml:"module_name"`
+	ModulePermissions []string `json:"module_permissions" yaml:"module_permissions"`
 }
 
 func NewGenesisAccount(acc auth.Account) GenesisAccount {
 	return GenesisAccount{
 		Address:   acc.GetAddress(),
-		Amount:    acc.GetCoins().AmountOf(coin.CYB).Int64(),
-		AccNumber: acc.GetAccountNumber(),
+		Coins:          acc.GetCoins(),
+		AccountNumber: acc.GetAccountNumber(),
+		Sequence:      acc.GetSequence(),
+		ModulePermissions: make([]string, 0),
 	}
 }
 
 // convert GenesisAccount to auth.BaseAccount
-func (ga *GenesisAccount) ToAccount() (acc *auth.BaseAccount) {
-	return &auth.BaseAccount{
-		Address:       ga.Address,
-		Coins:         sdk.Coins{sdk.NewInt64Coin(coin.CYB, ga.Amount)},
-		AccountNumber: ga.AccNumber,
+func (ga *GenesisAccount) ToAccount()  auth.Account {
+	acc := auth.NewBaseAccount(ga.Address, ga.Coins.Sort(), nil, ga.AccountNumber, ga.Sequence)
+
+	// vesting accounts
+	if !ga.OriginalVesting.IsZero() {
+		baseVestingAcc := auth.NewBaseVestingAccount(
+			acc, ga.OriginalVesting, ga.DelegatedFree,
+			ga.DelegatedVesting, ga.EndTime,
+		)
+
+		switch {
+		case ga.StartTime != 0 && ga.EndTime != 0:
+			return auth.NewContinuousVestingAccountRaw(baseVestingAcc, ga.StartTime)
+		case ga.EndTime != 0:
+			return auth.NewDelayedVestingAccountRaw(baseVestingAcc)
+		default:
+			panic(fmt.Sprintf("invalid genesis vesting account: %+v", ga))
+		}
 	}
+
+	// module accounts
+	if ga.ModuleName != "" {
+		return supply.NewModuleAccount(acc, ga.ModuleName, ga.ModulePermissions...)
+	}
+
+	return acc
+
 }
 
 // NewDefaultGenesisState generates the default state for cyberd.
@@ -106,7 +144,7 @@ func NewDefaultGenesisState() GenesisState {
 		},
 		MintData: mint.GenesisState{
 			Minter: mint.Minter{
-				Inflation: sdk.NewDecWithPrec(7, 2),
+				Inflation:        sdk.NewDecWithPrec(7, 2),
 				AnnualProvisions: sdk.NewDec(0),
 			},
 			Params: mint.Params{
@@ -119,13 +157,19 @@ func NewDefaultGenesisState() GenesisState {
 			},
 		},
 		StakingData: staking.GenesisState{
-			Pool: staking.InitialPool(),
 			Params: types.Params{
 				UnbondingTime: defaultUnbondingTime,
 				MaxValidators: 146,
 				MaxEntries:    7,
 				BondDenom:     coin.CYB,
 			},
+		},
+		Pool: staking.Pool{
+			NotBondedTokens: sdk.ZeroInt(),
+			BondedTokens:    sdk.ZeroInt(),
+		},
+		SupplyData: supply.GenesisState{
+			Supply: sdk.NewCoins(),
 		},
 		SlashingData: slashing.GenesisState{
 			Params: slashing.Params{
@@ -233,6 +277,10 @@ func validateGenesisState(genesisState GenesisState) (err error) {
 		return err
 	}
 	if err := mint.ValidateGenesis(genesisState.MintData); err != nil {
+		return err
+	}
+
+	if err := supply.ValidateGenesis(genesisState.SupplyData); err != nil {
 		return err
 	}
 

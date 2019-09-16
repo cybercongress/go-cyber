@@ -7,6 +7,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/staking"
+	"github.com/cybercongress/cyberd/types/coin"
 	"github.com/cybercongress/cyberd/util"
 	"github.com/cybercongress/cyberd/x/link"
 	abci "github.com/tendermint/tendermint/abci/types"
@@ -44,9 +45,9 @@ func (app *CyberdApp) ExportAppStateAndValidators(
 	genState.Accounts = accounts
 	genState.GenTxs = []json.RawMessage{}
 
-	genState.StakingData.Pool.NotBondedTokens = sdk.ZeroInt()
+	genState.Pool.NotBondedTokens = sdk.ZeroInt()
 	for _, acc := range accounts {
-		genState.StakingData.Pool.NotBondedTokens = genState.StakingData.Pool.NotBondedTokens.Add(sdk.NewInt(acc.Amount))
+		genState.Pool.NotBondedTokens = genState.Pool.NotBondedTokens.Add(sdk.NewInt(acc.Coins.AmountOf(coin.CYB).Int64()))
 	}
 
 	appState, err = codec.MarshalJSONIndent(app.cdc, genState)

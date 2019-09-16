@@ -4,12 +4,12 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cybercongress/cyberd/merkle"
 	"github.com/cybercongress/cyberd/store"
 	"github.com/cybercongress/cyberd/x/bank"
 	"github.com/cybercongress/cyberd/x/link/keeper"
 	. "github.com/cybercongress/cyberd/x/link/types"
 	"github.com/tendermint/tendermint/libs/log"
-	"github.com/cybercongress/cyberd/merkle"
 )
 
 type RankState struct {

@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"bufio"
 	"encoding/json"
 	"fmt"
 	"github.com/cosmos/cosmos-sdk/client/keys"
@@ -15,7 +16,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
-	authtx "github.com/cosmos/cosmos-sdk/x/auth/client/txbuilder"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -152,12 +153,12 @@ func initTestnet(config *tmconfig.Config, cdc *codec.Codec) error {
 		memo := fmt.Sprintf("%s@%s:26656", nodeIDs[i], ip)
 		genFiles = append(genFiles, config.GenesisFile())
 
-		buf := client.BufferStdin()
+		bufStdin := bufio.NewReader(os.Stdin)
 		prompt := fmt.Sprintf(
 			"Password for account '%s' (default %s):", nodeDirName, app.DefaultKeyPass,
 		)
 
-		keyPass, err := client.GetPassword(prompt, buf)
+		keyPass, err := client.GetPassword(prompt, bufStdin)
 		if err != nil && keyPass != "" {
 			// An error was returned that either failed to read the password from
 			// STDIN or the given password is not empty but failed to meet minimum
@@ -188,17 +189,23 @@ func initTestnet(config *tmconfig.Config, cdc *codec.Codec) error {
 			return err
 		}
 
+		accTokens := sdk.TokensFromConsensusPower(20000000000000000)
+		accStakingTokens := sdk.TokensFromConsensusPower(200000000)
 		accs = append(accs, app.GenesisAccount{
 			Address: addr,
-			Amount:  20000000000000000,
+			Coins: sdk.Coins{
+				sdk.NewCoin(fmt.Sprintf("%stoken", nodeDirName), accTokens),
+				sdk.NewCoin(coin.CYB, accStakingTokens),
+			},
 		})
 
+		valTokens := sdk.TokensFromConsensusPower(100000000)
 		msg := staking.NewMsgCreateValidator(
 			sdk.ValAddress(addr),
 			valPubKeys[i],
-			sdk.NewInt64Coin(coin.CYB, 10000000000000000),
+			sdk.NewCoin(coin.CYB, valTokens),
 			staking.NewDescription(nodeDirName, "tst", "com.com", "det"),
-			staking.NewCommissionMsg(sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec()),
+			staking.NewCommissionRates(sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec()),
 			sdk.OneInt(),
 		)
 
@@ -208,7 +215,7 @@ func initTestnet(config *tmconfig.Config, cdc *codec.Codec) error {
 		}
 
 		tx := auth.NewStdTx([]sdk.Msg{msg}, auth.StdFee{}, []auth.StdSignature{}, memo)
-		txBldr := authtx.NewTxBuilderFromCLI().WithChainID(chainID).WithMemo(memo).WithKeybase(kb)
+		txBldr := authtypes.NewTxBuilderFromCLI().WithChainID(chainID).WithMemo(memo).WithKeybase(kb)
 
 		signedTx, err := txBldr.SignStdTx(nodeDirName, keyPass, tx, false)
 		if err != nil {
@@ -253,9 +260,9 @@ func initGenFiles(
 
 	state := app.NewDefaultGenesisState()
 	state.Accounts = accs
-	state.StakingData.Pool.NotBondedTokens = sdk.ZeroInt()
+	state.Pool.NotBondedTokens = sdk.ZeroInt()
 	for _, acc := range accs {
-		state.StakingData.Pool.NotBondedTokens = state.StakingData.Pool.NotBondedTokens.Add(sdk.NewInt(acc.Amount))
+		state.Pool.NotBondedTokens = state.Pool.NotBondedTokens.Add(sdk.NewInt(acc.Coins.AmountOf(coin.CYB).Int64()))
 	}
 
 	appGenStateJSON, err := codec.MarshalJSONIndent(cdc, state)

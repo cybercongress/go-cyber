@@ -5,12 +5,12 @@ import (
 	"bytes"
 	"encoding/binary"
 	"errors"
+	"github.com/arturalbov/atomicf"
 	"github.com/cybercongress/cyberd/util"
 	"io"
 	"os"
 	"path/filepath"
 	"sync"
-	"github.com/arturalbov/atomicf"
 )
 
 const DbFileFormat = ".cbdata"

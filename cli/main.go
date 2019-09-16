@@ -4,20 +4,11 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/lcd"
 	"github.com/cosmos/cosmos-sdk/client/rpc"
-	"github.com/cosmos/cosmos-sdk/client/tx"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/version"
 	at "github.com/cosmos/cosmos-sdk/x/auth"
 	authcmd "github.com/cosmos/cosmos-sdk/x/auth/client/cli"
 	bankcmd "github.com/cosmos/cosmos-sdk/x/bank/client/cli"
-	distClient "github.com/cosmos/cosmos-sdk/x/distribution/client"
 	dist "github.com/cosmos/cosmos-sdk/x/distribution/client/rest"
-	gv "github.com/cosmos/cosmos-sdk/x/gov"
-	govClient "github.com/cosmos/cosmos-sdk/x/gov/client"
-	sl "github.com/cosmos/cosmos-sdk/x/slashing"
-	slashingClient "github.com/cosmos/cosmos-sdk/x/slashing/client"
-	st "github.com/cosmos/cosmos-sdk/x/staking"
-	stakingClient "github.com/cosmos/cosmos-sdk/x/staking/client"
 	"github.com/cybercongress/cyberd/app"
 	cyberdcmd "github.com/cybercongress/cyberd/cli/commands"
 	"github.com/cybercongress/cyberd/cli/commands/keys"
@@ -27,11 +18,11 @@ import (
 	"github.com/tendermint/tendermint/libs/cli"
 	"os"
 
-	auth "github.com/cosmos/cosmos-sdk/x/auth/client/rest"
-	bank "github.com/cosmos/cosmos-sdk/x/bank/client/rest"
-	gov "github.com/cosmos/cosmos-sdk/x/gov/client/rest"
-	slashing "github.com/cosmos/cosmos-sdk/x/slashing/client/rest"
-	staking "github.com/cosmos/cosmos-sdk/x/staking/client/rest"
+	authrest "github.com/cosmos/cosmos-sdk/x/auth/client/rest"
+	bankrest "github.com/cosmos/cosmos-sdk/x/bank/client/rest"
+	govrest "github.com/cosmos/cosmos-sdk/x/gov/client/rest"
+	slashingrest "github.com/cosmos/cosmos-sdk/x/slashing/client/rest"
+	stakingrest "github.com/cosmos/cosmos-sdk/x/staking/client/rest"
 
 	distcmd "github.com/cosmos/cosmos-sdk/x/distribution"
 )
@@ -49,13 +40,6 @@ func main() {
 		Short: "Command line interface for interacting with cyberd",
 	}
 
-	mc := []sdk.ModuleClients{
-		govClient.NewModuleClient(gv.StoreKey, cdc),
-		distClient.NewModuleClient(distcmd.StoreKey, cdc),
-		stakingClient.NewModuleClient(st.StoreKey, cdc),
-		slashingClient.NewModuleClient(sl.StoreKey, cdc),
-	}
-
 	// todo: hack till we don't handle with all merkle proofs
 	viper.SetDefault(client.FlagTrustNode, true)
 	cyberdcli.PersistentFlags().String(client.FlagChainID, "", "Chain Id of cyberd node")
@@ -63,14 +47,14 @@ func main() {
 	// Construct Root Command
 	cyberdcli.AddCommand(
 		rpc.StatusCommand(),
-		queryCmd(cdc, mc),
-		txCmd(cdc, mc),
+		queryCmd(cdc),
+		txCmd(cdc),
 		client.LineBreak,
 		keys.Commands(),
 		client.LineBreak,
 		lcd.ServeCommand(cdc, registerRoutes),
 		client.LineBreak,
-		version.VersionCmd,
+		version.Cmd,
 		client.NewCompletionCmd(cyberdcli, true),
 	)
 
@@ -87,18 +71,7 @@ func main() {
 	}
 }
 
-func registerRoutes(rs *lcd.RestServer) {
-	rpc.RegisterRoutes(rs.CliCtx, rs.Mux)
-	tx.RegisterRoutes(rs.CliCtx, rs.Mux, rs.Cdc)
-	auth.RegisterRoutes(rs.CliCtx, rs.Mux, rs.Cdc, at.StoreKey)
-	bank.RegisterRoutes(rs.CliCtx, rs.Mux, rs.Cdc, rs.KeyBase)
-	dist.RegisterRoutes(rs.CliCtx, rs.Mux, rs.Cdc, distcmd.StoreKey)
-	staking.RegisterRoutes(rs.CliCtx, rs.Mux, rs.Cdc, rs.KeyBase)
-	slashing.RegisterRoutes(rs.CliCtx, rs.Mux, rs.Cdc, rs.KeyBase)
-	gov.RegisterRoutes(rs.CliCtx, rs.Mux, rs.Cdc)
-}
-
-func queryCmd(cdc *amino.Codec, mc []sdk.ModuleClients) *cobra.Command {
+func queryCmd(cdc *amino.Codec) *cobra.Command {
 	queryCmd := &cobra.Command{
 		Use:     "query",
 		Aliases: []string{"q"},
@@ -106,22 +79,21 @@ func queryCmd(cdc *amino.Codec, mc []sdk.ModuleClients) *cobra.Command {
 	}
 
 	queryCmd.AddCommand(
+		authcmd.GetAccountCmd(cdc),
 		rpc.ValidatorCommand(cdc),
 		rpc.BlockCommand(),
-		tx.SearchTxCmd(cdc),
-		tx.QueryTxCmd(cdc),
+		authcmd.QueryTxCmd(cdc),
+		authcmd.QueryTxsByEventsCmd(cdc),
 		client.LineBreak,
-		authcmd.GetAccountCmd(at.StoreKey, cdc),
 	)
 
-	for _, m := range mc {
-		queryCmd.AddCommand(m.GetQueryCmd())
-	}
+	// add modules' query commands
+	app.ModuleBasics.AddQueryCommands(queryCmd, cdc)
 
 	return queryCmd
 }
 
-func txCmd(cdc *amino.Codec, mc []sdk.ModuleClients) *cobra.Command {
+func txCmd(cdc *amino.Codec) *cobra.Command {
 	txCmd := &cobra.Command{
 		Use:   "tx",
 		Short: "Transactions subcommands",
@@ -132,14 +104,23 @@ func txCmd(cdc *amino.Codec, mc []sdk.ModuleClients) *cobra.Command {
 		client.LineBreak,
 		authcmd.GetSignCommand(cdc),
 		authcmd.GetMultiSignCommand(cdc),
-		tx.GetBroadcastCommand(cdc),
-		tx.GetEncodeCommand(cdc),
+		authcmd.GetBroadcastCommand(cdc),
+		authcmd.GetEncodeCommand(cdc),
 		client.LineBreak,
 	)
 
-	for _, m := range mc {
-		txCmd.AddCommand(m.GetTxCmd())
-	}
+	// add modules' tx commands
+	app.ModuleBasics.AddTxCommands(txCmd, cdc)
 
 	return txCmd
+}
+
+func registerRoutes(rs *lcd.RestServer) {
+	authrest.RegisterRoutes(rs.CliCtx, rs.Mux, at.StoreKey)
+	bankrest.RegisterRoutes(rs.CliCtx, rs.Mux)
+	dist.RegisterRoutes(rs.CliCtx, rs.Mux, distcmd.StoreKey)
+	stakingrest.RegisterRoutes(rs.CliCtx, rs.Mux)
+	slashingrest.RegisterRoutes(rs.CliCtx, rs.Mux)
+	phs := make([]govrest.ProposalRESTHandler, 0)
+	govrest.RegisterRoutes(rs.CliCtx, rs.Mux, phs)
 }
