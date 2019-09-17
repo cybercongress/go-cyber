@@ -1,14 +1,16 @@
 package main
 
 import (
+	"fmt"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/lcd"
 	"github.com/cosmos/cosmos-sdk/client/rpc"
 	"github.com/cosmos/cosmos-sdk/version"
-	at "github.com/cosmos/cosmos-sdk/x/auth"
+	"github.com/cosmos/cosmos-sdk/x/auth"
 	authcmd "github.com/cosmos/cosmos-sdk/x/auth/client/cli"
+	authrest "github.com/cosmos/cosmos-sdk/x/auth/client/rest"
+	"github.com/cosmos/cosmos-sdk/x/bank"
 	bankcmd "github.com/cosmos/cosmos-sdk/x/bank/client/cli"
-	dist "github.com/cosmos/cosmos-sdk/x/distribution/client/rest"
 	"github.com/cybercongress/cyberd/app"
 	cyberdcmd "github.com/cybercongress/cyberd/cli/commands"
 	"github.com/cybercongress/cyberd/cli/commands/keys"
@@ -18,13 +20,6 @@ import (
 	"github.com/tendermint/tendermint/libs/cli"
 	"os"
 
-	authrest "github.com/cosmos/cosmos-sdk/x/auth/client/rest"
-	bankrest "github.com/cosmos/cosmos-sdk/x/bank/client/rest"
-	govrest "github.com/cosmos/cosmos-sdk/x/gov/client/rest"
-	slashingrest "github.com/cosmos/cosmos-sdk/x/slashing/client/rest"
-	stakingrest "github.com/cosmos/cosmos-sdk/x/staking/client/rest"
-
-	distcmd "github.com/cosmos/cosmos-sdk/x/distribution"
 )
 
 func main() {
@@ -37,11 +32,12 @@ func main() {
 
 	cyberdcli := &cobra.Command{
 		Use:   "cyberdcli",
-		Short: "Command line interface for interacting with cyberd",
+		Short: "Command Line Interface for interacting with cyberd",
 	}
 
 	// todo: hack till we don't handle with all merkle proofs
 	viper.SetDefault(client.FlagTrustNode, true)
+
 	cyberdcli.PersistentFlags().String(client.FlagChainID, "", "Chain Id of cyberd node")
 
 	// Construct Root Command
@@ -64,10 +60,11 @@ func main() {
 		)...)
 
 	executor := cli.PrepareMainCmd(cyberdcli, "CBD", os.ExpandEnv("$HOME/.cyberdcli"))
+
 	err := executor.Execute()
 	if err != nil {
-		// Note: Handle with #870
-		panic(err)
+		fmt.Printf("Failed executing CLI command: %s, exiting...\n", err)
+		os.Exit(1)
 	}
 }
 
@@ -80,6 +77,7 @@ func queryCmd(cdc *amino.Codec) *cobra.Command {
 
 	queryCmd.AddCommand(
 		authcmd.GetAccountCmd(cdc),
+		client.LineBreak,
 		rpc.ValidatorCommand(cdc),
 		rpc.BlockCommand(),
 		authcmd.QueryTxCmd(cdc),
@@ -104,6 +102,7 @@ func txCmd(cdc *amino.Codec) *cobra.Command {
 		client.LineBreak,
 		authcmd.GetSignCommand(cdc),
 		authcmd.GetMultiSignCommand(cdc),
+		client.LineBreak,
 		authcmd.GetBroadcastCommand(cdc),
 		authcmd.GetEncodeCommand(cdc),
 		client.LineBreak,
@@ -112,15 +111,22 @@ func txCmd(cdc *amino.Codec) *cobra.Command {
 	// add modules' tx commands
 	app.ModuleBasics.AddTxCommands(txCmd, cdc)
 
+	// remove auth and bank commands as they're mounted under the root tx command
+	var cmdsToRemove []*cobra.Command
+
+	for _, cmd := range txCmd.Commands() {
+		if cmd.Use == auth.ModuleName || cmd.Use == bank.ModuleName {
+			cmdsToRemove = append(cmdsToRemove, cmd)
+		}
+	}
+
+	txCmd.RemoveCommand(cmdsToRemove...)
+
 	return txCmd
 }
 
 func registerRoutes(rs *lcd.RestServer) {
-	authrest.RegisterRoutes(rs.CliCtx, rs.Mux, at.StoreKey)
-	bankrest.RegisterRoutes(rs.CliCtx, rs.Mux)
-	dist.RegisterRoutes(rs.CliCtx, rs.Mux, distcmd.StoreKey)
-	stakingrest.RegisterRoutes(rs.CliCtx, rs.Mux)
-	slashingrest.RegisterRoutes(rs.CliCtx, rs.Mux)
-	phs := make([]govrest.ProposalRESTHandler, 0)
-	govrest.RegisterRoutes(rs.CliCtx, rs.Mux, phs)
+	client.RegisterRoutes(rs.CliCtx, rs.Mux)
+	authrest.RegisterTxRoutes(rs.CliCtx, rs.Mux)
+	app.ModuleBasics.RegisterRESTRoutes(rs.CliCtx, rs.Mux)
 }

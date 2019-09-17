@@ -1,5 +1,5 @@
 package rank
 
 const (
-	CalculationPeriod = 2
+	CalculationPeriod = 10
 )

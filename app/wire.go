@@ -17,6 +17,5 @@ func MakeCodec() *codec.Codec {
 	codec.RegisterCrypto(cdc)
 	codec.RegisterEvidences(cdc)
 
-	cdc.Seal()
-	return cdc
+	return cdc.Seal()
 }

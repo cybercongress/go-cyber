@@ -30,6 +30,7 @@ import (
 	"github.com/cybercongress/cyberd/x/link/keeper"
 	"github.com/cybercongress/cyberd/x/rank"
 	abci "github.com/tendermint/tendermint/abci/types"
+	"github.com/tendermint/tendermint/abci/version"
 	cmn "github.com/tendermint/tendermint/libs/common"
 	"github.com/tendermint/tendermint/libs/log"
 	dbm "github.com/tendermint/tm-db"
@@ -114,6 +115,8 @@ type CyberdApp struct {
 	latestBlockHeight int64
 
 	debugState *debug.State
+
+	mm *module.Manager
 }
 
 // NewCyberdApp returns a reference to a new CyberdApp given a
@@ -129,6 +132,7 @@ func NewCyberdApp(
 	baseApp := baseapp.NewBaseApp(appName, logger, db, txDecoder, baseAppOptions...)
 	dbKeys := NewCyberdAppDbKeys()
 	mainKeeper := store.NewMainKeeper(dbKeys.main)
+	baseApp.SetAppVersion(version.Version)
 
 	// create your application type
 	var app = &CyberdApp{
@@ -151,8 +155,8 @@ func NewCyberdApp(
 	govSubspace := app.paramsKeeper.Subspace(gov.DefaultParamspace)
 
 	blacklistedAddrs := make(map[string]bool)
-	// add keepers
 
+	// add keepers
 	app.accountKeeper = auth.NewAccountKeeper(app.cdc, dbKeys.acc, authSubspace, cbd.NewCyberdAccount)
 	app.bankKeeper = cbdbank.NewKeeper(app.accountKeeper, bankSubspace, sdkbank.DefaultCodespace, blacklistedAddrs)
 	app.supplyKeeper = supply.NewKeeper(app.cdc, dbKeys.supply, app.accountKeeper, app.bankKeeper, maccPerms)
@@ -172,6 +176,7 @@ func NewCyberdApp(
 	app.accBandwidthKeeper = bandwidth.NewAccBandwidthKeeper(dbKeys.accBandwidth)
 	app.blockBandwidthKeeper = bandwidth.NewBlockSpentBandwidthKeeper(dbKeys.blockBandwidth)
 
+	// register the proposal types
 	govRouter := gov.NewRouter()
     govRouter.AddRoute(gov.RouterKey, gov.ProposalHandler).
         AddRoute(params.RouterKey, params.NewParamChangeProposalHandler(app.paramsKeeper)).
@@ -203,21 +208,25 @@ func NewCyberdApp(
 		app.blockBandwidthKeeper,
 	)
 
-	// register message routes
-	app.Router().
-		AddRoute("link", link.NewLinksHandler(app.cidNumKeeper, app.linkIndexedKeeper, app.accountKeeper)).
-		AddRoute(sdkbank.RouterKey, sdkbank.NewHandler(app.bankKeeper)).
-		AddRoute(staking.RouterKey, staking.NewHandler(app.stakingKeeper)).
-		AddRoute(distr.RouterKey, distr.NewHandler(app.distrKeeper)).
-		AddRoute(slashing.RouterKey, slashing.NewHandler(app.slashingKeeper)).
-		AddRoute(gov.RouterKey, gov.NewHandler(app.govKeeper))
+	// NOTE: Any module instantiated in the module manager that is later modified
+	// must be passed by reference here.
+	app.mm = module.NewManager(
+		auth.NewAppModule(app.accountKeeper),
+		sdkbank.NewAppModule(app.bankKeeper, app.accountKeeper),
+		crisis.NewAppModule(&app.crisisKeeper),
+		supply.NewAppModule(app.supplyKeeper, app.accountKeeper),
+		distr.NewAppModule(app.distrKeeper, app.supplyKeeper),
+		gov.NewAppModule(app.govKeeper, app.supplyKeeper),
+		mint.NewAppModule(app.mintKeeper),
+		slashing.NewAppModule(app.slashingKeeper, app.stakingKeeper),
+		staking.NewAppModule(app.stakingKeeper, app.distrKeeper, app.accountKeeper, app.supplyKeeper),
+	)
 
-	app.QueryRouter().
-		AddRoute(auth.QuerierRoute, auth.NewQuerier(app.accountKeeper)).
-		AddRoute(distr.QuerierRoute, distr.NewQuerier(app.distrKeeper)).
-		AddRoute(gov.QuerierRoute, gov.NewQuerier(app.govKeeper)).
-		AddRoute(slashing.QuerierRoute, slashing.NewQuerier(app.slashingKeeper)).
-		AddRoute(staking.QuerierRoute, staking.NewQuerier(app.stakingKeeper))
+	app.Router().
+		AddRoute("link", link.NewLinksHandler(app.cidNumKeeper, app.linkIndexedKeeper, app.accountKeeper))
+
+	app.mm.RegisterInvariants(&app.crisisKeeper)
+	app.mm.RegisterRoutes(app.Router(), app.QueryRouter())
 
 	// mount the multistore and load the latest state
 	app.MountStores(
@@ -484,7 +493,7 @@ func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.R
 
 	app.latestBlockHeight = ctx.BlockHeight()
 	app.mainKeeper.StoreLatestBlockNumber(ctx, uint64(ctx.BlockHeight()))
-
+	crisis.EndBlocker(ctx, app.crisisKeeper)
 	gov.EndBlocker(ctx, app.govKeeper)
 	validatorUpdates := staking.EndBlocker(ctx, app.stakingKeeper)
 	app.stakingIndex.EndBlocker(ctx)
