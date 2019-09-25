@@ -4,17 +4,30 @@ import (
 	"encoding/binary"
 	"encoding/json"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	. "github.com/cybercongress/cyberd/x/bandwidth/types"
+	"github.com/cosmos/cosmos-sdk/x/params"
 )
 
 var _ Keeper = BaseAccBandwidthKeeper{}
 
 type BaseAccBandwidthKeeper struct {
-	key *sdk.KVStoreKey
+	key        *sdk.KVStoreKey
+	paramSpace params.Subspace
 }
 
-func NewAccBandwidthKeeper(key *sdk.KVStoreKey) BaseAccBandwidthKeeper {
-	return BaseAccBandwidthKeeper{key: key}
+func NewAccBandwidthKeeper(key *sdk.KVStoreKey, subspace params.Subspace) BaseAccBandwidthKeeper {
+	return BaseAccBandwidthKeeper{
+		key:        key,
+		paramSpace: subspace,
+	}
+}
+
+func (bk BaseAccBandwidthKeeper) SetParams(ctx sdk.Context, params Params) {
+	bk.paramSpace.SetParamSet(ctx, &params)
+}
+
+func (bk BaseAccBandwidthKeeper) GetParams(ctx sdk.Context) (params Params) {
+	bk.paramSpace.GetParamSet(ctx, &params)
+	return
 }
 
 func (bk BaseAccBandwidthKeeper) SetAccBandwidth(ctx sdk.Context, bandwidth AcсBandwidth) {

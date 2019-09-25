@@ -66,7 +66,7 @@ func (i NoopSearchIndex) Search(cidNumber CidNumber, page, perPage int) ([]Ranke
 	return nil, 0, errors.New("search is not allowed on this node")
 }
 func (i NoopSearchIndex) PutNewLinks(links []CompactLink) {}
-func (i NoopSearchIndex) PutNewRank(rank Rank) {}
+func (i NoopSearchIndex) PutNewRank(rank Rank)            {}
 func (i NoopSearchIndex) GetRankValue(cidNumber CidNumber) float64 {
 	return 0
 }

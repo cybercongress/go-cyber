@@ -6,23 +6,27 @@ import (
 	sdkbank "github.com/cosmos/cosmos-sdk/x/bank"
 	"github.com/cosmos/cosmos-sdk/x/params"
 	"github.com/cosmos/cosmos-sdk/x/staking"
+	"github.com/cosmos/cosmos-sdk/x/supply"
 	"github.com/cybercongress/cyberd/types/coin"
 )
 
 type Keeper struct {
 	sdkbank.Keeper
 
-	ak auth.AccountKeeper
-	sk *staking.Keeper
+	accountKeeper auth.AccountKeeper
+	stakingKeeper *staking.Keeper
+	supplyKeeper  supply.Keeper
 
 	coinsTransferHooks []CoinsTransferHook
 }
 
-func NewBankKeeper(ak auth.AccountKeeper, sk *staking.Keeper, subspace params.Subspace) *Keeper {
+func NewKeeper(
+	accountKeeper auth.AccountKeeper, subspace params.Subspace, codespace sdk.CodespaceType, blacklistedAddrs map[string]bool) *Keeper {
 	return &Keeper{
-		Keeper:             sdkbank.NewBaseKeeper(ak, subspace, sdkbank.DefaultCodespace),
-		ak:                 ak,
-		sk:                 sk,
+		Keeper:        sdkbank.NewBaseKeeper(accountKeeper, subspace, codespace, blacklistedAddrs),
+		accountKeeper: accountKeeper,
+		//stakingKeeper:      stakingKeeper,
+		//supplyKeeper:       supplyKeeper,
 		coinsTransferHooks: make([]CoinsTransferHook, 0),
 	}
 }
@@ -31,22 +35,30 @@ func (k *Keeper) AddHook(hook CoinsTransferHook) {
 	k.coinsTransferHooks = append(k.coinsTransferHooks, hook)
 }
 
-/* Override methods */
-// sdk acc keeper is not interface yet
-func (k Keeper) AddCoins(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coins) (sdk.Coins, sdk.Tags, sdk.Error) {
-	coins, tags, err := k.Keeper.AddCoins(ctx, addr, amt)
-	if err == nil {
-		k.onCoinsTransfer(ctx, nil, addr)
-	}
-	return coins, tags, err
+func (k *Keeper) SetStakingKeeper(sk *staking.Keeper) {
+	k.stakingKeeper = sk
 }
 
-func (k Keeper) SubtractCoins(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coins) (sdk.Coins, sdk.Tags, sdk.Error) {
-	coins, tags, err := k.Keeper.SubtractCoins(ctx, addr, amt)
+func (k *Keeper) SetSupplyKeeper(sk supply.Keeper) {
+	k.supplyKeeper = sk
+}
+
+/* Override methods */
+// sdk accountKeeper keeper is not interface yet
+func (k Keeper) AddCoins(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coins) (sdk.Coins, sdk.Error) {
+	coins, err := k.Keeper.AddCoins(ctx, addr, amt)
 	if err == nil {
 		k.onCoinsTransfer(ctx, nil, addr)
 	}
-	return coins, tags, err
+	return coins, err
+}
+
+func (k Keeper) SubtractCoins(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coins) (sdk.Coins, sdk.Error) {
+	coins, err := k.Keeper.SubtractCoins(ctx, addr, amt)
+	if err == nil {
+		k.onCoinsTransfer(ctx, nil, addr)
+	}
+	return coins, err
 }
 
 func (k Keeper) SetCoins(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coins) sdk.Error {
@@ -58,20 +70,18 @@ func (k Keeper) SetCoins(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coins) sd
 }
 
 func (k Keeper) SendCoins(
-	ctx sdk.Context, fromAddr sdk.AccAddress, toAddr sdk.AccAddress, amt sdk.Coins,
-) (sdk.Tags, sdk.Error) {
+	ctx sdk.Context, fromAddr sdk.AccAddress, toAddr sdk.AccAddress, amt sdk.Coins) sdk.Error {
 
-	tags, err := k.Keeper.SendCoins(ctx, fromAddr, toAddr, amt)
+	err := k.Keeper.SendCoins(ctx, fromAddr, toAddr, amt)
 	if err == nil {
 		k.onCoinsTransfer(ctx, fromAddr, toAddr)
 	}
-	return tags, err
+	return err
 }
 
 func (k Keeper) InputOutputCoins(
-	ctx sdk.Context, inputs []sdkbank.Input, outputs []sdkbank.Output,
-) (sdk.Tags, sdk.Error) {
-	tags, err := k.Keeper.InputOutputCoins(ctx, inputs, outputs)
+	ctx sdk.Context, inputs []sdkbank.Input, outputs []sdkbank.Output) sdk.Error {
+	err := k.Keeper.InputOutputCoins(ctx, inputs, outputs)
 	if err == nil {
 		for _, i := range inputs {
 			k.onCoinsTransfer(ctx, i.Address, nil)
@@ -80,23 +90,23 @@ func (k Keeper) InputOutputCoins(
 			k.onCoinsTransfer(ctx, nil, j.Address)
 		}
 	}
-	return tags, err
+	return err
 }
 
-func (k Keeper) DelegateCoins(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coins) (sdk.Tags, sdk.Error) {
-	tags, err := k.Keeper.DelegateCoins(ctx, addr, amt)
+func (k Keeper) DelegateCoins(ctx sdk.Context, delegatorAddr, moduleAccAddr sdk.AccAddress, amt sdk.Coins) sdk.Error {
+	err := k.Keeper.DelegateCoins(ctx, delegatorAddr, moduleAccAddr, amt)
 	if err == nil {
-		k.onCoinsTransfer(ctx, nil, addr)
+		k.onCoinsTransfer(ctx, nil, moduleAccAddr)
 	}
-	return tags, err
+	return err
 }
 
-func (k Keeper) UndelegateCoins(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coins) (sdk.Tags, sdk.Error) {
-	tags, err := k.Keeper.UndelegateCoins(ctx, addr, amt)
+func (k Keeper) UndelegateCoins(ctx sdk.Context, moduleAccAddr, delegatorAddr sdk.AccAddress, amt sdk.Coins) sdk.Error {
+	err := k.Keeper.UndelegateCoins(ctx, moduleAccAddr, delegatorAddr, amt)
 	if err == nil {
-		k.onCoinsTransfer(ctx, nil, addr)
+		k.onCoinsTransfer(ctx, nil, delegatorAddr)
 	}
-	return tags, err
+	return err
 }
 
 func (k Keeper) onCoinsTransfer(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress) {
@@ -108,7 +118,7 @@ func (k Keeper) onCoinsTransfer(ctx sdk.Context, from sdk.AccAddress, to sdk.Acc
 /* Query methods */
 
 func (k Keeper) GetAccountUnboundedStake(ctx sdk.Context, addr sdk.AccAddress) int64 {
-	acc := k.ak.GetAccount(ctx, addr)
+	acc := k.accountKeeper.GetAccount(ctx, addr)
 	if acc == nil {
 		return 0
 	}
@@ -116,7 +126,7 @@ func (k Keeper) GetAccountUnboundedStake(ctx sdk.Context, addr sdk.AccAddress) i
 }
 
 func (k Keeper) GetAccountBoundedStake(ctx sdk.Context, addr sdk.AccAddress) int64 {
-	delegations := k.sk.GetAllDelegatorDelegations(ctx, addr)
+	delegations := k.stakingKeeper.GetAllDelegatorDelegations(ctx, addr)
 	boundedStake := int64(0)
 	for _, del := range delegations {
 		boundedStake += del.Shares.TruncateInt64()
@@ -130,10 +140,17 @@ func (k Keeper) GetAccountTotalStake(ctx sdk.Context, addr sdk.AccAddress) int64
 }
 
 func (k Keeper) GetAccStakePercentage(ctx sdk.Context, addr sdk.AccAddress) float64 {
-	return float64(k.GetAccountTotalStake(ctx, addr)) / float64(k.GetTotalSupply(ctx))
+	a := k.GetAccountTotalStake(ctx, addr)
+	aFloat := float64(a)
+
+	b := k.GetTotalSupply(ctx)
+	bFloat := float64(b)
+
+	c := aFloat / bFloat
+	return c
 }
 
 func (k Keeper) GetTotalSupply(ctx sdk.Context) int64 {
-	pool := k.sk.GetPool(ctx)
-	return pool.TokenSupply().Int64()
+	keeperSupply := k.supplyKeeper.GetSupply(ctx)
+	return keeperSupply.GetTotal().AmountOf("cyb").Int64()
 }

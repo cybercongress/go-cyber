@@ -16,7 +16,7 @@ moniker = "anonymous"
 fast_sync = true
 
 # Database backend: leveldb | memdb | cleveldb
-db_backend = "leveldb"
+db_backend = "goleveldb"
 
 # Database directory
 db_dir = "data"

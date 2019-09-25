@@ -5,7 +5,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-
 func Commands() *cobra.Command {
 
 	keyCommand := keys.Commands()

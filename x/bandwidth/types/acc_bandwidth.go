@@ -2,9 +2,10 @@ package types
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/x/params"
 )
 
-type MsgBandwidthCost func(msg sdk.Msg) int64
+type MsgBandwidthCost func(ctx sdk.Context, pk params.Keeper, msg sdk.Msg) int64
 
 type AcсBandwidth struct {
 	Address          sdk.AccAddress `json:"address"`

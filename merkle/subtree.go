@@ -9,7 +9,7 @@ type Subtree struct {
 	root *Node // root node
 
 	left  *Subtree // left subtree from this one
-	right *Subtree  // right  subtree from this one
+	right *Subtree // right  subtree from this one
 
 	height int // height of subtree
 	// hash function to hash sum nodes and hash data
