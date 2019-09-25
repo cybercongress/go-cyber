@@ -3,10 +3,11 @@ package app
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
+	acc "github.com/cybercongress/cyberd/x/acc/types"
 )
 
 // should be removed after cosmos refactor
-func NewAnteHandler(ak auth.AccountKeeper) sdk.AnteHandler {
+func NewAnteHandler(ak acc.AccountIndexKeeper) sdk.AnteHandler {
 	return func(ctx sdk.Context, tx sdk.Tx, simulate bool) (newCtx sdk.Context, res sdk.Result, abort bool) {
 
 		//todo really need it?
@@ -36,7 +37,7 @@ func NewAnteHandler(ak auth.AccountKeeper) sdk.AnteHandler {
 
 		for i := 0; i < len(stdSigs); i++ {
 
-			signerAccs[i], res = auth.GetSignerAcc(newCtx, ak, signerAddrs[i])
+			signerAccs[i], res = auth.GetSignerAcc(newCtx, ak.GetAccountKeeper(), signerAddrs[i])
 			if !res.IsOK() {
 				return newCtx, res, true
 			}
@@ -57,15 +58,15 @@ func NewAnteHandler(ak auth.AccountKeeper) sdk.AnteHandler {
 
 // verify the signature and increment the sequence. If the account doesn't have a pubkey, set it.
 func processSig(
-	acc auth.Account, sig auth.StdSignature, signBytes []byte, simulate bool,
+	account auth.Account, sig auth.StdSignature, signBytes []byte, simulate bool,
 ) (updatedAcc auth.Account, res sdk.Result) {
 
-	pubKey, res := auth.ProcessPubKey(acc, sig, simulate)
+	pubKey, res := auth.ProcessPubKey(account, sig, simulate)
 	if !res.IsOK() {
 		return nil, res
 	}
 
-	err := acc.SetPubKey(pubKey)
+	err := account.SetPubKey(pubKey)
 	if err != nil {
 		return nil, sdk.ErrInternal("setting PubKey on signer's account").Result()
 	}
@@ -74,9 +75,9 @@ func processSig(
 		return nil, sdk.ErrUnauthorized("signature verification failed").Result()
 	}
 
-	if err := acc.SetSequence(acc.GetSequence() + 1); err != nil {
+	if err := account.SetSequence(account.GetSequence() + 1); err != nil {
 		panic(err)
 	}
 
-	return acc, res
+	return account, res
 }

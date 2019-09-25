@@ -2,20 +2,21 @@ package app
 
 import (
 	"errors"
+	acc "github.com/cybercongress/cyberd/x/acc/types"
 	"math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cybercongress/cyberd/merkle"
-	cbd "github.com/cybercongress/cyberd/types"
 	bdwth "github.com/cybercongress/cyberd/x/bandwidth/types"
 	cbdlink "github.com/cybercongress/cyberd/x/link/types"
 	abci "github.com/tendermint/tendermint/abci/types"
 )
 
 type RankedCid struct {
-	Cid  cbdlink.Cid `json:"cid"`
-	Rank float64     `amino:"unsafe" json:"rank"`
+	Cid      cbdlink.Cid      `json:"cid"`
+	Rank     float64          `amino:"unsafe" json:"rank"`
+	Accounts []sdk.AccAddress `json:"accounts"`
 }
 
 func (app *CyberdApp) RpcContext() sdk.Context {
@@ -31,14 +32,28 @@ func (app *CyberdApp) Search(cid string, page, perPage int) ([]RankedCid, int, e
 	}
 
 	rankedCidNumbers, size, err := app.rankState.Search(cidNumber, page, perPage)
-
 	if err != nil {
 		return nil, size, err
 	}
 
 	result := make([]RankedCid, 0, len(rankedCidNumbers))
+	links := app.linkIndexedKeeper.GetOutLinks()
 	for _, c := range rankedCidNumbers {
-		result = append(result, RankedCid{Cid: app.cidNumKeeper.GetCid(ctx, c.GetNumber()), Rank: c.GetRank()})
+		accs := links[cidNumber][c.GetNumber()]
+		rc := RankedCid{
+			Cid:      app.cidNumKeeper.GetCid(ctx, c.GetNumber()),
+			Rank:     c.GetRank(),
+			Accounts: make([]sdk.AccAddress, 0, len(accs)),
+		}
+
+		for accNum := range accs {
+			addr, ok := app.accountKeeper.GetAccountAddress(accNum)
+			if ok {
+				rc.Accounts = append(rc.Accounts, addr)
+			}
+		}
+
+		result = append(result, rc)
 	}
 
 	return result, size, nil
@@ -77,9 +92,9 @@ func (app *CyberdApp) IsLinkExist(from cbdlink.Cid, to cbdlink.Cid, address sdk.
 
 	if fromExist && toExists {
 		if address != nil {
-			acc := app.accountKeeper.GetAccount(ctx, address)
-			if acc != nil {
-				accNumber := cbd.AccNumber(acc.GetAccountNumber())
+			account := app.accountKeeper.GetAccount(ctx, address)
+			if account != nil {
+				accNumber := acc.AccNumber(account.GetAccountNumber())
 				return app.linkIndexedKeeper.IsLinkExist(cbdlink.NewLink(fromNumber, toNumber, accNumber))
 			}
 		} else {

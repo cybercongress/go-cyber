@@ -1,7 +1,9 @@
 package types
 
-import "github.com/cosmos/cosmos-sdk/x/auth"
-import sdk "github.com/cosmos/cosmos-sdk/types"
+import (
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/x/auth"
+)
 
 type AccNumber uint64
 

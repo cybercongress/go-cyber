@@ -9,15 +9,16 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/bank"
 	distr "github.com/cosmos/cosmos-sdk/x/distribution"
 	"github.com/cosmos/cosmos-sdk/x/gov"
+	"github.com/cosmos/cosmos-sdk/x/mint"
 	"github.com/cosmos/cosmos-sdk/x/params"
 	"github.com/cosmos/cosmos-sdk/x/slashing"
 	"github.com/cosmos/cosmos-sdk/x/staking"
-	"github.com/cosmos/cosmos-sdk/x/mint"
 	"github.com/cybercongress/cyberd/store"
 	"github.com/cybercongress/cyberd/types"
-	cbd "github.com/cybercongress/cyberd/types"
 	"github.com/cybercongress/cyberd/types/coin"
 	"github.com/cybercongress/cyberd/util"
+	"github.com/cybercongress/cyberd/x/acc"
+	acct "github.com/cybercongress/cyberd/x/acc/types"
 	"github.com/cybercongress/cyberd/x/bandwidth"
 	bw "github.com/cybercongress/cyberd/x/bandwidth/types"
 	cbdbank "github.com/cybercongress/cyberd/x/bank"
@@ -65,7 +66,7 @@ type CyberdApp struct {
 
 	// manage getting and setting app data
 	mainKeeper          store.MainKeeper
-	accountKeeper       auth.AccountKeeper
+	accountKeeper       acct.AccountIndexKeeper
 	feeCollectionKeeper auth.FeeCollectionKeeper
 	bankKeeper          *cbdbank.Keeper
 	stakingKeeper       staking.Keeper
@@ -74,7 +75,7 @@ type CyberdApp struct {
 	govKeeper           gov.Keeper
 	paramsKeeper        params.Keeper
 	accBandwidthKeeper  bw.Keeper
-	mintKeeper     		mint.Keeper
+	mintKeeper          mint.Keeper
 
 	// cyberd storage
 	// todo: move all processes with this storages to another file
@@ -118,14 +119,15 @@ func NewCyberdApp(
 	app.accBandwidthKeeper = bandwidth.NewAccBandwidthKeeper(dbKeys.accBandwidth)
 	app.blockBandwidthKeeper = bandwidth.NewBlockSpentBandwidthKeeper(dbKeys.blockBandwidth)
 
-	app.accountKeeper = auth.NewAccountKeeper(
+	app.accountKeeper = acc.NewAccountIndexKeeper(auth.NewAccountKeeper(
 		app.cdc, dbKeys.acc,
-		app.paramsKeeper.Subspace(auth.DefaultParamspace), cbd.NewCyberdAccount,
-	)
+		app.paramsKeeper.Subspace(auth.DefaultParamspace), acct.NewCyberdAccount,
+	))
 
 	var stakingKeeper staking.Keeper
 	app.bankKeeper = cbdbank.NewBankKeeper(
-		app.accountKeeper, &stakingKeeper,
+		app.accountKeeper.GetAccountKeeper(), // TODO: Update with new version SDK
+		&stakingKeeper,
 		app.paramsKeeper.Subspace(bank.DefaultParamspace),
 	)
 	app.bankKeeper.AddHook(bandwidth.CollectAddressesWithStakeChange())
@@ -176,7 +178,9 @@ func NewCyberdApp(
 	)
 
 	app.bandwidthMeter = bandwidth.NewBaseMeter(
-		app.mainKeeper, app.accountKeeper, app.bankKeeper, app.accBandwidthKeeper, bandwidth.MsgBandwidthCosts,
+		app.mainKeeper,
+		app.accountKeeper.GetAccountKeeper(), // TODO: Update with new version SDK
+		app.bankKeeper, app.accBandwidthKeeper, bandwidth.MsgBandwidthCosts,
 		app.blockBandwidthKeeper,
 	)
 
@@ -190,7 +194,7 @@ func NewCyberdApp(
 		AddRoute(gov.RouterKey, gov.NewHandler(app.govKeeper))
 
 	app.QueryRouter().
-		AddRoute(auth.QuerierRoute, auth.NewQuerier(app.accountKeeper)).
+		AddRoute(auth.QuerierRoute, auth.NewQuerier(app.accountKeeper.GetAccountKeeper())).
 		AddRoute(distr.QuerierRoute, distr.NewQuerier(app.distrKeeper)).
 		AddRoute(gov.QuerierRoute, gov.NewQuerier(app.govKeeper)).
 		AddRoute(slashing.QuerierRoute, slashing.NewQuerier(app.slashingKeeper, app.cdc)).
@@ -228,6 +232,7 @@ func NewCyberdApp(
 	// load in-memory data
 	start := time.Now()
 	app.BaseApp.Logger().Info("Loading mem state")
+	app.accountKeeper.RefreshIndex(ctx)
 	app.linkIndexedKeeper.Load(rankCtx, ctx)
 	app.stakingIndex.Load(rankCtx, ctx)
 	app.BaseApp.Logger().Info("App loaded", "time", time.Since(start))
@@ -255,10 +260,10 @@ func (app *CyberdApp) applyGenesis(ctx sdk.Context, req abci.RequestInitChain) a
 
 	// load the accounts
 	for _, gacc := range genesisState.Accounts {
-		acc := gacc.ToAccount()
+		account := gacc.ToAccount()
 		app.accountKeeper.GetNextAccountNumber(ctx) //increment for future accs being started from right number
-		app.accountKeeper.SetAccount(ctx, acc)
-		app.stakingIndex.UpdateStake(types.AccNumber(acc.AccountNumber), acc.Coins.AmountOf(coin.CYB).Int64())
+		app.accountKeeper.SetAccount(ctx, account)
+		app.stakingIndex.UpdateStake(acct.AccNumber(account.AccountNumber), account.Coins.AmountOf(coin.CYB).Int64())
 	}
 
 	bank.InitGenesis(ctx, app.bankKeeper, genesisState.BankData)
@@ -270,7 +275,7 @@ func (app *CyberdApp) applyGenesis(ctx sdk.Context, req abci.RequestInitChain) a
 		panic(err)
 	}
 
-	auth.InitGenesis(ctx, app.accountKeeper, app.feeCollectionKeeper, genesisState.AuthData)
+	auth.InitGenesis(ctx, app.accountKeeper.GetAccountKeeper(), app.feeCollectionKeeper, genesisState.AuthData)
 
 	slashing.InitGenesis(
 		ctx, app.slashingKeeper, genesisState.SlashingData,

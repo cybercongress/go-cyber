@@ -2,8 +2,8 @@ package link
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/auth"
 	cbd "github.com/cybercongress/cyberd/types"
+	acc "github.com/cybercongress/cyberd/x/acc/types"
 	"github.com/cybercongress/cyberd/x/link/keeper"
 	cbdlink "github.com/cybercongress/cyberd/x/link/types"
 )
@@ -13,7 +13,7 @@ import (
 // ils  - links storage
 // as   - account storage
 // imms - in-memory storage
-func NewLinksHandler(cis keeper.CidNumberKeeper, ls *keeper.LinkIndexedKeeper, as auth.AccountKeeper) sdk.Handler {
+func NewLinksHandler(cis keeper.CidNumberKeeper, ls *keeper.LinkIndexedKeeper, as acc.AccountIndexKeeper) sdk.Handler {
 
 	return func(ctx sdk.Context, msg sdk.Msg) sdk.Result {
 
@@ -32,7 +32,7 @@ func NewLinksHandler(cis keeper.CidNumberKeeper, ls *keeper.LinkIndexedKeeper, a
 				continue
 			}
 
-			accNumber := cbd.AccNumber(as.GetAccount(ctx, linkMsg.Address).GetAccountNumber())
+			accNumber := acc.AccNumber(as.GetAccount(ctx, linkMsg.Address).GetAccountNumber())
 			compactLink := cbdlink.NewLink(fromCidNumber, toCidNumber, accNumber)
 
 			if ls.IsLinkExist(compactLink) {
@@ -43,7 +43,9 @@ func NewLinksHandler(cis keeper.CidNumberKeeper, ls *keeper.LinkIndexedKeeper, a
 		for _, link := range linkMsg.Links {
 			fromCidNumber := cis.GetOrPutCidNumber(ctx, link.From)
 			toCidNumber := cis.GetOrPutCidNumber(ctx, link.To)
-			accNumber := cbd.AccNumber(as.GetAccount(ctx, linkMsg.Address).GetAccountNumber())
+			a := as.GetAccount(ctx, linkMsg.Address)
+			as.AddToIndex(a) // TODO: Update with new version SDK
+			accNumber := acc.AccNumber(a.GetAccountNumber())
 
 			ls.PutLink(ctx, cbdlink.NewLink(fromCidNumber, toCidNumber, accNumber))
 		}
