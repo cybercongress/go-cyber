@@ -19,7 +19,6 @@ import (
 	"github.com/tendermint/go-amino"
 	"github.com/tendermint/tendermint/libs/cli"
 	"os"
-
 )
 
 func main() {

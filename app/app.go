@@ -29,6 +29,7 @@ import (
 	"github.com/cybercongress/cyberd/x/link"
 	"github.com/cybercongress/cyberd/x/link/keeper"
 	"github.com/cybercongress/cyberd/x/rank"
+	rt "github.com/cybercongress/cyberd/x/rank/types"
 	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/abci/version"
 	cmn "github.com/tendermint/tendermint/libs/common"
@@ -58,9 +59,12 @@ var (
 		distr.AppModuleBasic{},
 		gov.NewAppModuleBasic(paramsclient.ProposalHandler, distr.ProposalHandler),
 		params.AppModuleBasic{},
-        crisis.AppModuleBasic{},
+		crisis.AppModuleBasic{},
 		slashing.AppModuleBasic{},
 		supply.AppModuleBasic{},
+
+		bandwidth.AppModuleBasic{},
+		rank.AppModuleBasic{},
 	)
 
 	maccPerms = map[string][]string{
@@ -71,7 +75,6 @@ var (
 		staking.NotBondedPoolName: {supply.Burner, supply.Staking},
 		gov.ModuleName:            {supply.Burner},
 	}
-
 )
 
 // CyberdApp implements an extended ABCI application. It contains a BaseApp,
@@ -89,7 +92,7 @@ type CyberdApp struct {
 	blockBandwidthKeeper bw.BlockSpentBandwidthKeeper
 
 	// keys to access the multistore
-	dbKeys CyberdAppDbKeys
+	dbKeys cyberdAppDbKeys
 
 	// keepers: manage getting and setting app data
 	mainKeeper         store.MainKeeper
@@ -102,7 +105,7 @@ type CyberdApp struct {
 	distrKeeper        distr.Keeper
 	govKeeper          gov.Keeper
 	paramsKeeper       params.Keeper
-    crisisKeeper       crisis.Keeper
+	crisisKeeper       crisis.Keeper
 	accBandwidthKeeper bw.Keeper
 
 	// cyberd storage
@@ -153,6 +156,8 @@ func NewCyberdApp(
 	distrSubspace := app.paramsKeeper.Subspace(distr.DefaultParamspace)
 	crisisSubspace := app.paramsKeeper.Subspace(crisis.DefaultParamspace)
 	govSubspace := app.paramsKeeper.Subspace(gov.DefaultParamspace)
+	bandwidthSubspace := app.paramsKeeper.Subspace(bandwidth.DefaultParamspace).WithKeyTable(bandwidth.ParamKeyTable())
+	rankSubspace := app.paramsKeeper.Subspace(rank.DefaultParamspace).WithKeyTable(rank.ParamKeyTable())
 
 	blacklistedAddrs := make(map[string]bool)
 
@@ -173,16 +178,16 @@ func NewCyberdApp(
 		app.cdc, dbKeys.slashing, &stakingKeeper, slashingSubspace, slashing.DefaultCodespace)
 	app.crisisKeeper = crisis.NewKeeper(crisisSubspace, uint(1), app.supplyKeeper, auth.FeeCollectorName)
 
-	app.accBandwidthKeeper = bandwidth.NewAccBandwidthKeeper(dbKeys.accBandwidth)
+	app.accBandwidthKeeper = bandwidth.NewAccBandwidthKeeper(dbKeys.accBandwidth, bandwidthSubspace)
 	app.blockBandwidthKeeper = bandwidth.NewBlockSpentBandwidthKeeper(dbKeys.blockBandwidth)
 
 	// register the proposal types
 	govRouter := gov.NewRouter()
-    govRouter.AddRoute(gov.RouterKey, gov.ProposalHandler).
-        AddRoute(params.RouterKey, params.NewParamChangeProposalHandler(app.paramsKeeper)).
-        AddRoute(distr.RouterKey, distr.NewCommunityPoolSpendProposalHandler(app.distrKeeper))
+	govRouter.AddRoute(gov.RouterKey, gov.ProposalHandler).
+		AddRoute(params.RouterKey, params.NewParamChangeProposalHandler(app.paramsKeeper)).
+		AddRoute(distr.RouterKey, distr.NewCommunityPoolSpendProposalHandler(app.distrKeeper))
 
-    app.govKeeper = gov.NewKeeper(
+	app.govKeeper = gov.NewKeeper(
 		app.cdc, dbKeys.gov, app.paramsKeeper, govSubspace,
 		app.supplyKeeper, &stakingKeeper, gov.DefaultCodespace, govRouter)
 
@@ -204,8 +209,8 @@ func NewCyberdApp(
 	app.bankKeeper.AddHook(bandwidth.CollectAddressesWithStakeChange())
 
 	app.bandwidthMeter = bandwidth.NewBaseMeter(
-		app.mainKeeper, app.accountKeeper, app.bankKeeper, app.accBandwidthKeeper, bandwidth.MsgBandwidthCosts,
-		app.blockBandwidthKeeper,
+		app.mainKeeper, app.paramsKeeper, app.accountKeeper, app.accBandwidthKeeper,
+		app.blockBandwidthKeeper, app.bankKeeper, bandwidth.MsgBandwidthCosts,
 	)
 
 	// NOTE: Any module instantiated in the module manager that is later modified
@@ -220,6 +225,9 @@ func NewCyberdApp(
 		mint.NewAppModule(app.mintKeeper),
 		slashing.NewAppModule(app.slashingKeeper, app.stakingKeeper),
 		staking.NewAppModule(app.stakingKeeper, app.distrKeeper, app.accountKeeper, app.supplyKeeper),
+
+		bandwidth.NewAppModule(app.accBandwidthKeeper, app.blockBandwidthKeeper),
+		rank.NewAppModule(),
 	)
 
 	app.Router().
@@ -250,8 +258,14 @@ func NewCyberdApp(
 	app.latestBlockHeight = int64(mainKeeper.GetLatestBlockNumber(ctx))
 	ctx = ctx.WithBlockHeight(app.latestBlockHeight)
 
+	bandwidthParamset := bw.NewDefaultParams()
+	bandwidthSubspace.SetParamSet(ctx, &bandwidthParamset)
+
+	rankParamset := rt.NewDefaultParams()
+	rankSubspace.SetParamSet(ctx, &rankParamset)
+
 	// build context for current rank calculation round
-	rankRoundBlockNumber := (app.latestBlockHeight / rank.CalculationPeriod) * rank.CalculationPeriod
+	rankRoundBlockNumber := (app.latestBlockHeight / rankParamset.CalculationPeriod) * rankParamset.CalculationPeriod
 	if rankRoundBlockNumber == 0 && app.latestBlockHeight >= 1 {
 		rankRoundBlockNumber = 1 // special case cause tendermint blocks start from 1
 	}
@@ -289,8 +303,8 @@ func (app *CyberdApp) applyGenesis(ctx sdk.Context, req abci.RequestInitChain) a
 		app.accountKeeper.GetNextAccountNumber(ctx) //increment for future accs being started from right number
 		app.accountKeeper.SetAccount(ctx, acc)
 		app.stakingIndex.UpdateStake(
-		    types.AccNumber(acc.GetAccountNumber()),
-		    acc.GetCoins().AmountOf(coin.CYB).Int64())
+			types.AccNumber(acc.GetAccountNumber()),
+			acc.GetCoins().AmountOf(coin.CYB).Int64())
 	}
 
 	cbdbank.InitGenesis(ctx, app.bankKeeper, genesisState.BankData)
@@ -306,6 +320,7 @@ func (app *CyberdApp) applyGenesis(ctx sdk.Context, req abci.RequestInitChain) a
 	gov.InitGenesis(ctx, app.govKeeper, app.supplyKeeper, genesisState.GovData)
 	mint.InitGenesis(ctx, app.mintKeeper, genesisState.MintData)
 	bandwidth.InitGenesis(ctx, app.bandwidthMeter, app.accBandwidthKeeper, genesisState.GetAddresses())
+	rank.InitGenesis()
 
 	err = validateGenesisState(genesisState)
 	if err != nil {
@@ -363,7 +378,7 @@ func (app *CyberdApp) CheckTx(req abci.RequestCheckTx) (res abci.ResponseCheckTx
 
 	if err == nil {
 
-		txCost := app.bandwidthMeter.GetPricedTxCost(tx)
+		txCost := app.bandwidthMeter.GetPricedTxCost(ctx, tx)
 		accBw := app.bandwidthMeter.GetCurrentAccBandwidth(ctx, acc)
 
 		if !accBw.HasEnoughRemained(txCost) {
@@ -395,7 +410,7 @@ func (app *CyberdApp) DeliverTx(req abci.RequestDeliverTx) (res abci.ResponseDel
 
 	if err == nil {
 
-		txCost := app.bandwidthMeter.GetPricedTxCost(tx)
+		txCost := app.bandwidthMeter.GetPricedTxCost(ctx, tx)
 		accBw := app.bandwidthMeter.GetCurrentAccBandwidth(ctx, acc)
 
 		if !accBw.HasEnoughRemained(txCost) {
@@ -403,7 +418,7 @@ func (app *CyberdApp) DeliverTx(req abci.RequestDeliverTx) (res abci.ResponseDel
 		} else {
 			resp := app.BaseApp.DeliverTx(req)
 			app.bandwidthMeter.ConsumeAccBandwidth(ctx, accBw, txCost)
-			app.bandwidthMeter.AddToBlockBandwidth(app.bandwidthMeter.GetTxCost(tx))
+			app.bandwidthMeter.AddToBlockBandwidth(app.bandwidthMeter.GetTxCost(ctx, tx))
 
 			return abci.ResponseDeliverTx{
 				Code:      resp.GetCode(),
@@ -498,10 +513,10 @@ func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.R
 	validatorUpdates := staking.EndBlocker(ctx, app.stakingKeeper)
 	app.stakingIndex.EndBlocker(ctx)
 
-	bandwidth.EndBlocker(ctx, app.bandwidthMeter)
+	bandwidth.EndBlocker(ctx, app.paramsKeeper, app.bandwidthMeter)
 
 	// RANK CALCULATION
-	app.rankState.EndBlocker(ctx, app.Logger())
+	app.rankState.EndBlocker(ctx, app.paramsKeeper, app.Logger())
 
 	return abci.ResponseEndBlock{
 		ValidatorUpdates: validatorUpdates,

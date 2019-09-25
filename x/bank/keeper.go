@@ -23,8 +23,8 @@ type Keeper struct {
 func NewKeeper(
 	accountKeeper auth.AccountKeeper, subspace params.Subspace, codespace sdk.CodespaceType, blacklistedAddrs map[string]bool) *Keeper {
 	return &Keeper{
-		Keeper:             sdkbank.NewBaseKeeper(accountKeeper, subspace, codespace, blacklistedAddrs),
-		accountKeeper:      accountKeeper,
+		Keeper:        sdkbank.NewBaseKeeper(accountKeeper, subspace, codespace, blacklistedAddrs),
+		accountKeeper: accountKeeper,
 		//stakingKeeper:      stakingKeeper,
 		//supplyKeeper:       supplyKeeper,
 		coinsTransferHooks: make([]CoinsTransferHook, 0),
@@ -147,7 +147,7 @@ func (k Keeper) GetAccStakePercentage(ctx sdk.Context, addr sdk.AccAddress) floa
 	bFloat := float64(b)
 
 	c := aFloat / bFloat
-	return  c
+	return c
 }
 
 func (k Keeper) GetTotalSupply(ctx sdk.Context) int64 {

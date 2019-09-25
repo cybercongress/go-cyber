@@ -3,10 +3,10 @@
 package rank
 
 import (
-    "github.com/tendermint/tendermint/libs/log"
 	"github.com/cybercongress/cyberd/x/link/types"
+	"github.com/tendermint/tendermint/libs/log"
+	"sync"
 	"time"
-    "sync"
 )
 
 /*
@@ -15,7 +15,6 @@ import (
 #include "cbdrank.h"
 */
 import "C"
-
 
 func calculateRankGPU(ctx *CalculationContext, logger log.Logger) []float64 {
 	start := time.Now()
@@ -74,7 +73,7 @@ func calculateRankGPU(ctx *CalculationContext, logger log.Logger) []float64 {
 
 	wg.Wait()
 
-    /* Convert to C types */
+	/* Convert to C types */
 	cStakes := (*C.ulong)(&stakes[0])
 
 	cStakesSize := C.ulong(len(stakes))

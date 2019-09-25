@@ -92,16 +92,16 @@ type GenesisAccount struct {
 
 func NewGenesisAccount(acc auth.Account) GenesisAccount {
 	return GenesisAccount{
-		Address:   acc.GetAddress(),
-		Coins:          acc.GetCoins(),
-		AccountNumber: acc.GetAccountNumber(),
-		Sequence:      acc.GetSequence(),
+		Address:           acc.GetAddress(),
+		Coins:             acc.GetCoins(),
+		AccountNumber:     acc.GetAccountNumber(),
+		Sequence:          acc.GetSequence(),
 		ModulePermissions: make([]string, 0),
 	}
 }
 
 // convert GenesisAccount to auth.BaseAccount
-func (ga *GenesisAccount) ToAccount()  auth.Account {
+func (ga *GenesisAccount) ToAccount() auth.Account {
 	acc := auth.NewBaseAccount(ga.Address, ga.Coins.Sort(), nil, ga.AccountNumber, ga.Sequence)
 
 	// vesting accounts

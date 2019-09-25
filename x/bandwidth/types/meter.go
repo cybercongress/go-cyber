@@ -32,9 +32,9 @@ type BandwidthMeter interface {
 	// Returns acc max bandwidth
 	GetAccMaxBandwidth(ctx sdk.Context, address sdk.AccAddress) int64
 	// Returns tx bandwidth cost
-	GetTxCost(tx sdk.Tx) int64
+	GetTxCost(ctx sdk.Context, tx sdk.Tx) int64
 	// Return tx bandwidth cost considering the price
-	GetPricedTxCost(tx sdk.Tx) int64
+	GetPricedTxCost(ctx sdk.Context, tx sdk.Tx) int64
 	//
 	// Performs bw consumption for given acc
 	// To get right number, should be called after tx delivery with bw state obtained prior delivery

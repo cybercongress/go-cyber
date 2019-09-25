@@ -3,9 +3,11 @@ package bandwidth
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
+	"github.com/cosmos/cosmos-sdk/x/params"
 	"github.com/cybercongress/cyberd/store"
 	"github.com/cybercongress/cyberd/x/bandwidth/types"
 	"math"
+	"strconv"
 )
 
 var _ types.BandwidthMeter = &BaseBandwidthMeter{}
@@ -17,7 +19,7 @@ type BaseBandwidthMeter struct {
 	bwKeeper             types.Keeper
 	mainKeeper           store.MainKeeper
 	blockBandwidthKeeper types.BlockSpentBandwidthKeeper
-
+	paramsKeeper         params.Keeper
 	// bw configuration
 	msgCost types.MsgBandwidthCost
 
@@ -29,28 +31,34 @@ type BaseBandwidthMeter struct {
 }
 
 func NewBaseMeter(
-	mainKeeper store.MainKeeper, ak auth.AccountKeeper, sp types.AccStakeProvider, bwKeeper types.Keeper,
-	msgCost types.MsgBandwidthCost, blockBandwidthKeeper types.BlockSpentBandwidthKeeper,
+	mk store.MainKeeper, pk params.Keeper, ak auth.AccountKeeper, bwk types.Keeper,
+	bbwk types.BlockSpentBandwidthKeeper, sp types.AccStakeProvider, msgCost types.MsgBandwidthCost,
 ) *BaseBandwidthMeter {
 
 	return &BaseBandwidthMeter{
-		mainKeeper:           mainKeeper,
-		blockBandwidthKeeper: blockBandwidthKeeper,
+		mainKeeper:           mk,
+		blockBandwidthKeeper: bbwk,
 		accKeeper:            ak,
+		bwKeeper:             bwk,
+		paramsKeeper:         pk,
 		stakeProvider:        sp,
-		bwKeeper:             bwKeeper,
 		msgCost:              msgCost,
 		bandwidthSpent:       make(map[uint64]uint64),
 	}
 }
 
 func (m *BaseBandwidthMeter) Load(ctx sdk.Context) {
+	paramset := m.GetParamSet(ctx)
 	m.totalSpentForSlidingWindow = 0
-	m.bandwidthSpent = m.blockBandwidthKeeper.GetValuesForPeriod(ctx, SlidingWindowSize)
+	m.bandwidthSpent = m.blockBandwidthKeeper.GetValuesForPeriod(ctx, paramset.SlidingWindowSize)
 	for _, spentBandwidth := range m.bandwidthSpent {
 		m.totalSpentForSlidingWindow += spentBandwidth
 	}
-	m.currentCreditPrice = math.Float64frombits(m.mainKeeper.GetBandwidthPrice(ctx, BaseCreditPrice))
+	floatBaseCreditPrice, err := strconv.ParseFloat(paramset.BaseCreditPrice, 64)
+	if err != nil {
+		panic(err)
+	}
+	m.currentCreditPrice = math.Float64frombits(m.mainKeeper.GetBandwidthPrice(ctx, floatBaseCreditPrice))
 	m.curBlockSpentBandwidth = 0
 }
 
@@ -64,7 +72,8 @@ func (m *BaseBandwidthMeter) CommitBlockBandwidth(ctx sdk.Context) {
 	m.totalSpentForSlidingWindow += m.curBlockSpentBandwidth
 
 	newWindowEnd := ctx.BlockHeight()
-	windowStart := newWindowEnd - SlidingWindowSize
+	paramset := m.GetParamSet(ctx)
+	windowStart := newWindowEnd - paramset.SlidingWindowSize
 	if windowStart < 0 { // check needed cause it will be casted to uint and can cause overflow
 		windowStart = 0
 	}
@@ -79,38 +88,51 @@ func (m *BaseBandwidthMeter) CommitBlockBandwidth(ctx sdk.Context) {
 }
 
 func (m *BaseBandwidthMeter) AdjustPrice(ctx sdk.Context) {
+	paramset := m.GetParamSet(ctx)
+	floatBaseCreditPrice, err := strconv.ParseFloat(paramset.BaseCreditPrice, 64)
+	if err != nil {
+		panic(err)
+	}
 
-	newPrice := float64(m.totalSpentForSlidingWindow) / float64(ShouldBeSpentPerSlidingWindow)
+	floatShouldBeSpentPerSlidingWindow, err := strconv.ParseFloat(paramset.ShouldBeSpentPerSlidingWindow, 64)
+	if err != nil {
+		panic(err)
+	}
 
-	if newPrice < 0.01*BaseCreditPrice {
-		newPrice = 0.01 * BaseCreditPrice
+	newPrice := float64(m.totalSpentForSlidingWindow) / floatShouldBeSpentPerSlidingWindow
+
+	if newPrice < 0.01 * floatBaseCreditPrice {
+		newPrice = 0.01 * floatBaseCreditPrice
 	}
 
 	m.currentCreditPrice = newPrice
 	m.mainKeeper.StoreBandwidthPrice(ctx, math.Float64bits(newPrice))
 }
 
-func (m *BaseBandwidthMeter) GetTxCost(tx sdk.Tx) int64 {
-	bandwidthForTx := TxCost
+func (m *BaseBandwidthMeter) GetTxCost(ctx sdk.Context, tx sdk.Tx) int64 {
+	paramset := m.GetParamSet(ctx)
+	bandwidthForTx := paramset.TxCost
 	for _, msg := range tx.GetMsgs() {
-		bandwidthForTx = bandwidthForTx + m.msgCost(msg)
+		bandwidthForTx = bandwidthForTx + m.msgCost(ctx, m.paramsKeeper, msg)
 	}
 	return bandwidthForTx
 }
 
-func (m *BaseBandwidthMeter) GetPricedTxCost(tx sdk.Tx) int64 {
-	return int64(float64(m.GetTxCost(tx)) * m.currentCreditPrice)
+func (m *BaseBandwidthMeter) GetPricedTxCost(ctx sdk.Context, tx sdk.Tx) int64 {
+	return int64(float64(m.GetTxCost(ctx, tx)) * m.currentCreditPrice)
 }
 
 func (m *BaseBandwidthMeter) GetAccMaxBandwidth(ctx sdk.Context, addr sdk.AccAddress) int64 {
 	accStakePercentage := m.stakeProvider.GetAccStakePercentage(ctx, addr)
-	return int64(accStakePercentage * float64(DesirableNetworkBandwidthForRecoveryPeriod))
+	paramset := m.GetParamSet(ctx)
+	return int64(accStakePercentage * float64(paramset.DesirableNetworkBandwidthForRecoveryPeriod))
 }
 
 func (m *BaseBandwidthMeter) GetCurrentAccBandwidth(ctx sdk.Context, address sdk.AccAddress) types.AcсBandwidth {
 	accBw := m.bwKeeper.GetAccBandwidth(ctx, address)
 	accMaxBw := m.GetAccMaxBandwidth(ctx, address)
-	accBw.UpdateMax(accMaxBw, ctx.BlockHeight(), RecoveryPeriod)
+	paramset := m.GetParamSet(ctx)
+	accBw.UpdateMax(accMaxBw, ctx.BlockHeight(), paramset.RecoveryPeriod)
 	return accBw
 }
 
@@ -136,4 +158,15 @@ func (m *BaseBandwidthMeter) ConsumeAccBandwidth(ctx sdk.Context, bw types.AcсB
 
 func (m *BaseBandwidthMeter) GetCurrentCreditPrice() float64 {
 	return m.currentCreditPrice
+}
+
+func (m *BaseBandwidthMeter) GetParamSet(ctx sdk.Context) Params {
+	subspace, ok := m.paramsKeeper.GetSubspace(DefaultParamspace)
+	if !ok {
+		panic("bandwidth params subspace is not found")
+	}
+	var paramset Params
+	subspace.GetParamSet(ctx, &paramset)
+
+	return paramset
 }
