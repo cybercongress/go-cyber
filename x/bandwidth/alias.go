@@ -5,10 +5,9 @@ import (
 )
 
 const (
-	DefaultParamspace = types.DefaultParamspace
-	ModuleName        = types.ModuleName
-	StoreKey          = types.StoreKey
-	RouterKey         = types.RouterKey
+	ModuleName = types.ModuleName
+	StoreKey   = types.StoreKey
+	RouterKey  = types.RouterKey
 )
 
 type (
@@ -16,10 +15,13 @@ type (
 	BlockSpentBandwidthKeeper = types.BlockSpentBandwidthKeeper
 	AcсBandwidth              = types.AcсBandwidth
 	Params                    = types.Params
+	GenesisState              = types.GenesisState
 )
 
 var (
-	ModuleCdc     = types.ModuleCdc
-	RegisterCodec = types.RegisterCodec
-	ParamKeyTable = types.ParamKeyTable
+	ModuleCdc           = types.ModuleCdc
+	RegisterCodec       = types.RegisterCodec
+	NewGenesisState     = types.NewGenesisState
+	DefaultGenesisState = types.DefaultGenesisState
+	ValidateGenesis     = types.ValidateGenesis
 )

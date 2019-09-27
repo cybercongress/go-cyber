@@ -5,31 +5,18 @@ import (
 	"github.com/cybercongress/cyberd/x/bandwidth/types"
 )
 
-type GenesisState struct{}
-
-func NewGenesisState() GenesisState {
-	return GenesisState{}
-}
-
-func ValidateGenesis(data GenesisState) error {
-	return nil
-}
-
-func DefaultGenesisState() GenesisState {
-	return GenesisState{}
-}
-
-func ExportGenesis() GenesisState {
-	return GenesisState{}
-}
-
 // Genesis accounts should contains fully restored bandwidth on block 0
 func InitGenesis(
 	ctx sdk.Context, handler types.BandwidthMeter,
-	keeper types.Keeper, addresses []sdk.AccAddress) {
+	keeper types.Keeper, addresses []sdk.AccAddress, data GenesisState) {
 
+	keeper.SetParams(ctx, data.Params)
 	for _, address := range addresses {
 		accMaxBw := handler.GetAccMaxBandwidth(ctx, address)
 		keeper.SetAccBandwidth(ctx, types.NewGenesisAccBandwidth(address, accMaxBw))
 	}
+}
+
+func ExportGenesis(ctx sdk.Context, keeper types.Keeper) GenesisState {
+	return NewGenesisState(keeper.GetParams(ctx))
 }

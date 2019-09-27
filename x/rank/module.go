@@ -54,12 +54,14 @@ func (AppModuleBasic) GetQueryCmd(_ *codec.Codec) *cobra.Command { return nil }
 
 type AppModule struct {
 	AppModuleBasic
+	RankKeeper Keeper
 }
 
 // NewAppModule creates a new AppModule Object
-func NewAppModule() AppModule {
+func NewAppModule(rankKeeper Keeper) AppModule {
 	return AppModule{
 		AppModuleBasic: AppModuleBasic{},
+		RankKeeper:     rankKeeper,
 	}
 }
 
@@ -97,6 +99,6 @@ func (am AppModule) InitGenesis(ctx sdk.Context, data json.RawMessage) []abci.Va
 }
 
 func (am AppModule) ExportGenesis(ctx sdk.Context) json.RawMessage {
-	gs := ExportGenesis()
+	gs := ExportGenesis(ctx, am.RankKeeper)
 	return ModuleCdc.MustMarshalJSON(gs)
 }

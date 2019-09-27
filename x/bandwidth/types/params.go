@@ -8,15 +8,25 @@ import (
 
 // Default parameter values
 const (
-	DefaultLinkMsgCost                                int64   = 100
-	DefaultRecoveryPeriod                             int64   = 18000
-	DefaultAdjustPricePeriod                          int64   = 10
+	DefaultLinkMsgCost                                int64  = 100
+	DefaultRecoveryPeriod                             int64  = 18000
+	DefaultAdjustPricePeriod                          int64  = 10
 	DefaultBaseCreditPrice                            string = "1.0"
-	DefaultDesirableNetworkBandwidthForRecoveryPeriod int64   = 200000000
-	DefaultTxCost                                     int64   = 300
-	DefaultNonLinkMsgCost                             int64   = 500
-	DefaultSlidingWindowSize                          int64   = 18000
+	DefaultDesirableNetworkBandwidthForRecoveryPeriod int64  = 200000000
+	DefaultTxCost                                     int64  = 300
+	DefaultNonLinkMsgCost                             int64  = 500
+	DefaultSlidingWindowSize                          int64  = 18000
 	DefaultShouldBeSpentPerSlidingWindow              string = "200000000"
+
+	MinLinkMsgCost       = 1
+	MinRecoveryPeriod    = 100
+	MinAdjustPricePeriod = 1
+	//MinBaseCreditPrice
+	//MinDesirableNetworkBandwidthForRecoveryPeriod
+	MinTxCost                        = 1
+	MinNonLinkMsgCost                = 1
+	MinSlidingWindowSize             = 100
+	MinShouldBeSpentPerSlidingWindow = 1000
 )
 
 // Parameter keys
@@ -85,6 +95,34 @@ func (p Params) String() string {
 	return sb.String()
 }
 
+// Validate checks that the parameters have valid values.
+func (p Params) Validate() error {
+	if p.LinkMsgCost < MinLinkMsgCost {
+		return fmt.Errorf("invalid link msg cost: %d, can not be less then %d", p.LinkMsgCost, MinLinkMsgCost)
+	}
+	if p.RecoveryPeriod < MinRecoveryPeriod {
+		return fmt.Errorf("invalid recovery period: %d, can not be less then %d", p.RecoveryPeriod, MinRecoveryPeriod)
+	}
+	if p.AdjustPricePeriod < MinAdjustPricePeriod {
+		return fmt.Errorf("invalid adjust price period: %d, can not be less then %d", p.AdjustPricePeriod, MinAdjustPricePeriod)
+	}
+	//p.BaseCreditPrice
+	//p.DesirableNetworkBandwidthForRecoveryPeriod
+	if p.TxCost < MinTxCost {
+		return fmt.Errorf("invalid tx cost: %d, can not be less then %d", p.TxCost, MinTxCost)
+	}
+	if p.NonLinkMsgCost < MinNonLinkMsgCost {
+		return fmt.Errorf("invalid non link msg cost: %d, can not be less then %d", p.NonLinkMsgCost, MinNonLinkMsgCost)
+	}
+	if p.SlidingWindowSize < MinSlidingWindowSize {
+		return fmt.Errorf("invalid sliding window size: %d, can not be less then %d", p.SlidingWindowSize, MinSlidingWindowSize)
+	}
+	//if p.ShouldBeSpentPerSlidingWindow < MinShouldBeSpentPerSlidingWindow {
+	//	return fmt.Errorf("invalid recovery period: %d, can not be less then %d", p.RecoveryPeriod, MinRecoveryPeriod)
+	//}
+	return nil
+}
+
 // NewParams creates a new Params object
 func NewParams(
 	linkMsgCost int64,
@@ -123,9 +161,4 @@ func NewDefaultParams() Params {
 		SlidingWindowSize:             DefaultSlidingWindowSize,
 		ShouldBeSpentPerSlidingWindow: DefaultShouldBeSpentPerSlidingWindow,
 	}
-}
-
-// ParamKeyTable for bandwidth module
-func ParamKeyTable() subspace.KeyTable {
-	return subspace.NewKeyTable().RegisterParamSet(&Params{})
 }

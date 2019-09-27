@@ -101,7 +101,7 @@ func (m *BaseBandwidthMeter) AdjustPrice(ctx sdk.Context) {
 
 	newPrice := float64(m.totalSpentForSlidingWindow) / floatShouldBeSpentPerSlidingWindow
 
-	if newPrice < 0.01 * floatBaseCreditPrice {
+	if newPrice < 0.01*floatBaseCreditPrice {
 		newPrice = 0.01 * floatBaseCreditPrice
 	}
 
@@ -160,13 +160,11 @@ func (m *BaseBandwidthMeter) GetCurrentCreditPrice() float64 {
 	return m.currentCreditPrice
 }
 
-func (m *BaseBandwidthMeter) GetParamSet(ctx sdk.Context) Params {
+func (m *BaseBandwidthMeter) GetParamSet(ctx sdk.Context) (params Params) {
 	subspace, ok := m.paramsKeeper.GetSubspace(DefaultParamspace)
 	if !ok {
 		panic("bandwidth params subspace is not found")
 	}
-	var paramset Params
-	subspace.GetParamSet(ctx, &paramset)
-
-	return paramset
+	subspace.GetParamSet(ctx, &params)
+	return params
 }

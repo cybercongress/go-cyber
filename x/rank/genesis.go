@@ -1,21 +1,13 @@
 package rank
 
-type GenesisState struct{}
+import (
+	sdk "github.com/cosmos/cosmos-sdk/types"
+)
 
-func NewGenesisState() GenesisState {
-	return GenesisState{}
+func InitGenesis(ctx sdk.Context, keeper Keeper, data GenesisState) {
+	keeper.SetParams(ctx, data.Params)
 }
 
-func ValidateGenesis(data GenesisState) error {
-	return nil
+func ExportGenesis(ctx sdk.Context, keeper Keeper) GenesisState {
+	return NewGenesisState(keeper.GetParams(ctx))
 }
-
-func DefaultGenesisState() GenesisState {
-	return GenesisState{}
-}
-
-func ExportGenesis() GenesisState {
-	return GenesisState{}
-}
-
-func InitGenesis() {}

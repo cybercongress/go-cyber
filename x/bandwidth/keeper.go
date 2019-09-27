@@ -7,35 +7,26 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/params"
 )
 
-var _ Keeper = BaseAccBandwidthKeeper{}
+var _ Keeper = &BaseAccBandwidthKeeper{}
 
 type BaseAccBandwidthKeeper struct {
 	key        *sdk.KVStoreKey
-	paramSpace params.Subspace
+	paramSpace *params.Subspace
 }
 
-func NewAccBandwidthKeeper(key *sdk.KVStoreKey, subspace params.Subspace) BaseAccBandwidthKeeper {
-	return BaseAccBandwidthKeeper{
+func NewAccBandwidthKeeper(key *sdk.KVStoreKey, paramSpace *params.Subspace) *BaseAccBandwidthKeeper {
+	return &BaseAccBandwidthKeeper{
 		key:        key,
-		paramSpace: subspace,
+		paramSpace: paramSpace,
 	}
 }
 
-func (bk BaseAccBandwidthKeeper) SetParams(ctx sdk.Context, params Params) {
-	bk.paramSpace.SetParamSet(ctx, &params)
-}
-
-func (bk BaseAccBandwidthKeeper) GetParams(ctx sdk.Context) (params Params) {
-	bk.paramSpace.GetParamSet(ctx, &params)
-	return
-}
-
-func (bk BaseAccBandwidthKeeper) SetAccBandwidth(ctx sdk.Context, bandwidth AcсBandwidth) {
+func (bk *BaseAccBandwidthKeeper) SetAccBandwidth(ctx sdk.Context, bandwidth AcсBandwidth) {
 	bwBytes, _ := json.Marshal(bandwidth)
 	ctx.KVStore(bk.key).Set(bandwidth.Address, bwBytes)
 }
 
-func (bk BaseAccBandwidthKeeper) GetAccBandwidth(ctx sdk.Context, addr sdk.AccAddress) (bw AcсBandwidth) {
+func (bk *BaseAccBandwidthKeeper) GetAccBandwidth(ctx sdk.Context, addr sdk.AccAddress) (bw AcсBandwidth) {
 	bwBytes := ctx.KVStore(bk.key).Get(addr)
 	if bwBytes == nil {
 		return AcсBandwidth{

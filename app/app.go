@@ -107,6 +107,7 @@ type CyberdApp struct {
 	paramsKeeper       params.Keeper
 	crisisKeeper       crisis.Keeper
 	accBandwidthKeeper bw.Keeper
+	rankKeeper         rank.Keeper
 
 	// cyberd storage
 	// todo: move all processes with this storages to another file
@@ -178,7 +179,8 @@ func NewCyberdApp(
 		app.cdc, dbKeys.slashing, &stakingKeeper, slashingSubspace, slashing.DefaultCodespace)
 	app.crisisKeeper = crisis.NewKeeper(crisisSubspace, uint(1), app.supplyKeeper, auth.FeeCollectorName)
 
-	app.accBandwidthKeeper = bandwidth.NewAccBandwidthKeeper(dbKeys.accBandwidth, bandwidthSubspace)
+	app.accBandwidthKeeper = bandwidth.NewAccBandwidthKeeper(dbKeys.accBandwidth, &bandwidthSubspace)
+	app.rankKeeper = rank.NewBaseRankKeeper(&rankSubspace)
 	app.blockBandwidthKeeper = bandwidth.NewBlockSpentBandwidthKeeper(dbKeys.blockBandwidth)
 
 	// register the proposal types
@@ -227,7 +229,7 @@ func NewCyberdApp(
 		staking.NewAppModule(app.stakingKeeper, app.distrKeeper, app.accountKeeper, app.supplyKeeper),
 
 		bandwidth.NewAppModule(app.accBandwidthKeeper, app.blockBandwidthKeeper),
-		rank.NewAppModule(),
+		rank.NewAppModule(app.rankKeeper),
 	)
 
 	app.Router().
@@ -319,8 +321,9 @@ func (app *CyberdApp) applyGenesis(ctx sdk.Context, req abci.RequestInitChain) a
 	slashing.InitGenesis(ctx, app.slashingKeeper, app.stakingKeeper, genesisState.SlashingData)
 	gov.InitGenesis(ctx, app.govKeeper, app.supplyKeeper, genesisState.GovData)
 	mint.InitGenesis(ctx, app.mintKeeper, genesisState.MintData)
-	bandwidth.InitGenesis(ctx, app.bandwidthMeter, app.accBandwidthKeeper, genesisState.GetAddresses())
-	rank.InitGenesis()
+	bandwidth.InitGenesis(ctx, app.bandwidthMeter, app.accBandwidthKeeper, genesisState.GetAddresses(),
+		genesisState.BandwidthData)
+	rank.InitGenesis(ctx, app.rankKeeper, genesisState.RankData)
 
 	err = validateGenesisState(genesisState)
 	if err != nil {

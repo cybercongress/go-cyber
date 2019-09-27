@@ -57,3 +57,10 @@ func (p Params) String() string {
 
 	return sb.String()
 }
+
+func (p Params) Validate() error {
+	if p.CalculationPeriod < 1 {
+		return fmt.Errorf("invalid calculation period: %d less then 1", p.CalculationPeriod)
+	}
+	return nil
+}

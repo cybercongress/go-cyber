@@ -5,18 +5,21 @@ import (
 )
 
 const (
-	DefaultParamspace = types.DefaultParamspace
-	ModuleName        = types.ModuleName
-	StoreKey          = types.StoreKey
-	RouterKey         = types.RouterKey
+	ModuleName = types.ModuleName
+	StoreKey   = types.StoreKey
+	RouterKey  = types.RouterKey
 )
 
 type (
-	Params = types.Params
+	Params       = types.Params
+	Keeper       = types.Keeper
+	GenesisState = types.GenesisState
 )
 
 var (
-	ModuleCdc     = types.ModuleCdc
-	RegisterCodec = types.RegisterCodec
-	ParamKeyTable = types.ParamKeyTable
+	ModuleCdc           = types.ModuleCdc
+	RegisterCodec       = types.RegisterCodec
+	NewGenesisState     = types.NewGenesisState
+	DefaultGenesisState = types.DefaultGenesisState
+	ValidateGenesis     = types.ValidateGenesis
 )

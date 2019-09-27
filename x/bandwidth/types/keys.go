@@ -9,7 +9,4 @@ const (
 
 	// RouterKey is the message route for bandwidth
 	RouterKey = ModuleName
-
-	// DefaultParamspace default name for parameter store
-	DefaultParamspace = ModuleName
 )

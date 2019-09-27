@@ -106,6 +106,6 @@ func (am AppModule) InitGenesis(ctx sdk.Context, data json.RawMessage) []abci.Va
 }
 
 func (am AppModule) ExportGenesis(ctx sdk.Context) json.RawMessage {
-	gs := ExportGenesis()
+	gs := ExportGenesis(ctx, am.AccBandwidthKeeper)
 	return ModuleCdc.MustMarshalJSON(gs)
 }

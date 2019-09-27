@@ -17,6 +17,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/supply"
 	"github.com/cybercongress/cyberd/types/coin"
 	"github.com/cybercongress/cyberd/util"
+	"github.com/cybercongress/cyberd/x/bandwidth"
+	"github.com/cybercongress/cyberd/x/rank"
 	"github.com/pkg/errors"
 	"github.com/spf13/viper"
 	"github.com/tendermint/go-amino"
@@ -33,17 +35,19 @@ const (
 
 // State to Unmarshal
 type GenesisState struct {
-	Accounts     []GenesisAccount      `json:"accounts"`
-	AuthData     auth.GenesisState     `json:"auth"`
-	BankData     bank.GenesisState     `json:"bank"`
-	DistrData    distr.GenesisState    `json:"distr"`
-	MintData     mint.GenesisState     `json:"mint"`
-	StakingData  staking.GenesisState  `json:"staking"`
-	Pool         staking.Pool          `json:"pool"`
-	SupplyData   supply.GenesisState   `json:"supply"`
-	SlashingData slashing.GenesisState `json:"slashing"`
-	GovData      gov.GenesisState      `json:"gov"`
-	GenTxs       []json.RawMessage     `json:"gentxs"`
+	Accounts      []GenesisAccount       `json:"accounts"`
+	AuthData      auth.GenesisState      `json:"auth"`
+	BankData      bank.GenesisState      `json:"bank"`
+	DistrData     distr.GenesisState     `json:"distr"`
+	MintData      mint.GenesisState      `json:"mint"`
+	StakingData   staking.GenesisState   `json:"staking"`
+	Pool          staking.Pool           `json:"pool"`
+	SupplyData    supply.GenesisState    `json:"supply"`
+	SlashingData  slashing.GenesisState  `json:"slashing"`
+	GovData       gov.GenesisState       `json:"gov"`
+	BandwidthData bandwidth.GenesisState `json:"bandwidth"`
+	RankData      rank.GenesisState      `json:"rank"`
+	GenTxs        []json.RawMessage      `json:"gentxs"`
 }
 
 func (gs *GenesisState) GetAddresses() []sdk.AccAddress {
@@ -56,21 +60,25 @@ func (gs *GenesisState) GetAddresses() []sdk.AccAddress {
 
 func NewGenesisState(
 	accounts []GenesisAccount, authData auth.GenesisState,
-	stakingData staking.GenesisState, pool staking.Pool, mintData mint.GenesisState,
-	distrData distr.GenesisState, govData gov.GenesisState,
-	supplyData supply.GenesisState, slashingData slashing.GenesisState,
+	stakingData staking.GenesisState, pool staking.Pool,
+	mintData mint.GenesisState, distrData distr.GenesisState,
+	govData gov.GenesisState, supplyData supply.GenesisState,
+	slashingData slashing.GenesisState, bandwidthData bandwidth.GenesisState,
+	rankData rank.GenesisState,
 ) GenesisState {
 
 	return GenesisState{
-		Accounts:     accounts,
-		AuthData:     authData,
-		StakingData:  stakingData,
-		Pool:         pool,
-		SupplyData:   supplyData,
-		MintData:     mintData,
-		DistrData:    distrData,
-		SlashingData: slashingData,
-		GovData:      govData,
+		Accounts:      accounts,
+		AuthData:      authData,
+		StakingData:   stakingData,
+		Pool:          pool,
+		SupplyData:    supplyData,
+		MintData:      mintData,
+		DistrData:     distrData,
+		SlashingData:  slashingData,
+		GovData:       govData,
+		BandwidthData: bandwidthData,
+		RankData:      rankData,
 	}
 }
 
@@ -204,7 +212,9 @@ func NewDefaultGenesisState() GenesisState {
 				Veto:      sdk.NewDecWithPrec(334, 3),
 			},
 		},
-		GenTxs: []json.RawMessage{},
+		BandwidthData: bandwidth.DefaultGenesisState(),
+		RankData:      rank.DefaultGenesisState(),
+		GenTxs:        []json.RawMessage{},
 	}
 }
 
@@ -254,13 +264,10 @@ func CyberdAppGenStateJSON(cdc *codec.Codec, genDoc tmtypes.GenesisDoc, appGenTx
 }
 
 // validateGenesisState ensures that the genesis state obeys the expected invariants
-func validateGenesisState(genesisState GenesisState) (err error) {
-
-	err = validateGenesisStateAccounts(genesisState.Accounts)
-	if err != nil {
-		return
+func validateGenesisState(genesisState GenesisState) error {
+	if err := validateGenesisStateAccounts(genesisState.Accounts); err != nil {
+		return err
 	}
-
 	if err := staking.ValidateGenesis(genesisState.StakingData); err != nil {
 		return err
 	}
@@ -279,11 +286,15 @@ func validateGenesisState(genesisState GenesisState) (err error) {
 	if err := mint.ValidateGenesis(genesisState.MintData); err != nil {
 		return err
 	}
-
 	if err := supply.ValidateGenesis(genesisState.SupplyData); err != nil {
 		return err
 	}
-
+	if err := bandwidth.ValidateGenesis(genesisState.BandwidthData); err != nil {
+		return err
+	}
+	if err := rank.ValidateGenesis(genesisState.RankData); err != nil {
+		return err
+	}
 	return staking.ValidateGenesis(genesisState.StakingData)
 }
 
