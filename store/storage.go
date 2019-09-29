@@ -5,8 +5,8 @@ import (
 	"bytes"
 	"encoding/binary"
 	"errors"
-	"github.com/arturalbov/atomicf"
 	"github.com/cybercongress/cyberd/util"
+	"github.com/vasilistefanenko/atomicf"
 	"io"
 	"os"
 	"path/filepath"
@@ -45,11 +45,10 @@ func NewBaseStorageBuf(name string, dir string, elementLen uint64, bufferSize ui
 
 	dbFilePath := filepath.Join(dir, name+DbFileFormat)
 	file, err := atomicf.OpenFile(dbFilePath, os.O_RDWR|os.O_CREATE|os.O_SYNC, 0666)
-	defer file.Close()
-
 	if err != nil {
 		return nil, err
 	}
+	defer file.Close()
 
 	// Try to recover file if it was corrupted
 	if err = file.Recover(); err != nil {
@@ -123,11 +122,10 @@ func (bs *BaseStorage) IterateTillVersion(process func(bytes []byte), ver int64)
 	}
 
 	reader, err := bs.getReader()
-	defer reader.Close()
-
 	if err != nil {
 		return err
 	}
+	defer reader.Close()
 
 	bufr := bufio.NewReader(reader)
 	for {

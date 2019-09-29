@@ -1,7 +1,6 @@
 module github.com/cybercongress/cyberd
 
 require (
-	github.com/arturalbov/atomicf v0.1.1
 	github.com/cosmos/cosmos-sdk v0.37.0
 	github.com/cosmos/gaia v0.0.0-20190822123916-3c70fee43395
 	github.com/gorilla/context v1.1.1 // indirect
@@ -16,6 +15,7 @@ require (
 	github.com/tendermint/go-amino v0.15.0
 	github.com/tendermint/tendermint v0.32.2
 	github.com/tendermint/tm-db v0.1.1
+	github.com/vasilistefanenko/atomicf v0.1.2
 	github.com/zondax/ledger-go v0.8.0 // indirect
 
 )
