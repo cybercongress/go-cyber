@@ -5,14 +5,13 @@ import (
 	"github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cybercongress/cyberd/x/link"
-	cbd "github.com/cybercongress/cyberd/x/link/types"
 	"github.com/tendermint/tendermint/rpc/lib/types"
 )
 
 func IsLinkExist(ctx *rpctypes.Context, from string, to string, address string) (bool, error) {
 
 	if len(address) == 0 {
-		return cyberdApp.IsLinkExist(cbd.Cid(from), cbd.Cid(to), nil), nil
+		return cyberdApp.IsLinkExist(link.Cid(from), link.Cid(to), nil), nil
 	}
 
 	accAddress, err := types.AccAddressFromBech32(address)
@@ -20,7 +19,7 @@ func IsLinkExist(ctx *rpctypes.Context, from string, to string, address string) 
 		return false, err
 	}
 
-	return cyberdApp.IsLinkExist(cbd.Cid(from), cbd.Cid(to), accAddress), nil
+	return cyberdApp.IsLinkExist(link.Cid(from), link.Cid(to), accAddress), nil
 }
 
 type LinkRequest struct {

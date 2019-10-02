@@ -3,7 +3,6 @@ package app
 import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cybercongress/cyberd/x/link"
 )
 
 // MakeCodec creates a new  codec and registers
@@ -11,7 +10,6 @@ import (
 func MakeCodec() *codec.Codec {
 	cdc := codec.New()
 	ModuleBasics.RegisterCodec(cdc)
-	link.RegisterCodec(cdc)
 
 	sdk.RegisterCodec(cdc)
 	codec.RegisterCrypto(cdc)

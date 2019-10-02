@@ -6,6 +6,6 @@ import (
 )
 
 // InitGenesis sets distribution information for genesis.
-func InitGenesis(ctx sdk.Context, keeper *Keeper, data sdkbank.GenesisState) {
+func InitGenesis(ctx sdk.Context, keeper Keeper, data sdkbank.GenesisState) {
 	keeper.SetSendEnabled(ctx, data.SendEnabled)
 }

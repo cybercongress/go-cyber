@@ -2,12 +2,13 @@ package link
 
 import (
 	"bufio"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cybercongress/cyberd/util"
-	"github.com/cybercongress/cyberd/x/link/keeper"
-	"github.com/tendermint/tendermint/libs/log"
 	"os"
 	"path/filepath"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/tendermint/tendermint/libs/log"
+
+	"github.com/cybercongress/cyberd/util"
 )
 
 const (
@@ -16,7 +17,7 @@ const (
 )
 
 func InitGenesis(
-	ctx sdk.Context, cidNumKeeper keeper.CidNumberKeeper, linkIndexedKeeper *keeper.LinkIndexedKeeper, logger log.Logger,
+	ctx sdk.Context, cidNumKeeper CidNumberKeeper, linkIndexedKeeper IndexedKeeper, logger log.Logger,
 ) (err error) {
 
 	linksFilePath := util.RootifyPath(LinksFileName)
@@ -46,7 +47,7 @@ func InitGenesis(
 }
 
 func WriteGenesis(
-	ctx sdk.Context, cidNumKeeper keeper.CidNumberKeeper, linkIndexedKeeper *keeper.LinkIndexedKeeper, logger log.Logger,
+	ctx sdk.Context, cidNumKeeper CidNumberKeeper, linkIndexedKeeper IndexedKeeper, logger log.Logger,
 ) (err error) {
 
 	linksFilePath := util.RootifyPath(LinksExportFileName)

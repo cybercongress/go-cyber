@@ -11,9 +11,8 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cybercongress/cyberd/app"
 	"github.com/cybercongress/cyberd/daemon/rpc"
-	bwtps "github.com/cybercongress/cyberd/x/bandwidth/types"
-	"github.com/cybercongress/cyberd/x/link"
-	. "github.com/cybercongress/cyberd/x/link/types"
+	bwtps "github.com/cybercongress/cyberd/x/bandwidth/internal/types"
+	. "github.com/cybercongress/cyberd/x/link/internal/types"
 	tdmClient "github.com/tendermint/tendermint/rpc/client"
 	"github.com/tendermint/tendermint/rpc/lib/client"
 	"os"
@@ -144,7 +143,7 @@ func (c *HttpCyberdClient) SubmitLinksSync(links []Link, submitOnlyNew bool) err
 			return err
 		}
 		if !exists {
-			msges = append(msges, link.NewMsg(c.fromAddress, []Link{{From: l.From, To: l.To}}))
+			msges = append(msges, NewMsg(c.fromAddress, []Link{{From: l.From, To: l.To}}))
 		}
 		filter.Put(l.From, l.To)
 	}

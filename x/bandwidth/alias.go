@@ -1,21 +1,26 @@
 package bandwidth
 
 import (
-	"github.com/cybercongress/cyberd/x/bandwidth/types"
+	"github.com/cybercongress/cyberd/x/bandwidth/exported"
+	"github.com/cybercongress/cyberd/x/bandwidth/internal/keeper"
+	"github.com/cybercongress/cyberd/x/bandwidth/internal/types"
 )
 
 const (
-	ModuleName = types.ModuleName
-	StoreKey   = types.StoreKey
-	RouterKey  = types.RouterKey
+	DefaultParamspace = types.DefaultParamspace
+	ModuleName        = types.ModuleName
+	StoreKey          = types.StoreKey
+	RouterKey         = types.RouterKey
 )
 
 type (
-	Keeper                    = types.Keeper
-	BlockSpentBandwidthKeeper = types.BlockSpentBandwidthKeeper
-	AcсBandwidth              = types.AcсBandwidth
-	Params                    = types.Params
-	GenesisState              = types.GenesisState
+	Keeper                    = exported.Keeper
+	BlockSpentBandwidthKeeper = exported.BlockSpentBandwidthKeeper
+
+	Meter        = types.BandwidthMeter
+	AcсBandwidth = types.AcсBandwidth
+	Params       = types.Params
+	GenesisState = types.GenesisState
 )
 
 var (
@@ -24,4 +29,9 @@ var (
 	NewGenesisState     = types.NewGenesisState
 	DefaultGenesisState = types.DefaultGenesisState
 	ValidateGenesis     = types.ValidateGenesis
+	NewDefaultParams    = types.NewDefaultParams
+
+	NewAccBandwidthKeeper        = keeper.NewAccBandwidthKeeper
+	NewBlockSpentBandwidthKeeper = keeper.NewBlockSpentBandwidthKeeper
+	ParamKeyTable                = keeper.ParamKeyTable
 )

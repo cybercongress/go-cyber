@@ -2,13 +2,12 @@ package bandwidth
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cybercongress/cyberd/x/bandwidth/types"
+	"github.com/cybercongress/cyberd/x/bandwidth/internal/types"
 )
 
 // Genesis accounts should contains fully restored bandwidth on block 0
-func InitGenesis(
-	ctx sdk.Context, handler types.BandwidthMeter,
-	keeper types.Keeper, addresses []sdk.AccAddress, data GenesisState) {
+func InitGenesis(ctx sdk.Context, handler types.BandwidthMeter,
+	keeper Keeper, addresses []sdk.AccAddress, data GenesisState) {
 
 	keeper.SetParams(ctx, data.Params)
 	for _, address := range addresses {
@@ -17,6 +16,6 @@ func InitGenesis(
 	}
 }
 
-func ExportGenesis(ctx sdk.Context, keeper types.Keeper) GenesisState {
+func ExportGenesis(ctx sdk.Context, keeper Keeper) GenesisState {
 	return NewGenesisState(keeper.GetParams(ctx))
 }

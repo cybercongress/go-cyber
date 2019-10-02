@@ -4,7 +4,7 @@ import (
 	"errors"
 	"github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
-	bdwth "github.com/cybercongress/cyberd/x/bandwidth/types"
+	bw "github.com/cybercongress/cyberd/x/bandwidth"
 	"github.com/tendermint/tendermint/rpc/lib/types"
 )
 
@@ -33,7 +33,7 @@ func Account(ctx *rpctypes.Context, address string) (*ResultAccount, error) {
 	}, nil
 }
 
-func AccountBandwidth(ctx *rpctypes.Context, address string) (*bdwth.AcсBandwidth, error) {
+func AccountBandwidth(ctx *rpctypes.Context, address string) (*bw.AcсBandwidth, error) {
 
 	accAddress, err := types.AccAddressFromBech32(address)
 	if err != nil {

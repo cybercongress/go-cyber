@@ -3,7 +3,7 @@ package bandwidth
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/params"
-	"github.com/cybercongress/cyberd/x/bandwidth/types"
+	"github.com/cybercongress/cyberd/x/bandwidth/internal/types"
 )
 
 var accsToUpdate = make([]sdk.AccAddress, 0)
@@ -37,7 +37,7 @@ func CollectAddressesWithStakeChange() func(ctx sdk.Context, from sdk.AccAddress
 //  Cuz for some bound related operations, coins already added/reduced from acc, but not added to
 //  validator\delegator pool.
 func EndBlocker(ctx sdk.Context, pk params.Keeper, meter types.BandwidthMeter) {
-	subspace, ok := pk.GetSubspace(DefaultParamspace)
+	subspace, ok := pk.GetSubspace(types.DefaultParamspace)
 	if !ok {
 		panic("bandwidth params subspace is not found")
 	}

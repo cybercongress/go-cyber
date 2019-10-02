@@ -5,7 +5,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/params"
 	"github.com/cybercongress/cyberd/store"
-	"github.com/cybercongress/cyberd/x/bandwidth/types"
+	"github.com/cybercongress/cyberd/x/bandwidth/internal/types"
 	"math"
 	"strconv"
 )
@@ -16,9 +16,9 @@ type BaseBandwidthMeter struct {
 	// data providers
 	accKeeper            auth.AccountKeeper
 	stakeProvider        types.AccStakeProvider
-	bwKeeper             types.Keeper
+	bwKeeper             Keeper
 	mainKeeper           store.MainKeeper
-	blockBandwidthKeeper types.BlockSpentBandwidthKeeper
+	blockBandwidthKeeper BlockSpentBandwidthKeeper
 	paramsKeeper         params.Keeper
 	// bw configuration
 	msgCost types.MsgBandwidthCost
@@ -31,8 +31,8 @@ type BaseBandwidthMeter struct {
 }
 
 func NewBaseMeter(
-	mk store.MainKeeper, pk params.Keeper, ak auth.AccountKeeper, bwk types.Keeper,
-	bbwk types.BlockSpentBandwidthKeeper, sp types.AccStakeProvider, msgCost types.MsgBandwidthCost,
+	mk store.MainKeeper, pk params.Keeper, ak auth.AccountKeeper, bwk Keeper,
+	bbwk BlockSpentBandwidthKeeper, sp types.AccStakeProvider, msgCost types.MsgBandwidthCost,
 ) *BaseBandwidthMeter {
 
 	return &BaseBandwidthMeter{

@@ -6,9 +6,10 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/client/utils"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+
 	cbd "github.com/cybercongress/cyberd/types"
 	"github.com/cybercongress/cyberd/x/link"
-	cbdlink "github.com/cybercongress/cyberd/x/link/types"
+
 	"github.com/ipfs/go-cid"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -30,8 +31,8 @@ func LinkTxCmd(cdc *codec.Codec) *cobra.Command {
 			cliCtx := context.NewCLIContext().
 				WithCodec(cdc)
 
-			cidFrom := cbdlink.Cid(viper.GetString(flagCidFrom))
-			cidTo := cbdlink.Cid(viper.GetString(flagCidTo))
+			cidFrom := link.Cid(viper.GetString(flagCidFrom))
+			cidTo := link.Cid(viper.GetString(flagCidTo))
 
 			if _, err := cid.Decode(string(cidFrom)); err != nil {
 				return cbd.ErrInvalidCid()
@@ -50,7 +51,7 @@ func LinkTxCmd(cdc *codec.Codec) *cobra.Command {
 			}
 
 			// build and sign the transaction, then broadcast to Tendermint
-			msg := link.NewMsg(signAddr, []cbdlink.Link{{From: cidFrom, To: cidTo}})
+			msg := link.NewMsg(signAddr, []link.Link{{From: cidFrom, To: cidTo}})
 
 			return utils.CompleteAndBroadcastTxCLI(txCtx, cliCtx, []sdk.Msg{msg})
 		},

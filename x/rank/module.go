@@ -20,13 +20,9 @@ var (
 // app module Basics object
 type AppModuleBasic struct{}
 
-func (AppModuleBasic) Name() string {
-	return ModuleName
-}
+func (AppModuleBasic) Name() string { return ModuleName }
 
-func (AppModuleBasic) RegisterCodec(cdc *codec.Codec) {
-	RegisterCodec(cdc)
-}
+func (AppModuleBasic) RegisterCodec(cdc *codec.Codec) { RegisterCodec(cdc) }
 
 func (AppModuleBasic) DefaultGenesis() json.RawMessage {
 	return ModuleCdc.MustMarshalJSON(DefaultGenesisState())
@@ -65,26 +61,14 @@ func NewAppModule(rankKeeper Keeper) AppModule {
 	}
 }
 
-func (AppModule) Name() string {
-	return ModuleName
-}
-
 func (am AppModule) RegisterInvariants(ir sdk.InvariantRegistry) {}
 
-func (am AppModule) Route() string {
-	return RouterKey
-}
+func (am AppModule) Route() string { return RouterKey }
 
-func (am AppModule) NewHandler() sdk.Handler {
-	return nil
-}
-func (am AppModule) QuerierRoute() string {
-	return ModuleName
-}
+func (am AppModule) NewHandler() sdk.Handler { return nil }
+func (am AppModule) QuerierRoute() string    { return ModuleName }
 
-func (am AppModule) NewQuerierHandler() sdk.Querier {
-	return nil
-}
+func (am AppModule) NewQuerierHandler() sdk.Querier { return nil }
 
 func (am AppModule) BeginBlock(_ sdk.Context, _ abci.RequestBeginBlock) {}
 

@@ -2,6 +2,10 @@ package app
 
 import (
 	"fmt"
+	"os"
+	"sort"
+	"time"
+
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -17,27 +21,22 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/slashing"
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	"github.com/cosmos/cosmos-sdk/x/supply"
-	"github.com/cybercongress/cyberd/store"
-	"github.com/cybercongress/cyberd/types"
-	cbd "github.com/cybercongress/cyberd/types"
-	"github.com/cybercongress/cyberd/types/coin"
-	"github.com/cybercongress/cyberd/util"
-	"github.com/cybercongress/cyberd/x/bandwidth"
-	bw "github.com/cybercongress/cyberd/x/bandwidth/types"
-	cbdbank "github.com/cybercongress/cyberd/x/bank"
-	"github.com/cybercongress/cyberd/x/debug"
-	"github.com/cybercongress/cyberd/x/link"
-	"github.com/cybercongress/cyberd/x/link/keeper"
-	"github.com/cybercongress/cyberd/x/rank"
-	rt "github.com/cybercongress/cyberd/x/rank/types"
 	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/abci/version"
 	cmn "github.com/tendermint/tendermint/libs/common"
 	"github.com/tendermint/tendermint/libs/log"
 	dbm "github.com/tendermint/tm-db"
-	"os"
-	"sort"
-	"time"
+
+	"github.com/cybercongress/cyberd/store"
+	"github.com/cybercongress/cyberd/types"
+	cbd "github.com/cybercongress/cyberd/types"
+	"github.com/cybercongress/cyberd/types/coin"
+	"github.com/cybercongress/cyberd/util"
+	bw "github.com/cybercongress/cyberd/x/bandwidth"
+	cbdbank "github.com/cybercongress/cyberd/x/bank"
+	"github.com/cybercongress/cyberd/x/debug"
+	"github.com/cybercongress/cyberd/x/link"
+	"github.com/cybercongress/cyberd/x/rank"
 )
 
 const (
@@ -63,7 +62,8 @@ var (
 		slashing.AppModuleBasic{},
 		supply.AppModuleBasic{},
 
-		bandwidth.AppModuleBasic{},
+		link.AppModuleBasic{},
+		bw.AppModuleBasic{},
 		rank.AppModuleBasic{},
 	)
 
@@ -88,7 +88,7 @@ type CyberdApp struct {
 	txDecoder sdk.TxDecoder
 
 	// bandwidth
-	bandwidthMeter       bw.BandwidthMeter
+	bandwidthMeter       bw.Meter
 	blockBandwidthKeeper bw.BlockSpentBandwidthKeeper
 
 	// keys to access the multistore
@@ -97,7 +97,7 @@ type CyberdApp struct {
 	// keepers: manage getting and setting app data
 	mainKeeper         store.MainKeeper
 	accountKeeper      auth.AccountKeeper
-	bankKeeper         *cbdbank.Keeper
+	bankKeeper         cbdbank.Keeper
 	supplyKeeper       supply.Keeper
 	stakingKeeper      staking.Keeper
 	slashingKeeper     slashing.Keeper
@@ -107,14 +107,13 @@ type CyberdApp struct {
 	paramsKeeper       params.Keeper
 	crisisKeeper       crisis.Keeper
 	accBandwidthKeeper bw.Keeper
-	rankKeeper         rank.Keeper
 
 	// cyberd storage
 	// todo: move all processes with this storages to another file
-	linkIndexedKeeper *keeper.LinkIndexedKeeper
-	cidNumKeeper      keeper.CidNumberKeeper
-	stakingIndex      *cbdbank.IndexedKeeper
-	rankState         *rank.RankState
+	linkIndexedKeeper  link.IndexedKeeper
+	cidNumKeeper       link.CidNumberKeeper
+	stakingIndexKeeper cbdbank.IndexedKeeper
+	rankStateKeeper    rank.StateKeeper
 
 	latestBlockHeight int64
 
@@ -157,14 +156,15 @@ func NewCyberdApp(
 	distrSubspace := app.paramsKeeper.Subspace(distr.DefaultParamspace)
 	crisisSubspace := app.paramsKeeper.Subspace(crisis.DefaultParamspace)
 	govSubspace := app.paramsKeeper.Subspace(gov.DefaultParamspace)
-	bandwidthSubspace := app.paramsKeeper.Subspace(bandwidth.DefaultParamspace).WithKeyTable(bandwidth.ParamKeyTable())
+	bandwidthSubspace := app.paramsKeeper.Subspace(bw.DefaultParamspace).WithKeyTable(bw.ParamKeyTable())
 	rankSubspace := app.paramsKeeper.Subspace(rank.DefaultParamspace).WithKeyTable(rank.ParamKeyTable())
 
 	blacklistedAddrs := make(map[string]bool)
 
 	// add keepers
 	app.accountKeeper = auth.NewAccountKeeper(app.cdc, dbKeys.acc, authSubspace, cbd.NewCyberdAccount)
-	app.bankKeeper = cbdbank.NewKeeper(app.accountKeeper, bankSubspace, sdkbank.DefaultCodespace, blacklistedAddrs)
+	bankKeeper := cbdbank.NewKeeper(app.accountKeeper, bankSubspace, sdkbank.DefaultCodespace, blacklistedAddrs)
+	app.bankKeeper = bankKeeper
 	app.supplyKeeper = supply.NewKeeper(app.cdc, dbKeys.supply, app.accountKeeper, app.bankKeeper, maccPerms)
 	stakingKeeper := staking.NewKeeper(
 		app.cdc, dbKeys.stake, dbKeys.tStake, app.supplyKeeper, stakingSubspace, staking.DefaultCodespace)
@@ -179,9 +179,8 @@ func NewCyberdApp(
 		app.cdc, dbKeys.slashing, &stakingKeeper, slashingSubspace, slashing.DefaultCodespace)
 	app.crisisKeeper = crisis.NewKeeper(crisisSubspace, uint(1), app.supplyKeeper, auth.FeeCollectorName)
 
-	app.accBandwidthKeeper = bandwidth.NewAccBandwidthKeeper(dbKeys.accBandwidth, &bandwidthSubspace)
-	app.rankKeeper = rank.NewBaseRankKeeper(&rankSubspace)
-	app.blockBandwidthKeeper = bandwidth.NewBlockSpentBandwidthKeeper(dbKeys.blockBandwidth)
+	app.accBandwidthKeeper = bw.NewAccBandwidthKeeper(dbKeys.accBandwidth, &bandwidthSubspace)
+	app.blockBandwidthKeeper = bw.NewBlockSpentBandwidthKeeper(dbKeys.blockBandwidth)
 
 	// register the proposal types
 	govRouter := gov.NewRouter()
@@ -194,11 +193,11 @@ func NewCyberdApp(
 		app.supplyKeeper, &stakingKeeper, gov.DefaultCodespace, govRouter)
 
 	// cyberd keepers
-	app.linkIndexedKeeper = keeper.NewLinkIndexedKeeper(keeper.NewBaseLinkKeeper(mainKeeper, dbKeys.links))
-	app.cidNumKeeper = keeper.NewBaseCidNumberKeeper(mainKeeper, dbKeys.cidNum, dbKeys.cidNumReverse)
-	app.stakingIndex = cbdbank.NewIndexedKeeper(app.bankKeeper, app.accountKeeper)
-	app.rankState = rank.NewRankState(
-		opts.AllowSearch, app.mainKeeper, app.stakingIndex,
+	app.linkIndexedKeeper = link.NewIndexedKeeper(link.NewLinkKeeper(mainKeeper, dbKeys.links))
+	app.cidNumKeeper = link.NewCidNumberKeeper(mainKeeper, dbKeys.cidNum, dbKeys.cidNumReverse)
+	app.stakingIndexKeeper = cbdbank.NewIndexedKeeper(bankKeeper, app.accountKeeper)
+	app.rankStateKeeper = rank.NewStateKeeper(&rankSubspace,
+		opts.AllowSearch, app.mainKeeper, app.stakingIndexKeeper,
 		app.linkIndexedKeeper, app.cidNumKeeper, opts.ComputeUnit,
 	)
 
@@ -208,11 +207,11 @@ func NewCyberdApp(
 	app.stakingKeeper = *stakingKeeper.SetHooks(
 		NewStakeHooks(app.distrKeeper.Hooks(), app.slashingKeeper.Hooks()),
 	)
-	app.bankKeeper.AddHook(bandwidth.CollectAddressesWithStakeChange())
+	app.bankKeeper.AddHook(bw.CollectAddressesWithStakeChange())
 
-	app.bandwidthMeter = bandwidth.NewBaseMeter(
+	app.bandwidthMeter = bw.NewBaseMeter(
 		app.mainKeeper, app.paramsKeeper, app.accountKeeper, app.accBandwidthKeeper,
-		app.blockBandwidthKeeper, app.bankKeeper, bandwidth.MsgBandwidthCosts,
+		app.blockBandwidthKeeper, app.bankKeeper, bw.MsgBandwidthCosts,
 	)
 
 	// NOTE: Any module instantiated in the module manager that is later modified
@@ -228,12 +227,10 @@ func NewCyberdApp(
 		slashing.NewAppModule(app.slashingKeeper, app.stakingKeeper),
 		staking.NewAppModule(app.stakingKeeper, app.distrKeeper, app.accountKeeper, app.supplyKeeper),
 
-		bandwidth.NewAppModule(app.accBandwidthKeeper, app.blockBandwidthKeeper),
-		rank.NewAppModule(app.rankKeeper),
+		bw.NewAppModule(app.accBandwidthKeeper, app.blockBandwidthKeeper),
+		link.NewAppModule(app.cidNumKeeper, app.linkIndexedKeeper, app.accountKeeper),
+		rank.NewAppModule(app.rankStateKeeper),
 	)
-
-	app.Router().
-		AddRoute("link", link.NewLinksHandler(app.cidNumKeeper, app.linkIndexedKeeper, app.accountKeeper))
 
 	app.mm.RegisterInvariants(&app.crisisKeeper)
 	app.mm.RegisterRoutes(app.Router(), app.QueryRouter())
@@ -263,7 +260,7 @@ func NewCyberdApp(
 	bandwidthParamset := bw.NewDefaultParams()
 	bandwidthSubspace.SetParamSet(ctx, &bandwidthParamset)
 
-	rankParamset := rt.NewDefaultParams()
+	rankParamset := rank.NewDefaultParams()
 	rankSubspace.SetParamSet(ctx, &rankParamset)
 
 	// build context for current rank calculation round
@@ -277,14 +274,14 @@ func NewCyberdApp(
 	start := time.Now()
 	app.BaseApp.Logger().Info("Loading mem state")
 	app.linkIndexedKeeper.Load(rankCtx, ctx)
-	app.stakingIndex.Load(rankCtx, ctx)
+	app.stakingIndexKeeper.Load(rankCtx, ctx)
 	app.BaseApp.Logger().Info("App loaded", "time", time.Since(start))
 
 	// BANDWIDTH LOAD
 	app.bandwidthMeter.Load(ctx)
 
 	// RANK PARAMS
-	app.rankState.Load(ctx, app.Logger())
+	app.rankStateKeeper.Load(ctx, app.Logger())
 	app.debugState = &debug.State{Opts: opts.Debug, StartupBlock: app.latestBlockHeight}
 	app.Seal()
 	return app
@@ -304,7 +301,7 @@ func (app *CyberdApp) applyGenesis(ctx sdk.Context, req abci.RequestInitChain) a
 		acc := gacc.ToAccount()
 		app.accountKeeper.GetNextAccountNumber(ctx) //increment for future accs being started from right number
 		app.accountKeeper.SetAccount(ctx, acc)
-		app.stakingIndex.UpdateStake(
+		app.stakingIndexKeeper.UpdateStake(
 			types.AccNumber(acc.GetAccountNumber()),
 			acc.GetCoins().AmountOf(coin.CYB).Int64())
 	}
@@ -321,9 +318,9 @@ func (app *CyberdApp) applyGenesis(ctx sdk.Context, req abci.RequestInitChain) a
 	slashing.InitGenesis(ctx, app.slashingKeeper, app.stakingKeeper, genesisState.SlashingData)
 	gov.InitGenesis(ctx, app.govKeeper, app.supplyKeeper, genesisState.GovData)
 	mint.InitGenesis(ctx, app.mintKeeper, genesisState.MintData)
-	bandwidth.InitGenesis(ctx, app.bandwidthMeter, app.accBandwidthKeeper, genesisState.GetAddresses(),
+	bw.InitGenesis(ctx, app.bandwidthMeter, app.accBandwidthKeeper, genesisState.GetAddresses(),
 		genesisState.BandwidthData)
-	rank.InitGenesis(ctx, app.rankKeeper, genesisState.RankData)
+	rank.InitGenesis(ctx, app.rankStateKeeper, genesisState.RankData)
 
 	err = validateGenesisState(genesisState)
 	if err != nil {
@@ -514,12 +511,12 @@ func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.R
 	crisis.EndBlocker(ctx, app.crisisKeeper)
 	gov.EndBlocker(ctx, app.govKeeper)
 	validatorUpdates := staking.EndBlocker(ctx, app.stakingKeeper)
-	app.stakingIndex.EndBlocker(ctx)
+	app.stakingIndexKeeper.EndBlocker(ctx)
 
-	bandwidth.EndBlocker(ctx, app.paramsKeeper, app.bandwidthMeter)
+	bw.EndBlocker(ctx, app.paramsKeeper, app.bandwidthMeter)
 
 	// RANK CALCULATION
-	app.rankState.EndBlocker(ctx, app.paramsKeeper, app.Logger())
+	app.rankStateKeeper.EndBlocker(ctx, app.paramsKeeper, app.Logger())
 
 	return abci.ResponseEndBlock{
 		ValidatorUpdates: validatorUpdates,
@@ -554,7 +551,7 @@ func (app *CyberdApp) appHash() []byte {
 	}
 
 	linkHash := app.linkIndexedKeeper.GetNetworkLinkHash()
-	rankHash := app.rankState.GetNetworkRankHash()
+	rankHash := app.rankStateKeeper.GetNetworkRankHash()
 
 	result := make([]byte, len(linkHash))
 
