@@ -3,6 +3,7 @@ package types
 import (
 	"fmt"
 	"github.com/cosmos/cosmos-sdk/x/params/subspace"
+	"strconv"
 	"strings"
 )
 
@@ -18,8 +19,7 @@ const (
 	DefaultDesirableNetworkBandwidthForRecoveryPeriod int64  = 200000000
 	DefaultTxCost                                     int64  = 300
 	DefaultNonLinkMsgCost                             int64  = 500
-	DefaultSlidingWindowSize                          int64  = 18000
-	DefaultShouldBeSpentPerSlidingWindow              string = "200000000"
+	DefaultSlidingWindowSize                                 = DefaultRecoveryPeriod
 
 	MinLinkMsgCost       = 1
 	MinRecoveryPeriod    = 100
@@ -34,6 +34,10 @@ const (
 
 // Parameter keys
 var (
+	// DefaultShouldBeSpentPerSlidingWindow cast to string because:
+	// https://github.com/tendermint/go-amino/issues/230
+	DefaultShouldBeSpentPerSlidingWindow = strconv.Itoa(int(DefaultDesirableNetworkBandwidthForRecoveryPeriod))
+
 	// Bandwidth cost of specific messages and tx itself
 	KeyLinkMsgCost = []byte("LinkMsgCost")
 	// Number of blocks to recover full bandwidth
@@ -121,7 +125,7 @@ func (p Params) Validate() error {
 		return fmt.Errorf("invalid sliding window size: %d, can not be less then %d", p.SlidingWindowSize, MinSlidingWindowSize)
 	}
 	//if p.ShouldBeSpentPerSlidingWindow < MinShouldBeSpentPerSlidingWindow {
-	//	return fmt.Errorf("invalid recovery period: %d, can not be less then %d", p.RecoveryPeriod, MinRecoveryPeriod)
+	//	return fmt.Errorf("invalid should be spent per sliding window: %d, can not be less then %d", p.ShouldBeSpentPerSlidingWindow, MinShouldBeSpentPerSlidingWindow)
 	//}
 	return nil
 }
