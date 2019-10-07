@@ -76,6 +76,11 @@ func (s *IndexedKeeper) EndBlocker(ctx sdk.Context) {
 		stake := s.Keeper.GetAccountTotalStake(ctx, addr)
 		accNum := cbd.AccNumber(s.accountKeeper.GetAccount(ctx, addr).GetAccountNumber())
 		s.userNewTotalStake[accNum] = uint64(stake)
+		account := s.accountKeeper.GetAccount(ctx, addr)
+		if account != nil {
+			accNum := cbd.AccNumber(account.GetAccountNumber())
+			s.userNewTotalStake[accNum] = uint64(stake)
+		}
 	}
 	s.accsToUpdate = make([]sdk.AccAddress, 0)
 }
