@@ -4,15 +4,12 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	cbd "github.com/cybercongress/cyberd/types"
-	"github.com/cybercongress/cyberd/x/bank/internal/types"
 )
 
 // Used to hodl total user stake in memory for further rank calculation.
 // Updated once at block and the beginning of end block.
 type IndexedKeeper struct {
 	Keeper
-
-	accKeeper types.AccountKeeper
 
 	userTotalStake    map[cbd.AccNumber]uint64
 	userNewTotalStake map[cbd.AccNumber]uint64
@@ -21,8 +18,8 @@ type IndexedKeeper struct {
 	accsToUpdate []sdk.AccAddress
 }
 
-func NewIndexedKeeper(keeper *Keeper, accKeeper types.AccountKeeper) *IndexedKeeper {
-	index := IndexedKeeper{Keeper: *keeper, accKeeper: accKeeper, accsToUpdate: make([]sdk.AccAddress, 0)}
+func NewIndexedKeeper(keeper *Keeper) *IndexedKeeper {
+	index := IndexedKeeper{Keeper: *keeper, accsToUpdate: make([]sdk.AccAddress, 0)}
 	hook := func(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress) {
 		if from != nil {
 			index.accsToUpdate = append(index.accsToUpdate, from)
@@ -39,10 +36,10 @@ func NewIndexedKeeper(keeper *Keeper, accKeeper types.AccountKeeper) *IndexedKee
 func (s *IndexedKeeper) Load(rankCtx sdk.Context, freshCtx sdk.Context) {
 
 	s.userTotalStake = make(map[cbd.AccNumber]uint64)
-	s.accKeeper.IterateAccounts(rankCtx, s.getCollectFunc(rankCtx, s.userTotalStake))
+	s.accountKeeper.IterateAccounts(rankCtx, s.getCollectFunc(rankCtx, s.userTotalStake))
 
 	s.userNewTotalStake = make(map[cbd.AccNumber]uint64)
-	s.accKeeper.IterateAccounts(freshCtx, s.getCollectFunc(freshCtx, s.userNewTotalStake))
+	s.accountKeeper.IterateAccounts(freshCtx, s.getCollectFunc(freshCtx, s.userNewTotalStake))
 }
 
 func (s *IndexedKeeper) getCollectFunc(ctx sdk.Context, userStake map[cbd.AccNumber]uint64) func(acc auth.Account) bool {
@@ -77,7 +74,7 @@ func (s *IndexedKeeper) GetTotalStakes() map[cbd.AccNumber]uint64 {
 func (s *IndexedKeeper) EndBlocker(ctx sdk.Context) {
 	for _, addr := range s.accsToUpdate {
 		stake := s.Keeper.GetAccountTotalStake(ctx, addr)
-		accNum := cbd.AccNumber(s.accKeeper.GetAccount(ctx, addr).GetAccountNumber())
+		accNum := cbd.AccNumber(s.accountKeeper.GetAccount(ctx, addr).GetAccountNumber())
 		s.userNewTotalStake[accNum] = uint64(stake)
 	}
 	s.accsToUpdate = make([]sdk.AccAddress, 0)

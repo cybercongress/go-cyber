@@ -183,19 +183,20 @@ func NewCyberdApp(
 	app.blockBandwidthKeeper = bw.NewBlockSpentBandwidthKeeper(dbKeys.blockBandwidth)
 
 	// register the proposal types
-	govRouter := gov.NewRouter()
-	govRouter.AddRoute(gov.RouterKey, gov.ProposalHandler).
+	govRouter := gov.NewRouter().
+		AddRoute(gov.RouterKey, gov.ProposalHandler).
 		AddRoute(params.RouterKey, params.NewParamChangeProposalHandler(app.paramsKeeper)).
 		AddRoute(distr.RouterKey, distr.NewCommunityPoolSpendProposalHandler(app.distrKeeper))
 
 	app.govKeeper = gov.NewKeeper(
 		app.cdc, dbKeys.gov, app.paramsKeeper, govSubspace,
-		app.supplyKeeper, &stakingKeeper, gov.DefaultCodespace, govRouter)
+		app.supplyKeeper, &stakingKeeper, gov.DefaultCodespace, govRouter,
+	)
 
 	// cyberd keepers
 	app.linkIndexedKeeper = link.NewIndexedKeeper(link.NewLinkKeeper(mainKeeper, dbKeys.links))
 	app.cidNumKeeper = link.NewCidNumberKeeper(mainKeeper, dbKeys.cidNum, dbKeys.cidNumReverse)
-	app.stakingIndexKeeper = cbdbank.NewIndexedKeeper(bankKeeper, app.accountKeeper)
+	app.stakingIndexKeeper = cbdbank.NewIndexedKeeper(bankKeeper)
 	app.rankStateKeeper = rank.NewStateKeeper(&rankSubspace,
 		opts.AllowSearch, app.mainKeeper, app.stakingIndexKeeper,
 		app.linkIndexedKeeper, app.cidNumKeeper, opts.ComputeUnit,
