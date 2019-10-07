@@ -72,7 +72,7 @@ func (s *IndexedKeeper) GetTotalStakes() map[acc.AccNumber]uint64 {
 	return s.userTotalStake
 }
 
-// Performs stakes updates for acc touched in current block
+// Performs stakes updates for accountKeeper touched in current block
 func (s *IndexedKeeper) EndBlocker(ctx sdk.Context) {
 	for _, addr := range s.accsToUpdate {
 		stake := s.Keeper.GetAccountTotalStake(ctx, addr)

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/cybercongress/cyberd/app"
+	"github.com/cybercongress/cyberd/types/coin"
 	"github.com/cybercongress/cyberd/util"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -14,12 +15,12 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/client/keys"
-	"github.com/cosmos/cosmos-sdk/client/utils"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/server"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
-	authtxb "github.com/cosmos/cosmos-sdk/x/auth/client/txbuilder"
+	"github.com/cosmos/cosmos-sdk/x/auth/client/utils"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cosmos/cosmos-sdk/x/staking/client/cli"
 	cfg "github.com/tendermint/tendermint/config"
 	"github.com/tendermint/tendermint/crypto"
@@ -103,7 +104,7 @@ following delegation and commission default parameters:
 			}
 
 			// Run cyberd tx create-validator
-			txBldr := authtxb.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
+			txBldr := authtypes.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
 			cliCtx := context.NewCLIContext().WithCodec(cdc)
 			txBldr, msg, err := cli.BuildCreateValidatorMsg(cliCtx, txBldr)
 			if err != nil {
@@ -113,7 +114,7 @@ following delegation and commission default parameters:
 			// write the unsigned transaction to the buffer
 			w := bytes.NewBuffer([]byte{})
 			cliCtx = cliCtx.WithOutput(w)
-			if err = utils.PrintUnsignedStdTx(txBldr, cliCtx, []sdk.Msg{msg}, true); err != nil {
+			if err = utils.PrintUnsignedStdTx(txBldr, cliCtx, []sdk.Msg{msg}); err != nil {
 				return err
 			}
 
@@ -170,10 +171,10 @@ func accountInGenesis(genesisState app.GenesisState, key sdk.AccAddress, coins s
 		if acc.Address.Equals(key) {
 
 			// Ensure account contains enough funds of default bond denom
-			if coins.AmountOf(bondDenom).GT(sdk.NewInt(acc.Amount)) {
+			if coins.AmountOf(bondDenom).GT(sdk.NewInt(acc.Coins.AmountOf(coin.CYB).Int64())) {
 				return fmt.Errorf(
 					"account %v is in genesis, but it only has %v%v available to stake, not %v%v",
-					key.String(), acc.Amount, bondDenom, coins.AmountOf(bondDenom), bondDenom,
+					key.String(), acc.Coins.AmountOf(coin.CYB).Int64(), bondDenom, coins.AmountOf(bondDenom), bondDenom,
 				)
 			}
 			accountIsInGenesis = true

@@ -1,8 +1,8 @@
 package keeper
 
 import (
-	"encoding/binary"
 	"crypto/sha256"
+	"encoding/binary"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cybercongress/cyberd/merkle"
 	"github.com/cybercongress/cyberd/util"

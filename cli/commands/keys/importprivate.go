@@ -1,6 +1,7 @@
 package keys
 
 import (
+	"bufio"
 	"bytes"
 	"encoding/hex"
 	"fmt"
@@ -14,6 +15,7 @@ import (
 	"github.com/tendermint/go-amino"
 	"github.com/tendermint/tendermint/crypto/secp256k1"
 	"github.com/tendermint/tendermint/libs/cli"
+	"os"
 )
 
 const hashPrefix = "0x"
@@ -30,7 +32,7 @@ func importPrivateKeyCmd() *cobra.Command {
 
 			name := args[0]
 
-			bufStdin := client.BufferStdin()
+			bufStdin := bufio.NewReader(os.Stdin)
 			_, err := kb.Get(name)
 			if err == nil {
 				// account exists, ask for user confirmation

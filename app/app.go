@@ -5,20 +5,23 @@ import (
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/x/auth"
-	"github.com/cosmos/cosmos-sdk/x/bank"
+	sdkbank "github.com/cosmos/cosmos-sdk/x/bank"
+	"github.com/cosmos/cosmos-sdk/x/crisis"
 	distr "github.com/cosmos/cosmos-sdk/x/distribution"
 	"github.com/cosmos/cosmos-sdk/x/gov"
 	"github.com/cosmos/cosmos-sdk/x/mint"
 	"github.com/cosmos/cosmos-sdk/x/params"
+	paramsclient "github.com/cosmos/cosmos-sdk/x/params/client"
 	"github.com/cosmos/cosmos-sdk/x/slashing"
 	"github.com/cosmos/cosmos-sdk/x/staking"
+	"github.com/cosmos/cosmos-sdk/x/supply"
 	"github.com/cybercongress/cyberd/store"
 	"github.com/cybercongress/cyberd/types"
+	cbd "github.com/cybercongress/cyberd/types"
 	"github.com/cybercongress/cyberd/types/coin"
 	"github.com/cybercongress/cyberd/util"
-	"github.com/cybercongress/cyberd/x/acc"
-	acct "github.com/cybercongress/cyberd/x/acc/types"
 	"github.com/cybercongress/cyberd/x/bandwidth"
 	bw "github.com/cybercongress/cyberd/x/bandwidth/types"
 	cbdbank "github.com/cybercongress/cyberd/x/bank"
@@ -26,10 +29,12 @@ import (
 	"github.com/cybercongress/cyberd/x/link"
 	"github.com/cybercongress/cyberd/x/link/keeper"
 	"github.com/cybercongress/cyberd/x/rank"
+	rt "github.com/cybercongress/cyberd/x/rank/types"
 	abci "github.com/tendermint/tendermint/abci/types"
+	"github.com/tendermint/tendermint/abci/version"
 	cmn "github.com/tendermint/tendermint/libs/common"
-	dbm "github.com/tendermint/tendermint/libs/db"
 	"github.com/tendermint/tendermint/libs/log"
+	dbm "github.com/tendermint/tm-db"
 	"os"
 	"sort"
 	"time"
@@ -45,6 +50,31 @@ const (
 var (
 	DefaultCLIHome  = os.ExpandEnv("$HOME/.cyberdcli")
 	DefaultNodeHome = os.ExpandEnv("$HOME/.cyberd")
+
+	ModuleBasics = module.NewBasicManager(
+		auth.AppModuleBasic{},
+		sdkbank.AppModuleBasic{},
+		staking.AppModuleBasic{},
+		mint.AppModuleBasic{},
+		distr.AppModuleBasic{},
+		gov.NewAppModuleBasic(paramsclient.ProposalHandler, distr.ProposalHandler),
+		params.AppModuleBasic{},
+		crisis.AppModuleBasic{},
+		slashing.AppModuleBasic{},
+		supply.AppModuleBasic{},
+
+		bandwidth.AppModuleBasic{},
+		rank.AppModuleBasic{},
+	)
+
+	maccPerms = map[string][]string{
+		auth.FeeCollectorName:     nil,
+		distr.ModuleName:          nil,
+		mint.ModuleName:           {supply.Minter},
+		staking.BondedPoolName:    {supply.Burner, supply.Staking},
+		staking.NotBondedPoolName: {supply.Burner, supply.Staking},
+		gov.ModuleName:            {supply.Burner},
+	}
 )
 
 // CyberdApp implements an extended ABCI application. It contains a BaseApp,
@@ -62,20 +92,21 @@ type CyberdApp struct {
 	blockBandwidthKeeper bw.BlockSpentBandwidthKeeper
 
 	// keys to access the multistore
-	dbKeys CyberdAppDbKeys
+	dbKeys cyberdAppDbKeys
 
-	// manage getting and setting app data
-	mainKeeper          store.MainKeeper
-	accountKeeper       acct.AccountIndexKeeper
-	feeCollectionKeeper auth.FeeCollectionKeeper
-	bankKeeper          *cbdbank.Keeper
-	stakingKeeper       staking.Keeper
-	slashingKeeper      slashing.Keeper
-	distrKeeper         distr.Keeper
-	govKeeper           gov.Keeper
-	paramsKeeper        params.Keeper
-	accBandwidthKeeper  bw.Keeper
-	mintKeeper          mint.Keeper
+	// keepers: manage getting and setting app data
+	mainKeeper         store.MainKeeper
+	accountKeeper      auth.AccountKeeper
+	bankKeeper         *cbdbank.Keeper
+	supplyKeeper       supply.Keeper
+	stakingKeeper      staking.Keeper
+	slashingKeeper     slashing.Keeper
+	mintKeeper         mint.Keeper
+	distrKeeper        distr.Keeper
+	govKeeper          gov.Keeper
+	paramsKeeper       params.Keeper
+	crisisKeeper       crisis.Keeper
+	accBandwidthKeeper bw.Keeper
 
 	// cyberd storage
 	// todo: move all processes with this storages to another file
@@ -87,83 +118,82 @@ type CyberdApp struct {
 	latestBlockHeight int64
 
 	debugState *debug.State
+
+	mm *module.Manager
 }
 
-// NewBasecoinApp returns a reference to a new CyberdApp given a
-// logger and
-// database. Internally, a codec is created along with all the necessary dbKeys.
+// NewCyberdApp returns a reference to a new CyberdApp given a
+// logger and database. Internally, a codec is created along with all the necessary dbKeys.
 // In addition, all necessary mappers and keepers are created, routes
 // registered, and finally the stores being mounted along with any necessary
 // chain initialization.
 func NewCyberdApp(
-	logger log.Logger, db dbm.DB, opts Options, baseAppOptions ...func(*baseapp.BaseApp),
-) *CyberdApp {
-
+	logger log.Logger, db dbm.DB, opts Options, baseAppOptions ...func(*baseapp.BaseApp)) *CyberdApp {
 	// create and register app-level codec for TXs and accounts
 	cdc := MakeCodec()
+	txDecoder := auth.DefaultTxDecoder(cdc)
+	baseApp := baseapp.NewBaseApp(appName, logger, db, txDecoder, baseAppOptions...)
 	dbKeys := NewCyberdAppDbKeys()
-	ms := store.NewMainKeeper(dbKeys.main)
-	var txDecoder = auth.DefaultTxDecoder(cdc)
+	mainKeeper := store.NewMainKeeper(dbKeys.main)
+	baseApp.SetAppVersion(version.Version)
 
 	// create your application type
 	var app = &CyberdApp{
 		cdc:        cdc,
 		txDecoder:  txDecoder,
-		BaseApp:    baseapp.NewBaseApp(appName, logger, db, txDecoder, baseAppOptions...),
+		BaseApp:    baseApp,
 		dbKeys:     dbKeys,
-		mainKeeper: ms,
+		mainKeeper: mainKeeper,
 	}
 
-	app.feeCollectionKeeper = auth.NewFeeCollectionKeeper(app.cdc, dbKeys.fees)
-	app.paramsKeeper = params.NewKeeper(app.cdc, dbKeys.params, dbKeys.tParams)
-	app.accBandwidthKeeper = bandwidth.NewAccBandwidthKeeper(dbKeys.accBandwidth)
+	// init params keeper and subspaces
+	app.paramsKeeper = params.NewKeeper(app.cdc, dbKeys.params, dbKeys.tParams, params.DefaultCodespace)
+	authSubspace := app.paramsKeeper.Subspace(auth.DefaultParamspace)
+	bankSubspace := app.paramsKeeper.Subspace(sdkbank.DefaultParamspace)
+	stakingSubspace := app.paramsKeeper.Subspace(staking.DefaultParamspace)
+	slashingSubspace := app.paramsKeeper.Subspace(slashing.DefaultParamspace)
+	mintSubspace := app.paramsKeeper.Subspace(mint.DefaultParamspace)
+	distrSubspace := app.paramsKeeper.Subspace(distr.DefaultParamspace)
+	crisisSubspace := app.paramsKeeper.Subspace(crisis.DefaultParamspace)
+	govSubspace := app.paramsKeeper.Subspace(gov.DefaultParamspace)
+	bandwidthSubspace := app.paramsKeeper.Subspace(bandwidth.DefaultParamspace).WithKeyTable(bandwidth.ParamKeyTable())
+	rankSubspace := app.paramsKeeper.Subspace(rank.DefaultParamspace).WithKeyTable(rank.ParamKeyTable())
+
+	blacklistedAddrs := make(map[string]bool)
+
+	// add keepers
+	app.accountKeeper = auth.NewAccountKeeper(app.cdc, dbKeys.acc, authSubspace, cbd.NewCyberdAccount)
+	app.bankKeeper = cbdbank.NewKeeper(app.accountKeeper, bankSubspace, sdkbank.DefaultCodespace, blacklistedAddrs)
+	app.supplyKeeper = supply.NewKeeper(app.cdc, dbKeys.supply, app.accountKeeper, app.bankKeeper, maccPerms)
+	stakingKeeper := staking.NewKeeper(
+		app.cdc, dbKeys.stake, dbKeys.tStake, app.supplyKeeper, stakingSubspace, staking.DefaultCodespace)
+	app.bankKeeper.SetStakingKeeper(&stakingKeeper)
+	app.bankKeeper.SetSupplyKeeper(app.supplyKeeper)
+	app.mintKeeper = mint.NewKeeper(
+		app.cdc, dbKeys.mint, mintSubspace, &stakingKeeper, app.supplyKeeper, auth.FeeCollectorName)
+	app.distrKeeper = distr.NewKeeper(
+		app.cdc, dbKeys.distr, distrSubspace, &stakingKeeper, app.supplyKeeper,
+		distr.DefaultCodespace, auth.FeeCollectorName, blacklistedAddrs)
+	app.slashingKeeper = slashing.NewKeeper(
+		app.cdc, dbKeys.slashing, &stakingKeeper, slashingSubspace, slashing.DefaultCodespace)
+	app.crisisKeeper = crisis.NewKeeper(crisisSubspace, uint(1), app.supplyKeeper, auth.FeeCollectorName)
+
+	app.accBandwidthKeeper = bandwidth.NewAccBandwidthKeeper(dbKeys.accBandwidth, bandwidthSubspace)
 	app.blockBandwidthKeeper = bandwidth.NewBlockSpentBandwidthKeeper(dbKeys.blockBandwidth)
 
-	app.accountKeeper = acc.NewAccountIndexKeeper(auth.NewAccountKeeper(
-		app.cdc, dbKeys.acc,
-		app.paramsKeeper.Subspace(auth.DefaultParamspace), acct.NewCyberdAccount,
-	))
-
-	var stakingKeeper staking.Keeper
-	app.bankKeeper = cbdbank.NewBankKeeper(
-		app.accountKeeper.GetAccountKeeper(), // TODO: Update with new version SDK
-		&stakingKeeper,
-		app.paramsKeeper.Subspace(bank.DefaultParamspace),
-	)
-	app.bankKeeper.AddHook(bandwidth.CollectAddressesWithStakeChange())
-
-	stakingKeeper = staking.NewKeeper(
-		app.cdc, dbKeys.stake,
-		dbKeys.tStake, app.bankKeeper,
-		app.paramsKeeper.Subspace(staking.DefaultParamspace),
-		staking.DefaultCodespace,
-	)
-	app.slashingKeeper = slashing.NewKeeper(
-		app.cdc, dbKeys.slashing,
-		&stakingKeeper, app.paramsKeeper.Subspace(slashing.DefaultParamspace),
-		slashing.DefaultCodespace,
-	)
-	app.distrKeeper = distr.NewKeeper(
-		app.cdc, dbKeys.distr,
-		app.paramsKeeper.Subspace(distr.DefaultParamspace),
-		app.bankKeeper, &stakingKeeper, app.feeCollectionKeeper,
-		distr.DefaultCodespace,
-	)
+	// register the proposal types
+	govRouter := gov.NewRouter()
+	govRouter.AddRoute(gov.RouterKey, gov.ProposalHandler).
+		AddRoute(params.RouterKey, params.NewParamChangeProposalHandler(app.paramsKeeper)).
+		AddRoute(distr.RouterKey, distr.NewCommunityPoolSpendProposalHandler(app.distrKeeper))
 
 	app.govKeeper = gov.NewKeeper(
-		app.cdc, dbKeys.gov,
-		app.paramsKeeper, app.paramsKeeper.Subspace(gov.DefaultParamspace), app.bankKeeper, &stakingKeeper,
-		gov.DefaultCodespace,
-	)
-
-	app.mintKeeper = mint.NewKeeper(
-		app.cdc, dbKeys.mint, app.paramsKeeper.Subspace(mint.DefaultParamspace), &stakingKeeper,
-		app.feeCollectionKeeper,
-	)
+		app.cdc, dbKeys.gov, app.paramsKeeper, govSubspace,
+		app.supplyKeeper, &stakingKeeper, gov.DefaultCodespace, govRouter)
 
 	// cyberd keepers
-	app.linkIndexedKeeper = keeper.NewLinkIndexedKeeper(keeper.NewBaseLinkKeeper(ms, dbKeys.links))
-	app.cidNumKeeper = keeper.NewBaseCidNumberKeeper(ms, dbKeys.cidNum, dbKeys.cidNumReverse)
+	app.linkIndexedKeeper = keeper.NewLinkIndexedKeeper(keeper.NewBaseLinkKeeper(mainKeeper, dbKeys.links))
+	app.cidNumKeeper = keeper.NewBaseCidNumberKeeper(mainKeeper, dbKeys.cidNum, dbKeys.cidNumReverse)
 	app.stakingIndex = cbdbank.NewIndexedKeeper(app.bankKeeper, app.accountKeeper)
 	app.rankState = rank.NewRankState(
 		opts.AllowSearch, app.mainKeeper, app.stakingIndex,
@@ -176,35 +206,41 @@ func NewCyberdApp(
 	app.stakingKeeper = *stakingKeeper.SetHooks(
 		NewStakeHooks(app.distrKeeper.Hooks(), app.slashingKeeper.Hooks()),
 	)
+	app.bankKeeper.AddHook(bandwidth.CollectAddressesWithStakeChange())
 
 	app.bandwidthMeter = bandwidth.NewBaseMeter(
-		app.mainKeeper,
-		app.accountKeeper.GetAccountKeeper(), // TODO: Update with new version SDK
-		app.bankKeeper, app.accBandwidthKeeper, bandwidth.MsgBandwidthCosts,
-		app.blockBandwidthKeeper,
+		app.mainKeeper, app.paramsKeeper, app.accountKeeper, app.accBandwidthKeeper,
+		app.blockBandwidthKeeper, app.bankKeeper, bandwidth.MsgBandwidthCosts,
 	)
 
-	// register message routes
-	app.Router().
-		AddRoute("link", link.NewLinksHandler(app.cidNumKeeper, app.linkIndexedKeeper, app.accountKeeper)).
-		AddRoute(bank.RouterKey, bank.NewHandler(app.bankKeeper)).
-		AddRoute(staking.RouterKey, staking.NewHandler(app.stakingKeeper)).
-		AddRoute(distr.RouterKey, distr.NewHandler(app.distrKeeper)).
-		AddRoute(slashing.RouterKey, slashing.NewHandler(app.slashingKeeper)).
-		AddRoute(gov.RouterKey, gov.NewHandler(app.govKeeper))
+	// NOTE: Any module instantiated in the module manager that is later modified
+	// must be passed by reference here.
+	app.mm = module.NewManager(
+		auth.NewAppModule(app.accountKeeper),
+		sdkbank.NewAppModule(app.bankKeeper, app.accountKeeper),
+		crisis.NewAppModule(&app.crisisKeeper),
+		supply.NewAppModule(app.supplyKeeper, app.accountKeeper),
+		distr.NewAppModule(app.distrKeeper, app.supplyKeeper),
+		gov.NewAppModule(app.govKeeper, app.supplyKeeper),
+		mint.NewAppModule(app.mintKeeper),
+		slashing.NewAppModule(app.slashingKeeper, app.stakingKeeper),
+		staking.NewAppModule(app.stakingKeeper, app.distrKeeper, app.accountKeeper, app.supplyKeeper),
 
-	app.QueryRouter().
-		AddRoute(auth.QuerierRoute, auth.NewQuerier(app.accountKeeper.GetAccountKeeper())).
-		AddRoute(distr.QuerierRoute, distr.NewQuerier(app.distrKeeper)).
-		AddRoute(gov.QuerierRoute, gov.NewQuerier(app.govKeeper)).
-		AddRoute(slashing.QuerierRoute, slashing.NewQuerier(app.slashingKeeper, app.cdc)).
-		AddRoute(staking.QuerierRoute, staking.NewQuerier(app.stakingKeeper, app.cdc))
+		bandwidth.NewAppModule(app.accBandwidthKeeper, app.blockBandwidthKeeper),
+		rank.NewAppModule(),
+	)
+
+	app.Router().
+		AddRoute("link", link.NewLinksHandler(app.cidNumKeeper, app.linkIndexedKeeper, app.accountKeeper))
+
+	app.mm.RegisterInvariants(&app.crisisKeeper)
+	app.mm.RegisterRoutes(app.Router(), app.QueryRouter())
 
 	// mount the multistore and load the latest state
 	app.MountStores(
 		dbKeys.main, dbKeys.acc, dbKeys.cidNum, dbKeys.cidNumReverse, dbKeys.links, dbKeys.rank, dbKeys.stake,
 		dbKeys.slashing, dbKeys.gov, dbKeys.params, dbKeys.distr, dbKeys.fees, dbKeys.accBandwidth,
-		dbKeys.blockBandwidth, dbKeys.tDistr, dbKeys.tParams, dbKeys.tStake, dbKeys.mint,
+		dbKeys.blockBandwidth, dbKeys.tParams, dbKeys.tStake, dbKeys.mint, dbKeys.supply,
 	)
 
 	app.SetInitChainer(app.applyGenesis)
@@ -219,11 +255,17 @@ func NewCyberdApp(
 	}
 
 	ctx := app.BaseApp.NewContext(true, abci.Header{})
-	app.latestBlockHeight = int64(ms.GetLatestBlockNumber(ctx))
+	app.latestBlockHeight = int64(mainKeeper.GetLatestBlockNumber(ctx))
 	ctx = ctx.WithBlockHeight(app.latestBlockHeight)
 
+	bandwidthParamset := bw.NewDefaultParams()
+	bandwidthSubspace.SetParamSet(ctx, &bandwidthParamset)
+
+	rankParamset := rt.NewDefaultParams()
+	rankSubspace.SetParamSet(ctx, &rankParamset)
+
 	// build context for current rank calculation round
-	rankRoundBlockNumber := (app.latestBlockHeight / rank.CalculationPeriod) * rank.CalculationPeriod
+	rankRoundBlockNumber := (app.latestBlockHeight / rankParamset.CalculationPeriod) * rankParamset.CalculationPeriod
 	if rankRoundBlockNumber == 0 && app.latestBlockHeight >= 1 {
 		rankRoundBlockNumber = 1 // special case cause tendermint blocks start from 1
 	}
@@ -232,7 +274,6 @@ func NewCyberdApp(
 	// load in-memory data
 	start := time.Now()
 	app.BaseApp.Logger().Info("Loading mem state")
-	app.accountKeeper.RefreshIndex(ctx)
 	app.linkIndexedKeeper.Load(rankCtx, ctx)
 	app.stakingIndex.Load(rankCtx, ctx)
 	app.BaseApp.Logger().Info("App loaded", "time", time.Since(start))
@@ -248,42 +289,38 @@ func NewCyberdApp(
 }
 
 func (app *CyberdApp) applyGenesis(ctx sdk.Context, req abci.RequestInitChain) abci.ResponseInitChain {
-
 	start := time.Now()
 	app.Logger().Info("Applying genesis")
-	stateJSON := req.AppStateBytes
 	var genesisState GenesisState
-	err := app.cdc.UnmarshalJSON(stateJSON, &genesisState)
+	err := app.cdc.UnmarshalJSON(req.AppStateBytes, &genesisState)
 	if err != nil {
 		panic(err)
 	}
 
 	// load the accounts
 	for _, gacc := range genesisState.Accounts {
-		account := gacc.ToAccount()
+		acc := gacc.ToAccount()
 		app.accountKeeper.GetNextAccountNumber(ctx) //increment for future accs being started from right number
-		app.accountKeeper.SetAccount(ctx, account)
-		app.stakingIndex.UpdateStake(acct.AccNumber(account.AccountNumber), account.Coins.AmountOf(coin.CYB).Int64())
+		app.accountKeeper.SetAccount(ctx, acc)
+		app.stakingIndex.UpdateStake(
+			types.AccNumber(acc.GetAccountNumber()),
+			acc.GetCoins().AmountOf(coin.CYB).Int64())
 	}
 
-	bank.InitGenesis(ctx, app.bankKeeper, genesisState.BankData)
+	cbdbank.InitGenesis(ctx, app.bankKeeper, genesisState.BankData)
 	// initialize distribution (must happen before staking)
-	distr.InitGenesis(ctx, app.distrKeeper, genesisState.DistrData)
+	distr.InitGenesis(ctx, app.distrKeeper, app.supplyKeeper, genesisState.DistrData)
+	supply.InitGenesis(ctx, app.supplyKeeper, app.accountKeeper, genesisState.SupplyData)
 
-	validators, err := staking.InitGenesis(ctx, app.stakingKeeper, genesisState.StakingData)
-	if err != nil {
-		panic(err)
-	}
+	validators := staking.InitGenesis(
+		ctx, app.stakingKeeper, app.accountKeeper, app.supplyKeeper, genesisState.StakingData)
 
-	auth.InitGenesis(ctx, app.accountKeeper.GetAccountKeeper(), app.feeCollectionKeeper, genesisState.AuthData)
-
-	slashing.InitGenesis(
-		ctx, app.slashingKeeper, genesisState.SlashingData,
-		genesisState.StakingData.Validators.ToSDKValidators(),
-	)
-	gov.InitGenesis(ctx, app.govKeeper, genesisState.GovData)
+	auth.InitGenesis(ctx, app.accountKeeper, genesisState.AuthData)
+	slashing.InitGenesis(ctx, app.slashingKeeper, app.stakingKeeper, genesisState.SlashingData)
+	gov.InitGenesis(ctx, app.govKeeper, app.supplyKeeper, genesisState.GovData)
 	mint.InitGenesis(ctx, app.mintKeeper, genesisState.MintData)
 	bandwidth.InitGenesis(ctx, app.bandwidthMeter, app.accBandwidthKeeper, genesisState.GetAddresses())
+	rank.InitGenesis()
 
 	err = validateGenesisState(genesisState)
 	if err != nil {
@@ -298,7 +335,7 @@ func (app *CyberdApp) applyGenesis(ctx sdk.Context, req abci.RequestInitChain) a
 			if err != nil {
 				panic(err)
 			}
-			bz := app.cdc.MustMarshalBinaryLengthPrefixed(tx)
+			bz := abci.RequestDeliverTx{Tx: app.cdc.MustMarshalBinaryLengthPrefixed(tx)}
 			res := app.BaseApp.DeliverTx(bz)
 			if !res.IsOK() {
 				panic(res.Log)
@@ -334,21 +371,20 @@ func (app *CyberdApp) applyGenesis(ctx sdk.Context, req abci.RequestInitChain) a
 	}
 }
 
-func (app *CyberdApp) CheckTx(txBytes []byte) (res abci.ResponseCheckTx) {
+func (app *CyberdApp) CheckTx(req abci.RequestCheckTx) (res abci.ResponseCheckTx) {
 
 	ctx := app.NewContext(true, abci.Header{Height: app.latestBlockHeight})
-	tx, acc, err := app.decodeTxAndAcc(ctx, txBytes)
+	tx, acc, err := app.decodeTxAndAcc(ctx, req.GetTx())
 
 	if err == nil {
 
-		txCost := app.bandwidthMeter.GetPricedTxCost(tx)
+		txCost := app.bandwidthMeter.GetPricedTxCost(ctx, tx)
 		accBw := app.bandwidthMeter.GetCurrentAccBandwidth(ctx, acc)
 
 		if !accBw.HasEnoughRemained(txCost) {
 			err = types.ErrNotEnoughBandwidth()
 		} else {
-
-			resp := app.BaseApp.CheckTx(txBytes)
+			resp := app.BaseApp.CheckTx(req)
 			if resp.Code == 0 {
 				app.bandwidthMeter.ConsumeAccBandwidth(ctx, accBw, txCost)
 			}
@@ -363,36 +399,35 @@ func (app *CyberdApp) CheckTx(txBytes []byte) (res abci.ResponseCheckTx) {
 		Log:       result.Log,
 		GasWanted: int64(result.GasWanted),
 		GasUsed:   int64(result.GasUsed),
-		Tags:      result.Tags,
+		Events:    result.Events.ToABCIEvents(),
 	}
 }
 
-func (app *CyberdApp) DeliverTx(txBytes []byte) (res abci.ResponseDeliverTx) {
+func (app *CyberdApp) DeliverTx(req abci.RequestDeliverTx) (res abci.ResponseDeliverTx) {
 
 	ctx := app.NewContext(false, abci.Header{Height: app.latestBlockHeight})
-	tx, acc, err := app.decodeTxAndAcc(ctx, txBytes)
+	tx, acc, err := app.decodeTxAndAcc(ctx, req.GetTx())
 
 	if err == nil {
 
-		txCost := app.bandwidthMeter.GetPricedTxCost(tx)
+		txCost := app.bandwidthMeter.GetPricedTxCost(ctx, tx)
 		accBw := app.bandwidthMeter.GetCurrentAccBandwidth(ctx, acc)
 
 		if !accBw.HasEnoughRemained(txCost) {
 			err = types.ErrNotEnoughBandwidth()
 		} else {
-
-			resp := app.BaseApp.DeliverTx(txBytes)
+			resp := app.BaseApp.DeliverTx(req)
 			app.bandwidthMeter.ConsumeAccBandwidth(ctx, accBw, txCost)
-			app.bandwidthMeter.AddToBlockBandwidth(app.bandwidthMeter.GetTxCost(tx))
+			app.bandwidthMeter.AddToBlockBandwidth(app.bandwidthMeter.GetTxCost(ctx, tx))
 
 			return abci.ResponseDeliverTx{
-				Code:      uint32(resp.Code),
-				Codespace: string(resp.Codespace),
-				Data:      resp.Data,
-				Log:       resp.Log,
-				GasWanted: int64(resp.GasWanted),
-				GasUsed:   int64(resp.GasUsed),
-				Tags:      append(resp.Tags, getSignersTags(tx)...),
+				Code:      resp.GetCode(),
+				Codespace: resp.GetCodespace(),
+				Data:      resp.GetData(),
+				Log:       resp.GetLog(),
+				GasWanted: resp.GetGasWanted(),
+				GasUsed:   resp.GetGasUsed(),
+				Events:    append(resp.GetEvents(), getSignersEvents(tx).ToABCIEvents()...),
 			}
 		}
 	}
@@ -405,7 +440,7 @@ func (app *CyberdApp) DeliverTx(txBytes []byte) (res abci.ResponseDeliverTx) {
 		Log:       result.Log,
 		GasWanted: int64(result.GasWanted),
 		GasUsed:   int64(result.GasUsed),
-		Tags:      result.Tags,
+		Events:    result.Events.ToABCIEvents(),
 	}
 }
 
@@ -435,20 +470,18 @@ func (app *CyberdApp) decodeTxAndAcc(ctx sdk.Context, txBytes []byte) (auth.StdT
 	return tx, account, nil
 }
 
-func getSignersTags(tx sdk.Tx) sdk.Tags {
+func getSignersEvents(tx sdk.Tx) sdk.Events {
+	events := sdk.EmptyEvents()
 
-	signers := make(map[string]struct{})
 	for _, msg := range tx.GetMsgs() {
-		for _, s := range msg.GetSigners() {
-			signers[s.String()] = struct{}{}
+		for _, accAddress := range msg.GetSigners() {
+			attribute := sdk.NewAttribute("address", accAddress.String())
+			event := sdk.NewEvent("signer", attribute)
+			events.AppendEvent(event)
 		}
 	}
 
-	var tags = make(sdk.Tags, 0)
-	for signer := range signers {
-		tags.AppendTag("signer", signer)
-	}
-	return tags
+	return events
 }
 
 func (app *CyberdApp) BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock) abci.ResponseBeginBlock {
@@ -464,10 +497,8 @@ func (app *CyberdApp) BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock) 
 	// NOTE: This should happen after distr.BeginBlocker so that
 	// there is nothing left over in the validator fee pool,
 	// so as to keep the CanWithdrawInvariant invariant.
-	tags := slashing.BeginBlocker(ctx, req, app.slashingKeeper)
-	return abci.ResponseBeginBlock{
-		Tags: tags.ToKVPairs(),
-	}
+	slashing.BeginBlocker(ctx, req, app.slashingKeeper)
+	return abci.ResponseBeginBlock{Events: ctx.EventManager().ABCIEvents()}
 }
 
 // Calculates cyber.Rank for block N, and returns Hash of result as app state.
@@ -477,19 +508,19 @@ func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.R
 
 	app.latestBlockHeight = ctx.BlockHeight()
 	app.mainKeeper.StoreLatestBlockNumber(ctx, uint64(ctx.BlockHeight()))
-
-	tags := gov.EndBlocker(ctx, app.govKeeper)
-	validatorUpdates, stakingTags := staking.EndBlocker(ctx, app.stakingKeeper)
+	crisis.EndBlocker(ctx, app.crisisKeeper)
+	gov.EndBlocker(ctx, app.govKeeper)
+	validatorUpdates := staking.EndBlocker(ctx, app.stakingKeeper)
 	app.stakingIndex.EndBlocker(ctx)
 
-	bandwidth.EndBlocker(ctx, app.bandwidthMeter)
+	bandwidth.EndBlocker(ctx, app.paramsKeeper, app.bandwidthMeter)
 
 	// RANK CALCULATION
-	app.rankState.EndBlocker(ctx, app.Logger())
+	app.rankState.EndBlocker(ctx, app.paramsKeeper, app.Logger())
 
 	return abci.ResponseEndBlock{
 		ValidatorUpdates: validatorUpdates,
-		Tags:             append(tags, stakingTags...),
+		Events:           ctx.EventManager().ABCIEvents(),
 	}
 }
 
@@ -525,7 +556,7 @@ func (app *CyberdApp) appHash() []byte {
 	result := make([]byte, len(linkHash))
 
 	for i := 0; i < len(linkHash); i++ {
-		result[i] = (byte)(linkHash[i] ^ rankHash[i])
+		result[i] = linkHash[i] ^ rankHash[i]
 	}
 
 	return result

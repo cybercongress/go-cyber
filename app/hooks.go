@@ -4,10 +4,11 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	distr "github.com/cosmos/cosmos-sdk/x/distribution"
 	"github.com/cosmos/cosmos-sdk/x/slashing"
+	"github.com/cosmos/cosmos-sdk/x/staking/types"
 )
 
 //types check
-var _ sdk.StakingHooks = Hooks{}
+var _ types.StakingHooks = Hooks{}
 
 // Combined Staking Hooks
 type Hooks struct {

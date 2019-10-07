@@ -9,6 +9,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	"github.com/cybercongress/cyberd/app"
+	"github.com/cybercongress/cyberd/types/coin"
 	"github.com/pkg/errors"
 	cfg "github.com/tendermint/tendermint/config"
 	"github.com/tendermint/tendermint/crypto"
@@ -143,10 +144,10 @@ func collectStdTxs(cdc *codec.Codec, moniker string, genTxsDir string, genDoc tm
 				"account(s) %v not in genesis.json: %+v", strings.Join(accsNotInGenesis, " "), addrMap)
 		}
 
-		if sdk.NewInt(delAcc.Amount).LT(msg.Value.Amount) {
+		if sdk.NewInt(delAcc.Coins.AmountOf(coin.CYB).Int64()).LT(msg.Value.Amount) {
 			return appGenTxs, persistentPeers, fmt.Errorf(
 				"insufficient fund for delegation %v: %v < %v",
-				delAcc.Address, sdk.NewInt(delAcc.Amount), msg.Value.Amount,
+				delAcc.Address, sdk.NewInt(delAcc.Coins.AmountOf(coin.CYB).Int64()), msg.Value.Amount,
 			)
 		}
 

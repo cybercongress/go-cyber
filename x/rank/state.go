@@ -1,15 +1,16 @@
 package rank
 
 import (
+	"github.com/cosmos/cosmos-sdk/x/params"
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cybercongress/cyberd/merkle"
 	"github.com/cybercongress/cyberd/store"
 	"github.com/cybercongress/cyberd/x/bank"
 	"github.com/cybercongress/cyberd/x/link/keeper"
 	. "github.com/cybercongress/cyberd/x/link/types"
 	"github.com/tendermint/tendermint/libs/log"
-	"github.com/cybercongress/cyberd/merkle"
 )
 
 type RankState struct {
@@ -74,7 +75,7 @@ func (s *RankState) BuildSearchIndex(logger log.Logger) SearchIndex {
 	}
 }
 
-func (s *RankState) EndBlocker(ctx sdk.Context, log log.Logger) {
+func (s *RankState) EndBlocker(ctx sdk.Context, pk params.Keeper, log log.Logger) {
 	currentCidsCount := s.mainKeeper.GetCidsCount(ctx)
 
 	s.index.PutNewLinks(s.linkIndexedKeeper.GetCurrentBlockNewLinks())
@@ -82,7 +83,15 @@ func (s *RankState) EndBlocker(ctx sdk.Context, log log.Logger) {
 
 	blockHasNewLinks := s.linkIndexedKeeper.EndBlocker()
 	s.hasNewLinksForPeriod = s.hasNewLinksForPeriod || blockHasNewLinks
-	if ctx.BlockHeight()%CalculationPeriod == 0 || ctx.BlockHeight() == 1 {
+
+	subspace, ok := pk.GetSubspace(DefaultParamspace)
+	if !ok {
+		panic("rank params subspace is not found")
+	}
+	var paramset Params
+	subspace.GetParamSet(ctx, &paramset)
+
+	if ctx.BlockHeight()%paramset.CalculationPeriod == 0 || ctx.BlockHeight() == 1 {
 
 		s.checkRankCalcFinished(ctx, true, log)
 		s.applyNextRank()

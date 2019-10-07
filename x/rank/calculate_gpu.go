@@ -5,6 +5,7 @@ package rank
 import (
 	"github.com/cybercongress/cyberd/x/link/types"
 	"github.com/tendermint/tendermint/libs/log"
+	"sync"
 	"time"
 )
 
@@ -16,7 +17,6 @@ import (
 import "C"
 
 func calculateRankGPU(ctx *CalculationContext, logger log.Logger) []float64 {
-
 	start := time.Now()
 	if ctx.GetCidsCount() == 0 {
 		return make([]float64, 0)
@@ -42,33 +42,38 @@ func calculateRankGPU(ctx *CalculationContext, logger log.Logger) []float64 {
 		stakes[uint64(acc)] = stake
 	}
 
-	/* Fill values */
-	// todo parallel this
+	var wg sync.WaitGroup
+	wg.Add(int(cidsCount))
+
 	for i := int64(0); i < cidsCount; i++ {
+		/* Fill values */
+		go func(count int64) {
+			defer wg.Done()
+			if inLinks, sortedCids, ok := ctx.GetSortedInLinks(types.CidNumber(i)); ok {
+				for _, cid := range sortedCids {
+					inLinksCount[count] += uint32(len(inLinks[cid]))
+					for acc := range inLinks[cid] {
+						inLinksOuts = append(inLinksOuts, uint64(cid))
+						inLinksUsers = append(inLinksUsers, uint64(acc))
+					}
+				}
+				linksCount += uint64(inLinksCount[count])
+			}
 
-		if inLinks, sortedCids, ok := ctx.GetSortedInLinks(types.CidNumber(i)); ok {
-			for _, cid := range sortedCids {
-				inLinksCount[i] += uint32(len(inLinks[cid]))
-				for acc := range inLinks[cid] {
-					inLinksOuts = append(inLinksOuts, uint64(cid))
-					inLinksUsers = append(inLinksUsers, uint64(acc))
+			if outLinks, ok := outLinks[types.CidNumber(count)]; ok {
+				for _, accs := range outLinks {
+					outLinksCount[count] += uint32(len(accs))
+					for acc := range accs {
+						outLinksUsers = append(outLinksUsers, uint64(acc))
+					}
 				}
 			}
-			linksCount += uint64(inLinksCount[i])
-		}
-
-		if outLinks, ok := outLinks[types.CidNumber(i)]; ok {
-			for _, accs := range outLinks {
-				outLinksCount[i] += uint32(len(accs))
-				for acc := range accs {
-					outLinksUsers = append(outLinksUsers, uint64(acc))
-				}
-			}
-		}
+		}(i)
 	}
 
-	/* Convert to C types */
+	wg.Wait()
 
+	/* Convert to C types */
 	cStakes := (*C.ulong)(&stakes[0])
 
 	cStakesSize := C.ulong(len(stakes))
