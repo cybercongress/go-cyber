@@ -30,4 +30,5 @@ type StateKeeper interface {
 
 	GetLastCidNum() link.CidNumber
 	GetMerkleTree() *merkle.Tree
+	GetIndexError() error
 }
