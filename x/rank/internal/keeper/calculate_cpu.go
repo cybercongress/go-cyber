@@ -3,8 +3,6 @@ package keeper
 import (
 	"github.com/cybercongress/cyberd/x/link"
 	"github.com/cybercongress/cyberd/x/rank/internal/types"
-
-	"sync"
 )
 
 const (
@@ -54,32 +52,23 @@ func step(ctx *types.CalculationContext, defaultRankWithCorrection float64, prev
 
 	rank := append(make([]float64, 0, len(prevrank)), prevrank...)
 
-	var wg sync.WaitGroup
-	wg.Add(len(ctx.GetInLinks()))
-
 	for cid := range ctx.GetInLinks() {
+		_, sortedCids, ok := ctx.GetSortedInLinks(cid)
 
-		go func(i link.CidNumber) {
-			defer wg.Done()
-			_, sortedCids, ok := ctx.GetSortedInLinks(i)
-
-			if !ok {
-				return
-			} else {
-				ksum := float64(0)
-				for _, j := range sortedCids {
-					linkStake := getOverallLinkStake(ctx, j, i)
-					jCidOutStake := getOverallOutLinksStake(ctx, j)
-					weight := float64(linkStake) / float64(jCidOutStake)
-					ksum = float64(prevrank[j]*weight) + ksum //force no-fma here by explicit conversion
-				}
-
-				rank[i] = float64(ksum*d) + defaultRankWithCorrection //force no-fma here by explicit conversion
+		if !ok {
+			continue
+		} else {
+			ksum := float64(0)
+			for _, j := range sortedCids {
+				linkStake := getOverallLinkStake(ctx, j, cid)
+				jCidOutStake := getOverallOutLinksStake(ctx, j)
+				weight := float64(linkStake) / float64(jCidOutStake)
+				ksum = prevrank[j]*weight + ksum //force no-fma here by explicit conversion
 			}
-
-		}(link.CidNumber(cid))
+			rank[cid] = ksum*d + defaultRankWithCorrection //force no-fma here by explicit conversion
+		}
 	}
-	wg.Wait()
+
 	return rank
 }
 
