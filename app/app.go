@@ -85,7 +85,8 @@ type CyberdApp struct {
 	*baseapp.BaseApp
 	cdc *codec.Codec
 
-	txDecoder sdk.TxDecoder
+	txDecoder      sdk.TxDecoder
+	invCheckPeriod uint
 
 	// bandwidth
 	bandwidthMeter       bw.Meter
@@ -139,11 +140,12 @@ func NewCyberdApp(
 
 	// create your application type
 	var app = &CyberdApp{
-		cdc:        cdc,
-		txDecoder:  txDecoder,
-		BaseApp:    baseApp,
-		dbKeys:     dbKeys,
-		mainKeeper: mainKeeper,
+		cdc:            cdc,
+		txDecoder:      txDecoder,
+		invCheckPeriod: opts.InvCheckPeriod,
+		BaseApp:        baseApp,
+		dbKeys:         dbKeys,
+		mainKeeper:     mainKeeper,
 	}
 
 	// init params keeper and subspaces
@@ -177,7 +179,7 @@ func NewCyberdApp(
 		distr.DefaultCodespace, auth.FeeCollectorName, blacklistedAddrs)
 	app.slashingKeeper = slashing.NewKeeper(
 		app.cdc, dbKeys.slashing, &stakingKeeper, slashingSubspace, slashing.DefaultCodespace)
-	app.crisisKeeper = crisis.NewKeeper(crisisSubspace, uint(1), app.supplyKeeper, auth.FeeCollectorName)
+	app.crisisKeeper = crisis.NewKeeper(crisisSubspace, opts.InvCheckPeriod, app.supplyKeeper, auth.FeeCollectorName)
 
 	app.accBandwidthKeeper = bw.NewAccBandwidthKeeper(dbKeys.accBandwidth, &bandwidthSubspace)
 	app.blockBandwidthKeeper = bw.NewBlockSpentBandwidthKeeper(dbKeys.blockBandwidth)

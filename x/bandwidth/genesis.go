@@ -17,5 +17,5 @@ func InitGenesis(ctx sdk.Context, handler types.BandwidthMeter,
 }
 
 func ExportGenesis(ctx sdk.Context, keeper Keeper) GenesisState {
-	return NewGenesisState(keeper.GetParams(ctx))
+	return NewGenesisState(keeper.GetParams(ctx).BaseParams())
 }

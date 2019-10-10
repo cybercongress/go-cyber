@@ -83,7 +83,6 @@ func (s *StateKeeper) EndBlocker(ctx sdk.Context, pk params.Keeper, log log.Logg
 	currentCidsCount := s.mainKeeper.GetCidsCount(ctx)
 
 	s.index.PutNewLinks(s.linkIndexedKeeper.GetCurrentBlockNewLinks())
-	s.checkIndexFailure(log)
 
 	blockHasNewLinks := s.linkIndexedKeeper.EndBlocker()
 	s.hasNewLinksForPeriod = s.hasNewLinksForPeriod || blockHasNewLinks
@@ -170,15 +169,6 @@ func (s *StateKeeper) applyNextRank() {
 	s.nextCidRank.Clear()
 }
 
-func (s *StateKeeper) checkIndexFailure(logger log.Logger) {
-	// Check search index for error
-	err := s.getIndexError()
-	if err != nil {
-		logger.Error("Search index failed!", "error", err)
-		panic(err)
-	}
-}
-
 //
 // GETTERS
 //
@@ -201,4 +191,8 @@ func (s *StateKeeper) GetLastCidNum() link.CidNumber {
 
 func (s *StateKeeper) GetMerkleTree() *merkle.Tree {
 	return s.networkCidRank.MerkleTree
+}
+
+func (s *StateKeeper) GetIndexError() error {
+	return s.getIndexError()
 }

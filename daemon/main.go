@@ -29,8 +29,11 @@ const (
 	flagFailBeforeHeight          = "fail-before-height"
 	flagFailRandomlyInNextNBlocks = "fail-randomly-in-next-n-blocks"
 	flagSearchEnabled             = "allow-search"
+	flagInvCheckPeriod            = "inv-check-period"
 	flagNotToSealAccPrefix        = "not-to-seal-acc-prefix"
 )
+
+var invCheckPeriod uint
 
 func main() {
 
@@ -63,6 +66,8 @@ func main() {
 	}
 
 	executor := cli.PrepareBaseCmd(rootCmd, "CBD", rootDir)
+	rootCmd.PersistentFlags().UintVar(&invCheckPeriod, flagInvCheckPeriod,
+		0, "Assert registered invariants every N blocks")
 	err := executor.Execute()
 	if err != nil {
 		panic(err)
@@ -79,9 +84,10 @@ func newApp(logger log.Logger, db dbm.DB, storeTracer io.Writer) abci.Applicatio
 	}
 
 	opts := app.Options{
-		ComputeUnit: computeUnit,
-		AllowSearch: viper.GetBool(flagSearchEnabled),
-		Debug:       getDebugOptsFromFlags(),
+		ComputeUnit:    computeUnit,
+		AllowSearch:    viper.GetBool(flagSearchEnabled),
+		Debug:          getDebugOptsFromFlags(),
+		InvCheckPeriod: invCheckPeriod,
 	}
 	cyberdApp := app.NewCyberdApp(logger, db, opts, pruning)
 	rpc.SetCyberdApp(cyberdApp)

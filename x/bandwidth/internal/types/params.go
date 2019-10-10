@@ -19,7 +19,6 @@ const (
 	DefaultDesirableNetworkBandwidthForRecoveryPeriod int64  = 200000000
 	DefaultTxCost                                     int64  = 300
 	DefaultNonLinkMsgCost                             int64  = 500
-	DefaultSlidingWindowSize                                 = DefaultRecoveryPeriod
 
 	MinLinkMsgCost       = 1
 	MinRecoveryPeriod    = 100
@@ -34,6 +33,7 @@ const (
 
 // Parameter keys
 var (
+	DefaultSlidingWindowSize = DefaultRecoveryPeriod
 	// DefaultShouldBeSpentPerSlidingWindow cast to string because:
 	// https://github.com/tendermint/go-amino/issues/230
 	DefaultShouldBeSpentPerSlidingWindow = strconv.Itoa(int(DefaultDesirableNetworkBandwidthForRecoveryPeriod))
@@ -65,8 +65,8 @@ type Params struct {
 	DesirableNetworkBandwidthForRecoveryPeriod int64
 	TxCost                                     int64
 	NonLinkMsgCost                             int64
-	SlidingWindowSize                          int64
-	ShouldBeSpentPerSlidingWindow              string
+	SlidingWindowSize                          int64  `json:",omitempty"`
+	ShouldBeSpentPerSlidingWindow              string `json:",omitempty"`
 }
 
 // ParamSetPairs implements the ParamSet interface and returns all the key/value pairs
@@ -83,6 +83,12 @@ func (p *Params) ParamSetPairs() subspace.ParamSetPairs {
 		{KeySlidingWindowSize, &p.SlidingWindowSize},
 		{KeyShouldBeSpentPerSlidingWindow, &p.ShouldBeSpentPerSlidingWindow},
 	}
+}
+
+func (p Params) BaseParams() Params {
+	p.SlidingWindowSize = 0
+	p.ShouldBeSpentPerSlidingWindow = ""
+	return p
 }
 
 // String implements the stringer interface.
@@ -121,12 +127,6 @@ func (p Params) Validate() error {
 	if p.NonLinkMsgCost < MinNonLinkMsgCost {
 		return fmt.Errorf("invalid non link msg cost: %d, can not be less then %d", p.NonLinkMsgCost, MinNonLinkMsgCost)
 	}
-	if p.SlidingWindowSize < MinSlidingWindowSize {
-		return fmt.Errorf("invalid sliding window size: %d, can not be less then %d", p.SlidingWindowSize, MinSlidingWindowSize)
-	}
-	//if p.ShouldBeSpentPerSlidingWindow < MinShouldBeSpentPerSlidingWindow {
-	//	return fmt.Errorf("invalid should be spent per sliding window: %d, can not be less then %d", p.ShouldBeSpentPerSlidingWindow, MinShouldBeSpentPerSlidingWindow)
-	//}
 	return nil
 }
 
@@ -155,17 +155,22 @@ func NewParams(
 	}
 }
 
-// NewDefaultParams returns a default set of parameters.
-func NewDefaultParams() Params {
+func NewBaseDefaultParams() Params {
 	return Params{
 		LinkMsgCost:       DefaultLinkMsgCost,
 		RecoveryPeriod:    DefaultRecoveryPeriod,
 		AdjustPricePeriod: DefaultAdjustPricePeriod,
 		BaseCreditPrice:   DefaultBaseCreditPrice,
 		DesirableNetworkBandwidthForRecoveryPeriod: DefaultDesirableNetworkBandwidthForRecoveryPeriod,
-		TxCost:                        DefaultTxCost,
-		NonLinkMsgCost:                DefaultNonLinkMsgCost,
-		SlidingWindowSize:             DefaultSlidingWindowSize,
-		ShouldBeSpentPerSlidingWindow: DefaultShouldBeSpentPerSlidingWindow,
+		TxCost:         DefaultTxCost,
+		NonLinkMsgCost: DefaultNonLinkMsgCost,
 	}
+}
+
+// NewDefaultParams returns a default set of parameters.
+func NewDefaultParams() Params {
+	params := NewBaseDefaultParams()
+	params.SlidingWindowSize = DefaultSlidingWindowSize
+	params.ShouldBeSpentPerSlidingWindow = DefaultShouldBeSpentPerSlidingWindow
+	return params
 }

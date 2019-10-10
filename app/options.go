@@ -6,8 +6,9 @@ import (
 )
 
 type Options struct {
-	ComputeUnit rank.ComputeUnit
-	AllowSearch bool
+	ComputeUnit    rank.ComputeUnit
+	AllowSearch    bool
+	InvCheckPeriod uint
 
 	Debug debug.Options
 }

@@ -6,6 +6,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
+	"github.com/cybercongress/cyberd/x/rank/internal/keeper"
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
 	abci "github.com/tendermint/tendermint/abci/types"
@@ -50,18 +51,20 @@ func (AppModuleBasic) GetQueryCmd(_ *codec.Codec) *cobra.Command { return nil }
 
 type AppModule struct {
 	AppModuleBasic
-	RankKeeper Keeper
+	RankKeeper StateKeeper
 }
 
 // NewAppModule creates a new AppModule Object
-func NewAppModule(rankKeeper Keeper) AppModule {
+func NewAppModule(rankKeeper StateKeeper) AppModule {
 	return AppModule{
 		AppModuleBasic: AppModuleBasic{},
 		RankKeeper:     rankKeeper,
 	}
 }
 
-func (am AppModule) RegisterInvariants(ir sdk.InvariantRegistry) {}
+func (am AppModule) RegisterInvariants(ir sdk.InvariantRegistry) {
+	keeper.RegisterInvariants(ir, am.RankKeeper)
+}
 
 func (am AppModule) Route() string { return RouterKey }
 
