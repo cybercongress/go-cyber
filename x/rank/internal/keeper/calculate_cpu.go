@@ -5,14 +5,12 @@ import (
 	"github.com/cybercongress/cyberd/x/rank/internal/types"
 )
 
-const (
-	d         float64 = 0.85
-	tolerance float64 = 1e-3
-)
 
 func calculateRankCPU(ctx *types.CalculationContext) []float64 {
 
 	inLinks := ctx.GetInLinks()
+	tolerance := ctx.GetTolerance()
+	dampingFactor := ctx.GetDampingFactor()
 
 	size := ctx.GetCidsCount()
 	if size == 0 {
@@ -20,7 +18,7 @@ func calculateRankCPU(ctx *types.CalculationContext) []float64 {
 	}
 
 	rank := make([]float64, size)
-	defaultRank := (1.0 - d) / float64(size)
+	defaultRank := (1.0 - dampingFactor) / float64(size)
 	danglingNodesSize := uint64(0)
 
 	for i := range rank {
@@ -31,7 +29,7 @@ func calculateRankCPU(ctx *types.CalculationContext) []float64 {
 	}
 
 	innerProductOverSize := defaultRank * (float64(danglingNodesSize) / float64(size))
-	defaultRankWithCorrection := float64(d*innerProductOverSize) + defaultRank
+	defaultRankWithCorrection := float64(dampingFactor*innerProductOverSize) + defaultRank
 
 	change := tolerance + 1
 
@@ -39,7 +37,7 @@ func calculateRankCPU(ctx *types.CalculationContext) []float64 {
 	prevrank := make([]float64, 0)
 	prevrank = append(prevrank, rank...)
 	for change > tolerance {
-		rank = step(ctx, defaultRankWithCorrection, prevrank)
+		rank = step(ctx, defaultRankWithCorrection, dampingFactor, prevrank)
 		change = calculateChange(prevrank, rank)
 		prevrank = rank
 		steps++
@@ -48,7 +46,7 @@ func calculateRankCPU(ctx *types.CalculationContext) []float64 {
 	return rank
 }
 
-func step(ctx *types.CalculationContext, defaultRankWithCorrection float64, prevrank []float64) []float64 {
+func step(ctx *types.CalculationContext, defaultRankWithCorrection float64, dampingFactor float64, prevrank []float64) []float64 {
 
 	rank := append(make([]float64, 0, len(prevrank)), prevrank...)
 
@@ -65,7 +63,7 @@ func step(ctx *types.CalculationContext, defaultRankWithCorrection float64, prev
 				weight := float64(linkStake) / float64(jCidOutStake)
 				ksum = prevrank[j]*weight + ksum //force no-fma here by explicit conversion
 			}
-			rank[cid] = ksum*d + defaultRankWithCorrection //force no-fma here by explicit conversion
+			rank[cid] = ksum*dampingFactor + defaultRankWithCorrection //force no-fma here by explicit conversion
 		}
 	}
 

@@ -4,8 +4,10 @@ import (
 	"crypto/sha256"
 	"encoding/binary"
 	"math"
+	"time"
 
 	"github.com/cybercongress/cyberd/merkle"
+	"github.com/tendermint/tendermint/libs/log"
 )
 
 type Rank struct {
@@ -14,13 +16,15 @@ type Rank struct {
 	CidCount   uint64
 }
 
-func NewRank(values []float64, fullTree bool) Rank {
+func NewRank(values []float64, logger log.Logger, fullTree bool) Rank {
+	start := time.Now()
 	merkleTree := merkle.NewTree(sha256.New(), fullTree)
 	for _, f64 := range values {
 		rankBytes := make([]byte, 8)
 		binary.LittleEndian.PutUint64(rankBytes, math.Float64bits(f64))
 		merkleTree.Push(rankBytes)
 	}
+	logger.Info("Rank: constructing tree", "time", time.Since(start))
 	return Rank{Values: values, MerkleTree: merkleTree, CidCount: uint64(len(values))}
 }
 

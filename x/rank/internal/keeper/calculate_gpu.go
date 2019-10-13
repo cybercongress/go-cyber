@@ -25,6 +25,9 @@ func calculateRankGPU(ctx *types.CalculationContext, logger log.Logger) []float6
 		return make([]float64, 0)
 	}
 
+	tolerance := ctx.GetTolerance()
+	dampingFactor := ctx.GetDampingFactor()
+
 	outLinks := ctx.GetOutLinks()
 
 	cidsCount := ctx.GetCidsCount()
@@ -52,11 +55,11 @@ func calculateRankGPU(ctx *types.CalculationContext, logger log.Logger) []float6
 	wg.Add(int(cidsCount))
 
 	// the worker's function
-	f := func(count int64) {
+	f := func(i int64) {
 		defer wg.Done()
-		if inLinks, sortedCids, ok := ctx.GetSortedInLinks(link.CidNumber(count)); ok {
+		if inLinks, sortedCids, ok := ctx.GetSortedInLinks(link.CidNumber(i)); ok {
 			for _, cid := range sortedCids {
-				inLinksCount[count] += uint32(len(inLinks[cid]))
+				inLinksCount[i] += uint32(len(inLinks[cid]))
 				for acc := range inLinks[cid] {
 					lock2.Lock()
 					inLinksOuts = append(inLinksOuts, uint64(cid))
@@ -64,12 +67,12 @@ func calculateRankGPU(ctx *types.CalculationContext, logger log.Logger) []float6
 					lock2.Unlock()
 				}
 			}
-			linksCount += uint64(inLinksCount[count])
+			linksCount += uint64(inLinksCount[i])
 		}
 
-		if outLinks, ok := outLinks[link.CidNumber(count)]; ok {
+		if outLinks, ok := outLinks[link.CidNumber(i)]; ok {
 			for _, accs := range outLinks {
-				outLinksCount[count] += uint32(len(accs))
+				outLinksCount[i] += uint32(len(accs))
 				for acc := range accs {
 					lock1.Lock()
 					outLinksUsers = append(outLinksUsers, uint64(acc))
@@ -84,10 +87,10 @@ func calculateRankGPU(ctx *types.CalculationContext, logger log.Logger) []float6
 	// here the workers start
 	for i:=int64(0); i < countWorkers; i++ {
 		go func() {
-			var count int64
+			var cid int64
 			for {
-				count = <- ch
-				f(count)
+				cid = <- ch
+				f(cid)
 			}
 		}()
 	}
@@ -114,6 +117,9 @@ func calculateRankGPU(ctx *types.CalculationContext, logger log.Logger) []float6
 	cInLinksUsers := (*C.ulong)(&inLinksUsers[0])
 	cOutLinksUsers := (*C.ulong)(&outLinksUsers[0])
 
+	cDampingFactor := C.double(dampingFactor)
+	cTolerance := C.double(tolerance)
+
 	logger.Info("Rank: data for gpu preparation", "time", time.Since(start))
 
 	start = time.Now()
@@ -122,7 +128,7 @@ func calculateRankGPU(ctx *types.CalculationContext, logger log.Logger) []float6
 		cStakes, cStakesSize, cCidsSize, cLinksSize,
 		cInLinksCount, cOutLinksCount,
 		cInLinksOuts, cInLinksUsers, cOutLinksUsers,
-		cRank,
+		cRank, cDampingFactor, cTolerance,
 	)
 	logger.Info("Rank: gpu calculations", "time", time.Since(start))
 
