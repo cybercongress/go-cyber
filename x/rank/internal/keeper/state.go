@@ -75,12 +75,12 @@ func (s *StateKeeper) Load(ctx sdk.Context, log log.Logger) {
 
 	paramset := s.GetParamSet(ctx)
 
-	dampingFactor, err := strconv.ParseFloat(paramset.DampingFactor, 64)
+	dampingFactor, err := strconv.ParseFloat(paramset.DampingFactor.String(), 64)
 	if err != nil {
 		panic(err)
 	}
 
-	tolerance, err := strconv.ParseFloat(paramset.Tolerance, 64)
+	tolerance, err := strconv.ParseFloat(paramset.Tolerance.String(), 64)
 	if err != nil {
 		panic(err)
 	}
@@ -112,12 +112,12 @@ func (s *StateKeeper) EndBlocker(ctx sdk.Context, log log.Logger) {
 
 	if ctx.BlockHeight()%paramset.CalculationPeriod == 0 || ctx.BlockHeight() == 1 {
 
-		dampingFactor, err := strconv.ParseFloat(paramset.DampingFactor, 64)
+		dampingFactor, err := strconv.ParseFloat(paramset.DampingFactor.String(), 64)
 		if err != nil {
 			panic(err)
 		}
 
-		tolerance, err := strconv.ParseFloat(paramset.Tolerance, 64)
+		tolerance, err := strconv.ParseFloat(paramset.Tolerance.String(), 64)
 		if err != nil {
 			panic(err)
 		}

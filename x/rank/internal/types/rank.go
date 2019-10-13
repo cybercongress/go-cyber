@@ -24,7 +24,7 @@ func NewRank(values []float64, logger log.Logger, fullTree bool) Rank {
 		binary.LittleEndian.PutUint64(rankBytes, math.Float64bits(f64))
 		merkleTree.Push(rankBytes)
 	}
-	logger.Info("Rank: constructing tree", "time", time.Since(start))
+	logger.Info("Rank constructing tree", "time", time.Since(start))
 	return Rank{Values: values, MerkleTree: merkleTree, CidCount: uint64(len(values))}
 }
 

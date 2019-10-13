@@ -3,15 +3,8 @@ package types
 import (
 	"fmt"
 	"github.com/cosmos/cosmos-sdk/x/params/subspace"
-	"strconv"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"strings"
-)
-
-// Default parameter values
-const (
-	DefaultCalculationPeriod int64  = 10
-	DefaultDampingFactor   	 string = "0.85"
-	DefaultTolerance		 string = "0.001"
 )
 
 // Parameter keys
@@ -23,16 +16,14 @@ var (
 
 // Params defines the parameters for the rank module.
 type Params struct {
-	CalculationPeriod int64
-	DampingFactor 	  string
-	Tolerance		  string
+	CalculationPeriod int64   `json:"calculation_period" yaml:"calculation_period"`
+	DampingFactor 	  sdk.Dec `json:"damping_factor" yaml:"damping_factor"`
+	Tolerance		  sdk.Dec `json:"tolerance" yaml:"tolerance"`
 }
 
 // NewParams creates a new Params object
-func NewParams(
-	calculationPeriod int64,
-	dampingFactor string,
-	tolerance string) Params {
+func NewParams(calculationPeriod int64, dampingFactor sdk.Dec,
+	tolerance sdk.Dec) Params {
 
 	return Params{
 		CalculationPeriod: calculationPeriod,
@@ -44,9 +35,9 @@ func NewParams(
 // NewDefaultParams returns a default set of parameters.
 func NewDefaultParams() Params {
 	return Params{
-		CalculationPeriod: DefaultCalculationPeriod,
-		DampingFactor:	   DefaultDampingFactor,
-		Tolerance:         DefaultTolerance,
+		CalculationPeriod: int64(10),
+		DampingFactor:	   sdk.NewDecWithPrec(85, 2),
+		Tolerance:         sdk.NewDecWithPrec(1, 3),
 	}
 }
 
@@ -77,11 +68,20 @@ func (p Params) String() string {
 }
 
 func (p Params) Validate() error {
-	if p.CalculationPeriod < 1 {
-		return fmt.Errorf("invalid calculation period: %d less then 1", p.CalculationPeriod)
+	if p.CalculationPeriod < 2 {
+		return fmt.Errorf("invalid calculation period: %d less then 2", p.CalculationPeriod)
 	}
-	if strconv.ParseFloat(p.DampingFactor) > float64(1.0) {
-
+	if p.DampingFactor.GTE(sdk.OneDec()) {
+		return fmt.Errorf("damping factor parameter must be < 1, is %s", p.DampingFactor.String())
+	}
+	if p.DampingFactor.LT(sdk.ZeroDec()) {
+		return fmt.Errorf("damping factor parameter should be positive, is %s", p.DampingFactor.String())
+	}
+	if p.Tolerance.GT(sdk.NewDecWithPrec(1, 3)) {
+		return fmt.Errorf("tolerance parameter must be <= 0.001, is %s", p.DampingFactor.String())
+	}
+	if p.Tolerance.LT(sdk.NewDecWithPrec(1, 5)) {
+		return fmt.Errorf("tolerance parameter must be >= 0.00001, is %s", p.DampingFactor.String())
 	}
 	return nil
 }
