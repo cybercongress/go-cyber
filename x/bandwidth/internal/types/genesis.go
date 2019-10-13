@@ -11,7 +11,7 @@ func NewGenesisState(params Params) GenesisState {
 }
 
 func DefaultGenesisState() GenesisState {
-	return NewGenesisState(NewBaseDefaultParams())
+	return NewGenesisState(NewDefaultParams())
 }
 
 func ValidateGenesis(data GenesisState) error {

@@ -5,8 +5,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/params"
 
 	"github.com/cybercongress/cyberd/x/bandwidth/internal/types"
-
-	"strconv"
 )
 
 // ParamTable for bandwidth module
@@ -21,7 +19,5 @@ func (bk *BaseAccBandwidthKeeper) GetParams(ctx sdk.Context) (params types.Param
 
 // set the params
 func (bk *BaseAccBandwidthKeeper) SetParams(ctx sdk.Context, params types.Params) {
-	params.SlidingWindowSize = params.RecoveryPeriod
-	params.ShouldBeSpentPerSlidingWindow = strconv.Itoa(int(params.DesirableNetworkBandwidthForRecoveryPeriod))
 	bk.paramSpace.SetParamSet(ctx, &params)
 }

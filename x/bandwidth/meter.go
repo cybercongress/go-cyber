@@ -50,11 +50,11 @@ func NewBaseMeter(
 func (m *BaseBandwidthMeter) Load(ctx sdk.Context) {
 	paramset := m.GetParamSet(ctx)
 	m.totalSpentForSlidingWindow = 0
-	m.bandwidthSpent = m.blockBandwidthKeeper.GetValuesForPeriod(ctx, paramset.SlidingWindowSize)
+	m.bandwidthSpent = m.blockBandwidthKeeper.GetValuesForPeriod(ctx, paramset.RecoveryPeriod)
 	for _, spentBandwidth := range m.bandwidthSpent {
 		m.totalSpentForSlidingWindow += spentBandwidth
 	}
-	floatBaseCreditPrice, err := strconv.ParseFloat(paramset.BaseCreditPrice, 64)
+	floatBaseCreditPrice, err := strconv.ParseFloat(paramset.BaseCreditPrice.String(), 64)
 	if err != nil {
 		panic(err)
 	}
@@ -73,7 +73,7 @@ func (m *BaseBandwidthMeter) CommitBlockBandwidth(ctx sdk.Context) {
 
 	newWindowEnd := ctx.BlockHeight()
 	paramset := m.GetParamSet(ctx)
-	windowStart := newWindowEnd - paramset.SlidingWindowSize
+	windowStart := newWindowEnd - paramset.RecoveryPeriod
 	if windowStart < 0 { // check needed cause it will be casted to uint and can cause overflow
 		windowStart = 0
 	}
@@ -89,17 +89,12 @@ func (m *BaseBandwidthMeter) CommitBlockBandwidth(ctx sdk.Context) {
 
 func (m *BaseBandwidthMeter) AdjustPrice(ctx sdk.Context) {
 	paramset := m.GetParamSet(ctx)
-	floatBaseCreditPrice, err := strconv.ParseFloat(paramset.BaseCreditPrice, 64)
+	floatBaseCreditPrice, err := strconv.ParseFloat(paramset.BaseCreditPrice.String(), 64)
 	if err != nil {
 		panic(err)
 	}
 
-	floatShouldBeSpentPerSlidingWindow, err := strconv.ParseFloat(paramset.ShouldBeSpentPerSlidingWindow, 64)
-	if err != nil {
-		panic(err)
-	}
-
-	newPrice := float64(m.totalSpentForSlidingWindow) / floatShouldBeSpentPerSlidingWindow
+	newPrice := float64(m.totalSpentForSlidingWindow) / float64(paramset.RecoveryPeriod)
 
 	if newPrice < 0.01*floatBaseCreditPrice {
 		newPrice = 0.01 * floatBaseCreditPrice
@@ -125,7 +120,7 @@ func (m *BaseBandwidthMeter) GetPricedTxCost(ctx sdk.Context, tx sdk.Tx) int64 {
 func (m *BaseBandwidthMeter) GetAccMaxBandwidth(ctx sdk.Context, addr sdk.AccAddress) int64 {
 	accStakePercentage := m.stakeProvider.GetAccStakePercentage(ctx, addr)
 	paramset := m.GetParamSet(ctx)
-	return int64(accStakePercentage * float64(paramset.DesirableNetworkBandwidthForRecoveryPeriod))
+	return int64(accStakePercentage * float64(paramset.DesirableBandwidth))
 }
 
 func (m *BaseBandwidthMeter) GetCurrentAccBandwidth(ctx sdk.Context, address sdk.AccAddress) types.AcсBandwidth {
