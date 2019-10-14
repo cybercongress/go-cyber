@@ -13,9 +13,9 @@ func CalculateRank(ctx *types.CalculationContext, unit types.ComputeUnit, logger
 	start := time.Now()
 	if unit == types.CPU {
 		//used only for development
-		rank = types.NewRank(calculateRankCPU(ctx), ctx.FullTree)
+		rank = types.NewRank(calculateRankCPU(ctx), logger, ctx.FullTree)
 	} else {
-		rank = types.NewRank(calculateRankGPU(ctx, logger), ctx.FullTree)
+		rank = types.NewRank(calculateRankGPU(ctx, logger), logger, ctx.FullTree)
 	}
 	logger.Info(
 		"Rank calculated", "time", time.Since(start), "links", ctx.LinksCount, "cids", ctx.CidsCount,
