@@ -201,7 +201,7 @@ func NewCyberdApp(
 	app.stakingIndexKeeper = cbdbank.NewIndexedKeeper(bankKeeper)
 	app.rankStateKeeper = rank.NewStateKeeper(&rankSubspace,
 		opts.AllowSearch, app.mainKeeper, app.stakingIndexKeeper,
-		app.linkIndexedKeeper, app.cidNumKeeper, opts.ComputeUnit,
+		app.linkIndexedKeeper, app.cidNumKeeper, app.paramsKeeper, opts.ComputeUnit,
 	)
 
 	// register the staking hooks
@@ -520,7 +520,7 @@ func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.R
 	bw.EndBlocker(ctx, app.paramsKeeper, app.bandwidthMeter)
 
 	// RANK CALCULATION
-	app.rankStateKeeper.EndBlocker(ctx, app.paramsKeeper, app.Logger())
+	app.rankStateKeeper.EndBlocker(ctx, app.Logger())
 
 	return abci.ResponseEndBlock{
 		ValidatorUpdates: validatorUpdates,
