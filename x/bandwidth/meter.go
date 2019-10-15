@@ -77,6 +77,8 @@ func (m *BaseBandwidthMeter) CommitBlockBandwidth(ctx sdk.Context) {
 	if windowStart < 0 { // check needed cause it will be casted to uint and can cause overflow
 		windowStart = 0
 	}
+	// If recovery period will be increased via governance extended windows will not be accessible
+	// todo If recover period will be decreased via governance need to clean garbage values
 	windowStartValue, exists := m.bandwidthSpent[uint64(windowStart)]
 	if exists {
 		m.totalSpentForSlidingWindow -= windowStartValue
@@ -96,7 +98,7 @@ func (m *BaseBandwidthMeter) AdjustPrice(ctx sdk.Context) {
 
 	newPrice := float64(m.totalSpentForSlidingWindow) / float64(paramset.RecoveryPeriod)
 
-	if newPrice < 0.01*floatBaseCreditPrice {
+	if newPrice < 0.01 * floatBaseCreditPrice {
 		newPrice = 0.01 * floatBaseCreditPrice
 	}
 

@@ -89,11 +89,11 @@ func (p Params) Validate() error {
 	if p.AdjustPricePeriod < MinAdjustPricePeriod {
 		return fmt.Errorf("invalid adjust price period: %d, can not be less then %d", p.AdjustPricePeriod, MinAdjustPricePeriod)
 	}
-	if p.BaseCreditPrice.GT(sdk.OneDec()) {
-		return fmt.Errorf("base credit price parameter must be <= 1, is %s", p.BaseCreditPrice)
+	if p.BaseCreditPrice.LT(sdk.OneDec()) {
+		return fmt.Errorf("base credit price parameter must be >= 1, is %s", p.BaseCreditPrice)
 	}
-	if p.BaseCreditPrice.LT(sdk.NewDecWithPrec(1, 2)) {
-		return fmt.Errorf("base credit price parameter must be >= 0.01, is %s", p.BaseCreditPrice)
+	if p.BaseCreditPrice.GT(sdk.NewDecWithPrec(100, 2)) {
+		return fmt.Errorf("base credit price parameter must be <= 100, is %s", p.BaseCreditPrice)
 	}
 	if p.DesirableBandwidth < MinDesirableBandwidth {
 		return fmt.Errorf("invalid desirable bandwidth: %d, can not be less then %d", p.DesirableBandwidth, MinDesirableBandwidth)
