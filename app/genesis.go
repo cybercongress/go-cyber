@@ -145,6 +145,7 @@ func NewDefaultGenesisState() GenesisState {
 		AuthData: auth.GenesisState{
 			Params: auth.Params{
 				MaxMemoCharacters: 256,
+				TxSigLimit: 7,
 			},
 		},
 		BankData: bank.GenesisState{

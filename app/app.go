@@ -248,7 +248,8 @@ func NewCyberdApp(
 	app.SetInitChainer(app.applyGenesis)
 	app.SetBeginBlocker(app.BeginBlocker)
 	app.SetEndBlocker(app.EndBlocker)
-	app.SetAnteHandler(NewAnteHandler(app.accountKeeper))
+	//because genesis max_gas equals -1 there is NewInfiniteGasMeter
+	app.SetAnteHandler(auth.NewAnteHandler(app.accountKeeper, app.supplyKeeper, auth.DefaultSigVerificationGasConsumer))
 
 	// perform initialization logic
 	err := app.LoadLatestVersion(dbKeys.main)
