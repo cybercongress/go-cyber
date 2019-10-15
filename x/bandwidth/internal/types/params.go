@@ -92,7 +92,7 @@ func (p Params) Validate() error {
 	if p.BaseCreditPrice.LT(sdk.OneDec()) {
 		return fmt.Errorf("base credit price parameter must be >= 1, is %s", p.BaseCreditPrice)
 	}
-	if p.BaseCreditPrice.GT(sdk.NewDecWithPrec(100, 2)) {
+	if p.BaseCreditPrice.GT(sdk.NewDec(100)) {
 		return fmt.Errorf("base credit price parameter must be <= 100, is %s", p.BaseCreditPrice)
 	}
 	if p.DesirableBandwidth < MinDesirableBandwidth {
@@ -134,7 +134,7 @@ func NewDefaultParams() Params {
 		LinkMsgCost:        int64(100),
 		RecoveryPeriod:     int64(18000),
 		AdjustPricePeriod:  int64(10),
-		BaseCreditPrice:    sdk.NewDecWithPrec(1, 2),
+		BaseCreditPrice:    sdk.NewDec(1),
 		DesirableBandwidth: int64(200000000),
 		TxCost:             int64(300),
 		NonLinkMsgCost:     int64(500),
