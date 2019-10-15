@@ -43,7 +43,8 @@ func calculateRankGPU(ctx *types.CalculationContext, logger log.Logger) []float6
 	outLinksUsers := make([]uint64, 0)
 
 	// todo reduce size of stake by passing only participating in linking stakes.
-	stakes := make([]uint64, stakesCount)
+	// todo need to investigate why GetStakes returns accounts with one missed index, think this is goes from some module
+	stakes := make([]uint64, stakesCount+10)
 	for acc, stake := range ctx.GetStakes() {
 		stakes[uint64(acc)] = stake
 	}
