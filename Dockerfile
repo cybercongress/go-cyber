@@ -26,8 +26,8 @@ RUN go version && nvcc --version
 ###############################################################################
 COPY . /sources
 WORKDIR /sources/x/rank/cuda
-RUN nvcc -fmad=false -shared -o libcbdrank.so rank.cu --compiler-options '-fPIC -frounding-math -fsignaling-nans' && \
-    cp libcbdrank.so /usr/lib/ && cp cbdrank.h /usr/lib/
+RUN make build
+RUN cp ./build/libcbdrank.so /usr/lib/ && cp cbdrank.h /usr/lib/
 
 
 # Compile cyberd

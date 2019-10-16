@@ -3,6 +3,7 @@
 VERSION := $(shell echo $(shell git describe --tags) | sed 's/^v//')
 COMMIT := $(shell git log -1 --format='%H')
 LEDGER_ENABLED ?= true
+CUDA_ENABLED ?= true
 
 export GO111MODULE = on
 
@@ -30,6 +31,16 @@ ifeq ($(LEDGER_ENABLED),true)
       endif
     endif
   endif
+endif
+
+ifeq ($(CUDA_ENABLED),true)
+    NVCC_RESULT := $(shell which nvcc 2> NULL)
+    NVCC_TEST := $(notdir $(NVCC_RESULT))
+    ifeq ($(NVCC_TEST),nvcc)
+        build_tags += cuda
+    else
+        $(error CUDA not installed for GPU support, please install or set CUDA_ENABLED=false)
+    endif
 endif
 
 ifeq ($(WITH_CLEVELDB),yes)
