@@ -76,19 +76,19 @@ all: install
 
 build: go.sum
 ifeq ($(OS),Windows_NT)
-	go build -mod=readonly $(BUILD_FLAGS) -o build/cyberd.exe ./daemon
-	go build -mod=readonly $(BUILD_FLAGS) -o build/cyberdcli.exe ./cli
+	go build $(BUILD_FLAGS) -o build/cyberd.exe ./daemon
+	go build $(BUILD_FLAGS) -o build/cyberdcli.exe ./cli
 else
-	go build -mod=readonly $(BUILD_FLAGS) -o build/cyberd ./daemon
-	go build -mod=readonly $(BUILD_FLAGS) -o build/cyberdcli ./cli
+	go build $(BUILD_FLAGS) -o build/cyberd ./daemon
+	go build $(BUILD_FLAGS) -o build/cyberdcli ./cli
 endif
 
 build-linux: go.sum
 	LEDGER_ENABLED=false GOOS=linux GOARCH=amd64 $(MAKE) build
 
 install: go.sum
-	go install -mod=readonly $(BUILD_FLAGS) ./daemon
-	go install -mod=readonly $(BUILD_FLAGS) ./cli
+	go install $(BUILD_FLAGS) ./daemon
+	go install $(BUILD_FLAGS) ./cli
 
 ########################################
 ### Tools & dependencies
