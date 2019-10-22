@@ -2,7 +2,14 @@
 
 ## [Unreleased](https://github.com/cybercongress/cyberd/tree/HEAD)
 
-[Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.1.4...HEAD)
+[Full Changelog](https://github.com/cybercongress/cyberd/compare/euler-5rc1...HEAD)
+
+**Merged pull requests:**
+
+- Remove outdated whitepaper from docs [\#414](https://github.com/cybercongress/cyberd/pull/414) ([SaveTheAles](https://github.com/SaveTheAles))
+
+## [euler-5rc1](https://github.com/cybercongress/cyberd/tree/euler-5rc1) (2019-10-16)
+[Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.1.4...euler-5rc1)
 
 **Closed issues:**
 
@@ -45,6 +52,7 @@
 
 **Merged pull requests:**
 
+- Added makefile for rank, added tag CUDA for daemon build [\#411](https://github.com/cybercongress/cyberd/pull/411) ([litvintech](https://github.com/litvintech))
 - Band refactoring [\#408](https://github.com/cybercongress/cyberd/pull/408) ([litvintech](https://github.com/litvintech))
 - Damping factor and tolerance as onchain params [\#407](https://github.com/cybercongress/cyberd/pull/407) ([litvintech](https://github.com/litvintech))
 - Refactoring of data preparation for GPU, added workers [\#406](https://github.com/cybercongress/cyberd/pull/406) ([litvintech](https://github.com/litvintech))
