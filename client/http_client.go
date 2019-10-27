@@ -10,7 +10,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/client/utils"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cybercongress/cyberd/app"
-	"github.com/cybercongress/cyberd/daemon/rpc"
+	"github.com/cybercongress/cyberd/cmd/cyberd/rpc"
 	bwtps "github.com/cybercongress/cyberd/x/bandwidth/internal/types"
 	. "github.com/cybercongress/cyberd/x/link/internal/types"
 	tdmClient "github.com/tendermint/tendermint/rpc/client"
