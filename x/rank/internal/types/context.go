@@ -17,12 +17,14 @@ type CalculationContext struct {
 	stakes map[AccNumber]uint64
 
 	FullTree bool
+
+	DampingFactor float64
+	Tolerance 	  float64
 }
 
 func NewCalcContext(
-	ctx sdk.Context, linkIndex LinkIndexedKeeper,
-	numberKeeper CidNumberKeeper, stakeKeeper StakeKeeper, fullTree bool,
-) *CalculationContext {
+	ctx sdk.Context, linkIndex LinkIndexedKeeper, numberKeeper CidNumberKeeper,
+	stakeKeeper StakeKeeper, fullTree bool, dampingFactor float64, tolerance float64) *CalculationContext {
 
 	return &CalculationContext{
 		CidsCount:  int64(numberKeeper.GetCidsCount(ctx)),
@@ -34,6 +36,9 @@ func NewCalcContext(
 		stakes: stakeKeeper.GetTotalStakes(),
 
 		FullTree: fullTree,
+
+		DampingFactor: dampingFactor,
+		Tolerance: tolerance,
 	}
 }
 
@@ -51,6 +56,14 @@ func (c *CalculationContext) GetCidsCount() int64 {
 
 func (c *CalculationContext) GetStakes() map[AccNumber]uint64 {
 	return c.stakes
+}
+
+func (c *CalculationContext) GetTolerance() float64 {
+	return c.Tolerance
+}
+
+func (c *CalculationContext) GetDampingFactor() float64 {
+	return c.DampingFactor
 }
 
 func (с *CalculationContext) GetSortedInLinks(cid link.CidNumber) (link.CidLinks, []link.CidNumber, bool) {

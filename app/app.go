@@ -85,7 +85,8 @@ type CyberdApp struct {
 	*baseapp.BaseApp
 	cdc *codec.Codec
 
-	txDecoder sdk.TxDecoder
+	txDecoder      sdk.TxDecoder
+	invCheckPeriod uint
 
 	// bandwidth
 	bandwidthMeter       bw.Meter
@@ -139,11 +140,12 @@ func NewCyberdApp(
 
 	// create your application type
 	var app = &CyberdApp{
-		cdc:        cdc,
-		txDecoder:  txDecoder,
-		BaseApp:    baseApp,
-		dbKeys:     dbKeys,
-		mainKeeper: mainKeeper,
+		cdc:            cdc,
+		txDecoder:      txDecoder,
+		invCheckPeriod: opts.InvCheckPeriod,
+		BaseApp:        baseApp,
+		dbKeys:         dbKeys,
+		mainKeeper:     mainKeeper,
 	}
 
 	// init params keeper and subspaces
@@ -177,7 +179,7 @@ func NewCyberdApp(
 		distr.DefaultCodespace, auth.FeeCollectorName, blacklistedAddrs)
 	app.slashingKeeper = slashing.NewKeeper(
 		app.cdc, dbKeys.slashing, &stakingKeeper, slashingSubspace, slashing.DefaultCodespace)
-	app.crisisKeeper = crisis.NewKeeper(crisisSubspace, uint(1), app.supplyKeeper, auth.FeeCollectorName)
+	app.crisisKeeper = crisis.NewKeeper(crisisSubspace, opts.InvCheckPeriod, app.supplyKeeper, auth.FeeCollectorName)
 
 	app.accBandwidthKeeper = bw.NewAccBandwidthKeeper(dbKeys.accBandwidth, &bandwidthSubspace)
 	app.blockBandwidthKeeper = bw.NewBlockSpentBandwidthKeeper(dbKeys.blockBandwidth)
@@ -199,7 +201,7 @@ func NewCyberdApp(
 	app.stakingIndexKeeper = cbdbank.NewIndexedKeeper(bankKeeper)
 	app.rankStateKeeper = rank.NewStateKeeper(&rankSubspace,
 		opts.AllowSearch, app.mainKeeper, app.stakingIndexKeeper,
-		app.linkIndexedKeeper, app.cidNumKeeper, opts.ComputeUnit,
+		app.linkIndexedKeeper, app.cidNumKeeper, app.paramsKeeper, opts.ComputeUnit,
 	)
 
 	// register the staking hooks
@@ -246,7 +248,8 @@ func NewCyberdApp(
 	app.SetInitChainer(app.applyGenesis)
 	app.SetBeginBlocker(app.BeginBlocker)
 	app.SetEndBlocker(app.EndBlocker)
-	app.SetAnteHandler(NewAnteHandler(app.accountKeeper))
+	//because genesis max_gas equals -1 there is NewInfiniteGasMeter
+	app.SetAnteHandler(auth.NewAnteHandler(app.accountKeeper, app.supplyKeeper, auth.DefaultSigVerificationGasConsumer))
 
 	// perform initialization logic
 	err := app.LoadLatestVersion(dbKeys.main)
@@ -517,7 +520,7 @@ func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.R
 	bw.EndBlocker(ctx, app.paramsKeeper, app.bandwidthMeter)
 
 	// RANK CALCULATION
-	app.rankStateKeeper.EndBlocker(ctx, app.paramsKeeper, app.Logger())
+	app.rankStateKeeper.EndBlocker(ctx, app.Logger())
 
 	return abci.ResponseEndBlock{
 		ValidatorUpdates: validatorUpdates,

@@ -145,6 +145,7 @@ func NewDefaultGenesisState() GenesisState {
 		AuthData: auth.GenesisState{
 			Params: auth.Params{
 				MaxMemoCharacters: 256,
+				TxSigLimit: 10,
 			},
 		},
 		BankData: bank.GenesisState{
@@ -152,14 +153,14 @@ func NewDefaultGenesisState() GenesisState {
 		},
 		MintData: mint.GenesisState{
 			Minter: mint.Minter{
-				Inflation:        sdk.NewDecWithPrec(7, 2),
+				Inflation:        sdk.NewDecWithPrec(3, 2),
 				AnnualProvisions: sdk.NewDec(0),
 			},
 			Params: mint.Params{
 				MintDenom:           coin.CYB,
-				InflationRateChange: sdk.NewDecWithPrec(13, 2),
-				InflationMax:        sdk.NewDecWithPrec(18, 2),
-				InflationMin:        sdk.NewDecWithPrec(5, 2),
+				InflationRateChange: sdk.NewDecWithPrec(10, 2),
+				InflationMax:        sdk.NewDecWithPrec(15, 2),
+				InflationMin:        sdk.NewDecWithPrec(1, 2),
 				GoalBonded:          sdk.NewDecWithPrec(88, 2),
 				BlocksPerYear:       uint64(60 * 60 * 8766 / 5), // assuming 5 second block times
 			},
@@ -167,7 +168,7 @@ func NewDefaultGenesisState() GenesisState {
 		StakingData: staking.GenesisState{
 			Params: types.Params{
 				UnbondingTime: defaultUnbondingTime,
-				MaxValidators: 146,
+				MaxValidators: 7,
 				MaxEntries:    7,
 				BondDenom:     coin.CYB,
 			},
@@ -182,29 +183,29 @@ func NewDefaultGenesisState() GenesisState {
 		SlashingData: slashing.GenesisState{
 			Params: slashing.Params{
 				MaxEvidenceAge:          defaultUnbondingTime,
-				SignedBlocksWindow:      60 * 30, // ~30min
+				SignedBlocksWindow:      60 * 4, // ~20min
 				DowntimeJailDuration:    0,
-				MinSignedPerWindow:      sdk.NewDecWithPrec(70, 2),           // 70%
-				SlashFractionDoubleSign: sdk.NewDecWithPrec(20, 2),           // 20%
-				SlashFractionDowntime:   sdk.NewDec(1).Quo(sdk.NewDec(1000)), // 0.1%
+				MinSignedPerWindow:      sdk.NewDecWithPrec(80, 2),         // 80%
+				SlashFractionDoubleSign: sdk.NewDecWithPrec(5, 2),          // 5%
+				SlashFractionDowntime:   sdk.NewDec(5).Quo(sdk.NewDec(10000)), // 0.05%
 			},
 		},
 		DistrData: distr.GenesisState{
 			FeePool:             distr.InitialFeePool(),
-			CommunityTax:        sdk.NewDecWithPrec(0, 2), // 0%
-			BaseProposerReward:  sdk.NewDecWithPrec(1, 2), // 1%
-			BonusProposerReward: sdk.NewDecWithPrec(4, 2), // 4%
+			CommunityTax:        sdk.NewDecWithPrec(10, 2), // 10%
+			BaseProposerReward:  sdk.NewDecWithPrec(1, 2),  // 1%
+			BonusProposerReward: sdk.NewDecWithPrec(5, 2),  // 5%
 			WithdrawAddrEnabled: true,
 			PreviousProposer:    nil,
 		},
 		GovData: gov.GenesisState{
 			StartingProposalID: 1,
 			DepositParams: gov.DepositParams{
-				MinDeposit:       sdk.Coins{coin.NewCybCoin(500 * coin.Giga)}, //top 50 of current network
-				MaxDepositPeriod: gov.DefaultPeriod,
+				MinDeposit:       sdk.Coins{coin.NewCybCoin(500 * coin.Giga)},
+				MaxDepositPeriod: 7200 * time.Second, // 2 hours
 			},
 			VotingParams: gov.VotingParams{
-				VotingPeriod: gov.DefaultPeriod,
+				VotingPeriod: 7200 * time.Second, // 2 hours
 			},
 			TallyParams: gov.TallyParams{
 				Quorum:    sdk.NewDecWithPrec(334, 3),

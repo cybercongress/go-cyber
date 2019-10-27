@@ -6,6 +6,7 @@ import (
 	"github.com/cybercongress/cyberd/x/bank"
 	"github.com/cybercongress/cyberd/x/link"
 	"github.com/cybercongress/cyberd/x/rank/internal/types"
+	"strconv"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/params"
@@ -35,6 +36,7 @@ type StateKeeper struct {
 	stakeKeeper       types.StakeKeeper
 	cidNumKeeper      types.CidNumberKeeper
 	linkIndexedKeeper types.LinkIndexedKeeper
+	paramsKeeper      params.Keeper
 
 	// index
 	index         types.SearchIndex
@@ -44,14 +46,21 @@ type StateKeeper struct {
 func NewStateKeeper(
 	paramSpace *params.Subspace, allowSearch bool, mainKeeper store.MainKeeper, stakeIndex bank.IndexedKeeper,
 	linkIndexedKeeper types.LinkIndexedKeeper, cidNumKeeper types.CidNumberKeeper,
-	unit types.ComputeUnit,
+	pk params.Keeper, unit types.ComputeUnit,
 ) *StateKeeper {
 	return &StateKeeper{
 		BaseRankKeeper: NewBaseRankKeeper(paramSpace),
-		allowSearch:    allowSearch, rankCalcChan: make(chan types.Rank, 1),
-		rankErrChan: make(chan error), rankCalculationFinished: true, mainKeeper: mainKeeper,
-		stakeKeeper: stakeIndex, linkIndexedKeeper: linkIndexedKeeper, cidNumKeeper: cidNumKeeper,
-		computeUnit: unit, hasNewLinksForPeriod: true,
+		allowSearch:    allowSearch,
+		rankCalcChan:   make(chan types.Rank, 1),
+		rankErrChan:    make(chan error),
+		rankCalculationFinished: true,
+		mainKeeper:     mainKeeper,
+		stakeKeeper:    stakeIndex,
+		linkIndexedKeeper: linkIndexedKeeper,
+		cidNumKeeper:   cidNumKeeper,
+		paramsKeeper:   pk,
+		computeUnit:    unit,
+		hasNewLinksForPeriod: true,
 	}
 }
 
@@ -64,9 +73,21 @@ func (s *StateKeeper) Load(ctx sdk.Context, log log.Logger) {
 	s.index.Load(s.linkIndexedKeeper.GetOutLinks())
 	s.getIndexError = s.index.Run()
 
+	paramset := s.GetParamSet(ctx)
+
+	dampingFactor, err := strconv.ParseFloat(paramset.DampingFactor.String(), 64)
+	if err != nil {
+		panic(err)
+	}
+
+	tolerance, err := strconv.ParseFloat(paramset.Tolerance.String(), 64)
+	if err != nil {
+		panic(err)
+	}
+
 	// if we fell down and need to start new rank calculation
 	if !s.mainKeeper.GetRankCalculationFinished(ctx) {
-		s.startRankCalculation(ctx, log)
+		s.startRankCalculation(ctx, dampingFactor, tolerance, log)
 		s.rankCalculationFinished = false
 	}
 }
@@ -79,23 +100,27 @@ func (s *StateKeeper) BuildSearchIndex(logger log.Logger) types.SearchIndex {
 	}
 }
 
-func (s *StateKeeper) EndBlocker(ctx sdk.Context, pk params.Keeper, log log.Logger) {
+func (s *StateKeeper) EndBlocker(ctx sdk.Context, log log.Logger) {
 	currentCidsCount := s.mainKeeper.GetCidsCount(ctx)
 
 	s.index.PutNewLinks(s.linkIndexedKeeper.GetCurrentBlockNewLinks())
-	s.checkIndexFailure(log)
 
 	blockHasNewLinks := s.linkIndexedKeeper.EndBlocker()
 	s.hasNewLinksForPeriod = s.hasNewLinksForPeriod || blockHasNewLinks
 
-	subspace, ok := pk.GetSubspace(DefaultParamspace)
-	if !ok {
-		panic("rank params subspace is not found")
-	}
-	var paramset types.Params
-	subspace.GetParamSet(ctx, &paramset)
+	paramset := s.GetParamSet(ctx)
 
 	if ctx.BlockHeight()%paramset.CalculationPeriod == 0 || ctx.BlockHeight() == 1 {
+
+		dampingFactor, err := strconv.ParseFloat(paramset.DampingFactor.String(), 64)
+		if err != nil {
+			panic(err)
+		}
+
+		tolerance, err := strconv.ParseFloat(paramset.Tolerance.String(), 64)
+		if err != nil {
+			panic(err)
+		}
 
 		s.checkRankCalcFinished(ctx, true, log)
 		s.applyNextRank()
@@ -109,7 +134,7 @@ func (s *StateKeeper) EndBlocker(ctx sdk.Context, pk params.Keeper, log log.Logg
 			s.rankCalculationFinished = false
 			s.hasNewLinksForPeriod = false
 			s.mainKeeper.StoreRankCalculationFinished(ctx, false)
-			s.startRankCalculation(ctx, log)
+			s.startRankCalculation(ctx, dampingFactor, tolerance, log)
 		}
 	} else {
 		s.checkRankCalcFinished(ctx, false, log)
@@ -126,8 +151,10 @@ func (s *StateKeeper) GetRankValue(cidNumber link.CidNumber) float64 {
 	return s.index.GetRankValue(cidNumber)
 }
 
-func (s *StateKeeper) startRankCalculation(ctx sdk.Context, log log.Logger) {
-	calcCtx := types.NewCalcContext(ctx, s.linkIndexedKeeper, s.cidNumKeeper, s.stakeKeeper, s.allowSearch)
+func (s *StateKeeper) startRankCalculation(ctx sdk.Context, dampingFactor float64, tolerance float64, log log.Logger) {
+
+
+	calcCtx := types.NewCalcContext(ctx, s.linkIndexedKeeper, s.cidNumKeeper, s.stakeKeeper, s.allowSearch, dampingFactor, tolerance)
 	go CalculateRankInParallel(calcCtx, s.rankCalcChan, s.rankErrChan, s.computeUnit, log)
 }
 
@@ -170,15 +197,6 @@ func (s *StateKeeper) applyNextRank() {
 	s.nextCidRank.Clear()
 }
 
-func (s *StateKeeper) checkIndexFailure(logger log.Logger) {
-	// Check search index for error
-	err := s.getIndexError()
-	if err != nil {
-		logger.Error("Search index failed!", "error", err)
-		panic(err)
-	}
-}
-
 //
 // GETTERS
 //
@@ -201,4 +219,17 @@ func (s *StateKeeper) GetLastCidNum() link.CidNumber {
 
 func (s *StateKeeper) GetMerkleTree() *merkle.Tree {
 	return s.networkCidRank.MerkleTree
+}
+
+func (s *StateKeeper) GetIndexError() error {
+	return s.getIndexError()
+}
+
+func (s *StateKeeper) GetParamSet(ctx sdk.Context) (params types.Params) {
+	subspace, ok := s.paramsKeeper.GetSubspace(DefaultParamspace)
+	if !ok {
+		panic("rank params subspace is not found")
+	}
+	subspace.GetParamSet(ctx, &params)
+	return params
 }

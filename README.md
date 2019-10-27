@@ -183,6 +183,12 @@ The "game of links" is a game between cyber•Congress and between Cosmos stakeh
 
 Explore the docs in our [knowledge base](https://cybercongress.ai/docs/cyberd/cyberd/).
 
+## IBC
+
+### Subgraph transffering
+### CIDs Interchange
+### Ranks Interchange
+
 ## Community
 
 **\>** [devChat](https://t.me/fuckgoogle) for web3 agnets

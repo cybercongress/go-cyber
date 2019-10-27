@@ -100,7 +100,8 @@ func initTestnet(config *tmconfig.Config, cdc *codec.Codec) error {
 
 	chainID = viper.GetString(client.FlagChainID)
 	if chainID == "" {
-		chainID = "chain-" + cmn.RandStr(6)
+		//chainID = "chain-" + cmn.RandStr(6)
+		chainID = "euler-x"
 	}
 
 	monikers := make([]string, numValidators)
@@ -192,18 +193,27 @@ func initTestnet(config *tmconfig.Config, cdc *codec.Codec) error {
 		accStakingTokens := sdk.TokensFromConsensusPower(200000000)
 		accs = append(accs, app.GenesisAccount{
 			Address: addr,
+			AccountNumber: uint64(i),
 			Coins: sdk.Coins{
 				sdk.NewCoin(coin.CYB, accStakingTokens),
 			},
 		})
 
-		valTokens := sdk.TokensFromConsensusPower(100000000)
+		valTokens := sdk.TokensFromConsensusPower(50000000)
+
+		rate := int64(i+1)*10
+		maxRate := int64(2*(i+1))*10
+		maxRateChange := int64(2*(i+1))
+
 		msg := staking.NewMsgCreateValidator(
 			sdk.ValAddress(addr),
 			valPubKeys[i],
 			sdk.NewCoin(coin.CYB, valTokens),
-			staking.NewDescription(nodeDirName, "tst", "com.com", "det"),
-			staking.NewCommissionRates(sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec()),
+			staking.NewDescription(nodeDirName, nodeDirName, "fuckgoogle.page", "AI"),
+			staking.NewCommissionRates(
+				sdk.NewDecWithPrec(rate, 2),
+				sdk.NewDecWithPrec(maxRate, 2),
+				sdk.NewDecWithPrec(maxRateChange, 2)),
 			sdk.OneInt(),
 		)
 
@@ -259,19 +269,24 @@ func initGenFiles(
 	state := app.NewDefaultGenesisState()
 	state.Accounts = accs
 	state.Pool.NotBondedTokens = sdk.ZeroInt()
-	supply := sdk.ZeroInt()
+	stake := sdk.ZeroInt()
+
 	for _, acc := range accs {
-		supply = state.Pool.NotBondedTokens.Add(sdk.NewInt(acc.Coins.AmountOf(coin.CYB).Int64()))
+		coins := acc.Coins.AmountOf(coin.CYB)
+		stake = stake.Add(coins)
 	}
-	state.Pool.NotBondedTokens = supply
-	cybSupply := sdk.NewCoin(coin.CYB, supply)
+
+	pool := sdk.NewDec(stake.Int64()/100)
+	state.DistrData.FeePool.CommunityPool = sdk.DecCoins{sdk.DecCoin{"cyb", pool}}
+
+	state.Pool.NotBondedTokens = stake.Add(pool.RoundInt())
+	cybSupply := sdk.NewCoin(coin.CYB, stake.Add(pool.RoundInt()))
 	state.SupplyData.Supply = sdk.NewCoins(cybSupply)
 
 	appGenStateJSON, err := codec.MarshalJSONIndent(cdc, state)
 	if err != nil {
 		return err
 	}
-
 	genDoc := types.GenesisDoc{
 		ChainID:    chainID,
 		AppState:   appGenStateJSON,

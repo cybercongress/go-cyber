@@ -2,7 +2,6 @@ package exported
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/params"
 	"github.com/tendermint/tendermint/libs/log"
 
 	"github.com/cybercongress/cyberd/merkle"
@@ -21,7 +20,7 @@ type StateKeeper interface {
 	Load(sdk.Context, log.Logger)
 	BuildSearchIndex(log.Logger) types.SearchIndex
 
-	EndBlocker(sdk.Context, params.Keeper, log.Logger)
+	EndBlocker(sdk.Context, log.Logger)
 
 	Search(cidNumber link.CidNumber, page, perPage int) ([]types.RankedCidNumber, int, error)
 
@@ -30,4 +29,5 @@ type StateKeeper interface {
 
 	GetLastCidNum() link.CidNumber
 	GetMerkleTree() *merkle.Tree
+	GetIndexError() error
 }
