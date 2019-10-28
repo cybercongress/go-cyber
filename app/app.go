@@ -126,7 +126,7 @@ type CyberdApp struct {
 // In addition, all necessary mappers and keepers are created, routes
 // registered, and finally the stores being mounted along with any necessary
 // chain initialization.
-func NewCyberdApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest bool,
+func NewCyberdApp(logger log.Logger, db dbm.DB, traceStore io.Writer, height int64,
 	invCheckPeriod uint, computeUnit rank.ComputeUnit, allowSearch bool, baseAppOptions ...func(*baseapp.BaseApp)) *CyberdApp {
 	// create and register app-level codec for TXs and accounts
 	cdc := MakeCodec()
@@ -248,17 +248,20 @@ func NewCyberdApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest
 	//because genesis max_gas equals -1 there is NewInfiniteGasMeter
 	app.SetAnteHandler(auth.NewAnteHandler(app.accountKeeper, app.supplyKeeper, auth.DefaultSigVerificationGasConsumer))
 
-	keys := dbKeys.GetStoreKeys()
-	if loadLatest {
-		err := app.LoadLatestVersion(keys[0])
+	if height == -1 {
+		err := app.LoadLatestVersion(dbKeys.main)
+		if err != nil {
+			cmn.Exit(err.Error())
+		}
+	} else {
+		err := app.LoadVersion(height, dbKeys.main)
 		if err != nil {
 			cmn.Exit(err.Error())
 		}
 	}
-
 	ctx := app.BaseApp.NewContext(true, abci.Header{})
 	app.latestBlockHeight = int64(mainKeeper.GetLatestBlockNumber(ctx))
-	ctx = ctx.WithBlockHeight(app.LastBlockHeight())
+	ctx = ctx.WithBlockHeight(app.latestBlockHeight)
 
 	bandwidthParamset := bw.NewDefaultParams()
 	bandwidthSubspace.SetParamSet(ctx, &bandwidthParamset)
@@ -563,11 +566,6 @@ func (app *CyberdApp) appHash() []byte {
 	}
 
 	return result
-}
-
-// debug here
-func (app *CyberdApp) LoadHeight(height int64) error {
-	return app.LoadVersion(height, app.dbKeys.main)
 }
 
 // ModuleAccountAddrs returns all the app's module account addresses.
