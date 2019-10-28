@@ -45,16 +45,6 @@ var (
 	flagStartingIPAddress = "starting-ip-address"
 )
 
-//type initConfig struct {
-//	ChainID   string
-//	GenTxsDir string
-//	Name      string
-//	NodeID    string
-//	ValPubKey crypto.PubKey
-//}
-
-//const nodeDirPerm = 0755
-
 
 // get cmd to initialize all files for tendermint testnet and application
 func testnetCmd(ctx *server.Context, cdc *codec.Codec,
@@ -458,44 +448,3 @@ func genAppStateFromConfig(
 	err = util.ExportGenesisFile(genFile, initCfg.ChainID, nil, appState)
 	return
 }
-
-//// GenAppStateFromConfig gets the genesis app state from the config
-//func genAppStateFromConfig(cdc *codec.Codec, config *cfg.Config,
-//	initCfg InitConfig, genDoc tmtypes.GenesisDoc,
-//	genAccIterator types.GenesisAccountsIterator,
-//) (appState json.RawMessage, err error) {
-//
-//	// process genesis transactions, else create default genesis.json
-//	appGenTxs, persistentPeers, err := CollectStdTxs(
-//		cdc, config.Moniker, initCfg.GenTxsDir, genDoc, genAccIterator)
-//	if err != nil {
-//		return appState, err
-//	}
-//
-//	config.P2P.PersistentPeers = persistentPeers
-//	cfg.WriteConfigFile(filepath.Join(config.RootDir, "config", "config.toml"), config)
-//
-//	// if there are no gen txs to be processed, return the default empty state
-//	if len(appGenTxs) == 0 {
-//		return appState, errors.New("there must be at least one genesis tx")
-//	}
-//
-//	// create the app state
-//	appGenesisState, err := GenesisStateFromGenDoc(cdc, genDoc)
-//	if err != nil {
-//		return appState, err
-//	}
-//
-//	appGenesisState, err = SetGenTxsInAppGenesisState(cdc, appGenesisState, appGenTxs)
-//	if err != nil {
-//		return appState, err
-//	}
-//	appState, err = codec.MarshalJSONIndent(cdc, appGenesisState)
-//	if err != nil {
-//		return appState, err
-//	}
-//
-//	genDoc.AppState = appState
-//	err = ExportGenesisFile(&genDoc, config.GenesisFile())
-//	return appState, err
-//}

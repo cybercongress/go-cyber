@@ -3,8 +3,6 @@ package main
 import (
 	"encoding/json"
 	"github.com/cybercongress/cyberd/cmd/cyberd/rpc"
-
-	//"github.com/cybercongress/cyberd/cyberd/rpc"
 	"io"
 
 	"github.com/spf13/cobra"
@@ -26,23 +24,20 @@ import (
 	genaccscli "github.com/cosmos/cosmos-sdk/x/genaccounts/client/cli"
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
 	"github.com/cosmos/cosmos-sdk/x/staking"
-
-	//"github.com/cybercongress/cyberd/cyberd/cmd"
-	//"github.com/cybercongress/cyberd/cyberd/rpc"
 	"github.com/cybercongress/cyberd/x/rank"
 )
 
 const (
-	//flagGpuEnabled                = "compute-rank-on-gpu"
-	//flagSearchEnabled             = "allow-search"
+	flagGpuEnabled                = "compute-rank-on-gpu"
+	flagSearchEnabled             = "allow-search"
 	flagInvCheckPeriod            = "inv-check-period"
 )
 
 var invCheckPeriod uint
+var gpuEnabled     bool
+var searchEnabled  bool
 
 func main() {
-
-	//rootDir := os.ExpandEnv("$HOME/.cyberd")
 
 	cdc := app.MakeCodec()
 
@@ -65,13 +60,16 @@ func main() {
 	rootCmd.AddCommand(genaccscli.AddGenesisAccountCmd(ctx, cdc, app.DefaultNodeHome, app.DefaultCLIHome))
 	rootCmd.AddCommand(client.NewCompletionCmd(rootCmd, true))
 	rootCmd.AddCommand(testnetCmd(ctx, cdc, app.ModuleBasics, genaccounts.AppModuleBasic{}))
-	//rootCmd.AddCommand(replayCmd())
-
+	rootCmd.AddCommand(replayCmd())
 	server.AddCommands(ctx, cdc, rootCmd, newApp, exportAppStateAndTMValidators)
 
 	executor := cli.PrepareBaseCmd(rootCmd, "CBD", app.DefaultNodeHome)
 	rootCmd.PersistentFlags().UintVar(&invCheckPeriod, flagInvCheckPeriod,
 		0, "Assert registered invariants every N blocks")
+	rootCmd.PersistentFlags().BoolVar(&searchEnabled, flagSearchEnabled,
+		false, "Enables search API")
+	rootCmd.PersistentFlags().BoolVar(&gpuEnabled, flagGpuEnabled,
+		false, "Runs node in GPU/CPU mode")
 	err := executor.Execute()
 	if err != nil {
 		panic(err)
@@ -79,26 +77,20 @@ func main() {
 }
 
 func newApp(logger log.Logger, db dbm.DB, traceStore io.Writer) abci.Application {
-	//computeUnit := rank.CPU
-	//if viper.GetBool(flagGpuEnabled) {
-	//	computeUnit = rank.GPU
-	//}
-	//gpu := viper.GetBool(flagGpuEnabled)
-	//if (gpu) {
-	//
-	//}
+	computeUnit := rank.CPU
+	if gpuEnabled {
+		computeUnit = rank.GPU
+	}
 
 	cyberdApp := app.NewCyberdApp(
 		logger, db, traceStore, int64(-1), invCheckPeriod,
-		//computeUnit,
-		rank.CPU,
-		false,
-		//viper.GetBool(flagSearchEnabled),
+		computeUnit,
+		searchEnabled,
 		baseapp.SetPruning(store.NewPruningOptionsFromString(viper.GetString("pruning"))),
 		baseapp.SetHaltHeight(viper.GetUint64(server.FlagHaltHeight)),
 		baseapp.SetHaltTime(viper.GetUint64(server.FlagHaltTime)),
 	)
-	rpc.SetCyberdApp(cyberdApp) // ?
+	rpc.SetCyberdApp(cyberdApp)
 	return cyberdApp
 }
 
@@ -107,7 +99,6 @@ func exportAppStateAndTMValidators(
 ) (json.RawMessage, []tmtypes.GenesisValidator, error) {
 
 	if height != -1 {
-		// debug here
 		capp := app.NewCyberdApp(logger, db, traceStore, height, uint(1), rank.CPU, false)
 		return capp.ExportAppStateAndValidators(forZeroHeight, jailWhiteList)
 	}
