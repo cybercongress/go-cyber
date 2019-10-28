@@ -7,6 +7,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/bank"
+	"github.com/cosmos/cosmos-sdk/x/crisis"
 	distr "github.com/cosmos/cosmos-sdk/x/distribution"
 	"github.com/cosmos/cosmos-sdk/x/gov"
 	"github.com/cosmos/cosmos-sdk/x/mint"
@@ -43,6 +44,7 @@ type GenesisState struct {
 	BandwidthData bandwidth.GenesisState `json:"bandwidth"`
 	RankData      rank.GenesisState      `json:"rank"`
 	GenTxs        []json.RawMessage      `json:"gentxs"`
+	Crisis        crisis.GenesisState    `json:"crisis"`
 }
 
 func (gs *GenesisState) GetAddresses() []sdk.AccAddress {
@@ -59,7 +61,7 @@ func NewGenesisState(
 	mintData mint.GenesisState, distrData distr.GenesisState,
 	govData gov.GenesisState, supplyData supply.GenesisState,
 	slashingData slashing.GenesisState, bandwidthData bandwidth.GenesisState,
-	rankData rank.GenesisState,
+	rankData rank.GenesisState, crisisData crisis.GenesisState,
 ) GenesisState {
 
 	return GenesisState{
@@ -74,6 +76,7 @@ func NewGenesisState(
 		GovData:       govData,
 		BandwidthData: bandwidthData,
 		RankData:      rankData,
+		Crisis:        crisisData,
 	}
 }
 
@@ -201,6 +204,7 @@ func NewDefaultGenesisState() GenesisState {
 		BandwidthData: bandwidth.DefaultGenesisState(),
 		RankData:      rank.DefaultGenesisState(),
 		GenTxs:        []json.RawMessage{},
+		Crisis: 	   crisis.GenesisState{ ConstantFee: sdk.NewCoin(coin.CYB, sdk.NewInt(1000)) },
 	}
 }
 

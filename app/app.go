@@ -248,9 +248,9 @@ func NewCyberdApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest
 	//because genesis max_gas equals -1 there is NewInfiniteGasMeter
 	app.SetAnteHandler(auth.NewAnteHandler(app.accountKeeper, app.supplyKeeper, auth.DefaultSigVerificationGasConsumer))
 
-
+	keys := dbKeys.GetStoreKeys()
 	if loadLatest {
-		err := app.LoadLatestVersion(dbKeys.main)
+		err := app.LoadLatestVersion(keys[0])
 		if err != nil {
 			cmn.Exit(err.Error())
 		}
@@ -258,7 +258,7 @@ func NewCyberdApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest
 
 	ctx := app.BaseApp.NewContext(true, abci.Header{})
 	app.latestBlockHeight = int64(mainKeeper.GetLatestBlockNumber(ctx))
-	ctx = ctx.WithBlockHeight(app.latestBlockHeight)
+	ctx = ctx.WithBlockHeight(app.LastBlockHeight())
 
 	bandwidthParamset := bw.NewDefaultParams()
 	bandwidthSubspace.SetParamSet(ctx, &bandwidthParamset)
@@ -369,7 +369,7 @@ func (app *CyberdApp) applyGenesis(ctx sdk.Context, req abci.RequestInitChain) a
 	if err != nil {
 		panic(err)
 	}
-
+	crisis.InitGenesis(ctx, app.crisisKeeper, genesisState.Crisis)
 	app.Logger().Info("Genesis applied", "time", time.Since(start))
 	return abci.ResponseInitChain{
 		Validators: validators,
@@ -565,6 +565,7 @@ func (app *CyberdApp) appHash() []byte {
 	return result
 }
 
+// debug here
 func (app *CyberdApp) LoadHeight(height int64) error {
 	return app.LoadVersion(height, app.dbKeys.main)
 }
