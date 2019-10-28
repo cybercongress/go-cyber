@@ -212,6 +212,7 @@ Take a part with [set up dev environment](https://cybercongress.ai/docs/cyberd/s
 — CUDA VM for gas
 — Privacy
 - PoRep/PoST
+- Autonomous onchain agents
 ```
 
 
