@@ -35,6 +35,8 @@ type BandwidthMeter interface {
 	GetTxCost(ctx sdk.Context, tx sdk.Tx) int64
 	// Return tx bandwidth cost considering the price
 	GetPricedTxCost(ctx sdk.Context, tx sdk.Tx) int64
+	// Return links bandwidth cost considering the price
+	GetPricedLinksCost(ctx sdk.Context, tx sdk.Tx) int64
 	//
 	// Performs bw consumption for given acc
 	// To get right number, should be called after tx delivery with bw state obtained prior delivery
@@ -44,4 +46,7 @@ type BandwidthMeter interface {
 	// bwCost := deliverTx(tx)
 	// consumeBw(bw, bwCost)
 	ConsumeAccBandwidth(ctx sdk.Context, bw AcсBandwidth, amt int64)
+	// Performs updating of total bandwidth used by account for linking
+	UpdateLinkedBandwidth(ctx sdk.Context, bw AcсBandwidth, amt int64)
+
 }

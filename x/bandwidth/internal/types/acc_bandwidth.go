@@ -12,6 +12,7 @@ type AcсBandwidth struct {
 	RemainedValue    int64          `json:"remained"`
 	LastUpdatedBlock int64          `json:"last_updated_block"`
 	MaxValue         int64          `json:"max_value"`
+	Linked           int64         `json:"linked"`
 }
 
 func (bs *AcсBandwidth) UpdateMax(newValue int64, currentBlock int64, recoveryPeriod int64) {
@@ -49,6 +50,16 @@ func (bs *AcсBandwidth) Consume(bandwidthToConsume int64) {
 	}
 }
 
+func (bs *AcсBandwidth) AddLinked(bandwidthUsed int64) {
+	bs.Linked = bs.Linked + bandwidthUsed
+}
+
 func NewGenesisAccBandwidth(address sdk.AccAddress, bandwidth int64) AcсBandwidth {
-	return AcсBandwidth{Address: address, RemainedValue: bandwidth, MaxValue: bandwidth, LastUpdatedBlock: 0}
+	return AcсBandwidth{
+		Address:            address,
+		RemainedValue:      bandwidth,
+		MaxValue:           bandwidth,
+		LastUpdatedBlock:   0,
+		Linked:             0,
+	}
 }
