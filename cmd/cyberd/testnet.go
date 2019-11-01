@@ -1,13 +1,17 @@
-package cmd
+package main
 
 import (
 	"bufio"
 	"encoding/json"
 	"fmt"
 	"github.com/cosmos/cosmos-sdk/client/keys"
+	"github.com/cosmos/cosmos-sdk/types/module"
+	"github.com/cybercongress/cyberd/util"
+
+	//"github.com/cosmos/cosmos-sdk/x/genaccounts"
+	"github.com/cosmos/cosmos-sdk/x/genutil"
 	"github.com/cybercongress/cyberd/app"
 	"github.com/cybercongress/cyberd/types/coin"
-	"github.com/cybercongress/cyberd/util"
 	"net"
 	"os"
 	"path/filepath"
@@ -16,7 +20,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	//authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	srvconfig "github.com/cosmos/cosmos-sdk/server/config"
+	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -34,23 +40,16 @@ var (
 	flagNodeDirPrefix     = "node-dir-prefix"
 	flagNumValidators     = "v"
 	flagOutputDir         = "output-dir"
-	flagNodeDaemonHome    = "node-daemon-home"
-	flagNodeCliHome       = "node-cli-home"
+	flagNodeDaemonHome    = "node-cyberd-home"
+	flagNodeCLIHome       = "node-cyberdcli-home"
 	flagStartingIPAddress = "starting-ip-address"
 )
 
-type initConfig struct {
-	ChainID   string
-	GenTxsDir string
-	Name      string
-	NodeID    string
-	ValPubKey crypto.PubKey
-}
-
-const nodeDirPerm = 0755
 
 // get cmd to initialize all files for tendermint testnet and application
-func TestnetFilesCmd(ctx *server.Context, cdc *codec.Codec) *cobra.Command {
+func testnetCmd(ctx *server.Context, cdc *codec.Codec,
+	mbm module.BasicManager, genAccIterator genutiltypes.GenesisAccountsIterator,
+) *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "testnet",
@@ -63,9 +62,20 @@ Note, strict routability for addresses is turned off in the config file.
 Example:
 	cyberd testnet --v 4 --output-dir ./output --starting-ip-address 192.168.10.2
 	`,
-		RunE: func(_ *cobra.Command, _ []string) error {
+		RunE: func(cmd *cobra.Command, _ []string) error {
 			config := ctx.Config
-			return initTestnet(config, cdc)
+
+			outputDir := viper.GetString(flagOutputDir)
+			chainID := viper.GetString(client.FlagChainID)
+			nodeDirPrefix := viper.GetString(flagNodeDirPrefix)
+			nodeDaemonHome := viper.GetString(flagNodeDaemonHome)
+			nodeCLIHome := viper.GetString(flagNodeCLIHome)
+			startingIPAddress := viper.GetString(flagStartingIPAddress)
+			numValidators := viper.GetInt(flagNumValidators)
+
+			//return initTestnet(config, cdc)
+			return InitTestnet(cmd, config, cdc, mbm, genAccIterator, outputDir, chainID,
+				nodeDirPrefix, nodeDaemonHome, nodeCLIHome, startingIPAddress, numValidators)
 		},
 	}
 
@@ -79,10 +89,10 @@ Example:
 		"Prefix the directory name for each node with (node results in node0, node1, ...)",
 	)
 	cmd.Flags().String(flagNodeDaemonHome, "cyberd",
-		"Home directory of the node's daemon configuration",
+		"Home directory of the node's cyberd configuration",
 	)
-	cmd.Flags().String(flagNodeCliHome, "cyberdcli",
-		"Home directory of the node's cli configuration",
+	cmd.Flags().String(flagNodeCLIHome, "cyberdcli",
+		"Home directory of the node's cyberdcli configuration",
 	)
 	cmd.Flags().String(flagStartingIPAddress, "192.168.0.1",
 		"Starting IP address (192.168.0.1 results in persistent peers list ID0@192.168.0.1:46656, ID1@192.168.0.2:46656, ...)")
@@ -92,21 +102,26 @@ Example:
 	return cmd
 }
 
-func initTestnet(config *tmconfig.Config, cdc *codec.Codec) error {
-	var chainID string
+const nodeDirPerm = 0755
 
-	outDir := viper.GetString(flagOutputDir)
-	numValidators := viper.GetInt(flagNumValidators)
+func InitTestnet(cmd *cobra.Command, config *tmconfig.Config, cdc *codec.Codec,
+	mbm module.BasicManager, genAccIterator genutiltypes.GenesisAccountsIterator,
+	outputDir, chainID, nodeDirPrefix, nodeDaemonHome,
+	nodeCLIHome, startingIPAddress string, numValidators int) error {
 
-	chainID = viper.GetString(client.FlagChainID)
 	if chainID == "" {
 		//chainID = "chain-" + cmn.RandStr(6)
 		chainID = "euler-x"
 	}
 
+	//outDir := viper.GetString(flagOutputDir)
+	//numValidators := viper.GetInt(flagNumValidators)
+
 	monikers := make([]string, numValidators)
 	nodeIDs := make([]string, numValidators)
 	valPubKeys := make([]crypto.PubKey, numValidators)
+
+	cyberdConfig := srvconfig.DefaultConfig()
 
 	var (
 		accs     []app.GenesisAccount
@@ -115,51 +130,48 @@ func initTestnet(config *tmconfig.Config, cdc *codec.Codec) error {
 
 	// generate private keys, node IDs, and initial transactions
 	for i := 0; i < numValidators; i++ {
-		nodeDirName := fmt.Sprintf("%s%d", viper.GetString(flagNodeDirPrefix), i)
-		nodeDaemonHomeName := viper.GetString(flagNodeDaemonHome)
-		nodeCliHomeName := viper.GetString(flagNodeCliHome)
-		nodeDir := filepath.Join(outDir, nodeDirName, nodeDaemonHomeName)
-		clientDir := filepath.Join(outDir, nodeDirName, nodeCliHomeName)
-		gentxsDir := filepath.Join(outDir, "gentxs")
+		nodeDirName := fmt.Sprintf("%s%d", nodeDirPrefix, i)
+		nodeDir := filepath.Join(outputDir, nodeDirName, nodeDaemonHome)
+		clientDir := filepath.Join(outputDir, nodeDirName, nodeCLIHome)
+		gentxsDir := filepath.Join(outputDir, "gentxs")
 
 		config.SetRoot(nodeDir)
+		config.RPC.ListenAddress = "tcp://0.0.0.0:26657"
 
-		err := os.MkdirAll(filepath.Join(nodeDir, "config"), nodeDirPerm)
-		if err != nil {
-			_ = os.RemoveAll(outDir)
+		if err := os.MkdirAll(filepath.Join(nodeDir, "config"), nodeDirPerm); err != nil {
+			_ = os.RemoveAll(outputDir)
 			return err
 		}
 
-		err = os.MkdirAll(clientDir, nodeDirPerm)
-		if err != nil {
-			_ = os.RemoveAll(outDir)
+		if err := os.MkdirAll(clientDir, nodeDirPerm); err != nil {
+			_ = os.RemoveAll(outputDir)
 			return err
 		}
 
 		monikers = append(monikers, nodeDirName)
 		config.Moniker = nodeDirName
 
-		ip, err := getIP(i, viper.GetString(flagStartingIPAddress))
+		ip, err := getIP(i, startingIPAddress)
 		if err != nil {
-			_ = os.RemoveAll(outDir)
+			_ = os.RemoveAll(outputDir)
 			return err
 		}
 
-		nodeIDs[i], valPubKeys[i], err = InitializeNodeValidatorFiles(config)
+		nodeIDs[i], valPubKeys[i], err = genutil.InitializeNodeValidatorFiles(config)
 		if err != nil {
-			_ = os.RemoveAll(outDir)
+			_ = os.RemoveAll(outputDir)
 			return err
 		}
 
 		memo := fmt.Sprintf("%s@%s:26656", nodeIDs[i], ip)
 		genFiles = append(genFiles, config.GenesisFile())
 
-		bufStdin := bufio.NewReader(os.Stdin)
+		buf := bufio.NewReader(cmd.InOrStdin())
 		prompt := fmt.Sprintf(
-			"Password for account '%s' (default %s):", nodeDirName, app.DefaultKeyPass,
+			"Password for account '%s' (default %s):", nodeDirName, client.DefaultKeyPass,
 		)
 
-		keyPass, err := client.GetPassword(prompt, bufStdin)
+		keyPass, err := client.GetPassword(prompt, buf)
 		if err != nil && keyPass != "" {
 			// An error was returned that either failed to read the password from
 			// STDIN or the given password is not empty but failed to meet minimum
@@ -168,12 +180,12 @@ func initTestnet(config *tmconfig.Config, cdc *codec.Codec) error {
 		}
 
 		if keyPass == "" {
-			keyPass = app.DefaultKeyPass
+			keyPass = client.DefaultKeyPass
 		}
 
 		addr, secret, err := server.GenerateSaveCoinKey(clientDir, nodeDirName, keyPass, true)
 		if err != nil {
-			_ = os.RemoveAll(outDir)
+			_ = os.RemoveAll(outputDir)
 			return err
 		}
 
@@ -185,25 +197,22 @@ func initTestnet(config *tmconfig.Config, cdc *codec.Codec) error {
 		}
 
 		// save private key seed words
-		err = writeFile(fmt.Sprintf("%v.json", "key_seed"), clientDir, cliPrint)
-		if err != nil {
+		if err := writeFile(fmt.Sprintf("%v.json", "key_seed"), clientDir, cliPrint); err != nil {
 			return err
 		}
 
 		accStakingTokens := sdk.TokensFromConsensusPower(200000000)
 		accs = append(accs, app.GenesisAccount{
 			Address: addr,
-			AccountNumber: uint64(i),
 			Coins: sdk.Coins{
 				sdk.NewCoin(coin.CYB, accStakingTokens),
 			},
 		})
 
-		valTokens := sdk.TokensFromConsensusPower(50000000)
-
 		rate := int64(i+1)*10
 		maxRate := int64(2*(i+1))*10
 		maxRateChange := int64(2*(i+1))
+		valTokens := sdk.TokensFromConsensusPower(50000000)
 
 		msg := staking.NewMsgCreateValidator(
 			sdk.ValAddress(addr),
@@ -223,52 +232,60 @@ func initTestnet(config *tmconfig.Config, cdc *codec.Codec) error {
 		}
 
 		tx := auth.NewStdTx([]sdk.Msg{msg}, auth.StdFee{}, []auth.StdSignature{}, memo)
-		txBldr := authtypes.NewTxBuilderFromCLI().WithChainID(chainID).WithMemo(memo).WithKeybase(kb)
+		txBldr := auth.NewTxBuilderFromCLI().WithChainID(chainID).WithMemo(memo).WithKeybase(kb)
 
-		signedTx, err := txBldr.SignStdTx(nodeDirName, keyPass, tx, false)
+		signedTx, err := txBldr.SignStdTx(nodeDirName, client.DefaultKeyPass, tx, false)
 		if err != nil {
-			_ = os.RemoveAll(outDir)
+			_ = os.RemoveAll(outputDir)
 			return err
 		}
 
 		txBytes, err := cdc.MarshalJSON(signedTx)
 		if err != nil {
-			_ = os.RemoveAll(outDir)
+			_ = os.RemoveAll(outputDir)
 			return err
 		}
 
 		// gather gentxs folder
-		err = writeFile(fmt.Sprintf("%v.json", nodeDirName), gentxsDir, txBytes)
-		if err != nil {
-			_ = os.RemoveAll(outDir)
+		if err := writeFile(fmt.Sprintf("%v.json", nodeDirName), gentxsDir, txBytes); err != nil {
+			_ = os.RemoveAll(outputDir)
 			return err
 		}
+
+		// TODO: Rename config file to server.toml as it's not particular to Gaia
+		// (REF: https://github.com/cosmos/cosmos-sdk/issues/4125).
+		cyberdConfigFilePath := filepath.Join(nodeDir, "config/cyberd.toml")
+		srvconfig.WriteConfigFile(cyberdConfigFilePath, cyberdConfig)
+
 	}
 
-	if err := initGenFiles(cdc, chainID, accs, genFiles, numValidators); err != nil {
+	if err := initGenFiles(cdc, mbm, chainID, accs, genFiles, numValidators); err != nil {
 		return err
 	}
 
 	err := collectGenFiles(
 		cdc, config, chainID, monikers, nodeIDs, valPubKeys, numValidators,
-		outDir, viper.GetString(flagNodeDirPrefix), viper.GetString(flagNodeDaemonHome),
+		outputDir, nodeDirPrefix, nodeDaemonHome, genAccIterator,
 	)
 	if err != nil {
 		return err
 	}
 
-	fmt.Printf("Successfully initialized %d node directories\n", numValidators)
+	cmd.PrintErrf("Successfully initialized %d node directories\n", numValidators)
 	return nil
 }
 
-func initGenFiles(
-	cdc *codec.Codec, chainID string, accs []app.GenesisAccount,
-	genFiles []string, numValidators int,
-) error {
+func initGenFiles(cdc *codec.Codec, mbm module.BasicManager, chainID string,
+	accs []app.GenesisAccount, genFiles []string, numValidators int) error {
 
-	state := app.NewDefaultGenesisState()
-	state.Accounts = accs
-	state.Pool.NotBondedTokens = sdk.ZeroInt()
+	//appGenState := mbm.DefaultGenesis()
+
+	// set the accounts in the genesis state
+	//appGenState = genaccounts.SetGenesisStateInAppState(cdc, appGenState, accs)
+
+	appGenState := app.NewDefaultGenesisState()
+	appGenState.Accounts = accs
+	appGenState.Pool.NotBondedTokens = sdk.ZeroInt()
 	stake := sdk.ZeroInt()
 
 	for _, acc := range accs {
@@ -277,16 +294,17 @@ func initGenFiles(
 	}
 
 	pool := sdk.NewDec(stake.Int64()/100)
-	state.DistrData.FeePool.CommunityPool = sdk.DecCoins{sdk.DecCoin{"cyb", pool}}
+	appGenState.DistrData.FeePool.CommunityPool = sdk.DecCoins{sdk.DecCoin{"cyb", pool}}
 
-	state.Pool.NotBondedTokens = stake.Add(pool.RoundInt())
+	appGenState.Pool.NotBondedTokens = stake.Add(pool.RoundInt())
 	cybSupply := sdk.NewCoin(coin.CYB, stake.Add(pool.RoundInt()))
-	state.SupplyData.Supply = sdk.NewCoins(cybSupply)
+	appGenState.SupplyData.Supply = sdk.NewCoins(cybSupply)
 
-	appGenStateJSON, err := codec.MarshalJSONIndent(cdc, state)
+	appGenStateJSON, err := codec.MarshalJSONIndent(cdc, appGenState)
 	if err != nil {
 		return err
 	}
+
 	genDoc := types.GenesisDoc{
 		ChainID:    chainID,
 		AppState:   appGenStateJSON,
@@ -299,43 +317,37 @@ func initGenFiles(
 			return err
 		}
 	}
-
 	return nil
 }
 
 func collectGenFiles(
 	cdc *codec.Codec, config *tmconfig.Config, chainID string,
 	monikers, nodeIDs []string, valPubKeys []crypto.PubKey,
-	numValidators int, outDir, nodeDirPrefix, nodeDaemonHomeName string,
-) error {
+	numValidators int, outputDir, nodeDirPrefix, nodeDaemonHome string,
+	genAccIterator genutiltypes.GenesisAccountsIterator) error {
 
 	var appState json.RawMessage
 	genTime := tmtime.Now()
 
 	for i := 0; i < numValidators; i++ {
 		nodeDirName := fmt.Sprintf("%s%d", nodeDirPrefix, i)
-		nodeDir := filepath.Join(outDir, nodeDirName, nodeDaemonHomeName)
-		gentxsDir := filepath.Join(outDir, "gentxs")
+		nodeDir := filepath.Join(outputDir, nodeDirName, nodeDaemonHome)
+		gentxsDir := filepath.Join(outputDir, "gentxs")
 		moniker := monikers[i]
 		config.Moniker = nodeDirName
 
 		config.SetRoot(nodeDir)
 
 		nodeID, valPubKey := nodeIDs[i], valPubKeys[i]
-		initCfg := initConfig{
-			ChainID:   chainID,
-			GenTxsDir: gentxsDir,
-			Name:      moniker,
-			NodeID:    nodeID,
-			ValPubKey: valPubKey,
-		}
+		initCfg := genutil.NewInitConfig(chainID, gentxsDir, moniker, nodeID, valPubKey)
 
-		genDoc, err := app.LoadGenesisDoc(cdc, config.GenesisFile())
+		genDoc, err := types.GenesisDocFromFile(config.GenesisFile())
 		if err != nil {
 			return err
 		}
 
-		nodeAppState, err := genAppStateFromConfig(cdc, config, initCfg, genDoc)
+		//nodeAppState, err := genAppStateFromConfig(cdc, config, initCfg, *genDoc, genAccIterator)
+		nodeAppState, err := genAppStateFromConfig(cdc, config, initCfg, *genDoc)
 		if err != nil {
 			return err
 		}
@@ -348,8 +360,7 @@ func collectGenFiles(
 		genFile := config.GenesisFile()
 
 		// overwrite each validator's genesis file to have a canonical genesis time
-		err = util.ExportGenesisFileWithTime(genFile, chainID, nil, appState, genTime)
-		if err != nil {
+		if err := genutil.ExportGenesisFileWithTime(genFile, chainID, nil, appState, genTime); err != nil {
 			return err
 		}
 	}
@@ -357,25 +368,28 @@ func collectGenFiles(
 	return nil
 }
 
-func getIP(i int, startingIPAddr string) (string, error) {
-	var (
-		ip  string
-		err error
-	)
-
+func getIP(i int, startingIPAddr string) (ip string, err error) {
 	if len(startingIPAddr) == 0 {
 		ip, err = server.ExternalIP()
 		if err != nil {
 			return "", err
 		}
-	} else {
-		ip, err = calculateIP(startingIPAddr, i)
-		if err != nil {
-			return "", err
-		}
+		return ip, nil
+	}
+	return calculateIP(startingIPAddr, i)
+}
+
+func calculateIP(ip string, i int) (string, error) {
+	ipv4 := net.ParseIP(ip).To4()
+	if ipv4 == nil {
+		return "", fmt.Errorf("%v: non ipv4 address", ip)
 	}
 
-	return ip, nil
+	for j := 0; j < i; j++ {
+		ipv4[3]++
+	}
+
+	return ipv4.String(), nil
 }
 
 func writeFile(name string, dir string, contents []byte) error {
@@ -395,21 +409,8 @@ func writeFile(name string, dir string, contents []byte) error {
 	return nil
 }
 
-func calculateIP(ip string, i int) (string, error) {
-	ipv4 := net.ParseIP(ip).To4()
-	if ipv4 == nil {
-		return "", fmt.Errorf("%v: non ipv4 address", ip)
-	}
-
-	for j := 0; j < i; j++ {
-		ipv4[3]++
-	}
-
-	return ipv4.String(), nil
-}
-
 func genAppStateFromConfig(
-	cdc *codec.Codec, config *cfg.Config, initCfg initConfig, genDoc types.GenesisDoc,
+	cdc *codec.Codec, config *cfg.Config, initCfg genutil.InitConfig, genDoc types.GenesisDoc,
 ) (appState json.RawMessage, err error) {
 
 	genFile := config.GenesisFile()

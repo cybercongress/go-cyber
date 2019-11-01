@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/cosmos/cosmos-sdk/server"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/bank"
+	"github.com/cosmos/cosmos-sdk/x/crisis"
 	distr "github.com/cosmos/cosmos-sdk/x/distribution"
 	"github.com/cosmos/cosmos-sdk/x/gov"
 	"github.com/cosmos/cosmos-sdk/x/mint"
@@ -16,14 +16,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/cosmos/cosmos-sdk/x/supply"
 	"github.com/cybercongress/cyberd/types/coin"
-	"github.com/cybercongress/cyberd/util"
 	"github.com/cybercongress/cyberd/x/bandwidth"
 	"github.com/cybercongress/cyberd/x/rank"
 	"github.com/pkg/errors"
-	"github.com/spf13/viper"
 	"github.com/tendermint/go-amino"
-	"github.com/tendermint/tendermint/libs/cli"
-	"github.com/tendermint/tendermint/libs/common"
 	tmtypes "github.com/tendermint/tendermint/types"
 	"io/ioutil"
 	"time"
@@ -48,6 +44,7 @@ type GenesisState struct {
 	BandwidthData bandwidth.GenesisState `json:"bandwidth"`
 	RankData      rank.GenesisState      `json:"rank"`
 	GenTxs        []json.RawMessage      `json:"gentxs"`
+	Crisis        crisis.GenesisState    `json:"crisis"`
 }
 
 func (gs *GenesisState) GetAddresses() []sdk.AccAddress {
@@ -64,7 +61,7 @@ func NewGenesisState(
 	mintData mint.GenesisState, distrData distr.GenesisState,
 	govData gov.GenesisState, supplyData supply.GenesisState,
 	slashingData slashing.GenesisState, bandwidthData bandwidth.GenesisState,
-	rankData rank.GenesisState,
+	rankData rank.GenesisState, crisisData crisis.GenesisState,
 ) GenesisState {
 
 	return GenesisState{
@@ -79,6 +76,7 @@ func NewGenesisState(
 		GovData:       govData,
 		BandwidthData: bandwidthData,
 		RankData:      rankData,
+		Crisis:        crisisData,
 	}
 }
 
@@ -96,16 +94,6 @@ type GenesisAccount struct {
 
 	ModuleName        string   `json:"module_name" yaml:"module_name"`
 	ModulePermissions []string `json:"module_permissions" yaml:"module_permissions"`
-}
-
-func NewGenesisAccount(acc auth.Account) GenesisAccount {
-	return GenesisAccount{
-		Address:           acc.GetAddress(),
-		Coins:             acc.GetCoins(),
-		AccountNumber:     acc.GetAccountNumber(),
-		Sequence:          acc.GetSequence(),
-		ModulePermissions: make([]string, 0),
-	}
 }
 
 // convert GenesisAccount to auth.BaseAccount
@@ -216,6 +204,7 @@ func NewDefaultGenesisState() GenesisState {
 		BandwidthData: bandwidth.DefaultGenesisState(),
 		RankData:      rank.DefaultGenesisState(),
 		GenTxs:        []json.RawMessage{},
+		Crisis: 	   crisis.GenesisState{ ConstantFee: sdk.NewCoin(coin.CYB, sdk.NewInt(1000)) },
 	}
 }
 
@@ -311,41 +300,6 @@ func validateGenesisStateAccounts(accs []GenesisAccount) (err error) {
 		addrMap[strAddr] = true
 	}
 	return
-}
-
-func LoadGenesisState(
-	ctx *server.Context, cdc *codec.Codec,
-) (genDoc tmtypes.GenesisDoc, state GenesisState, err error) {
-
-	config := ctx.Config
-	config.SetRoot(viper.GetString(cli.HomeFlag))
-
-	genFile := config.GenesisFile()
-	if !common.FileExists(genFile) {
-		err = fmt.Errorf("%s does not exist, run `cyberd init` first", genFile)
-		return
-	}
-	genDoc, err = LoadGenesisDoc(cdc, genFile)
-	if err != nil {
-		return
-	}
-
-	err = cdc.UnmarshalJSON(genDoc.AppState, &state)
-	return
-}
-
-func SaveGenesisState(ctx *server.Context, cdc *codec.Codec, oldDoc tmtypes.GenesisDoc, state GenesisState) error {
-
-	config := ctx.Config
-	config.SetRoot(viper.GetString(cli.HomeFlag))
-	genFile := config.GenesisFile()
-
-	appStateJSON, err := cdc.MarshalJSON(&state)
-	if err != nil {
-		return err
-	}
-
-	return util.ExportGenesisFile(genFile, oldDoc.ChainID, oldDoc.Validators, appStateJSON)
 }
 
 func LoadGenesisDoc(cdc *amino.Codec, genFile string) (genDoc tmtypes.GenesisDoc, err error) {
