@@ -68,7 +68,7 @@ func NewHttpCyberdClient(nodeUrl string, passphrase string, signAddr string) *Ht
 	txBuilder := authtypes.NewTxBuilder(
 		utils.GetTxEncoder(cdc), accountNumber, accountSequence, 0, 0.0, false, status.NodeInfo.Network,
 		"", sdk.Coins{}, sdk.NewDecCoins(sdk.Coins{}),
-	)
+	).WithTxEncoder(utils.GetTxEncoder(cdc))
 
 	return &HttpCyberdClient{
 		tdmClient:  tdmHttpClient,
