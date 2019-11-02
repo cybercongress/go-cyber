@@ -34,7 +34,7 @@ type GenesisState struct {
 	Accounts      []GenesisAccount       `json:"accounts"`
 	AuthData      auth.GenesisState      `json:"auth"`
 	BankData      bank.GenesisState      `json:"bank"`
-	DistrData     distr.GenesisState     `json:"distr"`
+	DistrData     distr.GenesisState     `json:"distribution"`
 	MintData      mint.GenesisState      `json:"mint"`
 	StakingData   staking.GenesisState   `json:"staking"`
 	Pool          staking.Pool           `json:"pool"`
