@@ -95,8 +95,7 @@ func (m *BaseBandwidthMeter) AdjustPrice(ctx sdk.Context) {
 	if err != nil {
 		panic(err)
 	}
-
-	newPrice := float64(m.totalSpentForSlidingWindow) / float64(paramset.RecoveryPeriod)
+	newPrice := float64(m.totalSpentForSlidingWindow) / float64(paramset.DesirableBandwidth)
 
 	if newPrice < 0.01 * floatBaseCreditPrice {
 		newPrice = 0.01 * floatBaseCreditPrice
