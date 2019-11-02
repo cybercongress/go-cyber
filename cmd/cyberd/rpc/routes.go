@@ -3,7 +3,7 @@ package rpc
 import (
 	"github.com/cybercongress/cyberd/app"
 	"github.com/tendermint/tendermint/rpc/core"
-	rpcserver "github.com/tendermint/tendermint/rpc/lib/server"
+	"github.com/tendermint/tendermint/rpc/lib/server"
 )
 
 var cyberdApp *app.CyberdApp

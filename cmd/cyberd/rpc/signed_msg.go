@@ -28,8 +28,8 @@ type UnmarshalTxRequestFn func([]byte) (TxRequest, error)
 
 // takes signed messages, construct tx, invoke local client.
 // there is no way to assemble right amino tx object on js, so we need to do it on go side.
-func SignedMsgHandler(unmarshal UnmarshalTxRequestFn) func(dataHex string) (*ctypes.ResultBroadcastTx, error) {
-	return func(dataHex string) (*ctypes.ResultBroadcastTx, error) {
+func SignedMsgHandler(unmarshal UnmarshalTxRequestFn) func(ctx *rpctypes.Context, dataHex string) (*ctypes.ResultBroadcastTx, error) {
+	return func(ctx *rpctypes.Context, dataHex string) (*ctypes.ResultBroadcastTx, error) {
 		data, err := hex.DecodeString(dataHex)
 		if err != nil {
 			return nil, err
