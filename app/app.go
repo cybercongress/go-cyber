@@ -424,12 +424,11 @@ func (app *CyberdApp) DeliverTx(req abci.RequestDeliverTx) (res abci.ResponseDel
 		curBlockSpentBandwidth := app.bandwidthMeter.GetCurBlockSpentBandwidth(ctx)
 		maxBlockBandwidth := app.bandwidthMeter.GetMaxBlockBandwidth(ctx)
 
-		if uint64(txCost) + curBlockSpentBandwidth >= maxBlockBandwidth {
-			err = types.ErrExceededMaxBlockBandwidth()
-		}
-
 		if !accBw.HasEnoughRemained(txCost) {
 			err = types.ErrNotEnoughBandwidth()
+		} else if (uint64(txCost) + curBlockSpentBandwidth) > maxBlockBandwidth  {
+			app.bandwidthMeter.ConsumeAccBandwidth(ctx, accBw, txCost)
+			err = types.ErrExceededMaxBlockBandwidth()
 		} else {
 			resp := app.BaseApp.DeliverTx(req)
 			app.bandwidthMeter.ConsumeAccBandwidth(ctx, accBw, txCost)
