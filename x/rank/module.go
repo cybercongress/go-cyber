@@ -2,14 +2,18 @@ package rank
 
 import (
 	"encoding/json"
+
 	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	"github.com/cybercongress/cyberd/x/rank/internal/keeper"
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
 	abci "github.com/tendermint/tendermint/abci/types"
+
+	"github.com/cybercongress/cyberd/x/rank/client/rest"
+	"github.com/cybercongress/cyberd/x/rank/client/cli"
+	"github.com/cybercongress/cyberd/x/rank/internal/keeper"
 )
 
 // type check to ensure the interface is properly implemented
@@ -41,13 +45,17 @@ func (AppModuleBasic) ValidateGenesis(bz json.RawMessage) error {
 }
 
 // register rest routes
-func (AppModuleBasic) RegisterRESTRoutes(_ context.CLIContext, _ *mux.Router) {}
+func (AppModuleBasic) RegisterRESTRoutes(ctx context.CLIContext, rtr *mux.Router) {
+	rest.RegisterRoutes(ctx, rtr)
+}
 
 // get the root tx command of this module
 func (AppModuleBasic) GetTxCmd(_ *codec.Codec) *cobra.Command { return nil }
 
 // get the root query command of this module
-func (AppModuleBasic) GetQueryCmd(_ *codec.Codec) *cobra.Command { return nil }
+func (AppModuleBasic) GetQueryCmd(cdc *codec.Codec) *cobra.Command {
+	return cli.GetQueryCmd(cdc)
+}
 
 type AppModule struct {
 	AppModuleBasic
@@ -69,14 +77,13 @@ func (am AppModule) RegisterInvariants(ir sdk.InvariantRegistry) {
 func (am AppModule) Route() string { return RouterKey }
 
 func (am AppModule) NewHandler() sdk.Handler { return nil }
-func (am AppModule) QuerierRoute() string    { return ModuleName }
 
-func (am AppModule) NewQuerierHandler() sdk.Querier { return nil }
+func (am AppModule) QuerierRoute() string    {
+	return QuerierRoute
+}
 
-func (am AppModule) BeginBlock(_ sdk.Context, _ abci.RequestBeginBlock) {}
-
-func (am AppModule) EndBlock(sdk.Context, abci.RequestEndBlock) []abci.ValidatorUpdate {
-	return []abci.ValidatorUpdate{}
+func (am AppModule) NewQuerierHandler() sdk.Querier {
+	return NewQuerier(am.RankKeeper)
 }
 
 func (am AppModule) InitGenesis(ctx sdk.Context, data json.RawMessage) []abci.ValidatorUpdate {
@@ -88,4 +95,10 @@ func (am AppModule) InitGenesis(ctx sdk.Context, data json.RawMessage) []abci.Va
 func (am AppModule) ExportGenesis(ctx sdk.Context) json.RawMessage {
 	gs := ExportGenesis(ctx, am.RankKeeper)
 	return ModuleCdc.MustMarshalJSON(gs)
+}
+
+func (am AppModule) BeginBlock(_ sdk.Context, _ abci.RequestBeginBlock) {}
+
+func (am AppModule) EndBlock(sdk.Context, abci.RequestEndBlock) []abci.ValidatorUpdate {
+	return []abci.ValidatorUpdate{}
 }

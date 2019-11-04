@@ -9,4 +9,13 @@ const (
 
 	// RouterKey is the message route for bandwidth
 	RouterKey = ModuleName
+
+	// QuerierRoute is the querier route for the minting store.
+	QuerierRoute = ModuleName
+
+	// Query endpoints supported by the minting querier
+	QueryParameters         = "parameters"
+	QueryCalculationWindow  = "calculation_window"
+	QueryDampingFactor      = "damping_factor"
+	QueryTolerance          = "tolerance"
 )
