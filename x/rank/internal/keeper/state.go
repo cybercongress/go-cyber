@@ -52,7 +52,7 @@ func NewStateKeeper(
 	pk params.Keeper, unit types.ComputeUnit,
 ) *StateKeeper {
 	return &StateKeeper{
-		cdc:            cdc,
+		cdc:            cdc, //
 		BaseRankKeeper: NewBaseRankKeeper(paramSpace),
 		allowSearch:    allowSearch,
 		rankCalcChan:   make(chan types.Rank, 1),
@@ -67,8 +67,6 @@ func NewStateKeeper(
 		hasNewLinksForPeriod: true,
 	}
 }
-
-//func (s *StateKeeper) GetRanker(ctx sdk.Context) (ranker types.Ranker)
 
 func (s *StateKeeper) Load(ctx sdk.Context, log log.Logger) {
 	s.networkCidRank = types.NewFromMerkle(s.mainKeeper.GetCidsCount(ctx), s.mainKeeper.GetLatestMerkleTree(ctx))

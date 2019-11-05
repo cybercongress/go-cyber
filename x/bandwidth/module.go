@@ -3,6 +3,8 @@ package bandwidth
 import (
 	"encoding/json"
 
+	"github.com/cybercongress/cyberd/x/bandwidth/client/rest"
+	"github.com/cybercongress/cyberd/x/bandwidth/client/cli"
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
 
@@ -43,13 +45,17 @@ func (AppModuleBasic) ValidateGenesis(bz json.RawMessage) error {
 }
 
 // register rest routes
-func (AppModuleBasic) RegisterRESTRoutes(_ context.CLIContext, _ *mux.Router) {}
+func (AppModuleBasic) RegisterRESTRoutes(ctx context.CLIContext, rtr *mux.Router) {
+	rest.RegisterRoutes(ctx, rtr)
+}
 
 // get the root tx command of this module
 func (AppModuleBasic) GetTxCmd(_ *codec.Codec) *cobra.Command { return nil }
 
 // get the root query command of this module
-func (AppModuleBasic) GetQueryCmd(_ *codec.Codec) *cobra.Command { return nil }
+func (AppModuleBasic) GetQueryCmd(cdc *codec.Codec) *cobra.Command {
+	return cli.GetQueryCmd(cdc)
+}
 
 type AppModule struct {
 	AppModuleBasic
@@ -75,8 +81,11 @@ func (am AppModule) RegisterInvariants(ir sdk.InvariantRegistry) {}
 func (am AppModule) Route() string           { return RouterKey }
 func (am AppModule) NewHandler() sdk.Handler { return nil }
 
-func (am AppModule) QuerierRoute() string           { return ModuleName }
-func (am AppModule) NewQuerierHandler() sdk.Querier { return nil }
+func (am AppModule) QuerierRoute() string { return QuerierRoute }
+
+func (am AppModule) NewQuerierHandler() sdk.Querier {
+	return NewQuerier(am.AccBandwidthKeeper)
+}
 
 func (am AppModule) BeginBlock(_ sdk.Context, _ abci.RequestBeginBlock) {}
 func (am AppModule) EndBlock(sdk.Context, abci.RequestEndBlock) []abci.ValidatorUpdate {
