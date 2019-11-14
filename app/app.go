@@ -426,6 +426,12 @@ func (app *CyberdApp) DeliverTx(req abci.RequestDeliverTx) (res abci.ResponseDel
 		} else {
 			resp := app.BaseApp.DeliverTx(req)
 			app.bandwidthMeter.ConsumeAccBandwidth(ctx, accBw, txCost)
+
+			linkingCost := app.bandwidthMeter.GetPricedLinksCost(ctx, tx)
+			if linkingCost != int64(0) {
+				app.bandwidthMeter.UpdateLinkedBandwidth(ctx, accBw, linkingCost)
+			}
+
 			app.bandwidthMeter.AddToBlockBandwidth(app.bandwidthMeter.GetTxCost(ctx, tx))
 
 			return abci.ResponseDeliverTx{

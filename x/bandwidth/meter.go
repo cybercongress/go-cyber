@@ -119,6 +119,17 @@ func (m *BaseBandwidthMeter) GetPricedTxCost(ctx sdk.Context, tx sdk.Tx) int64 {
 	return int64(float64(m.GetTxCost(ctx, tx)) * m.currentCreditPrice)
 }
 
+func (m *BaseBandwidthMeter) GetPricedLinksCost(ctx sdk.Context, tx sdk.Tx) int64 {
+	usedBandwidth := int64(0)
+	for _, msg := range tx.GetMsgs() {
+		if msg.Type() == "link" {
+			usedBandwidth = usedBandwidth + m.msgCost(ctx, m.paramsKeeper, msg)
+		}
+	}
+	return int64(float64(usedBandwidth) * m.currentCreditPrice)
+}
+
+
 func (m *BaseBandwidthMeter) GetAccMaxBandwidth(ctx sdk.Context, addr sdk.AccAddress) int64 {
 	accStakePercentage := m.stakeProvider.GetAccStakePercentage(ctx, addr)
 	paramset := m.GetParamSet(ctx)
@@ -152,6 +163,12 @@ func (m *BaseBandwidthMeter) ConsumeAccBandwidth(ctx sdk.Context, bw types.AcсB
 	bw = m.GetCurrentAccBandwidth(ctx, bw.Address)
 	m.bwKeeper.SetAccBandwidth(ctx, bw)
 }
+
+func (m *BaseBandwidthMeter) UpdateLinkedBandwidth(ctx sdk.Context, bw types.AcсBandwidth, amt int64) {
+	bw.AddLinked(amt)
+	m.bwKeeper.SetAccBandwidth(ctx, bw)
+}
+
 
 func (m *BaseBandwidthMeter) GetCurrentCreditPrice() float64 {
 	return m.currentCreditPrice
