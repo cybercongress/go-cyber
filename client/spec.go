@@ -2,8 +2,8 @@ package client
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	bwtps "github.com/cybercongress/cyberd/x/bandwidth/internal/types"
-	. "github.com/cybercongress/cyberd/x/link/internal/types"
+	"github.com/cybercongress/cyberd/x/bandwidth"
+	"github.com/cybercongress/cyberd/x/link"
 )
 
 type CyberdClient interface {
@@ -13,10 +13,10 @@ type CyberdClient interface {
 	GetChainId() string
 
 	// returns, if given link already exists
-	IsLinkExist(from Cid, to Cid, addr sdk.AccAddress) (result bool, err error)
+	IsLinkExist(from link.Cid, to link.Cid, addr sdk.AccAddress) (result bool, err error)
 
 	// returns, if given link already exists
-	IsAnyLinkExist(from Cid, to Cid) (result bool, err error)
+	IsAnyLinkExist(from link.Cid, to link.Cid) (result bool, err error)
 
 	// get current bandwidth credits price
 	// price 1 is price for situation, when all users use all their bandwidth (all blocks are filled for 100%)
@@ -25,14 +25,14 @@ type CyberdClient interface {
 	GetCurrentBandwidthCreditPrice() (float64, error)
 
 	// returns account bandwidth information for given account
-	GetAccountBandwidth() (bwtps.AcсBandwidth, error)
+	GetAccountBandwidth() (bandwidth.AcсBandwidth, error)
 
 	// links two cids for given user
 	// this method also should check, either cids are correct cids and given user is msg signer
 	// do not wait till tx will be mined, just returns results from tx mempool check
-	SubmitLinkSync(link Link) error
+	SubmitLinkSync(link link.Link) error
 
 	// see `SubmitLinkAsync`. Links will be submitted as single tx with multiple msges.
 	// `submitOnlyNew` - if true, only links not exists before(no one do the same link) will be submitted.
-	SubmitLinksSync(links []Link, submitOnlyNew bool) error
+	SubmitLinksSync(links []link.Link, submitOnlyNew bool) error
 }

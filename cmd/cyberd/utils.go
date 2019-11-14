@@ -1,21 +1,14 @@
-package cmd
+package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/cosmos/cosmos-sdk/server"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	"github.com/cybercongress/cyberd/app"
 	"github.com/cybercongress/cyberd/types/coin"
 	"github.com/pkg/errors"
-	cfg "github.com/tendermint/tendermint/config"
-	"github.com/tendermint/tendermint/crypto"
-	"github.com/tendermint/tendermint/libs/common"
-	"github.com/tendermint/tendermint/p2p"
-	"github.com/tendermint/tendermint/privval"
 	tmtypes "github.com/tendermint/tendermint/types"
 	"io/ioutil"
 	"os"
@@ -24,44 +17,6 @@ import (
 	"strings"
 )
 
-// InitializeNodeValidatorFiles creates private validator and p2p configuration files.
-func InitializeNodeValidatorFiles(
-	config *cfg.Config) (nodeID string, valPubKey crypto.PubKey, err error,
-) {
-
-	nodeKey, err := p2p.LoadOrGenNodeKey(config.NodeKeyFile())
-	if err != nil {
-		return nodeID, valPubKey, err
-	}
-
-	nodeID = string(nodeKey.ID())
-	server.UpgradeOldPrivValFile(config)
-
-	pvKeyFile := config.PrivValidatorKeyFile()
-	if err := common.EnsureDir(filepath.Dir(pvKeyFile), 0777); err != nil {
-		return nodeID, valPubKey, nil
-	}
-
-	pvStateFile := config.PrivValidatorStateFile()
-	if err := common.EnsureDir(filepath.Dir(pvStateFile), 0777); err != nil {
-		return nodeID, valPubKey, nil
-	}
-
-	valPubKey = privval.LoadOrGenFilePV(pvKeyFile, pvStateFile).GetPubKey()
-
-	return nodeID, valPubKey, nil
-}
-
-func initializeEmptyGenesis(
-	cdc *codec.Codec, genFile, chainID string, overwrite bool,
-) (appState json.RawMessage, err error) {
-
-	if !overwrite && common.FileExists(genFile) {
-		return nil, fmt.Errorf("genesis.json file already exists: %v", genFile)
-	}
-
-	return codec.MarshalJSONIndent(cdc, app.NewDefaultGenesisState())
-}
 
 // CollectStdTxs processes and validates application's genesis StdTxs and returns
 // the list of appGenTxs, and persistent peers required to generate genesis.json.

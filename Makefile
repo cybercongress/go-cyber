@@ -3,7 +3,7 @@
 VERSION := $(shell echo $(shell git describe --tags) | sed 's/^v//')
 COMMIT := $(shell git log -1 --format='%H')
 LEDGER_ENABLED ?= true
-CUDA_ENABLED ?= true
+CUDA_ENABLED ?= false
 
 export GO111MODULE = on
 
@@ -76,19 +76,19 @@ all: install
 
 build: go.sum
 ifeq ($(OS),Windows_NT)
-	go build $(BUILD_FLAGS) -o build/cyberd.exe ./daemon
-	go build $(BUILD_FLAGS) -o build/cyberdcli.exe ./cli
+	go build $(BUILD_FLAGS) -o build/cyberd.exe ./cmd/cyberd
+	go build $(BUILD_FLAGS) -o build/cyberdcli.exe ./cmd/cyberdcli
 else
-	go build $(BUILD_FLAGS) -o build/cyberd ./daemon
-	go build $(BUILD_FLAGS) -o build/cyberdcli ./cli
+	go build $(BUILD_FLAGS) -o build/cyberd ./cmd/cyberd
+	go build $(BUILD_FLAGS) -o build/cyberdcli ./cmd/cyberdcli
 endif
 
 build-linux: go.sum
 	LEDGER_ENABLED=false GOOS=linux GOARCH=amd64 $(MAKE) build
 
 install: go.sum
-	go install $(BUILD_FLAGS) ./daemon
-	go install $(BUILD_FLAGS) ./cli
+	go install $(BUILD_FLAGS) ./cmd/cyberd
+	go install $(BUILD_FLAGS) ./cmd/cyberdcli
 
 ########################################
 ### Tools & dependencies

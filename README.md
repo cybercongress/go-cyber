@@ -212,6 +212,7 @@ Take a part with [set up dev environment](https://cybercongress.ai/docs/cyberd/s
 — CUDA VM for gas
 — Privacy
 - PoRep/PoST
+- Autonomous onchain agents
 ```
 
 
@@ -244,7 +245,6 @@ We want to reward you for your contributions! We constantly fund our issues on [
   <tr>
     <td align="center"><a href=https://github.com/xhipster><img src="https://avatars0.githubusercontent.com/u/410789?s=400&v=4" width="100px;" alt="xhipster"/><br /><sub><b>Dima Starodubcev</b></sub></a><br /><a href="https://github.com/cybercongress/cyberd/commits?author=xhipster" title="Documentation">📖</a> <a href="#maintenance-xhipster" title="Maintenance">🚧</a></td><td align="center"><a href="https://github.com/litvintech"><img src="https://avatars2.githubusercontent.com/u/1690657?v=4" width="100px;" alt="Valery Litvin"/><br /><sub><b>Valery Litvin</b></sub></a><br /><a href="https://github.com/cybercongress/cyberd/commits?author=litvintech" title="Code">💻</a> <a href="#projectManagement-litvintech" title="Project Management">📆</a> <a href="https://github.com/cybercongress/cyberd/commits?author=litvintech" title="Documentation">📖</a></td><td align="center"><a href="https://github.com/SaveTheAles"><img src="https://avatars0.githubusercontent.com/u/36516972?v=4" width="100px;" alt="Ales Puchilo"/><br /><sub><b>Ales Puchilo</b></sub></a><br /><a href="https://github.com/cybercongress/cyberd/commits?author=SaveTheAles" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/mrlp4"><img src="https://avatars2.githubusercontent.com/u/38989909?s=400&v=4" width="100px;" alt="Kiryl Laptanovich"/><br /><sub><b>Kiryl Laptanovich</b></sub></a><br /><a href="https://github.com/cybercongress/cyberd/commits?author=mrlp4" title="Tests">⚠️</a></td>
-    <td align="center"><a href="https://github.com/npopeka"><img src="https://avatars1.githubusercontent.com/u/29427584?s=400&v=4" width="100px;" alt="Nick_Popeka"/><br /><sub><b>Nick Popeka</b></sub></a><br /><a href="https://github.com/cybercongress/cyberd/commits?author=npopeka" title="Documentation">📖</a></td>
   </tr>
 </table>
 

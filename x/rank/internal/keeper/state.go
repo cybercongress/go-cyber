@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"github.com/cosmos/cosmos-sdk/codec"
+
 	"github.com/cybercongress/cyberd/merkle"
 	"github.com/cybercongress/cyberd/store"
 	"github.com/cybercongress/cyberd/x/bank"
@@ -17,6 +19,7 @@ import (
 
 type StateKeeper struct {
 	*BaseRankKeeper
+	cdc *codec.Codec
 
 	networkCidRank types.Rank // array linksIndex is cid number
 	nextCidRank    types.Rank // array linksIndex is cid number
@@ -44,11 +47,12 @@ type StateKeeper struct {
 }
 
 func NewStateKeeper(
-	paramSpace *params.Subspace, allowSearch bool, mainKeeper store.MainKeeper, stakeIndex bank.IndexedKeeper,
+	cdc *codec.Codec, paramSpace *params.Subspace, allowSearch bool, mainKeeper store.MainKeeper, stakeIndex bank.IndexedKeeper,
 	linkIndexedKeeper types.LinkIndexedKeeper, cidNumKeeper types.CidNumberKeeper,
 	pk params.Keeper, unit types.ComputeUnit,
 ) *StateKeeper {
 	return &StateKeeper{
+		cdc:            cdc, //
 		BaseRankKeeper: NewBaseRankKeeper(paramSpace),
 		allowSearch:    allowSearch,
 		rankCalcChan:   make(chan types.Rank, 1),

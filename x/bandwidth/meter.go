@@ -95,8 +95,7 @@ func (m *BaseBandwidthMeter) AdjustPrice(ctx sdk.Context) {
 	if err != nil {
 		panic(err)
 	}
-
-	newPrice := float64(m.totalSpentForSlidingWindow) / float64(paramset.RecoveryPeriod)
+	newPrice := float64(m.totalSpentForSlidingWindow) / float64(paramset.DesirableBandwidth)
 
 	if newPrice < 0.01 * floatBaseCreditPrice {
 		newPrice = 0.01 * floatBaseCreditPrice
@@ -127,6 +126,16 @@ func (m *BaseBandwidthMeter) GetPricedTxCost(ctx sdk.Context, tx sdk.Tx) int64 {
 
 func (m *BaseBandwidthMeter) GetCurBlockSpentBandwidth(ctx sdk.Context) uint64 {
 	return m.curBlockSpentBandwidth
+}
+
+func (m *BaseBandwidthMeter) GetPricedLinksCost(ctx sdk.Context, tx sdk.Tx) int64 {
+	usedBandwidth := int64(0)
+	for _, msg := range tx.GetMsgs() {
+		if msg.Type() == "link" {
+			usedBandwidth = usedBandwidth + m.msgCost(ctx, m.paramsKeeper, msg)
+		}
+	}
+	return int64(float64(usedBandwidth) * m.currentCreditPrice)
 }
 
 func (m *BaseBandwidthMeter) GetAccMaxBandwidth(ctx sdk.Context, addr sdk.AccAddress) int64 {
@@ -162,6 +171,12 @@ func (m *BaseBandwidthMeter) ConsumeAccBandwidth(ctx sdk.Context, bw types.AcсB
 	bw = m.GetCurrentAccBandwidth(ctx, bw.Address)
 	m.bwKeeper.SetAccBandwidth(ctx, bw)
 }
+
+func (m *BaseBandwidthMeter) UpdateLinkedBandwidth(ctx sdk.Context, bw types.AcсBandwidth, amt int64) {
+	bw.AddLinked(amt)
+	m.bwKeeper.SetAccBandwidth(ctx, bw)
+}
+
 
 func (m *BaseBandwidthMeter) GetCurrentCreditPrice() float64 {
 	return m.currentCreditPrice
