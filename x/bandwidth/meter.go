@@ -114,8 +114,18 @@ func (m *BaseBandwidthMeter) GetTxCost(ctx sdk.Context, tx sdk.Tx) int64 {
 	return bandwidthForTx
 }
 
+func (m *BaseBandwidthMeter) GetMaxBlockBandwidth(ctx sdk.Context) uint64 {
+	paramset := m.GetParamSet(ctx)
+	maxBlockBandwidth := paramset.MaxBlockBandwidth
+	return maxBlockBandwidth
+}
+
 func (m *BaseBandwidthMeter) GetPricedTxCost(ctx sdk.Context, tx sdk.Tx) int64 {
 	return int64(float64(m.GetTxCost(ctx, tx)) * m.currentCreditPrice)
+}
+
+func (m *BaseBandwidthMeter) GetCurBlockSpentBandwidth(ctx sdk.Context) uint64 {
+	return m.curBlockSpentBandwidth
 }
 
 func (m *BaseBandwidthMeter) GetPricedLinksCost(ctx sdk.Context, tx sdk.Tx) int64 {
@@ -127,7 +137,6 @@ func (m *BaseBandwidthMeter) GetPricedLinksCost(ctx sdk.Context, tx sdk.Tx) int6
 	}
 	return int64(float64(usedBandwidth) * m.currentCreditPrice)
 }
-
 
 func (m *BaseBandwidthMeter) GetAccMaxBandwidth(ctx sdk.Context, addr sdk.AccAddress) int64 {
 	accStakePercentage := m.stakeProvider.GetAccStakePercentage(ctx, addr)

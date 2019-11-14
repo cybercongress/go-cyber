@@ -33,8 +33,12 @@ type BandwidthMeter interface {
 	GetAccMaxBandwidth(ctx sdk.Context, address sdk.AccAddress) int64
 	// Returns tx bandwidth cost
 	GetTxCost(ctx sdk.Context, tx sdk.Tx) int64
+	// Return max block bandwidth param value
+	GetMaxBlockBandwidth(ctx sdk.Context) uint64
 	// Return tx bandwidth cost considering the price
 	GetPricedTxCost(ctx sdk.Context, tx sdk.Tx) int64
+	// Return current block spend bandwidth
+	GetCurBlockSpentBandwidth(ctx sdk.Context) uint64
 	// Return links bandwidth cost considering the price
 	GetPricedLinksCost(ctx sdk.Context, tx sdk.Tx) int64
 	//

@@ -18,6 +18,7 @@ const (
 	MinTxCost            = 1
 	MinNonLinkMsgCost    = 1
 	MinDesirableBandwidth = 10000
+	MinBlockBandwidth    = 100
 )
 
 // Parameter keys
@@ -31,6 +32,7 @@ var (
 	KeyBaseCreditPrice    = []byte("BaseCreditPrice")
 	// Maximum bandwidth of network
 	KeyDesirableBandwidth = []byte("DesirableBandwidth")
+	KeyMaxBlockBandwidth = []byte("MaxBlockBandwidth")
 	KeyTxCost             = []byte("TxCost")
 	KeyNonLinkMsgCost     = []byte("NonLinkMsgCost")
 )
@@ -42,6 +44,7 @@ type Params struct {
 	AdjustPricePeriod             int64  `json:"adjust_price_period" yaml:"adjust_price_period"`
 	BaseCreditPrice               sdk.Dec `json:"base_credit_price" yaml:"base_credit_price"`
 	DesirableBandwidth            int64  `json:"desirable_bandwidth" yaml:"desirable_bandwidth"`
+	MaxBlockBandwidth			  uint64  `json:"max_block_bandwidth" yaml:"max_block_bandwidth"`
 	TxCost                        int64  `json:"tx_cost" yaml:"tx_cost"`
 	NonLinkMsgCost                int64  `json:"non_link_msg_cost" yaml:"non_link_msg_cost"`
 }
@@ -55,6 +58,7 @@ func (p *Params) ParamSetPairs() subspace.ParamSetPairs {
 		{KeyAdjustPricePeriod, &p.AdjustPricePeriod},
 		{KeyBaseCreditPrice, &p.BaseCreditPrice},
 		{KeyDesirableBandwidth, &p.DesirableBandwidth},
+		{KeyMaxBlockBandwidth, &p.MaxBlockBandwidth},
 		{KeyTxCost, &p.TxCost},
 		{KeyNonLinkMsgCost, &p.NonLinkMsgCost},
 	}
@@ -68,6 +72,7 @@ func (p Params) String() string {
 	sb.WriteString(fmt.Sprintf("RecoveryPeriod: %d\n", p.RecoveryPeriod))
 	sb.WriteString(fmt.Sprintf("AdjustPricePeriod: %d\n", p.AdjustPricePeriod))
 	sb.WriteString(fmt.Sprintf("BaseCreditPrice: %d\n", p.BaseCreditPrice))
+	sb.WriteString(fmt.Sprintf("DesirableBandwidth: %d\n", p.DesirableBandwidth))
 	sb.WriteString(fmt.Sprintf("DesirableBandwidth: %d\n", p.DesirableBandwidth))
 	sb.WriteString(fmt.Sprintf("TxCost: %d\n", p.TxCost))
 	sb.WriteString(fmt.Sprintf("NonLinkMsgCost: %d\n", p.NonLinkMsgCost))
@@ -95,6 +100,9 @@ func (p Params) Validate() error {
 	if p.DesirableBandwidth < MinDesirableBandwidth {
 		return fmt.Errorf("invalid desirable bandwidth: %d, can not be less then %d", p.DesirableBandwidth, MinDesirableBandwidth)
 	}
+	if p.MaxBlockBandwidth < MinBlockBandwidth {
+		return fmt.Errorf("invalid max block bandwidth: %d, can not be less then %d", p.MaxBlockBandwidth, MinBlockBandwidth)
+	}
 	if p.TxCost < MinTxCost {
 		return fmt.Errorf("invalid tx cost: %d, can not be less then %d", p.TxCost, MinTxCost)
 	}
@@ -111,6 +119,7 @@ func NewParams(
 	adjustPricePeriod int64,
 	baseCreditPrice sdk.Dec,
 	desirableBandwidth int64,
+	maxBlockBandwidth uint64,
 	txCost int64,
 	nonLinkMsgCost int64) Params {
 
@@ -120,6 +129,7 @@ func NewParams(
 		AdjustPricePeriod:  adjustPricePeriod,
 		BaseCreditPrice:    baseCreditPrice,
 		DesirableBandwidth: desirableBandwidth,
+		MaxBlockBandwidth:  maxBlockBandwidth,
 		TxCost:             txCost,
 		NonLinkMsgCost:     nonLinkMsgCost,
 	}
@@ -133,6 +143,7 @@ func NewDefaultParams() Params {
 		AdjustPricePeriod:  int64(10),
 		BaseCreditPrice:    sdk.NewDec(1),
 		DesirableBandwidth: int64(200000000),
+		MaxBlockBandwidth:  uint64(200000000*10/18000),
 		TxCost:             int64(300),
 		NonLinkMsgCost:     int64(500),
 	}
