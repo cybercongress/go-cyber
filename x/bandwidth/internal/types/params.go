@@ -36,9 +36,6 @@ var (
 )
 
 // Params defines the parameters for the bandwidth module.
-//BaseCreditPrice and ShouldBeSpentPerSlidingWindow are strings because
-// `amino:"unsafe"` tag is not working for now:
-// https://github.com/tendermint/go-amino/issues/230
 type Params struct {
 	LinkMsgCost                   int64  `json:"link_msg_cost" yaml:"link_msg_cost"`
 	RecoveryPeriod                int64  `json:"recovery_period" yaml:"recovery_period"`

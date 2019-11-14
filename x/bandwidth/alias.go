@@ -11,6 +11,16 @@ const (
 	ModuleName        = types.ModuleName
 	StoreKey          = types.StoreKey
 	RouterKey         = types.RouterKey
+	QuerierRoute            = types.QuerierRoute
+	QueryParameters         = types.QueryParameters
+	QueryDesirableBandwidth = types.QueryDesirableBandwidth
+	QueryMaxBlockBandwidth  = types.QueryMaxBlockBandwidth
+	QueryRecoveryPeriod     = types.QueryRecoveryPeriod
+	QueryAdjustPricePeriod  = types.QueryAdjustPricePeriod
+	QueryBaseCreditPrice    = types.QueryBaseCreditPrice
+	QueryTxCost             = types.QueryTxCost
+	QueryLinkMsgCost        = types.QueryLinkMsgCost
+	QueryNonLinkMsgCost     = types.QueryNonLinkMsgCost
 )
 
 type (
@@ -30,6 +40,7 @@ var (
 	DefaultGenesisState = types.DefaultGenesisState
 	ValidateGenesis     = types.ValidateGenesis
 	NewDefaultParams    = types.NewDefaultParams
+	NewQuerier          = keeper.NewQuerier
 
 	NewAccBandwidthKeeper        = keeper.NewAccBandwidthKeeper
 	NewBlockSpentBandwidthKeeper = keeper.NewBlockSpentBandwidthKeeper

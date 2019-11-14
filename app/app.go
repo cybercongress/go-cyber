@@ -196,7 +196,7 @@ func NewCyberdApp(logger log.Logger, db dbm.DB, traceStore io.Writer, height int
 	app.linkIndexedKeeper = link.NewIndexedKeeper(link.NewLinkKeeper(mainKeeper, dbKeys.links))
 	app.cidNumKeeper = link.NewCidNumberKeeper(mainKeeper, dbKeys.cidNum, dbKeys.cidNumReverse)
 	app.stakingIndexKeeper = cbdbank.NewIndexedKeeper(bankKeeper)
-	app.rankStateKeeper = rank.NewStateKeeper(&rankSubspace,
+	app.rankStateKeeper = rank.NewStateKeeper(app.cdc, &rankSubspace,
 		allowSearch, app.mainKeeper, app.stakingIndexKeeper,
 		app.linkIndexedKeeper, app.cidNumKeeper, app.paramsKeeper, computeUnit,
 	)
