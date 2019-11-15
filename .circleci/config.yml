@@ -5,7 +5,7 @@ aliases:
   - &defaults
     working_directory: ~/build
     docker:
-      - image: circleci/golang:1.12
+      - image: circleci/golang:1.13
   - &release_filter
     filters:
       tags:
@@ -28,8 +28,8 @@ jobs:
       - run:
           name: Build And Test Project
           command: |
-            go build -o cyberd ./daemon
-            go build -o cyberdcli ./cli
+            go build -o cyberd ./cmd/cyberd
+            go build -o cyberdcli ./cmd/cyberdcli
             go get github.com/mattn/goveralls
             go test -v -race -cover -coverprofile=./coverage.out ./...
             $GOPATH/bin/goveralls -service=circle-ci -coverprofile=./coverage.out -repotoken=$COVERALLS_TOKEN
@@ -99,8 +99,8 @@ jobs:
             docker login -u $DOCKER_USER -p $DOCKER_PASS
             docker tag build/cyberd cyberd/cyberd:euler-$CIRCLE_TAG
             docker push cyberd/cyberd:euler-$CIRCLE_TAG
-            docker tag build/cyberd cyberd/cyberd:euler-4
-            docker push cyberd/cyberd:euler-4
+            docker tag build/cyberd cyberd/cyberd:euler-5
+            docker push cyberd/cyberd:euler-5
           no_output_timeout: 30m
 
 
@@ -111,7 +111,7 @@ jobs:
       - run:
           name: Github Release Cyberd Binaries
           command: |
-            go build -o cyberdcli ./cli
+            go build -o cyberdcli ./cmd/cyberdcli
             sudo apt-get update && sudo apt-get install -y rpm
             curl -sL https://git.io/goreleaser | bash
 
