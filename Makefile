@@ -3,7 +3,7 @@
 VERSION := $(shell echo $(shell git describe --tags) | sed 's/^v//')
 COMMIT := $(shell git log -1 --format='%H')
 LEDGER_ENABLED ?= true
-CUDA_ENABLED ?= false
+CUDA_ENABLED ?= true
 
 export GO111MODULE = on
 
