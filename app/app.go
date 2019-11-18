@@ -330,6 +330,13 @@ func (app *CyberdApp) applyGenesis(ctx sdk.Context, req abci.RequestInitChain) a
 		genesisState.BandwidthData)
 	rank.InitGenesis(ctx, app.rankStateKeeper, genesisState.RankData)
 
+	err = link.InitGenesis(ctx, app.cidNumKeeper, app.linkIndexedKeeper, app.Logger())
+	if err != nil {
+		panic(err)
+	}
+
+	crisis.InitGenesis(ctx, app.crisisKeeper, genesisState.Crisis)
+
 	err = validateGenesisState(genesisState)
 	if err != nil {
 		panic(err)
@@ -368,11 +375,6 @@ func (app *CyberdApp) applyGenesis(ctx sdk.Context, req abci.RequestInitChain) a
 		}
 	}
 
-	err = link.InitGenesis(ctx, app.cidNumKeeper, app.linkIndexedKeeper, app.Logger())
-	if err != nil {
-		panic(err)
-	}
-	crisis.InitGenesis(ctx, app.crisisKeeper, genesisState.Crisis)
 	app.Logger().Info("Genesis applied", "time", time.Since(start))
 	return abci.ResponseInitChain{
 		Validators: validators,
@@ -389,8 +391,13 @@ func (app *CyberdApp) CheckTx(req abci.RequestCheckTx) (res abci.ResponseCheckTx
 		txCost := app.bandwidthMeter.GetPricedTxCost(ctx, tx)
 		accBw := app.bandwidthMeter.GetCurrentAccBandwidth(ctx, acc)
 
+		curBlockSpentBandwidth := app.bandwidthMeter.GetCurBlockSpentBandwidth(ctx)
+		maxBlockBandwidth := app.bandwidthMeter.GetMaxBlockBandwidth(ctx)
+
 		if !accBw.HasEnoughRemained(txCost) {
 			err = types.ErrNotEnoughBandwidth()
+		} else if (uint64(txCost) + curBlockSpentBandwidth) > maxBlockBandwidth  {
+			err = types.ErrExceededMaxBlockBandwidth()
 		} else {
 			resp := app.BaseApp.CheckTx(req)
 			if resp.Code == 0 {
@@ -427,7 +434,6 @@ func (app *CyberdApp) DeliverTx(req abci.RequestDeliverTx) (res abci.ResponseDel
 		if !accBw.HasEnoughRemained(txCost) {
 			err = types.ErrNotEnoughBandwidth()
 		} else if (uint64(txCost) + curBlockSpentBandwidth) > maxBlockBandwidth  {
-			app.bandwidthMeter.ConsumeAccBandwidth(ctx, accBw, txCost)
 			err = types.ErrExceededMaxBlockBandwidth()
 		} else {
 			resp := app.BaseApp.DeliverTx(req)
