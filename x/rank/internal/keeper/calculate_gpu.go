@@ -52,7 +52,7 @@ func calculateRankGPU(ctx *types.CalculationContext, logger log.Logger) []float6
 
 		if inLinks, sortedCids, ok := ctx.GetSortedInLinks(link.CidNumber(i)); ok {
 			for _, cid := range sortedCids {
-				inLinksCount[i]  = uint32(len(inLinks[cid]))
+				inLinksCount[i]  += uint32(len(inLinks[cid]))
 				for acc := range inLinks[cid] {
 					inLinksOuts = append(inLinksOuts, uint64(cid))
 					inLinksUsers = append(inLinksUsers, uint64(acc))
@@ -63,7 +63,7 @@ func calculateRankGPU(ctx *types.CalculationContext, logger log.Logger) []float6
 
 		if outLinks, ok := outLinks[link.CidNumber(i)]; ok {
 			for _, accs := range outLinks {
-				outLinksCount[i]  = uint32(len(accs))
+				outLinksCount[i]  += uint32(len(accs))
 				for acc := range accs {
 					outLinksUsers = append(outLinksUsers, uint64(acc))
 				}
