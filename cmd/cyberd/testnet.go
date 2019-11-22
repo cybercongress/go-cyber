@@ -294,7 +294,7 @@ func initGenFiles(cdc *codec.Codec, mbm module.BasicManager, chainID string,
 	}
 
 	pool := sdk.NewDec(stake.Int64()/100)
-	appGenState.DistrData.FeePool.CommunityPool = sdk.DecCoins{sdk.DecCoin{"cyb", pool}}
+	appGenState.DistrData.FeePool.CommunityPool = sdk.DecCoins{sdk.DecCoin{coin.CYB, pool}}
 
 	appGenState.Pool.NotBondedTokens = stake.Add(pool.RoundInt())
 	cybSupply := sdk.NewCoin(coin.CYB, stake.Add(pool.RoundInt()))
