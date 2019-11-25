@@ -191,12 +191,13 @@ update-initramfs: Generating /boot/initrd.img-4.15.0-45-generic
 
 5. Reboot the system for the changes to take effect.
 
-6. Check the installed drivers
+6. Check the installed drivers:
 
 ```bash
 nvidia-smi
 ```
 You should see this:
+(Some version/driver numbers migth differ. You also might have some processes already running)
 
 ```
 +-----------------------------------------------------------------------------+
@@ -217,9 +218,9 @@ You should see this:
 +-----------------------------------------------------------------------------+
 ```
 
-### Install Nvidia container runtime for docker
+#### Install Nvidia container runtime for docker
 
-1. Add the package repositories
+1. Add package repositories:
 
 ```bash
 distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
@@ -257,7 +258,7 @@ sudo systemctl restart docker
 docker run --runtime=nvidia --rm nvidia/cuda:10.0-base nvidia-smi
 ```
 
-Output logs must should coincide as earlier:
+Output logs should coincide as earlier:
 
 ```
 Unable to find image 'nvidia/cuda:10.0-base' locally
@@ -288,9 +289,9 @@ Fri Feb  1 05:41:12 2019
 +-----------------------------------------------------------------------------+
 ```
 
-Your machine is ready to launch fullnode.
+Your machine is ready to launch the fullnode.
 
-## Cyberd fullnode launching
+### Cyberd fullnode launching
 
 1. Create folders for keys and data storing where you want, for example:
 
@@ -299,102 +300,104 @@ mkdir /cyberd-dev/cyberd
 mkdir /cyberd-dev/cyberdcli
 ```
 
-2. Run fullnode
+2. Run the fullnode:
+(This will pull and extract the image from cyberd/cyberd)
 
 ```bash
 docker run -d --name=euler-dev --restart always -p 26656:26656 -p 26657:26657 -p 1317:1317 -e ALLOW_SEARCH=true -v /cyberd-dev/cyberd:/root/.cyberd  -v /cyberd-dev/cyberdcli:/root/.cyberdcli  cyberd/cyberd:euler-dev
 ```
 
-3. After successful container pulling and launch run to check if your node is connected to the testnet:
+3. After successful pulling of the container and launching, run to check if your node is connected to the testnet:
 
 ```bash
 docker exec euler-dev cyberdcli status
 ```
 
-The possible output looks like this:
+A possible output looks like this:
 
 ```bash
 {"node_info":{"protocol_version":{"p2p":"6","block":"9","app":"0"},"id":"93b776d3eb3f3ce9d9bda7164bc8af3acacff7b6","listen_addr":"tcp://0.0.0.0:26656","network":"euler-dev","version":"0.32.7","channels":"4020212223303800","moniker":"anon","other":{"tx_index":"on","rpc_address":"tcp://0.0.0.0:26657"}},"sync_info":{"latest_block_hash":"686B4E65415D4E56D3B406153C965C0897D0CE27004E9CABF65064B6A0ED4240","latest_app_hash":"0A1F6D260945FD6E926785F07D41049B8060C60A132F5BA49DD54F7B1C5B2522","latest_block_height":"4553","latest_block_time":"2019-11-24T09:49:19.771375108Z","catching_up":false},"validator_info":{"address":"66098853CF3B61C4313DD487BA21EDF8DECACDF0","pub_key":{"type":"tendermint/PubKeyEd25519","value":"uZrCCdZTJoHE1/v+EvhtZufJgA3zAm1bN4uZA3RyvoY="},"voting_power":"0"}}
 ```
 
-Your node has started to sync. If that didn't happen, check your config.toml file located at /<your euler-dev directory>/cyberd/config/config.toml and add at least couple addresses to <persistent_peers = ""> and <seeds = "">, some of those you can fing at our [forum](https://ai.cybercongress.ai/t/euler-dev-testnet/32).
+Your node has started to sync. If that didn't happen, check your config.toml file located at /<your euler-dev directory>/cyberd/config/config.toml and add at least a couple of addresses to <persistent_peers = ""> and <seeds = "">, some of those you can fing on our [forum](https://ai.cybercongress.ai/t/euler-dev-testnet/32).
 
-The syncing process you can see in the terminal. Open a new tab and run following command:
+You can follow the syncing process in the terminal. Open a new tab and run the following command:
 
 ```bash
 docker logs euler-dev --follow
 ```
 
-Additional information available by API endpoint at `localhost:26657`
+Additional information about the chain is available via an API endpoint at: `localhost:26657` (access via your browser) 
 
-f.e. the number of active validators available here `localhost:26657/validators`
+e.i. the number of active validators is available at: `localhost:26657/validators`
 
 ## Validator start
-After your node successful synced you can run validator.
+After your node has successfully synced, you can run a validator.
 
-#### Prepare stake address
+#### Prepare the staking address
 
-We included 1 million Ethereum addresses, over 8000 cosmos addresses and all of `euler-4` validators addresses into  genesis, so there's a huge chance that you alredy have some EUL tokens. Here's 3 ways to check this out: 
+We included 1 million Ethereum addresses, over 8000 Cosmos addresses and all of `euler-4` validators addresses into  genesis, so there's a huge chance that you alredy have some EUL tokens. Here are 3 ways to check this: 
 
-If you already have cyberd address with EUL and know seed phrase or private key just restore it into your local keystore.
+If you already have a cyberd address with EUL and know the seed phrase or your private key, just restore it into your local keystore:
 ```bash
 docker exec -ti euler-dev cyberdcli keys add <your_key_name> --recover
 docker exec euler-dev cyberdcli keys show <your_key_name>
 ```
 
-If you have Ethereum address that kept ~0.2Eth or more at block 8080808 of EHT network you can import ethereum private key, check out our Ethereum [gift tool](qhttps://github.com/cybercongress/launch-kit/tree/0.1.0/ethereum_gift_tool)
+If you have an Ethereum address that had ~0.2Eth or more at block 8080808 (on the ETH network), you can import your Ethereum private key. To do this, please check out our Ethereum [gift tool](qhttps://github.com/cybercongress/launch-kit/tree/0.1.0/ethereum_gift_tool)
 
-> Please, do not import high value Ethereum accounts. This can not be safe! cyberd software is a new software and is not battle tested yet.
+> Please do not import high value Ethereum accounts. This is not safe! cyberd software is a new and has not been battle tested yet.
 
 ```bash
 docker exec -ti euler-dev cyberdcli keys add import_private <your_key_name>
 docker exec euler-dev cyberdcli keys show <your_key_name>
 ```
 
-If you want to create new acccount use the command below.
-Also, you should send coins to that address to bound them later during validator submitting.
+If you want to create a new acccount, use the command below:
+(You should send coins to that address to bound them later during the submitting of the validator)
 
 ```bash
 docker exec -ti euler-dev cyberdcli keys add <your_key_name>
 docker exec euler-dev cyberdcli keys show <your_key_name>
 ```
 
-Also you could use ledger device with cosmos app on it to sign and store cyber addresses, just use --ledger flag with your commands:
+You could use your ledger device with a Cosmos app installed on it to sign and store cyber addresses. 
+Just use the --ledger flag, with your commands:
 
 ```bash
 docker exec -ti euler-dev cyberdcli keys add <your_key_name> --ledger
 ```
 
 **<your_key_name>** is any name you pick to represent this key pair.
-You have to refer to this <your_key_name> later when you use the keys to sign transactions.
+You have to refer to this parameter <your_key_name> later, when you use the keys to sign transactions.
 It will ask you to enter your password twice to encrypt the key.
-You also need to enter your password when you use your key to sign any transaction.
+You will also need to enter your password when you use your key to sign any transaction.
 
-The command returns the address, public key and a seed phrase which you can use it to
+The command returns the address, a public key and a seed phrase, which you can use to
 recover your account if you forget your password later.
-Keep the seed phrase in a safe place in case you have to use them.
+Keep the seed phrase at a safe place (preferably, not hot storage) in case you have to use it.
 
-The address showing here is your account address. Let’s call this **<your_account_address>**.
+The address shown here is your account address. Let’s call this **<your_account_address>**.
 It stores your assets.
 
-#### Send create validator transaction
+#### Send the create validator transaction
 
-Validators are actors on the network committing new blocks by submitting their votes.
-It refers to the node itself, not a single person or a single account.
-Therefore, the public key here is referring to the node public key,
+Validators are actors on the network committing to new blocks by submitting their votes.
+This refers to the node itself, not a single person or a single account.
+Therefore, the public key here is referring to the nodes public key,
 not the public key of the address you have just created.
 
-To get the node public key, run the following command:
+To get the nodes public key, run the following command:
 
 ```bash
 docker exec euler-dev cyberd tendermint show-validator
 ```
 
 It will return a bech32 public key. Let’s call it **<your_node_pubkey>**.
-The next step you have to declare a validator candidate.
-The validator candidate is the account which stake the coins.
+The next step is to to declare a validator candidate.
+The validator candidate is the account which stakes the coins.
 So the validator candidate is an account this time.
-To declare a validator candidate, run the following command adjusting stake amount and other fields.
+To declare a validator candidate, run the following command adjusting the stake amount and the other fields:
 
 ```bash
 docker exec -ti euler-dev cyberdcli tx staking create-validator \
@@ -410,19 +413,21 @@ docker exec -ti euler-dev cyberdcli tx staking create-validator \
   --chain-id=euler-dev
 ```
 
-#### Verify that you validating
+#### Verify that you are validating
 
 ```bash
 docker exec -ti euler-dev cyberdcli query staking validators --trust-node=true
 ```
 
-If you see your `<your_node_nickname>` with status `Bonded` and Jailed `false` everything must be good. You are validating the network.
+If you see your `<your_node_nickname>` with status `Bonded` and Jailed `false` everything is good. 
+You are validating the network.
 
-## Maintenance of validator
+## Maintenance of the validator
 
-#### jailing
+#### Jailing
 
-If your validator go under slashing conditions it first go to jail. After this event operator must unjail it manually.
+If your validator got under slashing conditions, it will be jailed. 
+After such event, an operator must unjail the validator manually:
 
 ```bash
 docker exec -ti euler-dev cyberdcli tx slashing unjail --from=<your_key_name> --chain-id euler-dev
