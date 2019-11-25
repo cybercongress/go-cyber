@@ -1,18 +1,19 @@
-# Join Cyberd Devnet As Validator
+# Join Cyberd devnet as a Validator
 
-**Note**. Currently active dev testnet is `euler-dev` (substitute <testnet_chain_id> with that value).
+**Note** The current active dev testnet is `euler-dev` (substitute <testnet_chain_id> with that value, do not forget to remove the `<` and the `>` symbols).
 
 ## Prepare your server
 
 First, you have to setup a server.
-You are supposed to run your validator node all time, so you will need a reliable server to keep it running.
-Also, you may consider to use any cloud service with dedicated GPU, like Hetzner.
+You should to run your validator node all time. This means that you will need a reliable server to keep it running.
+Also, you may consider to use any cloud service with dedicated GPU, like Hetzner (or a local machine).
 
-Cyberd is based on Cosmos SDK written in Go.
+Cyberd is based on Cosmos SDK and written in Go.
 It should work on any platform which can compile and run programs in Go.
-However, I strongly recommend running the validator node on a Linux server.
+However, we strongly recommend running the validator node on a Linux server.
 
-Rank calculation on a cyberd is benefit GPU computation. They easy to parallelize that why is the best way is to use GPU.
+Rank calculation in cyberd is benefit to GPU computation. 
+They are easy to parallelize. This is why it is best to use GPU.
 
 Recommended requirements:
 
@@ -25,15 +26,16 @@ GPU: nvidia GeForce CUDA compatibale card with 6gb of memory
 Software: Docker, Ubuntu 16.04/18.04 LTS
 ```
 
-But, of cource, hardware is your onw choise and tecnically it migth be possible to run chain on "even - 1 CUDA core gpu", but you should be aware of stabilty and calculation speed drop.
+But, of cource, hardware is your onw choise and tecnically it migth be possible to run the chain on "even - 1 CUDA core gpu", but, you should be aware of stabilty and a decline in calculation speed.
 
 ## Validator setup
 
 ### Third-party software
 
-Cyberd main distribution unit is a [docker](https://www.docker.com/) container. All images are located in default [Dockerhub registry](https://hub.docker.com/r/cyberd/cyberd/).  In order to access GPU from the container, Nvidia drivers version **410+** and [Nvidia docker runtime](https://github.com/NVIDIA/nvidia-docker) should be installed on the host system. For great user experience, we propose you to use [portainer](https://portainer.io) - docker containers manager. You can skip any subsection of this if you already had and configured necessary software.
+The main distribution unit for Cyberd is a [docker](https://www.docker.com/) container. All images are located in the default [Dockerhub registry](https://hub.docker.com/r/cyberd/cyberd/). In order to access the GPU from the container, Nvidia drivers version **410+** and [Nvidia docker runtime](https://github.com/NVIDIA/nvidia-docker) should be installed on the host system. For better user experience, we propose you use [portainer](https://portainer.io) - a docker containers manager. You can skip any subsection of this guide if you already have any of the necessary software configured.
 
 #### Docker installation
+Simply, copy the commands below into your CLI.
 
 1. Update the apt package index:
 
@@ -52,7 +54,7 @@ sudo apt-get install \
      software-properties-common
 ```
 
-> May require `curl` installation `apt-get install curl`
+> You may require installing `curl` - `apt-get install curl`
 
 3. Add Docker’s official GPG key:
 
@@ -73,13 +75,13 @@ sudo add-apt-repository \
 sudo apt-get update
 ```
 
-5. Install the latest version of Docker CE and containerd, or go to the next step to install a specific version (at the date of Nov 2019 version 19.03 is required):
+5. Install the latest version of Docker CE and containerd or skip to the next step to install a specific version (as of Nov 2019 version 19.03 is required):
 
 ```bash
 sudo apt-get install docker-ce docker-ce-cli containerd.io
 ```
 
-If you don’t want to preface the docker command with sudo, create a Unix group called docker and add users to it. When the Docker daemon starts, it creates a Unix socket accessible by members of the docker group.
+If you don’t want to preface docker commands with sudo create a Unix group called docker and add users to that group. When the Docker daemon starts it creates a Unix socket accessible by members of the docker group.
 
 6. Create the docker group.
 
@@ -90,7 +92,7 @@ sudo groupadd docker
 7. Add your user to the docker group.
 
 ```bash
-sudo usermod -aG docker $USER
+sudo usermod -aG docker $YOUR-USER-NAME
 ```
 
 8. Reboot the system for the changes to take effect.
