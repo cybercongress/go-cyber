@@ -6,7 +6,7 @@
 
 First, you have to setup a server.
 You are supposed to run your validator node all time, so you will need a reliable server to keep it running.
-Also, you may consider to use any cloud services like AWS.
+Also, you may consider to use any cloud service with dedicated GPU, like Hetzner.
 
 Cyberd is based on Cosmos SDK written in Go.
 It should work on any platform which can compile and run programs in Go.
@@ -14,16 +14,14 @@ However, I strongly recommend running the validator node on a Linux server.
 
 Rank calculation on a cyberd is benefit GPU computation. They easy to parallelize that why is the best way is to use GPU.
 
-Minimal requirements for the next two weeks (until the middle of February):
-
 Recommended requirements:
 
 ```js
 CPU: 6 cores
-RAM: 64 GB
-SSD: 512 GB
+RAM: 32 GB
+SSD: 256 GB
 Connection: 100Mb, Fiber, Stable and low-latency connection
-GPU: GeForce 1070-1080, CUDA
+GPU: GTX or similar CUDA compatibale card, 6gb of 
 Software: Docker, Ubuntu 16.04/18.04 LTS
 ```
 
@@ -301,7 +299,7 @@ mkdir /cyberd-dev/cyberdcli
 2. Run fullnode
 
 ```bash
-docker run -d --name=euler-dev --restart always --runtime=nvidia  -p 26656:26656 -p 26657:26657 -p 1317:1317 -e ALLOW_SEARCH=true -v /cyberd-dev/cyberd:/root/.cyberd  -v /cyberd-dev/cyberdcli:/root/.cyberdcli  cyberd/cyberd:euler-dev
+docker run -d --name=euler-dev --restart always -p 26656:26656 -p 26657:26657 -p 1317:1317 -e ALLOW_SEARCH=true -v /cyberd-dev/cyberd:/root/.cyberd  -v /cyberd-dev/cyberdcli:/root/.cyberdcli  cyberd/cyberd:euler-dev
 ```
 
 3. After successful container pulling and launch run to check if your node is connected to the testnet:
@@ -341,7 +339,7 @@ docker exec -ti euler-dev cyberdcli keys add <your_key_name> --recover
 docker exec euler-dev cyberdcli keys show <your_key_name>
 ```
 
-If you have Ethereum address that kept 0.97Eth or more at block 8080808 of EHT network you can import ethereum private key
+If you have Ethereum address that kept ~0.2Eth or more at block 8080808 of EHT network you can import ethereum private key, check out our Ethereum [gift tool](qhttps://github.com/cybercongress/launch-kit/tree/0.1.0/ethereum_gift_tool)
 
 > Please, do not import high value Ethereum accounts. This can not be safe! cyberd software is a new software and is not battle tested yet.
 
