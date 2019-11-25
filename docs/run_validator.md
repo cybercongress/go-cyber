@@ -69,7 +69,7 @@ sudo add-apt-repository \
    stable"
 ```
 
-4. Update the apt package index.
+4. Update the apt package index:
 
 ```bash
 sudo apt-get update
@@ -83,13 +83,13 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io
 
 If you don’t want to preface docker commands with sudo create a Unix group called docker and add users to that group. When the Docker daemon starts it creates a Unix socket accessible by members of the docker group.
 
-6. Create the docker group.
+6. Create the docker group:
 
 ```bash
 sudo groupadd docker
 ```
 
-7. Add your user to the docker group.
+7. Add your user to the docker group:
 
 ```bash
 sudo usermod -aG docker $YOUR-USER-NAME
@@ -99,13 +99,13 @@ sudo usermod -aG docker $YOUR-USER-NAME
 
 #### Portainer installation (optional)
 
-1. Before installing Portainer, download the Portainer image from the DockerHub using the docker pull command below.
+1. Before installing Portainer, download the Portainer image from the DockerHub using the docker pull command below:
 
 ```bash
 docker pull portainer/portainer
 ```
 
-2. Now run Portainer using the simple docker command below.
+2. Now, run Portainer by using the simple docker command from below:
 
 ```bash
 docker run -d --restart always -p 9000:9000 -v /var/run/docker.sock:/var/run/docker.sock portainer/portainer
@@ -119,11 +119,12 @@ localhost:9000
 
 ![](https://ipfs.io/ipfs/QmS42MJxjUB7Cu1GoJeE6eBmWkjHTZdgiAUcX4Qqy9NR3M)
 
-4. Set password, chose `local` tab and click `connect`. All containers will be available at `containers` tab.
+4. Create a username and set a password. Chose the `local` tab and click `connect`. 
+All the containers will be available in the `containers` tab on your dashboard.
 
 #### Nvidia drivers installation
 
-1. To proceed first add the `ppa:graphics-drivers/ppa` repository into your system:
+1. To proceed, first add the `ppa:graphics-drivers/ppa` repository into your system (you might see some warnings - press `enter`):
 
 ```bash
 sudo add-apt-repository ppa:graphics-drivers/ppa
@@ -133,17 +134,17 @@ sudo add-apt-repository ppa:graphics-drivers/ppa
 sudo apt update
 ```
 
-2. Install Ubuntu-drivers
+2. Install Ubuntu-drivers:
 ```bash
 sudo apt install -y ubuntu-drivers-common
 ```
 
-3. Next, identify your graphic card model and recommended driver:
+3. Next, identify your graphic card model and the recommended drivers:
 
 ```bash
 ubuntu-drivers devices
 ```
-You should see something like this:
+You should see something similar to this this:
 
 ```bash
 == /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0 ==
@@ -157,15 +158,15 @@ driver   : nvidia-driver-440 - third-party free recommended
 driver   : xserver-xorg-video-nouveau - distro free builtin
 ```
 
-4. We need
+4. We need the
 **410+**
-drivers release. As we see v440 is recommended. The command below will install the recommended version of drivers.
+drivers release. As you can see v440 is recommended. The command below will install the recommended version of drivers:
 
 ```bash
 sudo ubuntu-drivers autoinstall
 ```
 
-Drivers will install due approximately 10 minutes.
+Drivers will install for approximately 10 minutes.
 
 ```bash
 DKMS: install completed.
@@ -190,7 +191,7 @@ update-initramfs: Generating /boot/initrd.img-4.15.0-45-generic
 
 5. Reboot the system for the changes to take effect.
 
-6. Check installed drivers
+6. Check the installed drivers
 
 ```bash
 nvidia-smi
