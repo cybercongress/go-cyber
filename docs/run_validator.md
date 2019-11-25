@@ -21,7 +21,7 @@ CPU: 6 cores
 RAM: 32 GB
 SSD: 256 GB
 Connection: 100Mb, Fiber, Stable and low-latency connection
-GPU: GTX or similar CUDA compatibale card, 6gb of 
+GPU: nvidia GeForce CUDA compatibale card with 6gb of memory
 Software: Docker, Ubuntu 16.04/18.04 LTS
 ```
 
