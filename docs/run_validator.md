@@ -22,9 +22,10 @@ CPU: 6 cores
 RAM: 32 GB
 SSD: 256 GB
 Connection: 100Mb, Fiber, Stable and low-latency connection
-GPU: nvidia GeForce CUDA compatibale card with 6gb of memory
+GPU: nvidia GeForce(or Tesla/Titan/Quadro) with CUDA-cores; at least 6gb of memory*
 Software: Docker, Ubuntu 16.04/18.04 LTS
 ```
+*Cyberd runs well on comsumer grade cards like Geforce GTX 1070, but expecting load growth we advise to use Error Correction compatible cards from Tesla or Quadro families. 
 
 But, of cource, hardware is your onw choise and tecnically it migth be possible to run the chain on "even - 1 CUDA core gpu", but, you should be aware of stabilty and a decline in calculation speed.
 
