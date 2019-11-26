@@ -117,4 +117,4 @@ cyberdcli keys show --multisig-threshold K name1 name2 name3 [...]
 ```
 
 For more information regarding how to generate, sign and broadcast transactions with a
-multi signature account see [Multisig Guide](https://github.com/cybercongress/cyberd/blob/master/docs/multisig_guide.md).
+multi signature account see [Multisig Guide](./multisig_guide.md).
