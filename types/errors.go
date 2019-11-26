@@ -14,6 +14,7 @@ const (
 	CodeNotEnoughBandwidth sdk.CodeType = 4
 	CodeDuplicatedLink     sdk.CodeType = 5
 	CodeZeroLinks          sdk.CodeType = 6
+	CodeExceededMaxBlockBandwidth sdk.CodeType = 7
 
 	// Code space
 	CodespaceCbd sdk.CodespaceType = "cyberd"
@@ -29,6 +30,8 @@ func codeToDefaultMsg(code sdk.CodeType) string {
 		return "link already exists"
 	case CodeNotEnoughBandwidth:
 		return "not enough bandwidth to make transaction"
+	case CodeExceededMaxBlockBandwidth:
+		return "exceeded max block bandwidth"
 	case CodeDuplicatedLink:
 		return "duplicated link"
 	case CodeZeroLinks:
@@ -47,6 +50,10 @@ func ErrInvalidCid() sdk.Error {
 
 func ErrNotEnoughBandwidth() sdk.Error {
 	return newError(CodespaceCbd, CodeNotEnoughBandwidth)
+}
+
+func ErrExceededMaxBlockBandwidth() sdk.Error {
+	return newError(CodespaceCbd, CodeExceededMaxBlockBandwidth)
 }
 
 func ErrCidNotFound() sdk.Error {

@@ -2,10 +2,11 @@ package link
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/auth"
+
 	cbd "github.com/cybercongress/cyberd/types"
-	"github.com/cybercongress/cyberd/x/link/keeper"
-	cbdlink "github.com/cybercongress/cyberd/x/link/types"
+	cbdlink "github.com/cybercongress/cyberd/x/link/internal/types"
+
+	"github.com/cosmos/cosmos-sdk/x/auth"
 )
 
 // NewHandler returns a handler for "link" type messages.
@@ -13,11 +14,11 @@ import (
 // ils  - links storage
 // as   - account storage
 // imms - in-memory storage
-func NewLinksHandler(cis keeper.CidNumberKeeper, ls *keeper.LinkIndexedKeeper, as auth.AccountKeeper) sdk.Handler {
+func NewLinksHandler(cis CidNumberKeeper, ls IndexedKeeper, as auth.AccountKeeper) sdk.Handler {
 
 	return func(ctx sdk.Context, msg sdk.Msg) sdk.Result {
 
-		linkMsg := msg.(Msg)
+		linkMsg := msg.(cbdlink.Msg)
 
 		//validations
 		//todo: optimize

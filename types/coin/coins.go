@@ -3,7 +3,7 @@ package coin
 import sdk "github.com/cosmos/cosmos-sdk/types"
 
 const (
-	CYB = "cyb"
+	CYB = "eul"
 )
 
 const (

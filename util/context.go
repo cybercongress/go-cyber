@@ -4,7 +4,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/store"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/tendermint/tendermint/abci/types"
-	"github.com/tendermint/tendermint/libs/db"
+	"github.com/tendermint/tm-db"
 )
 
 func NewContextWithMSVersion(db db.DB, version int64, keys ...*sdk.KVStoreKey) (sdk.Context, error) {

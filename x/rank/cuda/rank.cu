@@ -7,9 +7,6 @@
 #include <thrust/functional.h>
 #include "types.h"
 
-const double DUMP_FACTOR = 0.85;
-const double TOLERANCE = 1e-3;
-
 const int CUDA_THREAD_BLOCK_SIZE = 256;
 
 /*****************************************************/
@@ -22,7 +19,8 @@ void run_rank_iteration(
     CompressedInLink *inLinks,                            /* all compressed in links */
     double *prevRank, double *rank, uint64_t rankSize,    /* array index - cid index */
     uint64_t *inLinksStartIndex, uint32_t *inLinksCount,  /* array index - cid index */
-    double defaultRankWithCorrection // default rank + inner product correction
+    double defaultRankWithCorrection,                     /* default rank + inner product correction */
+    double dampingFactor
 ) {
 
 	int index = blockIdx.x * blockDim.x + threadIdx.x;
@@ -39,8 +37,8 @@ void run_rank_iteration(
            ksum = prevRank[inLinks[j].fromIndex] * inLinks[j].weight + ksum;
            //ksum = __fmaf_rn(prevRank[inLinks[j].fromIndex], inLinks[j].weight, ksum);
         }
-        rank[i] = ksum * DUMP_FACTOR + defaultRankWithCorrection;
-        //rank[i] = __fmaf_rn(ksum, DUMP_FACTOR, defaultRankWithCorrection);
+        rank[i] = ksum * dampingFactor + defaultRankWithCorrection;
+        //rank[i] = __fmaf_rn(ksum, dampingFactor, defaultRankWithCorrection);
     }
 }
 
@@ -225,7 +223,9 @@ extern "C" {
         uint32_t *inLinksCount, uint32_t *outLinksCount,          /* array index - cid index*/
         uint64_t *inLinksOuts, uint64_t *inLinksUsers,            /*all incoming links from all users*/
         uint64_t *outLinksUsers,                                  /*all outgoing links from all users*/
-        double *rank                                              /* array index - cid index*/
+        double *rank,                                             /* array index - cid index*/
+        double dampingFactor,                                     /* value of damping factor*/
+        double tolerance                                          /* value of needed tolerance */
     ) {
 
         // setbuf(stdout, NULL);
@@ -344,7 +344,7 @@ extern "C" {
 
         // STEP5: Calculate dangling nodes rank, and default rank
         /*-------------------------------------------------------------------*/
-        double defaultRank = (1.0 - DUMP_FACTOR) / cidsSize;
+        double defaultRank = (1.0 - dampingFactor) / cidsSize;
         uint64_t danglingNodesSize = 0;
         for(uint64_t i=0; i< cidsSize; i++){
             rank[i] = defaultRank;
@@ -354,7 +354,7 @@ extern "C" {
         }
 
         double innerProductOverSize = defaultRank * ((double) danglingNodesSize / (double)cidsSize);
-        double defaultRankWithCorrection = (DUMP_FACTOR * innerProductOverSize) + defaultRank; //fma point
+        double defaultRankWithCorrection = (dampingFactor * innerProductOverSize) + defaultRank; //fma point
         /*-------------------------------------------------------------------*/
 
 
@@ -371,15 +371,15 @@ extern "C" {
         cudaMemcpy(d_prevRank, rank, cidsSize*sizeof(double), cudaMemcpyHostToDevice);
 
         int steps = 0;
-        double change = TOLERANCE + 1.0;
-        while(change > TOLERANCE) {
+        double change = tolerance + 1.0;
+        while(change > tolerance) {
             swap(d_rank, d_prevRank);
             steps++;
         	run_rank_iteration<<<CUDA_BLOCKS_NUMBER,CUDA_THREAD_BLOCK_SIZE>>>(
                 d_compressedInLinks,
                 d_prevRank, d_rank, cidsSize,
                 d_compressedInLinksStartIndex, d_compressedInLinksCount,
-                defaultRankWithCorrection
+                defaultRankWithCorrection, dampingFactor
         	);
         	change = find_max_ranks_diff(d_prevRank, d_rank, cidsSize);
         	cudaDeviceSynchronize();
