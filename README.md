@@ -1,5 +1,5 @@
 
-# Cyberd - Knowledge consensus computer for The Great Web
+# Cyber - Knowledge consensus computer for The Great Web
 
 <div align="center">
  <img src="docs/img/header.png" width="320" />
@@ -9,19 +9,19 @@
 [![version](https://img.shields.io/github/release/cybercongress/cyberd.svg?style=flat-square)](https://github.com/cybercongress/cyberd/releases/latest)
 [![CircleCI](https://img.shields.io/circleci/project/github/cybercongress/cyberd.svg?style=flat-square)](https://circleci.com/gh/cybercongress/cyberd/tree/master)
 [![license](https://img.shields.io/badge/License-Cyber-brightgreen.svg?style=flat-square)](https://github.com/cybercongress/cyberd/blob/master/LICENSE)
-![Cosmos-SDK](https://img.shields.io/static/v1.svg?label=cosmos-sdk&message=0.35.0&color=blue&style=flat-square)
-![Tendermint](https://img.shields.io/static/v1.svg?label=tendermint&message=0.31.5&color=blue&style=flat-square)
+![Cosmos-SDK](https://img.shields.io/static/v1.svg?label=cosmos-sdk&message=0.37.3&color=blue&style=flat-square)
+![Tendermint](https://img.shields.io/static/v1.svg?label=tendermint&message=0.32.7&color=blue&style=flat-square)
 [![LoC](https://tokei.rs/b1/github/cybercongress/cyberd?style=flat)](https://github.com/cybercongress/cyberd)
 [![contributors](https://img.shields.io/github/contributors/cybercongress/cyberd.svg?style=flat-square)](https://github.com/cybercongress/cyberd/graphs/contributors)
 [![Coverage Status](https://img.shields.io/coveralls/github/cybercongress/cyberd/master?style=flat-square)](https://coveralls.io/github/cybercongress/cyberd?branch=master)
 
 ### Blockchain
-[![chain](https://img.shields.io/badge/Chain-Euler--4-success.svg?style=flat-square)](https://github.com/cybercongress/cyberd/blob/master/docs/run_validator.md)
-[![block](https://img.shields.io/badge/dynamic/json?color=blue&label=Block%20Height&query=%24.result.height&url=http%3A%2F%2F93.125.26.210%3A34657%2Findex_stats&style=flat-square)]()
-[![cyberlinks](https://img.shields.io/badge/dynamic/json?color=blue&label=Cyberlinks&query=%24.result.linksCount&url=http%3A%2F%2F93.125.26.210%3A34657%2Findex_stats&style=flat-square)]()
-[![cids](https://img.shields.io/badge/dynamic/json?color=blue&label=CIDs&query=%24.result.cidsCount&url=http%3A%2F%2F93.125.26.210%3A34657%2Findex_stats&style=flat-square)]()
-[![agents](https://img.shields.io/badge/dynamic/json?color=blue&label=Web3%20Agents&query=%24.result.accsCount&url=http%3A%2F%2F93.125.26.210%3A34657%2Findex_stats&style=flat-square)]()
-[![validators](https://img.shields.io/badge/dynamic/json?label=Validators&query=%24.result.validators.length&url=http%3A%2F%2F93.125.26.210%3A34657%2Fvalidators%3F&style=flat-square)]()
+[![chain](https://img.shields.io/badge/Chain-Euler--Dev-success.svg?style=flat-square)](https://github.com/cybercongress/cyberd/blob/master/docs/run_validator.md)
+[![block](https://img.shields.io/badge/dynamic/json?color=blue&label=Block%20Height&query=%24.result.height&url=https://titan.cybernode.ai/api/index_stats&style=flat-square)]()
+[![cyberlinks](https://img.shields.io/badge/dynamic/json?color=blue&label=Cyberlinks&query=%24.result.linksCount&url=https://titan.cybernode.ai/api/index_stats&style=flat-square)]()
+[![cids](https://img.shields.io/badge/dynamic/json?color=blue&label=CIDs&query=%24.result.cidsCount&url=https://titan.cybernode.ai/api/index_stats&style=flat-square)]()
+[![agents](https://img.shields.io/badge/dynamic/json?color=blue&label=Web3%20Agents&query=%24.result.accsCount&url=https://titan.cybernode.ai/api/index_stats&style=flat-square)]()
+[![validators](https://img.shields.io/badge/dynamic/json?label=Validators&query=%24.result.validators.length&url=https://titan.cybernode.ai/api/validators%3F&style=flat-square)]()
 
 ### Community
 [![telegram](https://img.shields.io/badge/Join%20Us%20On-Telegram-2599D2.svg?style=flat-square)](https://t.me/fuckgoogle)
@@ -37,25 +37,25 @@ The Great Web is coming. New search systems will drive its growth. Google is the
  <img src="./docs/img/cyber.png"/>
 </div>
 
-## What is Cyberd
+## What is Cyber
 
-Cyberd is a knowledge consensus computer or a search engine, which computes the [cyber•Rank]() like token, that is a weighted [Page Rank]() of a knowledge graph of the [Content IDentificators (CIDs)](), that are linked to each other with the help of [cyberlinks](): 
+Cyber is a knowledge consensus computer or a search engine, which computes the [cyber~Rank]() like token, that is a weighted [Page Rank]() of a knowledge graph of the [Content IDentificators (CIDs)](), that are linked to each other with the help of [cyberlinks](): 
 
 ```
 CID1 -----> CID2
 ```
 
-Cyberlinks are committed by Web3 agents. They are links between two CIDs. In its current implementation, a CID is an IPFS hash of the CIDv0 or of the CIDv1 versions. A web3 agent can link any keyword with a CID and cyberd will wrap these keywords in an IPFS hash; and then, create a link between the two hashes, with a weight corresponding to the users' stake.
+Cyberlinks are committed by Web3 agents. They are links between two CIDs. In its current implementation, a CID is an IPFS hash of the CIDv0 or of the CIDv1 versions. A web3 agent can link CID of any keyword, app, whatever with a other CID and and then, create a link between the two hashes, with a weight corresponding to the stake.
 
-All the cyberlinks with a given weight are stored within the knowledge graph. The graph is re-computed by the validators every given number of blocks. For the calculations, we've implemented "the proof of relevance" root-hash, which is computed on the Cuda GPUs every round. As this is the best way to calculate a Merkle tree - faster. The volume is important because we must load the whole graph into the memory to do the calculations.
+All the cyberlinks with a given weight are stored within the knowledge graph. The graph is re-computed by the validators every given number of blocks. For the calculations, we've implemented "the proof of relevance" root-hash, which is computes from CIDs rank values (which computes on CUDA GPUs every round). 
 
 Cyberd is the first implementation of the cyber protocol. It is based on the [cosmos-SDK](https://github.com/cosmos/cosmos-sdk) and [tendermint BFT Consensus](https://github.com/tendermint/tendermint). 
 
 This implementation uses a very simple bandwidth model. The main goal of the model is to reduce the daily networks growth to a given constant.
 
-Thus, here we introduce [resource credits(RS)](). Each message, of a transaction type - for example, a "link" or a "send" have been assigned an RS cost. We call this "Bandwidth". A users bandwidth depends on its balance and is equal to the sum of their liquid and staked tokens. The users' bandwidth is a recoverable value. Full recovery of the bandwidths quantity, from 0 to maximum value - takes 24 hours.
+Thus, here we introduce [resource credits(RS)](). Each message, of a transaction type - for example, a "link" or a "send" have been assigned an RS cost. We call this "Bandwidth". A users bandwidth depends on its balance and is equal to the sum of their liquid and staked tokens. The users' bandwidth is a recoverable value. Full recovery of the bandwidths quantity, from 0 to maximum value - takes `RecoveryWindow` blocks.
 
-There is a period `AdjustPricePeriod`, summing how much RS or bandwidth was spent during that period (`AdjustPricePeriodTotalSpent`). Also, there is a constant `AdjustPricePeriodDesiredSpent`, which is used to calculate the network load. The `AdjustPricePeriodTotalSpent/AdjustPricePeriodDesiredSpent` ratio defines the so-called current `price multiplier`. If the network usage is low, the `price multiplier` adjusts the message cost (simply by multiplying) to allow a user with a lower stake to make more transactions. If the demand for resources increases, the `price multiplier` goes `>1` thus, increasing message cost and limiting final tx count for a long-term period (RC recovery will be `<` then RC spending).
+There is a period `AdjustPricePeriod`, summing how much RS or bandwidth was spent during that period (`RecoveryPeriod`). The `SpentBandwidth/DesirableBandwidth` ratio defines the so-called current `price multiplier`. If the network usage is low, the `price multiplier` adjusts the message cost (simply by multiplying) to allow a user with a lower stake to make more transactions. If the demand for resources increases, the `price multiplier` goes `>1` thus, increasing message cost and limiting final tx count for a long-term period (RC recovery will be `<` then RC spending).
 
 
 ## For validators
@@ -102,7 +102,7 @@ With the growth of the network, we will need cards, a lot of cards. Join us.
 0. The network has a desirable network bandwidth (max bandwidth).
 1. An agent's bandwidth is proportional to the stake that he owns against the total network supply.
 2. Linking and other chain operations consume bandwidth.
-3. It takes 24 hours for a full recovery of an agent's bandwidth.
+3. It takes RecoveryPeriod blocks for a full recovery of an agent's bandwidth.
 4. The network gives a discount of up to 100X of the operational costs for incentivized loads.
 ```
 
@@ -122,21 +122,8 @@ With the growth of the network, we will need cards, a lot of cards. Join us.
 4. IPFS
 ```
 
-## Scaling
-#### CUDA Kernel
-```
-1. Single host, single GPU <--- We are here
-2. Single host, multiple GPUs <--- community-based R&D
-3. Multiple hosts / Data Centers <--- 2021
-```
-
-#### Tendrmint
-```
-```
-
 ## Paper
 ```
-Current state: Community Preview (Euler-5/Mainnet)
 ```
 
 ## Status
@@ -150,15 +137,59 @@ To run a full-node or a validator node on the latest public testnet of cyberd, p
 
 ## Explorers
 
-The [cyberd](https://cyberd.ai/) explorer is based on [bigDipper](https://cosmos.bigdipper.live) by Forbole(https://www.forbole.com/)
+### Euler-Dev Testnet
+The [cyberd](https://callisto.cybernode.ai/) explorer is based on [bigDipper](https://cosmos.bigdipper.live) by [Forbole](https://www.forbole.com/)
+
+## Peers & Seeds
+
+### Euler-Dev Testnet
+```
+d0a148810b8b0e6e5bd16ea3ede1e3a7851208b9@titan.cybernode.ai:26656  
+```
+
+## Build cyberd and cyberdcli (Go 1.13)
+```
+git clone github.com/cybercongress/cyberd
+cd cyberd
+make
+
+or 
+
+go build -tags cuda,netgo,ledger -o cyberd ./cmd/cyberd
+go build -tags netgo,ledger -o cyberdcli ./cmd/cyberdcli
+```
+Build of cyber node needs CUDA toolkit installed with latest Nvidia drivers. 
+
+You may would like to build just CLI to just communicate with dedicated cyber node.
+
+## Build GPU kernels
+```
+cd x/rank/cuda
+make
+```
+It will build libcbdrank.so and copy them with cbdrank.h to /usr/lib
+
+## Use CLI with dedicated node
+```
+cyberdcli q account <account> --chain-id euler-dev --node https://titan.cybernode.ai:26657
+```
+
+##  The 10 min Devenv Setup for Developers and Gitcoiners 
+
+Take a part with [set up dev environment](https://cybercongress.ai/docs/cyberd/setup_dev_env/) in the "10 minutes challenge".
+
+## Ledger and Multisig guides
+1. [Ledger with CLI]()
+2. [Ledger for validator setup]()
+3. [Multisig guide]()
 
 ## Game of Links
 
 The "game of links" is a game between cyber•Congress and between Cosmos stakeholders for a place in Genesis. It should bootstrap and load the network at Euler-5 testnet. The greatest project will come on top with the significant number of followers. The game is finished if both of the following criteria are met:
 
 **\>** 146 validators are in consensus for a period of 10k blocks
-**\>** 500000 ATOM donated or 90 days have passed
 
+**\>** 500000 ATOM donated or 90 days have passed
 
 #### Goals:
 ```
@@ -178,35 +209,45 @@ The "game of links" is a game between cyber•Congress and between Cosmos stakeh
 ```
 
 ## Distribution
+```
+```
 
 ## Docs
 
 Explore the docs in our [knowledge base](https://cybercongress.ai/docs/cyberd/cyberd/).
 
 ## IBC
+```
+Waiting for Game of Zones and Cosmos-SDK v0.38.0 release
+```
 
-### Subgraph transffering
-### CIDs Interchange
-### Ranks Interchange
+## Inter Knowledge Protocol for Relevance Machines (over IBC)
+```
+Protocol prototyping on:
+1. Subgraph Interchange
+2. CIDs Interchange
+3. Ranks Interchange
+```
 
 ## Community
 
 **\>** [devChat](https://t.me/fuckgoogle) for web3 agnets
+
 **\>** [TG channel](https://t.me/cybercongress) with hot updates
+
 **\>** [Twitter](https://twitter.com/cyber_devs) for updates and memes
+
 **\>** [Steemit blog](https://steemit.com/@cybercongress)
-**\>** [Own blog](https://cybercongress.ai/post/) with rss and useful articles
 
-##  The 10 min. Development Setup
+**\>** [Own blog](https://cybercongress.ai/post/) with RSS and useful articles
 
-Take a part with [set up dev environment](https://cybercongress.ai/docs/cyberd/setup_dev_env/) in the "10 minutes challenge".
 
 ## Research and Development
 ```
-- cyber•Rank scaling
-— Online parametrization
+- cyber~Rank scaling
 — Onchain upgrades
 — IBC
+- IKP
 — Universal oracle
 — WASM VM for gas
 — CUDA VM for gas
@@ -214,8 +255,6 @@ Take a part with [set up dev environment](https://cybercongress.ai/docs/cyberd/s
 - PoRep/PoST
 - Autonomous onchain agents
 ```
-
-
 
 ## Let's #fuckgoogle together
 ```
@@ -251,11 +290,12 @@ We want to reward you for your contributions! We constantly fund our issues on [
 
 ## Linked Projects
 
-**\>** Cosmos-SDK
-**\>** Tendermint
-**\>** IPFS
+**\>** [Cosmos](https://github.com/cosmos/)
 
-## GIFs
+**\>** [Tendermint](https://github.com/tendermint/)
+
+**\>** [IPFS](https://github.com/ipfs/)
+
 
 ## License
 
