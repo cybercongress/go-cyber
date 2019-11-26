@@ -8,13 +8,17 @@ NVCCFLAGS = -fmad=false --compiler-options '-fPIC -frounding-math -fsignaling-na
 
 all: build
 
-build: build_dir gpu
+build: build_dir gpu install_gpu
 
 build_dir:
 	mkdir -p $(BUILD_DIR)
 
-gpu:
-	$(NVCC) $(NVCCFLAGS) -o $(BUILD_DIR)/libcbdrank.so -shared rank.cu
+build_gpu:
+	$(NVCC) $(NVCCFLAGS) -o $(BUILD_DIR)/libcbdrank.so -shared ./cuda/rank.cu
+
+install_gpu:
+	sudo cp $(BUILD_DIR)/libcbdrank.so /usr/lib
+	sudo cp ./cuda/cbdrank.h /usr/lib`
 
 clean:
-	rm $(BUILD_DIR)/libcbdrank.so
+	rm $(BUILD_DIR)
