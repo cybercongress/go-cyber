@@ -26,13 +26,13 @@
 | Mint        | TokensPerBlock  | 0.634195840 Gcyb  | validators block rewards     |
 |             |                               |                             |                                                            |
 | Bandwidth   | RecoveryWindow                | 24h                         | from 0 to max recovery period                              |
-| Bandwidth   | PriceSlidingWindow            | 24h                         | price calculated based on network load for selected period |
-| Bandwidth   | PriceAdjustWindow             | 1m                          | how ofter price is recalculated                            |
-| Bandwidth   | PriceMin                      | 0.01                        | minimum price number (1 means normal price)                |
-| Bandwidth   | LinkCost                      | 100                         | link msg cost                                              |
-| Bandwidth   | NonLinkCost                   | 5 * LinkCost                | link msg cost                                              |
-| Bandwidth   | TxCost                        | 3 * LinkCost                | tx cost                                                    |
-| Bandwidth   | RecoveryWindowTotalBandwidth  | 2000 * 1000* LinkCost       | how much all users in average can spend for recover period |                                                           |
+| Bandwidth   | PriceSlidingWindow            | 24h                      | price calculated based on network load for selected period |
+| Bandwidth   | PriceAdjustWindow             | 1m                       | how ofter price is recalculated                            |
+| Bandwidth   | PriceMin                      | 0.01                     | minimum price number (1 means normal price)                |
+| Bandwidth   | LinkCost                      | 100                      | link msg cost                                              |
+| Bandwidth   | NonLinkCost                   | 5 * LinkCost             | link msg cost                                              |
+| Bandwidth   | TxCost                        | 3 * LinkCost             | tx cost                                                    |
+| Bandwidth   | DesirableNetworkBandwidthForRecoveryPeriod  | 2000 * 1000 * LinkCost   | how much all users in average can spend for recover period |                                                         |
 
 
 

@@ -314,6 +314,14 @@ We will be happy if you fork and launch your own network and set up a knowledge 
 
 Stay tuned with our [Changelog](./CHANGELOG.md).
 
+## Gitcoin program
+
+We want to pay you for your contribution! We constantly fund our issues on [gitcoin](https://gitcoin.co/profile/cybercongress) and attach good description for them with project state and user stories. We try to answer to comments regular in issues and in our [devChat](https://t.me/fuckgoogle).
+
+<a href="https://gitcoin.co/explorer?q=cyberd">
+    <img src="https://gitcoin.co/funding/embed?repo=https://github.com/cybercongress/cyberd">
+</a>
+
 <div align="center">
  <sub>Built by
  <a href="https://twitter.com/cyber_devs">cyber•Congress</a> and
