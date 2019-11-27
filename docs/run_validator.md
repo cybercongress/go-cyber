@@ -362,7 +362,7 @@ docker exec -ti euler-dev cyberdcli keys add <your_key_name>
 docker exec euler-dev cyberdcli keys show <your_key_name>
 ```
 
-You could use your ledger device with a Cosmos app installed on it to sign and store cyber addresses: [guide here](https://github.com/cybercongress/cyberd/blob/0.1.5/docs/cyberd_Ledger_guide.md). 
+You could use your ledger device with the Cosmos app installed on it to sign and store cyber addresses: [guide here](https://github.com/cybercongress/cyberd/blob/0.1.5/docs/cyberd_Ledger_guide.md). 
 In common case use the --ledger flag, with your commands:
 
 ```bash
