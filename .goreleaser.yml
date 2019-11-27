@@ -1,6 +1,6 @@
 builds:
   -
-    main: ./cli
+    main: ./cyberdcli
     binary: cyberdcli
     env:
       - CGO_ENABLED=0

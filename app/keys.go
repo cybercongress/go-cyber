@@ -6,12 +6,14 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	distr "github.com/cosmos/cosmos-sdk/x/distribution"
 	"github.com/cosmos/cosmos-sdk/x/gov"
+	"github.com/cosmos/cosmos-sdk/x/mint"
 	"github.com/cosmos/cosmos-sdk/x/params"
 	"github.com/cosmos/cosmos-sdk/x/slashing"
 	"github.com/cosmos/cosmos-sdk/x/staking"
+	"github.com/cosmos/cosmos-sdk/x/supply"
 )
 
-type CyberdAppDbKeys struct {
+type cyberdAppDbKeys struct {
 	main           *sdk.KVStoreKey
 	acc            *sdk.KVStoreKey
 	accIndex       *sdk.KVStoreKey
@@ -21,8 +23,8 @@ type CyberdAppDbKeys struct {
 	rank           *sdk.KVStoreKey
 	stake          *sdk.KVStoreKey
 	tStake         *sdk.TransientStoreKey
+	supply         *sdk.KVStoreKey
 	distr          *sdk.KVStoreKey
-	tDistr         *sdk.TransientStoreKey
 	gov            *sdk.KVStoreKey
 	slashing       *sdk.KVStoreKey
 	fees           *sdk.KVStoreKey
@@ -30,22 +32,23 @@ type CyberdAppDbKeys struct {
 	tParams        *sdk.TransientStoreKey
 	accBandwidth   *sdk.KVStoreKey
 	blockBandwidth *sdk.KVStoreKey
+	mint           *sdk.KVStoreKey
 }
 
-func NewCyberdAppDbKeys() CyberdAppDbKeys {
-
-	return CyberdAppDbKeys{
+func NewCyberdAppDbKeys() cyberdAppDbKeys {
+	return cyberdAppDbKeys{
 		main:     sdk.NewKVStoreKey(bam.MainStoreKey),
 		acc:      sdk.NewKVStoreKey(auth.StoreKey),
 		stake:    sdk.NewKVStoreKey(staking.StoreKey),
 		tStake:   sdk.NewTransientStoreKey(staking.TStoreKey),
-		fees:     sdk.NewKVStoreKey(auth.FeeStoreKey),
+		supply:   sdk.NewKVStoreKey(supply.StoreKey),
+		fees:     sdk.NewKVStoreKey(auth.FeeCollectorName),
 		distr:    sdk.NewKVStoreKey(distr.StoreKey),
-		tDistr:   sdk.NewTransientStoreKey(distr.TStoreKey),
 		gov:      sdk.NewKVStoreKey(gov.StoreKey),
 		slashing: sdk.NewKVStoreKey(slashing.StoreKey),
 		params:   sdk.NewKVStoreKey(params.StoreKey),
 		tParams:  sdk.NewTransientStoreKey(params.TStoreKey),
+		mint:     sdk.NewKVStoreKey(mint.StoreKey),
 
 		cidNum:         sdk.NewKVStoreKey("cid_index"),
 		cidNumReverse:  sdk.NewKVStoreKey("cid_index_reverse"),
@@ -56,15 +59,15 @@ func NewCyberdAppDbKeys() CyberdAppDbKeys {
 	}
 }
 
-func (k CyberdAppDbKeys) GetStoreKeys() []*sdk.KVStoreKey {
+func (k cyberdAppDbKeys) GetStoreKeys() []*sdk.KVStoreKey {
 	return []*sdk.KVStoreKey{
-		k.main, k.acc, k.cidNum, k.cidNumReverse, k.links, k.rank, k.stake, k.gov,
-		k.slashing, k.params, k.distr, k.fees, k.accBandwidth, k.blockBandwidth,
+		k.main, k.acc, k.cidNum, k.cidNumReverse, k.links, k.rank, k.stake, k.supply, k.gov,
+		k.slashing, k.params, k.distr, k.fees, k.accBandwidth, k.blockBandwidth, k.mint,
 	}
 }
 
-func (k CyberdAppDbKeys) GetTransientStoreKeys() []*sdk.TransientStoreKey {
+func (k cyberdAppDbKeys) GetTransientStoreKeys() []*sdk.TransientStoreKey {
 	return []*sdk.TransientStoreKey{
-		k.tStake, k.tParams, k.tDistr,
+		k.tStake, k.tParams,
 	}
 }

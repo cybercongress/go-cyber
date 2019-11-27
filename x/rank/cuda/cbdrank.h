@@ -6,5 +6,7 @@ void calculate_rank(
     uint32_t *inLinksCount, uint32_t *outLinksCount,          /* array index - cid index*/
     uint64_t *inLinksOuts, uint64_t *inLinksUsers,            /*all incoming links from all users*/
     uint64_t *outLinksUsers,                                  /*all outgoing links from all users*/
-    double *rank                                              /* array index - cid index*/
+    double *rank,                                             /* array index - cid index*/
+    double dampingFactor,                                     /* value of damping factor*/
+    double tolerance                                          /* value of needed tolerance */
 );

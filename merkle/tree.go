@@ -235,7 +235,7 @@ func (t *Tree) ImportSubtreesRoots(subTreesRoots []byte) {
 	var current *Subtree
 	for i := 0; i < t.subTreesCount; i++ {
 		end := start + hashSize
-		rootHash := subTreesRoots[start : end]
+		rootHash := subTreesRoots[start:end]
 		height := binary.LittleEndian.Uint64(subTreesRoots[end : end+heightSize])
 		nextSubtree := &Subtree{
 			root: &Node{

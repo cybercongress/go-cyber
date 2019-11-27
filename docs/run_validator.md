@@ -1,6 +1,8 @@
+
 # Join Cyberd devnet as a Validator
 
 **Note** The current active dev testnet is `euler-dev` (substitute <testnet_chain_id> with that value, do not forget to remove the `<` and the `>` symbols).
+
 
 ## Prepare your server
 
@@ -29,6 +31,7 @@ Software: Docker, Ubuntu 16.04/18.04 LTS
 
 But, of cource, hardware is your onw choise and tecnically it migth be possible to run the chain on "even - 1 CUDA core gpu", but, you should be aware of stabilty and a decline in calculation speed.
 
+
 ## Validator setup
 
 ### Third-party software
@@ -37,6 +40,7 @@ The main distribution unit for Cyberd is a [docker](https://www.docker.com/) con
 
 #### Docker installation
 Simply, copy the commands below into your CLI.
+
 
 1. Update the apt package index:
 
@@ -72,11 +76,13 @@ sudo add-apt-repository \
 
 4. Update the apt package index:
 
+
 ```bash
 sudo apt-get update
 ```
 
 5. Install the latest version of Docker CE and containerd or skip to the next step to install a specific version (as of Nov 2019 version 19.03 is required):
+
 
 ```bash
 sudo apt-get install docker-ce docker-ce-cli containerd.io
@@ -108,6 +114,7 @@ docker pull portainer/portainer
 
 2. Now, run Portainer by using the simple docker command from below:
 
+
 ```bash
 docker run -d --restart always -p 9000:9000 -v /var/run/docker.sock:/var/run/docker.sock portainer/portainer
 ```
@@ -127,6 +134,7 @@ All the containers will be available in the `containers` tab on your dashboard.
 
 1. To proceed, first add the `ppa:graphics-drivers/ppa` repository into your system (you might see some warnings - press `enter`):
 
+
 ```bash
 sudo add-apt-repository ppa:graphics-drivers/ppa
 ```
@@ -136,16 +144,19 @@ sudo apt update
 ```
 
 2. Install Ubuntu-drivers:
+
 ```bash
 sudo apt install -y ubuntu-drivers-common
 ```
 
 3. Next, identify your graphic card model and the recommended drivers:
 
+
 ```bash
 ubuntu-drivers devices
 ```
 You should see something similar to this this:
+
 
 ```bash
 == /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0 ==
@@ -163,11 +174,14 @@ driver   : xserver-xorg-video-nouveau - distro free builtin
 **410+**
 drivers release. As you can see v440 is recommended. The command below will install the recommended version of drivers:
 
+
 ```bash
 sudo ubuntu-drivers autoinstall
 ```
 
+
 Drivers will install for approximately 10 minutes.
+
 
 ```bash
 DKMS: install completed.
@@ -193,6 +207,7 @@ update-initramfs: Generating /boot/initrd.img-4.15.0-45-generic
 5. Reboot the system for the changes to take effect.
 
 6. Check the installed drivers:
+
 
 ```bash
 nvidia-smi
@@ -251,6 +266,7 @@ sudo apt-get update && sudo apt-get install -y nvidia-container-toolkit
 
 ```bash
 sudo systemctl restart docker
+
 ```
 
 4. Test nvidia-smi with the latest official CUDA image
@@ -260,6 +276,7 @@ docker run --runtime=nvidia --rm nvidia/cuda:10.0-base nvidia-smi
 ```
 
 Output logs should coincide as earlier:
+
 
 ```
 Unable to find image 'nvidia/cuda:10.0-base' locally
@@ -433,3 +450,4 @@ After such event, an operator must unjail the validator manually:
 ```bash
 docker exec -ti euler-dev cyberdcli tx slashing unjail --from=<your_key_name> --chain-id euler-dev
 ```
+

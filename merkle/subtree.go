@@ -9,7 +9,7 @@ type Subtree struct {
 	root *Node // root node
 
 	left  *Subtree // left subtree from this one
-	right *Subtree  // right  subtree from this one
+	right *Subtree // right  subtree from this one
 
 	height int // height of subtree
 	// hash function to hash sum nodes and hash data
@@ -30,7 +30,7 @@ func (t *Subtree) getLeftSubtreesProof() []Proof {
 	proofs := make([]Proof, 0)
 	current := t.left
 	for current != nil {
-		proofs = append(proofs, Proof{hash: current.root.hash, leftSide: false})
+		proofs = append(proofs, Proof{Hash: current.root.hash, LeftSide: false})
 		current = current.left
 	}
 	return proofs
@@ -58,5 +58,5 @@ func (t *Subtree) getRightSubtreesProof() []Proof {
 		proofHash = sum(t.hashF, proofHash, hashesToSum[i])
 	}
 
-	return []Proof{{hash: proofHash, leftSide: true}}
+	return []Proof{{Hash: proofHash, LeftSide: true}}
 }
