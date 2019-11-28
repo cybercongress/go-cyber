@@ -3,7 +3,6 @@
 
 **Note** The current active dev testnet is `euler-dev` (substitute <testnet_chain_id> with that value, do not forget to remove the `<` and the `>` symbols).
 
-
 ## Prepare your server
 
 First, you have to setup a server.
@@ -14,7 +13,7 @@ Cyberd is based on Cosmos SDK and written in Go.
 It should work on any platform which can compile and run programs in Go.
 However, we strongly recommend running the validator node on a Linux server.
 
-Rank calculation in cyberd is benefit to GPU computation. 
+Rank calculation in cyberd is benefit to GPU computation.
 They are easy to parallelize. This is why it is best to use GPU.
 
 Recommended requirements:
@@ -27,10 +26,10 @@ Connection: 100Mb, Fiber, Stable and low-latency connection
 GPU: nvidia GeForce(or Tesla/Titan/Quadro) with CUDA-cores; at least 6gb of memory*
 Software: Docker, Ubuntu 16.04/18.04 LTS
 ```
-*Cyberd runs well on comsumer grade cards like Geforce GTX 1070, but expecting load growth we advise to use Error Correction compatible cards from Tesla or Quadro families. 
+
+*Cyberd runs well on comsumer grade cards like Geforce GTX 1070, but expecting load growth we advise to use Error Correction compatible cards from Tesla or Quadro families.
 
 But, of cource, hardware is your onw choise and tecnically it migth be possible to run the chain on "even - 1 CUDA core gpu", but, you should be aware of stabilty and a decline in calculation speed.
-
 
 ## Validator setup
 
@@ -38,9 +37,9 @@ But, of cource, hardware is your onw choise and tecnically it migth be possible 
 
 The main distribution unit for Cyberd is a [docker](https://www.docker.com/) container. All images are located in the default [Dockerhub registry](https://hub.docker.com/r/cyberd/cyberd/). In order to access the GPU from the container, Nvidia drivers version **410+** and [Nvidia docker runtime](https://github.com/NVIDIA/nvidia-docker) should be installed on the host system. For better user experience, we propose you use [portainer](https://portainer.io) - a docker containers manager. You can skip any subsection of this guide if you already have any of the necessary software configured.
 
-#### Docker installation
-Simply, copy the commands below into your CLI.
+### Docker installation
 
+Simply, copy the commands below into your CLI.
 
 1. Update the apt package index:
 
@@ -76,13 +75,11 @@ sudo add-apt-repository \
 
 4. Update the apt package index:
 
-
 ```bash
 sudo apt-get update
 ```
 
 5. Install the latest version of Docker CE and containerd or skip to the next step to install a specific version (as of Nov 2019 version 19.03 is required):
-
 
 ```bash
 sudo apt-get install docker-ce docker-ce-cli containerd.io
@@ -114,7 +111,6 @@ docker pull portainer/portainer
 
 2. Now, run Portainer by using the simple docker command from below:
 
-
 ```bash
 docker run -d --restart always -p 9000:9000 -v /var/run/docker.sock:/var/run/docker.sock portainer/portainer
 ```
@@ -127,13 +123,12 @@ localhost:9000
 
 ![](https://ipfs.io/ipfs/QmS42MJxjUB7Cu1GoJeE6eBmWkjHTZdgiAUcX4Qqy9NR3M)
 
-4. Create a username and set a password. Chose the `local` tab and click `connect`. 
+4. Create a username and set a password. Chose the `local` tab and click `connect`.
 All the containers will be available in the `containers` tab on your dashboard.
 
 #### Nvidia drivers installation
 
 1. To proceed, first add the `ppa:graphics-drivers/ppa` repository into your system (you might see some warnings - press `enter`):
-
 
 ```bash
 sudo add-apt-repository ppa:graphics-drivers/ppa
@@ -151,12 +146,11 @@ sudo apt install -y ubuntu-drivers-common
 
 3. Next, identify your graphic card model and the recommended drivers:
 
-
 ```bash
 ubuntu-drivers devices
 ```
-You should see something similar to this this:
 
+You should see something similar to this this:
 
 ```bash
 == /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0 ==
@@ -174,14 +168,11 @@ driver   : xserver-xorg-video-nouveau - distro free builtin
 **410+**
 drivers release. As you can see v440 is recommended. The command below will install the recommended version of drivers:
 
-
 ```bash
 sudo ubuntu-drivers autoinstall
 ```
 
-
 Drivers will install for approximately 10 minutes.
-
 
 ```bash
 DKMS: install completed.
@@ -208,14 +199,14 @@ update-initramfs: Generating /boot/initrd.img-4.15.0-45-generic
 
 6. Check the installed drivers:
 
-
 ```bash
 nvidia-smi
 ```
+
 You should see this:
 (Some version/driver numbers migth differ. You also might have some processes already running)
 
-```
+```bash
 +-----------------------------------------------------------------------------+
 | NVIDIA-SMI 440.26       Driver Version: 430.14       CUDA Version: 10.2     |
 |-------------------------------+----------------------+----------------------+
@@ -272,13 +263,12 @@ sudo systemctl restart docker
 4. Test nvidia-smi with the latest official CUDA image
 
 ```bash
-docker run --runtime=nvidia --rm nvidia/cuda:10.0-base nvidia-smi
+docker run --gpus all nvidia/cuda:10.0-base nvidia-smi
 ```
 
 Output logs should coincide as earlier:
 
-
-```
+```bash
 Unable to find image 'nvidia/cuda:10.0-base' locally
 10.0-base: Pulling from nvidia/cuda
 38e2e6cd5626: Pull complete
@@ -289,7 +279,7 @@ c7051e069564: Pull complete
 8e2b19e62adb: Pull complete
 Digest: sha256:625491db7e15efcc78a529d3a2e41b77ffb5b002015983fdf90bf28955277d68
 Status: Downloaded newer image for nvidia/cuda:10.0-base
-Fri Feb  1 05:41:12 2019       
+Fri Feb  1 05:41:12 2019
 +-----------------------------------------------------------------------------+
 | NVIDIA-SMI 440.26      Driver Version: 440.26       CUDA Version: 10.0     |
 |-------------------------------+----------------------+----------------------+
@@ -322,7 +312,7 @@ mkdir /cyberd-dev/cyberdcli
 (This will pull and extract the image from cyberd/cyberd)
 
 ```bash
-docker run -d --name=euler-dev --restart always -p 26656:26656 -p 26657:26657 -p 1317:1317 -e ALLOW_SEARCH=true -v /cyberd-dev/cyberd:/root/.cyberd  -v /cyberd-dev/cyberdcli:/root/.cyberdcli  cyberd/cyberd:euler-dev
+docker run -d --gpus all --name=euler-dev --restart always -p 26656:26656 -p 26657:26657 -p 1317:1317 -e ALLOW_SEARCH=true -v /cyberd-dev/cyberd:/root/.cyberd  -v /cyberd-dev/cyberdcli:/root/.cyberdcli  cyberd/cyberd:euler-dev
 ```
 
 3. After successful pulling of the container and launching, run to check if your node is connected to the testnet:
@@ -345,18 +335,20 @@ You can follow the syncing process in the terminal. Open a new tab and run the f
 docker logs euler-dev --follow
 ```
 
-Additional information about the chain is available via an API endpoint at: `localhost:26657` (access via your browser) 
+Additional information about the chain is available via an API endpoint at: `localhost:26657` (access via your browser)
 
 e.i. the number of active validators is available at: `localhost:26657/validators`
 
 ## Validator start
+
 After your node has successfully synced, you can run a validator.
 
-#### Prepare the staking address
+### Prepare the staking address
 
-We included 1 million Ethereum addresses, over 8000 Cosmos addresses and all of `euler-4` validators addresses into  genesis, so there's a huge chance that you alredy have some EUL tokens. Here are 3 ways to check this: 
+We included 1 million Ethereum addresses, over 8000 Cosmos addresses and all of `euler-4` validators addresses into  genesis, so there's a huge chance that you alredy have some EUL tokens. Here are 3 ways to check this:
 
 If you already have a cyberd address with EUL and know the seed phrase or your private key, just restore it into your local keystore:
+
 ```bash
 docker exec -ti euler-dev cyberdcli keys add <your_key_name> --recover
 docker exec euler-dev cyberdcli keys show <your_key_name>
@@ -379,7 +371,7 @@ docker exec -ti euler-dev cyberdcli keys add <your_key_name>
 docker exec euler-dev cyberdcli keys show <your_key_name>
 ```
 
-You could use your ledger device with the Cosmos app installed on it to sign and store cyber addresses: [guide here](https://github.com/cybercongress/cyberd/blob/0.1.5/docs/cyberd_Ledger_guide.md). 
+You could use your ledger device with the Cosmos app installed on it to sign and store cyber addresses: [guide here](https://github.com/cybercongress/cyberd/blob/0.1.5/docs/cyberd_Ledger_guide.md).
 In common case use the --ledger flag, with your commands:
 
 ```bash
@@ -437,17 +429,16 @@ docker exec -ti euler-dev cyberdcli tx staking create-validator \
 docker exec -ti euler-dev cyberdcli query staking validators --trust-node=true
 ```
 
-If you see your `<your_node_nickname>` with status `Bonded` and Jailed `false` everything is good. 
+If you see your `<your_node_nickname>` with status `Bonded` and Jailed `false` everything is good.
 You are validating the network.
 
 ## Maintenance of the validator
 
-#### Jailing
+### Jailing
 
-If your validator got under slashing conditions, it will be jailed. 
+If your validator got under slashing conditions, it will be jailed.
 After such event, an operator must unjail the validator manually:
 
 ```bash
 docker exec -ti euler-dev cyberdcli tx slashing unjail --from=<your_key_name> --chain-id euler-dev
 ```
-
