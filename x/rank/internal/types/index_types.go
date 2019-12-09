@@ -48,6 +48,7 @@ type SearchIndex interface {
 	Run() GetError
 	Load(links link.Links)
 	Search(cidNumber link.CidNumber, page, perPage int) ([]RankedCidNumber, int, error)
+	Top(page, perPage int) ([]RankedCidNumber, int, error)
 	GetRankValue(cidNumber link.CidNumber) float64
 	PutNewLinks(links []link.CompactLink)
 	PutNewRank(rank Rank)
@@ -63,6 +64,9 @@ func (i NoopSearchIndex) Run() GetError {
 
 func (i NoopSearchIndex) Load(links link.Links) {}
 func (i NoopSearchIndex) Search(cidNumber link.CidNumber, page, perPage int) ([]RankedCidNumber, int, error) {
+	return nil, 0, errors.New("search is not allowed on this node")
+}
+func (i NoopSearchIndex) Top(page, perPage int) ([]RankedCidNumber, int, error) {
 	return nil, 0, errors.New("search is not allowed on this node")
 }
 func (i NoopSearchIndex) PutNewLinks(links []link.CompactLink) {}
