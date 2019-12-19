@@ -104,3 +104,7 @@ func (app *CyberdApp) LinksCount() uint64 {
 func (app *CyberdApp) AccsCount() uint64 {
 	return app.accountKeeper.GetNextAccountNumber(app.RpcContext())
 }
+
+func (app *CyberdApp) CurrentLinkedBandwidth() uint64 {
+	return app.bandwidthMeter.GetCurrentBandwidthLinked()
+}
