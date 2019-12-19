@@ -1,7 +1,7 @@
 
 # Join Cyberd devnet as a Validator
 
-**Note** The current active dev testnet is `euler-dev` (substitute <testnet_chain_id> with that value, do not forget to remove the `<` and the `>` symbols).
+**Note** The current active testnet is `euler-5` (substitute <testnet_chain_id> with that value, do not forget to remove the `<` and the `>` symbols).
 
 ## Prepare your server
 
@@ -58,7 +58,7 @@ sudo apt-get install \
      software-properties-common
 ```
 
-> You may require installing `curl` - `apt-get install curl`
+ It may require installing `curl` - `apt-get install curl`
 
 3. Add Docker’s official GPG key:
 
@@ -121,7 +121,7 @@ docker run -d --restart always -p 9000:9000 -v /var/run/docker.sock:/var/run/doc
 localhost:9000
 ```
 
-![](https://ipfs.io/ipfs/QmS42MJxjUB7Cu1GoJeE6eBmWkjHTZdgiAUcX4Qqy9NR3M)
+![portainer](https://ipfs.io/ipfs/QmS42MJxjUB7Cu1GoJeE6eBmWkjHTZdgiAUcX4Qqy9NR3M)
 
 4. Create a username and set a password. Chose the `local` tab and click `connect`.
 All the containers will be available in the `containers` tab on your dashboard.
@@ -249,7 +249,7 @@ deb https://nvidia.github.io/nvidia-container-runtime/ubuntu18.04/$(ARCH) /
 deb https://nvidia.github.io/nvidia-docker/ubuntu18.04/$(ARCH) /
 ```
 
-3. Install nvidia-docker2 and reload the Docker daemon configuration
+2. Install nvidia-docker2 and reload the Docker daemon configuration
 
 ```bash
 sudo apt-get update && sudo apt-get install -y nvidia-container-toolkit
@@ -260,7 +260,7 @@ sudo systemctl restart docker
 
 ```
 
-4. Test nvidia-smi with the latest official CUDA image
+3. Test nvidia-smi with the latest official CUDA image
 
 ```bash
 docker run --gpus all nvidia/cuda:10.0-base nvidia-smi
@@ -279,7 +279,7 @@ c7051e069564: Pull complete
 8e2b19e62adb: Pull complete
 Digest: sha256:625491db7e15efcc78a529d3a2e41b77ffb5b002015983fdf90bf28955277d68
 Status: Downloaded newer image for nvidia/cuda:10.0-base
-Fri Feb  1 05:41:12 2019
+Fri Nov  1 05:41:12 2019
 +-----------------------------------------------------------------------------+
 | NVIDIA-SMI 440.26      Driver Version: 440.26       CUDA Version: 10.0     |
 |-------------------------------+----------------------+----------------------+
@@ -312,27 +312,27 @@ mkdir /cyberd-dev/cyberdcli
 (This will pull and extract the image from cyberd/cyberd)
 
 ```bash
-docker run -d --gpus all --name=euler-dev --restart always -p 26656:26656 -p 26657:26657 -p 1317:1317 -e ALLOW_SEARCH=true -v /cyberd-dev/cyberd:/root/.cyberd  -v /cyberd-dev/cyberdcli:/root/.cyberdcli  cyberd/cyberd:euler-dev
+docker run -d --gpus all --name=euler-5 --restart always -p 26656:26656 -p 26657:26657 -p 1317:1317 -e ALLOW_SEARCH=true -v /cyberd-dev/cyberd:/root/.cyberd  -v /cyberd-dev/cyberdcli:/root/.cyberdcli  cyberd/cyberd:euler-5
 ```
 
 3. After successful pulling of the container and launching, run to check if your node is connected to the testnet:
 
 ```bash
-docker exec euler-dev cyberdcli status
+docker exec euler-5 cyberdcli status
 ```
 
 A possible output looks like this:
 
 ```bash
-{"node_info":{"protocol_version":{"p2p":"6","block":"9","app":"0"},"id":"93b776d3eb3f3ce9d9bda7164bc8af3acacff7b6","listen_addr":"tcp://0.0.0.0:26656","network":"euler-dev","version":"0.32.7","channels":"4020212223303800","moniker":"anon","other":{"tx_index":"on","rpc_address":"tcp://0.0.0.0:26657"}},"sync_info":{"latest_block_hash":"686B4E65415D4E56D3B406153C965C0897D0CE27004E9CABF65064B6A0ED4240","latest_app_hash":"0A1F6D260945FD6E926785F07D41049B8060C60A132F5BA49DD54F7B1C5B2522","latest_block_height":"4553","latest_block_time":"2019-11-24T09:49:19.771375108Z","catching_up":false},"validator_info":{"address":"66098853CF3B61C4313DD487BA21EDF8DECACDF0","pub_key":{"type":"tendermint/PubKeyEd25519","value":"uZrCCdZTJoHE1/v+EvhtZufJgA3zAm1bN4uZA3RyvoY="},"voting_power":"0"}}
+{"node_info":{"protocol_version":{"p2p":"6","block":"9","app":"0"},"id":"93b776d3eb3f3ce9d9bda7164bc8af3acacff7b6","listen_addr":"tcp://0.0.0.0:26656","network":"euler-5","version":"0.32.7","channels":"4020212223303800","moniker":"anon","other":{"tx_index":"on","rpc_address":"tcp://0.0.0.0:26657"}},"sync_info":{"latest_block_hash":"686B4E65415D4E56D3B406153C965C0897D0CE27004E9CABF65064B6A0ED4240","latest_app_hash":"0A1F6D260945FD6E926785F07D41049B8060C60A132F5BA49DD54F7B1C5B2522","latest_block_height":"4553","latest_block_time":"2019-11-24T09:49:19.771375108Z","catching_up":false},"validator_info":{"address":"66098853CF3B61C4313DD487BA21EDF8DECACDF0","pub_key":{"type":"tendermint/PubKeyEd25519","value":"uZrCCdZTJoHE1/v+EvhtZufJgA3zAm1bN4uZA3RyvoY="},"voting_power":"0"}}
 ```
 
-Your node has started to sync. If that didn't happen, check your config.toml file located at /<your euler-dev directory>/cyberd/config/config.toml and add at least a couple of addresses to <persistent_peers = ""> and <seeds = "">, some of those you can fing on our [forum](https://ai.cybercongress.ai/t/euler-dev-testnet/32).
+Your node has started to sync. If that didn't happen, check your config.toml file located at /<your euler-5 directory>/cyberd/config/config.toml and add at least a couple of addresses to <persistent_peers = ""> and <seeds = "">, some of those you can fing on our [forum](https://ai.cybercongress.ai/t/euler-5-testnet/38).
 
 You can follow the syncing process in the terminal. Open a new tab and run the following command:
 
 ```bash
-docker logs euler-dev --follow
+docker logs euler-5 --follow
 ```
 
 Additional information about the chain is available via an API endpoint at: `localhost:26657` (access via your browser)
@@ -350,8 +350,8 @@ We included 1 million Ethereum addresses, over 8000 Cosmos addresses and all of 
 If you already have a cyberd address with EUL and know the seed phrase or your private key, just restore it into your local keystore:
 
 ```bash
-docker exec -ti euler-dev cyberdcli keys add <your_key_name> --recover
-docker exec euler-dev cyberdcli keys show <your_key_name>
+docker exec -ti euler-5 cyberdcli keys add <your_key_name> --recover
+docker exec euler-5 cyberdcli keys show <your_key_name>
 ```
 
 If you have an Ethereum address that had ~0.2Eth or more at block 8080808 (on the ETH network), you can import your Ethereum private key. To do this, please check out our Ethereum [gift tool](qhttps://github.com/cybercongress/launch-kit/tree/0.1.0/ethereum_gift_tool)
@@ -359,23 +359,23 @@ If you have an Ethereum address that had ~0.2Eth or more at block 8080808 (on th
 > Please do not import high value Ethereum accounts. This is not safe! cyberd software is a new and has not been battle tested yet.
 
 ```bash
-docker exec -ti euler-dev cyberdcli keys add import_private <your_key_name>
-docker exec euler-dev cyberdcli keys show <your_key_name>
+docker exec -ti euler-5 cyberdcli keys add import_private <your_key_name>
+docker exec euler-5 cyberdcli keys show <your_key_name>
 ```
 
 If you want to create a new acccount, use the command below:
 (You should send coins to that address to bound them later during the submitting of the validator)
 
 ```bash
-docker exec -ti euler-dev cyberdcli keys add <your_key_name>
-docker exec euler-dev cyberdcli keys show <your_key_name>
+docker exec -ti euler-5 cyberdcli keys add <your_key_name>
+docker exec euler-5 cyberdcli keys show <your_key_name>
 ```
 
 You could use your ledger device with the Cosmos app installed on it to sign and store cyber addresses: [guide here](https://github.com/cybercongress/cyberd/blob/0.1.5/docs/cyberd_Ledger_guide.md).
 In common case use the --ledger flag, with your commands:
 
 ```bash
-docker exec -ti euler-dev cyberdcli keys add <your_key_name> --ledger
+docker exec -ti euler-5 cyberdcli keys add <your_key_name> --ledger
 ```
 
 **<your_key_name>** is any name you pick to represent this key pair.
@@ -400,7 +400,7 @@ not the public key of the address you have just created.
 To get the nodes public key, run the following command:
 
 ```bash
-docker exec euler-dev cyberd tendermint show-validator
+docker exec euler-5 cyberd tendermint show-validator
 ```
 
 It will return a bech32 public key. Let’s call it **<your_node_pubkey>**.
@@ -410,7 +410,7 @@ So the validator candidate is an account this time.
 To declare a validator candidate, run the following command adjusting the stake amount and the other fields:
 
 ```bash
-docker exec -ti euler-dev cyberdcli tx staking create-validator \
+docker exec -ti euler-5 cyberdcli tx staking create-validator \
   --amount=10000000eul \
   --min-self-delegation "1000000" \
   --pubkey=<your_node_pubkey> \
@@ -420,13 +420,13 @@ docker exec -ti euler-dev cyberdcli tx staking create-validator \
   --commission-rate="0.10" \
   --commission-max-rate="0.20" \
   --commission-max-change-rate="0.01" \
-  --chain-id=euler-dev
+  --chain-id=euler-5
 ```
 
 #### Verify that you are validating
 
 ```bash
-docker exec -ti euler-dev cyberdcli query staking validators --trust-node=true
+docker exec -ti euler-5 cyberdcli query staking validators --trust-node=true
 ```
 
 If you see your `<your_node_nickname>` with status `Bonded` and Jailed `false` everything is good.
@@ -440,5 +440,5 @@ If your validator got under slashing conditions, it will be jailed.
 After such event, an operator must unjail the validator manually:
 
 ```bash
-docker exec -ti euler-dev cyberdcli tx slashing unjail --from=<your_key_name> --chain-id euler-dev
+docker exec -ti euler-5 cyberdcli tx slashing unjail --from=<your_key_name> --chain-id euler-5
 ```

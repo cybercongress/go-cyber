@@ -1,6 +1,6 @@
 
-## How to get CYB?
+# How to get CYB
 
-Not until we setup `CYB` faucet you can get cyb just asking cyberadmin for that in our [devChat](https://t.me/fuckgoogle)
+Cyberd is not in the mainnet yet, so there's no straight way to get CYB now. Nevertheless you could participate in the [Game of Links](https://cybercongress.ai/game-of-links/) during `euler-5` to gain some CYB right in the Genesis.
 
-This method is actual only in `Euler-4` testnet.
+Also go ahead and [run validator](https://github.com/cybercongress/cyberd/blob/master/docs/run_validator.md) to  get more reward.
