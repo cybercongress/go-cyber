@@ -15,7 +15,7 @@ else
 fi
 
 # Start the first process
-cyberd start --compute-rank-on-gpu=${COMPUTE_GPU} --allow-search=${ALLOW_SEARCH_FLAG}
+cyberd start --compute-rank-on-gpu=${COMPUTE_GPU} --allow-search=${ALLOW_SEARCH_FLAG} &
 #status=$?
 #if [ $status -ne 0 ]; then
 #  echo "Failed to start cyberd: $status"
@@ -23,7 +23,7 @@ cyberd start --compute-rank-on-gpu=${COMPUTE_GPU} --allow-search=${ALLOW_SEARCH_
 #fi
 #
 ## Start the second process
-#cyberdcli rest-server --cors=* --trust-node --chain-id=euler-3 --laddr=tcp://0.0.0.0:1317 --indent --home=/root/.cyberdcli_fakepath . &
+cyberdcli rest-server  --trust-node --chain-id=euler-5 --laddr=tcp://0.0.0.0:1317 --indent --home=/root/.cyberdcli
 #status=$?
 #if [ $status -ne 0 ]; then
 #  echo "Failed to start cyberd light-client: $status"

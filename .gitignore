@@ -12,8 +12,6 @@ node_modules/
 *.so
 *.o
 
-/cyberd
-/cyberdcli
 
 mytestnet
 euler-*
