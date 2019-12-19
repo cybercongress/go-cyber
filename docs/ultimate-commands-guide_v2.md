@@ -1,6 +1,6 @@
 # Ultimate cyberd CLI guide. Testnet: Euler-3
 
-### If something wrong...
+## If something wrong...
 
   First of all I would like to encourage you to use  `--help` feature if you want to get better experience of using cyberdcli. This is really easy way to find all necessary commands with options and flags.
 
@@ -103,7 +103,7 @@ Global Flags:
 
   ```bash
   --from=<your_key_name> \
-  --chain-id=<testnet_chain_id>
+  --chain-id=euler-5
   ```
 
   That it. This is very useful ability for using cyberdcli and troubleshooting.
@@ -140,7 +140,7 @@ Global Flags:
 
   **<shares_percentage>** - the part of illiquid tokens that you want to unbonding or redelegate. Must be fraction >0 and <=1
 
-  **<testnet_chain_id>** - version of testnet.
+  **<testnet_chain_id>** - version of testnet(current is euler-5).
 
 ## General commands
 
@@ -216,7 +216,7 @@ Name, address and public key of current account
 docker exec euler-5 cyberdcli keys show <your_key_name>
 ```
 
-### Show account balance.
+### Show account balance
 
 Return account number, balance, public key in 16 and sequence.
 >Don't work if from current account no outgoing transactions. [Issue in progress](https://github.com/cybercongress/cyberd/issues/238)
@@ -248,9 +248,8 @@ docker exec -ti euler-5 cyberdcli keys update <your_key_name>
 ### Send tokens
 
 ```bash
-docker exec -ti euler-5 cyberdcli tx send <to_address> <amount_cyb> \
-  --from=<your_key_name> \
-  --chain-id=<testnet_chain_id>
+docker exec -ti euler-5 cyberdcli tx send <from_key_or_address> <to_address> <amount_eul> \
+  --chain-id=euler-5
 ```
 
 ### Linking content
@@ -262,7 +261,7 @@ docker exec -ti euler-5 cyberdcli link \
   --from=<your_key_name> \
   --cid-from=<key_phrase_to_link> \
   --cid-to=<content_that_you_want_to_link> \
-  --chain-id=<testnet_chain_id>
+  --chain-id=euler-5
 ```
 
 ## Validator commands
@@ -300,7 +299,7 @@ docker exec euler-5 cyberdcli query staking delegations-to <operator_address>
 docker exec -ti euler-5 cyberdcli tx staking edit-validator \
   --from=<your_key_name> \
   --commission-rate=<new_comission_rate_percentage> \
-  --chain-id=<testnet_chain_id>
+  --chain-id=euler-5
 ```
 
 ### Withdraw commission for either a delegation
@@ -308,7 +307,7 @@ docker exec -ti euler-5 cyberdcli tx staking edit-validator \
 ```bash
 docker exec -ti euler-5 cyberdcli tx distr withdraw-rewards <operator_address> \
   --from=<your_key_name> \
-  --chain-id=<testnet_chain_id> \
+  --chain-id=euler-5 \
   --commission
 ```
 
@@ -321,7 +320,7 @@ docker exec -ti euler-5 cyberdcli tx staking edit-validator \
   --from=<your_key_name> \
   --details="<description>" \
   --website=<your_website> \
-  --chain-id=<testnet_chain_id>
+  --chain-id=euler-5
 ```
 
 ### Unjail validator previously jailed for downtime
@@ -329,7 +328,7 @@ docker exec -ti euler-5 cyberdcli tx staking edit-validator \
 ```bash
 docker exec -ti euler-5 cyberdcli tx slashing unjail \
   --from=<your_key_name> \
-  --chain-id=<testnet_chain_id>
+  --chain-id=euler-5
 ```
 
 ### Get info about redelegation process from validator
@@ -369,7 +368,7 @@ docker exec -ti euler-5 cyberdcli query staking unbonding-delegations-from <oper
 ```bash
 docker exec -ti euler-5 cyberdcli tx distr withdraw-rewards <operator_address> \
   --from=<your_key_name> \
-  --chain-id=<testnet_chain_id>
+  --chain-id=euler-5
 ```
 
 ### Withdraw all delegation rewards
@@ -377,7 +376,7 @@ docker exec -ti euler-5 cyberdcli tx distr withdraw-rewards <operator_address> \
 ```bash
 docker exec -ti euler-5 cyberdcli tx distr withdraw-all-rewards \
   --from=<your_key_name> \
-  --chain-id=<testnet_chain_id>
+  --chain-id=euler-5
 ```
 
 ### Change the default withdraw address for rewards associated with an address
@@ -385,7 +384,7 @@ docker exec -ti euler-5 cyberdcli tx distr withdraw-all-rewards \
 ```bash
 docker exec -ti euler-5 cyberdcli tx distr set-withdraw-addr <your_new_address> \
   --from=<your_key_name> \
-  --chain-id=<testnet_chain_id>
+  --chain-id=euler-5
 ```
 
 ### Delegate liquid tokens to a validator
@@ -393,7 +392,7 @@ docker exec -ti euler-5 cyberdcli tx distr set-withdraw-addr <your_new_address> 
 ```bash
 docker exec -ti euler-5 cyberdcli tx staking delegate <operator_address> <amount_cyb> \
   --from=<your_key_name> \
-  --chain-id=<testnet_chain_id>
+  --chain-id=euler-5
 ```
 
 ### Redelegate illiquid tokens from one validator to another in absolute cyb value
@@ -403,7 +402,7 @@ docker exec -ti euler-5 cyberdcli tx staking delegate <operator_address> <amount
 ```bash
 docker exec -ti euler-5 cyberdcli tx staking redelegate <old_operator_address> <new_operator_address> <amount_cyb>
   --from=<your_key_name> \
-  --chain-id=<testnet_chain_id>
+  --chain-id=euler-5
 ```
 
 ### Redelegate illiquid tokens from one validator to another in percentages
@@ -411,7 +410,7 @@ docker exec -ti euler-5 cyberdcli tx staking redelegate <old_operator_address> <
 ```bash
 docker exec -ti euler-5 cyberdcli tx staking redelegate <old_operator_address> <new_operator_address> <shares_percentage>
   --from=<your_key_name> \
-  --chain-id=<testnet_chain_id>
+  --chain-id=euler-5
 ```
 
 ### Unbond shares from a validator in absolute cyb value
@@ -421,7 +420,7 @@ docker exec -ti euler-5 cyberdcli tx staking redelegate <old_operator_address> <
 ```bash
 docker exec -ti euler-5 cyberdcli tx staking unbond <operator_address> <amount_cyb>
   --from=<your_key_name> \
-  --chain-id=<testnet_chain_id>
+  --chain-id=euler-5
 ```
 
 ### Unbond shares from a validator in percentages
@@ -431,7 +430,7 @@ docker exec -ti euler-5 cyberdcli tx staking unbond <operator_address> <amount_c
 ```bash
 docker exec -ti euler-5 cyberdcli tx staking unbond <operator_address> <shares_percentage>
   --from=<your_key_name> \
-  --chain-id=<testnet_chain_id>
+  --chain-id=euler-5
 ```
 
 ### Get info about unbonding delegation process to current validator
