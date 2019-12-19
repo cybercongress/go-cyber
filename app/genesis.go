@@ -18,6 +18,7 @@ import (
 	"github.com/cybercongress/cyberd/types/coin"
 	"github.com/cybercongress/cyberd/x/bandwidth"
 	"github.com/cybercongress/cyberd/x/rank"
+	"github.com/cosmwasm/wasmd/x/wasm"
 	"github.com/pkg/errors"
 	"github.com/tendermint/go-amino"
 	tmtypes "github.com/tendermint/tendermint/types"
@@ -45,6 +46,7 @@ type GenesisState struct {
 	RankData      rank.GenesisState      `json:"rank"`
 	GenTxs        []json.RawMessage      `json:"gentxs"`
 	Crisis        crisis.GenesisState    `json:"crisis"`
+	Wasm          wasm.GenesisState      `json:"wasm"`
 }
 
 func (gs *GenesisState) GetAddresses() []sdk.AccAddress {
@@ -61,7 +63,7 @@ func NewGenesisState(
 	mintData mint.GenesisState, distrData distr.GenesisState,
 	govData gov.GenesisState, supplyData supply.GenesisState,
 	slashingData slashing.GenesisState, bandwidthData bandwidth.GenesisState,
-	rankData rank.GenesisState, crisisData crisis.GenesisState,
+	rankData rank.GenesisState, crisisData crisis.GenesisState, wasmData wasm.GenesisState,
 ) GenesisState {
 
 	return GenesisState{
@@ -77,6 +79,7 @@ func NewGenesisState(
 		BandwidthData: bandwidthData,
 		RankData:      rankData,
 		Crisis:        crisisData,
+		Wasm:          wasmData,
 	}
 }
 
@@ -205,6 +208,7 @@ func NewDefaultGenesisState() GenesisState {
 		RankData:      rank.DefaultGenesisState(),
 		GenTxs:        []json.RawMessage{},
 		Crisis: 	   crisis.GenesisState{ ConstantFee: sdk.NewCoin(coin.CYB, sdk.NewInt(1000)) },
+		Wasm:          wasm.GenesisState{},
 	}
 }
 
@@ -283,6 +287,9 @@ func validateGenesisState(genesisState GenesisState) error {
 		return err
 	}
 	if err := rank.ValidateGenesis(genesisState.RankData); err != nil {
+		return err
+	}
+	if err := wasm.ValidateGenesis(genesisState.Wasm); err != nil {
 		return err
 	}
 	return staking.ValidateGenesis(genesisState.StakingData)

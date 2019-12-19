@@ -1,4 +1,4 @@
-package app
+	package app
 
 import (
 	bam "github.com/cosmos/cosmos-sdk/baseapp"
@@ -11,6 +11,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/slashing"
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	"github.com/cosmos/cosmos-sdk/x/supply"
+	"github.com/cosmwasm/wasmd/x/wasm"
 )
 
 type cyberdAppDbKeys struct {
@@ -33,6 +34,7 @@ type cyberdAppDbKeys struct {
 	accBandwidth   *sdk.KVStoreKey
 	blockBandwidth *sdk.KVStoreKey
 	mint           *sdk.KVStoreKey
+	wasm           *sdk.KVStoreKey
 }
 
 func NewCyberdAppDbKeys() cyberdAppDbKeys {
@@ -49,6 +51,7 @@ func NewCyberdAppDbKeys() cyberdAppDbKeys {
 		params:   sdk.NewKVStoreKey(params.StoreKey),
 		tParams:  sdk.NewTransientStoreKey(params.TStoreKey),
 		mint:     sdk.NewKVStoreKey(mint.StoreKey),
+		wasm:     sdk.NewKVStoreKey(wasm.StoreKey),
 
 		cidNum:         sdk.NewKVStoreKey("cid_index"),
 		cidNumReverse:  sdk.NewKVStoreKey("cid_index_reverse"),

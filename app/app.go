@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
 	"sort"
 	"time"
 
@@ -22,6 +23,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/slashing"
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	"github.com/cosmos/cosmos-sdk/x/supply"
+	"github.com/cosmwasm/wasmd/x/wasm"
 	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/abci/version"
 	cmn "github.com/tendermint/tendermint/libs/common"
@@ -37,6 +39,7 @@ import (
 	cbdbank "github.com/cybercongress/cyberd/x/bank"
 	"github.com/cybercongress/cyberd/x/link"
 	"github.com/cybercongress/cyberd/x/rank"
+
 )
 
 const (
@@ -61,7 +64,7 @@ var (
 		crisis.AppModuleBasic{},
 		slashing.AppModuleBasic{},
 		supply.AppModuleBasic{},
-
+		wasm.AppModuleBasic{},
 		link.AppModuleBasic{},
 		bw.AppModuleBasic{},
 		rank.AppModuleBasic{},
@@ -108,6 +111,7 @@ type CyberdApp struct {
 	paramsKeeper       params.Keeper
 	crisisKeeper       crisis.Keeper
 	accBandwidthKeeper bw.Keeper
+	wasmKeeper         wasm.Keeper
 
 	// cyberd storage
 	// todo: move all processes with this storages to another file
@@ -181,6 +185,9 @@ func NewCyberdApp(logger log.Logger, db dbm.DB, traceStore io.Writer, height int
 	app.accBandwidthKeeper = bw.NewAccBandwidthKeeper(dbKeys.accBandwidth, &bandwidthSubspace)
 	app.blockBandwidthKeeper = bw.NewBlockSpentBandwidthKeeper(dbKeys.blockBandwidth)
 
+	wasmDir := filepath.Join(DefaultNodeHome, "wasm")
+	app.wasmKeeper = wasm.NewKeeper(app.cdc, dbKeys.wasm, app.accountKeeper, app.bankKeeper, app.Router(), wasmDir)
+
 	// register the proposal types
 	govRouter := gov.NewRouter().
 		AddRoute(gov.RouterKey, gov.ProposalHandler).
@@ -226,7 +233,7 @@ func NewCyberdApp(logger log.Logger, db dbm.DB, traceStore io.Writer, height int
 		mint.NewAppModule(app.mintKeeper),
 		slashing.NewAppModule(app.slashingKeeper, app.stakingKeeper),
 		staking.NewAppModule(app.stakingKeeper, app.distrKeeper, app.accountKeeper, app.supplyKeeper),
-
+		wasm.NewAppModule(app.wasmKeeper),
 		bw.NewAppModule(app.accBandwidthKeeper, app.blockBandwidthKeeper),
 		link.NewAppModule(app.cidNumKeeper, app.linkIndexedKeeper, app.accountKeeper),
 		rank.NewAppModule(app.rankStateKeeper),
@@ -295,7 +302,7 @@ func NewCyberdApp(logger log.Logger, db dbm.DB, traceStore io.Writer, height int
 	return app
 }
 
-func (app *CyberdApp) applyGenesis(ctx sdk.Context, req abci.RequestInitChain) abci.ResponseInitChain {
+func (app *CyberdApp) 		applyGenesis(ctx sdk.Context, req abci.RequestInitChain) abci.ResponseInitChain {
 	start := time.Now()
 	app.Logger().Info("Applying genesis")
 	var genesisState GenesisState
@@ -374,6 +381,8 @@ func (app *CyberdApp) applyGenesis(ctx sdk.Context, req abci.RequestInitChain) a
 			}
 		}
 	}
+
+	wasm.InitGenesis(ctx, app.wasmKeeper, genesisState.Wasm)
 
 	app.Logger().Info("Genesis applied", "time", time.Since(start))
 	return abci.ResponseInitChain{
