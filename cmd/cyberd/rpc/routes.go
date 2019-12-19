@@ -23,7 +23,7 @@ var Routes = map[string]*rpcserver.RPCFunc{
 	"current_bandwidth_price": rpcserver.NewRPCFunc(CurrentBandwidthPrice, ""),
 	"index_stats":             rpcserver.NewRPCFunc(IndexStats, ""),
 
-	"staking/validators": rpcserver.NewRPCFunc(StakingValidators, ""),
+	"staking/validators": rpcserver.NewRPCFunc(StakingValidators, "page,limit,status"),
 	"staking/pool":       rpcserver.NewRPCFunc(StakingPool, ""),
 
 	// routes required cuz of amino.js not exists yet.

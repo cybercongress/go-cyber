@@ -7,15 +7,21 @@ import (
 	"github.com/tendermint/tendermint/rpc/lib/types"
 )
 
-func StakingValidators(ctx *rpctypes.Context) ([]sdk.Validator, error) {
+func StakingValidators(ctx *rpctypes.Context, page, limit int, status string) ([]sdk.Validator, error) {
+
+	queryValsParams := staking.NewQueryValidatorsParams(page, limit, status)
+	bz, err := codec.MarshalJSON(queryValsParams)
+	if err != nil {
+		return nil, err
+	}
 
 	respQuery := cyberdApp.Query(abci.RequestQuery{
 		Path:  "custom/staking/validators",
-		Prove: false,
+		Data: bz,
 	})
 
 	validators := make([]sdk.Validator, 0)
-	err := codec.UnmarshalJSON(respQuery.Value, &validators)
+	err = codec.UnmarshalJSON(respQuery.Value, &validators)
 	if err != nil {
 		return nil, err
 	}
