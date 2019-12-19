@@ -28,6 +28,7 @@ type BaseBandwidthMeter struct {
 	currentCreditPrice         float64
 	bandwidthSpent             map[uint64]uint64 // bandwidth spent by blocks
 	totalSpentForSlidingWindow uint64
+	bandwidthSpentLinking      uint64
 }
 
 func NewBaseMeter(
@@ -86,6 +87,7 @@ func (m *BaseBandwidthMeter) CommitBlockBandwidth(ctx sdk.Context) {
 	}
 	m.blockBandwidthKeeper.SetBlockSpentBandwidth(ctx, uint64(ctx.BlockHeight()), m.curBlockSpentBandwidth)
 	m.bandwidthSpent[uint64(newWindowEnd)] = m.curBlockSpentBandwidth
+	m.bandwidthSpentLinking += m.curBlockSpentBandwidth
 	m.curBlockSpentBandwidth = 0
 }
 
@@ -180,6 +182,10 @@ func (m *BaseBandwidthMeter) UpdateLinkedBandwidth(ctx sdk.Context, bw types.Ac—
 
 func (m *BaseBandwidthMeter) GetCurrentCreditPrice() float64 {
 	return m.currentCreditPrice
+}
+
+func (m *BaseBandwidthMeter) GetCurrentBandwidthLinked() uint64 {
+	return m.bandwidthSpentLinking
 }
 
 func (m *BaseBandwidthMeter) GetParamSet(ctx sdk.Context) (params Params) {

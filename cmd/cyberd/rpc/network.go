@@ -7,6 +7,7 @@ type ResultIndexStats struct {
 	CidsCount  uint64 `json:"cidsCount"`
 	LinksCount uint64 `json:"linksCount"`
 	AccsCount  uint64 `json:"accsCount"`
+	BandLinked uint64 `json:"karmaAll"`
 }
 
 func IndexStats(ctx *rpctypes.Context) (*ResultIndexStats, error) {
@@ -15,5 +16,6 @@ func IndexStats(ctx *rpctypes.Context) (*ResultIndexStats, error) {
 	stats.CidsCount = cyberdApp.CidsCount()
 	stats.LinksCount = cyberdApp.LinksCount()
 	stats.AccsCount = cyberdApp.AccsCount()
+	stats.BandLinked = cyberdApp.CurrentLinkedBandwidth()
 	return stats, nil
 }

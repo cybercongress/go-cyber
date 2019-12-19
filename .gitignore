@@ -12,7 +12,12 @@ node_modules/
 *.so
 *.o
 
-cyberd
-cyberdcli
+/cyberd
+/cyberdcli
 
 mytestnet
+euler-*
+
+config.toml
+genesis.json
+links

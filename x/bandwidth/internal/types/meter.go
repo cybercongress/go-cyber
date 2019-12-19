@@ -23,6 +23,8 @@ type BandwidthMeter interface {
 	AdjustPrice(ctx sdk.Context)
 	// get current bandwidth price
 	GetCurrentCreditPrice() float64
+	// get current used linked bandwidth
+	GetCurrentBandwidthLinked() uint64
 	// commit bandwidth value spent for current block
 	CommitBlockBandwidth(ctx sdk.Context)
 	// Update acc max bandwidth for current stake. Also, performs recover.

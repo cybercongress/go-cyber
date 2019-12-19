@@ -12,7 +12,7 @@ type AcсBandwidth struct {
 	RemainedValue    int64          `json:"remained"`
 	LastUpdatedBlock int64          `json:"last_updated_block"`
 	MaxValue         int64          `json:"max_value"`
-	Linked           int64         `json:"linked"`
+	Linked           int64          `json:"karma"`
 }
 
 func (bs *AcсBandwidth) UpdateMax(newValue int64, currentBlock int64, recoveryPeriod int64) {
