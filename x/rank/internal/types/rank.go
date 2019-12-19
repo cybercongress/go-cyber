@@ -4,9 +4,12 @@ import (
 	"crypto/sha256"
 	"encoding/binary"
 	"math"
+	"sort"
 	"time"
 
 	"github.com/cybercongress/cyberd/merkle"
+	"github.com/cybercongress/cyberd/x/link"
+
 	"github.com/tendermint/tendermint/libs/log"
 )
 
@@ -14,6 +17,7 @@ type Rank struct {
 	Values     []float64
 	MerkleTree *merkle.Tree
 	CidCount   uint64
+	TopCIDs	   []RankedCidNumber
 }
 
 func NewRank(values []float64, logger log.Logger, fullTree bool) Rank {
@@ -25,7 +29,18 @@ func NewRank(values []float64, logger log.Logger, fullTree bool) Rank {
 		merkleTree.Push(rankBytes)
 	}
 	logger.Info("Rank constructing tree", "time", time.Since(start))
-	return Rank{Values: values, MerkleTree: merkleTree, CidCount: uint64(len(values))}
+
+	newSortedCIDs := make(sortableCidNumbers, 0, len(values))
+	for cid, rank := range values {
+		newRankedCid := RankedCidNumber{link.CidNumber(cid), rank}
+		newSortedCIDs = append(newSortedCIDs, newRankedCid)
+	}
+	sort.Stable(sort.Reverse(newSortedCIDs))
+	if (len(values)) > 1000 {
+		newSortedCIDs = newSortedCIDs[0:999]
+	}
+
+	return Rank{Values: values, MerkleTree: merkleTree, CidCount: uint64(len(values)), TopCIDs: newSortedCIDs}
 }
 
 func NewFromMerkle(cidCount uint64, treeBytes []byte) Rank {
@@ -33,6 +48,7 @@ func NewFromMerkle(cidCount uint64, treeBytes []byte) Rank {
 		Values:     nil,
 		MerkleTree: merkle.NewTree(sha256.New(), false),
 		CidCount:   cidCount,
+		TopCIDs:    nil,
 	}
 
 	rank.MerkleTree.ImportSubtreesRoots(treeBytes)
@@ -47,12 +63,13 @@ func (r *Rank) Clear() {
 	r.Values = nil
 	r.MerkleTree = nil
 	r.CidCount = 0
+	r.TopCIDs = nil
 }
 
 func (r *Rank) CopyWithoutTree() Rank {
 
 	if r.Values == nil {
-		return Rank{Values: nil, MerkleTree: nil, CidCount: 0}
+		return Rank{Values: nil, MerkleTree: nil, CidCount: 0, TopCIDs: nil}
 	}
 
 	copiedValues := make([]float64, len(r.Values))
@@ -61,7 +78,7 @@ func (r *Rank) CopyWithoutTree() Rank {
 	if n != len(r.Values) {
 		panic("Not all rank values have been copied")
 	}
-	return Rank{Values: copiedValues, MerkleTree: nil, CidCount: r.CidCount}
+	return Rank{Values: copiedValues, MerkleTree: nil, CidCount: r.CidCount, TopCIDs: r.TopCIDs}
 }
 
 // TODO: optimize. Possible solution: adjust capacity of rank values slice after rank calculation

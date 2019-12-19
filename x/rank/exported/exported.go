@@ -23,6 +23,7 @@ type StateKeeper interface {
 	EndBlocker(sdk.Context, log.Logger)
 
 	Search(cidNumber link.CidNumber, page, perPage int) ([]types.RankedCidNumber, int, error)
+	Top(page, perPage int) ([]types.RankedCidNumber, int, error)
 
 	GetRankValue(link.CidNumber) float64
 	GetNetworkRankHash() []byte

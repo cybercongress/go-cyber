@@ -99,6 +99,27 @@ func (i *BaseSearchIndex) Search(cidNumber link.CidNumber, page, perPage int) ([
 	return resultSet, totalSize, nil
 }
 
+func (i *BaseSearchIndex) Top(page, perPage int) ([]RankedCidNumber, int, error) {
+	if i.locked {
+		return nil, 0, errors.New("search index currently unavailable after node restart")
+	}
+
+	totalSize := len(i.rank.TopCIDs)
+	startIndex := page * perPage
+	if startIndex >= totalSize {
+		return nil, totalSize, errors.New("page not found")
+	}
+
+	endIndex := startIndex + perPage
+	if endIndex > totalSize {
+		endIndex = startIndex + (totalSize % perPage)
+	}
+
+	resultSet := i.rank.TopCIDs[startIndex:endIndex]
+
+	return resultSet, totalSize, nil
+}
+
 // make sure that this link (from-to) is new
 func (i *BaseSearchIndex) handleLink(link link.CompactLink) {
 

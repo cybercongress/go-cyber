@@ -44,6 +44,24 @@ func (app *CyberdApp) Search(cid string, page, perPage int) ([]RankedCid, int, e
 	return result, size, nil
 }
 
+func (app *CyberdApp) Top(page, perPage int) ([]RankedCid, int, error) {
+
+	ctx := app.RpcContext()
+
+	rankedCidNumbers, size, err := app.rankStateKeeper.Top(page, perPage)
+
+	if err != nil {
+		return nil, size, err
+	}
+
+	result := make([]RankedCid, 0, len(rankedCidNumbers))
+	for _, c := range rankedCidNumbers {
+		result = append(result, RankedCid{Cid: app.cidNumKeeper.GetCid(ctx, c.GetNumber()), Rank: c.GetRank()})
+	}
+
+	return result, size, nil
+}
+
 func (app *CyberdApp) Rank(cid string, proof bool) (float64, []merkle.Proof, error) {
 
 	cidNumber, exists := app.cidNumKeeper.GetCidNumber(app.RpcContext(), link.Cid(cid))
