@@ -4,7 +4,7 @@ In this guide, you'll find the full information on how to set up your validator 
 
 ## Preparing your Ledger
 
-We assume you have one. If not, only buy them from trusted sources! 
+We assume you have one. If not, only buy them from trusted sources!
 
 First of all, we'll need to prepare the Ledger to be able to work with Tendermint KMS.
 We need to install the Tendermint app onto the Ledger using Ledger Live.
@@ -50,7 +50,8 @@ After compiling, we should create a settings file - `tmkms.toml`, the `secret_co
 First of all, we need to generate a connection key that will be used for communication with the Ledger device. In order to do this `cd` to the directory with tmkms executable and run the following (path to save the file is optional):
 
 ```py
-tmkms softsign keygen ~/.tmkms/secret_connection.key
+cd <your_KMS_directory>/target/release/
+./tmkms softsign keygen ~/.tmkms/secret_connection.key
 ```
 
 Once you are done with the connection key, proceed to the config file. It could be created anywhere. It is possible to specify the path to it during tmkms launch.
@@ -102,7 +103,7 @@ Take *note* of the validator pubkey that appears on your screen. We will use it 
 
 ## Configuration of Cyberd
 
-Before we start validating, it's necessary to enanble a communication port at `cyberd` itself.  In the config file: `<your_cyberd_location>/cyberd/config/config.toml`, modify the `priv_validator_laddr` value to create a listening address/port. The port should be set according with the `[[validator]] addr = ` value of your `tmkms.toml` file.
+Before we start validating, it's necessary to enanble a communication port at `cyberd` itself.  In the config file: `<your_cyberd_location>/cyberd/config/config.toml`, modify the `priv_validator_laddr` value to create a listening address/port. The port should be set according with the `[[validator]] addr =` value of your `tmkms.toml` file.
 
 Example of `config.toml`:
 
@@ -114,8 +115,16 @@ priv_validator_laddr = "tcp://127.0.0.1:26658"
 
 *NOTE: if you will try to launch cyberd after enabling  `priv_validator_laddr`, and without the `tmkms` app running simultaneously, it will likely NOT start.*
 
-To process further, we assume that `cyberd` is synced on your machine and there were no validators created previously on that particular node. Also, you should have an imported account to `cyberdcli` that has enough bandwidth and EUL to start the validator.
+To process further, we assume that `cyberd` node is synced on your machine and there were no validators created previously on that particular node. Also, you should have an imported account to `cyberdcli` that has enough bandwidth and EUL to start validator.
 
-We also assume that the Ledger device is connected, unlocked and has the Tendermint app open. 
+We also assume that the Ledger device is connected, unlocked and has the Tendermint app open.
 
 One last thing: `tmkms` should be launched under a different console session on the same machine.
+
+## Run Validator
+
+TO DO
+
+## Maintenance of validator
+
+TO DO

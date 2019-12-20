@@ -4,15 +4,17 @@ headless: true
 - [Whitepaper]({{< relref "/docs/cyberd/cyberd.md" >}})
 - Usage:
   - [Run the validator]({{< relref "/docs/cyberd/run_validator.md" >}})
-  - [Supported GPUs]({{< relref "/docs/cyberd/supported_gpu_list.md" >}})
+  - [Supported GPUs list]({{< relref "/docs/cyberd/supported_gpu_list.md" >}})
   - [CLI guide]({{< relref "/docs/cyberd/ultimate-commands-guide_v2.md" >}})
-  - [Get CYBs]({{< relref "/docs/cyberd/get_CYB.md" >}})
+  - [Get EUL]({{< relref "/docs/cyberd/get_EUL.md" >}})
   - [Port forwarding]({{< relref "/docs/cyberd/port_forwarding_guide.md" >}})
+  - [Cyberd Ledger guide]({{< relref "/docs/cyberd/cyberd_Ledger_guide.md" >}})
+  - [Multisig guide]({{< relref "/docs/cyberd/multisig_guide.md" >}})
+  - [Run validator with Tendermint and Ledger]({{< relref "/docs/cyberd/validator_launch_with_tendermintKMS_and_Ledger.md" >}})
 - Dev environment:
   - [Setup development environment]({{< relref "/docs/cyberd/setup_dev_env.md" >}})
-  - [Network launch]({{< relref "/docs/cyberd/launch_network.md" >}})
 - Specs:
   - [RPC]({{< relref "/docs/cyberd/rpc.md" >}})
-  - [Network parameters]({{< relref "/docs/cyberd/params.md" >}})
+  - [Keystore]({{< relref "/docs/cyberd/keystore.md" >}})
 - [CHANGELOG]({{< relref "/docs/cyberd/Changelog.md" >}})
 - [CONTRIBUTING]({{< relref "/docs/cyberd/Contributing.md" >}})
