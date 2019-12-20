@@ -6,7 +6,7 @@ then
   cyberd init
   cp /genesis.json /root/.cyberd/config/
   cp /config.toml  /root/.cyberd/config/
-  cp /links        /root/.cyberd/config/
+#  cp /links        /root/.cyberd/config/
 fi
 
 if [ ! -f "/root/.cyberd/config/genesis.json" ]
@@ -19,10 +19,10 @@ then
   cp /config.toml /root/.cyberd/config/
 fi
 
-if [ ! -f "/root/.cyberd/config/links" ]
-then
-  cp /links /root/.cyberd/config/
-fi
+#if [ ! -f "/root/.cyberd/config/links" ]
+#then
+#  cp /links /root/.cyberd/config/
+#fi
 
 if [ "$2" = 'init' ]
 then
