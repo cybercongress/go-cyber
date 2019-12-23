@@ -6,6 +6,7 @@
 
 **Merged pull requests:**
 
+- Updated index.md [\#442](https://github.com/cybercongress/cyberd/pull/442) ([mrlp4](https://github.com/mrlp4))
 - fixed title ultimate guide; fixed folders names [\#441](https://github.com/cybercongress/cyberd/pull/441) ([mrlp4](https://github.com/mrlp4))
 
 ## [euler-5](https://github.com/cybercongress/cyberd/tree/euler-5) (2019-12-20)
