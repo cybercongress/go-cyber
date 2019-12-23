@@ -186,7 +186,7 @@ func NewCyberdApp(logger log.Logger, db dbm.DB, traceStore io.Writer, height int
 	app.blockBandwidthKeeper = bw.NewBlockSpentBandwidthKeeper(dbKeys.blockBandwidth)
 
 	wasmDir := filepath.Join(DefaultNodeHome, "wasm")
-	app.wasmKeeper = wasm.NewKeeper(app.cdc, dbKeys.wasm, app.accountKeeper, app.bankKeeper, app.Router(), wasmDir)
+	app.wasmKeeper = wasm.NewKeeper(app.cdc, dbKeys.wasm, app.accountKeeper, bankKeeper.Keeper, app.Router(), wasmDir)
 
 	// register the proposal types
 	govRouter := gov.NewRouter().
@@ -246,7 +246,7 @@ func NewCyberdApp(logger log.Logger, db dbm.DB, traceStore io.Writer, height int
 	app.MountStores(
 		dbKeys.main, dbKeys.acc, dbKeys.cidNum, dbKeys.cidNumReverse, dbKeys.links, dbKeys.rank, dbKeys.stake,
 		dbKeys.slashing, dbKeys.gov, dbKeys.params, dbKeys.distr, dbKeys.fees, dbKeys.accBandwidth,
-		dbKeys.blockBandwidth, dbKeys.tParams, dbKeys.tStake, dbKeys.mint, dbKeys.supply,
+		dbKeys.blockBandwidth, dbKeys.tParams, dbKeys.tStake, dbKeys.mint, dbKeys.supply, dbKeys.wasm,
 	)
 
 	app.SetInitChainer(app.applyGenesis)
@@ -302,7 +302,7 @@ func NewCyberdApp(logger log.Logger, db dbm.DB, traceStore io.Writer, height int
 	return app
 }
 
-func (app *CyberdApp) 		applyGenesis(ctx sdk.Context, req abci.RequestInitChain) abci.ResponseInitChain {
+func (app *CyberdApp) applyGenesis(ctx sdk.Context, req abci.RequestInitChain) abci.ResponseInitChain {
 	start := time.Now()
 	app.Logger().Info("Applying genesis")
 	var genesisState GenesisState
