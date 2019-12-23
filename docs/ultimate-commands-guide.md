@@ -400,9 +400,7 @@ docker exec -ti euler-5 cyberdcli tx staking delegate <operator_address> <amount
 >instant redelegation. Amount must be less than already delegated.
 
 ```bash
-docker exec -ti euler-5 cyberdcli tx staking redelegate <old_operator_address> <new_operator_address> <amount_cyb>
-  --from=<your_key_name> \
-  --chain-id=euler-5
+docker exec -ti euler-5 cyberdcli tx staking redelegate <old_operator_address> <new_operator_address> <amount_cyb> --from=<your_key_name> --chain-id=euler-5
 ```
 
 ### Redelegate illiquid tokens from one validator to another in percentages
