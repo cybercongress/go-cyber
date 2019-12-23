@@ -1,5 +1,5 @@
 
-# Join Cyberd devnet as a Validator
+# Join Cyberd testnet as a Validator
 
 **Note** The current active testnet is `euler-5` (substitute <testnet_chain_id> with that value, do not forget to remove the `<` and the `>` symbols).
 
@@ -304,15 +304,15 @@ Your machine is ready to launch the fullnode.
 1. Create folders for keys and data storing where you want, for example:
 
 ``` bash
-mkdir /cyberd-dev/cyberd
-mkdir /cyberd-dev/cyberdcli
+mkdir /euler-5/cyberd
+mkdir /euler-5/cyberdcli
 ```
 
 2. Run the fullnode:
 (This will pull and extract the image from cyberd/cyberd)
 
 ```bash
-docker run -d --gpus all --name=euler-5 --restart always -p 26656:26656 -p 26657:26657 -p 1317:1317 -e ALLOW_SEARCH=true -v /cyberd-dev/cyberd:/root/.cyberd  -v /cyberd-dev/cyberdcli:/root/.cyberdcli  cyberd/cyberd:euler-5
+docker run -d --gpus all --name=euler-5 --restart always -p 26656:26656 -p 26657:26657 -p 1317:1317 -e ALLOW_SEARCH=true -v /euler-5/cyberd:/root/.cyberd  -v /euler-5/cyberdcli:/root/.cyberdcli  cyberd/cyberd:euler-5
 ```
 
 3. After successful pulling of the container and launching, run to check if your node is connected to the testnet:
