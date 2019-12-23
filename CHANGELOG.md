@@ -1,5 +1,13 @@
 # Change Log
 
+## [Unreleased](https://github.com/cybercongress/cyberd/tree/HEAD)
+
+[Full Changelog](https://github.com/cybercongress/cyberd/compare/euler-5...HEAD)
+
+**Merged pull requests:**
+
+- fixed title ultimate guide; fixed folders names [\#441](https://github.com/cybercongress/cyberd/pull/441) ([mrlp4](https://github.com/mrlp4))
+
 ## [euler-5](https://github.com/cybercongress/cyberd/tree/euler-5) (2019-12-20)
 [Full Changelog](https://github.com/cybercongress/cyberd/compare/v0.1.5-t...euler-5)
 
