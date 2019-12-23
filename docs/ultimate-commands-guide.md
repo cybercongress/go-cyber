@@ -1,4 +1,4 @@
-# Ultimate cyberd CLI guide. Testnet: Euler-3
+# Ultimate cyberd CLI guide. Chain: Euler-5
 
 ## If something wrong...
 
