@@ -3,6 +3,8 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
+	"github.com/tendermint/tendermint/crypto"
+
 	cbd "github.com/cybercongress/cyberd/types"
 )
 
@@ -51,7 +53,17 @@ func (s *IndexedKeeper) getCollectFunc(ctx sdk.Context, userStake map[cbd.AccNum
 }
 
 // return true if some stake changed
-func (s *IndexedKeeper) FixUserStake() bool {
+func (s *IndexedKeeper) FixUserStake(ctx sdk.Context) bool {
+
+	// Standalone changes of modules balance should not trigger a rank recalculation
+	modulesNames := [6]string{"bonded_tokens_pool", "not_bonded_tokens_pool", "gov", "distribution", "mint", "fee_collector"}
+	for _, name := range modulesNames {
+		supplyModuleAddress := sdk.AccAddress(crypto.AddressHash([]byte(name)))
+		supplyModuleAccount := s.accountKeeper.GetAccount(ctx, supplyModuleAddress)
+		supplyModuleAccountNumber := cbd.AccNumber(supplyModuleAccount.GetAccountNumber())
+		s.userTotalStake[supplyModuleAccountNumber] = s.userNewTotalStake[supplyModuleAccountNumber]
+	}
+
 	stakeChanged := false
 	for k, v := range s.userNewTotalStake {
 		if s.userTotalStake[k] != v {
