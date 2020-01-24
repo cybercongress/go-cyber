@@ -18,17 +18,17 @@ var rankCalculationFinished = []byte("cyberd_rank_calc_finished")
 var nextRankCidCount = []byte("cyberd_next_rank_cid_count")
 
 type MainKeeper struct {
-	key *sdk.KVStoreKey
+	storeKey sdk.StoreKey
 }
 
-func NewMainKeeper(key *sdk.KVStoreKey) MainKeeper {
-	return MainKeeper{key: key}
+func NewMainKeeper(key sdk.StoreKey) MainKeeper {
+	return MainKeeper{storeKey: key}
 }
 
 // returns overall added cids count
 func (ms MainKeeper) GetCidsCount(ctx sdk.Context) uint64 {
 
-	mainStore := ctx.KVStore(ms.key)
+	mainStore := ctx.KVStore(ms.storeKey)
 	lastIndexAsBytes := mainStore.Get(lastCidNumberKey)
 
 	if lastIndexAsBytes == nil {
@@ -39,7 +39,7 @@ func (ms MainKeeper) GetCidsCount(ctx sdk.Context) uint64 {
 }
 
 func (ms MainKeeper) GetLinksCount(ctx sdk.Context) uint64 {
-	mainStore := ctx.KVStore(ms.key)
+	mainStore := ctx.KVStore(ms.storeKey)
 	linksCountAsBytes := mainStore.Get(linksCountKey)
 
 	if linksCountAsBytes == nil {
@@ -49,7 +49,7 @@ func (ms MainKeeper) GetLinksCount(ctx sdk.Context) uint64 {
 }
 
 func (ms MainKeeper) IncrementLinksCount(ctx sdk.Context) {
-	mainStore := ctx.KVStore(ms.key)
+	mainStore := ctx.KVStore(ms.storeKey)
 	linksCount := ms.GetLinksCount(ctx) + 1
 	linksCountAsBytes := make([]byte, 8)
 	binary.LittleEndian.PutUint64(linksCountAsBytes, linksCount)
@@ -58,26 +58,26 @@ func (ms MainKeeper) IncrementLinksCount(ctx sdk.Context) {
 }
 
 func (ms MainKeeper) SetGenesisSupply(ctx sdk.Context, supply uint64) {
-	mainStore := ctx.KVStore(ms.key)
+	mainStore := ctx.KVStore(ms.storeKey)
 	supplyAsBytes := make([]byte, 8)
 	binary.LittleEndian.PutUint64(supplyAsBytes, supply)
 	mainStore.Set(genesisSupplyKey, supplyAsBytes)
 }
 
 func (ms MainKeeper) GetGenesisSupply(ctx sdk.Context) uint64 {
-	mainStore := ctx.KVStore(ms.key)
+	mainStore := ctx.KVStore(ms.storeKey)
 	supplyAsBytes := mainStore.Get(genesisSupplyKey)
 	return binary.LittleEndian.Uint64(supplyAsBytes)
 }
 
 func (ms MainKeeper) SetLastCidIndex(ctx sdk.Context, cidsCount []byte) {
 
-	mainStore := ctx.KVStore(ms.key)
+	mainStore := ctx.KVStore(ms.storeKey)
 	mainStore.Set(lastCidNumberKey, cidsCount)
 }
 
 func (ms MainKeeper) GetBandwidthPrice(ctx sdk.Context, basePrice float64) uint64 {
-	store := ctx.KVStore(ms.key)
+	store := ctx.KVStore(ms.storeKey)
 	priceAsBytes := store.Get(lastBandwidthPrice)
 	if priceAsBytes == nil {
 		priceAsBytes = make([]byte, 8)
@@ -87,14 +87,14 @@ func (ms MainKeeper) GetBandwidthPrice(ctx sdk.Context, basePrice float64) uint6
 }
 
 func (ms MainKeeper) StoreBandwidthPrice(ctx sdk.Context, price uint64) {
-	store := ctx.KVStore(ms.key)
+	store := ctx.KVStore(ms.storeKey)
 	priceAsBytes := make([]byte, 8)
 	binary.LittleEndian.PutUint64(priceAsBytes, price)
 	store.Set(lastBandwidthPrice, priceAsBytes)
 }
 
 func (ms MainKeeper) GetSpentBandwidth(ctx sdk.Context) uint64 {
-	store := ctx.KVStore(ms.key)
+	store := ctx.KVStore(ms.storeKey)
 	bandwidthAsBytes := store.Get(spentBandwidth)
 	if bandwidthAsBytes == nil {
 		return 0
@@ -103,14 +103,14 @@ func (ms MainKeeper) GetSpentBandwidth(ctx sdk.Context) uint64 {
 }
 
 func (ms MainKeeper) StoreSpentBandwidth(ctx sdk.Context, bandwidth uint64) {
-	store := ctx.KVStore(ms.key)
+	store := ctx.KVStore(ms.storeKey)
 	bandwidthAsBytes := make([]byte, 8)
 	binary.LittleEndian.PutUint64(bandwidthAsBytes, bandwidth)
 	store.Set(spentBandwidth, bandwidthAsBytes)
 }
 
 func (ms MainKeeper) GetLatestBlockNumber(ctx sdk.Context) uint64 {
-	store := ctx.KVStore(ms.key)
+	store := ctx.KVStore(ms.storeKey)
 	numberAsBytes := store.Get(latestBlockNumber)
 	if numberAsBytes == nil {
 		return 0
@@ -119,34 +119,34 @@ func (ms MainKeeper) GetLatestBlockNumber(ctx sdk.Context) uint64 {
 }
 
 func (ms MainKeeper) StoreLatestBlockNumber(ctx sdk.Context, number uint64) {
-	store := ctx.KVStore(ms.key)
+	store := ctx.KVStore(ms.storeKey)
 	numberAsBytes := make([]byte, 8)
 	binary.LittleEndian.PutUint64(numberAsBytes, number)
 	store.Set(latestBlockNumber, numberAsBytes)
 }
 
 func (ms MainKeeper) GetLatestMerkleTree(ctx sdk.Context) []byte {
-	store := ctx.KVStore(ms.key)
+	store := ctx.KVStore(ms.storeKey)
 	return store.Get(latestMerkleTree)
 }
 
 func (ms MainKeeper) StoreLatestMerkleTree(ctx sdk.Context, treeAsBytes []byte) {
-	store := ctx.KVStore(ms.key)
+	store := ctx.KVStore(ms.storeKey)
 	store.Set(latestMerkleTree, treeAsBytes)
 }
 
 func (ms MainKeeper) GetNextMerkleTree(ctx sdk.Context) []byte {
-	store := ctx.KVStore(ms.key)
+	store := ctx.KVStore(ms.storeKey)
 	return store.Get(nextMerkleTree)
 }
 
 func (ms MainKeeper) StoreNextMerkleTree(ctx sdk.Context, treeAsBytes []byte) {
-	store := ctx.KVStore(ms.key)
+	store := ctx.KVStore(ms.storeKey)
 	store.Set(nextMerkleTree, treeAsBytes)
 }
 
 func (ms MainKeeper) StoreRankCalculationFinished(ctx sdk.Context, finished bool) {
-	store := ctx.KVStore(ms.key)
+	store := ctx.KVStore(ms.storeKey)
 	var byteFlag byte
 	if finished {
 		byteFlag = 1
@@ -155,7 +155,7 @@ func (ms MainKeeper) StoreRankCalculationFinished(ctx sdk.Context, finished bool
 }
 
 func (ms MainKeeper) GetRankCalculationFinished(ctx sdk.Context) bool {
-	store := ctx.KVStore(ms.key)
+	store := ctx.KVStore(ms.storeKey)
 	bytes := store.Get(rankCalculationFinished)
 	if bytes == nil || bytes[0] == 1 {
 		return true
@@ -164,7 +164,7 @@ func (ms MainKeeper) GetRankCalculationFinished(ctx sdk.Context) bool {
 }
 
 func (ms MainKeeper) GetNextRankCidCount(ctx sdk.Context) uint64 {
-	store := ctx.KVStore(ms.key)
+	store := ctx.KVStore(ms.storeKey)
 	numberAsBytes := store.Get(nextRankCidCount)
 	if numberAsBytes == nil {
 		return ms.GetCidsCount(ctx)
@@ -173,7 +173,7 @@ func (ms MainKeeper) GetNextRankCidCount(ctx sdk.Context) uint64 {
 }
 
 func (ms MainKeeper) StoreNextRankCidCount(ctx sdk.Context, number uint64) {
-	store := ctx.KVStore(ms.key)
+	store := ctx.KVStore(ms.storeKey)
 	numberAsBytes := make([]byte, 8)
 	binary.LittleEndian.PutUint64(numberAsBytes, number)
 	store.Set(nextRankCidCount, numberAsBytes)

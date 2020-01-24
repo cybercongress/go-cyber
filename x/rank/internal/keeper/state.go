@@ -47,7 +47,7 @@ type StateKeeper struct {
 }
 
 func NewStateKeeper(
-	cdc *codec.Codec, paramSpace *params.Subspace, allowSearch bool, mainKeeper store.MainKeeper, stakeIndex bank.IndexedKeeper,
+	cdc *codec.Codec, paramSpace params.Subspace, allowSearch bool, mainKeeper store.MainKeeper, stakeIndex bank.IndexedKeeper,
 	linkIndexedKeeper types.LinkIndexedKeeper, cidNumKeeper types.CidNumberKeeper,
 	pk params.Keeper, unit types.ComputeUnit,
 ) *StateKeeper {

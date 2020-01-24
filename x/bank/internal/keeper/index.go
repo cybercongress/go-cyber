@@ -2,7 +2,8 @@ package keeper
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/auth"
+	"github.com/cosmos/cosmos-sdk/x/auth/exported"
+
 	cbd "github.com/cybercongress/cyberd/types"
 )
 
@@ -42,8 +43,8 @@ func (s *IndexedKeeper) Load(rankCtx sdk.Context, freshCtx sdk.Context) {
 	s.accountKeeper.IterateAccounts(freshCtx, s.getCollectFunc(freshCtx, s.userNewTotalStake))
 }
 
-func (s *IndexedKeeper) getCollectFunc(ctx sdk.Context, userStake map[cbd.AccNumber]uint64) func(acc auth.Account) bool {
-	return func(acc auth.Account) bool {
+func (s *IndexedKeeper) getCollectFunc(ctx sdk.Context, userStake map[cbd.AccNumber]uint64) func(acc exported.Account) bool {
+	return func(acc exported.Account) bool {
 		balance := s.Keeper.GetAccountTotalStake(ctx, acc.GetAddress())
 		userStake[cbd.AccNumber(acc.GetAccountNumber())] = uint64(balance)
 		return false

@@ -2,6 +2,7 @@ package types
 
 import (
 	"fmt"
+	"github.com/cosmos/cosmos-sdk/x/params"
 	"github.com/cosmos/cosmos-sdk/x/params/subspace"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"strings"
@@ -53,14 +54,14 @@ type Params struct {
 // pairs of bandwidth module's parameters.
 func (p *Params) ParamSetPairs() subspace.ParamSetPairs {
 	return subspace.ParamSetPairs{
-		{KeyLinkMsgCost, &p.LinkMsgCost},
-		{KeyRecoveryPeriod, &p.RecoveryPeriod},
-		{KeyAdjustPricePeriod, &p.AdjustPricePeriod},
-		{KeyBaseCreditPrice, &p.BaseCreditPrice},
-		{KeyDesirableBandwidth, &p.DesirableBandwidth},
-		{KeyMaxBlockBandwidth, &p.MaxBlockBandwidth},
-		{KeyTxCost, &p.TxCost},
-		{KeyNonLinkMsgCost, &p.NonLinkMsgCost},
+		params.NewParamSetPair(KeyLinkMsgCost, &p.LinkMsgCost, validateMock),
+		params.NewParamSetPair(KeyRecoveryPeriod, &p.RecoveryPeriod, validateMock),
+		params.NewParamSetPair(KeyAdjustPricePeriod, &p.AdjustPricePeriod, validateMock),
+		params.NewParamSetPair(KeyBaseCreditPrice, &p.BaseCreditPrice, validateMock),
+		params.NewParamSetPair(KeyDesirableBandwidth, &p.DesirableBandwidth, validateMock),
+		params.NewParamSetPair(KeyMaxBlockBandwidth, &p.MaxBlockBandwidth, validateMock),
+		params.NewParamSetPair(KeyTxCost, &p.TxCost, validateMock),
+		params.NewParamSetPair(KeyNonLinkMsgCost, &p.NonLinkMsgCost, validateMock),
 	}
 }
 
@@ -109,6 +110,11 @@ func (p Params) Validate() error {
 	if p.NonLinkMsgCost < MinNonLinkMsgCost {
 		return fmt.Errorf("invalid non link msg cost: %d, can not be less then %d", p.NonLinkMsgCost, MinNonLinkMsgCost)
 	}
+	return nil
+}
+
+// TODO
+func validateMock(i interface{}) error {
 	return nil
 }
 

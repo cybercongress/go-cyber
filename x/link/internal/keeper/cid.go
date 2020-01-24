@@ -20,11 +20,11 @@ const (
 
 type CidNumberKeeper struct {
 	ms         store.MainKeeper
-	key        *sdk.KVStoreKey
-	reverseKey *sdk.KVStoreKey
+	key        sdk.StoreKey
+	reverseKey sdk.StoreKey
 }
 
-func NewCidNumberKeeper(ms store.MainKeeper, key *sdk.KVStoreKey, reverseKey *sdk.KVStoreKey) *CidNumberKeeper {
+func NewCidNumberKeeper(ms store.MainKeeper, key sdk.StoreKey, reverseKey sdk.StoreKey) *CidNumberKeeper {
 	return &CidNumberKeeper{
 		ms:         ms,
 		key:        key,

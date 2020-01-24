@@ -5,12 +5,13 @@ import (
 	"math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/auth"
+	"github.com/cosmos/cosmos-sdk/x/auth/exported"
+	abci "github.com/tendermint/tendermint/abci/types"
+
 	"github.com/cybercongress/cyberd/merkle"
 	cbd "github.com/cybercongress/cyberd/types"
 	bw "github.com/cybercongress/cyberd/x/bandwidth"
 	"github.com/cybercongress/cyberd/x/link"
-	abci "github.com/tendermint/tendermint/abci/types"
 )
 
 type RankedCid struct {
@@ -79,7 +80,7 @@ func (app *CyberdApp) Rank(cid string, proof bool) (float64, []merkle.Proof, err
 	return rankValue, nil, nil
 }
 
-func (app *CyberdApp) Account(address sdk.AccAddress) auth.Account {
+func (app *CyberdApp) Account(address sdk.AccAddress) exported.Account {
 	return app.accountKeeper.GetAccount(app.RpcContext(), address)
 }
 

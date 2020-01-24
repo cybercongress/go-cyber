@@ -7,6 +7,7 @@ import (
 	cbdlink "github.com/cybercongress/cyberd/x/link/internal/types"
 
 	"github.com/cosmos/cosmos-sdk/x/auth"
+	"github.com/cybercongress/cyberd/types"
 )
 
 // NewHandler returns a handler for "link" type messages.
@@ -16,7 +17,7 @@ import (
 // imms - in-memory storage
 func NewLinksHandler(cis CidNumberKeeper, ls IndexedKeeper, as auth.AccountKeeper) sdk.Handler {
 
-	return func(ctx sdk.Context, msg sdk.Msg) sdk.Result {
+	return func(ctx sdk.Context, msg sdk.Msg) (*sdk.Result, error) {
 
 		linkMsg := msg.(cbdlink.Msg)
 
@@ -37,7 +38,7 @@ func NewLinksHandler(cis CidNumberKeeper, ls IndexedKeeper, as auth.AccountKeepe
 			compactLink := cbdlink.NewLink(fromCidNumber, toCidNumber, accNumber)
 
 			if ls.IsLinkExist(compactLink) {
-				return sdk.Result{Code: cbd.CodeLinkAlreadyExist, Codespace: cbd.CodespaceCbd}
+				return nil, types.ErrDuplicatedLink
 			}
 		}
 
@@ -49,6 +50,13 @@ func NewLinksHandler(cis CidNumberKeeper, ls IndexedKeeper, as auth.AccountKeepe
 			ls.PutLink(ctx, cbdlink.NewLink(fromCidNumber, toCidNumber, accNumber))
 		}
 
-		return sdk.Result{Code: cbd.CodeOK, Codespace: cbd.CodespaceCbd}
+		ctx.EventManager().EmitEvent(
+			sdk.NewEvent(
+				sdk.EventTypeMessage,
+				sdk.NewAttribute(sdk.AttributeKeyModule, ModuleName), // TODO
+			),
+		)
+
+		return &sdk.Result{Events: ctx.EventManager().Events()}, nil
 	}
 }

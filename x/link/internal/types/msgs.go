@@ -2,8 +2,10 @@ package types
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	cbd "github.com/cybercongress/cyberd/types"
+	//cbd "github.com/cybercongress/cyberd/types"
 	"github.com/ipfs/go-cid"
+	"github.com/cybercongress/cyberd/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 type Msg struct {
@@ -22,14 +24,14 @@ func (msg Msg) Name() string { return "link" }
 func (Msg) Route() string { return "link" }
 func (Msg) Type() string  { return "link" }
 
-func (msg Msg) ValidateBasic() sdk.Error {
+func (msg Msg) ValidateBasic() error {
 
 	if len(msg.Address) == 0 {
-		return sdk.ErrInvalidAddress(msg.Address.String())
+		return sdkerrors.ErrInvalidAddress
 	}
 
 	if len(msg.Links) == 0 {
-		return cbd.ErrZeroLinks()
+		return types.ErrZeroLinks
 	}
 
 	var filter = make(CidsFilter)
@@ -37,15 +39,15 @@ func (msg Msg) ValidateBasic() sdk.Error {
 	for _, link := range msg.Links {
 
 		if _, err := cid.Decode(string(link.From)); err != nil {
-			return cbd.ErrInvalidCid()
+			return types.ErrInvalidCid
 		}
 
 		if _, err := cid.Decode(string(link.To)); err != nil {
-			return cbd.ErrInvalidCid()
+			return types.ErrInvalidCid
 		}
 
 		if filter.Contains(link.From, link.To) {
-			return cbd.ErrDuplicatedLink()
+			return types.ErrDuplicatedLink
 		}
 
 		filter.Put(link.From, link.To)

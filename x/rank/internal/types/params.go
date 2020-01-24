@@ -2,6 +2,7 @@ package types
 
 import (
 	"fmt"
+	"github.com/cosmos/cosmos-sdk/x/params"
 	"github.com/cosmos/cosmos-sdk/x/params/subspace"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"strings"
@@ -50,9 +51,9 @@ func ParamKeyTable() subspace.KeyTable {
 // pairs of rank module's parameters.
 func (p *Params) ParamSetPairs() subspace.ParamSetPairs {
 	return subspace.ParamSetPairs{
-		{KeyCalculationPeriod, &p.CalculationPeriod},
-		{KeyDampingFactor, &p.DampingFactor},
-		{KeyTolerance, &p.Tolerance},
+		params.NewParamSetPair(KeyCalculationPeriod, &p.CalculationPeriod, validateMock),
+		params.NewParamSetPair(KeyDampingFactor, &p.DampingFactor, validateMock),
+		params.NewParamSetPair(KeyTolerance, &p.Tolerance, validateMock),
 	}
 }
 
@@ -83,5 +84,10 @@ func (p Params) Validate() error {
 	if p.Tolerance.LT(sdk.NewDecWithPrec(1, 5)) {
 		return fmt.Errorf("tolerance parameter must be >= 0.00001, is %s", p.DampingFactor.String())
 	}
+	return nil
+}
+
+// TODO
+func validateMock(i interface{}) error {
 	return nil
 }

@@ -1,8 +1,8 @@
 package keeper
 
 import (
-	"fmt"
-
+	//"fmt"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cybercongress/cyberd/x/rank/exported"
 	abci "github.com/tendermint/tendermint/abci/types"
 
@@ -14,7 +14,7 @@ import (
 
 // NewQuerier returns a minting Querier handler. k exported.StateKeeper
 func NewQuerier(k exported.StateKeeper) sdk.Querier {
-	return func(ctx sdk.Context, path []string, _ abci.RequestQuery) ([]byte, sdk.Error) {
+	return func(ctx sdk.Context, path []string, _ abci.RequestQuery) ([]byte, error) {
 		switch path[0] {
 		case types.QueryParameters:
 			return queryParams(ctx, k)
@@ -29,50 +29,50 @@ func NewQuerier(k exported.StateKeeper) sdk.Querier {
 			return queryTolerance(ctx, k)
 
 		default:
-			return nil, sdk.ErrUnknownRequest(fmt.Sprintf("unknown rank query endpoint: %s", path[0]))
+			return nil, sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "unknown query path: %s", path[0])
 		}
 	}
 }
 
-func queryParams(ctx sdk.Context, k exported.StateKeeper) ([]byte, sdk.Error) {
+func queryParams(ctx sdk.Context, k exported.StateKeeper) ([]byte, error) {
 	params := k.GetParams(ctx)
 
 	res, err := codec.MarshalJSONIndent(types.ModuleCdc, params)
 	if err != nil {
-		return nil, sdk.ErrInternal(sdk.AppendMsgToErr("failed to marshal JSON", err.Error()))
+		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
 	}
 
 	return res, nil
 }
 
-func queryCalculationWindow(ctx sdk.Context, k exported.StateKeeper) ([]byte, sdk.Error) {
+func queryCalculationWindow(ctx sdk.Context, k exported.StateKeeper) ([]byte, error) {
 	params := k.GetParams(ctx)
 
 	res, err := codec.MarshalJSONIndent(types.ModuleCdc, params.CalculationPeriod)
 	if err != nil {
-		return nil, sdk.ErrInternal(sdk.AppendMsgToErr("failed to marshal JSON", err.Error()))
+		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
 	}
 
 	return res, nil
 }
 
-func queryDampingFactor(ctx sdk.Context, k exported.StateKeeper) ([]byte, sdk.Error) {
+func queryDampingFactor(ctx sdk.Context, k exported.StateKeeper) ([]byte, error) {
 	params := k.GetParams(ctx)
 
 	res, err := codec.MarshalJSONIndent(types.ModuleCdc, params.DampingFactor)
 	if err != nil {
-		return nil, sdk.ErrInternal(sdk.AppendMsgToErr("failed to marshal JSON", err.Error()))
+		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
 	}
 
 	return res, nil
 }
 
-func queryTolerance(ctx sdk.Context, k exported.StateKeeper) ([]byte, sdk.Error) {
+func queryTolerance(ctx sdk.Context, k exported.StateKeeper) ([]byte, error) {
 	params := k.GetParams(ctx)
 
 	res, err := codec.MarshalJSONIndent(types.ModuleCdc, params.Tolerance)
 	if err != nil {
-		return nil, sdk.ErrInternal(sdk.AppendMsgToErr("failed to marshal JSON", err.Error()))
+		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
 	}
 
 	return res, nil

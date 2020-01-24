@@ -22,11 +22,11 @@ var DefaultLinkFilter = func(l types.CompactLink) bool { return true }
 
 type Keeper struct {
 	ms      store.MainKeeper
-	key     *sdk.KVStoreKey
+	key     sdk.StoreKey
 	storage store.Storage
 }
 
-func NewLinkKeeper(ms store.MainKeeper, key *sdk.KVStoreKey) *Keeper {
+func NewLinkKeeper(ms store.MainKeeper, key sdk.StoreKey) *Keeper {
 	storage, err := store.NewBaseStorage(key.Name(), util.RootifyPath("data/"), LinkBytesSize)
 	if err != nil {
 		panic("Failed to load links DB")

@@ -9,10 +9,10 @@ import (
 var _ exported.Keeper = &BaseRankKeeper{}
 
 type BaseRankKeeper struct {
-	paramSpace *params.Subspace
+	paramSpace params.Subspace
 }
 
-func NewBaseRankKeeper(paramSpace *params.Subspace) *BaseRankKeeper {
+func NewBaseRankKeeper(paramSpace params.Subspace) *BaseRankKeeper {
 	return &BaseRankKeeper{
 		paramSpace: paramSpace,
 	}

@@ -5,17 +5,22 @@ import (
 	"bytes"
 	"encoding/hex"
 	"fmt"
-	"github.com/cosmos/cosmos-sdk/client"
+	"os"
+
+	//"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/input"
 	"github.com/cosmos/cosmos-sdk/client/keys"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/mintkey"
-	"github.com/cybercongress/cyberd/util"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/tendermint/btcd/btcec"
 	"github.com/tendermint/go-amino"
 	"github.com/tendermint/tendermint/crypto/secp256k1"
 	"github.com/tendermint/tendermint/libs/cli"
-	"os"
+
+	"github.com/cybercongress/cyberd/util"
+	//"github.com/cosmos/cosmos-sdk/client/flags"
+	crypto "github.com/cosmos/cosmos-sdk/crypto/keys"
 )
 
 const hashPrefix = "0x"
@@ -40,11 +45,11 @@ func importPrivateKeyCmd() *cobra.Command {
 				return nil
 			}
 
-			encryptPassword, err := client.GetCheckPassword(
+			encryptPassword, err := input.GetCheckPassword(
 				"Enter a passphrase to encrypt your key to disk:",
 				"Repeat the passphrase:", bufStdin)
 
-			privateKey, err := client.GetString(
+			privateKey, err := input.GetString(
 				"Enter your private key (hex encoded):", bufStdin)
 			if err != nil {
 				return err
@@ -65,7 +70,7 @@ func importPrivateKeyCmd() *cobra.Command {
 			var cbdPribKey [32]byte
 			copy(cbdPribKey[:], privKey.Serialize()[:])
 
-			pkArmor := mintkey.EncryptArmorPrivKey(secp256k1.PrivKeySecp256k1(cbdPribKey), encryptPassword)
+			pkArmor := mintkey.EncryptArmorPrivKey(secp256k1.PrivKeySecp256k1(cbdPribKey), encryptPassword, string(crypto.SigningAlgo("secp256k1")))
 
 			buf := bytes.NewBuffer(nil)
 

@@ -13,10 +13,10 @@ var _ exported.Keeper = &BaseAccBandwidthKeeper{}
 
 type BaseAccBandwidthKeeper struct {
 	key        *sdk.KVStoreKey
-	paramSpace *params.Subspace
+	paramSpace params.Subspace
 }
 
-func NewAccBandwidthKeeper(key *sdk.KVStoreKey, paramSpace *params.Subspace) *BaseAccBandwidthKeeper {
+func NewAccBandwidthKeeper(key *sdk.KVStoreKey, paramSpace params.Subspace) *BaseAccBandwidthKeeper {
 	return &BaseAccBandwidthKeeper{
 		key:        key,
 		paramSpace: paramSpace,
