@@ -445,6 +445,7 @@ func (app *CyberdApp) DeliverTx(req abci.RequestDeliverTx) (res abci.ResponseDel
 			}
 
 			app.bandwidthMeter.AddToBlockBandwidth(app.bandwidthMeter.GetTxCost(ctx, tx))
+			app.bandwidthMeter.AddToOverallKarma(linkingCost)
 
 			return abci.ResponseDeliverTx{
 				Code:      resp.GetCode(),
