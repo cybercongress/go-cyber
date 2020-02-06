@@ -67,6 +67,10 @@ func (m *BaseBandwidthMeter) AddToBlockBandwidth(value int64) {
 	m.curBlockSpentBandwidth += uint64(value)
 }
 
+func (m *BaseBandwidthMeter) AddToOverallKarma(value int64) {
+	m.bandwidthSpentLinking += uint64(value)
+}
+
 // Here we move bandwidth window:
 // Remove first block of window and add new block to window end
 func (m *BaseBandwidthMeter) CommitBlockBandwidth(ctx sdk.Context) {
@@ -87,7 +91,6 @@ func (m *BaseBandwidthMeter) CommitBlockBandwidth(ctx sdk.Context) {
 	}
 	m.blockBandwidthKeeper.SetBlockSpentBandwidth(ctx, uint64(ctx.BlockHeight()), m.curBlockSpentBandwidth)
 	m.bandwidthSpent[uint64(newWindowEnd)] = m.curBlockSpentBandwidth
-	m.bandwidthSpentLinking += m.curBlockSpentBandwidth
 	m.curBlockSpentBandwidth = 0
 }
 
