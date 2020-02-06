@@ -28,7 +28,7 @@ type IndexedKeeper interface {
 
 	Load(sdk.Context, sdk.Context)
 
-	FixUserStake() bool
+	FixUserStake(ctx sdk.Context) bool
 	UpdateStake(cbd.AccNumber, int64)
 	GetTotalStakes() map[cbd.AccNumber]uint64
 	EndBlocker(sdk.Context)

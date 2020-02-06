@@ -8,7 +8,7 @@ import (
 )
 
 type StakeKeeper interface {
-	FixUserStake() bool
+	FixUserStake(ctx sdk.Context) bool
 	GetTotalStakes() map[cbd.AccNumber]uint64
 }
 
