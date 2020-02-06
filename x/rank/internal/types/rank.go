@@ -32,6 +32,7 @@ func NewRank(values []float64, logger log.Logger, fullTree bool) Rank {
 
 	newSortedCIDs := make(sortableCidNumbers, 0, len(values))
 	for cid, rank := range values {
+		if math.IsNaN(rank) { continue } // TODO remove this after rank's NaN fix
 		newRankedCid := RankedCidNumber{link.CidNumber(cid), rank}
 		newSortedCIDs = append(newSortedCIDs, newRankedCid)
 	}
