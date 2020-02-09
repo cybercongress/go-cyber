@@ -4,8 +4,19 @@
 
 [Full Changelog](https://github.com/cybercongress/cyberd/compare/euler-5...HEAD)
 
+**Closed issues:**
+
+- Error in RPC response, top endpoint [\#451](https://github.com/cybercongress/cyberd/issues/451)
+- Fix overall karma calculation [\#448](https://github.com/cybercongress/cyberd/issues/448)
+- Standalone changes of modules balance shouldn't trigger a rank recalculation [\#446](https://github.com/cybercongress/cyberd/issues/446)
+- Command list from euler 3 update [\#433](https://github.com/cybercongress/cyberd/issues/433)
+- Update run\_validator guide for Euler-dev [\#423](https://github.com/cybercongress/cyberd/issues/423)
+
 **Merged pull requests:**
 
+- Fixed calculation of overall karma [\#459](https://github.com/cybercongress/cyberd/pull/459) ([litvintech](https://github.com/litvintech))
+- Fixed triggering of rank calculation by modules [\#458](https://github.com/cybercongress/cyberd/pull/458) ([litvintech](https://github.com/litvintech))
+- Added skipping of NaN objects during sorting [\#457](https://github.com/cybercongress/cyberd/pull/457) ([litvintech](https://github.com/litvintech))
 - Updated index.md [\#442](https://github.com/cybercongress/cyberd/pull/442) ([mrlp4](https://github.com/mrlp4))
 - fixed title ultimate guide; fixed folders names [\#441](https://github.com/cybercongress/cyberd/pull/441) ([mrlp4](https://github.com/mrlp4))
 
