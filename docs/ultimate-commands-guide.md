@@ -163,15 +163,15 @@ docker exec euler-5 cyberdcli status --indent
 ### Distribution params
 
 ```bash
-docker exec euler-5 cyberdcli query distr params --trust-node
+docker exec euler-5 cyberdcli query distribution params --trust-node
 ```
 
-### The amount of outstanding rewards
+### The amount of outstanding rewards for validator
 
-Return the sum of rewards in a pool
+Return the sum of outstanding rewards for validator
 
 ```bash
-docker exec euler-5 cyberdcli query distr outstanding-rewards --trust-node
+docker exec euler-5 cyberdcli query distribution validator-outstanding-rewards <operator_address> --trust-node
 ```
 
 ### Staking params
@@ -278,7 +278,7 @@ docker exec euler-5 cyberdcli query staking validators \
 Available to withdraw validator commission.
 
 ```bash
-docker exec euler-5 cyberdcli query distr commission <operator_address>
+docker exec euler-5 cyberdcli query distribution commission <operator_address>
 ```
 
 ### State of current validator
@@ -305,7 +305,7 @@ docker exec -ti euler-5 cyberdcli tx staking edit-validator \
 ### Withdraw commission for either a delegation
 
 ```bash
-docker exec -ti euler-5 cyberdcli tx distr withdraw-rewards <operator_address> \
+docker exec -ti euler-5 cyberdcli tx distribution withdraw-rewards <operator_address> \
   --from=<your_key_name> \
   --chain-id=euler-5 \
   --commission
@@ -342,7 +342,7 @@ docker exec -ti euler-5 cyberdcli query staking redelegations-from <operator_add
 ### Return distribution delegator rewards according current validator
 
 ```bash
-docker exec -ti euler-5 cyberdcli query distr rewards <delegator_address> <operator_address>
+docker exec -ti euler-5 cyberdcli query distribution rewards <delegator_address> <operator_address>
 ```
 
 ### Return delegator shares with current validator
@@ -366,7 +366,7 @@ docker exec -ti euler-5 cyberdcli query staking unbonding-delegations-from <oper
 ### Withdraw rewards for either a delegation
 
 ```bash
-docker exec -ti euler-5 cyberdcli tx distr withdraw-rewards <operator_address> \
+docker exec -ti euler-5 cyberdcli tx distribution withdraw-rewards <operator_address> \
   --from=<your_key_name> \
   --chain-id=euler-5
 ```
@@ -374,7 +374,7 @@ docker exec -ti euler-5 cyberdcli tx distr withdraw-rewards <operator_address> \
 ### Withdraw all delegation rewards
 
 ```bash
-docker exec -ti euler-5 cyberdcli tx distr withdraw-all-rewards \
+docker exec -ti euler-5 cyberdcli tx distribution withdraw-all-rewards \
   --from=<your_key_name> \
   --chain-id=euler-5
 ```
@@ -382,7 +382,7 @@ docker exec -ti euler-5 cyberdcli tx distr withdraw-all-rewards \
 ### Change the default withdraw address for rewards associated with an address
 
 ```bash
-docker exec -ti euler-5 cyberdcli tx distr set-withdraw-addr <your_new_address> \
+docker exec -ti euler-5 cyberdcli tx distribution set-withdraw-addr <your_new_address> \
   --from=<your_key_name> \
   --chain-id=euler-5
 ```
