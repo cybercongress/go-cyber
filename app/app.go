@@ -532,6 +532,11 @@ func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.R
 	// RANK CALCULATION
 	app.rankStateKeeper.EndBlocker(ctx, app.Logger())
 
+	err := app.linkIndexedKeeper.Commit(ctx)
+	if err != nil {
+		panic(err)
+	}
+
 	return abci.ResponseEndBlock{
 		ValidatorUpdates: validatorUpdates,
 		Events:           ctx.EventManager().ABCIEvents(),
@@ -540,10 +545,6 @@ func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.R
 
 // Implements ABCI
 func (app *CyberdApp) Commit() (res abci.ResponseCommit) {
-	err := app.linkIndexedKeeper.Commit(uint64(app.latestBlockHeight))
-	if err != nil {
-		panic(err)
-	}
 	app.BaseApp.Commit()
 	return abci.ResponseCommit{Data: app.appHash()}
 }

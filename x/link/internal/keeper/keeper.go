@@ -1,8 +1,10 @@
 package keeper
 
 import (
+	"bytes"
+	"sync"
+
 	"github.com/cybercongress/cyberd/store"
-	"github.com/cybercongress/cyberd/util"
 	"github.com/cybercongress/cyberd/x/link/internal/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -16,37 +18,36 @@ const (
 	LinksCountBytesSize = uint64(8)
 )
 
+const defaultBufferSize = 32768
+
 type LinkFilter func(l types.CompactLink) bool
 
 var DefaultLinkFilter = func(l types.CompactLink) bool { return true }
 
 type Keeper struct {
-	ms      store.MainKeeper
-	key     sdk.StoreKey
-	storage store.Storage
+	ms      	store.MainKeeper
+	storeKey    sdk.StoreKey
+	buffer      *bytes.Buffer
+	mu 			*sync.Mutex
 }
 
-func NewLinkKeeper(ms store.MainKeeper, key sdk.StoreKey) *Keeper {
-	storage, err := store.NewBaseStorage(key.Name(), util.RootifyPath("data/"), LinkBytesSize)
-	if err != nil {
-		panic("Failed to load links DB")
-	}
+func NewLinkKeeper(ms store.MainKeeper, storeKey sdk.StoreKey) *Keeper {
 	return &Keeper{
-		key:     key,
-		ms:      ms,
-		storage: storage,
+		storeKey: storeKey,
+		ms:       ms,
+		buffer:   bytes.NewBuffer(make([]byte, 0, defaultBufferSize)),
+		mu:		  new(sync.Mutex),
 	}
 }
 
 func (lk Keeper) PutLink(ctx sdk.Context, link types.CompactLink) {
-	if ctx.BlockHeight() == lk.storage.LastVersion() {
-		return
-	}
+	lk.mu.Lock()
+	defer lk.mu.Unlock()
 	linkAsBytes := link.MarshalBinary()
-	err := lk.storage.Put(linkAsBytes)
-	if err != nil {
-		panic(err)
+	if uint64(len(linkAsBytes)) != LinkBytesSize {
+		panic("invalid element length")
 	}
+	lk.buffer.Write(linkAsBytes)
 	lk.ms.IncrementLinksCount(ctx)
 }
 
@@ -74,20 +75,40 @@ func (lk Keeper) GetLinksCount(ctx sdk.Context) uint64 {
 }
 
 func (lk Keeper) Iterate(ctx sdk.Context, process func(link types.CompactLink)) {
-
-	err := lk.storage.IterateTillVersion(func(bytes []byte) {
+	lk.IterateTillVersion(ctx, func(bytes []byte) {
 		process(types.UnmarshalBinaryLink(bytes))
 	}, ctx.BlockHeight())
+}
 
-	if err != nil {
-		panic("Error during links iterating")
+func (lk Keeper) IterateTillVersion(ctx sdk.Context, process func(bytes []byte), ver int64) {
+	store := ctx.KVStore(lk.storeKey)
+
+	startAsBytes := make([]byte, 8)
+	binary.LittleEndian.PutUint64(startAsBytes, uint64(1))
+
+	endAsBytes := make([]byte, 8)
+	binary.LittleEndian.PutUint64(endAsBytes, uint64(ver))
+
+	iterator := store.Iterator(startAsBytes, endAsBytes)
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		value := iterator.Value()
+		elementsCountBytes := value[0:8]
+		elementsCount := binary.LittleEndian.Uint64(elementsCountBytes)
+
+		for i := uint64(0); i < elementsCount; i++ {
+			start := uint64(8) + (i*LinkBytesSize)
+			end := uint64(8) + ((i+1)*LinkBytesSize)
+			elementBytes := value[start:end]
+			process(elementBytes)
+		}
 	}
 }
 
 // write links to writer in binary format: <links_count><cid_number_from><cid_number_to><acc_number>...
 func (lk Keeper) WriteLinks(ctx sdk.Context, writer io.Writer) (err error) {
-	uintAsBytes := make([]byte, 8) //common bytes array to convert uints
-
+	uintAsBytes := make([]byte, 8)
 	linksCount := lk.GetLinksCount(ctx)
 	binary.LittleEndian.PutUint64(uintAsBytes, linksCount)
 	_, err = writer.Write(uintAsBytes)
@@ -95,13 +116,29 @@ func (lk Keeper) WriteLinks(ctx sdk.Context, writer io.Writer) (err error) {
 		return
 	}
 
-	err = lk.storage.IterateTillVersion(func(bytes []byte) {
+	lk.IterateTillVersion(ctx, func(bytes []byte) {
 		_, _ = writer.Write(bytes)
-	}, lk.storage.LastVersion())
+	}, ctx.BlockHeight())
 
-	return err
+	return nil
 }
 
-func (lk Keeper) Commit(blockHeight uint64) error {
-	return lk.storage.Commit(blockHeight)
+func (lk Keeper) Commit(ctx sdk.Context) error {
+	lk.mu.Lock()
+	defer func() {
+		lk.mu.Unlock()
+		lk.buffer.Reset()
+	}()
+
+	elementsCountBytes := make([]byte, 8)
+	binary.LittleEndian.PutUint64(elementsCountBytes, uint64(lk.buffer.Len())/LinkBytesSize)
+
+	versionAsBytes := make([]byte, 8)
+	binary.LittleEndian.PutUint64(versionAsBytes, uint64(ctx.BlockHeight()))
+	bytesToCommit := append(elementsCountBytes, lk.buffer.Bytes()...)
+
+	store := ctx.KVStore(lk.storeKey)
+	store.Set(versionAsBytes, bytesToCommit)
+
+	return nil
 }

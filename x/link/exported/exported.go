@@ -19,7 +19,7 @@ type KeeperI interface {
 	PutLink(sdk.Context, types.CompactLink)
 	WriteLinks(sdk.Context, io.Writer) error
 
-	Commit(blockHeight uint64) error
+	Commit(ctx sdk.Context) error
 }
 
 type IndexedKeeperI interface {
