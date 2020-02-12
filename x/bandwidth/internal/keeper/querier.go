@@ -1,18 +1,16 @@
 package keeper
 
 import (
-	//"fmt"
-
 	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/cybercongress/cyberd/x/bandwidth/exported"
-	"github.com/cybercongress/cyberd/x/bandwidth/internal/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	abci "github.com/tendermint/tendermint/abci/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	abci "github.com/tendermint/tendermint/abci/types"
+
+	"github.com/cybercongress/cyberd/x/bandwidth/internal/types"
 )
 
 // NewQuerier returns a minting Querier handler. k exported.StateKeeper
-func NewQuerier(k exported.Keeper) sdk.Querier {
+func NewQuerier(k BaseAccountBandwidthKeeper) sdk.Querier {
 	return func(ctx sdk.Context, path []string, _ abci.RequestQuery) ([]byte, error) {
 		switch path[0] {
 		case types.QueryParameters:
@@ -49,7 +47,7 @@ func NewQuerier(k exported.Keeper) sdk.Querier {
 	}
 }
 
-func queryParams(ctx sdk.Context, k exported.Keeper) ([]byte, error) {
+func queryParams(ctx sdk.Context, k BaseAccountBandwidthKeeper) ([]byte, error) {
 	params := k.GetParams(ctx)
 
 	res, err := codec.MarshalJSONIndent(types.ModuleCdc, params)
@@ -60,7 +58,7 @@ func queryParams(ctx sdk.Context, k exported.Keeper) ([]byte, error) {
 	return res, nil
 }
 
-func queryDesirableBandwidth(ctx sdk.Context, k exported.Keeper) ([]byte, error) {
+func queryDesirableBandwidth(ctx sdk.Context, k BaseAccountBandwidthKeeper) ([]byte, error) {
 	params := k.GetParams(ctx)
 
 	res, err := codec.MarshalJSONIndent(types.ModuleCdc, params.DesirableBandwidth)
@@ -71,7 +69,7 @@ func queryDesirableBandwidth(ctx sdk.Context, k exported.Keeper) ([]byte, error)
 	return res, nil
 }
 
-func queryMaxBlockBandwidth(ctx sdk.Context, k exported.Keeper) ([]byte, error) {
+func queryMaxBlockBandwidth(ctx sdk.Context, k BaseAccountBandwidthKeeper) ([]byte, error) {
 	params := k.GetParams(ctx)
 
 	res, err := codec.MarshalJSONIndent(types.ModuleCdc, params.MaxBlockBandwidth)
@@ -82,7 +80,7 @@ func queryMaxBlockBandwidth(ctx sdk.Context, k exported.Keeper) ([]byte, error) 
 	return res, nil
 }
 
-func queryRecoveryPeriod(ctx sdk.Context, k exported.Keeper) ([]byte, error) {
+func queryRecoveryPeriod(ctx sdk.Context, k BaseAccountBandwidthKeeper) ([]byte, error) {
 	params := k.GetParams(ctx)
 
 	res, err := codec.MarshalJSONIndent(types.ModuleCdc, params.RecoveryPeriod)
@@ -93,7 +91,7 @@ func queryRecoveryPeriod(ctx sdk.Context, k exported.Keeper) ([]byte, error) {
 	return res, nil
 }
 
-func queryAdjustPricePeriod(ctx sdk.Context, k exported.Keeper) ([]byte, error) {
+func queryAdjustPricePeriod(ctx sdk.Context, k BaseAccountBandwidthKeeper) ([]byte, error) {
 	params := k.GetParams(ctx)
 
 	res, err := codec.MarshalJSONIndent(types.ModuleCdc, params.AdjustPricePeriod)
@@ -104,7 +102,7 @@ func queryAdjustPricePeriod(ctx sdk.Context, k exported.Keeper) ([]byte, error) 
 	return res, nil
 }
 
-func queryBaseCreditPrice(ctx sdk.Context, k exported.Keeper) ([]byte, error) {
+func queryBaseCreditPrice(ctx sdk.Context, k BaseAccountBandwidthKeeper) ([]byte, error) {
 	params := k.GetParams(ctx)
 
 	res, err := codec.MarshalJSONIndent(types.ModuleCdc, params.BaseCreditPrice)
@@ -115,7 +113,7 @@ func queryBaseCreditPrice(ctx sdk.Context, k exported.Keeper) ([]byte, error) {
 	return res, nil
 }
 
-func queryTxCost(ctx sdk.Context, k exported.Keeper) ([]byte, error) {
+func queryTxCost(ctx sdk.Context, k BaseAccountBandwidthKeeper) ([]byte, error) {
 	params := k.GetParams(ctx)
 
 	res, err := codec.MarshalJSONIndent(types.ModuleCdc, params.TxCost)
@@ -126,7 +124,7 @@ func queryTxCost(ctx sdk.Context, k exported.Keeper) ([]byte, error) {
 	return res, nil
 }
 
-func queryLinkMsgCost(ctx sdk.Context, k exported.Keeper) ([]byte, error) {
+func queryLinkMsgCost(ctx sdk.Context, k BaseAccountBandwidthKeeper) ([]byte, error) {
 	params := k.GetParams(ctx)
 
 	res, err := codec.MarshalJSONIndent(types.ModuleCdc, params.LinkMsgCost)
@@ -137,7 +135,7 @@ func queryLinkMsgCost(ctx sdk.Context, k exported.Keeper) ([]byte, error) {
 	return res, nil
 }
 
-func queryNonLinkMsgCost(ctx sdk.Context, k exported.Keeper) ([]byte, error) {
+func queryNonLinkMsgCost(ctx sdk.Context, k BaseAccountBandwidthKeeper) ([]byte, error) {
 	params := k.GetParams(ctx)
 
 	res, err := codec.MarshalJSONIndent(types.ModuleCdc, params.NonLinkMsgCost)

@@ -32,7 +32,7 @@ type BandwidthMeter interface {
 	// Update acc max bandwidth for current stake. Also, performs recover.
 	UpdateAccMaxBandwidth(ctx sdk.Context, address sdk.AccAddress)
 	// Returns recovered to current block height acc bandwidth
-	GetCurrentAccBandwidth(ctx sdk.Context, address sdk.AccAddress) AcсBandwidth
+	GetCurrentAccBandwidth(ctx sdk.Context, address sdk.AccAddress) AcсountBandwidth
 	// Returns acc max bandwidth
 	GetAccMaxBandwidth(ctx sdk.Context, address sdk.AccAddress) int64
 	// Returns tx bandwidth cost
@@ -53,8 +53,8 @@ type BandwidthMeter interface {
 	// bw := getCurrentBw(addr)
 	// bwCost := deliverTx(tx)
 	// consumeBw(bw, bwCost)
-	ConsumeAccBandwidth(ctx sdk.Context, bw AcсBandwidth, amt int64)
+	ConsumeAccBandwidth(ctx sdk.Context, bw AcсountBandwidth, amt int64)
 	// Performs updating of total bandwidth used by account for linking
-	UpdateLinkedBandwidth(ctx sdk.Context, bw AcсBandwidth, amt int64)
+	UpdateLinkedBandwidth(ctx sdk.Context, bw AcсountBandwidth, amt int64)
 
 }

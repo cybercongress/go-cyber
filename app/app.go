@@ -111,7 +111,7 @@ type CyberdApp struct {
 	evidenceKeeper     evidence.Keeper
 
 	bankKeeper         cyberbank.Keeper
-	accBandwidthKeeper bandwidth.Keeper
+	accountBandwidthKeeper bandwidth.AccountBandwidthKeeper
 	linkIndexedKeeper  link.IndexedKeeper
 	cidNumKeeper       link.CidNumberKeeper
 	stakingIndexKeeper cyberbank.IndexedKeeper
@@ -156,8 +156,8 @@ func NewCyberdApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest
 	app.subspaces[crisis.ModuleName] = app.paramsKeeper.Subspace(crisis.DefaultParamspace)
 	app.subspaces[evidence.ModuleName] = app.paramsKeeper.Subspace(evidence.DefaultParamspace)
 	app.subspaces[gov.ModuleName] = app.paramsKeeper.Subspace(gov.DefaultParamspace).WithKeyTable(gov.ParamKeyTable())
-	app.subspaces[bandwidth.ModuleName] = app.paramsKeeper.Subspace(bandwidth.DefaultParamspace).WithKeyTable(bandwidth.ParamKeyTable())
-	app.subspaces[rank.ModuleName] = app.paramsKeeper.Subspace(rank.DefaultParamspace).WithKeyTable(rank.ParamKeyTable())
+	app.subspaces[bandwidth.ModuleName] = app.paramsKeeper.Subspace(bandwidth.DefaultParamspace)
+	app.subspaces[rank.ModuleName] = app.paramsKeeper.Subspace(rank.DefaultParamspace)
 
 	// add keepers
 	app.accountKeeper = auth.NewAccountKeeper(
@@ -198,7 +198,7 @@ func NewCyberdApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest
 	app.evidenceKeeper = *evidenceKeeper
 
 
-	app.accBandwidthKeeper = bandwidth.NewAccBandwidthKeeper(dbKeys.accBandwidth, app.subspaces[bandwidth.ModuleName])
+	app.accountBandwidthKeeper = bandwidth.NewAccountBandwidthKeeper(app.cdc, dbKeys.accBandwidth, app.subspaces[bandwidth.ModuleName])
 	app.blockBandwidthKeeper = bandwidth.NewBlockSpentBandwidthKeeper(dbKeys.blockBandwidth)
 
 	// register the proposal types
@@ -229,7 +229,7 @@ func NewCyberdApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest
 	app.bankKeeper.AddHook(bandwidth.CollectAddressesWithStakeChange())
 
 	app.bandwidthMeter = bandwidth.NewBaseMeter(
-		app.mainKeeper, app.paramsKeeper, app.accountKeeper, app.accBandwidthKeeper,
+		app.mainKeeper, app.accountKeeper, app.accountBandwidthKeeper,
 		app.blockBandwidthKeeper, app.bankKeeper, bandwidth.MsgBandwidthCosts,
 	)
 
@@ -248,8 +248,7 @@ func NewCyberdApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest
 		staking.NewAppModule(app.stakingKeeper, app.accountKeeper, app.supplyKeeper),
 		upgrade.NewAppModule(app.upgradeKeeper),
 		evidence.NewAppModule(app.evidenceKeeper),
-
-		bandwidth.NewAppModule(app.accBandwidthKeeper, app.blockBandwidthKeeper),
+		bandwidth.NewAppModule(app.accountBandwidthKeeper, app.blockBandwidthKeeper),
 		link.NewAppModule(app.cidNumKeeper, app.linkIndexedKeeper, app.accountKeeper),
 		rank.NewAppModule(app.rankStateKeeper),
 	)
@@ -281,8 +280,8 @@ func NewCyberdApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest
 	app.latestBlockHeight = int64(mainKeeper.GetLatestBlockNumber(ctx))
 	ctx = ctx.WithBlockHeight(app.latestBlockHeight)
 
-	bandwidthParamset := bandwidth.NewDefaultParams()
-	app.accBandwidthKeeper.SetParams(ctx, bandwidthParamset)
+	bandwidthParams := bandwidth.DefaultParams()
+	app.accountBandwidthKeeper.SetParams(ctx, bandwidthParams)
 
 	rankParamset := rank.NewDefaultParams()
 	app.rankStateKeeper.SetParams(ctx, rankParamset)
@@ -347,7 +346,7 @@ func (app *CyberdApp) applyGenesis(ctx sdk.Context, req abci.RequestInitChain) a
 	slashing.InitGenesis(ctx, app.slashingKeeper, app.stakingKeeper, genesisState.SlashingData)
 	gov.InitGenesis(ctx, app.govKeeper, app.supplyKeeper, genesisState.GovData)
 	mint.InitGenesis(ctx, app.mintKeeper, genesisState.MintData)
-	bandwidth.InitGenesis(ctx, app.bandwidthMeter, app.accBandwidthKeeper, genesisState.GetAddresses(),
+	bandwidth.InitGenesis(ctx, app.bandwidthMeter, app.accountBandwidthKeeper, genesisState.GetAddresses(),
 		genesisState.BandwidthData)
 	rank.InitGenesis(ctx, app.rankStateKeeper, genesisState.RankData)
 
@@ -527,15 +526,11 @@ func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.R
 	validatorUpdates := staking.EndBlocker(ctx, app.stakingKeeper)
 	app.stakingIndexKeeper.EndBlocker(ctx)
 
-	bandwidth.EndBlocker(ctx, app.paramsKeeper, app.bandwidthMeter)
+	bandwidth.EndBlocker(ctx, app.accountBandwidthKeeper, app.bandwidthMeter)
 
 	// RANK CALCULATION
 	app.rankStateKeeper.EndBlocker(ctx, app.Logger())
-
-	err := app.linkIndexedKeeper.Commit(ctx)
-	if err != nil {
-		panic(err)
-	}
+	app.linkIndexedKeeper.Commit(ctx)
 
 	return abci.ResponseEndBlock{
 		ValidatorUpdates: validatorUpdates,

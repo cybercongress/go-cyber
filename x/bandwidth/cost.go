@@ -2,24 +2,15 @@ package bandwidth
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/params"
-	"github.com/cybercongress/cyberd/x/bandwidth/internal/types"
 	"github.com/cybercongress/cyberd/x/link"
 )
 
-func MsgBandwidthCosts(ctx sdk.Context, pk params.Keeper, msg sdk.Msg) int64 {
-	subspace, ok := pk.GetSubspace(types.DefaultParamspace)
-	if !ok {
-		panic("bandwidth params subspace is not found")
-	}
-	var paramset Params
-	subspace.GetParamSet(ctx, &paramset)
-
+func MsgBandwidthCosts(ctx sdk.Context, params Params, msg sdk.Msg) int64 {
 	switch msg.(type) {
 	case link.Msg:
 		linkMsg := msg.(link.Msg)
-		return int64(len(linkMsg.Links)) * paramset.LinkMsgCost
+		return int64(len(linkMsg.Links)) * params.LinkMsgCost
 	default:
-		return paramset.NonLinkMsgCost
+		return params.NonLinkMsgCost
 	}
 }

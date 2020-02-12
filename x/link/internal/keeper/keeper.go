@@ -18,7 +18,7 @@ const (
 	LinksCountBytesSize = uint64(8)
 )
 
-const defaultBufferSize = 32768
+const defaultBufferSize = 65536
 
 type LinkFilter func(l types.CompactLink) bool
 
@@ -94,13 +94,13 @@ func (lk Keeper) IterateTillVersion(ctx sdk.Context, process func(bytes []byte),
 
 	for ; iterator.Valid(); iterator.Next() {
 		value := iterator.Value()
-		elementsCountBytes := value[0:8]
-		elementsCount := binary.LittleEndian.Uint64(elementsCountBytes)
+		if (value == nil) { continue }
 
-		for i := uint64(0); i < elementsCount; i++ {
-			start := uint64(8) + (i*LinkBytesSize)
-			end := uint64(8) + ((i+1)*LinkBytesSize)
-			elementBytes := value[start:end]
+		links := len(value)/int(LinkBytesSize)
+
+		for i := 0 ; i < links; i++ {
+			elementBytes := value[:LinkBytesSize]
+			value = value[LinkBytesSize:]
 			process(elementBytes)
 		}
 	}
@@ -130,15 +130,10 @@ func (lk Keeper) Commit(ctx sdk.Context) error {
 		lk.buffer.Reset()
 	}()
 
-	elementsCountBytes := make([]byte, 8)
-	binary.LittleEndian.PutUint64(elementsCountBytes, uint64(lk.buffer.Len())/LinkBytesSize)
-
 	versionAsBytes := make([]byte, 8)
 	binary.LittleEndian.PutUint64(versionAsBytes, uint64(ctx.BlockHeight()))
-	bytesToCommit := append(elementsCountBytes, lk.buffer.Bytes()...)
-
 	store := ctx.KVStore(lk.storeKey)
-	store.Set(versionAsBytes, bytesToCommit)
+	store.Set(versionAsBytes, lk.buffer.Bytes())
 
 	return nil
 }

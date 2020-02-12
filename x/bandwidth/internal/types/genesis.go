@@ -1,7 +1,7 @@
 package types
 
 type GenesisState struct {
-	Params Params
+	Params Params `json:"Params" yaml:"Params"`
 }
 
 func NewGenesisState(params Params) GenesisState {
@@ -11,9 +11,12 @@ func NewGenesisState(params Params) GenesisState {
 }
 
 func DefaultGenesisState() GenesisState {
-	return NewGenesisState(NewDefaultParams())
+	return NewGenesisState(DefaultParams())
 }
 
 func ValidateGenesis(data GenesisState) error {
-	return data.Params.Validate()
+	if err := data.Params.Validate(); err != nil {
+		return err
+	}
+	return nil
 }

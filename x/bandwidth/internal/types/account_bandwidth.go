@@ -2,12 +2,11 @@ package types
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/params"
 )
 
-type MsgBandwidthCost func(ctx sdk.Context, pk params.Keeper, msg sdk.Msg) int64
+type MsgBandwidthCost func(ctx sdk.Context, params Params, msg sdk.Msg) int64
 
-type AcсBandwidth struct {
+type AcсountBandwidth struct {
 	Address          sdk.AccAddress `json:"address"`
 	RemainedValue    int64          `json:"remained"`
 	LastUpdatedBlock int64          `json:"last_updated_block"`
@@ -15,7 +14,7 @@ type AcсBandwidth struct {
 	Linked           int64          `json:"karma"`
 }
 
-func (bs *AcсBandwidth) UpdateMax(newValue int64, currentBlock int64, recoveryPeriod int64) {
+func (bs *AcсountBandwidth) UpdateMax(newValue int64, currentBlock int64, recoveryPeriod int64) {
 	bs.Recover(currentBlock, recoveryPeriod)
 	bs.MaxValue = newValue
 	bs.LastUpdatedBlock = currentBlock
@@ -25,7 +24,7 @@ func (bs *AcсBandwidth) UpdateMax(newValue int64, currentBlock int64, recoveryP
 	}
 }
 
-func (bs *AcсBandwidth) Recover(currentBlock int64, recoveryPeriod int64) {
+func (bs *AcсountBandwidth) Recover(currentBlock int64, recoveryPeriod int64) {
 	recoverPerBlock := float64(bs.MaxValue) / float64(recoveryPeriod)
 	fullRecoveryAmount := float64(bs.MaxValue - bs.RemainedValue)
 
@@ -38,24 +37,23 @@ func (bs *AcсBandwidth) Recover(currentBlock int64, recoveryPeriod int64) {
 	bs.LastUpdatedBlock = currentBlock
 }
 
-func (bs AcсBandwidth) HasEnoughRemained(bandwidthToConsume int64) bool {
+func (bs AcсountBandwidth) HasEnoughRemained(bandwidthToConsume int64) bool {
 	return bs.RemainedValue >= bandwidthToConsume
 }
 
-func (bs *AcсBandwidth) Consume(bandwidthToConsume int64) {
+func (bs *AcсountBandwidth) Consume(bandwidthToConsume int64) {
 	bs.RemainedValue = bs.RemainedValue - bandwidthToConsume
 	if bs.RemainedValue < 0 {
-		// should not happen
-		panic("Negative bandwidth!!")
+		panic("Negative bandwidth!")
 	}
 }
 
-func (bs *AcсBandwidth) AddLinked(bandwidthUsed int64) {
+func (bs *AcсountBandwidth) AddLinked(bandwidthUsed int64) {
 	bs.Linked = bs.Linked + bandwidthUsed
 }
 
-func NewGenesisAccBandwidth(address sdk.AccAddress, bandwidth int64) AcсBandwidth {
-	return AcсBandwidth{
+func NewGenesisAccountBandwidth(address sdk.AccAddress, bandwidth int64) AcсountBandwidth {
+	return AcсountBandwidth{
 		Address:            address,
 		RemainedValue:      bandwidth,
 		MaxValue:           bandwidth,

@@ -84,7 +84,7 @@ func (app *CyberdApp) Account(address sdk.AccAddress) exported.Account {
 	return app.accountKeeper.GetAccount(app.RpcContext(), address)
 }
 
-func (app *CyberdApp) AccountBandwidth(address sdk.AccAddress) bw.AcсBandwidth {
+func (app *CyberdApp) AccountBandwidth(address sdk.AccAddress) bw.AccountBandwidth {
 	return app.bandwidthMeter.GetCurrentAccBandwidth(app.RpcContext(), address)
 }
 

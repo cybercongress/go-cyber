@@ -55,8 +55,8 @@ type GenesisState struct {
 }
 
 func (gs *GenesisState) GetAddresses() []sdk.AccAddress {
-	addresses := make([]sdk.AccAddress, 0, len(gs.Accounts))
-	for _, acc := range gs.Accounts {
+	addresses := make([]sdk.AccAddress, 0, len(gs.AuthData.Accounts))
+	for _, acc := range gs.AuthData.Accounts {
 		addresses = append(addresses, acc.GetAddress())
 	}
 	return addresses
@@ -168,7 +168,9 @@ func NewDefaultGenesisState() GenesisState {
 				Veto:      sdk.NewDecWithPrec(334, 3),
 			},
 		},
-		BandwidthData: bandwidth.DefaultGenesisState(),
+		BandwidthData: bandwidth.GenesisState{
+			Params:		bandwidth.DefaultParams(),
+		},
 		RankData:      rank.DefaultGenesisState(),
 		//GenTxs:        []json.RawMessage{},
 		Crisis: 	   crisis.GenesisState{ ConstantFee: sdk.NewCoin(coin.CYB, sdk.NewInt(1000)) },
