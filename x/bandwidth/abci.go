@@ -42,5 +42,5 @@ func EndBlocker(ctx sdk.Context, bk AccountBandwidthKeeper, meter types.Bandwidt
 		meter.AdjustPrice(ctx)
 	}
 	meter.CommitBlockBandwidth(ctx)
-	updateAccMaxBandwidth(ctx, meter)
+	//updateAccMaxBandwidth(ctx, meter)
 }

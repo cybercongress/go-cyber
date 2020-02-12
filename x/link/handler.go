@@ -38,7 +38,7 @@ func NewLinksHandler(cis CidNumberKeeper, ls IndexedKeeper, as auth.AccountKeepe
 			compactLink := cbdlink.NewLink(fromCidNumber, toCidNumber, accNumber)
 
 			if ls.IsLinkExist(compactLink) {
-				return nil, types.ErrDuplicatedLink
+				return nil, types.ErrCyberlinkExist
 			}
 		}
 

@@ -47,7 +47,7 @@ func (msg Msg) ValidateBasic() error {
 		}
 
 		if filter.Contains(link.From, link.To) {
-			return types.ErrDuplicatedLink
+			return types.ErrCyberlinkExist
 		}
 
 		filter.Put(link.From, link.To)

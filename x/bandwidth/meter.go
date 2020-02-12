@@ -176,7 +176,6 @@ func (m *BaseBandwidthMeter) ConsumeAccBandwidth(ctx sdk.Context, bw types.Acсo
 }
 
 func (m *BaseBandwidthMeter) UpdateLinkedBandwidth(ctx sdk.Context, bw types.AcсountBandwidth, amt int64) {
-	bw = m.GetCurrentAccBandwidth(ctx, bw.Address) // TODO check this should fix linking consuming bandwidth issue
 	bw.AddLinked(amt)
 	m.accountBaindwidthKeeper.SetAccountBandwidth(ctx, bw)
 }

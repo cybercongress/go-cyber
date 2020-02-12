@@ -6,7 +6,7 @@ import (
 )
 
 // Genesis accounts should contains fully restored bandwidth on block 0
-func InitGenesis(ctx sdk.Context, handler types.BandwidthMeter,
+func InitAccountsBandwidthGenesis(ctx sdk.Context, handler types.BandwidthMeter,
 	keeper AccountBandwidthKeeper, addresses []sdk.AccAddress, data GenesisState) {
 
 	keeper.SetParams(ctx, data.Params)

@@ -99,7 +99,7 @@ func (am AppModule) EndBlock(sdk.Context, abci.RequestEndBlock) []abci.Validator
 	return []abci.ValidatorUpdate{}
 }
 
-// Cannot InitGenesis from here
+// Cannot InitAccountsBandwidthGenesis from here
 func (am AppModule) InitGenesis(ctx sdk.Context, data json.RawMessage) []abci.ValidatorUpdate {
 	var genesisState GenesisState
 	ModuleCdc.MustUnmarshalJSON(data, &genesisState)

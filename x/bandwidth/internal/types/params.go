@@ -61,12 +61,12 @@ func NewParams(
 
 func DefaultParams() Params {
 	return Params{
-		TxCost:             int64(300),
-		LinkMsgCost:        int64(100),
-		NonLinkMsgCost:     int64(500),
-		RecoveryPeriod:     int64(16000),
+		TxCost:             int64(3000),
+		LinkMsgCost:        int64(1000),
+		NonLinkMsgCost:     int64(5000),
+		RecoveryPeriod:     int64(1600000),
 		AdjustPricePeriod:  int64(10),
-		BaseCreditPrice:    sdk.NewDec(1),
+		BaseCreditPrice:    sdk.NewDec(50),
 		DesirableBandwidth: int64(200000000),
 		MaxBlockBandwidth:  uint64(200000000*10/16000),
 	}

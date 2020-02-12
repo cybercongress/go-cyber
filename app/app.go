@@ -346,7 +346,7 @@ func (app *CyberdApp) applyGenesis(ctx sdk.Context, req abci.RequestInitChain) a
 	slashing.InitGenesis(ctx, app.slashingKeeper, app.stakingKeeper, genesisState.SlashingData)
 	gov.InitGenesis(ctx, app.govKeeper, app.supplyKeeper, genesisState.GovData)
 	mint.InitGenesis(ctx, app.mintKeeper, genesisState.MintData)
-	bandwidth.InitGenesis(ctx, app.bandwidthMeter, app.accountBandwidthKeeper, genesisState.GetAddresses(),
+	bandwidth.InitAccountsBandwidthGenesis(ctx, app.bandwidthMeter, app.accountBandwidthKeeper, genesisState.GetAddresses(),
 		genesisState.BandwidthData)
 	rank.InitGenesis(ctx, app.rankStateKeeper, genesisState.RankData)
 
@@ -458,13 +458,16 @@ func (app *CyberdApp) DeliverTx(req abci.RequestDeliverTx) (res abci.ResponseDel
 			resp := app.BaseApp.DeliverTx(req)
 			app.bandwidthMeter.ConsumeAccBandwidth(ctx, accBw, txCost)
 
-			linkingCost := app.bandwidthMeter.GetPricedLinksCost(ctx, tx)
-			if linkingCost != int64(0) {
-				app.bandwidthMeter.UpdateLinkedBandwidth(ctx, accBw, linkingCost)
+			if resp.Code == 0 {
+				linkingCost := app.bandwidthMeter.GetPricedLinksCost(ctx, tx)
+				if linkingCost != int64(0) {
+					accBwNew := app.bandwidthMeter.GetCurrentAccBandwidth(ctx, acc)
+					app.bandwidthMeter.UpdateLinkedBandwidth(ctx, accBwNew, linkingCost)
+				}
+				app.bandwidthMeter.AddToOverallKarma(linkingCost)
 			}
 
 			app.bandwidthMeter.AddToBlockBandwidth(app.bandwidthMeter.GetTxCost(ctx, tx))
-			app.bandwidthMeter.AddToOverallKarma(linkingCost)
 
 			return resp
 		}
