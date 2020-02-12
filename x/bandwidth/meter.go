@@ -26,7 +26,7 @@ type BaseBandwidthMeter struct {
 	currentCreditPrice         float64
 	bandwidthSpent             map[uint64]uint64 // bandwidth spent by blocks
 	totalSpentForSlidingWindow uint64
-	bandwidthSpentLinking      uint64
+	currentBlockSpentKarma     uint64
 }
 
 func NewBaseMeter(
@@ -64,8 +64,8 @@ func (m *BaseBandwidthMeter) AddToBlockBandwidth(value int64) {
 	m.curBlockSpentBandwidth += uint64(value)
 }
 
-func (m *BaseBandwidthMeter) AddToOverallKarma(value int64) {
-	m.bandwidthSpentLinking += uint64(value)
+func (m *BaseBandwidthMeter) AddToBlockKarma(value int64) {
+	m.currentBlockSpentKarma += uint64(value)
 }
 
 // Here we move bandwidth window:
@@ -89,6 +89,14 @@ func (m *BaseBandwidthMeter) CommitBlockBandwidth(ctx sdk.Context) {
 	m.blockBandwidthKeeper.SetBlockSpentBandwidth(ctx, uint64(ctx.BlockHeight()), m.curBlockSpentBandwidth)
 	m.bandwidthSpent[uint64(newWindowEnd)] = m.curBlockSpentBandwidth
 	m.curBlockSpentBandwidth = 0
+}
+
+func (m *BaseBandwidthMeter) CommitTotalKarma(ctx sdk.Context) {
+	if m.currentBlockSpentKarma != uint64(0) {
+		currentKarma := m.mainKeeper.GetSpentKarma(ctx)
+		m.mainKeeper.StoreSpentKarma(ctx, currentKarma + m.currentBlockSpentKarma)
+	}
+	m.currentBlockSpentKarma = 0
 }
 
 func (m *BaseBandwidthMeter) AdjustPrice(ctx sdk.Context) {
@@ -183,8 +191,4 @@ func (m *BaseBandwidthMeter) UpdateLinkedBandwidth(ctx sdk.Context, bw types.Ac—
 
 func (m *BaseBandwidthMeter) GetCurrentCreditPrice() float64 {
 	return m.currentCreditPrice
-}
-
-func (m *BaseBandwidthMeter) GetCurrentBandwidthLinked() uint64 {
-	return m.bandwidthSpentLinking
 }

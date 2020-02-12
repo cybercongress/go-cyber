@@ -20,15 +20,15 @@ type BandwidthMeter interface {
 	// add value to consumed bandwidth for current block
 	AddToBlockBandwidth(value int64)
 	// add value to overall linked bandwidth
-	AddToOverallKarma(value int64)
+	AddToBlockKarma(value int64)
 	// adjust price based on 24h loading
 	AdjustPrice(ctx sdk.Context)
 	// get current bandwidth price
 	GetCurrentCreditPrice() float64
-	// get current used linked bandwidth
-	GetCurrentBandwidthLinked() uint64
 	// commit bandwidth value spent for current block
 	CommitBlockBandwidth(ctx sdk.Context)
+	// commit bandwidth value spent for current block
+	CommitTotalKarma(ctx sdk.Context)
 	// Update acc max bandwidth for current stake. Also, performs recover.
 	UpdateAccMaxBandwidth(ctx sdk.Context, address sdk.AccAddress)
 	// Returns recovered to current block height acc bandwidth

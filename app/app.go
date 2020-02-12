@@ -464,7 +464,7 @@ func (app *CyberdApp) DeliverTx(req abci.RequestDeliverTx) (res abci.ResponseDel
 					accBwNew := app.bandwidthMeter.GetCurrentAccBandwidth(ctx, acc)
 					app.bandwidthMeter.UpdateLinkedBandwidth(ctx, accBwNew, linkingCost)
 				}
-				app.bandwidthMeter.AddToOverallKarma(linkingCost)
+				app.bandwidthMeter.AddToBlockKarma(linkingCost)
 			}
 
 			app.bandwidthMeter.AddToBlockBandwidth(app.bandwidthMeter.GetTxCost(ctx, tx))

@@ -11,6 +11,7 @@ var linksCountKey = []byte("cyberd_links_count")
 var genesisSupplyKey = []byte("cyberd_genesis_supply")
 var lastBandwidthPrice = []byte("cyberd_last_bandwidth_price")
 var spentBandwidth = []byte("cyberd_spent_bandwidth")
+var spentKarma = []byte("cyberd_latest_karma")
 var latestBlockNumber = []byte("cyberd_latest_block_number")
 var latestMerkleTree = []byte("cyberd_latest_merkle_tree")
 var nextMerkleTree = []byte("cyberd_next_merkle_tree")
@@ -107,6 +108,22 @@ func (ms MainKeeper) StoreSpentBandwidth(ctx sdk.Context, bandwidth uint64) {
 	bandwidthAsBytes := make([]byte, 8)
 	binary.LittleEndian.PutUint64(bandwidthAsBytes, bandwidth)
 	store.Set(spentBandwidth, bandwidthAsBytes)
+}
+
+func (ms MainKeeper) GetSpentKarma(ctx sdk.Context) uint64 {
+	store := ctx.KVStore(ms.storeKey)
+	karmaAsBytes := store.Get(spentKarma)
+	if karmaAsBytes == nil {
+		return 0
+	}
+	return binary.LittleEndian.Uint64(karmaAsBytes)
+}
+
+func (ms MainKeeper) StoreSpentKarma(ctx sdk.Context, karma uint64) {
+	store := ctx.KVStore(ms.storeKey)
+	karmaAsBytes := make([]byte, 8)
+	binary.LittleEndian.PutUint64(karmaAsBytes, karma)
+	store.Set(spentKarma, karmaAsBytes)
 }
 
 func (ms MainKeeper) GetLatestBlockNumber(ctx sdk.Context) uint64 {
