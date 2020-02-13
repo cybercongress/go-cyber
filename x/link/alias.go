@@ -7,10 +7,21 @@ import (
 )
 
 const (
-	//DefaultParamspace = types.DefaultParamspace
 	ModuleName = types.ModuleName
 	StoreKey   = types.StoreKey
 	RouterKey  = types.RouterKey
+)
+
+var (
+	// keeper
+	NewLinkKeeper      = keeper.NewLinkKeeper
+	NewIndexedKeeper   = keeper.NewIndexedKeeper
+	NewCidNumberKeeper = keeper.NewCidNumberKeeper
+
+	// types
+	RegisterCodec = types.RegisterCodec
+	NewMsg        = types.NewMsg
+	NewLink       = types.NewLink
 )
 
 type (
@@ -28,16 +39,4 @@ type (
 	CidsFilter  = types.CidsFilter
 	Link        = types.Link
 	CompactLink = types.CompactLink
-)
-
-var (
-	// keeper
-	NewLinkKeeper      = keeper.NewLinkKeeper
-	NewIndexedKeeper   = keeper.NewIndexedKeeper
-	NewCidNumberKeeper = keeper.NewCidNumberKeeper
-
-	// types
-	RegisterCodec = types.RegisterCodec
-	NewMsg        = types.NewMsg
-	NewLink       = types.NewLink
 )

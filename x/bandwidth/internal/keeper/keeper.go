@@ -8,9 +8,12 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/params"
 
+	"github.com/cybercongress/cyberd/x/bandwidth/exported"
 	"github.com/cybercongress/cyberd/x/bandwidth/internal/types"
 )
 
+var _ exported.BaseAccountBandwidthKeeper = &BaseAccountBandwidthKeeper{}
+var _ exported.BaseBlockSpentBandwidthKeeper = &BaseBlockSpentBandwidthKeeper{}
 
 type BaseAccountBandwidthKeeper struct {
 	cdc        *codec.Codec

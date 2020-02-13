@@ -219,7 +219,7 @@ func NewCyberdApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest
 	app.stakingIndexKeeper = cyberbank.NewIndexedKeeper(bankKeeper)
 	app.rankStateKeeper = rank.NewStateKeeper(app.cdc, app.subspaces[rank.ModuleName],
 		allowSearch, app.mainKeeper, app.stakingIndexKeeper,
-		app.linkIndexedKeeper, app.cidNumKeeper, app.paramsKeeper, computeUnit,
+		app.linkIndexedKeeper, app.cidNumKeeper, computeUnit,
 	)
 
 	app.stakingKeeper = *stakingKeeper.SetHooks(
@@ -283,8 +283,8 @@ func NewCyberdApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest
 	bandwidthParams := bandwidth.DefaultParams()
 	app.accountBandwidthKeeper.SetParams(ctx, bandwidthParams)
 
-	rankParamset := rank.NewDefaultParams()
-	app.rankStateKeeper.SetParams(ctx, rankParamset)
+	rankParams := rank.DefaultParams()
+	app.rankStateKeeper.SetParams(ctx, rankParams)
 
 	// build context for current rank calculation round
 	calculationPeriod := app.rankStateKeeper.GetParams(ctx).CalculationPeriod
@@ -302,7 +302,7 @@ func NewCyberdApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest
 	start := time.Now()
 	app.BaseApp.Logger().Info("Loading mem state")
 	app.linkIndexedKeeper.Load(rankCtx, ctx)
-	app.stakingIndexKeeper.Load(rankCtx, ctx)
+	app.stakingIndexKeeper.Load(rankCtx, ctx) // TODO fix fails on replay here
 	app.BaseApp.Logger().Info("App loaded", "time", time.Since(start))
 
 	// BANDWIDTH LOAD

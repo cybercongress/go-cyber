@@ -94,7 +94,7 @@ func (lk Keeper) IterateTillVersion(ctx sdk.Context, process func(bytes []byte),
 
 	for ; iterator.Valid(); iterator.Next() {
 		value := iterator.Value()
-		if (value == nil) { continue }
+		if (len(value) == 0) { continue }
 
 		links := len(value)/int(LinkBytesSize)
 
@@ -117,7 +117,10 @@ func (lk Keeper) WriteLinks(ctx sdk.Context, writer io.Writer) (err error) {
 	}
 
 	lk.IterateTillVersion(ctx, func(bytes []byte) {
-		_, _ = writer.Write(bytes)
+		_, err = writer.Write(bytes)
+		if err != nil {
+			return
+		}
 	}, ctx.BlockHeight())
 
 	return nil

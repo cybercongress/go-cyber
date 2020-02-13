@@ -54,16 +54,7 @@ func (s *IndexedKeeper) getCollectFunc(ctx sdk.Context, userStake map[cbd.AccNum
 
 // return true if some stake changed
 func (s *IndexedKeeper) FixUserStake(ctx sdk.Context) bool {
-
-	// Standalone changes of modules balance should not trigger a rank recalculation
-	modulesNames := [6]string{"bonded_tokens_pool", "not_bonded_tokens_pool", "gov", "distribution", "mint", "fee_collector"}
-	for _, name := range modulesNames {
-		supplyModuleAddress := sdk.AccAddress(crypto.AddressHash([]byte(name)))
-		supplyModuleAccount := s.accountKeeper.GetAccount(ctx, supplyModuleAddress)
-		supplyModuleAccountNumber := cbd.AccNumber(supplyModuleAccount.GetAccountNumber())
-		s.userTotalStake[supplyModuleAccountNumber] = s.userNewTotalStake[supplyModuleAccountNumber]
-	}
-
+	s.FixModulesStake(ctx)
 	stakeChanged := false
 	for k, v := range s.userNewTotalStake {
 		if s.userTotalStake[k] != v {
@@ -72,6 +63,17 @@ func (s *IndexedKeeper) FixUserStake(ctx sdk.Context) bool {
 		}
 	}
 	return stakeChanged
+}
+
+func (s *IndexedKeeper) FixModulesStake(ctx sdk.Context) {
+	// Standalone changes of modules balance should not trigger a rank recalculation
+	modulesNames := [6]string{"bonded_tokens_pool", "not_bonded_tokens_pool", "gov", "distribution", "mint", "fee_collector"}
+	for _, name := range modulesNames {
+		supplyModuleAddress := sdk.AccAddress(crypto.AddressHash([]byte(name)))
+		supplyModuleAccount := s.accountKeeper.GetAccount(ctx, supplyModuleAddress)
+		supplyModuleAccountNumber := cbd.AccNumber(supplyModuleAccount.GetAccountNumber())
+		s.userTotalStake[supplyModuleAccountNumber] = s.userNewTotalStake[supplyModuleAccountNumber]
+	}
 }
 
 func (s *IndexedKeeper) UpdateStake(acc cbd.AccNumber, stake int64) {

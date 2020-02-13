@@ -91,7 +91,6 @@ func NewGenesisState(
 // NewDefaultGenesisState generates the default state for cyberd.
 func NewDefaultGenesisState() GenesisState {
 	return GenesisState{
-		Accounts: nil,
 		AuthData: auth.GenesisState{
 			Params: auth.Params{
 				MaxMemoCharacters: 256,

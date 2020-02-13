@@ -16,7 +16,10 @@ type Msg struct {
 var _ sdk.Msg = Msg{}
 
 func NewMsg(address sdk.AccAddress, links []Link) Msg {
-	return Msg{Address: address, Links: links}
+	return Msg{
+		Address: address,
+		Links:   links,
+	}
 }
 
 func (msg Msg) Name() string { return "link" }

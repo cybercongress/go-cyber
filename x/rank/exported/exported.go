@@ -9,13 +9,9 @@ import (
 	"github.com/cybercongress/cyberd/x/rank/internal/types"
 )
 
-type Keeper interface {
+type StateKeeper interface {
 	SetParams(sdk.Context, types.Params)
 	GetParams(sdk.Context) types.Params
-}
-
-type StateKeeper interface {
-	Keeper
 
 	Load(sdk.Context, log.Logger)
 	BuildSearchIndex(log.Logger) types.SearchIndex

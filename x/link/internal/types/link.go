@@ -17,12 +17,16 @@ type CompactLink struct {
 }
 
 func NewLink(from CidNumber, to CidNumber, acc AccNumber) CompactLink {
-	return CompactLink{from: from, to: to, acc: acc}
+	return CompactLink{
+		from: from,
+		to:   to,
+		acc:  acc,
+	}
 }
 
 func (l CompactLink) From() CidNumber { return l.from }
-func (l CompactLink) To() CidNumber   { return l.to }
-func (l CompactLink) Acc() AccNumber  { return l.acc }
+func (l CompactLink) To()   CidNumber { return l.to }
+func (l CompactLink) Acc()  AccNumber { return l.acc }
 
 func UnmarshalBinaryLink(b []byte) CompactLink {
 	return NewLink(

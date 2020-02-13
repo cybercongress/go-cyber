@@ -2,10 +2,10 @@ package types
 
 import (
 	"fmt"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/params"
 	"github.com/cosmos/cosmos-sdk/x/params/subspace"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"strings"
 )
 
 // Parameter keys
@@ -22,9 +22,17 @@ type Params struct {
 	Tolerance		  sdk.Dec `json:"tolerance" yaml:"tolerance"`
 }
 
+// ParamKeyTable for rank module
+func ParamKeyTable() subspace.KeyTable {
+	return subspace.NewKeyTable().RegisterParamSet(&Params{})
+}
+
 // NewParams creates a new Params object
-func NewParams(calculationPeriod int64, dampingFactor sdk.Dec,
-	tolerance sdk.Dec) Params {
+func NewParams(
+	calculationPeriod int64,
+	dampingFactor sdk.Dec,
+	tolerance sdk.Dec,
+) Params {
 
 	return Params{
 		CalculationPeriod: calculationPeriod,
@@ -34,7 +42,7 @@ func NewParams(calculationPeriod int64, dampingFactor sdk.Dec,
 }
 
 // NewDefaultParams returns a default set of parameters.
-func NewDefaultParams() Params {
+func DefaultParams() Params {
 	return Params{
 		CalculationPeriod: int64(10),
 		DampingFactor:	   sdk.NewDecWithPrec(85, 2),
@@ -42,52 +50,85 @@ func NewDefaultParams() Params {
 	}
 }
 
-// ParamKeyTable for rank module
-func ParamKeyTable() subspace.KeyTable {
-	return subspace.NewKeyTable().RegisterParamSet(&Params{})
+func (p Params) Validate() error {
+	if err := validateCalculationPeriod(p.CalculationPeriod); err != nil {
+		return err
+	}
+	if err := validateDampingFactor(p.DampingFactor); err != nil {
+		return err
+	}
+	if err := validateTolerance(p.Tolerance); err != nil {
+		return err
+	}
+
+	return nil
 }
 
-// ParamSetPairs implements the ParamSet interface and returns all the key/value pairs
-// pairs of rank module's parameters.
+func (p Params) String() string {
+
+	return fmt.Sprintf(`Rank params:
+  CalculationPeriod: %d
+  DampingFactor:	 %d
+  Tolerance:		 %d
+`,
+		p.CalculationPeriod, p.DampingFactor, p.Tolerance,
+	)
+}
+
+func validateCalculationPeriod(i interface{}) error {
+	v, ok := i.(int64)
+
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if v <= int64(2) {
+		return fmt.Errorf("calculation period too low: %s", v)
+	}
+
+	return nil
+}
+
+func validateDampingFactor(i interface{}) error {
+	v, ok := i.(sdk.Dec)
+
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if v.LT(sdk.ZeroDec()) {
+		return fmt.Errorf("damping factor should be positive: %s", v)
+	}
+
+	if v.GTE(sdk.OneDec()) {
+		return fmt.Errorf("damping factor should be < 1, is: %s", v)
+	}
+
+	return nil
+}
+
+func validateTolerance(i interface{}) error {
+	v, ok := i.(sdk.Dec)
+
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if v.GT(sdk.NewDecWithPrec(1, 3)) {
+		return fmt.Errorf("tolerance too low: %s", v)
+	}
+
+	if v.LT(sdk.NewDecWithPrec(1, 5)) {
+		return fmt.Errorf("tolerance too big: %s", v)
+	}
+
+	return nil
+}
+
 func (p *Params) ParamSetPairs() subspace.ParamSetPairs {
 	return subspace.ParamSetPairs{
-		params.NewParamSetPair(KeyCalculationPeriod, &p.CalculationPeriod, validateMock),
-		params.NewParamSetPair(KeyDampingFactor, &p.DampingFactor, validateMock),
-		params.NewParamSetPair(KeyTolerance, &p.Tolerance, validateMock),
+		params.NewParamSetPair(KeyCalculationPeriod, &p.CalculationPeriod, validateCalculationPeriod),
+		params.NewParamSetPair(KeyDampingFactor, &p.DampingFactor, validateDampingFactor),
+		params.NewParamSetPair(KeyTolerance, &p.Tolerance, validateTolerance),
 	}
-}
-
-// String implements the stringer interface.
-func (p Params) String() string {
-	var sb strings.Builder
-	sb.WriteString("Params: \n")
-	sb.WriteString(fmt.Sprintf("CalculationPeriod: %d\n", p.CalculationPeriod))
-	sb.WriteString(fmt.Sprintf("DampingFactor: %d\n", p.DampingFactor))
-	sb.WriteString(fmt.Sprintf("Tolerance: %d\n", p.Tolerance))
-
-	return sb.String()
-}
-
-func (p Params) Validate() error {
-	if p.CalculationPeriod < 2 {
-		return fmt.Errorf("invalid calculation period: %d less then 2", p.CalculationPeriod)
-	}
-	if p.DampingFactor.GTE(sdk.OneDec()) {
-		return fmt.Errorf("damping factor parameter must be < 1, is %s", p.DampingFactor.String())
-	}
-	if p.DampingFactor.LT(sdk.ZeroDec()) {
-		return fmt.Errorf("damping factor parameter should be positive, is %s", p.DampingFactor.String())
-	}
-	if p.Tolerance.GT(sdk.NewDecWithPrec(1, 3)) {
-		return fmt.Errorf("tolerance parameter must be <= 0.001, is %s", p.DampingFactor.String())
-	}
-	if p.Tolerance.LT(sdk.NewDecWithPrec(1, 5)) {
-		return fmt.Errorf("tolerance parameter must be >= 0.00001, is %s", p.DampingFactor.String())
-	}
-	return nil
-}
-
-// TODO
-func validateMock(i interface{}) error {
-	return nil
 }

@@ -79,6 +79,6 @@ func WriteGenesis(
 	}
 	err = linksFile.Close()
 
-	logger.Info("Cids and links exported. File created.", "path", linksFilePath)
+	logger.Info("Cids and cyberlinks exported. File created.", "path", linksFilePath)
 	return
 }
