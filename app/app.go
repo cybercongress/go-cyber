@@ -37,7 +37,7 @@ import (
 	"github.com/cybercongress/cyberd/types"
 	"github.com/cybercongress/cyberd/types/coin"
 	"github.com/cybercongress/cyberd/util"
-	bandwidth "github.com/cybercongress/cyberd/x/bandwidth"
+	"github.com/cybercongress/cyberd/x/bandwidth"
 	cyberbank "github.com/cybercongress/cyberd/x/bank"
 	"github.com/cybercongress/cyberd/x/link"
 	"github.com/cybercongress/cyberd/x/rank"
@@ -53,6 +53,7 @@ var (
 	DefaultNodeHome = os.ExpandEnv("$HOME/.cyberd")
 
 	ModuleBasics = module.NewBasicManager(
+		genutil.AppModuleBasic{},
 		auth.AppModuleBasic{},
 		sdkbank.AppModuleBasic{},
 		staking.AppModuleBasic{},
@@ -63,7 +64,8 @@ var (
 		crisis.AppModuleBasic{},
 		slashing.AppModuleBasic{},
 		supply.AppModuleBasic{},
-
+		upgrade.AppModuleBasic{},
+		evidence.AppModuleBasic{},
 		link.AppModuleBasic{},
 		bandwidth.AppModuleBasic{},
 		rank.AppModuleBasic{},
@@ -110,12 +112,12 @@ type CyberdApp struct {
 	upgradeKeeper      upgrade.Keeper
 	evidenceKeeper     evidence.Keeper
 
-	bankKeeper         cyberbank.Keeper
+	bankKeeper             cyberbank.Keeper
 	accountBandwidthKeeper bandwidth.AccountBandwidthKeeper
-	linkIndexedKeeper  link.IndexedKeeper
-	cidNumKeeper       link.CidNumberKeeper
-	stakingIndexKeeper cyberbank.IndexedKeeper
-	rankStateKeeper    rank.StateKeeper
+	linkIndexedKeeper  	   link.IndexedKeeper
+	cidNumKeeper           link.CidNumberKeeper
+	stakingIndexKeeper     cyberbank.IndexedKeeper
+	rankStateKeeper        rank.StateKeeper
 
 	latestBlockHeight int64
 
@@ -161,20 +163,20 @@ func NewCyberdApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest
 
 	// add keepers
 	app.accountKeeper = auth.NewAccountKeeper(
-		app.cdc, dbKeys.acc, app.subspaces[auth.ModuleName], auth.ProtoBaseAccount,
+		app.cdc, dbKeys.auth, app.subspaces[auth.ModuleName], auth.ProtoBaseAccount,
 	)
 	bankKeeper := cyberbank.NewKeeper(
 		app.accountKeeper, app.subspaces[sdkbank.ModuleName], app.ModuleAccountAddrs(),
 	)
-	app.bankKeeper = bankKeeper // TODO
+	app.bankKeeper = bankKeeper
 	app.supplyKeeper = supply.NewKeeper(
 		app.cdc, dbKeys.supply, app.accountKeeper, app.bankKeeper, maccPerms,
 	)
 	stakingKeeper := staking.NewKeeper(
 		app.cdc, dbKeys.stake, app.supplyKeeper, app.subspaces[staking.ModuleName],
 	)
-	app.bankKeeper.SetStakingKeeper(&stakingKeeper) // TODO
-	app.bankKeeper.SetSupplyKeeper(app.supplyKeeper) // TODO
+	app.bankKeeper.SetStakingKeeper(&stakingKeeper)
+	app.bankKeeper.SetSupplyKeeper(app.supplyKeeper)
 	app.mintKeeper = mint.NewKeeper(
 		app.cdc, dbKeys.mint, app.subspaces[mint.ModuleName], &stakingKeeper,
 		app.supplyKeeper, auth.FeeCollectorName,
@@ -202,12 +204,10 @@ func NewCyberdApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest
 	app.blockBandwidthKeeper = bandwidth.NewBlockSpentBandwidthKeeper(dbKeys.blockBandwidth)
 
 	// register the proposal types
-	govRouter := gov.NewRouter().
-		AddRoute(gov.RouterKey, gov.ProposalHandler).
+	govRouter := gov.NewRouter().AddRoute(gov.RouterKey, gov.ProposalHandler).
 		AddRoute(params.RouterKey, params.NewParamChangeProposalHandler(app.paramsKeeper)).
 		AddRoute(distr.RouterKey, distr.NewCommunityPoolSpendProposalHandler(app.distrKeeper)).
 		AddRoute(upgrade.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.upgradeKeeper))
-
 	app.govKeeper = gov.NewKeeper(
 		app.cdc, dbKeys.gov, app.subspaces[gov.ModuleName],
 		app.supplyKeeper, &stakingKeeper, govRouter,
@@ -256,9 +256,8 @@ func NewCyberdApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest
 	app.mm.RegisterInvariants(&app.crisisKeeper)
 	app.mm.RegisterRoutes(app.Router(), app.QueryRouter())
 
-	// TODO
 	app.MountStores(
-		dbKeys.main, dbKeys.acc, dbKeys.cidNum, dbKeys.cidNumReverse, dbKeys.links, dbKeys.rank, dbKeys.stake,
+		dbKeys.main, dbKeys.auth, dbKeys.cidNum, dbKeys.cidNumReverse, dbKeys.links, dbKeys.rank, dbKeys.stake,
 		dbKeys.slashing, dbKeys.gov, dbKeys.params, dbKeys.distr, dbKeys.accBandwidth,
 		dbKeys.blockBandwidth, dbKeys.tParams, dbKeys.tStake, dbKeys.mint, dbKeys.supply, dbKeys.upgrade, dbKeys.evidence,
 	)
@@ -269,7 +268,7 @@ func NewCyberdApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest
 	//because genesis max_gas equals -1 there is NewInfiniteGasMeter
 	app.SetAnteHandler(auth.NewAnteHandler(app.accountKeeper, app.supplyKeeper, auth.DefaultSigVerificationGasConsumer))
 
-	if loadLatest {
+	if loadLatest { // TODO always true
 		err := app.LoadLatestVersion(dbKeys.main)
 		if err != nil {
 			tmos.Exit(err.Error())
@@ -302,7 +301,7 @@ func NewCyberdApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest
 	start := time.Now()
 	app.BaseApp.Logger().Info("Loading mem state")
 	app.linkIndexedKeeper.Load(rankCtx, ctx)
-	app.stakingIndexKeeper.Load(rankCtx, ctx) // TODO fix fails on replay here
+	app.stakingIndexKeeper.Load(rankCtx, ctx) // TODO fix fails on replay here, replay cmd disabled
 	app.BaseApp.Logger().Info("App loaded", "time", time.Since(start))
 
 	// BANDWIDTH LOAD
@@ -324,28 +323,25 @@ func (app *CyberdApp) applyGenesis(ctx sdk.Context, req abci.RequestInitChain) a
 	if err != nil {
 		panic(err)
 	}
-
+	// initialize distribution (must happen before staking)
+	distr.InitGenesis(ctx, app.distrKeeper, app.supplyKeeper, genesisState.DistrData)
+	validators := staking.InitGenesis(
+		ctx, app.stakingKeeper, app.accountKeeper, app.supplyKeeper, genesisState.StakingData,
+	)
 	// load the accounts
-	for _, account := range genesisState.Accounts {
+	for _, account := range genesisState.AuthData.Accounts {
 		app.accountKeeper.GetNextAccountNumber(ctx)
 		app.accountKeeper.SetAccount(ctx, account)
 		app.stakingIndexKeeper.UpdateStake(
 			types.AccNumber(account.GetAccountNumber()),
 			account.GetCoins().AmountOf(coin.CYB).Int64())
 	}
-
-	cyberbank.InitGenesis(ctx, app.bankKeeper, genesisState.BankData)
-	// initialize distribution (must happen before staking)
-	distr.InitGenesis(ctx, app.distrKeeper, app.supplyKeeper, genesisState.DistrData)
-	supply.InitGenesis(ctx, app.supplyKeeper, app.accountKeeper, genesisState.SupplyData)
-
-	validators := staking.InitGenesis(
-		ctx, app.stakingKeeper, app.accountKeeper, app.supplyKeeper, genesisState.StakingData,
-	)
 	auth.InitGenesis(ctx, app.accountKeeper, genesisState.AuthData)
+	cyberbank.InitGenesis(ctx, app.bankKeeper, genesisState.BankData)
 	slashing.InitGenesis(ctx, app.slashingKeeper, app.stakingKeeper, genesisState.SlashingData)
 	gov.InitGenesis(ctx, app.govKeeper, app.supplyKeeper, genesisState.GovData)
 	mint.InitGenesis(ctx, app.mintKeeper, genesisState.MintData)
+	supply.InitGenesis(ctx, app.supplyKeeper, app.accountKeeper, genesisState.SupplyData)
 	bandwidth.InitAccountsBandwidthGenesis(ctx, app.bandwidthMeter, app.accountBandwidthKeeper, genesisState.GetAddresses(),
 		genesisState.BandwidthData)
 	rank.InitGenesis(ctx, app.rankStateKeeper, genesisState.RankData)
@@ -356,15 +352,14 @@ func (app *CyberdApp) applyGenesis(ctx sdk.Context, req abci.RequestInitChain) a
 	}
 
 	crisis.InitGenesis(ctx, app.crisisKeeper, genesisState.Crisis)
-	evidence.InitGenesis(ctx, app.evidenceKeeper, evidence.DefaultGenesisState())
 
 	err = validateGenesisState(genesisState)
 	if err != nil {
 		panic(err)
 	}
 
-	if len(genesisState.GenTxs.GenTxs) > 0 { // TODO
-		for _, genTx := range genesisState.GenTxs.GenTxs {
+	if len(genesisState.GenUtil.GenTxs) > 0 {
+		for _, genTx := range genesisState.GenUtil.GenTxs {
 			var tx auth.StdTx
 			err = app.cdc.UnmarshalJSON(genTx, &tx)
 			if err != nil {
@@ -379,6 +374,8 @@ func (app *CyberdApp) applyGenesis(ctx sdk.Context, req abci.RequestInitChain) a
 
 		validators = app.stakingKeeper.ApplyAndReturnValidatorSetUpdates(ctx)
 	}
+
+	evidence.InitGenesis(ctx, app.evidenceKeeper, genesisState.Evidence)
 
 	if len(req.Validators) > 0 {
 		if len(req.Validators) != len(validators) {
@@ -410,7 +407,6 @@ func (app *CyberdApp) CheckTx(req abci.RequestCheckTx) (res abci.ResponseCheckTx
 	}
 
 	if err == nil {
-
 		txCost := app.bandwidthMeter.GetPricedTxCost(ctx, tx)
 		accBw := app.bandwidthMeter.GetCurrentAccBandwidth(ctx, acc)
 
@@ -444,7 +440,7 @@ func (app *CyberdApp) DeliverTx(req abci.RequestDeliverTx) (res abci.ResponseDel
 
 	if err == nil {
 
-		txCost := app.bandwidthMeter.GetPricedTxCost(ctx, tx)
+			txCost := app.bandwidthMeter.GetPricedTxCost(ctx, tx)
 		accBw := app.bandwidthMeter.GetCurrentAccBandwidth(ctx, acc)
 
 		curBlockSpentBandwidth := app.bandwidthMeter.GetCurBlockSpentBandwidth(ctx)
@@ -502,11 +498,11 @@ func (app *CyberdApp) decodeTxAndAccount(ctx sdk.Context, txBytes []byte) (auth.
 	return tx, account, nil
 }
 
-func (app *CyberdApp) BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock) abci.ResponseBeginBlock {
+func (app *CyberdApp) Name() string { return app.BaseApp.Name() }
 
-	// mint new tokens for the previous block
+func (app *CyberdApp) BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock) abci.ResponseBeginBlock {
+	upgrade.BeginBlocker(app.upgradeKeeper, ctx, req)
 	mint.BeginBlocker(ctx, app.mintKeeper)
-	// distribute rewards for the previous block
 	distr.BeginBlocker(ctx, req, app.distrKeeper)
 
 	// slash anyone who double signed.
@@ -531,7 +527,6 @@ func (app *CyberdApp) EndBlocker(ctx sdk.Context, _ abci.RequestEndBlock) abci.R
 
 	bandwidth.EndBlocker(ctx, app.accountBandwidthKeeper, app.bandwidthMeter)
 
-	// RANK CALCULATION
 	app.rankStateKeeper.EndBlocker(ctx, app.Logger())
 	app.linkIndexedKeeper.Commit(ctx)
 

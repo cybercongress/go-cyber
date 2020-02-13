@@ -23,10 +23,11 @@ var Routes = map[string]*rpcserver.RPCFunc{
 	"current_bandwidth_price": rpcserver.NewRPCFunc(CurrentBandwidthPrice, ""),
 	"index_stats":             rpcserver.NewRPCFunc(IndexStats, ""),
 
+	// TODO remove this for euler-6 release
 	"staking/validators": rpcserver.NewRPCFunc(StakingValidators, "page,limit,status"),
 	"staking/pool":       rpcserver.NewRPCFunc(StakingPool, ""),
 
-	// routes required cuz of amino.js not exists yet.
+	// TODO remove this for euler-6 release
 	"submit_signed_link": rpcserver.NewRPCFunc(SignedMsgHandler(UnmarshalLinkRequestFn), "data"),
 	"submit_signed_send": rpcserver.NewRPCFunc(SignedMsgHandler(UnmarshalSendRequestFn), "data"),
 }

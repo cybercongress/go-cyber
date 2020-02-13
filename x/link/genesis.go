@@ -12,8 +12,8 @@ import (
 )
 
 const (
-	LinksFileName       = "config/links"
-	LinksExportFileName = "export/links"
+	LinksFileName       = "config/graph"
+	LinksExportFileName = "export/graph"
 )
 
 func InitGenesis(

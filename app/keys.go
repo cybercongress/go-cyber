@@ -17,8 +17,7 @@ import (
 
 type cyberdAppDbKeys struct {
 	main           *sdk.KVStoreKey
-	acc            *sdk.KVStoreKey
-	accIndex       *sdk.KVStoreKey
+	auth           *sdk.KVStoreKey
 	stake          *sdk.KVStoreKey
 	supply         *sdk.KVStoreKey
 	distr          *sdk.KVStoreKey
@@ -28,7 +27,6 @@ type cyberdAppDbKeys struct {
 	mint           *sdk.KVStoreKey
 	upgrade  	   *sdk.KVStoreKey
 	evidence	   *sdk.KVStoreKey
-	//fees           *sdk.KVStoreKey
 
 	cidNum         *sdk.KVStoreKey
 	cidNumReverse  *sdk.KVStoreKey
@@ -44,10 +42,9 @@ type cyberdAppDbKeys struct {
 func NewCyberdAppDbKeys() cyberdAppDbKeys {
 	return cyberdAppDbKeys{
 		main:     sdk.NewKVStoreKey(bam.MainStoreKey),
-		acc:      sdk.NewKVStoreKey(auth.StoreKey),
+		auth:      sdk.NewKVStoreKey(auth.StoreKey),
 		stake:    sdk.NewKVStoreKey(staking.StoreKey),
 		supply:   sdk.NewKVStoreKey(supply.StoreKey),
-		//fees:     sdk.NewKVStoreKey(auth.FeeCollectorName),
 		distr:    sdk.NewKVStoreKey(distr.StoreKey),
 		gov:      sdk.NewKVStoreKey(gov.StoreKey),
 		slashing: sdk.NewKVStoreKey(slashing.StoreKey),
@@ -70,7 +67,7 @@ func NewCyberdAppDbKeys() cyberdAppDbKeys {
 
 func (k cyberdAppDbKeys) GetStoreKeys() []*sdk.KVStoreKey {
 	return []*sdk.KVStoreKey{
-		k.main, k.acc, k.cidNum, k.cidNumReverse, k.links, k.rank, k.stake, k.supply, k.gov,
+		k.main, k.auth, k.cidNum, k.cidNumReverse, k.links, k.rank, k.stake, k.supply, k.gov,
 		k.slashing, k.params, k.distr, k.accBandwidth, k.blockBandwidth, k.mint, k.upgrade, k.evidence,
 	}
 }

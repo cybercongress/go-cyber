@@ -56,7 +56,7 @@ func (m *BaseBandwidthMeter) Load(ctx sdk.Context) {
 	if err != nil {
 		panic(err)
 	}
-	m.currentCreditPrice = math.Float64frombits(m.mainKeeper.GetBandwidthPrice(ctx, floatBaseCreditPrice))
+	m.currentCreditPrice = 0.01 * math.Float64frombits(m.mainKeeper.GetBandwidthPrice(ctx, floatBaseCreditPrice))
 	m.curBlockSpentBandwidth = 0
 }
 

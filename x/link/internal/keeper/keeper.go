@@ -126,7 +126,7 @@ func (lk Keeper) WriteLinks(ctx sdk.Context, writer io.Writer) (err error) {
 	return nil
 }
 
-func (lk Keeper) Commit(ctx sdk.Context) error {
+func (lk Keeper) Commit(ctx sdk.Context) {
 	lk.mu.Lock()
 	defer func() {
 		lk.mu.Unlock()
@@ -137,6 +137,4 @@ func (lk Keeper) Commit(ctx sdk.Context) error {
 	binary.LittleEndian.PutUint64(versionAsBytes, uint64(ctx.BlockHeight()))
 	store := ctx.KVStore(lk.storeKey)
 	store.Set(versionAsBytes, lk.buffer.Bytes())
-
-	return nil
 }
