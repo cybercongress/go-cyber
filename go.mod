@@ -3,7 +3,7 @@ module github.com/cybercongress/cyberd
 go 1.13
 
 require (
-	github.com/cosmos/cosmos-sdk v0.38.0
+	github.com/cosmos/cosmos-sdk v0.38.1
 	github.com/gorilla/context v1.1.1 // indirect
 	github.com/gorilla/mux v1.7.3
 	github.com/ipfs/go-cid v0.0.3
