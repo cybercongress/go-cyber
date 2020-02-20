@@ -32,6 +32,7 @@ var (
 	ParamKeyTable       = types.ParamKeyTable
 	NewParams			= types.NewParams
 	DefaultParams       = types.DefaultParams
+	NewGenesisAccountBandwidth = types.NewGenesisAccountBandwidth
 
 	// variable aliases
 	ModuleCdc             = types.ModuleCdc
@@ -43,6 +44,9 @@ var (
 	KeyBaseCreditPrice    = types.KeyBaseCreditPrice
 	KeyDesirableBandwidth = types.KeyDesirableBandwidth
 	KeyMaxBlockBandwidth  = types.KeyMaxBlockBandwidth
+
+	ErrNotEnoughBandwidth = types.ErrNotEnoughBandwidth
+	ErrExceededMaxBlockBandwidth = types.ErrExceededMaxBlockBandwidth
 )
 
 type (

@@ -2,12 +2,13 @@ package exported
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cybercongress/cyberd/x/bandwidth/internal/types"
+
+	types "github.com/cybercongress/cyberd/x/bandwidth"
 )
 
 type BaseAccountBandwidthKeeper interface {
-	SetAccountBandwidth(ctx sdk.Context, bandwidth types.AcсountBandwidth)
-	GetAccountBandwidth(ctx sdk.Context, address sdk.AccAddress) (bw types.AcсountBandwidth)
+	SetAccountBandwidth(ctx sdk.Context, bandwidth types.AccountBandwidth)
+	GetAccountBandwidth(ctx sdk.Context, address sdk.AccAddress) (bw types.AccountBandwidth)
 
 	SetParams(ctx sdk.Context, params types.Params)
 	GetParams(ctx sdk.Context) (params types.Params)

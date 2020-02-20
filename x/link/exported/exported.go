@@ -5,13 +5,12 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/cybercongress/cyberd/x/link/internal/keeper"
-	"github.com/cybercongress/cyberd/x/link/internal/types"
+	types "github.com/cybercongress/cyberd/x/link"
 )
 
 type KeeperI interface {
 	GetAllLinks(sdk.Context) (types.Links, types.Links, error)
-	GetAllLinksFiltered(sdk.Context, keeper.LinkFilter) (types.Links, types.Links, error)
+	GetAllLinksFiltered(sdk.Context, types.LinkFilter) (types.Links, types.Links, error)
 
 	GetLinksCount(sdk.Context) uint64
 	Iterate(sdk.Context, func(types.CompactLink))

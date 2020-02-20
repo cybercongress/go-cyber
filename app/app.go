@@ -37,9 +37,9 @@ import (
 	"github.com/cybercongress/cyberd/types"
 	"github.com/cybercongress/cyberd/types/coin"
 	"github.com/cybercongress/cyberd/util"
-	"github.com/cybercongress/cyberd/x/bandwidth"
+	bandwidth "github.com/cybercongress/cyberd/x/bandwidth"
 	cyberbank "github.com/cybercongress/cyberd/x/bank"
-	"github.com/cybercongress/cyberd/x/link"
+	link "github.com/cybercongress/cyberd/x/link"
 	"github.com/cybercongress/cyberd/x/rank"
 )
 
@@ -414,9 +414,9 @@ func (app *CyberdApp) CheckTx(req abci.RequestCheckTx) (res abci.ResponseCheckTx
 		maxBlockBandwidth := app.bandwidthMeter.GetMaxBlockBandwidth(ctx)
 
 		if !accBw.HasEnoughRemained(txCost) {
-			err = types.ErrNotEnoughBandwidth
+			err = bandwidth.ErrNotEnoughBandwidth
 		} else if (uint64(txCost) + curBlockSpentBandwidth) > maxBlockBandwidth  {
-			err = types.ErrExceededMaxBlockBandwidth
+			err = bandwidth.ErrExceededMaxBlockBandwidth
 		} else {
 			resp := app.BaseApp.CheckTx(req)
 			if resp.Code == 0 {
@@ -447,9 +447,9 @@ func (app *CyberdApp) DeliverTx(req abci.RequestDeliverTx) (res abci.ResponseDel
 		maxBlockBandwidth := app.bandwidthMeter.GetMaxBlockBandwidth(ctx)
 
 		if !accBw.HasEnoughRemained(txCost) {
-			err = types.ErrNotEnoughBandwidth
+			err = bandwidth.ErrNotEnoughBandwidth
 		} else if (uint64(txCost) + curBlockSpentBandwidth) > maxBlockBandwidth  {
-			err = types.ErrExceededMaxBlockBandwidth
+			err = bandwidth.ErrExceededMaxBlockBandwidth
 		} else {
 			resp := app.BaseApp.DeliverTx(req)
 			app.bandwidthMeter.ConsumeAccBandwidth(ctx, accBw, txCost)

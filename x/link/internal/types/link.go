@@ -16,6 +16,8 @@ type CompactLink struct {
 	acc  AccNumber
 }
 
+type LinkFilter func(CompactLink) bool
+
 func NewLink(from CidNumber, to CidNumber, acc AccNumber) CompactLink {
 	return CompactLink{
 		from: from,

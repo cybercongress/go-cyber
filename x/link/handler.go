@@ -7,8 +7,6 @@ import (
 	cyberlink "github.com/cybercongress/cyberd/x/link/internal/types"
 
 	"github.com/cosmos/cosmos-sdk/x/auth"
-
-	"github.com/cybercongress/cyberd/types"
 )
 
 // NewHandler returns a handler for "link" type messages.
@@ -38,7 +36,7 @@ func NewLinksHandler(cis CidNumberKeeper, ls IndexedKeeper, as auth.AccountKeepe
 			compactLink := cyberlink.NewLink(fromCidNumber, toCidNumber, accNumber)
 
 			if ls.IsLinkExist(compactLink) {
-				return nil, types.ErrCyberlinkExist
+				return nil, ErrCyberlinkExist
 			}
 		}
 

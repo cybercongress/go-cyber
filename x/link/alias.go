@@ -1,7 +1,6 @@
 package link
 
 import (
-	"github.com/cybercongress/cyberd/x/link/exported"
 	"github.com/cybercongress/cyberd/x/link/internal/keeper"
 	"github.com/cybercongress/cyberd/x/link/internal/types"
 )
@@ -22,13 +21,17 @@ var (
 	RegisterCodec = types.RegisterCodec
 	NewMsg        = types.NewMsg
 	NewLink       = types.NewLink
+
+	ErrCyberlinkExist = types.ErrCyberlinkExist
+	ErrInvalidCid 	  = types.ErrInvalidCid
+	ErrZeroLinks      = types.ErrZeroLinks
 )
 
 type (
 	// exported
-	Keeper          = exported.KeeperI
-	IndexedKeeper   = exported.IndexedKeeperI
-	CidNumberKeeper = exported.CidNumberKeeperI
+	Keeper          = keeper.Keeper
+	IndexedKeeper   = keeper.IndexedKeeper
+	CidNumberKeeper = keeper.CidNumberKeeper
 
 	// types
 	Msg         = types.Msg
@@ -39,4 +42,6 @@ type (
 	CidsFilter  = types.CidsFilter
 	Link        = types.Link
 	CompactLink = types.CompactLink
+	LinkFilter  = types.LinkFilter
+
 )

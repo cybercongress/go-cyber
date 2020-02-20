@@ -2,10 +2,8 @@ package types
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	//cbd "github.com/cybercongress/cyberd/types"
-	"github.com/ipfs/go-cid"
-	"github.com/cybercongress/cyberd/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/ipfs/go-cid"
 )
 
 type Msg struct {
@@ -34,7 +32,7 @@ func (msg Msg) ValidateBasic() error {
 	}
 
 	if len(msg.Links) == 0 {
-		return types.ErrZeroLinks
+		return ErrZeroLinks
 	}
 
 	var filter = make(CidsFilter)
@@ -42,15 +40,15 @@ func (msg Msg) ValidateBasic() error {
 	for _, link := range msg.Links {
 
 		if _, err := cid.Decode(string(link.From)); err != nil {
-			return types.ErrInvalidCid
+			return ErrInvalidCid
 		}
 
 		if _, err := cid.Decode(string(link.To)); err != nil {
-			return types.ErrInvalidCid
+			return ErrInvalidCid
 		}
 
 		if filter.Contains(link.From, link.To) {
-			return types.ErrCyberlinkExist
+			return ErrCyberlinkExist
 		}
 
 		filter.Put(link.From, link.To)

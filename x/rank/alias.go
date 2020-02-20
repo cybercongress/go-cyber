@@ -1,7 +1,6 @@
 package rank
 
 import (
-	"github.com/cybercongress/cyberd/x/rank/exported"
 	"github.com/cybercongress/cyberd/x/rank/internal/keeper"
 	"github.com/cybercongress/cyberd/x/rank/internal/types"
 )
@@ -34,7 +33,7 @@ var (
 )
 
 type (
-	StateKeeper  = exported.StateKeeper
+	StateKeeper  = keeper.StateKeeper
 
 	GenesisState = types.GenesisState
 	Params       = types.Params

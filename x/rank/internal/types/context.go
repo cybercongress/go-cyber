@@ -1,10 +1,12 @@
 package types
 
 import (
+	"sort"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
 	. "github.com/cybercongress/cyberd/types"
 	"github.com/cybercongress/cyberd/x/link"
-	"sort"
 )
 
 type CalculationContext struct {

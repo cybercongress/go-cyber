@@ -20,8 +20,6 @@ const (
 
 const defaultBufferSize = 65536
 
-type LinkFilter func(l types.CompactLink) bool
-
 var DefaultLinkFilter = func(l types.CompactLink) bool { return true }
 
 type Keeper struct {
@@ -55,7 +53,7 @@ func (lk Keeper) GetAllLinks(ctx sdk.Context) (types.Links, types.Links, error) 
 	return lk.GetAllLinksFiltered(ctx, DefaultLinkFilter)
 }
 
-func (lk Keeper) GetAllLinksFiltered(ctx sdk.Context, filter LinkFilter) (types.Links, types.Links, error) {
+func (lk Keeper) GetAllLinksFiltered(ctx sdk.Context, filter types.LinkFilter) (types.Links, types.Links, error) {
 
 	inLinks := make(map[types.CidNumber]types.CidLinks)
 	outLinks := make(map[types.CidNumber]types.CidLinks)
