@@ -219,7 +219,7 @@ func NewCyberdApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest
 	app.stakingIndexKeeper = cyberbank.NewIndexedKeeper(bankKeeper)
 	app.rankStateKeeper = rank.NewStateKeeper(app.cdc, app.subspaces[rank.ModuleName],
 		allowSearch, app.mainKeeper, app.stakingIndexKeeper,
-		app.linkIndexedKeeper, app.cidNumKeeper, computeUnit,
+		&app.linkIndexedKeeper, app.cidNumKeeper, computeUnit,
 	)
 
 	app.stakingKeeper = *stakingKeeper.SetHooks(

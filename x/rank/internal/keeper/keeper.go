@@ -52,8 +52,8 @@ func NewStateKeeper(
 	mainKeeper store.MainKeeper, stakeIndex bank.IndexedKeeper,
 	linkIndexedKeeper types.LinkIndexedKeeper, cidNumKeeper types.CidNumberKeeper,
 	unit types.ComputeUnit,
-) *StateKeeper {
-	return &StateKeeper{
+) StateKeeper {
+	return StateKeeper{
 		cdc:            cdc,
 		paramSpace: 	paramSpace.WithKeyTable(types.ParamKeyTable()),
 		allowSearch:    allowSearch,

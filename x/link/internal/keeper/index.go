@@ -28,10 +28,10 @@ type IndexedKeeper struct {
 	MerkleTree        *merkle.Tree
 }
 
-func NewIndexedKeeper(keeper *Keeper) *IndexedKeeper {
+func NewIndexedKeeper(keeper *Keeper) IndexedKeeper {
 	merkleTree := merkle.NewTree(sha256.New(), true)
 
-	return &IndexedKeeper{Keeper: keeper, MerkleTree: merkleTree}
+	return IndexedKeeper{Keeper: keeper, MerkleTree: merkleTree}
 }
 
 func (i *IndexedKeeper) Load(rankCtx sdk.Context, freshCtx sdk.Context) {
