@@ -168,6 +168,7 @@ void getCompressedInLinks(
             uint64_t oppositeCid = inLinksOuts[inLinksStartIndex[i]];
             uint64_t compressedLinkStake = stakes[inLinksUsers[inLinksStartIndex[i]]];
             double weight = ddiv_rn(&compressedLinkStake, &cidsTotalOutStakes[oppositeCid]);
+            if (isnan(weight)) { weight = 0; }
             compressedInLinks[compressedLinksIndex] = CompressedInLink {oppositeCid, weight};
             continue;
         }
@@ -180,6 +181,7 @@ void getCompressedInLinks(
             if(j == lastLinkIndex || inLinksOuts[j] != inLinksOuts[j+1]) {
                 uint64_t oppositeCid = inLinksOuts[j];
                 double weight = ddiv_rn(&compressedLinkStake, &cidsTotalOutStakes[oppositeCid]);
+                if (isnan(weight)) { weight = 0; }
                 compressedInLinks[compressedLinksIndex] = CompressedInLink {oppositeCid, weight};
                 compressedLinksIndex++;
                 compressedLinkStake=0;
