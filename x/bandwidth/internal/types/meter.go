@@ -19,6 +19,8 @@ type BandwidthMeter interface {
 	Load(ctx sdk.Context)
 	// add value to consumed bandwidth for current block
 	AddToBlockBandwidth(value int64)
+	// add value to overall linked bandwidth
+	AddToOverallKarma(value int64)
 	// adjust price based on 24h loading
 	AdjustPrice(ctx sdk.Context)
 	// get current bandwidth price
