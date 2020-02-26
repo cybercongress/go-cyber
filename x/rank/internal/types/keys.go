@@ -4,6 +4,8 @@ const (
 	// ModuleName is the name of the module
 	ModuleName = "rank"
 
+	DefaultParamspace = ModuleName
+
 	// StoreKey is the store key string for bandwidth
 	StoreKey = ModuleName
 

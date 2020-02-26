@@ -20,7 +20,9 @@ var (
 
 type AppModuleBasic struct{}
 
-func (AppModuleBasic) Name() string { return ModuleName }
+func (AppModuleBasic) Name() string {
+	return ModuleName
+}
 
 func (AppModuleBasic) RegisterCodec(cdc *codec.Codec) { RegisterCodec(cdc) }
 
@@ -53,19 +55,26 @@ func NewAppModule(cidNumberKeeper CidNumberKeeper, indexedKeeper IndexedKeeper,
 	}
 }
 
-func (am AppModule) InitGenesis(sdk.Context, json.RawMessage) []types.ValidatorUpdate { return nil }
+func (AppModule) Name() string {
+	return ModuleName
+}
 
-func (am AppModule) ExportGenesis(sdk.Context) json.RawMessage { return nil }
+func (am AppModule) InitGenesis(_ sdk.Context, _ json.RawMessage) []types.ValidatorUpdate { return nil }
 
-func (am AppModule) RegisterInvariants(sdk.InvariantRegistry) {}
+func (am AppModule) RegisterInvariants(_ sdk.InvariantRegistry) {}
 
 func (am AppModule) Route() string { return RouterKey }
+
 func (am AppModule) NewHandler() sdk.Handler {
 	return NewLinksHandler(am.cidNumberKeeper, am.indexedKeeper, am.accountKeeper)
 }
 
-func (am AppModule) QuerierRoute() string           { return RouterKey }
+func (am AppModule) QuerierRoute() string { return RouterKey }
+
 func (am AppModule) NewQuerierHandler() sdk.Querier { return nil }
 
-func (am AppModule) BeginBlock(sdk.Context, types.RequestBeginBlock)                     {}
+func (am AppModule) ExportGenesis(_ sdk.Context) json.RawMessage { return nil }
+
+func (am AppModule) BeginBlock(sdk.Context, types.RequestBeginBlock) {}
+
 func (am AppModule) EndBlock(sdk.Context, types.RequestEndBlock) []types.ValidatorUpdate { return nil }

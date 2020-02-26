@@ -6,7 +6,7 @@ import (
 	"github.com/cybercongress/cyberd/x/link/internal/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	cmn "github.com/tendermint/tendermint/libs/common"
+	tmos "github.com/tendermint/tendermint/libs/os"
 
 	"crypto/sha256"
 	"encoding/binary"
@@ -28,16 +28,16 @@ type IndexedKeeper struct {
 	MerkleTree        *merkle.Tree
 }
 
-func NewIndexedKeeper(keeper *Keeper) *IndexedKeeper {
+func NewIndexedKeeper(keeper *Keeper) IndexedKeeper {
 	merkleTree := merkle.NewTree(sha256.New(), true)
 
-	return &IndexedKeeper{Keeper: keeper, MerkleTree: merkleTree}
+	return IndexedKeeper{Keeper: keeper, MerkleTree: merkleTree}
 }
 
 func (i *IndexedKeeper) Load(rankCtx sdk.Context, freshCtx sdk.Context) {
 	inLinks, outLinks, err := i.Keeper.GetAllLinks(rankCtx)
 	if err != nil {
-		cmn.Exit(err.Error())
+		tmos.Exit(err.Error())
 	}
 
 	i.currentRankInLinks = inLinks
@@ -48,7 +48,7 @@ func (i *IndexedKeeper) Load(rankCtx sdk.Context, freshCtx sdk.Context) {
 	})
 
 	if err != nil {
-		cmn.Exit(err.Error())
+		tmos.Exit(err.Error())
 	}
 
 	i.nextRankInLinks = newInLinks

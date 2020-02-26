@@ -25,9 +25,11 @@ var (
 // app module Basics object
 type AppModuleBasic struct{}
 
-func (AppModuleBasic) Name() string { return ModuleName }
+func (AppModuleBasic) Name() string {
+	return ModuleName
+}
 
-func (AppModuleBasic) RegisterCodec(cdc *codec.Codec) { RegisterCodec(cdc) }
+func (AppModuleBasic) RegisterCodec(cdc *codec.Codec) {}
 
 func (AppModuleBasic) DefaultGenesis() json.RawMessage {
 	return ModuleCdc.MustMarshalJSON(DefaultGenesisState())
@@ -40,7 +42,6 @@ func (AppModuleBasic) ValidateGenesis(bz json.RawMessage) error {
 	if err != nil {
 		return err
 	}
-	// Once json successfully marshalled, passes along to genesis.go
 	return ValidateGenesis(data)
 }
 
@@ -74,7 +75,7 @@ func (am AppModule) RegisterInvariants(ir sdk.InvariantRegistry) {
 	keeper.RegisterInvariants(ir, am.RankKeeper)
 }
 
-func (am AppModule) Route() string { return RouterKey }
+func (am AppModule) Route() string { return "" }
 
 func (am AppModule) NewHandler() sdk.Handler { return nil }
 
@@ -89,6 +90,7 @@ func (am AppModule) NewQuerierHandler() sdk.Querier {
 func (am AppModule) InitGenesis(ctx sdk.Context, data json.RawMessage) []abci.ValidatorUpdate {
 	var genesisState GenesisState
 	ModuleCdc.MustUnmarshalJSON(data, &genesisState)
+	InitGenesis(ctx, am.RankKeeper, genesisState)
 	return []abci.ValidatorUpdate{}
 }
 
@@ -99,6 +101,6 @@ func (am AppModule) ExportGenesis(ctx sdk.Context) json.RawMessage {
 
 func (am AppModule) BeginBlock(_ sdk.Context, _ abci.RequestBeginBlock) {}
 
-func (am AppModule) EndBlock(sdk.Context, abci.RequestEndBlock) []abci.ValidatorUpdate {
+func (am AppModule) EndBlock(_ sdk.Context, _ abci.RequestEndBlock) []abci.ValidatorUpdate {
 	return []abci.ValidatorUpdate{}
 }

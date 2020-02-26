@@ -1,46 +1,41 @@
 package rank
 
 import (
-	"github.com/cybercongress/cyberd/x/rank/exported"
 	"github.com/cybercongress/cyberd/x/rank/internal/keeper"
 	"github.com/cybercongress/cyberd/x/rank/internal/types"
 )
 
 const (
-	ModuleName = types.ModuleName
-	DefaultParamspace = keeper.DefaultParamspace
-	StoreKey   = types.StoreKey
-	RouterKey  = types.RouterKey
+	ModuleName 			   = types.ModuleName
+	DefaultParamspace 	   = types.DefaultParamspace
+	StoreKey   			   = types.StoreKey
 	QuerierRoute           = types.QuerierRoute
 	QueryParameters        = types.QueryParameters
 	QueryCalculationWindow = types.QueryCalculationWindow
 	QueryDampingFactor     = types.QueryDampingFactor
 	QueryTolerance         = types.QueryTolerance
-	CPU        = types.CPU
-	GPU        = types.GPU
+	CPU        			   = types.CPU
+	GPU        			   = types.GPU
 )
 
 var (
 	// keeper
-	NewStateKeeper = keeper.NewStateKeeper
-	ParamKeyTable  = keeper.ParamKeyTable
+	NewStateKeeper 		= keeper.NewStateKeeper
 	NewQuerier          = keeper.NewQuerier
-	// types
-	ModuleCdc           = types.ModuleCdc
-	RegisterCodec       = types.RegisterCodec
-	NewDefaultParams    = types.NewDefaultParams
 	NewGenesisState     = types.NewGenesisState
 	DefaultGenesisState = types.DefaultGenesisState
 	ValidateGenesis     = types.ValidateGenesis
+	ParamKeyTable  		= types.ParamKeyTable
+	NewParams	        = types.NewParams
+	DefaultParams       = types.DefaultParams
+
+	ModuleCdc           = types.ModuleCdc
 )
 
 type (
-	// exported
-	Keeper      = exported.Keeper
-	StateKeeper = exported.StateKeeper
+	StateKeeper  = keeper.StateKeeper
 
-	// types
-	Params       = types.Params
 	GenesisState = types.GenesisState
+	Params       = types.Params
 	ComputeUnit  = types.ComputeUnit
 )

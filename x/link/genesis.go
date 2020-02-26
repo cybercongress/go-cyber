@@ -12,8 +12,8 @@ import (
 )
 
 const (
-	LinksFileName       = "config/links"
-	LinksExportFileName = "export/links"
+	LinksFileName       = "config/graph"
+	LinksExportFileName = "export/graph"
 )
 
 func InitGenesis(
@@ -79,6 +79,6 @@ func WriteGenesis(
 	}
 	err = linksFile.Close()
 
-	logger.Info("Cids and links exported. File created.", "path", linksFilePath)
+	logger.Info("Cids and cyberlinks exported. File created.", "path", linksFilePath)
 	return
 }

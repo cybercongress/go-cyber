@@ -1,13 +1,15 @@
 package commands
 
 import (
+	"bufio"
+
 	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/auth/client/utils"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	cbd "github.com/cybercongress/cyberd/types"
 	"github.com/cybercongress/cyberd/x/link"
 
 	"github.com/ipfs/go-cid"
@@ -26,8 +28,8 @@ func LinkTxCmd(cdc *codec.Codec) *cobra.Command {
 		Use:   "link",
 		Short: "Create and sign a link tx",
 		RunE: func(cmd *cobra.Command, args []string) error {
-
-			txCtx := authtypes.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
+			inBuf := bufio.NewReader(cmd.InOrStdin())
+			txCtx := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
 			cliCtx := context.NewCLIContext().
 				WithCodec(cdc)
 
@@ -35,11 +37,11 @@ func LinkTxCmd(cdc *codec.Codec) *cobra.Command {
 			cidTo := link.Cid(viper.GetString(flagCidTo))
 
 			if _, err := cid.Decode(string(cidFrom)); err != nil {
-				return cbd.ErrInvalidCid()
+				return link.ErrInvalidCid
 			}
 
 			if _, err := cid.Decode(string(cidTo)); err != nil {
-				return cbd.ErrInvalidCid()
+				return link.ErrInvalidCid
 			}
 
 			signAddr := cliCtx.GetFromAddress()
