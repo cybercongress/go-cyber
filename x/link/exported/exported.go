@@ -5,7 +5,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	types "github.com/cybercongress/cyberd/x/link"
+	types "github.com/cybercongress/go-cyber/x/link"
 )
 
 type KeeperI interface {

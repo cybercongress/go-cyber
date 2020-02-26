@@ -19,8 +19,8 @@ import (
 	//"github.com/cosmos/cosmos-sdk/x/genaccounts"
 	"github.com/cosmos/cosmos-sdk/x/genutil"
 
-	"github.com/cybercongress/cyberd/app"
-	"github.com/cybercongress/cyberd/types/coin"
+	"github.com/cybercongress/go-cyber/app"
+	"github.com/cybercongress/go-cyber/types/coin"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"

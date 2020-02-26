@@ -1,8 +1,8 @@
 package link
 
 import (
-	"github.com/cybercongress/cyberd/x/link/internal/keeper"
-	"github.com/cybercongress/cyberd/x/link/internal/types"
+	"github.com/cybercongress/go-cyber/x/link/internal/keeper"
+	"github.com/cybercongress/go-cyber/x/link/internal/types"
 )
 
 const (

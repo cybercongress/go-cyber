@@ -17,8 +17,8 @@ import (
 	tmstore "github.com/tendermint/tendermint/store"
 	tm "github.com/tendermint/tendermint/types"
 
-	"github.com/cybercongress/cyberd/app"
-	"github.com/cybercongress/cyberd/x/rank"
+	"github.com/cybercongress/go-cyber/app"
+	"github.com/cybercongress/go-cyber/x/rank"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/server"

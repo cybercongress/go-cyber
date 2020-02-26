@@ -38,14 +38,14 @@ import (
 
 	"github.com/cosmwasm/wasmd/x/wasm"
 
-	"github.com/cybercongress/cyberd/store"
-	"github.com/cybercongress/cyberd/types"
-	"github.com/cybercongress/cyberd/types/coin"
-	"github.com/cybercongress/cyberd/util"
-	bandwidth "github.com/cybercongress/cyberd/x/bandwidth"
-	cyberbank "github.com/cybercongress/cyberd/x/bank"
-	link "github.com/cybercongress/cyberd/x/link"
-	"github.com/cybercongress/cyberd/x/rank"
+	"github.com/cybercongress/go-cyber/store"
+	"github.com/cybercongress/go-cyber/types"
+	"github.com/cybercongress/go-cyber/types/coin"
+	"github.com/cybercongress/go-cyber/util"
+	bandwidth "github.com/cybercongress/go-cyber/x/bandwidth"
+	cyberbank "github.com/cybercongress/go-cyber/x/bank"
+	link "github.com/cybercongress/go-cyber/x/link"
+	"github.com/cybercongress/go-cyber/x/rank"
 )
 
 const (

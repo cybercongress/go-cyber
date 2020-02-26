@@ -3,8 +3,8 @@ package keeper
 import (
 	"math"
 
-	"github.com/cybercongress/cyberd/x/link"
-	"github.com/cybercongress/cyberd/x/rank/internal/types"
+	"github.com/cybercongress/go-cyber/x/link"
+	"github.com/cybercongress/go-cyber/x/rank/internal/types"
 )
 
 

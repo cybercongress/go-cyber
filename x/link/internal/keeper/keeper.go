@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"sync"
 
-	"github.com/cybercongress/cyberd/store"
-	"github.com/cybercongress/cyberd/x/link/internal/types"
+	"github.com/cybercongress/go-cyber/store"
+	"github.com/cybercongress/go-cyber/x/link/internal/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 

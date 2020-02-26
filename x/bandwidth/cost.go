@@ -2,7 +2,7 @@ package bandwidth
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cybercongress/cyberd/x/link"
+	"github.com/cybercongress/go-cyber/x/link"
 )
 
 func MsgBandwidthCosts(ctx sdk.Context, params Params, msg sdk.Msg) int64 {
