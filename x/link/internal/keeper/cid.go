@@ -24,8 +24,8 @@ type CidNumberKeeper struct {
 	reverseKey sdk.StoreKey
 }
 
-func NewCidNumberKeeper(ms store.MainKeeper, key sdk.StoreKey, reverseKey sdk.StoreKey) CidNumberKeeper {
-	return CidNumberKeeper{
+func NewCidNumberKeeper(ms store.MainKeeper, key sdk.StoreKey, reverseKey sdk.StoreKey) *CidNumberKeeper {
+	return &CidNumberKeeper{
 		ms:         ms,
 		key:        key,
 		reverseKey: reverseKey,

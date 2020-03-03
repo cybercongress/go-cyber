@@ -5,15 +5,16 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
+	"github.com/cybercongress/cyberd/x/rank/exported"
 	"github.com/cybercongress/cyberd/x/rank/internal/types"
 )
 
-func RegisterInvariants(ir sdk.InvariantRegistry, k StateKeeper) {
+func RegisterInvariants(ir sdk.InvariantRegistry, k exported.StateKeeper) {
 	ir.RegisterRoute(types.ModuleName, "index-error",
 		IndexErrorInvariant(k))
 }
 
-func IndexErrorInvariant(keeper StateKeeper) sdk.Invariant {
+func IndexErrorInvariant(keeper exported.StateKeeper) sdk.Invariant {
 	return func(ctx sdk.Context) (string, bool) {
 		var msg string
 		var broken bool

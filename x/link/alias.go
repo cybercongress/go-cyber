@@ -1,6 +1,7 @@
 package link
 
 import (
+	"github.com/cybercongress/cyberd/x/link/exported"
 	"github.com/cybercongress/cyberd/x/link/internal/keeper"
 	"github.com/cybercongress/cyberd/x/link/internal/types"
 )
@@ -29,9 +30,9 @@ var (
 
 type (
 	// exported
-	Keeper          = keeper.Keeper
-	IndexedKeeper   = keeper.IndexedKeeper
-	CidNumberKeeper = keeper.CidNumberKeeper
+    Keeper          = exported.KeeperI
+    IndexedKeeper   = exported.IndexedKeeperI
+    CidNumberKeeper = exported.CidNumberKeeperI
 
 	// types
 	Msg         = types.Msg

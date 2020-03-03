@@ -5,6 +5,7 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	abci "github.com/tendermint/tendermint/abci/types"
 
+	"github.com/cybercongress/cyberd/x/rank/exported"
 	"github.com/cybercongress/cyberd/x/rank/internal/types"
 
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -12,7 +13,7 @@ import (
 )
 
 // NewQuerier returns a minting Querier handler. k exported.StateKeeper
-func NewQuerier(k StateKeeper) sdk.Querier {
+func NewQuerier(k exported.StateKeeper) sdk.Querier {
 	return func(ctx sdk.Context, path []string, _ abci.RequestQuery) ([]byte, error) {
 		switch path[0] {
 		case types.QueryParameters:
@@ -33,7 +34,7 @@ func NewQuerier(k StateKeeper) sdk.Querier {
 	}
 }
 
-func queryParams(ctx sdk.Context, k StateKeeper) ([]byte, error) {
+func queryParams(ctx sdk.Context, k exported.StateKeeper) ([]byte, error) {
 	params := k.GetParams(ctx)
 
 	res, err := codec.MarshalJSONIndent(types.ModuleCdc, params)
@@ -44,7 +45,7 @@ func queryParams(ctx sdk.Context, k StateKeeper) ([]byte, error) {
 	return res, nil
 }
 
-func queryCalculationWindow(ctx sdk.Context, k StateKeeper) ([]byte, error) {
+func queryCalculationWindow(ctx sdk.Context, k exported.StateKeeper) ([]byte, error) {
 	params := k.GetParams(ctx)
 
 	res, err := codec.MarshalJSONIndent(types.ModuleCdc, params.CalculationPeriod)
@@ -55,7 +56,7 @@ func queryCalculationWindow(ctx sdk.Context, k StateKeeper) ([]byte, error) {
 	return res, nil
 }
 
-func queryDampingFactor(ctx sdk.Context, k StateKeeper) ([]byte, error) {
+func queryDampingFactor(ctx sdk.Context, k exported.StateKeeper) ([]byte, error) {
 	params := k.GetParams(ctx)
 
 	res, err := codec.MarshalJSONIndent(types.ModuleCdc, params.DampingFactor)
@@ -66,7 +67,7 @@ func queryDampingFactor(ctx sdk.Context, k StateKeeper) ([]byte, error) {
 	return res, nil
 }
 
-func queryTolerance(ctx sdk.Context, k StateKeeper) ([]byte, error) {
+func queryTolerance(ctx sdk.Context, k exported.StateKeeper) ([]byte, error) {
 	params := k.GetParams(ctx)
 
 	res, err := codec.MarshalJSONIndent(types.ModuleCdc, params.Tolerance)
