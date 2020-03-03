@@ -1,8 +1,8 @@
 package bandwidth
 
 import (
-	"github.com/cybercongress/cyberd/x/bandwidth/internal/keeper"
-	"github.com/cybercongress/cyberd/x/bandwidth/internal/types"
+	"github.com/cybercongress/go-cyber/x/bandwidth/internal/keeper"
+	"github.com/cybercongress/go-cyber/x/bandwidth/internal/types"
 )
 
 const (

@@ -23,7 +23,7 @@ import (
 	//"github.com/cosmos/cosmos-sdk/crypto/keys"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/cybercongress/cyberd/util"
+	"github.com/cybercongress/go-cyber/util"
 	//"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/crypto/keys"
 )

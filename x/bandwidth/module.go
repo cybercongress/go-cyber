@@ -8,8 +8,8 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
 
-	"github.com/cybercongress/cyberd/x/bandwidth/client/cli"
-	"github.com/cybercongress/cyberd/x/bandwidth/client/rest"
+	"github.com/cybercongress/go-cyber/x/bandwidth/client/cli"
+	"github.com/cybercongress/go-cyber/x/bandwidth/client/rest"
 
 	"github.com/cosmos/cosmos-sdk/client/context"
 	sdk "github.com/cosmos/cosmos-sdk/types"

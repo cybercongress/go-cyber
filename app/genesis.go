@@ -27,9 +27,9 @@ import (
 	"github.com/tendermint/go-amino"
 	tmtypes "github.com/tendermint/tendermint/types"
 
-	"github.com/cybercongress/cyberd/types/coin"
-	"github.com/cybercongress/cyberd/x/bandwidth"
-	"github.com/cybercongress/cyberd/x/rank"
+	"github.com/cybercongress/go-cyber/types/coin"
+	"github.com/cybercongress/go-cyber/x/bandwidth"
+	"github.com/cybercongress/go-cyber/x/rank"
 )
 
 const (

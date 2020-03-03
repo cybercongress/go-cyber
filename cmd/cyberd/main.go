@@ -18,8 +18,8 @@ import (
 	tmtypes "github.com/tendermint/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/cybercongress/cyberd/app"
-	"github.com/cybercongress/cyberd/cmd/cyberd/rpc"
+	"github.com/cybercongress/go-cyber/app"
+	"github.com/cybercongress/go-cyber/cmd/cyberd/rpc"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/server"
@@ -28,7 +28,7 @@ import (
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
 	"github.com/cosmos/cosmos-sdk/x/staking"
 
-	"github.com/cybercongress/cyberd/x/rank"
+	"github.com/cybercongress/go-cyber/x/rank"
 )
 
 const (

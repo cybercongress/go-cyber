@@ -3,7 +3,7 @@ package exported
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	types "github.com/cybercongress/cyberd/x/bandwidth"
+	types "github.com/cybercongress/go-cyber/x/bandwidth"
 )
 
 type BaseAccountBandwidthKeeper interface {
