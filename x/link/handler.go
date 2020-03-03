@@ -17,6 +17,7 @@ import (
 func NewLinksHandler(cis CidNumberKeeper, ls IndexedKeeper, as auth.AccountKeeper) sdk.Handler {
 
 	return func(ctx sdk.Context, msg sdk.Msg) (*sdk.Result, error) {
+		ctx = ctx.WithEventManager(sdk.NewEventManager())
 
 		linkMsg := msg.(cyberlink.Msg)
 
