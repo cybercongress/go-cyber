@@ -85,7 +85,7 @@ func (lk Keeper) IterateTillVersion(ctx sdk.Context, process func(bytes []byte),
 	binary.LittleEndian.PutUint64(startAsBytes, uint64(1))
 
 	endAsBytes := make([]byte, 8)
-	binary.LittleEndian.PutUint64(endAsBytes, uint64(ver))
+	binary.LittleEndian.PutUint64(endAsBytes, uint64(ver+1)) // Iterator end is exclusive.
 
 	iterator := store.Iterator(startAsBytes, endAsBytes)
 	defer iterator.Close()
@@ -131,8 +131,16 @@ func (lk Keeper) Commit(ctx sdk.Context) {
 		lk.buffer.Reset()
 	}()
 
-	versionAsBytes := make([]byte, 8)
-	binary.LittleEndian.PutUint64(versionAsBytes, uint64(ctx.BlockHeight()))
-	store := ctx.KVStore(lk.storeKey)
-	store.Set(versionAsBytes, lk.buffer.Bytes())
+	if lk.buffer.Len() > 0 {
+		versionAsBytes := make([]byte, 8)
+		binary.LittleEndian.PutUint64(versionAsBytes, uint64(ctx.BlockHeight()))
+		store := ctx.KVStore(lk.storeKey)
+
+		ctx.Logger().Info(
+			"block links commited", hex.EncodeToString(lk.buffer.Bytes()),
+		)
+
+		store.Set(versionAsBytes, lk.buffer.Bytes())
+	}
+
 }
