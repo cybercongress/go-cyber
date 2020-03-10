@@ -3,7 +3,9 @@
 ## Linking
 
 1. create link -> link created
-2. create dublicated link -> returns error
+2. create existed link by the same address -> returns error
+3. broadcast tx with multiple links messages -> links created
+4. linkchain in the one cyberlink message -> links created
 
 ____________
 
