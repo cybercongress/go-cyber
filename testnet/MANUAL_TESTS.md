@@ -2,30 +2,30 @@
 
 ## Linking
 
-1. create link -> link created
-2. create existed link by the same address -> returns error
-3. broadcast tx with multiple links messages -> links created
-4. linkchain in the one cyberlink message -> links created
+- [x] create link -> link created **@savetheales**
+- [x] create existed link by the same address -> returns error **@savetheales**
+- [x] broadcast tx with multiple links messages -> links created **@savetheales**
+- [x] linkchain in the one cyberlink message -> links created **@savetheales**
 
 ____________
 
 ## Transaction
 
-1. successed -> consumed bandwidth
-2. failed -> consumes band
+- [x] successed -> consumed bandwidth **@savetheales**
+- [x] failed -> consumes band **@savetheales**
 3. non-link msgs -> consumes needed band
-4. link msgs -> consumes needed band and increasea personal karma
-5. link msgs -> increase global karma
-6. send msgs -> change balance
-7. send msgs -> change max bandwidth, band resume speed
-8. send msgs -> change power of given cyberlinks, affects rank values
+- [x] link msgs -> consumes needed band and increasea personal karma **@savetheales**
+- [x] link msgs -> increase global karma **@savetheales**
+- [x] send msgs -> change balance **@savetheales**
+- [x] send msgs -> change max bandwidth, band resume speed **@savetheales**
+- [x] send msgs -> change power of given cyberlinks, affects rank values **@savetheales**
 
 ____________
 
 ## Rank calculation
 
-1. calculation -> every calculation window
-2. full balance transfer -> assign default rank values for given CID
+- [x] calculation -> every calculation window (if rank changed) **@savetheales**
+- [x] full balance transfer -> assign close to default rank values for given CID **@savetheales**
 
 ____________
 
@@ -40,16 +40,16 @@ ____________
 ## Search index
 
 1. udpates -> with zero for new values
-2. udpates -> calculated values after rank calculation
-3. top-1000 -> updates and pagination works
+- [x] udpates -> calculated values after rank calculation **@savetheales**
+- [x] top-1000 -> updates and pagination works **@savetheales**
 4. node restart -> should available
 
 ____________
 
 ## Bandwidth
 
-1. exceeded max block band -> returns error
-2. not enough personal band -> returns error
+- [x] exceeded max block band -> returns error **@savetheales**
+- [x] not enough personal band -> returns error **@savetheales**
 3. personal band -> resumes based on DesirableBandwidth, personal balance and Recovery Period
 
 ____________
