@@ -13,7 +13,7 @@ ____________
 
 - [x] successed -> consumed bandwidth **@savetheales**
 - [x] failed -> consumes band **@savetheales**
-3. non-link msgs -> consumes needed band
+- [x] non-link msgs -> consumes needed band **@savetheales**
 - [x] link msgs -> consumes needed band and increasea personal karma **@savetheales**
 - [x] link msgs -> increase global karma **@savetheales**
 - [x] send msgs -> change balance **@savetheales**
@@ -39,10 +39,10 @@ ____________
 
 ## Search index
 
-1. udpates -> with zero for new values
+- [x] udpates -> with zero(default?) for new values **@savetheales**
 - [x] udpates -> calculated values after rank calculation **@savetheales**
 - [x] top-1000 -> updates and pagination works **@savetheales**
-4. node restart -> should available
+- [x] node restart -> should available
 
 ____________
 
@@ -50,7 +50,7 @@ ____________
 
 - [x] exceeded max block band -> returns error **@savetheales**
 - [x] not enough personal band -> returns error **@savetheales**
-3. personal band -> resumes based on DesirableBandwidth, personal balance and Recovery Period
+- [x] personal band -> resumes based on DesirableBandwidth, personal balance and Recovery Period **@savetheales**
 
 ____________
 
@@ -76,18 +76,30 @@ ____________
 ## CLI
 
 1. modules -> returns their params
-2. linking and all other txs -> works
-3. all queries -> available (also with --trust-node=true)
-4. ethereum key import -> works
-5. ethereum key sign -> works
+    - [x] slashing **@savetheales**
+    - [ ] supply **@savetheales**
+    - [ ] upgrade **@savetheales**
+    - [x] evidence **@savetheales**
+    - [x] bandwidth **@savetheales**
+    - [x] staking **@savetheales**
+    - [x] distribution **@savetheales**
+    - [x] rank **@savetheales**
+    - [ ] wasm **@savetheales**
+    - [ ] auth **@savetheales**
+    - [x] mint **@savetheales**
+    - [x] gov **@savetheales**
+- [x] linking and all other txs -> works **@savetheales**
+- [x] all queries -> available (also with --trust-node=true)
+- [x] ethereum key import -> works
+- [ ] ethereum key sign -> works **@savetheales**
 
 ____________
 
 ## Node
 
-1. restart -> works
-2. search index -> works
-3. rank -> computes
+- [x] restart -> works
+- [x] search index -> works
+- [x] rank -> computes
 4. cyberlinks -> restored
 5. sync from zero
 6. sync from backups
