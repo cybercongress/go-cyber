@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"path/filepath"
 	"sort"
 	"time"
 
@@ -203,9 +202,8 @@ func NewCyberdApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest
 
 	var wasmRouter = baseApp.Router()
 	homeDir := viper.GetString(cli.HomeFlag)
-	wasmDir := filepath.Join(homeDir, "wasm")
 
-	app.wasmKeeper = wasm.NewKeeper(app.cdc, dbKeys.wasm, app.accountKeeper, app.bankKeeper, wasmRouter, wasmDir, wasm.DefaultWasmConfig())
+	app.wasmKeeper = wasm.NewKeeper(app.cdc, dbKeys.wasm, app.accountKeeper, app.bankKeeper, wasmRouter, homeDir, wasm.DefaultWasmConfig())
 
 	evidenceKeeper := evidence.NewKeeper(
 		app.cdc, dbKeys.evidence, app.subspaces[evidence.ModuleName], &stakingKeeper, app.slashingKeeper,
