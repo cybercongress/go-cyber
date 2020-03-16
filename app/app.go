@@ -38,14 +38,14 @@ import (
 
 	"github.com/cosmwasm/wasmd/x/wasm"
 
-	"github.com/cybercongress/go-cyber/store"
-	"github.com/cybercongress/go-cyber/types"
-	"github.com/cybercongress/go-cyber/types/coin"
-	"github.com/cybercongress/go-cyber/util"
-	bandwidth "github.com/cybercongress/go-cyber/x/bandwidth"
-	cyberbank "github.com/cybercongress/go-cyber/x/bank"
-	link "github.com/cybercongress/go-cyber/x/link"
-	"github.com/cybercongress/go-cyber/x/rank"
+	"github.com/cybercongress/cyberd/store"
+	"github.com/cybercongress/cyberd/types"
+	"github.com/cybercongress/cyberd/types/coin"
+	"github.com/cybercongress/cyberd/util"
+	bandwidth "github.com/cybercongress/cyberd/x/bandwidth"
+	cyberbank "github.com/cybercongress/cyberd/x/bank"
+	link "github.com/cybercongress/cyberd/x/link"
+	"github.com/cybercongress/cyberd/x/rank"
 )
 
 const (
@@ -264,7 +264,7 @@ func NewCyberdApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest
 		upgrade.NewAppModule(app.upgradeKeeper),
 		evidence.NewAppModule(app.evidenceKeeper),
 		bandwidth.NewAppModule(app.accountBandwidthKeeper, app.blockBandwidthKeeper),
-		link.NewAppModule(app.cidNumKeeper, app.linkIndexedKeeper, app.accountKeeper),
+		link.NewAppModule(app.cidNumKeeper, app.linkIndexedKeeper, app.accountKeeper, app.accountBandwidthKeeper, app.bandwidthMeter),
 		rank.NewAppModule(app.rankStateKeeper),
 		wasm.NewAppModule(app.wasmKeeper),
 	)
@@ -282,7 +282,8 @@ func NewCyberdApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest
 	app.SetInitChainer(app.applyGenesis)
 	app.SetBeginBlocker(app.BeginBlocker)
 	app.SetEndBlocker(app.EndBlocker)
-	app.SetAnteHandler(NewAnteHandler(app.accountKeeper, app.supplyKeeper, auth.DefaultSigVerificationGasConsumer))
+	//because genesis max_gas equals -1 there is NewInfiniteGasMeter
+	app.SetAnteHandler(auth.NewAnteHandler(app.accountKeeper, app.supplyKeeper, auth.DefaultSigVerificationGasConsumer))
 
 	if loadLatest { // TODO always true
 		err := app.LoadLatestVersion(dbKeys.main)

@@ -2,6 +2,7 @@ package link
 
 import (
 	"encoding/json"
+
 	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -10,6 +11,8 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
 	"github.com/tendermint/tendermint/abci/types"
+
+	"github.com/cybercongress/go-cyber/x/bandwidth/exported"
 )
 
 // type check to ensure the interface is properly implemented
@@ -42,16 +45,20 @@ type AppModule struct {
 	cidNumberKeeper CidNumberKeeper
 	indexedKeeper   IndexedKeeper
 	accountKeeper   auth.AccountKeeper
+	accountBandwidthKeeper exported.BaseAccountBandwidthKeeper
+	meter exported.Meter
 }
 
 func NewAppModule(cidNumberKeeper CidNumberKeeper, indexedKeeper IndexedKeeper,
-	accountKeeper auth.AccountKeeper) AppModule {
+	accountKeeper auth.AccountKeeper, accountBandwidthKeeper exported.BaseAccountBandwidthKeeper, meter exported.Meter) AppModule {
 
 	return AppModule{
 		AppModuleBasic:  AppModuleBasic{},
 		cidNumberKeeper: cidNumberKeeper,
 		indexedKeeper:   indexedKeeper,
 		accountKeeper:   accountKeeper,
+		accountBandwidthKeeper: accountBandwidthKeeper,
+		meter: meter,
 	}
 }
 
@@ -66,7 +73,7 @@ func (am AppModule) RegisterInvariants(_ sdk.InvariantRegistry) {}
 func (am AppModule) Route() string { return RouterKey }
 
 func (am AppModule) NewHandler() sdk.Handler {
-	return NewLinksHandler(am.cidNumberKeeper, am.indexedKeeper, am.accountKeeper)
+	return NewLinksHandler(am.cidNumberKeeper, am.indexedKeeper, am.accountKeeper, am.accountBandwidthKeeper, am.meter)
 }
 
 func (am AppModule) QuerierRoute() string { return RouterKey }

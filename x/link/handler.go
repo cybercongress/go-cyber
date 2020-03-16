@@ -1,9 +1,12 @@
 package link
 
 import (
+	"strconv"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	cbd "github.com/cybercongress/go-cyber/types"
+	"github.com/cybercongress/go-cyber/x/bandwidth/exported"
 	cyberlink "github.com/cybercongress/go-cyber/x/link/internal/types"
 
 	"github.com/cosmos/cosmos-sdk/x/auth"
@@ -14,7 +17,13 @@ import (
 // ils  - links storage
 // as   - account storage
 // imms - in-memory storage
-func NewLinksHandler(cis CidNumberKeeper, ls IndexedKeeper, as auth.AccountKeeper) sdk.Handler {
+func NewLinksHandler(
+	cis CidNumberKeeper,
+	ls IndexedKeeper,
+	as auth.AccountKeeper,
+	abk exported.BaseAccountBandwidthKeeper,
+	meter exported.Meter,
+) sdk.Handler {
 
 	return func(ctx sdk.Context, msg sdk.Msg) (*sdk.Result, error) {
 		ctx = ctx.WithEventManager(sdk.NewEventManager())
@@ -41,6 +50,11 @@ func NewLinksHandler(cis CidNumberKeeper, ls IndexedKeeper, as auth.AccountKeepe
 			}
 		}
 
+		// TODO later we will migrate to advanced karma ranking
+		linkMsgCost := abk.GetParams(ctx).LinkMsgCost
+		currentCreditPrice := meter.GetCurrentCreditPrice()
+		linkCost := int64(float64(linkMsgCost) * currentCreditPrice)
+
 		for _, link := range linkMsg.Links {
 			fromCidNumber := cis.GetOrPutCidNumber(ctx, link.From)
 			toCidNumber := cis.GetOrPutCidNumber(ctx, link.To)
@@ -50,10 +64,11 @@ func NewLinksHandler(cis CidNumberKeeper, ls IndexedKeeper, as auth.AccountKeepe
 
 			ctx.EventManager().EmitEvent(
 				sdk.NewEvent(
-					cyberlink.EventTypeCreateCyberlink,
+					cyberlink.EventTypeCyberlink,
 					sdk.NewAttribute(cyberlink.AttributeKeySubject, linkMsg.Address.String()),
 					sdk.NewAttribute(cyberlink.AttributeKeyObjectFrom, string(link.From)),
 					sdk.NewAttribute(cyberlink.AttributeKeyObjectTo, string(link.To)),
+					sdk.NewAttribute(cyberlink.AttributeKeyKarma, strconv.FormatInt(linkCost, 10)),
 				),
 			)
 		}
