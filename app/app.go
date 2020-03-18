@@ -262,7 +262,7 @@ func NewCyberdApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest
 		upgrade.NewAppModule(app.upgradeKeeper),
 		evidence.NewAppModule(app.evidenceKeeper),
 		bandwidth.NewAppModule(app.accountBandwidthKeeper, app.blockBandwidthKeeper),
-		link.NewAppModule(app.cidNumKeeper, app.linkIndexedKeeper, app.accountKeeper),
+		link.NewAppModule(app.cidNumKeeper, app.linkIndexedKeeper, app.accountKeeper, app.accountBandwidthKeeper, app.bandwidthMeter),
 		rank.NewAppModule(app.rankStateKeeper),
 		wasm.NewAppModule(app.wasmKeeper),
 	)
@@ -280,7 +280,8 @@ func NewCyberdApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest
 	app.SetInitChainer(app.applyGenesis)
 	app.SetBeginBlocker(app.BeginBlocker)
 	app.SetEndBlocker(app.EndBlocker)
-	app.SetAnteHandler(NewAnteHandler(app.accountKeeper, app.supplyKeeper, auth.DefaultSigVerificationGasConsumer))
+	//because genesis max_gas equals -1 there is NewInfiniteGasMeter
+	app.SetAnteHandler(auth.NewAnteHandler(app.accountKeeper, app.supplyKeeper, auth.DefaultSigVerificationGasConsumer))
 
 	if loadLatest { // TODO always true
 		err := app.LoadLatestVersion(dbKeys.main)
