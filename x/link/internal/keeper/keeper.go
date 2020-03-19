@@ -59,7 +59,7 @@ func (lk Keeper) GetAllLinksFiltered(ctx sdk.Context, filter types.LinkFilter) (
 	inLinks := make(map[types.CidNumber]types.CidLinks)
 	outLinks := make(map[types.CidNumber]types.CidLinks)
 
-	lk.Iterate(ctx, func(link types.CompactLink) {
+	lk.IterateLinks(ctx, func(link types.CompactLink) {
 		if filter(link) {
 			types.Links(outLinks).Put(link.From(), link.To(), link.Acc())
 			types.Links(inLinks).Put(link.To(), link.From(), link.Acc())
@@ -73,22 +73,16 @@ func (lk Keeper) GetLinksCount(ctx sdk.Context) uint64 {
 	return lk.ms.GetLinksCount(ctx)
 }
 
-func (lk Keeper) Iterate(ctx sdk.Context, process func(link types.CompactLink)) {
-	lk.IterateTillVersion(ctx, func(bytes []byte) {
+func (lk Keeper) IterateLinks(ctx sdk.Context, process func(link types.CompactLink)) {
+	lk.IterateBinaryLinks(ctx, func(bytes []byte) {
 		process(types.UnmarshalBinaryLink(bytes))
-	}, ctx.BlockHeight())
+	})
 }
 
-func (lk Keeper) IterateTillVersion(ctx sdk.Context, process func(bytes []byte), ver int64) {
+func (lk Keeper) IterateBinaryLinks(ctx sdk.Context, process func(bytes []byte)) {
 	store := ctx.KVStore(lk.storeKey)
 
-	startAsBytes := make([]byte, 8)
-	binary.LittleEndian.PutUint64(startAsBytes, uint64(1))
-
-	endAsBytes := make([]byte, 8)
-	binary.LittleEndian.PutUint64(endAsBytes, uint64(ver+1)) // Iterator end is exclusive.
-
-	iterator := store.Iterator(startAsBytes, endAsBytes)
+	iterator := store.Iterator(nil, nil)
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
@@ -115,12 +109,12 @@ func (lk Keeper) WriteLinks(ctx sdk.Context, writer io.Writer) (err error) {
 		return
 	}
 
-	lk.IterateTillVersion(ctx, func(bytes []byte) {
+	lk.IterateBinaryLinks(ctx, func(bytes []byte) {
 		_, err = writer.Write(bytes)
 		if err != nil {
 			return
 		}
-	}, ctx.BlockHeight())
+	})
 
 	return nil
 }

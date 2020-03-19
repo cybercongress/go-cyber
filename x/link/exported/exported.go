@@ -13,7 +13,8 @@ type KeeperI interface {
 	GetAllLinksFiltered(sdk.Context, types.LinkFilter) (types.Links, types.Links, error)
 
 	GetLinksCount(sdk.Context) uint64
-	Iterate(sdk.Context, func(types.CompactLink))
+	IterateLinks(sdk.Context, func(types.CompactLink))
+	IterateBinaryLinks(sdk.Context, func([]byte))
 
 	PutLink(sdk.Context, types.CompactLink)
 	WriteLinks(sdk.Context, io.Writer) error
@@ -37,8 +38,6 @@ type IndexedKeeperI interface {
 
 	GetCurrentBlockLinks() []types.CompactLink
 	GetCurrentBlockNewLinks() []types.CompactLink
-
-	GetNetworkLinkHash() []byte
 
 	IsAnyLinkExist(from types.CidNumber, to types.CidNumber) bool
 	IsLinkExist(types.CompactLink) bool
