@@ -21,6 +21,7 @@ var Routes = map[string]*rpcserver.RPCFunc{
 	"account_bandwidth":       rpcserver.NewRPCFunc(AccountBandwidth, "address"),
 	"is_link_exist":           rpcserver.NewRPCFunc(IsLinkExist, "from,to,address"),
 	"current_bandwidth_price": rpcserver.NewRPCFunc(CurrentBandwidthPrice, ""),
+	"current_network_load":    rpcserver.NewRPCFunc(CurrentNetworkLoad, ""),
 	"index_stats":             rpcserver.NewRPCFunc(IndexStats, ""),
 
 	// TODO remove this for euler-6 release

@@ -192,3 +192,8 @@ func (m *BaseBandwidthMeter) UpdateLinkedBandwidth(ctx sdk.Context, bw types.Ac—
 func (m *BaseBandwidthMeter) GetCurrentCreditPrice() float64 {
 	return m.currentCreditPrice
 }
+
+func (m *BaseBandwidthMeter) GetCurrentNetworkLoad(ctx sdk.Context) float64 {
+	params := m.accountBaindwidthKeeper.GetParams(ctx)
+	return float64(m.totalSpentForSlidingWindow) / float64(params.DesirableBandwidth)
+}
