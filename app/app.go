@@ -573,16 +573,7 @@ func (app *CyberdApp) appHash() []byte {
 		return make([]byte, 0)
 	}
 
-	linkHash := app.linkIndexedKeeper.GetNetworkLinkHash()
-	rankHash := app.rankStateKeeper.GetNetworkRankHash()
-
-	result := make([]byte, len(linkHash))
-
-	for i := 0; i < len(linkHash); i++ {
-		result[i] = linkHash[i] ^ rankHash[i]
-	}
-
-	return result
+	return app.rankStateKeeper.GetNetworkRankHash()
 }
 
 func (app *CyberdApp) LoadHeight(height int64) error {
