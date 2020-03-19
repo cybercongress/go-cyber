@@ -127,3 +127,7 @@ func (app *CyberdApp) AccsCount() uint64 {
 func (app *CyberdApp) CurrentTotalKarma() uint64 {
 	return app.mainKeeper.GetSpentKarma(app.RpcContext())
 }
+
+func (app *CyberdApp) CurrentNetworkLoad() float64 {
+	return app.bandwidthMeter.GetCurrentNetworkLoad(app.RpcContext())
+}

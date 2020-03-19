@@ -25,6 +25,8 @@ type BandwidthMeter interface {
 	AdjustPrice(ctx sdk.Context)
 	// get current bandwidth price
 	GetCurrentCreditPrice() float64
+	// get used in window band proportional to desirable
+	GetCurrentNetworkLoad(ctx sdk.Context) float64
 	// commit bandwidth value spent for current block
 	CommitBlockBandwidth(ctx sdk.Context)
 	// commit bandwidth value spent for current block
