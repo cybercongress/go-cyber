@@ -29,6 +29,7 @@ func NewLinksHandler(
 		ctx = ctx.WithEventManager(sdk.NewEventManager())
 
 		linkMsg := msg.(cyberlink.Msg)
+		accNumber := cbd.AccNumber(as.GetAccount(ctx, linkMsg.Address).GetAccountNumber())
 
 		//todo: optimize validations
 		for _, link := range linkMsg.Links {
@@ -42,7 +43,6 @@ func NewLinksHandler(
 				continue
 			}
 
-			accNumber := cbd.AccNumber(as.GetAccount(ctx, linkMsg.Address).GetAccountNumber())
 			compactLink := cyberlink.NewLink(fromCidNumber, toCidNumber, accNumber)
 
 			if ls.IsLinkExist(compactLink) {
@@ -54,24 +54,30 @@ func NewLinksHandler(
 		linkMsgCost := abk.GetParams(ctx).LinkMsgCost
 		currentCreditPrice := meter.GetCurrentCreditPrice()
 		linkCost := int64(float64(linkMsgCost) * currentCreditPrice)
+		karma := linkCost*int64(len(linkMsg.Links))
 
 		for _, link := range linkMsg.Links {
 			fromCidNumber := cis.GetOrPutCidNumber(ctx, link.From)
 			toCidNumber := cis.GetOrPutCidNumber(ctx, link.To)
-			accNumber := cbd.AccNumber(as.GetAccount(ctx, linkMsg.Address).GetAccountNumber())
 
 			ls.PutLink(ctx, cyberlink.NewLink(fromCidNumber, toCidNumber, accNumber))
 
 			ctx.EventManager().EmitEvent(
 				sdk.NewEvent(
 					cyberlink.EventTypeCyberlink,
-					sdk.NewAttribute(cyberlink.AttributeKeySubject, linkMsg.Address.String()),
 					sdk.NewAttribute(cyberlink.AttributeKeyObjectFrom, string(link.From)),
 					sdk.NewAttribute(cyberlink.AttributeKeyObjectTo, string(link.To)),
-					sdk.NewAttribute(cyberlink.AttributeKeyKarma, strconv.FormatInt(linkCost, 10)),
 				),
 			)
 		}
+
+		ctx.EventManager().EmitEvent(
+			sdk.NewEvent(
+				cyberlink.EventTypeCyberlinkMeta,
+				sdk.NewAttribute(cyberlink.AttributeKeySubject, linkMsg.Address.String()),
+				sdk.NewAttribute(cyberlink.AttributeKeyKarma, strconv.FormatInt(karma, 10)),
+			),
+		)
 
 		return &sdk.Result{Events: ctx.EventManager().Events()}, nil
 	}

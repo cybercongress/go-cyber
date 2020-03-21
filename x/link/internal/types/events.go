@@ -3,8 +3,9 @@ package types
 // link module event types
 const (
 	EventTypeCyberlink     = "cyberlink"
-	AttributeKeySubject    = "subject"
 	AttributeKeyObjectFrom = "objectFrom"
 	AttributeKeyObjectTo   = "objectTo"
+	EventTypeCyberlinkMeta = "cybermeta"
+	AttributeKeySubject    = "subject"
 	AttributeKeyKarma      = "karma"
 )
