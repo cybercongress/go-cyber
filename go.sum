@@ -44,6 +44,7 @@ github.com/client9/misspell v0.3.4/go.mod h1:qj6jICC3Q7zFZvVWo7KLAzC3yx5G7kyvSDk
 github.com/confio/go-cosmwasm v0.6.3 h1:TcZ8k0RsGissZ83JcRMvOu93FpDu2S9XGzCd79xwKyU=
 github.com/confio/go-cosmwasm v0.6.3/go.mod h1:pHipRby+f3cv97QPLELkzOAlNs/s87uDyhc+SnMn7L4=
 github.com/confio/go-cosmwasm v0.7.0/go.mod h1:pHipRby+f3cv97QPLELkzOAlNs/s87uDyhc+SnMn7L4=
+github.com/confio/go-cosmwasm v0.7.1 h1:lTAruzPuBv7Txjd0sEM40Wx2tC0jg58Ot7/KWtdNGiU=
 github.com/confio/go-cosmwasm v0.7.1/go.mod h1:pHipRby+f3cv97QPLELkzOAlNs/s87uDyhc+SnMn7L4=
 github.com/coreos/bbolt v1.3.2/go.mod h1:iRUV2dpdMOn7Bo10OQBFzIJO9kkE559Wcmn+qkEiiKk=
 github.com/coreos/etcd v3.3.10+incompatible/go.mod h1:uF7uidLiAD3TWHmW31ZFd/JWoc32PjwdhPthX9715RE=
@@ -62,6 +63,7 @@ github.com/cosmos/ledger-go v0.9.2/go.mod h1:oZJ2hHAZROdlHiwTg4t7kP+GKIIkBT+o6c9
 github.com/cosmwasm/wasmd v0.6.1 h1:FsY+XSN+3IxxY3+/bcLz3oOzfjo6tXcf64YEq0WLSNM=
 github.com/cosmwasm/wasmd v0.6.1/go.mod h1:6PnJVhVN8ab9g8S8kisGsKw5/ulrN0cP/QyUfQ00yns=
 github.com/cosmwasm/wasmd v0.7.0/go.mod h1:1hHwbnn8iMSSEVJF3je9zZHu3F56UdMqv+PkrrnY6G8=
+github.com/cosmwasm/wasmd v0.7.1 h1:lRMbUvim0jstD8fyAmSNBFGvp6KqYH3IOcXBFNYIiVM=
 github.com/cosmwasm/wasmd v0.7.1/go.mod h1:pbFDWyCwH9Lb+MHbvpaH4/WeBGnM64QVn20goQDOZKI=
 github.com/cpuguy83/go-md2man v1.0.10/go.mod h1:SmD6nW6nTyfqj6ABTjUi3V3JVMnlJmwcJI5acqYI6dE=
 github.com/danieljoos/wincred v1.0.2 h1:zf4bhty2iLuwgjgpraD2E9UbvO+fe54XXGJbOwe23fU=
