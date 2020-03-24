@@ -86,7 +86,7 @@ The opportunity to move their content to web3 and save it from any type of censo
 With the growth of the network, we will need cards, a lot of cards. Join us.
 
 
-## cyber•Rank
+## cyber•Rank 
 ```
 0. cyber•Rank - a token weighted Page Rank (initial implementation).
 1. A knowledge graph consists of CIDs, which are connected by cyberlinks. 
