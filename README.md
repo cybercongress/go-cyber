@@ -19,6 +19,8 @@ add text
 
 ### Storage
 
+add text
+
 ## Cyber Protocol
 In its core the protocol is very minimalistic and can be expressed by the following steps:
 1 Compute the genesis of cyber protocol based on the distribution games
