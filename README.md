@@ -23,14 +23,14 @@ add text
 
 ## Cyber Protocol
 In its core the protocol is very minimalistic and can be expressed by the following steps:
-1 Compute the genesis of cyber protocol based on the distribution games
-2 Define the state of the knowledge graph
-3 Gather transactions, using consensus computer
-4 Check the validity of the signatures
-5 Check the bandwidth limit
-6 Check the validity of CIDv0/CIDv1
-7 If the signatures, the bandwidth limit and CIDv1 are all valid - apply cyberlinks and transactions
-8 Calculate cyber~rank values every round for the CIDs on the knowledge graph
+- Compute the genesis of cyber protocol based on the distribution games
+- Define the state of the knowledge graph
+- Gather transactions, using consensus computer
+- Check the validity of the signatures
+- Check the bandwidth limit
+- Check the validity of CIDv0/CIDv1
+- If the signatures, the bandwidth limit and CIDv1 are all valid - apply cyberlinks and transactions
+- Calculate cyber~rank values every round for the CIDs on the knowledge graph
 
 For full information, discover [WhitePaper](https://ipfs.io/ipfs/QmceNpj6HfS81PcCaQXrFMQf7LR5FTLkdG9sbSRNy3UXoZ/)
 
