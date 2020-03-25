@@ -11,7 +11,11 @@ Cyber is a knowledge consensus computer for answers and a search engine. Cyber i
 
 ### Computation
 
+add text 
+
 ### Bandwidth
+
+add text 
 
 ### Storage
 
@@ -26,21 +30,25 @@ In its core the protocol is very minimalistic and can be expressed by the follow
 7 If the signatures, the bandwidth limit and CIDv1 are all valid - apply cyberlinks and transactions
 8 Calculate cyber~rank values every round for the CIDs on the knowledge graph
 
-For full information, discover [WhitePaper] (https://ipfs.io/ipfs/QmceNpj6HfS81PcCaQXrFMQf7LR5FTLkdG9sbSRNy3UXoZ)
+For full information, discover [WhitePaper](https://ipfs.io/ipfs/QmceNpj6HfS81PcCaQXrFMQf7LR5FTLkdG9sbSRNy3UXoZ/)
 
 ## Go-Cyber as a first realization of Cyber protocol
 
 ### Consensys algorithm
 
-### Consensys algorithm
+add text 
+
+### Cyb 
+
+add text 
 
 ## Resourses
 
-Cyber.page
-[Blog] (https://cybercongress.ai/post/) 
-[Become a Validator] (https://github.com/cybercongress/congress/blob/master/ecosystem/validators/onboarding.md)
-[White Paper] (https://ipfs.io/ipfs/QmceNpj6HfS81PcCaQXrFMQf7LR5FTLkdG9sbSRNy3UXoZ)
-[Cyber Homestead] (https://github.com/cybercongress/congress/blob/master/ecosystem/Cyber%20Homestead%20doc.md)
+- [Cyber.page](https://cyber.page/)
+- [Blog](https://cybercongress.ai/post/) 
+- [Become a Validator](https://github.com/cybercongress/congress/blob/master/ecosystem/validators/onboarding.md)
+- [White Paper](https://ipfs.io/ipfs/QmceNpj6HfS81PcCaQXrFMQf7LR5FTLkdG9sbSRNy3UXoZ)
+- [Cyber Homestead](https://github.com/cybercongress/congress/blob/master/ecosystem/Cyber%20Homestead%20doc.md)
 
 ## License
 
