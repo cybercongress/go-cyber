@@ -1,7 +1,7 @@
 
 # Join Cyberd testnet as a Validator
 
-**Note** The current active testnet is `euler-5` (substitute <testnet_chain_id> with that value, do not forget to remove the `<` and the `>` symbols).
+**Note** The current active testnet is `euler-6` (substitute <testnet_chain_id> with that value, do not forget to remove the `<` and the `>` symbols).
 
 ## Prepare your server
 
@@ -27,7 +27,7 @@ GPU: nvidia GeForce(or Tesla/Titan/Quadro) with CUDA-cores; at least 6gb of memo
 Software: Docker, Ubuntu 16.04/18.04 LTS
 ```
 
-*Cyberd runs well on comsumer grade cards like Geforce GTX 1070, but expecting load growth we advise to use Error Correction compatible cards from Tesla or Quadro families.
+*Cyberd runs well on comsumer grade cards like Geforce GTX 1070, but expecting load growth we advise to use Error Correction compatible cards from Tesla or Quadro families.*
 
 But, of cource, hardware is your onw choise and tecnically it migth be possible to run the chain on "even - 1 CUDA core gpu", but, you should be aware of stabilty and a decline in calculation speed.
 
@@ -35,96 +35,47 @@ But, of cource, hardware is your onw choise and tecnically it migth be possible 
 
 ### Third-party software
 
-The main distribution unit for Cyberd is a [docker](https://www.docker.com/) container. All images are located in the default [Dockerhub registry](https://hub.docker.com/r/cyberd/cyberd/). In order to access the GPU from the container, Nvidia drivers version **410+** and [Nvidia docker runtime](https://github.com/NVIDIA/nvidia-docker) should be installed on the host system. For better user experience, we propose you use [portainer](https://portainer.io) - a docker containers manager. You can skip any subsection of this guide if you already have any of the necessary software configured.
+ In order to access the GPU cyberd uses Nvidia drivers version **410+** and [Nvidia CUDA toolkit](https://developer.nvidia.com/cuda-downloads) should be installed on the host system. You can skip any subsection of this guide if you already have any of the necessary software configured. And as far as current implementation of `cyber` written in [Go](https://golang.org/) we will need it installed also.
 
-### Docker installation
+### Install Go
 
-Simply, copy the commands below into your CLI.
+Cyberd for `euler-6` require at least go of version 1.13, install it according to official [guide](https://golang.org/doc/install):
 
-1. Update the apt package index:
-
-```bash
-sudo apt-get update
-```
-
-2. Install packages to allow apt to use a repository over HTTPS:
+1. Download archive:
 
 ```bash
-sudo apt-get install \
-     apt-transport-https \
-     ca-certificates \
-     curl \
-     gnupg-agent \
-     software-properties-common
+wget https://dl.google.com/go/go1.13.9.linux-amd64.tar.gz
 ```
 
- It may require installing `curl` - `apt-get install curl`
-
-3. Add Docker’s official GPG key:
+2. Extract it into `/usr/local`, creating a Go tree in `/usr/local/go`:
 
 ```bash
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+tar -C /usr/local -xzf go1.13.9.linux-amd64.tar.gz
 ```
+
+3. Add `/usr/local/go/bin` to the PATH environment variable. You can do this by adding this line to your `/etc/profile` (for a system-wide installation) or `$HOME/.profile`:
 
 ```bash
-sudo add-apt-repository \
-   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
-   $(lsb_release -cs) \
-   stable"
+export PATH=$PATH:/usr/local/go/bin
 ```
 
-4. Update the apt package index:
+4. Do `source` for the file with your `$PATH` variable, or just log-out/log-in:
 
 ```bash
-sudo apt-get update
+source /etc/profile
 ```
 
-5. Install the latest version of Docker CE and containerd or skip to the next step to install a specific version (as of Nov 2019 version 19.03 is required):
+or
 
 ```bash
-sudo apt-get install docker-ce docker-ce-cli containerd.io
+source $HOME/.profile
 ```
 
-If you don’t want to preface docker commands with sudo create a Unix group called docker and add users to that group. When the Docker daemon starts it creates a Unix socket accessible by members of the docker group.
-
-6. Create the docker group:
+5. To check your installation run `go version`, it will let you know everything completed correcltly. As output you should see the following:
 
 ```bash
-sudo groupadd docker
+go version go1.13.8 linux/amd64
 ```
-
-7. Add your user to the docker group:
-
-```bash
-sudo usermod -aG docker $YOUR-USER-NAME
-```
-
-8. Reboot the system for the changes to take effect.
-
-#### Portainer installation (optional)
-
-1. Before installing Portainer, download the Portainer image from the DockerHub using the docker pull command below:
-
-```bash
-docker pull portainer/portainer
-```
-
-2. Now, run Portainer by using the simple docker command from below:
-
-```bash
-docker run -d --restart always -p 9000:9000 -v /var/run/docker.sock:/var/run/docker.sock portainer/portainer
-```
-
-3. Open your browser and go to:
-
-```bash
-localhost:9000
-```
-
-![portainer](https://ipfs.io/ipfs/QmS42MJxjUB7Cu1GoJeE6eBmWkjHTZdgiAUcX4Qqy9NR3M)
-
-4. Create a username and set a password. Chose the `local` tab and click `connect`.
-All the containers will be available in the `containers` tab on your dashboard.
 
 #### Nvidia drivers installation
 
@@ -164,9 +115,7 @@ driver   : nvidia-driver-440 - third-party free recommended
 driver   : xserver-xorg-video-nouveau - distro free builtin
 ```
 
-4. We need the
-**410+**
-drivers release. As you can see v440 is recommended. The command below will install the recommended version of drivers:
+4. We need the **410+** drivers release. As you can see v440 is recommended. The command below will install the recommended version of drivers:
 
 ```bash
 sudo ubuntu-drivers autoinstall
@@ -225,115 +174,188 @@ You should see this:
 +-----------------------------------------------------------------------------+
 ```
 
-#### Install Nvidia container runtime for docker
+### Install CUDA toolkit
 
-1. Add package repositories:
-
-```bash
-distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
-```
-
-```bash
-curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add -
-```
-
-```bash
-curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | sudo tee /etc/apt/sources.list.d/nvidia-docker.list
-```
-
-You should see this:
-
-```bash
-deb https://nvidia.github.io/libnvidia-container/ubuntu18.04/$(ARCH) /
-deb https://nvidia.github.io/nvidia-container-runtime/ubuntu18.04/$(ARCH) /
-deb https://nvidia.github.io/nvidia-docker/ubuntu18.04/$(ARCH) /
-```
-
-2. Install nvidia-docker2 and reload the Docker daemon configuration
-
-```bash
-sudo apt-get update && sudo apt-get install -y nvidia-container-toolkit
-```
-
-```bash
-sudo systemctl restart docker
-
-```
-
-3. Test nvidia-smi with the latest official CUDA image
-
-```bash
-docker run --gpus all nvidia/cuda:10.0-base nvidia-smi
-```
-
-Output logs should coincide as earlier:
-
-```bash
-Unable to find image 'nvidia/cuda:10.0-base' locally
-10.0-base: Pulling from nvidia/cuda
-38e2e6cd5626: Pull complete
-705054bc3f5b: Pull complete
-c7051e069564: Pull complete
-7308e914506c: Pull complete
-5260e5fce42c: Pull complete
-8e2b19e62adb: Pull complete
-Digest: sha256:625491db7e15efcc78a529d3a2e41b77ffb5b002015983fdf90bf28955277d68
-Status: Downloaded newer image for nvidia/cuda:10.0-base
-Fri Nov  1 05:41:12 2019
-+-----------------------------------------------------------------------------+
-| NVIDIA-SMI 440.26      Driver Version: 440.26       CUDA Version: 10.0     |
-|-------------------------------+----------------------+----------------------+
-| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
-| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
-|===============================+======================+======================|
-|   0  GeForce GTX 1070    Off  | 00000000:01:00.0  On |                  N/A |
-| N/A   55C    P0    31W /  N/A |    445MiB /  8117MiB |     38%      Default |
-+-------------------------------+----------------------+----------------------+
-
-+-----------------------------------------------------------------------------+
-| Processes:                                                       GPU Memory |
-|  GPU       PID   Type   Process name                             Usage      |
-|=============================================================================|
-+-----------------------------------------------------------------------------+
-```
-
-Your machine is ready to launch the fullnode.
+Simply run `apt install nvidia-cuda-toolkit`. Any version above 9.1 is OK. To check version run `nvcc --version`.
 
 ### Cyberd fullnode launching
 
-1. Create folders for keys and data storing where you want, for example:
 
-``` bash
-mkdir /euler-5/cyberd
-mkdir /euler-5/cyberdcli
-```
-
-2. Run the fullnode:
-(This will pull and extract the image from cyberd/cyberd)
+1. Add environment variables:
 
 ```bash
-docker run -d --gpus all --name=euler-5 --restart always -p 26656:26656 -p 26657:26657 -p 1317:1317 -e ALLOW_SEARCH=true -v /euler-5/cyberd:/root/.cyberd  -v /euler-5/cyberdcli:/root/.cyberdcli  cyberd/cyberd:euler-5
+export DAEMON_HOME=$HOME/.cyberd
+export DAEMON_NAME=cyber
 ```
 
-3. After successful pulling of the container and launching, run to check if your node is connected to the testnet:
+To make those vatiables persistent add them to the end of the `$HOME/.profile` and log-out/log-in or do `source ~/.profile`
+
+2. Make directories tree for storing your daemon:
 
 ```bash
-docker exec euler-5 cyberdcli status
+mkdir $HOME/.cyberd
+mkdir -p $DAEMON_HOME/upgrade_manager
+mkdir -p $DAEMON_HOME/upgrade_manager/genesis
+mkdir -p $DAEMON_HOME/upgrade_manager/genesis/bin
 ```
 
-A possible output looks like this:
+3. Get a prebuilt copy of cosmosd or build from source:
+
+ Use prebuild copy
 
 ```bash
-{"node_info":{"protocol_version":{"p2p":"6","block":"9","app":"0"},"id":"93b776d3eb3f3ce9d9bda7164bc8af3acacff7b6","listen_addr":"tcp://0.0.0.0:26656","network":"euler-5","version":"0.32.7","channels":"4020212223303800","moniker":"anon","other":{"tx_index":"on","rpc_address":"tcp://0.0.0.0:26657"}},"sync_info":{"latest_block_hash":"686B4E65415D4E56D3B406153C965C0897D0CE27004E9CABF65064B6A0ED4240","latest_app_hash":"0A1F6D260945FD6E926785F07D41049B8060C60A132F5BA49DD54F7B1C5B2522","latest_block_height":"4553","latest_block_time":"2019-11-24T09:49:19.771375108Z","catching_up":false},"validator_info":{"address":"66098853CF3B61C4313DD487BA21EDF8DECACDF0","pub_key":{"type":"tendermint/PubKeyEd25519","value":"uZrCCdZTJoHE1/v+EvhtZufJgA3zAm1bN4uZA3RyvoY="},"voting_power":"0"}}
+curl -L -o $DAEMON_HOME/cosmosd https://github.com/regen-network/cosmosd/releases/download/0.2.0/cosmosd
+
+chmod +x $DAEMON_HOME/cosmosd
 ```
 
-Your node has started to sync. If that didn't happen, check your config.toml file located at /<your euler-5 directory>/cyberd/config/config.toml and add at least a couple of addresses to <persistent_peers = ""> and <seeds = "">, some of those you can fing on our [forum](https://ai.cybercongress.ai/t/euler-5-testnet/38).
-
-You can follow the syncing process in the terminal. Open a new tab and run the following command:
+or build from source:
 
 ```bash
-docker logs euler-5 --follow
+git clone git@github.com/regen-network/cosmosd.git
+cd cosmosd
+go build
+mv cosmosd $DAEMON_HOME/
+chmod +x $DAEMON_HOME/cosmosd
 ```
+
+4. Clone go-cyber repo, checkout to necessary version (`master` by default):
+
+```bash
+cd ~
+git clone git@github.com:cybercongress/go-cyber.git
+```
+
+5. Build cyber daemon (as result you should get `cyberd` and `cyberdcli` files inside `go-cyber/build/` folder):
+
+```bash
+cd ~/go-cyber
+make build
+```
+
+6. Copy binaries to apropriate locations:
+
+```bash
+cp build/cyberd $DAEMON_HOME/upgrade_manager/genesis/bin
+cp build/cyberdcli /usr/local/bin/
+```
+
+7. Initialize cyber daemon:
+
+```bash
+cd $DAEMON_HOME/upgrade_manager/genesis/bin
+./cyberd init
+```
+
+As result of this operation `data` and `config` folders should appear inside your *$DAEMON_HOME/* folder.
+
+8. Download and place `genesis.json` and `config.toml`
+
+```bash
+cd $DAEMON_HOME/config
+wget <https://to_config.toml_file>
+wget <https://to_genesis.json_file>
+```
+
+> TODO update links for genesis and config
+
+### Setup cyberd service (Ubuntu)
+
+1. Increase resource limits for [Tendermint](https://tendermint.com):
+
+```bash
+ulimit -n 4096
+```
+
+2. Make a system service, it will help you easily start/stop cyberd and run it in the background.
+
+```bash
+sudo nano /etc/systemd/system/cyberd.service
+```
+
+Paste the following (replace `ubuntu` with your username, or if you running as `root` replce whole */home/ubuntu/* to `/root/`):
+
+```bash
+[Unit]
+Description=Cyber Node
+After=network-online.target
+
+[Service]
+User=ubuntu
+WorkingDirectory=/home/ubuntu/.cyberd/
+ExecStart=/home/ubuntu/.cyberd/cosmosd start --compute-rank-on-gpu=true
+Environment=DAEMON_HOME=/home/ubuntu/.cyberd
+Environment=DAEMON_NAME=cyberd
+Environment=GAIA_HOME=/home/ubuntu/.cyberd
+Restart=always
+RestartSec=3m
+LimitNOFILE=4096
+
+[Install]
+WantedBy=multi-user.target
+```
+
+If you need to enable search on the node add flag `--allow-search=true` right after `--compute-rank-on-gpu=true`. Also, if you need to run rest-server alongside with `cyberd` here's service file for it (do `sudo nano /etc/systemd/system/cyberd-rest.service` and paste following):
+
+```bash
+[Unit]
+Description=Cyberd REST Server
+
+[Service]
+User=ubuntu
+WorkingDirectory=/home/ubuntu/.cyberd/
+ExecStart=/home/ubuntu/.cyberd/cosmosd rest-server --laddr tcp://0.0.0.0:1317 --chain-id euler-6
+Environment=DAEMON_HOME=/home/ubuntu/.cyberd
+Environment=DAEMON_NAME=cyberd
+Environment=GAIA_HOME=/home/ubuntu/.cyberd
+Restart=always
+TimeoutSec=120
+RestartSec=30
+LimitNOFILE=4096
+
+[Install]
+WantedBy=multi-user.target
+```
+
+3. Run cyberd:
+
+Start node:
+
+```bash
+sudo systemctl start cyberd
+```
+
+Check status of node:
+
+```bash
+sudo systemctl status cyberd
+```
+
+Enable service:
+
+```bash
+sudo systemctl enable cyberd
+```
+
+Check logs:
+
+```bash
+journalctl -u cyberd -f --lines 50
+```
+
+If you need to Stop the node:
+
+```bash
+sudo systemctl stop cyberd
+```
+
+At this point your cyberd should be running in the backgroud, and you should be able to call `cyberdcli` to operate with the client. Try calling `cyberdcli status`, a possible output looks like this:
+
+```bash
+{"node_info":{"protocol_version":{"p2p":"6","block":"9","app":"0"},"id":"93b776d3eb3f3ce9d9bda7164bc8af3acacff7b6","listen_addr":"tcp://0.0.0.0:26656","network":"euler-6","version":"0.32.7","channels":"4020212223303800","moniker":"anon","other":{"tx_index":"on","rpc_address":"tcp://0.0.0.0:26657"}},"sync_info":{"latest_block_hash":"686B4E65415D4E56D3B406153C965C0897D0CE27004E9CABF65064B6A0ED4240","latest_app_hash":"0A1F6D260945FD6E926785F07D41049B8060C60A132F5BA49DD54F7B1C5B2522","latest_block_height":"4553","latest_block_time":"2019-11-24T09:49:19.771375108Z","catching_up":false},"validator_info":{"address":"66098853CF3B61C4313DD487BA21EDF8DECACDF0","pub_key":{"type":"tendermint/PubKeyEd25519","value":"uZrCCdZTJoHE1/v+EvhtZufJgA3zAm1bN4uZA3RyvoY="},"voting_power":"0"}}
+```
+
+Your node has started to sync. If that didn't happen, check your config.toml file located at `$DAEMON_HOME/config/config.toml` and add at least a couple of addresses to <persistent_peers = ""> and <seeds = "">, some of those you can fing on our [forum](https://ai.cybercongress.ai/).
 
 Additional information about the chain is available via an API endpoint at: `localhost:26657` (access via your browser)
 
@@ -350,32 +372,32 @@ We included 1 million Ethereum addresses, over 8000 Cosmos addresses and all of 
 If you already have a cyberd address with EUL and know the seed phrase or your private key, just restore it into your local keystore:
 
 ```bash
-docker exec -ti euler-5 cyberdcli keys add <your_key_name> --recover
-docker exec euler-5 cyberdcli keys show <your_key_name>
+cyberdcli keys add <your_key_name> --recover
+cyberdcli keys show <your_key_name>
 ```
 
-If you have an Ethereum address that had ~0.2Eth or more at block 8080808 (on the ETH network), you can import your Ethereum private key. To do this, please check out our Ethereum [gift tool](qhttps://github.com/cybercongress/launch-kit/tree/0.1.0/ethereum_gift_tool)
+If you have an Ethereum address that had ~0.2Eth or more at block 8080808 (on the ETH network), you probably got some tokens gifted to you,and can import your Ethereum private key. To check your gift just paste your Ethereum address to [cyber.page](https://cyber.page).
 
 > Please do not import high value Ethereum accounts. This is not safe! cyberd software is a new and has not been battle tested yet.
 
 ```bash
-docker exec -ti euler-5 cyberdcli keys add import_private <your_key_name>
-docker exec euler-5 cyberdcli keys show <your_key_name>
+cyberdcli keys add private <your_key_name>
+cyberdcli keys show <your_key_name>
 ```
 
 If you want to create a new acccount, use the command below:
 (You should send coins to that address to bound them later during the submitting of the validator)
 
 ```bash
-docker exec -ti euler-5 cyberdcli keys add <your_key_name>
-docker exec euler-5 cyberdcli keys show <your_key_name>
+cyberdcli keys add <your_key_name>
+cyberdcli keys show <your_key_name>
 ```
 
 You could use your ledger device with the Cosmos app installed on it to sign and store cyber addresses: [guide here](https://github.com/cybercongress/cyberd/blob/0.1.5/docs/cyberd_Ledger_guide.md).
 In common case use the --ledger flag, with your commands:
 
 ```bash
-docker exec -ti euler-5 cyberdcli keys add <your_key_name> --ledger
+cyberdcli keys add <your_key_name> --ledger
 ```
 
 **<your_key_name>** is any name you pick to represent this key pair.
@@ -397,10 +419,10 @@ This refers to the node itself, not a single person or a single account.
 Therefore, the public key here is referring to the nodes public key,
 not the public key of the address you have just created.
 
-To get the nodes public key, run the following command:
+To get the nodes public key run the following command:
 
 ```bash
-docker exec euler-5 cyberd tendermint show-validator
+$DAEMON_HOME/upgrade_manager/genesis/bin/cyberd tendermint show-validator
 ```
 
 It will return a bech32 public key. Let’s call it **<your_node_pubkey>**.
@@ -410,7 +432,7 @@ So the validator candidate is an account this time.
 To declare a validator candidate, run the following command adjusting the stake amount and the other fields:
 
 ```bash
-docker exec -ti euler-5 cyberdcli tx staking create-validator \
+cyberdcli tx staking create-validator \
   --amount=10000000eul \
   --min-self-delegation "1000000" \
   --pubkey=<your_node_pubkey> \
@@ -420,13 +442,13 @@ docker exec -ti euler-5 cyberdcli tx staking create-validator \
   --commission-rate="0.10" \
   --commission-max-rate="0.20" \
   --commission-max-change-rate="0.01" \
-  --chain-id=euler-5
+  --chain-id=euler-6
 ```
 
 #### Verify that you are validating
 
 ```bash
-docker exec -ti euler-5 cyberdcli query staking validators --trust-node=true
+cyberdcli query staking validators --trust-node=true
 ```
 
 If you see your `<your_node_nickname>` with status `Bonded` and Jailed `false` everything is good.
@@ -440,5 +462,5 @@ If your validator got under slashing conditions, it will be jailed.
 After such event, an operator must unjail the validator manually:
 
 ```bash
-docker exec -ti euler-5 cyberdcli tx slashing unjail --from=<your_key_name> --chain-id euler-5
+cyberdcli tx slashing unjail --from=<your_key_name> --chain-id euler-5
 ```
