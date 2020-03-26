@@ -247,7 +247,7 @@ cp build/cyberdcli /usr/local/bin/
 
 ```bash
 cd $DAEMON_HOME/upgrade_manager/genesis/bin
-./cyberd init
+./cyberd init <your_node_moniker>
 ```
 
 As result of this operation `data` and `config` folders should appear inside your *$DAEMON_HOME/* folder.
@@ -321,6 +321,12 @@ WantedBy=multi-user.target
 ```
 
 3. Run cyberd:
+
+Reload `systemd` after creation of new service:
+
+```bash
+systemctl daemon-reload
+```
 
 Start node:
 
