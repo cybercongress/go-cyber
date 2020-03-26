@@ -6,15 +6,15 @@
 ## Prepare your server
 
 First, you have to setup a server.
-You should to run your validator node all time. This means that you will need a reliable server to keep it running.
-Also, you may consider to use any cloud service with dedicated GPU, like Hetzner (or a local machine).
+You node should be constantnly running. This means that you will need a reliable server to keep it running.
+Also, you may consider to use any cloud service with dedicated GPU, like Hetzner (or use a local machine).
 
-Cyberd is based on Cosmos SDK and written in Go.
+Cyberd is based on Cosmos-SDK and written in Go.
 It should work on any platform which can compile and run programs in Go.
 However, we strongly recommend running the validator node on a Linux server.
 
-Rank calculation in cyberd is benefit to GPU computation.
-They are easy to parallelize. This is why it is best to use GPU.
+The rank calculations are done via GPU computations.
+They are easy to parallelize. This is why it is reccomended to use a GPU.
 
 Recommended requirements:
 
@@ -27,7 +27,7 @@ GPU: nvidia GeForce(or Tesla/Titan/Quadro) with CUDA-cores; at least 6gb of memo
 Software: Docker, Ubuntu 16.04/18.04 LTS
 ```
 
-*Cyberd runs well on comsumer grade cards like Geforce GTX 1070, but expecting load growth we advise to use Error Correction compatible cards from Tesla or Quadro families.*
+*Cyberd runs well on comsumer grade cards like Geforce GTX 1070, but expect load growth. We advise to use Error Correction compatible cards from Tesla or Quadro families.*
 
 But, of cource, hardware is your onw choise and tecnically it migth be possible to run the chain on "even - 1 CUDA core gpu", but, you should be aware of stabilty and a decline in calculation speed.
 
@@ -35,13 +35,17 @@ But, of cource, hardware is your onw choise and tecnically it migth be possible 
 
 ### Third-party software
 
- In order to access the GPU cyberd uses Nvidia drivers version **410+** and [Nvidia CUDA toolkit](https://developer.nvidia.com/cuda-downloads) should be installed on the host system. You can skip any subsection of this guide if you already have any of the necessary software configured. And as far as current implementation of `cyber` written in [Go](https://golang.org/) we will need it installed also.
+In order to access the GPU, cyberd uses Nvidia drivers version **410+** and [Nvidia CUDA toolkit](https://developer.nvidia.com/cuda-downloads) should be installed on the host system. 
 
-### Install Go
+You may skip any sections of the guide if you already have any of the necessary software configured. 
 
-Cyberd for `euler-6` require at least go of version 1.13, install it according to official [guide](https://golang.org/doc/install):
+As long as the the current implementation of `cyber` is written in [Go](https://golang.org/), we will also need to install Go.
 
-1. Download archive:
+### Installing Go
+
+For `euler-6` Cyberd requires at least Go version 1.13+. Install it according to the official [guide](https://golang.org/doc/install):
+
+1. Download the archive:
 
 ```bash
 wget https://dl.google.com/go/go1.13.9.linux-amd64.tar.gz
@@ -53,7 +57,7 @@ wget https://dl.google.com/go/go1.13.9.linux-amd64.tar.gz
 tar -C /usr/local -xzf go1.13.9.linux-amd64.tar.gz
 ```
 
-3. Add `/usr/local/go/bin` to the PATH environment variable. You can do this by adding this line to your `/etc/profile` (for a system-wide installation) or `$HOME/.profile`:
+3. Add `/usr/local/go/bin` to the PATH environment variable. You can do this by adding this line to your `/etc/profile` (for installation on the whole system) or `$HOME/.profile`:
 
 ```bash
 export PATH=$PATH:/usr/local/go/bin
@@ -71,7 +75,7 @@ or
 source $HOME/.profile
 ```
 
-5. To check your installation run `go version`, it will let you know everything completed correcltly. As output you should see the following:
+5. To check your installation run `go version`, it will let you know if everything was installed correcltly. As an output, you should see the following (version number may vary, of course):
 
 ```bash
 go version go1.13.8 linux/amd64
@@ -115,13 +119,13 @@ driver   : nvidia-driver-440 - third-party free recommended
 driver   : xserver-xorg-video-nouveau - distro free builtin
 ```
 
-4. We need the **410+** drivers release. As you can see v440 is recommended. The command below will install the recommended version of drivers:
+4. We need the **410+** drivers release. As you can see v440 is recommended. The command below will install the recommended version of the drivers:
 
 ```bash
 sudo ubuntu-drivers autoinstall
 ```
 
-Drivers will install for approximately 10 minutes.
+The driver installation takes approximately 10 minutes.
 
 ```bash
 DKMS: install completed.
@@ -176,10 +180,9 @@ You should see this:
 
 ### Install CUDA toolkit
 
-Simply run `apt install nvidia-cuda-toolkit`. Any version above 9.1 is OK. To check version run `nvcc --version`.
+Simply run `apt install nvidia-cuda-toolkit`. Any version above 9.1 is OK. To check the version run `nvcc --version`.
 
 ### Cyberd fullnode launching
-
 
 1. Add environment variables:
 
@@ -188,7 +191,7 @@ export DAEMON_HOME=$HOME/.cyberd
 export DAEMON_NAME=cyber
 ```
 
-To make those vatiables persistent add them to the end of the `$HOME/.profile` and log-out/log-in or do `source ~/.profile`
+To make those vatiables persistent, add them to the end of the `$HOME/.profile` and log-out/log-in or do `source ~/.profile`.
 
 2. Make directories tree for storing your daemon:
 
@@ -199,9 +202,9 @@ mkdir -p $DAEMON_HOME/upgrade_manager/genesis
 mkdir -p $DAEMON_HOME/upgrade_manager/genesis/bin
 ```
 
-3. Get a prebuilt copy of cosmosd or build from source:
+3. Get a prebuilt copy of cosmosd or build it from source:
 
- Use prebuild copy
+ Using a prebuild copy:
 
 ```bash
 curl -L -o $DAEMON_HOME/cosmosd https://github.com/regen-network/cosmosd/releases/download/0.2.0/cosmosd
@@ -209,7 +212,7 @@ curl -L -o $DAEMON_HOME/cosmosd https://github.com/regen-network/cosmosd/release
 chmod +x $DAEMON_HOME/cosmosd
 ```
 
-or build from source:
+Or building from source:
 
 ```bash
 git clone git@github.com/regen-network/cosmosd.git
@@ -219,14 +222,14 @@ mv cosmosd $DAEMON_HOME/
 chmod +x $DAEMON_HOME/cosmosd
 ```
 
-4. Clone go-cyber repo, checkout to necessary version (`master` by default):
+4. Clone go-cyber repo, checkout to the necessary version (`master` by default):
 
 ```bash
 cd ~
 git clone git@github.com:cybercongress/go-cyber.git
 ```
 
-5. Build cyber daemon (as result you should get `cyberd` and `cyberdcli` files inside `go-cyber/build/` folder):
+5. Build cyber daemon (as a result you should get `cyberd` and `cyberdcli` files inside of the `go-cyber/build/` folder):
 
 ```bash
 cd ~/go-cyber
@@ -257,7 +260,7 @@ wget <https://to_config.toml_file>
 wget <https://to_genesis.json_file>
 ```
 
-> TODO update links for genesis and config
+> TO DO update links for genesis and config
 
 ### Setup cyberd service (Ubuntu)
 
@@ -267,7 +270,7 @@ wget <https://to_genesis.json_file>
 ulimit -n 4096
 ```
 
-2. Make a system service, it will help you easily start/stop cyberd and run it in the background.
+2. Make cyberd a system service. This will help you easily start/stop cyberd and run it in the background.
 
 ```bash
 sudo nano /etc/systemd/system/cyberd.service
@@ -295,7 +298,7 @@ LimitNOFILE=4096
 WantedBy=multi-user.target
 ```
 
-If you need to enable search on the node add flag `--allow-search=true` right after `--compute-rank-on-gpu=true`. Also, if you need to run rest-server alongside with `cyberd` here's service file for it (do `sudo nano /etc/systemd/system/cyberd-rest.service` and paste following):
+If you need to enable search on the node add the flag `--allow-search=true` right after `--compute-rank-on-gpu=true`. If you need to run rest-server alongside `cyberd` here is a service file for it (do `sudo nano /etc/systemd/system/cyberd-rest.service` and paste the following):
 
 ```bash
 [Unit]
@@ -325,7 +328,7 @@ Start node:
 sudo systemctl start cyberd
 ```
 
-Check status of node:
+Check node status:
 
 ```bash
 sudo systemctl status cyberd
@@ -343,23 +346,23 @@ Check logs:
 journalctl -u cyberd -f --lines 50
 ```
 
-If you need to Stop the node:
+If you need to stop the node:
 
 ```bash
 sudo systemctl stop cyberd
 ```
 
-At this point your cyberd should be running in the backgroud, and you should be able to call `cyberdcli` to operate with the client. Try calling `cyberdcli status`, a possible output looks like this:
+At this point your cyberd should be running in the backgroud and you should be able to call `cyberdcli` to operate with the client. Try calling `cyberdcli status`, a possible output looks like this:
 
 ```bash
 {"node_info":{"protocol_version":{"p2p":"6","block":"9","app":"0"},"id":"93b776d3eb3f3ce9d9bda7164bc8af3acacff7b6","listen_addr":"tcp://0.0.0.0:26656","network":"euler-6","version":"0.32.7","channels":"4020212223303800","moniker":"anon","other":{"tx_index":"on","rpc_address":"tcp://0.0.0.0:26657"}},"sync_info":{"latest_block_hash":"686B4E65415D4E56D3B406153C965C0897D0CE27004E9CABF65064B6A0ED4240","latest_app_hash":"0A1F6D260945FD6E926785F07D41049B8060C60A132F5BA49DD54F7B1C5B2522","latest_block_height":"4553","latest_block_time":"2019-11-24T09:49:19.771375108Z","catching_up":false},"validator_info":{"address":"66098853CF3B61C4313DD487BA21EDF8DECACDF0","pub_key":{"type":"tendermint/PubKeyEd25519","value":"uZrCCdZTJoHE1/v+EvhtZufJgA3zAm1bN4uZA3RyvoY="},"voting_power":"0"}}
 ```
 
-Your node has started to sync. If that didn't happen, check your config.toml file located at `$DAEMON_HOME/config/config.toml` and add at least a couple of addresses to <persistent_peers = ""> and <seeds = "">, some of those you can fing on our [forum](https://ai.cybercongress.ai/).
+Your node has started to sync. If that didn't happen, check your config.toml file located at `$DAEMON_HOME/config/config.toml` and add at least a couple of addresses to <persistent_peers = ""> and <seeds = "">, some of those you can find on our [forum](https://ai.cybercongress.ai/).
 
 Additional information about the chain is available via an API endpoint at: `localhost:26657` (access via your browser)
 
-e.i. the number of active validators is available at: `localhost:26657/validators`
+E.G. the number of active validators is available at: `localhost:26657/validators`
 
 ## Validator start
 
@@ -367,7 +370,7 @@ After your node has successfully synced, you can run a validator.
 
 ### Prepare the staking address
 
-We included 1 million Ethereum addresses, over 8000 Cosmos addresses and all of `euler-4` validators addresses into  genesis, so there's a huge chance that you alredy have some EUL tokens. Here are 3 ways to check this:
+We included 1 million Ethereum addresses, over 8000 Cosmos addresses and all of `euler-4` validators addresses into the genesis file. This means that there's a huge chance that you alredy have some EUL tokens. Here are 3 ways to check this:
 
 If you already have a cyberd address with EUL and know the seed phrase or your private key, just restore it into your local keystore:
 
@@ -376,9 +379,9 @@ cyberdcli keys add <your_key_name> --recover
 cyberdcli keys show <your_key_name>
 ```
 
-If you have an Ethereum address that had ~0.2Eth or more at block 8080808 (on the ETH network), you probably got some tokens gifted to you,and can import your Ethereum private key. To check your gift just paste your Ethereum address to [cyber.page](https://cyber.page).
+If you have an Ethereum address that had ~0.2Eth or more at block 8080808 (on the ETH network), you probably recieved a gift and may import your Ethereum private key. To check your gift balance, paste your Ethereum address on [cyber.page](https://cyber.page).
 
-> Please do not import high value Ethereum accounts. This is not safe! cyberd software is a new and has not been battle tested yet.
+> Please do not import high value Ethereum accounts. This is not safe! cyberd software is new and has not been audited yet.
 
 ```bash
 cyberdcli keys add private <your_key_name>
@@ -386,14 +389,14 @@ cyberdcli keys show <your_key_name>
 ```
 
 If you want to create a new acccount, use the command below:
-(You should send coins to that address to bound them later during the submitting of the validator)
+(You should send coins to that address to bound them later during the launch of the validator)
 
 ```bash
 cyberdcli keys add <your_key_name>
 cyberdcli keys show <your_key_name>
 ```
 
-You could use your ledger device with the Cosmos app installed on it to sign and store cyber addresses: [guide here](https://github.com/cybercongress/cyberd/blob/0.1.5/docs/cyberd_Ledger_guide.md).
+You could use your Ledger device, with the Cosmos app installed on it to sign and store cyber addresses: [guide here](https://github.com/cybercongress/cyberd/blob/0.1.5/docs/cyberd_Ledger_guide.md).
 In common case use the --ledger flag, with your commands:
 
 ```bash
@@ -407,7 +410,7 @@ You will also need to enter your password when you use your key to sign any tran
 
 The command returns the address, a public key and a seed phrase, which you can use to
 recover your account if you forget your password later.
-Keep the seed phrase at a safe place (preferably, not hot storage) in case you have to use it.
+Keep the seed phrase at a safe place (not in hot storage) in case you have to use it.
 
 The address shown here is your account address. Let’s call this **<your_account_address>**.
 It stores your assets.
@@ -428,8 +431,8 @@ $DAEMON_HOME/upgrade_manager/genesis/bin/cyberd tendermint show-validator
 It will return a bech32 public key. Let’s call it **<your_node_pubkey>**.
 The next step is to to declare a validator candidate.
 The validator candidate is the account which stakes the coins.
-So the validator candidate is an account this time.
-To declare a validator candidate, run the following command adjusting the stake amount and the other fields:
+So the validator candidate is the account this time.
+To declare a validator candidate, run the following command adjusting the staked amount and the other fields:
 
 ```bash
 cyberdcli tx staking create-validator \
@@ -451,15 +454,15 @@ cyberdcli tx staking create-validator \
 cyberdcli query staking validators --trust-node=true
 ```
 
-If you see your `<your_node_nickname>` with status `Bonded` and Jailed `false` everything is good.
+If you see your `<your_node_nickname>` with status `Bonded` and Jailed `false`, everything is good.
 You are validating the network.
 
 ## Maintenance of the validator
 
 ### Jailing
 
-If your validator got under slashing conditions, it will be jailed.
-After such event, an operator must unjail the validator manually:
+If your validator got under slashing conditions, it will get jailed.
+If it happens the operator must unjail the validator manually:
 
 ```bash
 cyberdcli tx slashing unjail --from=<your_key_name> --chain-id euler-5
