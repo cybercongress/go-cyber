@@ -244,7 +244,7 @@ chmod +x $DAEMON_HOME/cosmosd
 Or building from source:
 
 ```bash
-git clone git@github.com/regen-network/cosmosd.git
+git clone https://github.com/regen-network/cosmosd
 cd cosmosd
 go build
 mv cosmosd $DAEMON_HOME/
@@ -255,7 +255,14 @@ chmod +x $DAEMON_HOME/cosmosd
 
 ```bash
 cd ~
-git clone git@github.com:cybercongress/go-cyber.git
+git clone https://github.com/cybercongress/go-cyber
+```
+
+5. Build cyber-rank cuda kernel:
+
+```bash
+cd ~/go-cyber/x/rank/cuda/
+make
 ```
 
 5. Build cyber daemon (as a result you should get `cyberd` and `cyberdcli` files inside of the `go-cyber/build/` folder):
@@ -276,7 +283,7 @@ cp build/cyberdcli /usr/local/bin/
 
 ```bash
 cd $DAEMON_HOME/upgrade_manager/genesis/bin
-./cyberd init <your_node_moniker>
+./cyberd init <your_node_moniker> --home $DAEMON_HOME
 ```
 
 As result of this operation `data` and `config` folders should appear inside your *$DAEMON_HOME/* folder.
