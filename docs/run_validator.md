@@ -7,7 +7,7 @@
 
 First, you have to setup a server.
 You node should be constantnly running. This means that you will need a reliable server to keep it running.
-Also, you may consider to use any cloud service with dedicated GPU, like Hetzner (or use a local machine).
+Also, you may consider to use any cloud service with dedicated GPU, like Hetzner (or use a local machine), but whatever you'll choose, for better stabillity and consistence we recomend to use a dedicated server for every validator node.
 
 Cyberd is based on Cosmos-SDK and written in Go.
 It should work on any platform which can compile and run programs in Go.
@@ -75,7 +75,13 @@ or
 source $HOME/.profile
 ```
 
-5. To check your installation run `go version`, it will let you know if everything was installed correcltly. As an output, you should see the following (version number may vary, of course):
+5. To check your installation run
+
+```bash
+`go version`
+```
+
+it will let you know if everything was installed correcltly. As an output, you should see the following (version number may vary, of course):
 
 ```bash
 go version go1.13.8 linux/amd64
@@ -180,7 +186,26 @@ You should see this:
 
 ### Install CUDA toolkit
 
-Simply run `apt install nvidia-cuda-toolkit`. Any version above 9.1 is OK. To check the version run `nvcc --version`.
+Simply run
+
+```bash
+apt install nvidia-cuda-toolkit
+```
+
+Any version above 9.1 is OK. To check the version run `
+
+```bash
+nvcc --version
+```
+
+Possible output will look like following:
+
+```bash
+nvcc: NVIDIA (R) Cuda compiler driver
+Copyright (c) 2005-2017 NVIDIA Corporation
+Built on Fri_Nov__3_21:07:56_CDT_2017
+Cuda compilation tools, release 9.1, V9.1.85
+```
 
 ### Cyberd fullnode launching
 
@@ -191,7 +216,11 @@ export DAEMON_HOME=$HOME/.cyberd
 export DAEMON_NAME=cyber
 ```
 
-To make those vatiables persistent, add them to the end of the `$HOME/.profile` and log-out/log-in or do `source ~/.profile`.
+To make those vatiables persistent, add them to the end of the **`$HOME/.profile`** and log-out/log-in or do:
+
+```bash
+source ~/.profile
+```
 
 2. Make directories tree for storing your daemon:
 
@@ -370,6 +399,20 @@ Additional information about the chain is available via an API endpoint at: `loc
 
 E.G. the number of active validators is available at: `localhost:26657/validators`
 
+4. If your node has not started well from the genesis, you must set current link for cosmosd to cyber daemon:
+
+```bash
+ln -s $DAEMON_HOME/upgrade_manager/genesis current
+```
+
+Also, if you joined testnet **after** chain upgrade happend, you must point your current link to new location (with approptiate upgraded binaty file in it):
+
+```bash
+mkdir $DAEMON_HOME/upgrade_manager/upgrades
+cp <path_to_upgraded_cyberd> $DAEMON_HOME/upgrade_manager/upgrades
+ln -s $DAEMON_HOME/upgrade_manager/upgrades current
+```
+
 ## Validator start
 
 After your node has successfully synced, you can run a validator.
@@ -420,6 +463,73 @@ Keep the seed phrase at a safe place (not in hot storage) in case you have to us
 
 The address shown here is your account address. Let’s call this **<your_account_address>**.
 It stores your assets.
+
+**Important note**: Since v.38 cosmos-sdk uses os-native keyring to store all your keys. We've noticed that on some platforms it does not work well by default, so if during execituon `cyberdcli keys add` command you've got this kind of error:
+
+```bash
+panic: No such interface 'org.freedesktop.DBus.Properties' on object at path /
+
+goroutine 1 [running]:
+github.com/cosmos/cosmos-sdk/crypto/keys.keyringKeybase.writeInfo(0x1307a18, 0x1307a10, 0xc000b37160, 0x1, 0x1, 0xc000b37170, 0x1, 0x1, 0x147a6c0, 0xc000f1c780, ...)
+	/root/go/pkg/mod/github.com/cosmos/cosmos-sdk@v0.38.1/crypto/keys/keyring.go:479 +0x38c
+github.com/cosmos/cosmos-sdk/crypto/keys.keyringKeybase.writeLocalKey(0x1307a18, 0x1307a10, 0xc000b37160, 0x1, 0x1, 0xc000b37170, 0x1, 0x1, 0x147a6c0, 0xc000f1c780, ...)
+	/root/go/pkg/mod/github.com/cosmos/cosmos-sdk@v0.38.1/crypto/keys/keyring.go:465 +0x189
+github.com/cosmos/cosmos-sdk/crypto/keys.baseKeybase.CreateAccount(0x1307a18, 0x1307a10, 0xc000b37160, 0x1, 0x1, 0xc000b37170, 0x1, 0x1, 0x146aa00, 0xc000b15630, ...)
+	/root/go/pkg/mod/github.com/cosmos/cosmos-sdk@v0.38.1/crypto/keys/keybase_base.go:171 +0x192
+github.com/cosmos/cosmos-sdk/crypto/keys.keyringKeybase.CreateAccount(...)
+	/root/go/pkg/mod/github.com/cosmos/cosmos-sdk@v0.38.1/crypto/keys/keyring.go:107
+github.com/cosmos/cosmos-sdk/client/keys.RunAddCmd(0xc000f0b400, 0xc000f125f0, 0x1, 0x1, 0x148dcc0, 0xc000aca550, 0xc000ea75c0, 0xc000ae1c08, 0x5e93b7)
+	/root/go/pkg/mod/github.com/cosmos/cosmos-sdk@v0.38.1/client/keys/add.go:273 +0xa8b
+... etc
+```
+
+you will have to use another keyring backend to keep your keys. Here's 2 options: file stored within cli folder, and `pass` manager.
+
+Set keyring backend to **local file**:
+
+Execute:
+
+```bash
+cyberdcli config keyring-backend file
+```
+
+As the result you migth see following: `configuration saved to /root/.cybercli/config/config.toml`
+
+Then execute:
+
+```bash
+cyberdcli config --get keyring-backend
+```
+
+Result must be as following:
+
+```bash
+user@node:~# cyberdcli config --get keyring-backend
+file
+```
+
+That mean that you set your keyring-backent to local file. *Note* at this case all keys in your keyring will be encrypted using 1 same password. If you would like to setup unique password for each key you must set unique `--home` folder for each key. To do that just use `--home=/<unique_path_to_key_folder>/` with setup keyring backend and all iteractions with keys using cyberdcli:
+
+```bash
+cyberdcli config keyring-backend file --home=/<unique_path_to_key_folder>/
+cyberdcli keys add <your_second_key_name> --home=/<unique_path_to_key_folder>/
+cyberdcli keys list --home=/<unique_path_to_key_folder>/
+```
+
+Set keyring backend to [**pass manager**](https://github.com/cosmos/cosmos-sdk/blob/9cce836c08d14dc6836d07164dd964b2b7226f36/crypto/keyring/doc.go#L30):
+
+Pass utility uses GPG key to encrypt your keys (but again same GPG for all keys). To install and greate your GPG key it you must follow guides [here](https://www.passwordstore.org/) and another very detailed [guide](http://tuxlabs.com/?p=450). When you'll get your `pass` set configure `cyberdcli` to use it as keyring backend:
+
+```bash
+cyberdcli config keyring-backend pass
+```
+
+And verify that all set as planned:
+
+```bash
+cyberdcli config --get keyring-backend
+pass
+```
 
 #### Send the create validator transaction
 
