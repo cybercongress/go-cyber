@@ -1,6 +1,10 @@
 # Ultimate cyberd CLI guide. Chain: Euler-5
 
-## If something wrong...
+## Install client separately
+
+It is possible to interract with cyber even if you don't have your own node. For that case you just need to install `cyberdcli` to your machine using script below:
+
+
 
   First of all I would like to encourage you to use  `--help` feature if you want to get better experience of using cyberdcli. This is really easy way to find all necessary commands with options and flags.
 
