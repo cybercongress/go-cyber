@@ -277,6 +277,7 @@ make build
 ```bash
 cp build/cyberd $DAEMON_HOME/upgrade_manager/genesis/bin
 cp build/cyberdcli /usr/local/bin/
+cp build/cyberd /usr/local/bin/
 ```
 
 7. Initialize cyber daemon:
@@ -471,10 +472,10 @@ Keep the seed phrase at a safe place (not in hot storage) in case you have to us
 The address shown here is your account address. Let’s call this **<your_account_address>**.
 It stores your assets.
 
-**Important note**: Starting with v.38, cosmos-SDK uses os-native keyring to store all your keys. We've noticed that on some platforms it does not work well by default. If during the execution of the `cyberdcli keys add` command, you are getting this type of error:
+**Important note**: Since v.38 cosmos-sdk uses os-native keyring to store all your keys. We've noticed that in several cases it does not work well by default (for example if you dont have GUI installed on you machine), so if during execituon `cyberdcli keys add` command you've got this kind of error:
 
 ```bash
-panic: No such interface 'org.freedesktop.DBus.Properties' on object at path /
+panic: No such  interface 'org.freedesktop.DBus.Properties' on object at path /
 
 goroutine 1 [running]:
 github.com/cosmos/cosmos-sdk/crypto/keys.keyringKeybase.writeInfo(0x1307a18, 0x1307a10, 0xc000b37160, 0x1, 0x1, 0xc000b37170, 0x1, 0x1, 0x147a6c0, 0xc000f1c780, ...)
@@ -548,7 +549,7 @@ not the public key of the address you have just created.
 To get the nodes public key run the following command:
 
 ```bash
-$DAEMON_HOME/upgrade_manager/genesis/bin/cyberd tendermint show-validator
+cyberd tendermint show-validator
 ```
 
 It will return a bech32 public key. Let’s call it **<your_node_pubkey>**.
