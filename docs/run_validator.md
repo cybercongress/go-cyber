@@ -5,16 +5,16 @@
 
 ## Prepare your server
 
-First, you have to setup a server.
-You node should be constantnly running. This means that you will need a reliable server to keep it running.
-Also, you may consider to use any cloud service with dedicated GPU, like Hetzner (or use a local machine), but whatever you'll choose, for better stabillity and consistence we recomend to use a dedicated server for every validator node.
+First, you should set up a server.
+Your node should be constantly running. This means that you will need a reliable server to keep it running.
+You may also consider using any cloud service with dedicated GPU, like Hetzner (or use a local machine), but whatever you'll choose, for better stability and consistency we recommend to use a dedicated server for each validator node.
 
 Cyberd is based on Cosmos-SDK and written in Go.
 It should work on any platform which can compile and run programs in Go.
 However, we strongly recommend running the validator node on a Linux server.
 
 The rank calculations are done via GPU computations.
-They are easy to parallelize. This is why it is reccomended to use a GPU.
+They are easy to parallelize. This is why it is recommended to use a GPU.
 
 Recommended requirements:
 
@@ -23,23 +23,23 @@ CPU: 6 cores
 RAM: 32 GB
 SSD: 256 GB
 Connection: 100Mb, Fiber, Stable and low-latency connection
-GPU: nvidia GeForce(or Tesla/Titan/Quadro) with CUDA-cores; at least 6gb of memory*
+GPU: Nvidia GeForce(or Tesla/Titan/Quadro) with CUDA-cores; at least 6gb of memory*
 Software: Docker, Ubuntu 16.04/18.04 LTS
 ```
 
-*Cyberd runs well on comsumer grade cards like Geforce GTX 1070, but expect load growth. We advise to use Error Correction compatible cards from Tesla or Quadro families.*
+*Cyberd runs well on consumer-grade cards like Geforce GTX 1070, but expect load growth. We advise to use Error Correction compatible cards from Tesla or Quadro families.*
 
-But, of cource, hardware is your onw choise and tecnically it migth be possible to run the chain on "even - 1 CUDA core gpu", but, you should be aware of stabilty and a decline in calculation speed.
+But, of course, the hardware is your own choice and technically it might be possible to run the chain on "even - 1 CUDA core GPU", but, you should be aware of stability and a decline in calculation speed.
 
 ## Validator setup
 
 ### Third-party software
 
-In order to access the GPU, cyberd uses Nvidia drivers version **410+** and [Nvidia CUDA toolkit](https://developer.nvidia.com/cuda-downloads) should be installed on the host system. 
+To access the GPU, cyberd uses Nvidia drivers version **410+** and [Nvidia CUDA toolkit](https://developer.nvidia.com/cuda-downloads) should be installed on the host system. 
 
 You may skip any sections of the guide if you already have any of the necessary software configured. 
 
-As long as the the current implementation of `cyber` is written in [Go](https://golang.org/), we will also need to install Go.
+As long as the current implementation of `cyber` is written in [Go](https://golang.org/), we will also need to install Go.
 
 ### Installing Go
 
@@ -63,7 +63,7 @@ tar -C /usr/local -xzf go1.13.9.linux-amd64.tar.gz
 export PATH=$PATH:/usr/local/go/bin
 ```
 
-4. Do `source` for the file with your `$PATH` variable, or just log-out/log-in:
+4. Do `source` for the file with your `$PATH` variable or just log-out/log-in:
 
 ```bash
 source /etc/profile
@@ -81,7 +81,7 @@ source $HOME/.profile
 `go version`
 ```
 
-it will let you know if everything was installed correcltly. As an output, you should see the following (version number may vary, of course):
+it will let you know if everything was installed correctly. As an output, you should see the following (version number may vary, of course):
 
 ```bash
 go version go1.13.8 linux/amd64
@@ -163,7 +163,7 @@ nvidia-smi
 ```
 
 You should see this:
-(Some version/driver numbers migth differ. You also might have some processes already running)
+(Some version/driver numbers might differ. You also might have some processes already running)
 
 ```bash
 +-----------------------------------------------------------------------------+
@@ -198,7 +198,7 @@ Any version above 9.1 is OK. To check the version run `
 nvcc --version
 ```
 
-Possible output will look like following:
+The possible output will look like the following:
 
 ```bash
 nvcc: NVIDIA (R) Cuda compiler driver
@@ -216,7 +216,7 @@ export DAEMON_HOME=$HOME/.cyberd
 export DAEMON_NAME=cyber
 ```
 
-To make those vatiables persistent, add them to the end of the **`$HOME/.profile`** and log-out/log-in or do:
+To make those variables persistent, add them to the end of the **`$HOME/.profile`** and log-out/log-in or do:
 
 ```bash
 source ~/.profile
@@ -286,7 +286,7 @@ cd $DAEMON_HOME/upgrade_manager/genesis/bin
 ./cyberd init <your_node_moniker> --home $DAEMON_HOME
 ```
 
-As result of this operation `data` and `config` folders should appear inside your *$DAEMON_HOME/* folder.
+As a result of this operation `data` and `config` folders should appear inside your *$DAEMON_HOME/* folder.
 
 8. Download and place `genesis.json` and `config.toml`
 
@@ -358,7 +358,7 @@ WantedBy=multi-user.target
 
 3. Run cyberd:
 
-Reload `systemd` after creation of new service:
+Reload `systemd` after the creation of new service:
 
 ```bash
 systemctl daemon-reload
@@ -406,13 +406,13 @@ Additional information about the chain is available via an API endpoint at: `loc
 
 E.G. the number of active validators is available at: `localhost:26657/validators`
 
-4. If your node has not started well from the genesis, you must set current link for cosmosd to cyber daemon:
+4. If your node did not launch correctly from the genesis, you need to set the current link to cosmosd for cyber daemon:
 
 ```bash
 ln -s $DAEMON_HOME/upgrade_manager/genesis current
 ```
 
-Also, if you joined testnet **after** chain upgrade happend, you must point your current link to new location (with approptiate upgraded binaty file in it):
+If you joined the testnet **after** a chain upgrade happened, you must point your current link to a new location (with an approptiatly upgraded binary file):
 
 ```bash
 mkdir $DAEMON_HOME/upgrade_manager/upgrades
@@ -426,25 +426,25 @@ After your node has successfully synced, you can run a validator.
 
 ### Prepare the staking address
 
-We included 1 million Ethereum addresses, over 8000 Cosmos addresses and all of `euler-4` validators addresses into the genesis file. This means that there's a huge chance that you alredy have some EUL tokens. Here are 3 ways to check this:
+We included 1 million Ethereum addresses, over 8000 Cosmos addresses and all of `euler-4` validators addresses into the genesis file. This means that there's a huge chance that you already have some EUL tokens. Here are 3 ways to check this:
 
-If you already have a cyberd address with EUL and know the seed phrase or your private key, just restore it into your local keystore:
+If you already have a cyberd address with EUL and know the seed phrase or your private key, just restore it into your local Keystore:
 
 ```bash
 cyberdcli keys add <your_key_name> --recover
 cyberdcli keys show <your_key_name>
 ```
 
-If you have an Ethereum address that had ~0.2Eth or more at block 8080808 (on the ETH network), you probably recieved a gift and may import your Ethereum private key. To check your gift balance, paste your Ethereum address on [cyber.page](https://cyber.page).
+If you have an Ethereum address that had ~0.2Eth or more at block 8080808 (on the ETH network), you probably received a gift and may import your Ethereum private key. To check your gift balance, paste your Ethereum address on [cyber.page](https://cyber.page).
 
-> Please do not import high value Ethereum accounts. This is not safe! cyberd software is new and has not been audited yet.
+> Please do not import high-value Ethereum accounts. This is not safe! cyberd software is new and has not been audited yet.
 
 ```bash
 cyberdcli keys add private <your_key_name>
 cyberdcli keys show <your_key_name>
 ```
 
-If you want to create a new acccount, use the command below:
+If you want to create a new account, use the command below:
 (You should send coins to that address to bound them later during the launch of the validator)
 
 ```bash
@@ -460,7 +460,7 @@ cyberdcli keys add <your_key_name> --ledger
 ```
 
 **<your_key_name>** is any name you pick to represent this key pair.
-You have to refer to this parameter <your_key_name> later, when you use the keys to sign transactions.
+You have to refer to this parameter <your_key_name> later when you use the keys to sign transactions.
 It will ask you to enter your password twice to encrypt the key.
 You will also need to enter your password when you use your key to sign any transaction.
 
@@ -471,28 +471,28 @@ Keep the seed phrase at a safe place (not in hot storage) in case you have to us
 The address shown here is your account address. Let’s call this **<your_account_address>**.
 It stores your assets.
 
-**Important note**: Since v.38 cosmos-sdk uses os-native keyring to store all your keys. We've noticed that on some platforms it does not work well by default, so if during execituon `cyberdcli keys add` command you've got this kind of error:
+**Important note**: Starting with v.38, cosmos-SDK uses os-native keyring to store all your keys. We've noticed that on some platforms it does not work well by default. If during the execution of the `cyberdcli keys add` command, you are getting this type of error:
 
 ```bash
 panic: No such interface 'org.freedesktop.DBus.Properties' on object at path /
 
 goroutine 1 [running]:
 github.com/cosmos/cosmos-sdk/crypto/keys.keyringKeybase.writeInfo(0x1307a18, 0x1307a10, 0xc000b37160, 0x1, 0x1, 0xc000b37170, 0x1, 0x1, 0x147a6c0, 0xc000f1c780, ...)
-	/root/go/pkg/mod/github.com/cosmos/cosmos-sdk@v0.38.1/crypto/keys/keyring.go:479 +0x38c
+    /root/go/pkg/mod/github.com/cosmos/cosmos-sdk@v0.38.1/crypto/keys/keyring.go:479 +0x38c
 github.com/cosmos/cosmos-sdk/crypto/keys.keyringKeybase.writeLocalKey(0x1307a18, 0x1307a10, 0xc000b37160, 0x1, 0x1, 0xc000b37170, 0x1, 0x1, 0x147a6c0, 0xc000f1c780, ...)
-	/root/go/pkg/mod/github.com/cosmos/cosmos-sdk@v0.38.1/crypto/keys/keyring.go:465 +0x189
+    /root/go/pkg/mod/github.com/cosmos/cosmos-sdk@v0.38.1/crypto/keys/keyring.go:465 +0x189
 github.com/cosmos/cosmos-sdk/crypto/keys.baseKeybase.CreateAccount(0x1307a18, 0x1307a10, 0xc000b37160, 0x1, 0x1, 0xc000b37170, 0x1, 0x1, 0x146aa00, 0xc000b15630, ...)
-	/root/go/pkg/mod/github.com/cosmos/cosmos-sdk@v0.38.1/crypto/keys/keybase_base.go:171 +0x192
+    /root/go/pkg/mod/github.com/cosmos/cosmos-sdk@v0.38.1/crypto/keys/keybase_base.go:171 +0x192
 github.com/cosmos/cosmos-sdk/crypto/keys.keyringKeybase.CreateAccount(...)
-	/root/go/pkg/mod/github.com/cosmos/cosmos-sdk@v0.38.1/crypto/keys/keyring.go:107
+    /root/go/pkg/mod/github.com/cosmos/cosmos-sdk@v0.38.1/crypto/keys/keyring.go:107
 github.com/cosmos/cosmos-sdk/client/keys.RunAddCmd(0xc000f0b400, 0xc000f125f0, 0x1, 0x1, 0x148dcc0, 0xc000aca550, 0xc000ea75c0, 0xc000ae1c08, 0x5e93b7)
-	/root/go/pkg/mod/github.com/cosmos/cosmos-sdk@v0.38.1/client/keys/add.go:273 +0xa8b
+    /root/go/pkg/mod/github.com/cosmos/cosmos-sdk@v0.38.1/client/keys/add.go:273 +0xa8b
 ... etc
 ```
 
-you will have to use another keyring backend to keep your keys. Here's 2 options: file stored within cli folder, and `pass` manager.
+You will have to use another keyring backend to keep your keys. Here are 2 options: store the files within the cli folder or a `pass` manager.
 
-Set keyring backend to **local file**:
+Setting keyring backend to **local file**:
 
 Execute:
 
@@ -500,22 +500,22 @@ Execute:
 cyberdcli config keyring-backend file
 ```
 
-As the result you migth see following: `configuration saved to /root/.cybercli/config/config.toml`
+As a result you migth see following: `configuration saved to /root/.cybercli/config/config.toml`
 
-Then execute:
+Execute:
 
 ```bash
 cyberdcli config --get keyring-backend
 ```
 
-Result must be as following:
+The result must be the following:
 
 ```bash
 user@node:~# cyberdcli config --get keyring-backend
 file
 ```
 
-That mean that you set your keyring-backent to local file. *Note* at this case all keys in your keyring will be encrypted using 1 same password. If you would like to setup unique password for each key you must set unique `--home` folder for each key. To do that just use `--home=/<unique_path_to_key_folder>/` with setup keyring backend and all iteractions with keys using cyberdcli:
+That means that you've set your keyring-backend to a local file. *Note*, in this case, all the keys in your keyring will be encrypted using the same password. If you would like to set up a unique password for each key, you should set a unique `--home` folder for each key. To do that, just use `--home=/<unique_path_to_key_folder>/` with setup keyring backend and at all interactions with keys when using cyberdcli:
 
 ```bash
 cyberdcli config keyring-backend file --home=/<unique_path_to_key_folder>/
@@ -525,7 +525,7 @@ cyberdcli keys list --home=/<unique_path_to_key_folder>/
 
 Set keyring backend to [**pass manager**](https://github.com/cosmos/cosmos-sdk/blob/9cce836c08d14dc6836d07164dd964b2b7226f36/crypto/keyring/doc.go#L30):
 
-Pass utility uses GPG key to encrypt your keys (but again same GPG for all keys). To install and greate your GPG key it you must follow guides [here](https://www.passwordstore.org/) and another very detailed [guide](http://tuxlabs.com/?p=450). When you'll get your `pass` set configure `cyberdcli` to use it as keyring backend:
+Pass utility uses a GPG key to encrypt your keys (but again, it uses the same GPG for all the keys). To install and generate your GPG key you should follow [this guide](https://www.passwordstore.org/) or this very [detailed guide](http://tuxlabs.com/?p=450). When you'll get your `pass` set, configure `cyberdcli` to use it as a keyring backend:
 
 ```bash
 cyberdcli config keyring-backend pass
@@ -552,7 +552,7 @@ $DAEMON_HOME/upgrade_manager/genesis/bin/cyberd tendermint show-validator
 ```
 
 It will return a bech32 public key. Let’s call it **<your_node_pubkey>**.
-The next step is to to declare a validator candidate.
+The next step is to declare a validator candidate.
 The validator candidate is the account which stakes the coins.
 So the validator candidate is the account this time.
 To declare a validator candidate, run the following command adjusting the staked amount and the other fields:
