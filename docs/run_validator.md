@@ -287,6 +287,25 @@ cd $DAEMON_HOME/upgrade_manager/genesis/bin
 ./cyberd init <your_node_moniker> --home $DAEMON_HOME
 ```
 
+8. Your folder with cyberd must look loke this after initialization:
+
+```bash
+root@node:~/.cyberd# tree
+.
+├── config
+│   ├── app.toml
+│   ├── config.toml
+│   ├── node_key.json
+│   └── priv_validator_key.json
+├── cosmosd
+├── data
+│   └── priv_validator_state.json
+└── upgrade_manager
+    └── genesis
+        └── bin
+            └── cyberd
+```
+
 As a result of this operation `data` and `config` folders should appear inside your *$DAEMON_HOME/* folder.
 
 8. Download and place `genesis.json` and `config.toml`
@@ -335,7 +354,7 @@ LimitNOFILE=4096
 WantedBy=multi-user.target
 ```
 
-If you need to enable search on the node add the flag `--allow-search=true` right after `--compute-rank-on-gpu=true`. If you need to run rest-server alongside `cyberd` here is a service file for it (do `sudo nano /etc/systemd/system/cyberd-rest.service` and paste the following):
+If you need to enable search on the node add the flag `--allow-search=true` right after `--compute-rank-on-gpu=true`. If you need to run rest-server alongside `cyberd` here is a service file for it (do `sudo nano /etc/systemd/system/cyberd-rest.service` and paste the following), just make sure you'll replace `ubuntu` to your user name and group:
 
 ```bash
 [Unit]
@@ -343,15 +362,11 @@ Description=Cyberd REST Server
 
 [Service]
 User=ubuntu
-WorkingDirectory=/home/ubuntu/.cyberd/
-ExecStart=/home/ubuntu/.cyberd/cosmosd rest-server --laddr tcp://0.0.0.0:1317 --chain-id euler-6
-Environment=DAEMON_HOME=/home/ubuntu/.cyberd
-Environment=DAEMON_NAME=cyberd
-Environment=GAIA_HOME=/home/ubuntu/.cyberd
+Group=ubuntu
+ExecStart=/usr/local/bin/cyberdcli rest-server --laddr tcp://0.0.0.0:1317 --chain-id euler-6
 Restart=always
 TimeoutSec=120
 RestartSec=30
-LimitNOFILE=4096
 
 [Install]
 WantedBy=multi-user.target
@@ -427,7 +442,7 @@ After your node has successfully synced, you can run a validator.
 
 ### Prepare the staking address
 
-We included 1 million Ethereum addresses, over 8000 Cosmos addresses and all of `euler-4` validators addresses into the genesis file. This means that there's a huge chance that you already have some EUL tokens. Here are 3 ways to check this:
+We included 1 million Ethereum addresses, over 10000 Cosmos addresses and all of `euler-4` validators addresses into the genesis file. This means that there's a huge chance that you already have some EUL tokens. Here are 3 ways to check this:
 
 If you already have a cyberd address with EUL and know the seed phrase or your private key, just restore it into your local Keystore:
 
