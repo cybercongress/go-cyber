@@ -24,7 +24,7 @@ When you make sure that your Ledger device is successfully interacting with your
 For actual account creation run:
 
 ``` js
-docker exec -ti euler-5 cyberdcli keys add <your_key_name> --ledger
+cyberdcli keys add <your_key_name> --ledger
 ```
 
 After submitting this command Ledger device should show generated address and will wait for confirmation. Hit confirm button and in the console you'll see following output:
@@ -42,7 +42,7 @@ After submitting this command Ledger device should show generated address and wi
 By default, using `...keys add` command account 0 and index 0 of [bip44](https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki) derivation path is used, so in order to add more than one key account and/or index must be specified separately in the following way:
 
 ``` js
-docker exec -ti euler-5 cyberdcli keys add <your_key2_name> --ledger --account 1 --index 1
+cyberdcli keys add <your_key2_name> --ledger --account 1 --index 1
 ```
 
 You don't need to remember which numbers for account and index you used, it will be matched to <your_key_name> automatically.
@@ -52,7 +52,7 @@ You don't need to remember which numbers for account and index you used, it will
 To make sure you have everything added correctly just run:
 
 ``` js
-docker exec euler-5 cyberdcli keys show <key_name> -d
+cyberdcli keys show <key_name> -d
 ```
 
 Now it's necessary to confirm that key on Ledger matches one shown in console.
@@ -62,7 +62,7 @@ Now it's necessary to confirm that key on Ledger matches one shown in console.
 You now ready to sign and send transaktions. That could be done using `tx send` command. Ledger device should be connected and unlocked at this step. Run the following to send some cyb's to someone:
 
 ``` js
-docker exec -ti euler-5 cyberdcli tx send <from_key_name> <destination_address> <ammount>cyb --chain-id <current_chain_id>
+cyberdcli tx send <from_key_name> <destination_address> <ammount>cyb --chain-id <current_chain_id>
 ```
 
 `<from_key_name>` is your ledger key name, `<destination_address>` is address of recipient in format `cyber1wq7p5qfygxr37vqqufhj5fzwlg55zmm4w0p8sw`.

@@ -1,9 +1,9 @@
-# API reference 
+# API reference
 
-Cyberd provides a [JSON-RPC](http://json-rpc.org/wiki/specification) API. Http endpoint is served under 
- `localhost:20657`. WebSockets are the preferred transport for cyberd RPC and are used by applications such as cyb. 
- Default WebSocket connection endpoint for cyberd is `ws://localhost:20657/websocket`. There are test endpoints 
- available at `http://earth.cybernode.ai:34657` and `ws://earth.cybernode.ai:34657/websocket`.
+Cyberd provides a [JSON-RPC](http://json-rpc.org/wiki/specification) API. Http endpoint is served under
+ `localhost:20657`. WebSockets are the preferred transport for cyberd RPC and are used by applications such as cyb.
+ Default WebSocket connection endpoint for cyberd is `ws://localhost:26657/websocket`. There are test endpoints
+ available at `https://titan.cybernode.ai/api/` and `ws://titan.cybernode.ai/websocket`.
 
 <br />
 
@@ -12,12 +12,14 @@ Cyberd provides a [JSON-RPC](http://json-rpc.org/wiki/specification) API. Http e
 ### Query Example
 
 Query http endpoint using curl:
+
 ```bash
 curl --data '{"method":"status","params":[],"id":"1","jsonrpc":"2.0"}' \
 -H "Content-Type: application/json" -X POST earth.cybernode.ai:34657
 ```
 
 Query ws endpoint from js:
+
 ```js
 let websocket = new WebSocket("ws://earth.cybernode.ai:34657/websocket");
 websocket.send(JSON.stringify({
@@ -27,7 +29,6 @@ websocket.send(JSON.stringify({
   "jsonrpc":"2.0"
 }));
 ```
-
 
 ### Method Overview
 
@@ -109,9 +110,11 @@ the method name for further details such as parameter and return information.
 Cyberd uses standard JSON-RPC notifications to notify clients of changes, rather than requiring clients to poll cyberd
  for updates. JSON-RPC notifications are a subset of requests, but do not contain an ID. The notification type 
  is categorized by the `query` params field.
- 
+
 ### Subscribe Example 
+
 Subscribe for new blocks header from js:
+
  ```js
  let websocket = new WebSocket("ws://earth.cybernode.ai:34657/websocket");
  websocket.send(JSON.stringify({
@@ -121,8 +124,7 @@ Subscribe for new blocks header from js:
    "jsonrpc": "2.0"
  }));
  ```
- 
- 
+
 ### Events Overview
 
 |#|Event|Description|
@@ -135,7 +137,8 @@ Subscribe for new blocks header from js:
 
 ### Events Details
 
-#### NewBlockHeader    
+#### NewBlockHeader
+
 |   |   |
 |---|---|
 |Event|NewBlockHeader|
@@ -143,8 +146,8 @@ Subscribe for new blocks header from js:
 |Query|`tm.event='NewBlockHeader'`|
 |[Return to Overview](#events-overview)<br />
 
+#### CoinsReceived
 
-#### CoinsReceived    
 |   |   |
 |---|---|
 |Event|CoinsReceived|
@@ -152,7 +155,8 @@ Subscribe for new blocks header from js:
 |Query|`tm.event='EventTx' AND recipient='cbd1sk3uvpacpjm2t3389caqk4gd9n9gkzq2054yds'`|
 |[Return to Overview](#events-overview)<br />
 
-#### CoinsSend    
+#### CoinsSend
+
 |   |   |
 |---|---|
 |Event|CoinsSend|
@@ -160,7 +164,7 @@ Subscribe for new blocks header from js:
 |Query|`tm.event='EventTx' AND sender='cbd1sk3uvpacpjm2t3389caqk4gd9n9gkzq2054yds'`|
 |[Return to Overview](#events-overview)<br />
 
-#### СidsLinked    
+#### СidsLinked
 |   |   |
 |---|---|
 |Event|СidsLinked|
@@ -168,7 +172,8 @@ Subscribe for new blocks header from js:
 |Query|`tm.event='EventTx' AND signer='cbd1sk3uvpacpjm2t3389caqk4gd9n9gkzq2054yds' AND action='link'`|
 |[Return to Overview](#events-overview)<br />
 
-#### SignedTxCommitted    
+#### SignedTxCommitted
+
 |   |   |
 |---|---|
 |Event|SignedTxCommitted|

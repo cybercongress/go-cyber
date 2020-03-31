@@ -120,17 +120,17 @@ That it. This is very useful ability for using cyberdcli and troubleshooting.
 
 ## Glossary
 
-**Bandwidth** - The recovered unit of your account. Used to complete transactions in the cyberd blockchain. The amount of your bandwidth calculates like:
+**Bandwidth** - The recovered unit of your account. Used to complete transactions in the cyber blockchain. The amount of your bandwidth calculates like:
 
-`your_eul_tokens / all_eul_tokens_in_cyberd * 2000*1000*100`.
+`your_eul_tokens / all_eul_tokens_in_cyber * 2000*1000*100`.
 
-Messages cost is `500` (exclude link). Transaction consists of one or more messages `m_1, m_2, ..., m_n`. Transaction cost is `300 + c_1 + c_2 ... + c_n`, where `c_i` - cost of `m_i` message. Full bandwidth regeneration time is 86400 blocks (24 hours)
+Messages cost is `100` (exclude link). Transaction consists of one or more messages `m_1, m_2, ..., m_n`. Transaction cost is `300 + c_1 + c_2 ... + c_n`, where `c_i` - cost of `m_i` message. Full bandwidth regeneration time is 16000 blocks ( ~24 hours ). All bandwith prices, as well as other parameters could be found in our [launch kit](https://github.com/cybercongress/launch-kit/tree/0.1.0/params).
 
 **commission** -  tokens that you've earned with validation. You can take them at any time.
 
 **illiquid tokens** - non-transferable tokens that you've delegated to the validator. Delegation process duration - 1 block. **Unbonding** process, or taking back share -  5 days (for `euler-6` only).
 
-**link** - reference between CID key and CID value. Link message cost is `100*n`, where `n` is quantity of links in message. Link finalization time is 1 block. New rank for CIDs of link will be recalculated at period from 100 to 200 blocks (from 100 to 200 seconds).
+**link** - reference between CID key and CID value. Link message cost is `100*n`, where `n` is quantity of links in message. Link finalization time is 1 block. New rank for CIDs of link will be recalculated at period of 5 blocks if state of chain is changing.
 
 **liquid tokens** - transferable tokens in cyberd blockchain
 
@@ -230,7 +230,7 @@ Name, address and public key of current account
 
 ### Show account balance
 
-Return account number, balance, public key in 16 and sequence.
+Return account number and amount of tokens.
 
 ```bash
  cyberdcli query account <your_key_address>
@@ -321,7 +321,7 @@ pass
 
 ### Usefull client configuration
 
-There's some thing you would like to configure, that would simplify you interaction with cli. To see all possible parameters of those hints just run:
+There's some hints you may configure to simplify you interaction with client. To see all possible parameters of those hints just run:
 
 ```bash
 cyberdcli config --help

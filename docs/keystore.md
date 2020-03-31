@@ -28,7 +28,7 @@ All agents user keypairs stored locally at `PATH_TO_CYBERD/cli/keys` folder. You
 
 > Note: A validator's operator key is directly tied to an application key, but uses reserved prefixes solely for this purpose: `cybervaloper` and `cybersvaloperpub`.
 
-The node keypair stored in `node_key.json` and `priv_validator_key.json` at `PATH_TO_CYBERD/daemon/config` folder. You can delete it and restart docker if you want to change this keypair. The new pair will create automatically. Or you can backup it too and insert in the same folder at new testnet if you want same node pubkey.
+The node keypair stored in `node_key.json` and `priv_validator_key.json` at `PATH_TO_CYBERD/daemon/config` folder. You can delete them and restart `cyberd` if you want to change this keypair. The new pair will create automatically. Or you can backup it too and insert in the same folder at new testnet if you want same node pubkey.
 
 ## Generate keys
 
@@ -87,6 +87,73 @@ Note that this is the Tendermint signing key, _not_ the operator key you will us
 ::: danger Warning
 We strongly recommend _NOT_ using the same passphrase for multiple keys. The cyberd team and the cyber•Congress team will not be responsible for the loss of funds.
 :::
+
+**Important note**: Since v.38 cosmos-sdk uses os-native keyring to store all your keys. We've noticed that in several cases it does not work well by default (for example if you dont have GUI installed on you machine), so if during execituon `cyberdcli keys add` command you've got this kind of error:
+
+```bash
+panic: No such  interface 'org.freedesktop.DBus.Properties' on object at path /
+
+goroutine 1 [running]:
+github.com/cosmos/cosmos-sdk/crypto/keys.keyringKeybase.writeInfo(0x1307a18, 0x1307a10, 0xc000b37160, 0x1, 0x1, 0xc000b37170, 0x1, 0x1, 0x147a6c0, 0xc000f1c780, ...)
+    /root/go/pkg/mod/github.com/cosmos/cosmos-sdk@v0.38.1/crypto/keys/keyring.go:479 +0x38c
+github.com/cosmos/cosmos-sdk/crypto/keys.keyringKeybase.writeLocalKey(0x1307a18, 0x1307a10, 0xc000b37160, 0x1, 0x1, 0xc000b37170, 0x1, 0x1, 0x147a6c0, 0xc000f1c780, ...)
+    /root/go/pkg/mod/github.com/cosmos/cosmos-sdk@v0.38.1/crypto/keys/keyring.go:465 +0x189
+github.com/cosmos/cosmos-sdk/crypto/keys.baseKeybase.CreateAccount(0x1307a18, 0x1307a10, 0xc000b37160, 0x1, 0x1, 0xc000b37170, 0x1, 0x1, 0x146aa00, 0xc000b15630, ...)
+    /root/go/pkg/mod/github.com/cosmos/cosmos-sdk@v0.38.1/crypto/keys/keybase_base.go:171 +0x192
+github.com/cosmos/cosmos-sdk/crypto/keys.keyringKeybase.CreateAccount(...)
+    /root/go/pkg/mod/github.com/cosmos/cosmos-sdk@v0.38.1/crypto/keys/keyring.go:107
+github.com/cosmos/cosmos-sdk/client/keys.RunAddCmd(0xc000f0b400, 0xc000f125f0, 0x1, 0x1, 0x148dcc0, 0xc000aca550, 0xc000ea75c0, 0xc000ae1c08, 0x5e93b7)
+    /root/go/pkg/mod/github.com/cosmos/cosmos-sdk@v0.38.1/client/keys/add.go:273 +0xa8b
+... etc
+```
+
+You will have to use another keyring backend to keep your keys. Here are 2 options: store the files within the cli folder or a `pass` manager.
+
+Setting keyring backend to **local file**:
+
+Execute:
+
+```bash
+cyberdcli config keyring-backend file
+```
+
+As a result you migth see following: `configuration saved to /root/.cybercli/config/config.toml`
+
+Execute:
+
+```bash
+cyberdcli config --get keyring-backend
+```
+
+The result must be the following:
+
+```bash
+user@node:~# cyberdcli config --get keyring-backend
+file
+```
+
+That means that you've set your keyring-backend to a local file. *Note*, in this case, all the keys in your keyring will be encrypted using the same password. If you would like to set up a unique password for each key, you should set a unique `--home` folder for each key. To do that, just use `--home=/<unique_path_to_key_folder>/` with setup keyring backend and at all interactions with keys when using cyberdcli:
+
+```bash
+cyberdcli config keyring-backend file --home=/<unique_path_to_key_folder>/
+cyberdcli keys add <your_second_key_name> --home=/<unique_path_to_key_folder>/
+cyberdcli keys list --home=/<unique_path_to_key_folder>/
+```
+
+Set keyring backend to [**pass manager**](https://github.com/cosmos/cosmos-sdk/blob/9cce836c08d14dc6836d07164dd964b2b7226f36/crypto/keyring/doc.go#L30):
+
+Pass utility uses a GPG key to encrypt your keys (but again, it uses the same GPG for all the keys). To install and generate your GPG key you should follow [this guide](https://www.passwordstore.org/) or this very [detailed guide](http://tuxlabs.com/?p=450). When you'll get your `pass` set, configure `cyberdcli` to use it as a keyring backend:
+
+```bash
+cyberdcli config keyring-backend pass
+```
+
+And verify that all set as planned:
+
+```bash
+cyberdcli config --get keyring-backend
+pass
+```
 
 ## Generate Multisig Public Keys
 
