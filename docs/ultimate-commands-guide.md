@@ -1,6 +1,6 @@
 # Ultimate cyberd CLI guide. Chain: euler-6
 
-## Install client separately
+## Install cyberd client
 
 It is possible to interract with cyber even if you don't have your own node. For that case you just need to install `cyberdcli` to your machine using script below (just paste it in the console):
 
@@ -10,7 +10,7 @@ bash < <(curl -s https://mars.cybernode.ai/go-cyber/install_cyberdcli_v0.1.6.sh)
 
 To start using client without own node you have to configure some parameters as: [key storage](#keyring-manipulation-settings), [connetion to remote node](#usefull-client-configuration), etc.
 
-After installation you would be able to use `cyberdcli` to [import account](#account-management), create [links](#linking-content) or, for example, running validator.
+After installation you would be able to use `cyberdcli` to [import account](#account-management), create [links](#linking-content) or, for example, run validator.
 
 First of all I would like to encourage you to use  `--help` feature if you want to get better experience of using cyberdcli. This is really easy way to find all necessary commands with options and flags.
 
