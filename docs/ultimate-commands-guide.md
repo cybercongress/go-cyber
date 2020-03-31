@@ -2,19 +2,19 @@
 
 ## Install cyberd client
 
-It is possible to interract with cyber even if you don't have your own node. For that case you just need to install `cyberdcli` to your machine using script below (just paste it in the console):
+It is possible to interact with cyber even if you don't have your own node. All you need to do is install `cyberdcli` on your machine using the script below (just paste it in the console):
 
 ```bash
 bash < <(curl -s https://mars.cybernode.ai/go-cyber/install_cyberdcli_v0.1.6.sh)
 ```
 
-To start using client without own node you have to configure some parameters as: [key storage](#keyring-manipulation-settings), [connetion to remote node](#usefull-client-configuration), etc.
+To start using the client without an own node, you have to configure some parameter Such as: [key storage](#keyring-manipulation-settings), [connetion to a remote node](#usefull-client-configuration), etc.
 
-After installation you would be able to use `cyberdcli` to [import account](#account-management), create [links](#linking-content) or, for example, run validator.
+After installation you will be able to use `cyberdcli` to [import accounts](#account-management), create [links](#linking-content) or, for example, run a validator.
 
-First of all I would like to encourage you to use  `--help` feature if you want to get better experience of using cyberdcli. This is really easy way to find all necessary commands with options and flags.
+First of all, I would like to encourage you to use the  `--help` feature if you want to get a better experience of using cyberdcli. This is a really easy way to find all the necessary commands with the appropriate options and flags.
 
-For example you can enter:
+For example, you can enter:
 
 ```bash
 cyberdcli --help
@@ -51,20 +51,20 @@ Flags:
     --trace             print out full stack trace on errors
 ```
 
-Help feature working as a stairs - you can use it with any command to find available options, subcommands and flags. For example lets explore `query` subcommands:
+The help feature works like a pyramid, you can use it with any command to find available options, subcommands and flags. For example, lets explore the `query` subcommands:
 
 ```bash
 cyberdcli query --help
 ```
 
-now, you can see subcommand structure:
+You can see the structure of the subcommand:
 
 ```bash
 Usage:
 cyberdcli query [command]
 ```
 
-and available subcommands and flags:
+And the available subcommands and flags:
 
 ```bash
 Available Commands:
@@ -96,27 +96,27 @@ Global Flags:
     --trace             print out full stack trace on errors
 ```
 
-Alright, lets explore `account` subcommand:
+Let's explore the `account` subcommand:
 
 ```bash
 cyberdcli query account --help
 ```
 
-Now we see all options available at this subcommands, namely, account address and flags:
+We can see all of the options available for this subcommands, namely, account address and flags:
 
 ```bash
 Usage:
 cyberdcli query account [address] [flags]
 ```
 
-In most cases you need just two extra flags:
+In most cases you will need just two extra flags:
 
 ```bash
 --from <your_key_name> \
 --chain-id euler-6
 ```
 
-That it. This is very useful ability for using cyberdcli and troubleshooting.
+That's it. This is a very useful tool for using cyberdcli and troubleshooting.
 
 ## Glossary
 
@@ -126,37 +126,43 @@ That it. This is very useful ability for using cyberdcli and troubleshooting.
 
 Messages cost is `100` (exclude link). Transaction consists of one or more messages `m_1, m_2, ..., m_n`. Transaction cost is `300 + c_1 + c_2 ... + c_n`, where `c_i` - cost of `m_i` message. Full bandwidth regeneration time is 16000 blocks ( ~24 hours ). All bandwith prices, as well as other parameters could be found in our [launch kit](https://github.com/cybercongress/launch-kit/tree/0.1.0/params).
 
-**commission** -  tokens that you've earned with validation. You can take them at any time.
+**commission** -  The tokens that you've earned via validating from delegators. You may take them at any time
 
-**illiquid tokens** - non-transferable tokens that you've delegated to the validator. Delegation process duration - 1 block. **Unbonding** process, or taking back share -  5 days (for `euler-6` only).
+**illiquid tokens** - Non-transferable tokens that you've delegated to the validator. Delegation process duration: 1 block
 
-**link** - reference between CID key and CID value. Link message cost is `100*n`, where `n` is quantity of links in message. Link finalization time is 1 block. New rank for CIDs of link will be recalculated at period of 5 blocks if state of chain is changing.
+**Hero** - A validator node
 
-**liquid tokens** - transferable tokens in cyberd blockchain
+**Unbonding** - The process of taking back your share (delegated tokens + any rewards). 5 days (for `euler-6` only)
 
-**local keystore** - store with keys in you local machine
+**Ledger** - A hardware wallet
 
-**rewards** - tokens that you've earned with the delegation. To reduce network loads all rewards storing in a pool. You can take your part of bounty at any time by commands at **delegator** section.
+**link** - A reference between a CID key and a CID value. Link message cost is `100*n`, where `n` is the number of links in a message. Link finalization time is 1 block. New rank for CIDs of links will be recalculated at a period of 100 to 200 blocks (from 100 to 200 seconds)
 
-**<comission_rate_percentage>** - the commission that validator get for the work. Must be fraction >0 and <=1
+**liquid tokens** - Transferable tokens within the cyber blockchain
 
-**<delegator_address>** - delegator address. Starts with `cyber` most often coinciding with **<key_address>**
+**local keystore** - A store with keys on your local machine
 
-**<key_address>** - account address. Starts with `cyber`
+**rewards** - Tokens that you've earned via delegation. To reduce network load all the rewards are stored in a pool. You can take your part of the bounty at any time with commands from the **delegator** section.
 
-**<key_name>** - name of account in cybercli
+**<comission_rate_percentage>** - The commission that a validator gets for their work. Must be a fraction >0 and <=1
 
-**<operator_address>** - validator address. Starts with `cybervaloper`
+**<delegator_address>** - Delegator address. Starts with `cyber` most often coinciding with **<key_address>**
 
-**<shares_percentage>** - the part of illiquid tokens that you want to unbonding or redelegate. Must be fraction >0 and <=1
+**<key_address>** - An account address. Starts with `cyber`
 
-**<testnet_chain_id>** - version of testnet(current is euler-6).
+**<key_name>** - The name of the account in cybercli
+
+**<operator_address>** - Validator address. Starts with `cybervaloper`
+
+**<shares_percentage>** - The part of illiquid tokens that you want to unbond or redelegate. Must be a fraction >0 and <=1
+
+**<testnet_chain_id>** - The current version of the testnet (current, euler-6).
 
 ## General commands
 
 ### Show all validators
 
-Return set of all active and jailed validators.
+Return the set of all active and jailed validators:
 
 ```bash
 cyberdcli query staking validators --trust-node
@@ -164,7 +170,7 @@ cyberdcli query staking validators --trust-node
 
 ### Show chain status
 
-Return general chain information
+Return general chain information:
 
 ```bash
  cyberdcli status --indent
@@ -176,9 +182,9 @@ Return general chain information
  cyberdcli query distribution params --trust-node
 ```
 
-### The amount of outstanding rewards for validator
+### The number of outstanding rewards for a validator
 
-Return the sum of outstanding rewards for validator
+Return the sum of outstanding rewards for a validator:
 
 ```bash
  cyberdcli query distribution validator-outstanding-rewards <operator_address> --trust-node
@@ -186,7 +192,7 @@ Return the sum of outstanding rewards for validator
 
 ### Staking params
 
-Chain staking info
+Chain staking info:
 
 ```bash
  cyberdcli query staking params --trust-node
@@ -200,15 +206,15 @@ Chain staking info
 
 ## Account management
 
-Don't have an account? Check out if you have some [gift](https://cyber.page/gift) allocated to you!
+Don't have an account? Check out if you have a [gift](https://cyber.page/gift) allocated to you!
 
-### Import an account by seed phrase and store it in local keystore
+### Import an account with a seed phrase and store it in the local keystore
 
 ```bash
  cyberdcli keys add <your_key_name> --recover
 ```
 
-### Import an account by private key and store it in local keystore (private key could be your ETH private key)
+### Import an account with a private key and store it in the local keystore (private key could be your ETH private key)
 
 ```bash
  cyberdcli keys add private <your_key_name>
@@ -222,7 +228,7 @@ Don't have an account? Check out if you have some [gift](https://cyber.page/gift
 
 ### Show account information
 
-Name, address and public key of current account
+Name, address and the public key of the current account
 
 ```bash
  cyberdcli keys show <your_key_name>
@@ -238,7 +244,7 @@ Return account number and amount of tokens.
 
 ### List existing keys
 
-Return all keys in cyberdcli
+Return all the existing keys in cyberdcli:
 
 ```bash
  cyberdcli keys list
@@ -252,10 +258,10 @@ Return all keys in cyberdcli
 
 ### Keyring manipulation settings
 
-**Important note**: Since v.38 cosmos-sdk uses os-native keyring to store all your keys. We've noticed that in several cases it does not work well by default (for example if you dont have GUI installed on you machine), so if during execituon `cyberdcli keys add` command you've got this kind of error:
+**Important note**: Starting with v.38, Cosmos-SDK uses os-native keyring to store all of your keys. We've noticed that in certain cases it does not work well by default (for example if you don't have any GUI installed on your machine). If during the execution `cyberdcli keys add` command, you are getting this type of error:
 
 ```bash
-panic: No such  interface 'org.freedesktop.DBus.Properties' on object at path /
+panic: No such interface 'org.freedesktop.DBus.Properties' on object at path /
 
 goroutine 1 [running]:
 github.com/cosmos/cosmos-sdk/crypto/keys.keyringKeybase.writeInfo(0x1307a18, 0x1307a10, 0xc000b37160, 0x1, 0x1, 0xc000b37170, 0x1, 0x1, 0x147a6c0, 0xc000f1c780, ...)
@@ -273,7 +279,7 @@ github.com/cosmos/cosmos-sdk/client/keys.RunAddCmd(0xc000f0b400, 0xc000f125f0, 0
 
 You will have to use another keyring backend to keep your keys. Here are 2 options: store the files within the cli folder or a `pass` manager.
 
-Setting keyring backend to **local file**:
+Setting keyring backend to a **local file**:
 
 Execute:
 
@@ -281,7 +287,7 @@ Execute:
 cyberdcli config keyring-backend file
 ```
 
-As a result you migth see following: `configuration saved to /root/.cybercli/config/config.toml`
+As a result you migth see the following: `configuration saved to /root/.cybercli/config/config.toml`
 
 Execute:
 
@@ -289,7 +295,7 @@ Execute:
 cyberdcli config --get keyring-backend
 ```
 
-The result must be the following:
+The result should be the following:
 
 ```bash
 user@node:~# cyberdcli config --get keyring-backend
@@ -312,7 +318,7 @@ Pass utility uses a GPG key to encrypt your keys (but again, it uses the same GP
 cyberdcli config keyring-backend pass
 ```
 
-And verify that all set as planned:
+Verify that all of the settings went as planned:
 
 ```bash
 cyberdcli config --get keyring-backend
@@ -347,23 +353,23 @@ Global Flags:
       --trace             print out full stack trace on errors
 ```
 
-First of all, if you using standalone client, that is good idea to set up addres of the node to process all of your transactions. To to that use:
+First of all, if you using a standalone client, it is a good idea to set up an address of a node to process all of your transactions. To do this use:
 
 ```bash
 cyberdcli config node <http://node_address:port>
 ```
 
-We provide public api address: `http://titan.cybernode.ai:26657`.
+We provide a public API address: `http://titan.cybernode.ai:26657`.
 
-> TODO add new addres for public api
+> TO DO add a new address for public API
 
-Also it will be usefull to configure `chain-id` to avoid entering it aevery time:
+It will be useful to configure the `chain-id` to avoid entering it every time:
 
 ```bash
 cyberd config chain-id euler-6
 ```
 
-And in case if you have some troubles with [key storage](#keyring-manipulation-settings), you may want to save home directory for your cli:
+If you are having trouble with the [key storage](#keyring-manipulation-settings), you may want to save your home directory for your cli:
 
 ```bash
 cyberdcli config --home /path_to_cli_home/.cybercli/
@@ -383,7 +389,7 @@ cyberdcli config --get <parameter_name>
 
 ### Linking content
 
->Just ipfs hashes available as a CID
+> Only IPFS hashes are available to use as CIDs
 
 ```bash
  cyberdcli link \
@@ -393,7 +399,7 @@ cyberdcli config --get <parameter_name>
   --chain-id=euler-6
 ```
 
-Example of link command:
+Example of a link command:
 
 ```bash 
 cyberdcli link --cid-from QmWDYzTXarWYy9UKC7Ro4xMCdSVseQPbmdnmTYsJ9zGTpK --cid-to QmVgxX3TVntSNRiQ1Kd8sE8zvEKkbEgb8PaMnA4N7w7pK3 --from fuckgoogle --chain-id euler-6 --yes
@@ -409,25 +415,25 @@ cyberdcli link --cid-from QmWDYzTXarWYy9UKC7Ro4xMCdSVseQPbmdnmTYsJ9zGTpK --cid-t
 
 ### The amount of commission
 
-Available to withdraw validator commission.
+The commission available to withdraw for a validator:
 
 ```bash
  cyberdcli query distribution commission <operator_address>
 ```
 
-### State of current validator
+### State of a current validator
 
 ```bash
 docker exec eiler-5 cyberdcli query staking validator <operator_address>
 ```
 
-### Return all delegations to validator
+### Return all delegations to a validator
 
 ```bash
  cyberdcli query staking delegations-to <operator_address>
 ```
 
-### Edit commission in existing validator account
+### Edit the commission in an existing validator account
 
 ```bash
  cyberdcli tx staking edit-validator \
@@ -436,7 +442,7 @@ docker exec eiler-5 cyberdcli query staking validator <operator_address>
   --chain-id=euler-6
 ```
 
-### Withdraw commission for either a delegation
+### Withdraw the commission for any delegation
 
 ```bash
  cyberdcli tx distribution withdraw-rewards <operator_address> \
@@ -445,7 +451,7 @@ docker exec eiler-5 cyberdcli query staking validator <operator_address>
   --commission
 ```
 
-### Edit site and description in existing validator account
+### Edit the site and description for an existing validator account
 
 ```bash
  cyberdcli tx staking edit-validator \
@@ -455,13 +461,13 @@ docker exec eiler-5 cyberdcli query staking validator <operator_address>
   --chain-id=euler-6
 ```
 
-### Unjail validator previously jailed for downtime
+### Unjail a validator previously jailed for downtime
 
 ```bash
  cyberdcli tx slashing unjail --from=<your_key_name> --chain-id=euler-6
 ```
 
-### Get info about redelegation process from validator
+### Get info about a redelegation process from a validator
 
 ```bash
  cyberdcli query staking redelegations-from <operator_address>
@@ -469,31 +475,31 @@ docker exec eiler-5 cyberdcli query staking validator <operator_address>
 
 ## Delegator commands
 
-### Return distribution delegator rewards according current validator
+### Return distribution delegator rewards for a specified validator
 
 ```bash
  cyberdcli query distribution rewards <delegator_address> <operator_address>
 ```
 
-### Return delegator shares with current validator
+### Return delegator shares for the specified validator
 
 ```bash
  cyberdcli query staking delegation <delegator_address> <operator_address>
 ```
 
-### Return all delegations made from one delegator
+### Return all of the delegations made from a delegator
 
 ```bash
  cyberdcli query staking delegations <delegator_address>
 ```
 
-### Return all unbonding delegatations from a validator
+### Return all unbonding delegations from a validator
 
 ```bash
  cyberdcli query staking unbonding-delegations-from <operator_address>
 ```
 
-### Withdraw rewards for either a delegation
+### Withdraw rewards for any delegation
 
 ```bash
  cyberdcli tx distribution withdraw-rewards <operator_address> \
@@ -509,7 +515,7 @@ docker exec eiler-5 cyberdcli query staking validator <operator_address>
   --chain-id=euler-6
 ```
 
-### Change the default withdraw address for rewards associated with an address
+### Change the default withdrawal address for rewards associated with an address
 
 ```bash
  cyberdcli tx distribution set-withdraw-addr <your_new_address> \
@@ -527,7 +533,7 @@ docker exec eiler-5 cyberdcli query staking validator <operator_address>
 
 ### Redelegate illiquid tokens from one validator to another in absolute cyb value
 
-> 5 days for unbonding first.
+> There is a 5-day unbonding period
 
 ```bash
  cyberdcli tx staking redelegate <old_operator_address> <new_operator_address> <amount_cyb> --from=<your_key_name> --chain-id=euler-6
@@ -543,7 +549,7 @@ docker exec eiler-5 cyberdcli query staking validator <operator_address>
 
 ### Unbond shares from a validator in absolute cyb value
 
-> 5 days for unbonding.
+> 5 days for unbonding
 
 ```bash
  cyberdcli tx staking unbond <operator_address> <amount_cyb>
@@ -553,7 +559,7 @@ docker exec eiler-5 cyberdcli query staking validator <operator_address>
 
 ### Unbond shares from a validator in percentages
 
->5 days unbonding.
+> 5 days for unbonding
 
 ```bash
  cyberdcli tx staking unbond <operator_address> <shares_percentage>
@@ -561,13 +567,13 @@ docker exec eiler-5 cyberdcli query staking validator <operator_address>
   --chain-id=euler-6
 ```
 
-### Get info about unbonding delegation process to current validator
+### Get info about the unbonding delegation process to any validator
 
 ```bash
  cyberdcli query staking unbonding-delegation <delegator_address> <operator_address>
 ```
 
-### Get info about unbonding delegation process to all unbonded validators
+### Get info about the unbonding delegation process to all unbonded validators
 
 ```bash
  cyberdcli query staking unbonding-delegation <delegator_address>
@@ -579,7 +585,7 @@ docker exec eiler-5 cyberdcli query staking validator <operator_address>
  cyberdcli query staking redelegation <delegator_address> <old_operator_address> <new_operator_address>
 ```
 
-### Get info about all redelegation processes by one delegator
+### Get the info about all the redelegation processes by a delegator
 
 ```bash
  cyberdcli query staking redelegations <delegator_address>
