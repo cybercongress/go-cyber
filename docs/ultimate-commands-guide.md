@@ -8,8 +8,9 @@ It is possible to interract with cyber even if you don't have your own node. For
 bash < <(curl -s https://mars.cybernode.ai/go-cyber/install_cyberdcli_v0.1.6.sh)
 ```
 
-To start using client without own node you have to configure some parameters as: [key storage](#keyring-manipulation-settings), [connetion to remote node](#usefull-client-configuration)
-After installation you would be able to use `cyberdcli` to imort account, create some links or, for example, sign genesis.
+To start using client without own node you have to configure some parameters as: [key storage](#keyring-manipulation-settings), [connetion to remote node](#usefull-client-configuration), etc.
+
+After installation you would be able to use `cyberdcli` to [import account](#account-management), create [links](#linking-content) or, for example, running validator.
 
 First of all I would like to encourage you to use  `--help` feature if you want to get better experience of using cyberdcli. This is really easy way to find all necessary commands with options and flags.
 
@@ -111,8 +112,8 @@ cyberdcli query account [address] [flags]
 In most cases you need just two extra flags:
 
 ```bash
---from=<your_key_name> \
---chain-id=euler-6
+--from <your_key_name> \
+--chain-id euler-6
 ```
 
 That it. This is very useful ability for using cyberdcli and troubleshooting.
@@ -198,6 +199,8 @@ Chain staking info
 ```
 
 ## Account management
+
+Don't have an account? Check out if you have some [gift](https://cyber.page/gift) allocated to you!
 
 ### Import an account by seed phrase and store it in local keystore
 
@@ -352,6 +355,8 @@ cyberdcli config node <http://node_address:port>
 
 We provide public api address: `http://titan.cybernode.ai:26657`.
 
+> TODO add new addres for public api
+
 Also it will be usefull to configure `chain-id` to avoid entering it aevery time:
 
 ```bash
@@ -364,11 +369,16 @@ And in case if you have some troubles with [key storage](#keyring-manipulation-s
 cyberdcli config --home /path_to_cli_home/.cybercli/
 ```
 
+To check what is the current setup for any parameter run:
+
+```bash
+cyberdcli config --get <parameter_name>
+```
+
 ### Send tokens
 
 ```bash
- cyberdcli tx send <from_key_or_address> <to_address> <amount_eul> \
-  --chain-id=euler-6
+ cyberdcli tx send <from_key_or_address> <to_address> <amount_eul> --chain-id euler-6
 ```
 
 ### Linking content
@@ -383,13 +393,18 @@ cyberdcli config --home /path_to_cli_home/.cybercli/
   --chain-id=euler-6
 ```
 
+Example of link command:
+
+```bash 
+cyberdcli link --cid-from QmWDYzTXarWYy9UKC7Ro4xMCdSVseQPbmdnmTYsJ9zGTpK --cid-to QmVgxX3TVntSNRiQ1Kd8sE8zvEKkbEgb8PaMnA4N7w7pK3 --from fuckgoogle --chain-id euler-6 --yes
+```
+
 ## Validator commands
 
 ### Get all validators
 
 ```bash
- cyberdcli query staking validators \
-    --trust-node
+ cyberdcli query staking validators --trust-node
 ```
 
 ### The amount of commission
@@ -432,8 +447,6 @@ docker exec eiler-5 cyberdcli query staking validator <operator_address>
 
 ### Edit site and description in existing validator account
 
->Will be available at description section
-
 ```bash
  cyberdcli tx staking edit-validator \
   --from=<your_key_name> \
@@ -445,9 +458,7 @@ docker exec eiler-5 cyberdcli query staking validator <operator_address>
 ### Unjail validator previously jailed for downtime
 
 ```bash
- cyberdcli tx slashing unjail \
-  --from=<your_key_name> \
-  --chain-id=euler-6
+ cyberdcli tx slashing unjail --from=<your_key_name> --chain-id=euler-6
 ```
 
 ### Get info about redelegation process from validator
@@ -516,7 +527,7 @@ docker exec eiler-5 cyberdcli query staking validator <operator_address>
 
 ### Redelegate illiquid tokens from one validator to another in absolute cyb value
 
->instant redelegation. Amount must be less than already delegated.
+> 5 days for unbonding first.
 
 ```bash
  cyberdcli tx staking redelegate <old_operator_address> <new_operator_address> <amount_cyb> --from=<your_key_name> --chain-id=euler-6
