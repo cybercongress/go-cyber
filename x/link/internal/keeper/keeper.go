@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"bytes"
-	"encoding/hex"
 	"sync"
 
 	"github.com/cybercongress/go-cyber/store"
@@ -130,10 +129,6 @@ func (lk Keeper) Commit(ctx sdk.Context) {
 		versionAsBytes := make([]byte, 8)
 		binary.LittleEndian.PutUint64(versionAsBytes, uint64(ctx.BlockHeight()))
 		store := ctx.KVStore(lk.storeKey)
-
-		ctx.Logger().Info(
-			"block links commited", hex.EncodeToString(lk.buffer.Bytes()),
-		)
 
 		store.Set(versionAsBytes, lk.buffer.Bytes())
 	}
