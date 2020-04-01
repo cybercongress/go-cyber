@@ -23,7 +23,8 @@ cyberd start --compute-rank-on-gpu=${COMPUTE_GPU} --allow-search=${ALLOW_SEARCH_
 #fi
 #
 ## Start the second process
-cyberdcli rest-server  --trust-node --chain-id=euler-5 --laddr=tcp://0.0.0.0:1317 --indent --home=/root/.cyberdcli
+## PUT needed CHAIN_ID here
+cyberdcli rest-server  --trust-node --chain-id=<CHAIN_ID> --laddr=tcp://0.0.0.0:1317 --indent --home=/root/.cyberdcli
 #status=$?
 #if [ $status -ne 0 ]; then
 #  echo "Failed to start cyberd light-client: $status"

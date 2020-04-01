@@ -70,8 +70,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends wget curl
 # Download genesis file and links file from IPFS
 ###############################################################################
 # To slow using ipget, currently we use gateway
-RUN wget -O /genesis.json https://ipfs.io/ipfs/QmTTBz7svGkrnigzBhUvnLKExY6LfYQrM3jXzWUFLeM3Xo
-RUN wget -O /config.toml https://ipfs.io/ipfs/QmYDtVn8xJiR69fLDF2d384aSkSNzwKMrAwz5saa4HUuaj
+# PUT needed CID_OF_GENESIS and CID_OF_CONFIG here
+RUN wget -O /genesis.json https://ipfs.io/ipfs/<CID_OF_GENESIS>
+RUN wget -O /config.toml https://ipfs.io/ipfs/<CID_OF_CONFIG>
 
 WORKDIR /
 
