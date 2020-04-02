@@ -153,7 +153,7 @@ Explore the documentation in our [knowledge base](https://cybercongress.ai/docs/
   - [Genesis parameters](https://github.com/cybercongress/launch-kit/blob/0.1.0/params/README.md)
 - Usage:
   - [CLI guide](./docs/cyberd/ultimate-commands-guide.md")
-  - [Get EUL](./docs/cyberd/get_CYB.md")
+  - [Get EUL](https://cyber.page/get)
   - [Cyber Ledger guide](./docs/cyberd/cyberd_Ledger_guide.md")
   - [Multisig guide](./docs/cyberd/multisig_guide.md")
 - Validators:
