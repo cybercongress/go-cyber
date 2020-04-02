@@ -1,9 +1,9 @@
-# API reference 
+# API reference
 
-Cyberd provides a [JSON-RPC](http://json-rpc.org/wiki/specification) API. Http endpoint is served under 
- `localhost:20657`. WebSockets are the preferred transport for cyberd RPC and are used by applications such as cyb. 
- Default WebSocket connection endpoint for cyberd is `ws://localhost:20657/websocket`. There are test endpoints 
- available at `http://earth.cybernode.ai:34657` and `ws://earth.cybernode.ai:34657/websocket`.
+Cyberd provides a [JSON-RPC](http://json-rpc.org/wiki/specification) type API. The HTTP endpoint is served under
+ `localhost:20657`. WebSockets are the preferred transport for cyberd RPC and are used by applications, such as cyb.
+ The default WebSocket connection endpoint for cyberd is `ws://localhost:26657/websocket`. There are test endpoints
+ available at `https://titan.cybernode.ai/api/` and `ws://titan.cybernode.ai/websocket`.
 
 <br />
 
@@ -11,13 +11,15 @@ Cyberd provides a [JSON-RPC](http://json-rpc.org/wiki/specification) API. Http e
 
 ### Query Example
 
-Query http endpoint using curl:
+Query the HTTP endpoint using curl:
+
 ```bash
 curl --data '{"method":"status","params":[],"id":"1","jsonrpc":"2.0"}' \
 -H "Content-Type: application/json" -X POST earth.cybernode.ai:34657
 ```
 
-Query ws endpoint from js:
+Query ws endpoint from JS:
+
 ```js
 let websocket = new WebSocket("ws://earth.cybernode.ai:34657/websocket");
 websocket.send(JSON.stringify({
@@ -28,11 +30,10 @@ websocket.send(JSON.stringify({
 }));
 ```
 
-
 ### Method Overview
 
 The following is an overview of the RPC methods and their current status.  Click
-the method name for further details such as parameter and return information.
+the method name for further detail, such as parameter, and this will return information.
 
 |#|Method|Description|
 |---|------|-----------|
@@ -106,12 +107,14 @@ the method name for further details such as parameter and return information.
 
 ## Notifications (WebSocket-specific)
 
-Cyberd uses standard JSON-RPC notifications to notify clients of changes, rather than requiring clients to poll cyberd
+Cyberd uses standard JSON-RPC notifications to notify clients of changes rather than requiring clients to poll cyberd
  for updates. JSON-RPC notifications are a subset of requests, but do not contain an ID. The notification type 
  is categorized by the `query` params field.
- 
+
 ### Subscribe Example 
-Subscribe for new blocks header from js:
+
+Subscribe for new block headers from JS:
+
  ```js
  let websocket = new WebSocket("ws://earth.cybernode.ai:34657/websocket");
  websocket.send(JSON.stringify({
@@ -121,21 +124,21 @@ Subscribe for new blocks header from js:
    "jsonrpc": "2.0"
  }));
  ```
- 
- 
+
 ### Events Overview
 
 |#|Event|Description|
 |---|------|-----------|
-|1|[NewBlockHeader](#NewBlockHeader)|Sends block header notification when a new block is committed.|
-|2|[CoinsReceived](#CoinsReceived)|Sends a notification when a new coins is arrived to given address.|
-|3|[CoinsSend](#CoinsSend)|Sends a notification when a new coins is send from given address.|
-|4|[СidsLinked](#СidsLinked)|Notification of link created by given address.|
-|5|[SignedTxCommitted](#SignedTxCommitted)|Notify when any tx for given signer is committed.|
+|1|[NewBlockHeader](#NewBlockHeader)|Sends a block header notification when a new block is committed.|
+|2|[CoinsReceived](#CoinsReceived)|Sends a notification when new coinc arrive to a given address.|
+|3|[CoinsSend](#CoinsSend)|Sends a notification when new coins are sent from a given address.|
+|4|[СidsLinked](#СidsLinked)|Notification of links created by a given address.|
+|5|[SignedTxCommitted](#SignedTxCommitted)|Notify when any tx for a given signer is committed.|
 
 ### Events Details
 
-#### NewBlockHeader    
+#### NewBlockHeader
+
 |   |   |
 |---|---|
 |Event|NewBlockHeader|
@@ -143,36 +146,38 @@ Subscribe for new blocks header from js:
 |Query|`tm.event='NewBlockHeader'`|
 |[Return to Overview](#events-overview)<br />
 
+#### CoinsReceived
 
-#### CoinsReceived    
 |   |   |
 |---|---|
 |Event|CoinsReceived|
-|Description|Sends a notification when a new coins is arrived to given address.|
+|Description|Sends a notification when new coins have arrived to a given address.|
 |Query|`tm.event='EventTx' AND recipient='cbd1sk3uvpacpjm2t3389caqk4gd9n9gkzq2054yds'`|
 |[Return to Overview](#events-overview)<br />
 
-#### CoinsSend    
+#### CoinsSend
+
 |   |   |
 |---|---|
 |Event|CoinsSend|
-|Description|Sends a notification when a new coins is send from given address.|
+|Description|Sends a notification when new coins are sent from a given address.|
 |Query|`tm.event='EventTx' AND sender='cbd1sk3uvpacpjm2t3389caqk4gd9n9gkzq2054yds'`|
 |[Return to Overview](#events-overview)<br />
 
-#### СidsLinked    
+#### СidsLinked
 |   |   |
 |---|---|
 |Event|СidsLinked|
-|Description|Notification of link created by given address.|
+|Description|Notification of links created by a given address.|
 |Query|`tm.event='EventTx' AND signer='cbd1sk3uvpacpjm2t3389caqk4gd9n9gkzq2054yds' AND action='link'`|
 |[Return to Overview](#events-overview)<br />
 
-#### SignedTxCommitted    
+#### SignedTxCommitted
+
 |   |   |
 |---|---|
 |Event|SignedTxCommitted|
-|Description|Notify when any tx for given signer is committed.|
+|Description|Notify when any tx for a given signer is committed.|
 |Query|`tm.event='EventTx' AND signer='cbd1sk3uvpacpjm2t3389caqk4gd9n9gkzq2054yds'`|
 |[Return to Overview](#events-overview)<br />
 
