@@ -110,6 +110,19 @@ With the growth of the network, we will need cards, a lot of cards. Join us.
 
 _____________
 
+## Cyber Protocol
+In its core the protocol is very minimalistic and can be eli5's-expressed by the following steps:
+
+1. Compute the genesis of cyber protocol based on the distribution games
+2. Define the state of the knowledge graph
+3. Gather transactions, using consensus computer
+4. Check the validity of the signatures
+5. Check the bandwidth limit
+6. Check the validity of CIDv0/CIDv1
+7. If the signatures, the bandwidth limit and CIDv1 are all valid - apply cyberlinks and transactions
+8. Calculate cyber~Rank values every round for the CIDs on the knowledge graph
+_____________
+
 ## Validation
   - [Onboarding point for cyber validators](https://github.com/cybercongress/congress/blob/master/ecosystem/validators/onboarding.md)
   - [Run the validator](./docs/cyberd/run_validator.md")
@@ -117,7 +130,7 @@ _____________
 
 ## Status
 
-Explore our latest before mainnet testnet network and participate in [Game of Links](https://cybercongress.ai/game-of-links/)
+Explore our [network](https://cyber.page/brain) and participate in [Game of Links](https://cybercongress.ai/game-of-links/)
 
 ## Documentation and guides
 Explore the documentation in our [knowledge base](https://cybercongress.ai/docs/cyberd/cyberd/).
