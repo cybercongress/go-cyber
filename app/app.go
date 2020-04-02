@@ -48,7 +48,7 @@ import (
 )
 
 const (
-	appName        = "CyberApp"
+	appName = "cyber"
 )
 
 // default home directories for expected binaries
