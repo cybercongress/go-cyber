@@ -231,17 +231,7 @@ mkdir -p $DAEMON_HOME/upgrade_manager/genesis
 mkdir -p $DAEMON_HOME/upgrade_manager/genesis/bin
 ```
 
-3. Get a prebuilt copy of cosmosd or build it from source:
-
- Using a prebuild copy:
-
-```bash
-curl -L -o $DAEMON_HOME/cosmosd https://github.com/regen-network/cosmosd/releases/download/0.2.0/cosmosd
-
-chmod +x $DAEMON_HOME/cosmosd
-```
-
-Or building from source:
+3. Download cosmosd repo anf building cosmosd:
 
 ```bash
 git clone https://github.com/regen-network/cosmosd
@@ -354,11 +344,11 @@ LimitNOFILE=4096
 WantedBy=multi-user.target
 ```
 
-If you need to enable search on the node add the flag `--allow-search=true` right after `--compute-rank-on-gpu=true`. If you need to run rest-server alongside `cyberd` here is a service file for it (do `sudo nano /etc/systemd/system/cyberd-rest.service` and paste the following), just make sure you'll replace `ubuntu` to your user name and group:
+If you need to enable search on the node add the flag `--allow-search=true` right after `--compute-rank-on-gpu=true`. If you need to run rest-server alongside `cyberd` here is a service file for it (do `sudo nano /etc/systemd/system/cyberdcli-rest.service` and paste the following), just make sure you'll replace `ubuntu` to your user name and group:
 
 ```bash
 [Unit]
-Description=Cyberd REST Server
+Description=Cyberdcli REST Server
 
 [Service]
 User=ubuntu
@@ -371,6 +361,28 @@ RestartSec=30
 [Install]
 WantedBy=multi-user.target
 ```
+
+There's a possibillity to build and run swagger-ui for your node to get better experience with rest-server. In order to get it up you'll have to install `static` library for go: 
+
+```bash
+go get github.com/rakyll/statik
+```
+
+Then `cd` to go-cyber repo and set static file for swagger-ui:
+
+```bash
+cd <path_to_go-cyber>/go-cyber/
+statik -src=cmd/cyberdcli/temp -dest=cmd/cyberdcli/lcd -f
+```
+
+And rebuild cyberdcli and replace one in `/usr/local/bin` (no worries, you wont loose your keys, if alredy have some imported):
+
+```bash
+make build
+cp build/cyberdcli /usr/local/bin/
+```
+
+When all above would be completed and cyberdcli-rest servise started you should have Swagger-ui available at `http://localhost:1317/swagger-ui/` .
 
 3. Run cyberd:
 
@@ -409,6 +421,8 @@ If you need to stop the node:
 ```bash
 sudo systemctl stop cyberd
 ```
+
+All commands at this section also applicable to `cyberdcli-rest.service`.
 
 At this point your cyberd should be running in the backgroud and you should be able to call `cyberdcli` to operate with the client. Try calling `cyberdcli status`, a possible output looks like this:
 
