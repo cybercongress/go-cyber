@@ -14,11 +14,19 @@
 </div>
 
 <div align="center">
- <h3><a href="https://ai.cybercongress.ai/">Forum</a> and <a href="https://cybercongress.ai/post/">Blog</a></h1>
+ <h3><a href="https://github.com/cybercongress/congress/blob/master/ecosystem/ELI-5%20FAQ.md">ELI-5</a> and <a href="https://github.com/cybercongress/congress/blob/master/ecosystem/Cyber%20Homestead%20doc.md">Homestead Documentation</a></h1>
 </div>
 
 <div align="center">
- <h3><a href="https://github.com/cybercongress/congress/blob/master/ecosystem/ELI-5%20FAQ.md">ELI-5</a> and <a href="https://github.com/cybercongress/congress/blob/master/ecosystem/Cyber%20Homestead%20doc.md">Homestead Documentation</a></h1>
+ <h3>Onboarding <a href="https://github.com/cybercongress/congress/blob/master/ecosystem/validators/onboarding.md">point</a> for cyber validators</a></h1>
+</div>
+
+<div align="center">
+ <h3><a href="https://t.me/fuckgoogle">#fuckgoogle</a> community</h1>
+</div>
+
+<div align="center">
+ <h3><a href="https://ai.cybercongress.ai/">Forum</a> and <a href="https://cybercongress.ai/post/">Blog</a></h1>
 </div>
 
 _____________
@@ -130,7 +138,7 @@ _____________
 
 ## Status
 
-Explore our [network](https://cyber.page/brain) and participate in [Game of Links](https://cybercongress.ai/game-of-links/)
+Explore our [network](https://cyber.page/brain) and participate in [Game of Links](https://cyber.page/gol)
 
 ## Documentation and guides
 Explore the documentation in our [knowledge base](https://cybercongress.ai/docs/cyberd/cyberd/).
@@ -140,11 +148,15 @@ Explore the documentation in our [knowledge base](https://cybercongress.ai/docs/
   - [Cyber Homestead](https://github.com/cybercongress/congress/blob/master/ecosystem/Cyber%20Homestead%20doc.md)
   - [cyber~Ecosystem development](https://github.com/cybercongress/congress/blob/master/ecosystem/cyber~Ecosystem%20development%20paper.md)
   - [Usecases](https://github.com/cybercongress/congress/blob/master/ecosystem/usecases.md)
+- Launch:
+  - [Launch protocol](https://github.com/cybercongress/launch-kit/blob/0.1.0/README.md#distribution-params)
+  - [Genesis parameters](https://github.com/cybercongress/launch-kit/blob/0.1.0/params/README.md)
 - Usage:
   - [CLI guide](./docs/cyberd/ultimate-commands-guide.md")
   - [Get EUL](./docs/cyberd/get_CYB.md")
   - [Cyber Ledger guide](./docs/cyberd/cyberd_Ledger_guide.md")
   - [Multisig guide](./docs/cyberd/multisig_guide.md")
+- Validators:
   - [Supported GPUs list](./docs/cyberd/supported_gpu_list.md")
   - [Port forwarding](./docs/cyberd/port_forwarding_guide.md")
   - [Run validator with Tendermint KMS and Ledger](./docs/cyberd/validator_launch_with_tendermintKMS_and_ledger.md")
@@ -154,8 +166,10 @@ Explore the documentation in our [knowledge base](https://cybercongress.ai/docs/
 - Specs:
   - [RPC](./docs/cyberd/rpc.md")
   - [Keystore](./docs/cyberd/keystore.md")
+- Gifts to Ethereum, Cosmos and Urbit communities:
+  - [Gift Information and FAQ](https://github.com/cybercongress/congress/blob/master/ecosystem/Gift%20FAQ%20and%20general%20gift%20information.md)
 - [CHANGELOG](./docs/cyberd/Changelog.md")
-- [CONTRIBUTING](./docs/cyberd/Contributing.md")
+- [CONTRIBUTING](./docs/cyberd/CONTRIBUTING.md")
 
 _____________
 
