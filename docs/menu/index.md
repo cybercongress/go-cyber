@@ -11,6 +11,7 @@ headless: true
   - [Cyberd Ledger guide]({{< relref "/docs/cyberd/cyberd_Ledger_guide.md" >}})
   - [Multisig guide]({{< relref "/docs/cyberd/multisig_guide.md" >}})
   - [Run validator with Tendermint and Ledger]({{< relref "/docs/cyberd/validator_launch_with_tendermintKMS_and_ledger.md" >}})
+  - [Set up config.toml in the right way]({{< relref "/docs/cyberd/setup_cyberd_configuration.md" >}})
 - Dev environment:
   - [Setup development environment]({{< relref "/docs/cyberd/setup_dev_env.md" >}})
 - Specs:
