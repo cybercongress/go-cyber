@@ -10,11 +10,15 @@
 </div>
 
 <div align="center">
- <h3>Whitepaper - <a href="http://ipfs.io/ipfs/QmceNpj6HfS81PcCaQXrFMQf7LR5FTLkdG9sbSRNy3UXoZ">cyber: Computing the knowledge of the Great Web</a></h1>
+ <h3>Whitepaper - <a href=" ">cyber: Computing the knowledge of the Great Web</a></h1>
 </div>
 
 <div align="center">
  <h3><a href="https://ai.cybercongress.ai/">Forum</a> and <a href="https://cybercongress.ai/post/">Blog</a></h1>
+</div>
+
+<div align="center">
+ <h3><a href="https://github.com/cybercongress/congress/blob/master/ecosystem/ELI-5%20FAQ.md">ELI-5</a> and <a href="https://github.com/cybercongress/congress/blob/master/ecosystem/Cyber%20Homestead%20doc.md">Homestead Documentation</a></h1>
 </div>
 
 _____________
@@ -70,7 +74,7 @@ Cyberlinks are committed by Web3 agents. They are links between two CIDs. In its
 
 All the cyberlinks with a given weight are stored within the knowledge graph. The graph is re-computed by the validators every given number of blocks. For calculations, we've implemented `the proof of relevance` root-hash, which is computed from CIDs rank values (which are computed on GPUs with CUDA support every round). 
 
-Cyberd is the first implementation of the cyber protocol. It is based on [cosmos-SDK](https://github.com/cosmos/cosmos-sdk) and [tendermint BFT Consensus](https://github.com/tendermint/tendermint). 
+Cyber is the first implementation of the cyber protocol. It is based on [cosmos-SDK](https://github.com/cosmos/cosmos-sdk) and [tendermint BFT Consensus](https://github.com/tendermint/tendermint). 
 
 Network use bandwidth model to allow agents make transactions without fees. The main goal of the model is to reduce the daily networks growth to a given constant which adjustable with network governance.
 
@@ -106,6 +110,11 @@ With the growth of the network, we will need cards, a lot of cards. Join us.
 
 _____________
 
+## Validation
+  - [Onboarding point for cyber validators](https://github.com/cybercongress/congress/blob/master/ecosystem/validators/onboarding.md)
+  - [Run the validator](./docs/cyberd/run_validator.md")
+
+
 ## Status
 
 Explore our latest before mainnet testnet network and participate in [Game of Links](https://cybercongress.ai/game-of-links/)
@@ -113,14 +122,18 @@ Explore our latest before mainnet testnet network and participate in [Game of Li
 ## Documentation and guides
 Explore the documentation in our [knowledge base](https://cybercongress.ai/docs/cyberd/cyberd/).
 
+- Guides:
+  - [ELI-5](https://github.com/cybercongress/congress/blob/master/ecosystem/ELI-5%20FAQ.md)
+  - [Cyber Homestead](https://github.com/cybercongress/congress/blob/master/ecosystem/Cyber%20Homestead%20doc.md)
+  - [cyber~Ecosystem development](https://github.com/cybercongress/congress/blob/master/ecosystem/cyber~Ecosystem%20development%20paper.md)
+  - [Usecases](https://github.com/cybercongress/congress/blob/master/ecosystem/usecases.md)
 - Usage:
-  - [Run the validator](./docs/cyberd/run_validator.md")
-  - [Supported GPUs list](./docs/cyberd/supported_gpu_list.md")
   - [CLI guide](./docs/cyberd/ultimate-commands-guide.md")
   - [Get EUL](./docs/cyberd/get_CYB.md")
-  - [Port forwarding](./docs/cyberd/port_forwarding_guide.md")
   - [Cyber Ledger guide](./docs/cyberd/cyberd_Ledger_guide.md")
   - [Multisig guide](./docs/cyberd/multisig_guide.md")
+  - [Supported GPUs list](./docs/cyberd/supported_gpu_list.md")
+  - [Port forwarding](./docs/cyberd/port_forwarding_guide.md")
   - [Run validator with Tendermint KMS and Ledger](./docs/cyberd/validator_launch_with_tendermintKMS_and_ledger.md")
   - [Set up config.toml in the right way](./docs/cyberd/setup_cyberd_configuration.md")
 - Development environment:
