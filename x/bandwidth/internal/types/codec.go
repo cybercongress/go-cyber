@@ -4,13 +4,11 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 )
 
-// ModuleCdc is the codec for the module
-var ModuleCdc = codec.New()
+// generic sealed codec to be used throughout this module
+var ModuleCdc *codec.Codec
 
 func init() {
-	RegisterCodec(ModuleCdc)
-}
-
-// RegisterCodec registers concrete types on the Amino codec
-func RegisterCodec(cdc *codec.Codec) {
+	ModuleCdc = codec.New()
+	codec.RegisterCrypto(ModuleCdc)
+	ModuleCdc.Seal()
 }

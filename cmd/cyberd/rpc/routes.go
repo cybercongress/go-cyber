@@ -1,7 +1,7 @@
 package rpc
 
 import (
-	"github.com/cybercongress/cyberd/app"
+	"github.com/cybercongress/go-cyber/app"
 	"github.com/tendermint/tendermint/rpc/core"
 	"github.com/tendermint/tendermint/rpc/lib/server"
 )
@@ -21,12 +21,14 @@ var Routes = map[string]*rpcserver.RPCFunc{
 	"account_bandwidth":       rpcserver.NewRPCFunc(AccountBandwidth, "address"),
 	"is_link_exist":           rpcserver.NewRPCFunc(IsLinkExist, "from,to,address"),
 	"current_bandwidth_price": rpcserver.NewRPCFunc(CurrentBandwidthPrice, ""),
+	"current_network_load":    rpcserver.NewRPCFunc(CurrentNetworkLoad, ""),
 	"index_stats":             rpcserver.NewRPCFunc(IndexStats, ""),
 
+	// TODO remove this for euler-6 release
 	"staking/validators": rpcserver.NewRPCFunc(StakingValidators, "page,limit,status"),
 	"staking/pool":       rpcserver.NewRPCFunc(StakingPool, ""),
 
-	// routes required cuz of amino.js not exists yet.
+	// TODO remove this for euler-6 release
 	"submit_signed_link": rpcserver.NewRPCFunc(SignedMsgHandler(UnmarshalLinkRequestFn), "data"),
 	"submit_signed_send": rpcserver.NewRPCFunc(SignedMsgHandler(UnmarshalSendRequestFn), "data"),
 }

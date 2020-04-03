@@ -1,16 +1,14 @@
 package bandwidth
 
 import (
-	"github.com/cybercongress/cyberd/x/bandwidth/exported"
-	"github.com/cybercongress/cyberd/x/bandwidth/internal/keeper"
-	"github.com/cybercongress/cyberd/x/bandwidth/internal/types"
+	"github.com/cybercongress/go-cyber/x/bandwidth/internal/keeper"
+	"github.com/cybercongress/go-cyber/x/bandwidth/internal/types"
 )
 
 const (
-	DefaultParamspace = types.DefaultParamspace
-	ModuleName        = types.ModuleName
-	StoreKey          = types.StoreKey
-	RouterKey         = types.RouterKey
+	ModuleName        		= types.ModuleName
+	DefaultParamspace 		= types.DefaultParamspace
+	StoreKey          		= types.StoreKey
 	QuerierRoute            = types.QuerierRoute
 	QueryParameters         = types.QueryParameters
 	QueryDesirableBandwidth = types.QueryDesirableBandwidth
@@ -23,26 +21,40 @@ const (
 	QueryNonLinkMsgCost     = types.QueryNonLinkMsgCost
 )
 
-type (
-	Keeper                    = exported.Keeper
-	BlockSpentBandwidthKeeper = exported.BlockSpentBandwidthKeeper
-
-	Meter        = types.BandwidthMeter
-	AcсBandwidth = types.AcсBandwidth
-	Params       = types.Params
-	GenesisState = types.GenesisState
-)
-
 var (
-	ModuleCdc           = types.ModuleCdc
-	RegisterCodec       = types.RegisterCodec
+	// functions aliases
+	NewAccountBandwidthKeeper    = keeper.NewAccountBandwidthKeeper
+	NewBlockSpentBandwidthKeeper = keeper.NewBlockSpentBandwidthKeeper
+	NewQuerier          = keeper.NewQuerier
 	NewGenesisState     = types.NewGenesisState
 	DefaultGenesisState = types.DefaultGenesisState
 	ValidateGenesis     = types.ValidateGenesis
-	NewDefaultParams    = types.NewDefaultParams
-	NewQuerier          = keeper.NewQuerier
+	ParamKeyTable       = types.ParamKeyTable
+	NewParams			= types.NewParams
+	DefaultParams       = types.DefaultParams
+	NewGenesisAccountBandwidth = types.NewGenesisAccountBandwidth
 
-	NewAccBandwidthKeeper        = keeper.NewAccBandwidthKeeper
-	NewBlockSpentBandwidthKeeper = keeper.NewBlockSpentBandwidthKeeper
-	ParamKeyTable                = keeper.ParamKeyTable
+	// variable aliases
+	ModuleCdc             = types.ModuleCdc
+	KeyTxCost             = types.KeyTxCost
+	KeyLinkMsgCost 		  = types.KeyLinkMsgCost
+	KeyNonLinkMsgCost     = types.KeyNonLinkMsgCost
+	KeyRecoveryPeriod     = types.KeyRecoveryPeriod
+	KeyAdjustPricePeriod  = types.KeyAdjustPricePeriod
+	KeyBaseCreditPrice    = types.KeyBaseCreditPrice
+	KeyDesirableBandwidth = types.KeyDesirableBandwidth
+	KeyMaxBlockBandwidth  = types.KeyMaxBlockBandwidth
+
+	ErrNotEnoughBandwidth = types.ErrNotEnoughBandwidth
+	ErrExceededMaxBlockBandwidth = types.ErrExceededMaxBlockBandwidth
+)
+
+type (
+	AccountBandwidthKeeper    = keeper.BaseAccountBandwidthKeeper
+	BlockSpentBandwidthKeeper = keeper.BaseBlockSpentBandwidthKeeper
+
+	Meter            = types.BandwidthMeter
+	AccountBandwidth = types.AcсountBandwidth
+	GenesisState     = types.GenesisState
+	Params           = types.Params
 )

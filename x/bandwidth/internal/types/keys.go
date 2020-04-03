@@ -4,16 +4,16 @@ const (
 	// ModuleName is the name of the module
 	ModuleName = "bandwidth"
 
+	// default paramspace for params keeper
+	DefaultParamspace = ModuleName
+
 	// StoreKey is the store key string for bandwidth
 	StoreKey = ModuleName
 
-	// RouterKey is the message route for bandwidth
-	RouterKey = ModuleName
-
-	// QuerierRoute is the querier route for the minting store.
+	// QuerierRoute is the querier route for the bandwidth store.
 	QuerierRoute = ModuleName
 
-	// Query endpoints supported by the minting querier
+	// Query endpoints supported by the bandwidth querier
 	QueryParameters         = "parameters"
 	QueryDesirableBandwidth = "desirable_bandwidth"
 	QueryMaxBlockBandwidth  = "max_block_bandwidth"

@@ -3,35 +3,37 @@ package keeper
 import (
 	"encoding/binary"
 	"encoding/json"
+
+	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/params"
-	"github.com/cybercongress/cyberd/x/bandwidth/exported"
-	"github.com/cybercongress/cyberd/x/bandwidth/internal/types"
+
+	"github.com/cybercongress/go-cyber/x/bandwidth/internal/types"
 )
 
-var _ exported.Keeper = &BaseAccBandwidthKeeper{}
-
-type BaseAccBandwidthKeeper struct {
-	key        *sdk.KVStoreKey
-	paramSpace *params.Subspace
+type BaseAccountBandwidthKeeper struct {
+	cdc        *codec.Codec
+	storeKey   sdk.StoreKey
+	paramSpace params.Subspace
 }
 
-func NewAccBandwidthKeeper(key *sdk.KVStoreKey, paramSpace *params.Subspace) *BaseAccBandwidthKeeper {
-	return &BaseAccBandwidthKeeper{
-		key:        key,
-		paramSpace: paramSpace,
+func NewAccountBandwidthKeeper(cdc *codec.Codec, key sdk.StoreKey, paramSpace params.Subspace) BaseAccountBandwidthKeeper {
+	return BaseAccountBandwidthKeeper{
+		cdc:        cdc,
+		storeKey:   key,
+		paramSpace: paramSpace.WithKeyTable(types.ParamKeyTable()),
 	}
 }
 
-func (bk *BaseAccBandwidthKeeper) SetAccBandwidth(ctx sdk.Context, bandwidth types.AcсBandwidth) {
+func (k BaseAccountBandwidthKeeper) SetAccountBandwidth(ctx sdk.Context, bandwidth types.AcсountBandwidth) {
 	bwBytes, _ := json.Marshal(bandwidth)
-	ctx.KVStore(bk.key).Set(bandwidth.Address, bwBytes)
+	ctx.KVStore(k.storeKey).Set(bandwidth.Address, bwBytes)
 }
 
-func (bk *BaseAccBandwidthKeeper) GetAccBandwidth(ctx sdk.Context, addr sdk.AccAddress) (bw types.AcсBandwidth) {
-	bwBytes := ctx.KVStore(bk.key).Get(addr)
+func (bk BaseAccountBandwidthKeeper) GetAccountBandwidth(ctx sdk.Context, addr sdk.AccAddress) (bw types.AcсountBandwidth) {
+	bwBytes := ctx.KVStore(bk.storeKey).Get(addr)
 	if bwBytes == nil {
-		return types.AcсBandwidth{
+		return types.AcсountBandwidth{
 			Address:          addr,
 			RemainedValue:    0,
 			LastUpdatedBlock: ctx.BlockHeight(),
@@ -40,18 +42,28 @@ func (bk *BaseAccBandwidthKeeper) GetAccBandwidth(ctx sdk.Context, addr sdk.AccA
 	}
 	err := json.Unmarshal(bwBytes, &bw)
 	if err != nil {
-		// should not happen
 		panic("bandwidth index is broken")
 	}
 	return
 }
 
-type BaseBlockSpentBandwidthKeeper struct {
-	key *sdk.KVStoreKey
+func (bk BaseAccountBandwidthKeeper) GetParams(ctx sdk.Context) (params types.Params) {
+	bk.paramSpace.GetParamSet(ctx, &params)
+	return params
 }
 
-func NewBlockSpentBandwidthKeeper(key *sdk.KVStoreKey) BaseBlockSpentBandwidthKeeper {
-	return BaseBlockSpentBandwidthKeeper{key: key}
+func (bk BaseAccountBandwidthKeeper) SetParams(ctx sdk.Context, params types.Params) {
+	bk.paramSpace.SetParamSet(ctx, &params)
+}
+
+type BaseBlockSpentBandwidthKeeper struct {
+	storeKey sdk.StoreKey
+}
+
+func NewBlockSpentBandwidthKeeper(key sdk.StoreKey) BaseBlockSpentBandwidthKeeper {
+	return BaseBlockSpentBandwidthKeeper{
+		storeKey: key,
+	}
 }
 
 func (bk BaseBlockSpentBandwidthKeeper) SetBlockSpentBandwidth(ctx sdk.Context, blockNumber uint64, value uint64) {
@@ -59,15 +71,17 @@ func (bk BaseBlockSpentBandwidthKeeper) SetBlockSpentBandwidth(ctx sdk.Context, 
 	binary.LittleEndian.PutUint64(keyAsBytes, blockNumber)
 	valueAsBytes := make([]byte, 8)
 	binary.LittleEndian.PutUint64(valueAsBytes, value)
-	ctx.KVStore(bk.key).Set(keyAsBytes, valueAsBytes)
+
+	store := ctx.KVStore(bk.storeKey)
+	store.Set(keyAsBytes, valueAsBytes)
 }
 
 func (bk BaseBlockSpentBandwidthKeeper) GetValuesForPeriod(ctx sdk.Context, period int64) map[uint64]uint64 {
 
-	store := ctx.KVStore(bk.key)
+	store := ctx.KVStore(bk.storeKey)
 
 	windowStart := ctx.BlockHeight() - period + 1
-	if windowStart <= 0 { // check needed cause it will be casted to uint and can cause overflow
+	if windowStart <= 0 {
 		windowStart = 1
 	}
 

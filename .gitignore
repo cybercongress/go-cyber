@@ -13,9 +13,11 @@ node_modules/
 *.o
 
 
-mytestnet
+mytestnet*
 euler-*
 
 config.toml
 genesis.json
 links
+/cyberd
+/cyberdcli

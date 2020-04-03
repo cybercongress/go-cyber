@@ -1,14 +1,12 @@
 package keeper
 
 import (
-	"github.com/cybercongress/cyberd/merkle"
-	"github.com/cybercongress/cyberd/util"
-	"github.com/cybercongress/cyberd/x/link/internal/types"
+	"github.com/cybercongress/go-cyber/util"
+	"github.com/cybercongress/go-cyber/x/link/internal/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	cmn "github.com/tendermint/tendermint/libs/common"
+	tmos "github.com/tendermint/tendermint/libs/os"
 
-	"crypto/sha256"
 	"encoding/binary"
 	"io"
 )
@@ -25,19 +23,16 @@ type IndexedKeeper struct {
 	nextRankOutLinks types.Links
 
 	currentBlockLinks []types.CompactLink
-	MerkleTree        *merkle.Tree
 }
 
 func NewIndexedKeeper(keeper *Keeper) *IndexedKeeper {
-	merkleTree := merkle.NewTree(sha256.New(), true)
-
-	return &IndexedKeeper{Keeper: keeper, MerkleTree: merkleTree}
+	return &IndexedKeeper{Keeper: keeper}
 }
 
 func (i *IndexedKeeper) Load(rankCtx sdk.Context, freshCtx sdk.Context) {
 	inLinks, outLinks, err := i.Keeper.GetAllLinks(rankCtx)
 	if err != nil {
-		cmn.Exit(err.Error())
+		tmos.Exit(err.Error())
 	}
 
 	i.currentRankInLinks = inLinks
@@ -48,16 +43,11 @@ func (i *IndexedKeeper) Load(rankCtx sdk.Context, freshCtx sdk.Context) {
 	})
 
 	if err != nil {
-		cmn.Exit(err.Error())
+		tmos.Exit(err.Error())
 	}
 
 	i.nextRankInLinks = newInLinks
 	i.nextRankOutLinks = newOutLinks
-
-	i.Iterate(freshCtx, func(link types.CompactLink) {
-		linkAsBytes := link.MarshalBinary()
-		i.MerkleTree.Push(linkAsBytes)
-	})
 }
 
 func (i *IndexedKeeper) FixLinks() {
@@ -87,9 +77,6 @@ func (i *IndexedKeeper) PutLink(ctx sdk.Context, link types.CompactLink) {
 		i.currentBlockLinks = append(i.currentBlockLinks, link)
 	}
 
-	linkAsBytes := link.MarshalBinary()
-	i.MerkleTree.Push(linkAsBytes)
-
 	i.Keeper.PutLink(ctx, link)
 }
 
@@ -117,10 +104,6 @@ func (i *IndexedKeeper) GetCurrentBlockNewLinks() []types.CompactLink {
 		}
 	}
 	return result
-}
-
-func (i *IndexedKeeper) GetNetworkLinkHash() []byte {
-	return i.MerkleTree.RootHash()
 }
 
 func (i *IndexedKeeper) IsAnyLinkExist(from types.CidNumber, to types.CidNumber) bool {

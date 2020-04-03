@@ -7,8 +7,8 @@ import (
 	"sort"
 	"time"
 
-	"github.com/cybercongress/cyberd/merkle"
-	"github.com/cybercongress/cyberd/x/link"
+	"github.com/cybercongress/go-cyber/merkle"
+	"github.com/cybercongress/go-cyber/x/link"
 
 	"github.com/tendermint/tendermint/libs/log"
 )
@@ -30,15 +30,10 @@ func NewRank(values []float64, logger log.Logger, fullTree bool) Rank {
 	}
 	logger.Info("Rank constructing tree", "time", time.Since(start))
 
-	newSortedCIDs := make(sortableCidNumbers, 0, len(values))
-	for cid, rank := range values {
-		if math.IsNaN(rank) { continue } // TODO remove this after rank's NaN fix
-		newRankedCid := RankedCidNumber{link.CidNumber(cid), rank}
-		newSortedCIDs = append(newSortedCIDs, newRankedCid)
-	}
-	sort.Stable(sort.Reverse(newSortedCIDs))
-	if (len(values)) > 1000 {
-		newSortedCIDs = newSortedCIDs[0:999]
+	// NOTE fulltree true if search index enabled
+	var newSortedCIDs []RankedCidNumber
+	if (fullTree == true) {
+		newSortedCIDs = BuildTop(values, 1000)
 	}
 
 	return Rank{Values: values, MerkleTree: merkleTree, CidCount: uint64(len(values)), TopCIDs: newSortedCIDs}
@@ -99,4 +94,18 @@ func (r *Rank) AddNewCids(currentCidCount uint64) {
 	}
 
 	r.CidCount = currentCidCount
+}
+
+func BuildTop(values []float64, size int) []RankedCidNumber {
+	newSortedCIDs := make(sortableCidNumbers, 0, len(values))
+	for cid, rank := range values {
+		if (rank == 0) { continue } // NOTE math.IsNaN(rank) check removed after rank fix
+		newRankedCid := RankedCidNumber{link.CidNumber(cid), rank}
+		newSortedCIDs = append(newSortedCIDs, newRankedCid)
+	}
+	sort.Stable(sort.Reverse(newSortedCIDs))
+	if (len(values) > size) {
+		newSortedCIDs = newSortedCIDs[0:(size-1)]
+	}
+	return newSortedCIDs
 }

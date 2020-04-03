@@ -1,9 +1,9 @@
 package keeper
 
 import (
-	"github.com/cybercongress/cyberd/store"
-	"github.com/cybercongress/cyberd/util"
-	"github.com/cybercongress/cyberd/x/link/internal/types"
+	"github.com/cybercongress/go-cyber/store"
+	"github.com/cybercongress/go-cyber/util"
+	"github.com/cybercongress/go-cyber/x/link/internal/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
@@ -20,11 +20,11 @@ const (
 
 type CidNumberKeeper struct {
 	ms         store.MainKeeper
-	key        *sdk.KVStoreKey
-	reverseKey *sdk.KVStoreKey
+	key        sdk.StoreKey
+	reverseKey sdk.StoreKey
 }
 
-func NewCidNumberKeeper(ms store.MainKeeper, key *sdk.KVStoreKey, reverseKey *sdk.KVStoreKey) *CidNumberKeeper {
+func NewCidNumberKeeper(ms store.MainKeeper, key sdk.StoreKey, reverseKey sdk.StoreKey) *CidNumberKeeper {
 	return &CidNumberKeeper{
 		ms:         ms,
 		key:        key,

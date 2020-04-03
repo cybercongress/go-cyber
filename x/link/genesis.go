@@ -8,12 +8,12 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/tendermint/tendermint/libs/log"
 
-	"github.com/cybercongress/cyberd/util"
+	"github.com/cybercongress/go-cyber/util"
 )
 
 const (
-	LinksFileName       = "config/links"
-	LinksExportFileName = "export/links"
+	LinksFileName       = "config/graph"
+	LinksExportFileName = "export/graph"
 )
 
 func InitGenesis(
@@ -79,6 +79,6 @@ func WriteGenesis(
 	}
 	err = linksFile.Close()
 
-	logger.Info("Cids and links exported. File created.", "path", linksFilePath)
+	logger.Info("Cids and cyberlinks exported. File created.", "path", linksFilePath)
 	return
 }

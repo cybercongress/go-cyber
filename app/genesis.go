@@ -3,26 +3,33 @@ package app
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"time"
+
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
+	"github.com/cosmos/cosmos-sdk/x/auth/exported"
 	"github.com/cosmos/cosmos-sdk/x/bank"
 	"github.com/cosmos/cosmos-sdk/x/crisis"
 	distr "github.com/cosmos/cosmos-sdk/x/distribution"
+	"github.com/cosmos/cosmos-sdk/x/evidence"
+	"github.com/cosmos/cosmos-sdk/x/genutil"
+	"github.com/cosmwasm/wasmd/x/wasm"
+
 	"github.com/cosmos/cosmos-sdk/x/gov"
 	"github.com/cosmos/cosmos-sdk/x/mint"
 	"github.com/cosmos/cosmos-sdk/x/slashing"
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	"github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/cosmos/cosmos-sdk/x/supply"
-	"github.com/cybercongress/cyberd/types/coin"
-	"github.com/cybercongress/cyberd/x/bandwidth"
-	"github.com/cybercongress/cyberd/x/rank"
 	"github.com/pkg/errors"
 	"github.com/tendermint/go-amino"
 	tmtypes "github.com/tendermint/tendermint/types"
-	"io/ioutil"
-	"time"
+
+	"github.com/cybercongress/go-cyber/types/coin"
+	"github.com/cybercongress/go-cyber/x/bandwidth"
+	"github.com/cybercongress/go-cyber/x/rank"
 )
 
 const (
@@ -31,41 +38,42 @@ const (
 
 // State to Unmarshal
 type GenesisState struct {
-	Accounts      []GenesisAccount       `json:"accounts"`
-	AuthData      auth.GenesisState      `json:"auth"`
-	BankData      bank.GenesisState      `json:"bank"`
-	DistrData     distr.GenesisState     `json:"distribution"`
-	MintData      mint.GenesisState      `json:"mint"`
-	StakingData   staking.GenesisState   `json:"staking"`
-	Pool          staking.Pool           `json:"pool"`
-	SupplyData    supply.GenesisState    `json:"supply"`
-	SlashingData  slashing.GenesisState  `json:"slashing"`
-	GovData       gov.GenesisState       `json:"gov"`
-	BandwidthData bandwidth.GenesisState `json:"bandwidth"`
-	RankData      rank.GenesisState      `json:"rank"`
-	GenTxs        []json.RawMessage      `json:"gentxs"`
-	Crisis        crisis.GenesisState    `json:"crisis"`
+	AuthData      auth.GenesisState         `json:"auth"`
+	BankData      bank.GenesisState         `json:"bank"`
+	DistrData     distr.GenesisState        `json:"distribution"`
+	MintData      mint.GenesisState         `json:"mint"`
+	StakingData   staking.GenesisState      `json:"staking"`
+	Pool          staking.Pool              `json:"pool"`
+	SupplyData    supply.GenesisState       `json:"supply"`
+	SlashingData  slashing.GenesisState     `json:"slashing"`
+	GovData       gov.GenesisState          `json:"gov"`
+	BandwidthData bandwidth.GenesisState    `json:"bandwidth"`
+	RankData      rank.GenesisState         `json:"rank"`
+	GenUtil       genutil.GenesisState      `json:"genutil"`
+	Crisis        crisis.GenesisState       `json:"crisis"`
+	Evidence      evidence.GenesisState		`json:"evidence"`
+	WasmData      wasm.GenesisState         `json:"wasm"`
 }
 
 func (gs *GenesisState) GetAddresses() []sdk.AccAddress {
-	addresses := make([]sdk.AccAddress, 0, len(gs.Accounts))
-	for _, acc := range gs.Accounts {
-		addresses = append(addresses, acc.Address)
+	addresses := make([]sdk.AccAddress, 0, len(gs.AuthData.Accounts))
+	for _, acc := range gs.AuthData.Accounts {
+		addresses = append(addresses, acc.GetAddress())
 	}
 	return addresses
 }
 
 func NewGenesisState(
-	accounts []GenesisAccount, authData auth.GenesisState,
+	authData auth.GenesisState,
 	stakingData staking.GenesisState, pool staking.Pool,
 	mintData mint.GenesisState, distrData distr.GenesisState,
 	govData gov.GenesisState, supplyData supply.GenesisState,
 	slashingData slashing.GenesisState, bandwidthData bandwidth.GenesisState,
 	rankData rank.GenesisState, crisisData crisis.GenesisState,
+	evidenceData evidence.GenesisState, wasmData wasm.GenesisState,
 ) GenesisState {
 
 	return GenesisState{
-		Accounts:      accounts,
 		AuthData:      authData,
 		StakingData:   stakingData,
 		Pool:          pool,
@@ -77,63 +85,21 @@ func NewGenesisState(
 		BandwidthData: bandwidthData,
 		RankData:      rankData,
 		Crisis:        crisisData,
+		Evidence: 	   evidenceData,
+		WasmData:      wasmData,
 	}
-}
-
-type GenesisAccount struct {
-	Address       sdk.AccAddress `json:"address" yaml:"address"`
-	Coins         sdk.Coins      `json:"coins" yaml:"coins"`
-	Sequence      uint64         `json:"sequence_number" yaml:"sequence_number"`
-	AccountNumber uint64         `json:"account_number" yaml:"account_number"`
-
-	OriginalVesting  sdk.Coins `json:"original_vesting" yaml:"original_vesting"`
-	DelegatedFree    sdk.Coins `json:"delegated_free" yaml:"delegated_free"`
-	DelegatedVesting sdk.Coins `json:"delegated_vesting" yaml:"delegated_vesting"`
-	StartTime        int64     `json:"start_time" yaml:"start_time"`
-	EndTime          int64     `json:"end_time" yaml:"end_time"`
-
-	ModuleName        string   `json:"module_name" yaml:"module_name"`
-	ModulePermissions []string `json:"module_permissions" yaml:"module_permissions"`
-}
-
-// convert GenesisAccount to auth.BaseAccount
-func (ga *GenesisAccount) ToAccount() auth.Account {
-	acc := auth.NewBaseAccount(ga.Address, ga.Coins.Sort(), nil, ga.AccountNumber, ga.Sequence)
-
-	// vesting accounts
-	if !ga.OriginalVesting.IsZero() {
-		baseVestingAcc := auth.NewBaseVestingAccount(
-			acc, ga.OriginalVesting, ga.DelegatedFree,
-			ga.DelegatedVesting, ga.EndTime,
-		)
-
-		switch {
-		case ga.StartTime != 0 && ga.EndTime != 0:
-			return auth.NewContinuousVestingAccountRaw(baseVestingAcc, ga.StartTime)
-		case ga.EndTime != 0:
-			return auth.NewDelayedVestingAccountRaw(baseVestingAcc)
-		default:
-			panic(fmt.Sprintf("invalid genesis vesting account: %+v", ga))
-		}
-	}
-
-	// module accounts
-	if ga.ModuleName != "" {
-		return supply.NewModuleAccount(acc, ga.ModuleName, ga.ModulePermissions...)
-	}
-
-	return acc
-
 }
 
 // NewDefaultGenesisState generates the default state for cyberd.
 func NewDefaultGenesisState() GenesisState {
 	return GenesisState{
-		Accounts: nil,
 		AuthData: auth.GenesisState{
 			Params: auth.Params{
 				MaxMemoCharacters: 256,
 				TxSigLimit: 10,
+				TxSizeCostPerByte: 1,
+				SigVerifyCostED25519: 1,
+				SigVerifyCostSecp256k1: 1,
 			},
 		},
 		BankData: bank.GenesisState{
@@ -170,9 +136,8 @@ func NewDefaultGenesisState() GenesisState {
 		},
 		SlashingData: slashing.GenesisState{
 			Params: slashing.Params{
-				MaxEvidenceAge:          defaultUnbondingTime,
 				SignedBlocksWindow:      60 * 4, // ~20min
-				DowntimeJailDuration:    0,
+				DowntimeJailDuration:    1,
 				MinSignedPerWindow:      sdk.NewDecWithPrec(80, 2),         // 80%
 				SlashFractionDoubleSign: sdk.NewDecWithPrec(5, 2),          // 5%
 				SlashFractionDowntime:   sdk.NewDec(5).Quo(sdk.NewDec(10000)), // 0.05%
@@ -180,10 +145,12 @@ func NewDefaultGenesisState() GenesisState {
 		},
 		DistrData: distr.GenesisState{
 			FeePool:             distr.InitialFeePool(),
-			CommunityTax:        sdk.NewDecWithPrec(10, 2), // 10%
-			BaseProposerReward:  sdk.NewDecWithPrec(1, 2),  // 1%
-			BonusProposerReward: sdk.NewDecWithPrec(5, 2),  // 5%
-			WithdrawAddrEnabled: true,
+			Params:              distr.Params{
+				CommunityTax:        sdk.NewDecWithPrec(10, 2), // 10%
+				BaseProposerReward:  sdk.NewDecWithPrec(1, 2),  // 1%
+				BonusProposerReward: sdk.NewDecWithPrec(5, 2),  // 5%
+				WithdrawAddrEnabled: true,
+			},
 			PreviousProposer:    nil,
 		},
 		GovData: gov.GenesisState{
@@ -201,10 +168,16 @@ func NewDefaultGenesisState() GenesisState {
 				Veto:      sdk.NewDecWithPrec(334, 3),
 			},
 		},
-		BandwidthData: bandwidth.DefaultGenesisState(),
-		RankData:      rank.DefaultGenesisState(),
-		GenTxs:        []json.RawMessage{},
-		Crisis: 	   crisis.GenesisState{ ConstantFee: sdk.NewCoin(coin.CYB, sdk.NewInt(1000)) },
+		BandwidthData: bandwidth.GenesisState{
+			Params:		bandwidth.DefaultParams(),
+		},
+		RankData: rank.GenesisState{
+			Params: 	rank.DefaultParams(),
+		},
+		Crisis: crisis.GenesisState{
+			ConstantFee: sdk.NewCoin(coin.CYB, sdk.NewInt(10000000000)),
+		},
+		Evidence: evidence.DefaultGenesisState(),
 	}
 }
 
@@ -238,7 +211,7 @@ func CyberdAppGenState(cdc *codec.Codec, genDoc tmtypes.GenesisDoc, appGenTxs []
 		}
 	}
 
-	genesisState.GenTxs = appGenTxs
+	//genesisState.GenTxs = appGenTxs
 	return genesisState, nil
 }
 
@@ -255,7 +228,7 @@ func CyberdAppGenStateJSON(cdc *codec.Codec, genDoc tmtypes.GenesisDoc, appGenTx
 
 // validateGenesisState ensures that the genesis state obeys the expected invariants
 func validateGenesisState(genesisState GenesisState) error {
-	if err := validateGenesisStateAccounts(genesisState.Accounts); err != nil {
+	if err := validateGenesisStateAccounts(genesisState.AuthData.Accounts); err != nil {
 		return err
 	}
 	if err := staking.ValidateGenesis(genesisState.StakingData); err != nil {
@@ -289,13 +262,13 @@ func validateGenesisState(genesisState GenesisState) error {
 }
 
 // Ensures that there are no duplicate accounts in the genesis state,
-func validateGenesisStateAccounts(accs []GenesisAccount) (err error) {
+func validateGenesisStateAccounts(accs []exported.GenesisAccount) (err error) {
 	addrMap := make(map[string]bool, len(accs))
 	for i := 0; i < len(accs); i++ {
 		acc := accs[i]
-		strAddr := string(acc.Address)
+		strAddr := string(acc.GetAddress())
 		if _, ok := addrMap[strAddr]; ok {
-			return fmt.Errorf("duplicate account in genesis state: Address %v", acc.Address.String())
+			return fmt.Errorf("duplicate account in genesis state: Address %v", acc.GetAddress())
 		}
 		addrMap[strAddr] = true
 	}

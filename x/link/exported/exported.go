@@ -5,21 +5,21 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/cybercongress/cyberd/x/link/internal/keeper"
-	"github.com/cybercongress/cyberd/x/link/internal/types"
+	"github.com/cybercongress/go-cyber/x/link/internal/types"
 )
 
 type KeeperI interface {
 	GetAllLinks(sdk.Context) (types.Links, types.Links, error)
-	GetAllLinksFiltered(sdk.Context, keeper.LinkFilter) (types.Links, types.Links, error)
+	GetAllLinksFiltered(sdk.Context, types.LinkFilter) (types.Links, types.Links, error)
 
 	GetLinksCount(sdk.Context) uint64
-	Iterate(sdk.Context, func(types.CompactLink))
+	IterateLinks(sdk.Context, func(types.CompactLink))
+	IterateBinaryLinks(sdk.Context, func([]byte))
 
 	PutLink(sdk.Context, types.CompactLink)
 	WriteLinks(sdk.Context, io.Writer) error
 
-	Commit(blockHeight uint64) error
+	Commit(ctx sdk.Context)
 }
 
 type IndexedKeeperI interface {
@@ -38,8 +38,6 @@ type IndexedKeeperI interface {
 
 	GetCurrentBlockLinks() []types.CompactLink
 	GetCurrentBlockNewLinks() []types.CompactLink
-
-	GetNetworkLinkHash() []byte
 
 	IsAnyLinkExist(from types.CidNumber, to types.CidNumber) bool
 	IsLinkExist(types.CompactLink) bool

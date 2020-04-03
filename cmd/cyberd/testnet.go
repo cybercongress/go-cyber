@@ -4,32 +4,37 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
-	"github.com/cosmos/cosmos-sdk/client/keys"
-	"github.com/cosmos/cosmos-sdk/types/module"
-	"github.com/cybercongress/cyberd/util"
 
-	//"github.com/cosmos/cosmos-sdk/x/genaccounts"
-	"github.com/cosmos/cosmos-sdk/x/genutil"
-	"github.com/cybercongress/cyberd/app"
-	"github.com/cybercongress/cyberd/types/coin"
+	"github.com/cosmos/cosmos-sdk/client/flags"
+	//"github.com/cosmos/cosmos-sdk/client/keys"
+	"github.com/cosmos/cosmos-sdk/types/module"
+	"github.com/cosmos/cosmos-sdk/x/auth/exported"
+
 	"net"
 	"os"
 	"path/filepath"
 
-	"github.com/cosmos/cosmos-sdk/client"
+	clientkeys "github.com/cosmos/cosmos-sdk/client/keys"
+	"github.com/cosmos/cosmos-sdk/crypto/keys"
+	//"github.com/cosmos/cosmos-sdk/x/genaccounts"
+	"github.com/cosmos/cosmos-sdk/x/genutil"
+
+	"github.com/cybercongress/go-cyber/app"
+	"github.com/cybercongress/go-cyber/types/coin"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
+	//"github.com/cosmos/cosmos-sdk/client"
+	tmos "github.com/tendermint/tendermint/libs/os"
 	//authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	srvconfig "github.com/cosmos/cosmos-sdk/server/config"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	cfg "github.com/tendermint/tendermint/config"
 	tmconfig "github.com/tendermint/tendermint/config"
 	"github.com/tendermint/tendermint/crypto"
-	cmn "github.com/tendermint/tendermint/libs/common"
+	//cmn "github.com/tendermint/tendermint/libs/common"
 	"github.com/tendermint/tendermint/types"
 	tmtime "github.com/tendermint/tendermint/types/time"
 
@@ -66,7 +71,7 @@ Example:
 			config := ctx.Config
 
 			outputDir := viper.GetString(flagOutputDir)
-			chainID := viper.GetString(client.FlagChainID)
+			chainID := viper.GetString(flags.FlagChainID)
 			nodeDirPrefix := viper.GetString(flagNodeDirPrefix)
 			nodeDaemonHome := viper.GetString(flagNodeDaemonHome)
 			nodeCLIHome := viper.GetString(flagNodeCLIHome)
@@ -97,7 +102,9 @@ Example:
 	cmd.Flags().String(flagStartingIPAddress, "192.168.0.1",
 		"Starting IP address (192.168.0.1 results in persistent peers list ID0@192.168.0.1:46656, ID1@192.168.0.2:46656, ...)")
 
-	cmd.Flags().String(client.FlagChainID, "", "genesis file chain-id, if left blank will be randomly created")
+	cmd.Flags().String(flags.FlagChainID, "", "genesis file chain-id, if left blank will be randomly created")
+
+	cmd.Flags().String(flags.FlagKeyringBackend, flags.DefaultKeyringBackend, "Select keyring's backend (os|file|test)")
 
 	return cmd
 }
@@ -124,10 +131,11 @@ func InitTestnet(cmd *cobra.Command, config *tmconfig.Config, cdc *codec.Codec,
 	cyberdConfig := srvconfig.DefaultConfig()
 
 	var (
-		accs     []app.GenesisAccount
+		accs     []exported.GenesisAccount
 		genFiles []string
 	)
 
+	inBuf := bufio.NewReader(cmd.InOrStdin())
 	// generate private keys, node IDs, and initial transactions
 	for i := 0; i < numValidators; i++ {
 		nodeDirName := fmt.Sprintf("%s%d", nodeDirPrefix, i)
@@ -166,24 +174,19 @@ func InitTestnet(cmd *cobra.Command, config *tmconfig.Config, cdc *codec.Codec,
 		memo := fmt.Sprintf("%s@%s:26656", nodeIDs[i], ip)
 		genFiles = append(genFiles, config.GenesisFile())
 
-		buf := bufio.NewReader(cmd.InOrStdin())
-		prompt := fmt.Sprintf(
-			"Password for account '%s' (default %s):", nodeDirName, client.DefaultKeyPass,
+		kb, err := keys.NewKeyring(
+			sdk.KeyringServiceName(),
+			viper.GetString(flags.FlagKeyringBackend),
+			clientDir,
+			inBuf,
 		)
-
-		keyPass, err := client.GetPassword(prompt, buf)
-		if err != nil && keyPass != "" {
-			// An error was returned that either failed to read the password from
-			// STDIN or the given password is not empty but failed to meet minimum
-			// length requirements.
+		if err != nil {
 			return err
 		}
 
-		if keyPass == "" {
-			keyPass = client.DefaultKeyPass
-		}
+		keyPass := clientkeys.DefaultKeyPass
 
-		addr, secret, err := server.GenerateSaveCoinKey(clientDir, nodeDirName, keyPass, true)
+		addr, secret, err := server.GenerateSaveCoinKey(kb, nodeDirName, keyPass, true)
 		if err != nil {
 			_ = os.RemoveAll(outputDir)
 			return err
@@ -202,12 +205,11 @@ func InitTestnet(cmd *cobra.Command, config *tmconfig.Config, cdc *codec.Codec,
 		}
 
 		accStakingTokens := sdk.TokensFromConsensusPower(200000000)
-		accs = append(accs, app.GenesisAccount{
-			Address: addr,
-			Coins: sdk.Coins{
-				sdk.NewCoin(coin.CYB, accStakingTokens),
-			},
-		})
+		coins := sdk.Coins{
+			sdk.NewCoin(coin.CYB, accStakingTokens),
+		}
+		accs = append(accs, auth.NewBaseAccount(addr, coins.Sort(), nil, 0, 0))
+
 
 		rate := int64(i+1)*10
 		maxRate := int64(2*(i+1))*10
@@ -218,7 +220,7 @@ func InitTestnet(cmd *cobra.Command, config *tmconfig.Config, cdc *codec.Codec,
 			sdk.ValAddress(addr),
 			valPubKeys[i],
 			sdk.NewCoin(coin.CYB, valTokens),
-			staking.NewDescription(nodeDirName, nodeDirName, "fuckgoogle.page", "AI"),
+			staking.NewDescription(nodeDirName, nodeDirName, "fuckgoogle.page", "keybase", "AI"),
 			staking.NewCommissionRates(
 				sdk.NewDecWithPrec(rate, 2),
 				sdk.NewDecWithPrec(maxRate, 2),
@@ -226,15 +228,10 @@ func InitTestnet(cmd *cobra.Command, config *tmconfig.Config, cdc *codec.Codec,
 			sdk.OneInt(),
 		)
 
-		kb, err := keys.NewKeyBaseFromDir(clientDir)
-		if err != nil {
-			return err
-		}
-
 		tx := auth.NewStdTx([]sdk.Msg{msg}, auth.StdFee{}, []auth.StdSignature{}, memo)
-		txBldr := auth.NewTxBuilderFromCLI().WithChainID(chainID).WithMemo(memo).WithKeybase(kb)
+		txBldr := auth.NewTxBuilderFromCLI(inBuf).WithChainID(chainID).WithMemo(memo).WithKeybase(kb)
 
-		signedTx, err := txBldr.SignStdTx(nodeDirName, client.DefaultKeyPass, tx, false)
+		signedTx, err := txBldr.SignStdTx(nodeDirName, clientkeys.DefaultKeyPass, tx, false)
 		if err != nil {
 			_ = os.RemoveAll(outputDir)
 			return err
@@ -276,20 +273,15 @@ func InitTestnet(cmd *cobra.Command, config *tmconfig.Config, cdc *codec.Codec,
 }
 
 func initGenFiles(cdc *codec.Codec, mbm module.BasicManager, chainID string,
-	accs []app.GenesisAccount, genFiles []string, numValidators int) error {
-
-	//appGenState := mbm.DefaultGenesis()
-
-	// set the accounts in the genesis state
-	//appGenState = genaccounts.SetGenesisStateInAppState(cdc, appGenState, accs)
-
+	genAccounts []exported.GenesisAccount, genFiles []string, numValidators int,
+) error {
 	appGenState := app.NewDefaultGenesisState()
-	appGenState.Accounts = accs
+	appGenState.AuthData.Accounts = genAccounts
 	appGenState.Pool.NotBondedTokens = sdk.ZeroInt()
 	stake := sdk.ZeroInt()
 
-	for _, acc := range accs {
-		coins := acc.Coins.AmountOf(coin.CYB)
+	for _, acc := range genAccounts {
+		coins := acc.GetCoins().AmountOf(coin.CYB)
 		stake = stake.Add(coins)
 	}
 
@@ -324,7 +316,8 @@ func collectGenFiles(
 	cdc *codec.Codec, config *tmconfig.Config, chainID string,
 	monikers, nodeIDs []string, valPubKeys []crypto.PubKey,
 	numValidators int, outputDir, nodeDirPrefix, nodeDaemonHome string,
-	genAccIterator genutiltypes.GenesisAccountsIterator) error {
+	genAccIterator genutiltypes.GenesisAccountsIterator,
+) error {
 
 	var appState json.RawMessage
 	genTime := tmtime.Now()
@@ -347,7 +340,7 @@ func collectGenFiles(
 		}
 
 		//nodeAppState, err := genAppStateFromConfig(cdc, config, initCfg, *genDoc, genAccIterator)
-		nodeAppState, err := genAppStateFromConfig(cdc, config, initCfg, *genDoc)
+		nodeAppState, err := genutil.GenAppStateFromConfig(cdc, config, initCfg, *genDoc, genAccIterator)
 		if err != nil {
 			return err
 		}
@@ -396,12 +389,12 @@ func writeFile(name string, dir string, contents []byte) error {
 	writePath := filepath.Join(dir)
 	file := filepath.Join(writePath, name)
 
-	err := cmn.EnsureDir(writePath, 0700)
+	err := tmos.EnsureDir(writePath, 0700)
 	if err != nil {
 		return err
 	}
 
-	err = cmn.WriteFile(file, contents, 0600)
+	err = tmos.WriteFile(file, contents, 0600)
 	if err != nil {
 		return err
 	}
@@ -409,42 +402,42 @@ func writeFile(name string, dir string, contents []byte) error {
 	return nil
 }
 
-func genAppStateFromConfig(
-	cdc *codec.Codec, config *cfg.Config, initCfg genutil.InitConfig, genDoc types.GenesisDoc,
-) (appState json.RawMessage, err error) {
-
-	genFile := config.GenesisFile()
-	var (
-		appGenTxs       []auth.StdTx
-		persistentPeers string
-		genTxs          []json.RawMessage
-		jsonRawTx       json.RawMessage
-	)
-
-	// process genesis transactions, else create default genesis.json
-	appGenTxs, persistentPeers, err = collectStdTxs(cdc, config.Moniker, initCfg.GenTxsDir, genDoc)
-	if err != nil {
-		return
-	}
-
-	genTxs = make([]json.RawMessage, len(appGenTxs))
-	config.P2P.PersistentPeers = persistentPeers
-
-	for i, stdTx := range appGenTxs {
-		jsonRawTx, err = cdc.MarshalJSON(stdTx)
-		if err != nil {
-			return
-		}
-		genTxs[i] = jsonRawTx
-	}
-
-	cfg.WriteConfigFile(filepath.Join(config.RootDir, "config", "config.toml"), config)
-
-	appState, err = app.CyberdAppGenStateJSON(cdc, genDoc, genTxs)
-	if err != nil {
-		return
-	}
-
-	err = util.ExportGenesisFile(genFile, initCfg.ChainID, nil, appState)
-	return
-}
+//func genAppStateFromConfig(
+//	cdc *codec.Codec, config *cfg.Config, initCfg genutil.InitConfig, genDoc types.GenesisDoc,
+//) (appState json.RawMessage, err error) {
+//
+//	genFile := config.GenesisFile()
+//	var (
+//		appGenTxs       []auth.StdTx
+//		persistentPeers string
+//		genTxs          []json.RawMessage
+//		jsonRawTx       json.RawMessage
+//	)
+//
+//	// process genesis transactions, else create default genesis.json
+//	appGenTxs, persistentPeers, err = collectStdTxs(cdc, config.Moniker, initCfg.GenTxsDir, genDoc)
+//	if err != nil {
+//		return
+//	}
+//
+//	genTxs = make([]json.RawMessage, len(appGenTxs))
+//	config.P2P.PersistentPeers = persistentPeers
+//
+//	for i, stdTx := range appGenTxs {
+//		jsonRawTx, err = cdc.MarshalJSON(stdTx)
+//		if err != nil {
+//			return
+//		}
+//		genTxs[i] = jsonRawTx
+//	}
+//
+//	cfg.WriteConfigFile(filepath.Join(config.RootDir, "config", "config.toml"), config)
+//
+//	appState, err = app.CyberdAppGenStateJSON(cdc, genDoc, genTxs)
+//	if err != nil {
+//		return
+//	}
+//
+//	err = util.ExportGenesisFile(genFile, initCfg.ChainID, nil, appState)
+//	return
+//}

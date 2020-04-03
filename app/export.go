@@ -6,7 +6,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/x/slashing"
 	"github.com/cosmos/cosmos-sdk/x/staking"
-	"github.com/cybercongress/cyberd/x/link"
+	"github.com/cybercongress/go-cyber/x/link"
 	abci "github.com/tendermint/tendermint/abci/types"
 	tmtypes "github.com/tendermint/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -91,7 +91,7 @@ func (app *CyberdApp) prepForZeroHeightGenesis(ctx sdk.Context, jailWhiteList []
 		// donate any unwithdrawn outstanding reward fraction tokens to the community pool
 		scraps := app.distrKeeper.GetValidatorOutstandingRewards(ctx, val.GetOperator())
 		feePool := app.distrKeeper.GetFeePool(ctx)
-		feePool.CommunityPool = feePool.CommunityPool.Add(scraps)
+		feePool.CommunityPool = feePool.CommunityPool.Add(scraps...)
 		app.distrKeeper.SetFeePool(ctx, feePool)
 
 		app.distrKeeper.Hooks().AfterValidatorCreated(ctx, val.GetOperator())

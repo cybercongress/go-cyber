@@ -2,7 +2,7 @@ package types
 
 import (
 	"errors"
-	"github.com/cybercongress/cyberd/x/link"
+	"github.com/cybercongress/go-cyber/x/link"
 )
 
 type RankedCidNumber struct {
@@ -64,10 +64,10 @@ func (i NoopSearchIndex) Run() GetError {
 
 func (i NoopSearchIndex) Load(links link.Links) {}
 func (i NoopSearchIndex) Search(cidNumber link.CidNumber, page, perPage int) ([]RankedCidNumber, int, error) {
-	return nil, 0, errors.New("search is not allowed on this node")
+	return nil, 0, errors.New("search is not enabled on this node")
 }
 func (i NoopSearchIndex) Top(page, perPage int) ([]RankedCidNumber, int, error) {
-	return nil, 0, errors.New("search is not allowed on this node")
+	return nil, 0, errors.New("search and top is not enabled on this node")
 }
 func (i NoopSearchIndex) PutNewLinks(links []link.CompactLink) {}
 func (i NoopSearchIndex) PutNewRank(rank Rank)                 {}

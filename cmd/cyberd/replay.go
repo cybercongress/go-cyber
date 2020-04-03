@@ -7,18 +7,18 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/cybercongress/cyberd/x/rank"
-
 	cpm "github.com/otiai10/copy"
 	"github.com/spf13/cobra"
+
 	abci "github.com/tendermint/tendermint/abci/types"
-	cmn "github.com/tendermint/tendermint/libs/common"
+	tmos "github.com/tendermint/tendermint/libs/os"
 	"github.com/tendermint/tendermint/proxy"
 	tmsm "github.com/tendermint/tendermint/state"
 	tmstore "github.com/tendermint/tendermint/store"
 	tm "github.com/tendermint/tendermint/types"
 
-	"github.com/cybercongress/cyberd/app"
+	"github.com/cybercongress/go-cyber/app"
+	"github.com/cybercongress/go-cyber/x/rank"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/server"
@@ -29,7 +29,7 @@ import (
 func replayCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "replay <root-dir>",
-		Short: "Replay cyberd transactions",
+		Short: "Replay gaia transactions",
 		RunE: func(_ *cobra.Command, args []string) error {
 			return replayTxs(args[0])
 		},
@@ -43,10 +43,12 @@ func replayTxs(rootDir string) error {
 		// Copy the rootDir to a new directory, to preserve the old one.
 		fmt.Fprintln(os.Stderr, "Copying rootdir over")
 		oldRootDir := rootDir
+
 		rootDir = oldRootDir + "_replay"
-		if cmn.FileExists(rootDir) {
-			cmn.Exit(fmt.Sprintf("temporary copy dir %v already exists", rootDir))
+		if tmos.FileExists(rootDir) {
+			tmos.Exit(fmt.Sprintf("temporary copy dir %v already exists", rootDir))
 		}
+
 		if err := cpm.Copy(oldRootDir, rootDir); err != nil {
 			return err
 		}
@@ -91,11 +93,17 @@ func replayTxs(rootDir string) error {
 		return err
 	}
 
+	computeUnit := rank.GPU
+	if !gpuEnabled {
+		computeUnit = rank.CPU
+	}
+
 	// Application
 	fmt.Fprintln(os.Stderr, "Creating application")
-	myapp := app.NewCyberdApp(
-		ctx.Logger, appDB, traceStoreWriter, -1, uint(1), rank.GPU, false,
-		baseapp.SetPruning(store.PruneEverything), // nothing
+	gapp := app.NewCyberdApp(
+		ctx.Logger, appDB, traceStoreWriter, true, uint(1), map[int64]bool{},
+		computeUnit, searchEnabled,
+		baseapp.SetPruning(store.PruneNothing), // nothing
 	)
 
 	// Genesis
@@ -110,14 +118,17 @@ func replayTxs(rootDir string) error {
 	}
 	// tmsm.SaveState(tmDB, genState)
 
-	cc := proxy.NewLocalClientCreator(myapp)
+	cc := proxy.NewLocalClientCreator(gapp)
 	proxyApp := proxy.NewAppConns(cc)
 	err = proxyApp.Start()
 	if err != nil {
 		return err
 	}
 	defer func() {
-		_ = proxyApp.Stop()
+		err = proxyApp.Stop()
+		if err != nil {
+			return
+		}
 	}()
 
 	state := tmsm.LoadState(tmDB)

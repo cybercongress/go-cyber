@@ -4,8 +4,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkbank "github.com/cosmos/cosmos-sdk/x/bank"
 	"github.com/cosmos/cosmos-sdk/x/params"
-	"github.com/cybercongress/cyberd/types/coin"
-	"github.com/cybercongress/cyberd/x/bank/internal/types"
+	"github.com/cybercongress/go-cyber/types/coin"
+	"github.com/cybercongress/go-cyber/x/bank/internal/types"
 )
 
 type Keeper struct {
@@ -18,14 +18,11 @@ type Keeper struct {
 	coinsTransferHooks []types.CoinsTransferHook
 }
 
-func NewKeeper(accountKeeper types.AccountKeeper, subspace params.Subspace,
-	codespace sdk.CodespaceType, blacklistedAddrs map[string]bool) *Keeper {
+func NewKeeper(accountKeeper types.AccountKeeper, subspace params.Subspace, blacklistedAddrs map[string]bool) *Keeper {
 
 	return &Keeper{
-		Keeper:        sdkbank.NewBaseKeeper(accountKeeper, subspace, codespace, blacklistedAddrs),
+		Keeper:        sdkbank.NewBaseKeeper(accountKeeper, subspace, blacklistedAddrs),
 		accountKeeper: accountKeeper,
-		//stakingKeeper:      stakingKeeper,
-		//supplyKeeper:       supplyKeeper,
 		coinsTransferHooks: make([]types.CoinsTransferHook, 0),
 	}
 }
@@ -44,7 +41,7 @@ func (k *Keeper) SetSupplyKeeper(sk types.SupplyKeeper) {
 
 /* Override methods */
 // sdk accountKeeper keeper is not interface yet
-func (k Keeper) AddCoins(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coins) (sdk.Coins, sdk.Error) {
+func (k Keeper) AddCoins(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coins) (sdk.Coins, error) {
 	coins, err := k.Keeper.AddCoins(ctx, addr, amt)
 	if err == nil {
 		k.onCoinsTransfer(ctx, nil, addr)
@@ -52,7 +49,7 @@ func (k Keeper) AddCoins(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coins) (s
 	return coins, err
 }
 
-func (k Keeper) SubtractCoins(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coins) (sdk.Coins, sdk.Error) {
+func (k Keeper) SubtractCoins(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coins) (sdk.Coins, error) {
 	coins, err := k.Keeper.SubtractCoins(ctx, addr, amt)
 	if err == nil {
 		k.onCoinsTransfer(ctx, nil, addr)
@@ -60,7 +57,7 @@ func (k Keeper) SubtractCoins(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coin
 	return coins, err
 }
 
-func (k Keeper) SetCoins(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coins) sdk.Error {
+func (k Keeper) SetCoins(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coins) error {
 	err := k.Keeper.SetCoins(ctx, addr, amt)
 	if err == nil {
 		k.onCoinsTransfer(ctx, nil, addr)
@@ -69,7 +66,7 @@ func (k Keeper) SetCoins(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coins) sd
 }
 
 func (k Keeper) SendCoins(
-	ctx sdk.Context, fromAddr sdk.AccAddress, toAddr sdk.AccAddress, amt sdk.Coins) sdk.Error {
+	ctx sdk.Context, fromAddr sdk.AccAddress, toAddr sdk.AccAddress, amt sdk.Coins) error {
 
 	err := k.Keeper.SendCoins(ctx, fromAddr, toAddr, amt)
 	if err == nil {
@@ -79,7 +76,7 @@ func (k Keeper) SendCoins(
 }
 
 func (k Keeper) InputOutputCoins(
-	ctx sdk.Context, inputs []sdkbank.Input, outputs []sdkbank.Output) sdk.Error {
+	ctx sdk.Context, inputs []sdkbank.Input, outputs []sdkbank.Output) error {
 	err := k.Keeper.InputOutputCoins(ctx, inputs, outputs)
 	if err == nil {
 		for _, i := range inputs {
@@ -92,7 +89,7 @@ func (k Keeper) InputOutputCoins(
 	return err
 }
 
-func (k Keeper) DelegateCoins(ctx sdk.Context, delegatorAddr, moduleAccAddr sdk.AccAddress, amt sdk.Coins) sdk.Error {
+func (k Keeper) DelegateCoins(ctx sdk.Context, delegatorAddr, moduleAccAddr sdk.AccAddress, amt sdk.Coins) error {
 	err := k.Keeper.DelegateCoins(ctx, delegatorAddr, moduleAccAddr, amt)
 	if err == nil {
 		k.onCoinsTransfer(ctx, nil, moduleAccAddr)
@@ -100,7 +97,7 @@ func (k Keeper) DelegateCoins(ctx sdk.Context, delegatorAddr, moduleAccAddr sdk.
 	return err
 }
 
-func (k Keeper) UndelegateCoins(ctx sdk.Context, moduleAccAddr, delegatorAddr sdk.AccAddress, amt sdk.Coins) sdk.Error {
+func (k Keeper) UndelegateCoins(ctx sdk.Context, moduleAccAddr, delegatorAddr sdk.AccAddress, amt sdk.Coins) error {
 	err := k.Keeper.UndelegateCoins(ctx, moduleAccAddr, delegatorAddr, amt)
 	if err == nil {
 		k.onCoinsTransfer(ctx, nil, delegatorAddr)

@@ -1,18 +1,17 @@
 package keeper
 
 import (
-	"fmt"
-
 	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/cybercongress/cyberd/x/bandwidth/exported"
-	"github.com/cybercongress/cyberd/x/bandwidth/internal/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	abci "github.com/tendermint/tendermint/abci/types"
+
+	"github.com/cybercongress/go-cyber/x/bandwidth/internal/types"
 )
 
 // NewQuerier returns a minting Querier handler. k exported.StateKeeper
-func NewQuerier(k exported.Keeper) sdk.Querier {
-	return func(ctx sdk.Context, path []string, _ abci.RequestQuery) ([]byte, sdk.Error) {
+func NewQuerier(k BaseAccountBandwidthKeeper) sdk.Querier {
+	return func(ctx sdk.Context, path []string, _ abci.RequestQuery) ([]byte, error) {
 		switch path[0] {
 		case types.QueryParameters:
 			return queryParams(ctx, k)
@@ -43,105 +42,105 @@ func NewQuerier(k exported.Keeper) sdk.Querier {
 
 
 		default:
-			return nil, sdk.ErrUnknownRequest(fmt.Sprintf("unknown rank query endpoint: %s", path[0]))
+			return nil, sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "unknown query path: %s", path[0])
 		}
 	}
 }
 
-func queryParams(ctx sdk.Context, k exported.Keeper) ([]byte, sdk.Error) {
+func queryParams(ctx sdk.Context, k BaseAccountBandwidthKeeper) ([]byte, error) {
 	params := k.GetParams(ctx)
 
 	res, err := codec.MarshalJSONIndent(types.ModuleCdc, params)
 	if err != nil {
-		return nil, sdk.ErrInternal(sdk.AppendMsgToErr("failed to marshal JSON", err.Error()))
+		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
 	}
 
 	return res, nil
 }
 
-func queryDesirableBandwidth(ctx sdk.Context, k exported.Keeper) ([]byte, sdk.Error) {
+func queryDesirableBandwidth(ctx sdk.Context, k BaseAccountBandwidthKeeper) ([]byte, error) {
 	params := k.GetParams(ctx)
 
 	res, err := codec.MarshalJSONIndent(types.ModuleCdc, params.DesirableBandwidth)
 	if err != nil {
-		return nil, sdk.ErrInternal(sdk.AppendMsgToErr("failed to marshal JSON", err.Error()))
+		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
 	}
 
 	return res, nil
 }
 
-func queryMaxBlockBandwidth(ctx sdk.Context, k exported.Keeper) ([]byte, sdk.Error) {
+func queryMaxBlockBandwidth(ctx sdk.Context, k BaseAccountBandwidthKeeper) ([]byte, error) {
 	params := k.GetParams(ctx)
 
 	res, err := codec.MarshalJSONIndent(types.ModuleCdc, params.MaxBlockBandwidth)
 	if err != nil {
-		return nil, sdk.ErrInternal(sdk.AppendMsgToErr("failed to marshal JSON", err.Error()))
+		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
 	}
 
 	return res, nil
 }
 
-func queryRecoveryPeriod(ctx sdk.Context, k exported.Keeper) ([]byte, sdk.Error) {
+func queryRecoveryPeriod(ctx sdk.Context, k BaseAccountBandwidthKeeper) ([]byte, error) {
 	params := k.GetParams(ctx)
 
 	res, err := codec.MarshalJSONIndent(types.ModuleCdc, params.RecoveryPeriod)
 	if err != nil {
-		return nil, sdk.ErrInternal(sdk.AppendMsgToErr("failed to marshal JSON", err.Error()))
+		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
 	}
 
 	return res, nil
 }
 
-func queryAdjustPricePeriod(ctx sdk.Context, k exported.Keeper) ([]byte, sdk.Error) {
+func queryAdjustPricePeriod(ctx sdk.Context, k BaseAccountBandwidthKeeper) ([]byte, error) {
 	params := k.GetParams(ctx)
 
 	res, err := codec.MarshalJSONIndent(types.ModuleCdc, params.AdjustPricePeriod)
 	if err != nil {
-		return nil, sdk.ErrInternal(sdk.AppendMsgToErr("failed to marshal JSON", err.Error()))
+		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
 	}
 
 	return res, nil
 }
 
-func queryBaseCreditPrice(ctx sdk.Context, k exported.Keeper) ([]byte, sdk.Error) {
+func queryBaseCreditPrice(ctx sdk.Context, k BaseAccountBandwidthKeeper) ([]byte, error) {
 	params := k.GetParams(ctx)
 
 	res, err := codec.MarshalJSONIndent(types.ModuleCdc, params.BaseCreditPrice)
 	if err != nil {
-		return nil, sdk.ErrInternal(sdk.AppendMsgToErr("failed to marshal JSON", err.Error()))
+		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
 	}
 
 	return res, nil
 }
 
-func queryTxCost(ctx sdk.Context, k exported.Keeper) ([]byte, sdk.Error) {
+func queryTxCost(ctx sdk.Context, k BaseAccountBandwidthKeeper) ([]byte, error) {
 	params := k.GetParams(ctx)
 
 	res, err := codec.MarshalJSONIndent(types.ModuleCdc, params.TxCost)
 	if err != nil {
-		return nil, sdk.ErrInternal(sdk.AppendMsgToErr("failed to marshal JSON", err.Error()))
+		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
 	}
 
 	return res, nil
 }
 
-func queryLinkMsgCost(ctx sdk.Context, k exported.Keeper) ([]byte, sdk.Error) {
+func queryLinkMsgCost(ctx sdk.Context, k BaseAccountBandwidthKeeper) ([]byte, error) {
 	params := k.GetParams(ctx)
 
 	res, err := codec.MarshalJSONIndent(types.ModuleCdc, params.LinkMsgCost)
 	if err != nil {
-		return nil, sdk.ErrInternal(sdk.AppendMsgToErr("failed to marshal JSON", err.Error()))
+		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
 	}
 
 	return res, nil
 }
 
-func queryNonLinkMsgCost(ctx sdk.Context, k exported.Keeper) ([]byte, sdk.Error) {
+func queryNonLinkMsgCost(ctx sdk.Context, k BaseAccountBandwidthKeeper) ([]byte, error) {
 	params := k.GetParams(ctx)
 
 	res, err := codec.MarshalJSONIndent(types.ModuleCdc, params.NonLinkMsgCost)
 	if err != nil {
-		return nil, sdk.ErrInternal(sdk.AppendMsgToErr("failed to marshal JSON", err.Error()))
+		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
 	}
 
 	return res, nil

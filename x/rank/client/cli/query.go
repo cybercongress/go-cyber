@@ -3,7 +3,8 @@ package cli
 import (
 	"fmt"
 
-	"github.com/cybercongress/cyberd/x/rank/internal/types"
+	"github.com/cybercongress/go-cyber/x/rank/internal/types"
+	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cobra"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -22,7 +23,7 @@ func GetQueryCmd(cdc *codec.Codec) *cobra.Command {
 	}
 
 	rankingQueryCmd.AddCommand(
-		client.GetCommands(
+		flags.GetCommands(
 			GetCmdQueryParams(cdc),
 			GetCmdQueryCalculationWindow(cdc),
 			GetCmdQueryDampingFactor(cdc),

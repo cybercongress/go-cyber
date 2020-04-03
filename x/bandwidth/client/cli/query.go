@@ -3,7 +3,8 @@ package cli
 import (
 	"fmt"
 
-	"github.com/cybercongress/cyberd/x/bandwidth/internal/types"
+	"github.com/cybercongress/go-cyber/x/bandwidth/internal/types"
+	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cobra"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -13,7 +14,7 @@ import (
 
 // GetQueryCmd returns the cli query commands for the bandwidth module.
 func GetQueryCmd(cdc *codec.Codec) *cobra.Command {
-	rankingQueryCmd := &cobra.Command{
+	bandwidthQueryCmd := &cobra.Command{
 		Use:                        types.ModuleName,
 		Short:                      "Querying commands for the bandwidth module",
 		DisableFlagParsing:         true,
@@ -21,8 +22,8 @@ func GetQueryCmd(cdc *codec.Codec) *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
-	rankingQueryCmd.AddCommand(
-		client.GetCommands(
+	bandwidthQueryCmd.AddCommand(
+		flags.GetCommands(
 			GetCmdQueryParams(cdc),
 			GetCmdQueryDesirableBandwidth(cdc),
 			GetCmdQueryMaxBlockBandwidth(cdc),
@@ -35,7 +36,7 @@ func GetQueryCmd(cdc *codec.Codec) *cobra.Command {
 		)...,
 	)
 
-	return rankingQueryCmd
+	return bandwidthQueryCmd
 }
 
 // GetCmdQueryParams implements a command to return the current minting
@@ -43,7 +44,7 @@ func GetQueryCmd(cdc *codec.Codec) *cobra.Command {
 func GetCmdQueryParams(cdc *codec.Codec) *cobra.Command {
 	return &cobra.Command{
 		Use:   "params",
-		Short: "Query the current rank parameters",
+		Short: "Query the current bandwidth parameters",
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cliCtx := context.NewCLIContext().WithCodec(cdc)
@@ -68,7 +69,7 @@ func GetCmdQueryParams(cdc *codec.Codec) *cobra.Command {
 // desirable bandwidth of network.
 func GetCmdQueryDesirableBandwidth(cdc *codec.Codec) *cobra.Command {
 	return &cobra.Command{
-		Use:   "window",
+		Use:   "desirable",
 		Short: "Query the current desirable bandwidth",
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {

@@ -1,8 +1,10 @@
 package keeper
 
 import (
-	"github.com/cybercongress/cyberd/x/link"
-	"github.com/cybercongress/cyberd/x/rank/internal/types"
+	"math"
+
+	"github.com/cybercongress/go-cyber/x/link"
+	"github.com/cybercongress/go-cyber/x/rank/internal/types"
 )
 
 
@@ -61,6 +63,7 @@ func step(ctx *types.CalculationContext, defaultRankWithCorrection float64, damp
 				linkStake := getOverallLinkStake(ctx, j, cid)
 				jCidOutStake := getOverallOutLinksStake(ctx, j)
 				weight := float64(linkStake) / float64(jCidOutStake)
+				if math.IsNaN(weight) { weight = float64(0) }
 				ksum = prevrank[j]*weight + ksum //force no-fma here by explicit conversion
 			}
 			rank[cid] = ksum*dampingFactor + defaultRankWithCorrection //force no-fma here by explicit conversion

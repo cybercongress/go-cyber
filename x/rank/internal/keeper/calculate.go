@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"github.com/cybercongress/cyberd/x/rank/internal/types"
+	"github.com/cybercongress/go-cyber/x/rank/internal/types"
 
 	"github.com/tendermint/tendermint/libs/log"
 
@@ -18,7 +18,7 @@ func CalculateRank(ctx *types.CalculationContext, unit types.ComputeUnit, logger
 		rank = types.NewRank(calculateRankGPU(ctx, logger), logger, ctx.FullTree)
 	}
 	logger.Info(
-		"Rank calculated", "time", time.Since(start), "links", ctx.LinksCount, "cids", ctx.CidsCount,
+		"Rank calculated", "time", time.Since(start), "links", ctx.LinksCount, "objects", ctx.CidsCount,
 		"hash", hex.EncodeToString(rank.MerkleTree.RootHash()),
 	)
 	return

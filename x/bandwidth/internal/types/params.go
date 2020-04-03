@@ -2,149 +2,246 @@ package types
 
 import (
 	"fmt"
-	"github.com/cosmos/cosmos-sdk/x/params/subspace"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"strings"
+	"github.com/cosmos/cosmos-sdk/x/params"
 )
 
-// Default parameter values
-const (
-	// DefaultParamspace default name for parameter store
-	DefaultParamspace = ModuleName
-
-	MinLinkMsgCost       = 1
-	MinRecoveryPeriod    = 100
-	MinAdjustPricePeriod = 1
-	MinTxCost            = 1
-	MinNonLinkMsgCost    = 1
-	MinDesirableBandwidth = 10000
-	MinBlockBandwidth    = 100
-)
-
-// Parameter keys
+// Parameter store keys
 var (
-	// Bandwidth cost of specific messages and tx itself
+	KeyTxCost             = []byte("TxCost")
 	KeyLinkMsgCost 		  = []byte("LinkMsgCost")
-	// Number of blocks to recover full bandwidth
+	KeyNonLinkMsgCost     = []byte("NonLinkMsgCost")
 	KeyRecoveryPeriod     = []byte("RecoveryPeriod")
-	// Number of blocks before next adjust price
 	KeyAdjustPricePeriod  = []byte("AdjustPricePeriod")
 	KeyBaseCreditPrice    = []byte("BaseCreditPrice")
-	// Maximum bandwidth of network
 	KeyDesirableBandwidth = []byte("DesirableBandwidth")
-	KeyMaxBlockBandwidth = []byte("MaxBlockBandwidth")
-	KeyTxCost             = []byte("TxCost")
-	KeyNonLinkMsgCost     = []byte("NonLinkMsgCost")
+	KeyMaxBlockBandwidth  = []byte("MaxBlockBandwidth")
 )
 
 // Params defines the parameters for the bandwidth module.
+// TODO move int64 -> uint64 for params
 type Params struct {
-	LinkMsgCost                   int64  `json:"link_msg_cost" yaml:"link_msg_cost"`
-	RecoveryPeriod                int64  `json:"recovery_period" yaml:"recovery_period"`
-	AdjustPricePeriod             int64  `json:"adjust_price_period" yaml:"adjust_price_period"`
-	BaseCreditPrice               sdk.Dec `json:"base_credit_price" yaml:"base_credit_price"`
-	DesirableBandwidth            int64  `json:"desirable_bandwidth" yaml:"desirable_bandwidth"`
-	MaxBlockBandwidth			  uint64  `json:"max_block_bandwidth" yaml:"max_block_bandwidth"`
-	TxCost                        int64  `json:"tx_cost" yaml:"tx_cost"`
-	NonLinkMsgCost                int64  `json:"non_link_msg_cost" yaml:"non_link_msg_cost"`
+	TxCost             int64   `json:"tx_cost" yaml:"tx_cost"`
+	LinkMsgCost        int64   `json:"link_msg_cost" yaml:"link_msg_cost"`
+	NonLinkMsgCost     int64   `json:"non_link_msg_cost" yaml:"non_link_msg_cost"`
+	RecoveryPeriod     int64   `json:"recovery_period" yaml:"recovery_period"`
+	AdjustPricePeriod  int64   `json:"adjust_price_period" yaml:"adjust_price_period"`
+	BaseCreditPrice    sdk.Dec `json:"base_credit_price" yaml:"base_credit_price"`
+	DesirableBandwidth int64   `json:"desirable_bandwidth" yaml:"desirable_bandwidth"`
+	MaxBlockBandwidth  uint64  `json:"max_block_bandwidth" yaml:"max_block_bandwidth"`
 }
 
-// ParamSetPairs implements the ParamSet interface and returns all the key/value pairs
-// pairs of bandwidth module's parameters.
-func (p *Params) ParamSetPairs() subspace.ParamSetPairs {
-	return subspace.ParamSetPairs{
-		{KeyLinkMsgCost, &p.LinkMsgCost},
-		{KeyRecoveryPeriod, &p.RecoveryPeriod},
-		{KeyAdjustPricePeriod, &p.AdjustPricePeriod},
-		{KeyBaseCreditPrice, &p.BaseCreditPrice},
-		{KeyDesirableBandwidth, &p.DesirableBandwidth},
-		{KeyMaxBlockBandwidth, &p.MaxBlockBandwidth},
-		{KeyTxCost, &p.TxCost},
-		{KeyNonLinkMsgCost, &p.NonLinkMsgCost},
-	}
+func ParamKeyTable() params.KeyTable {
+	return params.NewKeyTable().RegisterParamSet(&Params{})
 }
 
-// String implements the stringer interface.
-func (p Params) String() string {
-	var sb strings.Builder
-	sb.WriteString("Params: \n")
-	sb.WriteString(fmt.Sprintf("LinkMsgCost: %d\n", p.LinkMsgCost))
-	sb.WriteString(fmt.Sprintf("RecoveryPeriod: %d\n", p.RecoveryPeriod))
-	sb.WriteString(fmt.Sprintf("AdjustPricePeriod: %d\n", p.AdjustPricePeriod))
-	sb.WriteString(fmt.Sprintf("BaseCreditPrice: %d\n", p.BaseCreditPrice))
-	sb.WriteString(fmt.Sprintf("DesirableBandwidth: %d\n", p.DesirableBandwidth))
-	sb.WriteString(fmt.Sprintf("DesirableBandwidth: %d\n", p.DesirableBandwidth))
-	sb.WriteString(fmt.Sprintf("TxCost: %d\n", p.TxCost))
-	sb.WriteString(fmt.Sprintf("NonLinkMsgCost: %d\n", p.NonLinkMsgCost))
-
-	return sb.String()
-}
-
-// Validate checks that the parameters have valid values.
-func (p Params) Validate() error {
-	if p.LinkMsgCost < MinLinkMsgCost {
-		return fmt.Errorf("invalid link msg cost: %d, can not be less then %d", p.LinkMsgCost, MinLinkMsgCost)
-	}
-	if p.RecoveryPeriod < MinRecoveryPeriod {
-		return fmt.Errorf("invalid recovery period: %d, can not be less then %d", p.RecoveryPeriod, MinRecoveryPeriod)
-	}
-	if p.AdjustPricePeriod < MinAdjustPricePeriod {
-		return fmt.Errorf("invalid adjust price period: %d, can not be less then %d", p.AdjustPricePeriod, MinAdjustPricePeriod)
-	}
-	if p.BaseCreditPrice.LT(sdk.OneDec()) {
-		return fmt.Errorf("base credit price parameter must be >= 1, is %s", p.BaseCreditPrice)
-	}
-	if p.BaseCreditPrice.GT(sdk.NewDec(100)) {
-		return fmt.Errorf("base credit price parameter must be <= 100, is %s", p.BaseCreditPrice)
-	}
-	if p.DesirableBandwidth < MinDesirableBandwidth {
-		return fmt.Errorf("invalid desirable bandwidth: %d, can not be less then %d", p.DesirableBandwidth, MinDesirableBandwidth)
-	}
-	if p.MaxBlockBandwidth < MinBlockBandwidth {
-		return fmt.Errorf("invalid max block bandwidth: %d, can not be less then %d", p.MaxBlockBandwidth, MinBlockBandwidth)
-	}
-	if p.TxCost < MinTxCost {
-		return fmt.Errorf("invalid tx cost: %d, can not be less then %d", p.TxCost, MinTxCost)
-	}
-	if p.NonLinkMsgCost < MinNonLinkMsgCost {
-		return fmt.Errorf("invalid non link msg cost: %d, can not be less then %d", p.NonLinkMsgCost, MinNonLinkMsgCost)
-	}
-	return nil
-}
-
-// NewParams creates a new Params object
 func NewParams(
-	linkMsgCost int64,
-	recoveryPeriod int64,
-	adjustPricePeriod int64,
-	baseCreditPrice sdk.Dec,
+	txCost 			   int64,
+	linkMsgCost        int64,
+	nonLinkMsgCost     int64,
+	recoveryPeriod     int64,
+	adjustPricePeriod  int64,
+	baseCreditPrice    sdk.Dec,
 	desirableBandwidth int64,
-	maxBlockBandwidth uint64,
-	txCost int64,
-	nonLinkMsgCost int64) Params {
+	maxBlockBandwidth  uint64,
+) Params {
 
 	return Params{
+		TxCost:             txCost,
 		LinkMsgCost:        linkMsgCost,
+		NonLinkMsgCost:     nonLinkMsgCost,
 		RecoveryPeriod:     recoveryPeriod,
 		AdjustPricePeriod:  adjustPricePeriod,
 		BaseCreditPrice:    baseCreditPrice,
 		DesirableBandwidth: desirableBandwidth,
 		MaxBlockBandwidth:  maxBlockBandwidth,
-		TxCost:             txCost,
-		NonLinkMsgCost:     nonLinkMsgCost,
 	}
 }
 
-// NewDefaultParams returns a default set of parameters.
-func NewDefaultParams() Params {
+func DefaultParams() Params {
 	return Params{
-		LinkMsgCost:        int64(100),
-		RecoveryPeriod:     int64(18000),
+		TxCost:             int64(3000),
+		LinkMsgCost:        int64(1000),
+		NonLinkMsgCost:     int64(5000),
+		RecoveryPeriod:     int64(1600000),
 		AdjustPricePeriod:  int64(10),
-		BaseCreditPrice:    sdk.NewDec(1),
+		BaseCreditPrice:    sdk.NewDec(50),
 		DesirableBandwidth: int64(200000000),
-		MaxBlockBandwidth:  uint64(200000000*10/18000),
-		TxCost:             int64(300),
-		NonLinkMsgCost:     int64(500),
+		MaxBlockBandwidth:  uint64(200000000*10/16000),
+	}
+}
+
+// Validate checks that the parameters have valid values.
+func (p Params) Validate() error {
+	if err := validateTxCost(p.TxCost); err != nil {
+		return err
+	}
+	if err := validateLinkMsgCost(p.TxCost); err != nil {
+		return err
+	}
+	if err := validateNonLinkMsgCost(p.NonLinkMsgCost); err != nil {
+		return err
+	}
+	if err := validateRecoveryPeriod(p.RecoveryPeriod); err != nil {
+		return err
+	}
+	if err := validateAdjustPricePeriod(p.AdjustPricePeriod); err != nil {
+		return err
+	}
+	if err := validateBaseCreditPrice(p.BaseCreditPrice); err != nil {
+		return err
+	}
+	if err := validateDesirableBandwidth(p.DesirableBandwidth); err != nil {
+		return err
+	}
+	if err := validateMaxBlockBanwidth(p.MaxBlockBandwidth); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (p Params) String() string {
+
+	return fmt.Sprintf(`Bandwidth params:
+  LinkMsgCost:        %d
+  TxCost:			  %d
+  NonLinkMsgCost:	  %d
+  RecoveryPeriod:     %d
+  AdjustPricePeriod:  %d
+  BaseCreditPrice:    %d
+  DesirableBandwidth: %d
+  MaxBlockBandidth:   %d
+`,
+		p.LinkMsgCost, p.RecoveryPeriod, p.AdjustPricePeriod,
+		p.BaseCreditPrice, p.DesirableBandwidth, p.MaxBlockBandwidth,
+		p.TxCost, p.NonLinkMsgCost,
+	)
+}
+
+// TODO improve validations for parameters
+func validateTxCost(i interface{}) error {
+	v, ok := i.(int64)
+
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if v <= int64(10) {
+		return fmt.Errorf("tx cost too low: %d", v)
+	}
+
+	return nil
+}
+
+func validateLinkMsgCost(i interface{}) error {
+	v, ok := i.(int64)
+
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if v <= int64(10) {
+		return fmt.Errorf("link msg cost too low: %d", v)
+	}
+
+	return nil
+}
+
+func validateNonLinkMsgCost(i interface{}) error {
+	v, ok := i.(int64)
+
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if v <= int64(10) {
+		return fmt.Errorf("non link msg too low: %d", v)
+	}
+
+	return nil
+}
+
+func validateRecoveryPeriod(i interface{}) error {
+	v, ok := i.(int64)
+
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if v <= int64(100) {
+		return fmt.Errorf("recovery period too low: %d", v)
+	}
+
+	return nil
+}
+
+func validateAdjustPricePeriod(i interface{}) error {
+	v, ok := i.(int64)
+
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if v <= int64(2) {
+		return fmt.Errorf("adjust price period too low: %d", v)
+	}
+
+	return nil
+}
+
+func validateBaseCreditPrice(i interface{}) error {
+	v, ok := i.(sdk.Dec)
+
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if v.LT(sdk.OneDec()) {
+		return fmt.Errorf("base credit price too low: %s", v)
+	}
+
+	return nil
+}
+
+func validateDesirableBandwidth(i interface{}) error {
+	v, ok := i.(int64)
+
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if v <= int64(10000) {
+		return fmt.Errorf("desirable bandwidth too low: %d", v)
+	}
+
+	return nil
+}
+
+func validateMaxBlockBanwidth(i interface{}) error {
+	v, ok := i.(uint64)
+
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if v <= uint64(100) {
+		return fmt.Errorf("max block bandwidth too low: %d", v)
+	}
+
+	return nil
+}
+
+func (p *Params) ParamSetPairs() params.ParamSetPairs {
+	return params.ParamSetPairs{
+		params.NewParamSetPair(KeyTxCost, &p.TxCost, validateTxCost),
+		params.NewParamSetPair(KeyLinkMsgCost, &p.LinkMsgCost, validateLinkMsgCost),
+		params.NewParamSetPair(KeyNonLinkMsgCost, &p.NonLinkMsgCost, validateNonLinkMsgCost),
+		params.NewParamSetPair(KeyRecoveryPeriod, &p.RecoveryPeriod, validateRecoveryPeriod),
+		params.NewParamSetPair(KeyAdjustPricePeriod, &p.AdjustPricePeriod, validateAdjustPricePeriod),
+		params.NewParamSetPair(KeyBaseCreditPrice, &p.BaseCreditPrice, validateBaseCreditPrice),
+		params.NewParamSetPair(KeyDesirableBandwidth, &p.DesirableBandwidth, validateDesirableBandwidth),
+		params.NewParamSetPair(KeyMaxBlockBandwidth, &p.MaxBlockBandwidth, validateMaxBlockBanwidth),
 	}
 }

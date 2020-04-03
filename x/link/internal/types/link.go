@@ -2,7 +2,7 @@ package types
 
 import (
 	"encoding/binary"
-	. "github.com/cybercongress/cyberd/types"
+	. "github.com/cybercongress/go-cyber/types"
 )
 
 type Link struct {
@@ -16,13 +16,19 @@ type CompactLink struct {
 	acc  AccNumber
 }
 
+type LinkFilter func(CompactLink) bool
+
 func NewLink(from CidNumber, to CidNumber, acc AccNumber) CompactLink {
-	return CompactLink{from: from, to: to, acc: acc}
+	return CompactLink{
+		from: from,
+		to:   to,
+		acc:  acc,
+	}
 }
 
 func (l CompactLink) From() CidNumber { return l.from }
-func (l CompactLink) To() CidNumber   { return l.to }
-func (l CompactLink) Acc() AccNumber  { return l.acc }
+func (l CompactLink) To()   CidNumber { return l.to }
+func (l CompactLink) Acc()  AccNumber { return l.acc }
 
 func UnmarshalBinaryLink(b []byte) CompactLink {
 	return NewLink(

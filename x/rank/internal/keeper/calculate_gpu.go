@@ -5,8 +5,8 @@ package keeper
 import (
 	"github.com/tendermint/tendermint/libs/log"
 
-	"github.com/cybercongress/cyberd/x/link"
-	"github.com/cybercongress/cyberd/x/rank/internal/types"
+	"github.com/cybercongress/go-cyber/x/link"
+	"github.com/cybercongress/go-cyber/x/rank/internal/types"
 
 	"time"
 )
@@ -41,8 +41,8 @@ func calculateRankGPU(ctx *types.CalculationContext, logger log.Logger) []float6
 	inLinksUsers := make([]uint64, 0)
 	outLinksUsers := make([]uint64, 0)
 
-	// todo reduce size of stake by passing only participating in linking stakes.
-	// todo need to investigate why GetStakes returns accounts with one missed index, think this is goes from some sdk module
+	// TODO reduce size of stake by passing only participating in linking stakes.
+	// TODO need to investigate why GetStakes returns accounts with missed index, some sdk module?
 	stakes := make([]uint64, stakesCount+10)
 	for acc, stake := range ctx.GetStakes() {
 		stakes[uint64(acc)] = stake
@@ -58,7 +58,6 @@ func calculateRankGPU(ctx *types.CalculationContext, logger log.Logger) []float6
 					inLinksUsers = append(inLinksUsers, uint64(acc))
 				}
 			}
-			//linksCount  = uint64(inLinksCount[i])
 		}
 
 		if outLinks, ok := outLinks[link.CidNumber(i)]; ok {
@@ -88,7 +87,7 @@ func calculateRankGPU(ctx *types.CalculationContext, logger log.Logger) []float6
 	cDampingFactor := C.double(dampingFactor)
 	cTolerance := C.double(tolerance)
 
-	logger.Info("Rank: data for gpu preparation", "time", time.Since(start))
+	logger.Info("Rank: data for gpu transformation", "time", time.Since(start))
 
 	start = time.Now()
 	cRank := (*C.double)(&rank[0])
