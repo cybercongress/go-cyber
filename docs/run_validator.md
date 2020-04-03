@@ -298,15 +298,13 @@ root@node:~/.cyberd# tree
 
 As a result of this operation `data` and `config` folders should appear inside your *$DAEMON_HOME/* folder.
 
-8. Download and place `genesis.json` and `config.toml`
+8. Download `genesis.json` and `config.toml` and place them to your `.cyberd/config`:
 
 ```bash
 cd $DAEMON_HOME/config
 wget <https://to_config.toml_file>
-wget <https://to_genesis.json_file>
+wget -O genesis.json https://ipfs.io/ipfs/QmfYSpPY2BqiPa528sbSP11dAHFBhw3Yj5wh81x65D9hZM
 ```
-
-> TO DO update links for genesis and config
 
 ### Setup cyberd service (Ubuntu)
 
