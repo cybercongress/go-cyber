@@ -43,7 +43,7 @@ jobs:
       - run:
           name: Update Changelog
           command: |
-            cid=$(docker run -d -it ferrarimarco/github-changelog-generator:1.14.3 -u cybercongress -p cyberd --exclude-tags-regex .*[.].*[.].*[.].* --token $CHANGELOG_GITHUB_TOKEN )
+            cid=$(docker run -d -it ferrarimarco/github-changelog-generator:1.14.3 -u cybercongress -p go-cyber --exclude-tags-regex .*[.].*[.].*[.].* --token $CHANGELOG_GITHUB_TOKEN )
             docker attach $cid
             docker cp $cid:/usr/local/src/your-app/CHANGELOG.md ./CHANGELOG.md
             diff=$(git diff CHANGELOG.md)
