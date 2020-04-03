@@ -71,8 +71,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends wget curl
 ###############################################################################
 # To slow using ipget, currently we use gateway
 # PUT needed CID_OF_GENESIS and CID_OF_CONFIG here
-RUN wget -O /genesis.json https://ipfs.io/ipfs/<CID_OF_GENESIS>
-RUN wget -O /config.toml https://ipfs.io/ipfs/<CID_OF_CONFIG>
+RUN wget -O /genesis.json https://ipfs.io/ipfs/QmZHpLc3H5RMXp3Z4LURNpKgNfXd3NZ8pZLYbjNFPL6T5n
+RUN wget -O /config.toml https://ipfs.io/ipfs/QmSEPs57PyaK5envPyJ16jQZ9dwfhDePz6fmG4WaLWFVts
 
 WORKDIR /
 
