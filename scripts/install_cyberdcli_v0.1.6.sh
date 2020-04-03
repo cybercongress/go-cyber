@@ -15,8 +15,8 @@ PLATFORM=$(uname)
 case "$PLATFORM" in
   "Darwin")
     # macOS
-    curl  https://mars.cybernode.ai/go-cyber/go_cyber_v0.1.6_darwin-amd64.tar.gz --output go_cyber_v0.1.6_darwin-amd64.tar.gz
-    tar -xzf go_cyber_v0.1.6_darwin-amd64.tar.gz -C ./
+    curl -OL  https://github.com/cybercongress/go-cyber/releases/download/v0.1.6/cyberdcli_v0.1.6_darwin-amd64.tar.gz
+    tar -xzf cyberdcli_v0.1.6_darwin-amd64.tar.gz
     for binpath in $binpaths; do
       if cp build_v0.1.6_darwin_amd64/cyberdcli "$binpath"; then
         for libpath in $libpaths; do
@@ -32,21 +32,22 @@ case "$PLATFORM" in
         done
         echo "Moved $bin to $binpath"
         echo "Enjoy your cyber experience!"
-        rm go_cyber_v0.1.6_darwin-amd64.tar.gz
+        rm cyberdcli_v0.1.6_darwin-amd64.tar.gz
         rm -rf build_v0.1.6_darwin_amd64
         exit 0
       else
       if [ -d "$binpath" ] && [ ! -w "$binpath" ]; then
         is_write_perm_missing=1
-        rm go_cyber_v0.1.6_darwin-amd64.tar.gz
+        rm cyberdcli_v0.1.6_darwin-amd64.tar.gz
+        rm -rf build_v0.1.6_darwin_amd64
       fi
       fi
     done
     ;;
       "Linux")
     # Linux distro,
-    curl https://mars.cybernode.ai/go-cyber/go_cyber_v0.1.6_linux-amd64.tar.gz --output go_cyber_v0.1.6_linux-amd64.tar.gz
-    tar -xzf go_cyber_v0.1.6_linux-amd64.tar.gz -C ./
+    curl -OL https://github.com/cybercongress/go-cyber/releases/download/v0.1.6/cyberdcli_v0.1.6_linux-amd64.tar.gz
+    tar -xzf cyberdcli_v0.1.6_linux-amd64.tar.gz -C ./
     for binpath in $binpaths; do
       if cp build_v0.1.6_linux_amd64/cyberdcli "$binpath"; then
         for libpath in $libpaths; do
@@ -62,12 +63,14 @@ case "$PLATFORM" in
         done
         echo "Moved $bin to $binpath"
         echo "Enjoy your cyber experience!"
-        rm go_cyber_v0.1.6_linux-amd64.tar.gz
+        rm cyberdcli_v0.1.6_linux-amd64.tar.gz
+        rm -rf build_v0.1.6_linux_amd64
         exit 0
       else
       if [ -d "$binpath" ] && [ ! -w "$binpath" ]; then
         is_write_perm_missing=1
-        rm go_cyber_v0.1.6_darwin-amd64.tar.gz
+        rm cyberdcli_v0.1.6_darwin-amd64.tar.gz
+        rm -rf build_v0.1.6_linux_amd64
       fi
       fi
     done
