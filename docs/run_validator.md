@@ -298,13 +298,14 @@ root@node:~/.cyberd# tree
 
 As a result of this operation `data` and `config` folders should appear inside your *$DAEMON_HOME/* folder.
 
-8. Download `genesis.json` and `config.toml` and place them to your `.cyberd/config`:
+8. Download `genesis.json` and place to your `.cyberd/config`:
 
 ```bash
 cd $DAEMON_HOME/config
-wget <https://to_config.toml_file>
-wget -O genesis.json https://ipfs.io/ipfs/QmfYSpPY2BqiPa528sbSP11dAHFBhw3Yj5wh81x65D9hZM
+wget -O genesis.json https://ipfs.io/ipfs/QmZHpLc3H5RMXp3Z4LURNpKgNfXd3NZ8pZLYbjNFPL6T5n
 ```
+
+9. Setup private peers in `config.toml`. You can find them at our [forum](https://ai.cybercongress.ai/t/euler-6-testnet-faq/65).
 
 ### Setup cyberd service (Ubuntu)
 
