@@ -44,7 +44,7 @@ func NewParams(
 // NewDefaultParams returns a default set of parameters.
 func DefaultParams() Params {
 	return Params{
-		CalculationPeriod: int64(10),
+		CalculationPeriod: int64(5),
 		DampingFactor:	   sdk.NewDecWithPrec(85, 2),
 		Tolerance:         sdk.NewDecWithPrec(1, 3),
 	}

@@ -294,9 +294,12 @@ func NewCyberdApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest
 	ctx = ctx.WithBlockHeight(app.latestBlockHeight)
 
 	bandwidthParams := bandwidth.DefaultParams()
-	app.accountBandwidthKeeper.SetParams(ctx, bandwidthParams)
-
 	rankParams := rank.DefaultParams()
+	if app.latestBlockHeight >= 1 {
+		bandwidthParams = app.accountBandwidthKeeper.GetParams(ctx)
+		rankParams = app.rankStateKeeper.GetParams(ctx)
+	}
+	app.accountBandwidthKeeper.SetParams(ctx, bandwidthParams)
 	app.rankStateKeeper.SetParams(ctx, rankParams)
 
 	// build context for current rank calculation round
