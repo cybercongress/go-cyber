@@ -5,16 +5,16 @@
 
 ## Prepare your server
 
-First, you should set up a server.
-Your node should be constantly running. This means that you will need a reliable server to keep it running.
-You may also consider using any cloud service with dedicated GPU, like Hetzner (or use a local machine), but whatever you'll choose, for better stability and consistency we recommend to use a dedicated server for each validator node.
+First of all, you should set up a server.
+Your node should be running (online) constantly. This means that you will need a reliable server to keep it running.
+You may also consider using any cloud service with a dedicated GPU, like Hetzner (or use a local machine). Whatever you'll choose, for better stability and consistency we recommend to use a dedicated server for each separate validator node.
 
-Cyberd is based on Cosmos-SDK and written in Go.
+Cyberd is based on Cosmos-SDK and is written in Go.
 It should work on any platform which can compile and run programs in Go.
-However, we strongly recommend running the validator node on a Linux server.
+However, we strongly recommend running the validator node on a Linux-based server.
 
 The rank calculations are done via GPU computations.
-They are easy to parallelize. This is why it is recommended to use a GPU.
+They are easy to parallelize. This is why we recommended using a GPU.
 
 Recommended requirements:
 
@@ -35,11 +35,11 @@ But, of course, the hardware is your own choice and technically it might be poss
 
 ### Third-party software
 
-To access the GPU, cyberd uses Nvidia drivers version **410+** and [Nvidia CUDA toolkit](https://developer.nvidia.com/cuda-downloads) should be installed on the host system. 
+To access the GPU, cyberd uses Nvidia drivers version **410+** and the [Nvidia CUDA toolkit](https://developer.nvidia.com/cuda-downloads) should be installed on the hosting system. 
 
 You may skip any sections of the guide if you already have any of the necessary software configured. 
 
-As long as the current implementation of `cyber` is written in [Go](https://golang.org/), we will also need to install Go.
+As long as the current implementation of `cyber` is written in [Go](https://golang.org/), you will need to install Go.
 
 ### Installing Go
 
@@ -81,15 +81,15 @@ source $HOME/.profile
 `go version`
 ```
 
-it will let you know if everything was installed correctly. As an output, you should see the following (version number may vary, of course):
+This will let you know if everything was installed correctly. As an output, you should see the following (version number may vary, of course):
 
 ```bash
 go version go1.13.8 linux/amd64
 ```
 
-#### Nvidia drivers installation
+#### Installing Nvidia drivers 
 
-1. To proceed, first add the `ppa:graphics-drivers/ppa` repository into your system (you might see some warnings - press `enter`):
+1. To proceed, first, add the `ppa:graphics-drivers/ppa` repository into your system (you might see some warnings - press `enter`):
 
 ```bash
 sudo add-apt-repository ppa:graphics-drivers/ppa
@@ -111,7 +111,7 @@ sudo apt install -y ubuntu-drivers-common
 ubuntu-drivers devices
 ```
 
-You should see something similar to this this:
+You should see something similar to this:
 
 ```bash
 == /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0 ==
@@ -125,7 +125,7 @@ driver   : nvidia-driver-440 - third-party free recommended
 driver   : xserver-xorg-video-nouveau - distro free builtin
 ```
 
-4. We need the **410+** drivers release. As you can see v440 is recommended. The command below will install the recommended version of the drivers:
+4. We need the **410+** drivers release. As you can see that v440 is recommended. The command below will install the recommended version of the drivers:
 
 ```bash
 sudo ubuntu-drivers autoinstall
@@ -163,7 +163,7 @@ nvidia-smi
 ```
 
 You should see this:
-(Some version/driver numbers might differ. You also might have some processes already running)
+(Some version/driver numbers might differ. You might also have some processes already running)
 
 ```bash
 +-----------------------------------------------------------------------------+
@@ -186,19 +186,19 @@ You should see this:
 
 ### Install CUDA toolkit
 
-Simply run
+Simply run:
 
 ```bash
 apt install nvidia-cuda-toolkit
 ```
 
-Any version above 9.1 is OK. To check the version run `
+Any version above 9.1 is OK. To check the version run: `
 
 ```bash
 nvcc --version
 ```
 
-The possible output will look like the following:
+The possible output will look like this:
 
 ```bash
 nvcc: NVIDIA (R) Cuda compiler driver
@@ -207,7 +207,7 @@ Built on Fri_Nov__3_21:07:56_CDT_2017
 Cuda compilation tools, release 9.1, V9.1.85
 ```
 
-### Cyberd fullnode launching
+### Launching Cyberd fullnode
 
 1. Add environment variables:
 
@@ -216,13 +216,13 @@ export DAEMON_HOME=$HOME/.cyberd
 export DAEMON_NAME=cyber
 ```
 
-To make those variables persistent, add them to the end of the **`$HOME/.profile`** and log-out/log-in or do:
+To make those variables persistent add them to the end of the **`$HOME/.profile`** and log-out/log-in, or do:
 
 ```bash
 source ~/.profile
 ```
 
-2. Make directories tree for storing your daemon:
+2. Make a directories tree for storing your daemon:
 
 ```bash
 mkdir $HOME/.cyberd
@@ -231,7 +231,7 @@ mkdir -p $DAEMON_HOME/upgrade_manager/genesis
 mkdir -p $DAEMON_HOME/upgrade_manager/genesis/bin
 ```
 
-3. Download cosmosd repo anf building cosmosd:
+3. Download cosmosd repo and build cosmosd:
 
 ```bash
 git clone https://github.com/regen-network/cosmosd
@@ -241,28 +241,28 @@ mv cosmosd $DAEMON_HOME/
 chmod +x $DAEMON_HOME/cosmosd
 ```
 
-4. Clone go-cyber repo, checkout to the necessary version (`master` by default):
+4. Clone the go-cyber repo, checkout to the necessary version (`master` by default):
 
 ```bash
 cd ~
 git clone https://github.com/cybercongress/go-cyber
 ```
 
-5. Build cyber-rank cuda kernel:
+5. Build cyber~Rank CUDA kernel:
 
 ```bash
 cd ~/go-cyber/x/rank/cuda/
 make
 ```
 
-5. Build cyber daemon (as a result you should get `cyberd` and `cyberdcli` files inside of the `go-cyber/build/` folder):
+5. Build cyber daemon (as a result you should see `cyberd` and `cyberdcli` files inside of the `go-cyber/build/` folder):
 
 ```bash
 cd ~/go-cyber
 make build
 ```
 
-6. Copy binaries to apropriate locations:
+6. Copy the binaries to an apropriate locations:
 
 ```bash
 cp build/cyberd $DAEMON_HOME/upgrade_manager/genesis/bin
@@ -277,7 +277,7 @@ cd $DAEMON_HOME/upgrade_manager/genesis/bin
 ./cyberd init <your_node_moniker> --home $DAEMON_HOME
 ```
 
-8. Your folder with cyberd must look loke this after initialization:
+8. Your folder with cyberd must look like this after initialization:
 
 ```bash
 root@node:~/.cyberd# tree
@@ -296,19 +296,18 @@ root@node:~/.cyberd# tree
             └── cyberd
 ```
 
-As a result of this operation `data` and `config` folders should appear inside your *$DAEMON_HOME/* folder.
+As a result of this operation, the `data` and `config` folders should appear inside of your *$DAEMON_HOME/* folder.
 
-8. Download and place `genesis.json` and `config.toml`
+8. Download `genesis.json` and place into your `.cyberd/config`:
 
 ```bash
 cd $DAEMON_HOME/config
-wget <https://to_config.toml_file>
-wget <https://to_genesis.json_file>
+wget -O genesis.json https://ipfs.io/ipfs/QmZHpLc3H5RMXp3Z4LURNpKgNfXd3NZ8pZLYbjNFPL6T5n
 ```
 
-> TO DO update links for genesis and config
+9. Setup private peers in `config.toml`. You can find them on our [forum](https://ai.cybercongress.ai/t/euler-6-testnet-faq/65).
 
-### Setup cyberd service (Ubuntu)
+### Setup cyberd as a service (Ubuntu)
 
 1. Increase resource limits for [Tendermint](https://tendermint.com):
 
@@ -316,13 +315,13 @@ wget <https://to_genesis.json_file>
 ulimit -n 4096
 ```
 
-2. Make cyberd a system service. This will help you easily start/stop cyberd and run it in the background.
+2. Make cyberd a system service. This will help you easily start/stop cyberd and run it in the background:
 
 ```bash
 sudo nano /etc/systemd/system/cyberd.service
 ```
 
-Paste the following (replace `ubuntu` with your username, or if you running as `root` replce whole */home/ubuntu/* to `/root/`):
+Paste the following (replace `ubuntu` with your username, or if you running as `root` replce the whole */home/ubuntu/* to `/root/`):
 
 ```bash
 [Unit]
@@ -344,7 +343,7 @@ LimitNOFILE=4096
 WantedBy=multi-user.target
 ```
 
-If you need to enable search on the node add the flag `--allow-search=true` right after `--compute-rank-on-gpu=true`. If you need to run rest-server alongside `cyberd` here is a service file for it (do `sudo nano /etc/systemd/system/cyberdcli-rest.service` and paste the following), just make sure you'll replace `ubuntu` to your user name and group:
+If you need to enable search of the node add the flag `--allow-search=true` right after `--compute-rank-on-gpu=true`. If you need to run a rest-server alongside `cberd` here is a service file for it (do `sudo nano /etc/systemd/system/cyberdcli-rest.service` and paste the following), just make sure you'll replace `ubuntu` to your user name and group:
 
 ```bash
 [Unit]
@@ -362,37 +361,37 @@ RestartSec=30
 WantedBy=multi-user.target
 ```
 
-There's a possibillity to build and run swagger-ui for your node to get better experience with rest-server. In order to get it up you'll have to install `static` library for go: 
+There's a possibility to build and run swagger-ui for your node to get a better experience with the rest-server. To get it up you'll have to install `static` library for Go: 
 
 ```bash
 go get github.com/rakyll/statik
 ```
 
-Then `cd` to go-cyber repo and set static file for swagger-ui:
+Then `cd` to the go-cyber repo and set static file for swagger-ui:
 
 ```bash
 cd <path_to_go-cyber>/go-cyber/
 statik -src=cmd/cyberdcli/temp -dest=cmd/cyberdcli/lcd -f
 ```
 
-And rebuild cyberdcli and replace one in `/usr/local/bin` (no worries, you wont loose your keys, if alredy have some imported):
+Rebuild cyberdcli and replace the one in `/usr/local/bin` (no worries, you won't lose your keys, if you already have keys imported):
 
 ```bash
 make build
 cp build/cyberdcli /usr/local/bin/
 ```
 
-When all above would be completed and cyberdcli-rest servise started you should have Swagger-ui available at `http://localhost:1317/swagger-ui/` .
+When all of the above steps are completed and cyberdcli-rest service has been started, you should have Swagger-ui available at `http://localhost:1317/swagger-ui/` .
 
 3. Run cyberd:
 
-Reload `systemd` after the creation of new service:
+Reload `systemd` after the creation of the new service:
 
 ```bash
 systemctl daemon-reload
 ```
 
-Start node:
+Start the node:
 
 ```bash
 sudo systemctl start cyberd
@@ -422,9 +421,9 @@ If you need to stop the node:
 sudo systemctl stop cyberd
 ```
 
-All commands at this section also applicable to `cyberdcli-rest.service`.
+All commands in this section are also applicable to `cyberdcli-rest.service`.
 
-At this point your cyberd should be running in the backgroud and you should be able to call `cyberdcli` to operate with the client. Try calling `cyberdcli status`, a possible output looks like this:
+At this point your cyberd should be running in the backgroud and you should be able to call `cyberdcli` to operate with the client. Try calling `cyberdcli status`. A possible output looks like this:
 
 ```bash
 {"node_info":{"protocol_version":{"p2p":"6","block":"9","app":"0"},"id":"93b776d3eb3f3ce9d9bda7164bc8af3acacff7b6","listen_addr":"tcp://0.0.0.0:26656","network":"euler-6","version":"0.32.7","channels":"4020212223303800","moniker":"anon","other":{"tx_index":"on","rpc_address":"tcp://0.0.0.0:26657"}},"sync_info":{"latest_block_hash":"686B4E65415D4E56D3B406153C965C0897D0CE27004E9CABF65064B6A0ED4240","latest_app_hash":"0A1F6D260945FD6E926785F07D41049B8060C60A132F5BA49DD54F7B1C5B2522","latest_block_height":"4553","latest_block_time":"2019-11-24T09:49:19.771375108Z","catching_up":false},"validator_info":{"address":"66098853CF3B61C4313DD487BA21EDF8DECACDF0","pub_key":{"type":"tendermint/PubKeyEd25519","value":"uZrCCdZTJoHE1/v+EvhtZufJgA3zAm1bN4uZA3RyvoY="},"voting_power":"0"}}
@@ -454,7 +453,7 @@ ln -s $DAEMON_HOME/upgrade_manager/upgrades current
 
 After your node has successfully synced, you can run a validator.
 
-### Prepare the staking address
+### Prepare a staking address
 
 We included 1 million Ethereum addresses, over 10000 Cosmos addresses and all of `euler-4` validators addresses into the genesis file. This means that there's a huge chance that you already have some EUL tokens. Here are 3 ways to check this:
 
@@ -483,7 +482,7 @@ cyberdcli keys show <your_key_name>
 ```
 
 You could use your Ledger device, with the Cosmos app installed on it to sign and store cyber addresses: [guide here](https://github.com/cybercongress/cyberd/blob/0.1.5/docs/cyberd_Ledger_guide.md).
-In common case use the --ledger flag, with your commands:
+In most cases use the --ledger flag, with your commands:
 
 ```bash
 cyberdcli keys add <your_key_name> --ledger
@@ -501,7 +500,7 @@ Keep the seed phrase at a safe place (not in hot storage) in case you have to us
 The address shown here is your account address. Let’s call this **<your_account_address>**.
 It stores your assets.
 
-**Important note**: Since v.38 cosmos-sdk uses os-native keyring to store all your keys. We've noticed that in several cases it does not work well by default (for example if you dont have GUI installed on you machine), so if during execituon `cyberdcli keys add` command you've got this kind of error:
+**Important note**: Starting with v.38 cosmos-SDK uses os-native keyring to store all your keys. We've noticed that in certain cases it does not work well by default (for example if you don't have any GUI installed on your machine). If during the execution of the `cyberdcli keys add` command, you are getting this type of error:
 
 ```bash
 panic: No such  interface 'org.freedesktop.DBus.Properties' on object at path /
@@ -522,7 +521,7 @@ github.com/cosmos/cosmos-sdk/client/keys.RunAddCmd(0xc000f0b400, 0xc000f125f0, 0
 
 You will have to use another keyring backend to keep your keys. Here are 2 options: store the files within the cli folder or a `pass` manager.
 
-Setting keyring backend to **local file**:
+Setting keyring backend to a **local file**:
 
 Execute:
 
@@ -538,14 +537,14 @@ Execute:
 cyberdcli config --get keyring-backend
 ```
 
-The result must be the following:
+The result should be the following:
 
 ```bash
 user@node:~# cyberdcli config --get keyring-backend
 file
 ```
 
-That means that you've set your keyring-backend to a local file. *Note*, in this case, all the keys in your keyring will be encrypted using the same password. If you would like to set up a unique password for each key, you should set a unique `--home` folder for each key. To do that, just use `--home=/<unique_path_to_key_folder>/` with setup keyring backend and at all interactions with keys when using cyberdcli:
+This means that you've set your keyring-backend to a local file. *Note*, in this case, all the keys in your keyring will be encrypted using the same password. If you would like to set up a unique password for each key, you should set a unique `--home` folder for each key. To do that, just use `--home=/<unique_path_to_key_folder>/` with setup keyring backend and at all interactions with keys when using cyberdcli:
 
 ```bash
 cyberdcli config keyring-backend file --home=/<unique_path_to_key_folder>/
@@ -561,7 +560,7 @@ Pass utility uses a GPG key to encrypt your keys (but again, it uses the same GP
 cyberdcli config keyring-backend pass
 ```
 
-And verify that all set as planned:
+And verify that all has been set as planned:
 
 ```bash
 cyberdcli config --get keyring-backend
@@ -614,7 +613,7 @@ You are validating the network.
 
 ### Jailing
 
-If your validator got under slashing conditions, it will get jailed.
+If your validator got slashed, it will get jailed.
 If it happens the operator must unjail the validator manually:
 
 ```bash
