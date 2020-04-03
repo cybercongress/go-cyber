@@ -52,7 +52,7 @@ jobs:
               git config --global user.name "Cyber Admin"
               git add CHANGELOG.md
               git commit -m "Circle CI: Update Changelog"
-              git push --set-upstream origin master
+              git push -q https://${DOCS_GITHUB_TOKEN}@github.com/cybercongress/go-cyber.git master
             fi
 
 
