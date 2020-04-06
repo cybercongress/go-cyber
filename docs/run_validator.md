@@ -262,12 +262,13 @@ cd ~/go-cyber
 make build
 ```
 
-6. Copy the binaries to an apropriate locations:
+6. Copy the binaries to an apropriate locations and add execute permitions to them:
 
 ```bash
 cp build/cyberd $DAEMON_HOME/upgrade_manager/genesis/bin
 cp build/cyberdcli /usr/local/bin/
 cp build/cyberd /usr/local/bin/
+chmod +x $DAEMON_HOME/upgrade_manager/genesis/bin/cyberd
 ```
 
 7. Initialize cyber daemon:
@@ -371,7 +372,7 @@ Then `cd` to the go-cyber repo and set static file for swagger-ui:
 
 ```bash
 cd <path_to_go-cyber>/go-cyber/
-statik -src=cmd/cyberdcli/temp -dest=cmd/cyberdcli/lcd -f
+statik -src=cmd/cyberdcli/swagger-ui -dest=cmd/cyberdcli/lcd -f
 ```
 
 Rebuild cyberdcli and replace the one in `/usr/local/bin` (no worries, you won't lose your keys, if you already have keys imported):
