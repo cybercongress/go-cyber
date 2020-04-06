@@ -10,7 +10,7 @@
 </div>
 
 <div align="center">
- <h3>Whitepaper - <a href=" ">cyber: Computing the knowledge of the Great Web</a></h1>
+ <h3>Whitepaper - <a href="https://ipfs.io/ipfs/QmceNpj6HfS81PcCaQXrFMQf7LR5FTLkdG9sbSRNy3UXoZ">cyber: Computing the knowledge of the Great Web</a></h1>
 </div>
 
 <div align="center">
@@ -32,6 +32,7 @@
 _____________
 
 ### Code
+
 [![version](https://img.shields.io/github/release/cybercongress/cyberd.svg?style=flat-square)](https://github.com/cybercongress/cyberd/releases/latest)
 [![CircleCI](https://img.shields.io/circleci/build/github/cybercongress/go-cyber/master?style=flat-square)](https://circleci.com/gh/cybercongress/workflows/go-cyber/tree/master)
 [![license](https://img.shields.io/badge/License-Cyber-brightgreen.svg?style=flat-square)](https://github.com/cybercongress/cyberd/blob/master/LICENSE)
@@ -42,6 +43,7 @@ _____________
 [![Coverage Status](https://img.shields.io/coveralls/github/cybercongress/cyberd/master?style=flat-square)](https://coveralls.io/github/cybercongress/cyberd?branch=master)
 
 ### Blockchain
+
 [![chain](https://img.shields.io/badge/Chain-Euler--6-success.svg?style=flat-square)](https://github.com/cybercongress/cyberd/blob/master/docs/run_validator.md)
 [![block](https://img.shields.io/badge/dynamic/json?color=blue&label=Block%20Height&query=%24.result.height&url=https://titan.cybernode.ai/api/index_stats&style=flat-square)]()
 [![cyberlinks](https://img.shields.io/badge/dynamic/json?color=blue&label=Cyberlinks&query=%24.result.linksCount&url=https://titan.cybernode.ai/api/index_stats&style=flat-square)]()
@@ -50,6 +52,7 @@ _____________
 [![validators](https://img.shields.io/badge/dynamic/json?label=Validators&query=%24.result.validators.length&url=https://titan.cybernode.ai/api/validators%3F&style=flat-square)]()
 
 ### Community
+
 [![telegram](https://img.shields.io/badge/Join%20Us%20On-Telegram-2599D2.svg?style=flat-square)](https://t.me/fuckgoogle)
 [![gitcoin](https://img.shields.io/badge/Join%20Us%20On-Gitcoin-2599D2.svg?style=flat-square)](https://t.me/fuckgoogle)
 [![forum](https://img.shields.io/badge/Join%20Us%20On-Forum-2599D2.svg?style=flat-square)](https://ai.cybercongress.ai/)
@@ -62,9 +65,9 @@ _____________
 
 Google is the most powerful religion ever, and now is the time to abandon it. 
 
-The Great Web is coming. 
+The Great Web is coming.
 
-A search system that will drive its growth, needs to be censorless, open and relevant. 
+A search system that will drive its growth, needs to be censorless, open and relevant.
 
 <div align="center">
  <img src="./docs/img/cyber.png"/>
@@ -74,7 +77,7 @@ A search system that will drive its growth, needs to be censorless, open and rel
 
 Cyber is a knowledge consensus computer for answers and a search engine. Cyber is defined by web3 agents. It is a distributed consensus supercomputer that runs on top of IPFS. It can compute relevance for web3 data via the use of cyberlinks, that are created from IPFS hashes. Essentialy, those hashes represent [Content IDentificators (CIDs)] ranked by cyber~Rank (token-weighted Page Rank):
 
-```
+```bash
 CID1 -----> CID2
 ```
 
@@ -82,31 +85,27 @@ Cyberlinks are committed by Web3 agents. They are links between two CIDs. In its
 
 All the cyberlinks with a given weight are stored within the knowledge graph. The graph is re-computed by the validators every given number of blocks. For calculations, we've implemented `the proof of relevance` root-hash, which is computed from CIDs rank values (which are computed on GPUs with CUDA support every round). 
 
-Cyber is the first implementation of the cyber protocol. It is based on [cosmos-SDK](https://github.com/cosmos/cosmos-sdk) and [tendermint BFT Consensus](https://github.com/tendermint/tendermint). 
+Cyber is the first implementation of the cyber protocol. It is based on [cosmos-SDK](https://github.com/cosmos/cosmos-sdk) and [tendermint BFT Consensus](https://github.com/tendermint/tendermint).
 
 Network use bandwidth model to allow agents make transactions without fees. The main goal of the model is to reduce the daily networks growth to a given constant which adjustable with network governance.
 
 Each message, of a transaction type - for example, a link or a send are assigned an given bandwidth cost. A agent bandwidth depends on their balance and is equal to the sum of their liquid and staked tokens. The agent bandwidth is a recoverable value. Full recovery time of the bandwidths, from zero to maximum value adjustable via network governance.
 
-
 ### For validators
 
 Each validator participates in the Tendermint consensus and computes/validates cyber~Rank within the knowledge graph.
-
 
 ### For rank providers
 
 Rank providers crawl/index the The Great Web. They then, cyberlinks CIDs of any given data to cyber by consuming their bandwidth with weight of their accounts.
 
-
 ### For search users
 
 A valuable, censorship-resistant and a provable search of the The Great Web for any kind of intellegent species.
 
-
 ### For developers
 
-The chance to create a new and a `Decentralized Google` with affiliated services, for example: marketplaces, crawlers, web indexers, decentralized platforms and so on. You have the chance of buidl The Great Web. 
+The chance to create a new and a `Decentralized Google` with affiliated services, for example: marketplaces, crawlers, web indexers, decentralized platforms and so on. You have the chance of buidl The Great Web.
 
 ### For data/content producers
 
@@ -119,6 +118,7 @@ With the growth of the network, we will need cards, a lot of cards. Join us.
 _____________
 
 ## Cyber Protocol
+
 In its core the protocol is very minimalistic and can be eli5's-expressed by the following steps:
 
 1. Compute the genesis of cyber protocol based on the distribution games
@@ -129,18 +129,20 @@ In its core the protocol is very minimalistic and can be eli5's-expressed by the
 6. Check the validity of CIDv0/CIDv1
 7. If the signatures, the bandwidth limit and CIDv1 are all valid - apply cyberlinks and transactions
 8. Calculate cyber~Rank values every round for the CIDs on the knowledge graph
+
 _____________
 
 ## Validation
-  - [Onboarding point for cyber validators](https://github.com/cybercongress/congress/blob/master/ecosystem/validators/onboarding.md)
-  - [Run the validator](./docs/cyberd/run_validator.md")
 
+- [Onboarding point for cyber validators](https://github.com/cybercongress/congress/blob/master/ecosystem/validators/onboarding.md)
+- [Run the validator](./docs/run_validator.md)
 
 ## Status
 
 Explore our [network](https://cyber.page/brain) and participate in [Game of Links](https://cyber.page/gol)
 
 ## Documentation and guides
+
 Explore the documentation in our [knowledge base](https://cybercongress.ai/docs/cyberd/cyberd/).
 
 - Guides:
@@ -152,24 +154,24 @@ Explore the documentation in our [knowledge base](https://cybercongress.ai/docs/
   - [Launch protocol](https://github.com/cybercongress/launch-kit/blob/0.1.0/README.md#distribution-params)
   - [Genesis parameters](https://github.com/cybercongress/launch-kit/blob/0.1.0/params/README.md)
 - Usage:
-  - [CLI guide](./docs/cyberd/ultimate-commands-guide.md")
-  - [Get EUL](https://cyber.page/get)
-  - [Cyber Ledger guide](./docs/cyberd/cyberd_Ledger_guide.md")
-  - [Multisig guide](./docs/cyberd/multisig_guide.md")
+  - [CLI guide](./docs/ultimate-commands-guide.md)
+  - [Get EUL](https://cyber.page/tot)
+  - [Cyber Ledger guide](./docs/cyberd_Ledger_guide.md)
+  - [Multisig guide](./docs/multisig_guide.md)
 - Validators:
-  - [Supported GPUs list](./docs/cyberd/supported_gpu_list.md")
-  - [Port forwarding](./docs/cyberd/port_forwarding_guide.md")
-  - [Run validator with Tendermint KMS and Ledger](./docs/cyberd/validator_launch_with_tendermintKMS_and_ledger.md")
-  - [Set up config.toml in the right way](./docs/cyberd/setup_cyberd_configuration.md")
+  - [Supported GPUs list](./docs/supported_gpu_list.md)
+  - [Port forwarding](./docs/port_forwarding_guide.md)
+  - [Run validator with Tendermint KMS and Ledger](./docs/validator_launch_with_tendermintKMS_and_ledger.md)
+  - [Set up config.toml in the right way](./docs/setup_cyberd_configuration.md)
 - Development environment:
-  - [Setup development environment](./docs/cyberd/setup_dev_env.md")
+  - [Setup development environment](./docs/setup_dev_env.md)
 - Specs:
-  - [RPC](./docs/cyberd/rpc.md")
-  - [Keystore](./docs/cyberd/keystore.md")
+  - [RPC](./docs/rpc.md)
+  - [Keystore](./docs/keystore.md)
 - Gifts to Ethereum, Cosmos and Urbit communities:
   - [Gift Information and FAQ](https://github.com/cybercongress/congress/blob/master/ecosystem/Gift%20FAQ%20and%20general%20gift%20information.md)
-- [CHANGELOG](./docs/cyberd/Changelog.md")
-- [CONTRIBUTING](./docs/cyberd/CONTRIBUTING.md")
+- [CHANGELOG](./CHANGELOG.md)
+- [CONTRIBUTING](./CONTRIBUTING.md)
 
 _____________
 
@@ -194,7 +196,7 @@ a [GitHub issue](https://github.com/cybercongress/cyberd/issues).
 ### Contribute
 
 You are invited to contribute new features, fixes, or updates - large or small. We are always thrilled to receive pull requests and do our best to process them as fast as we can. You can find detailed information in our
-[contribution guide](./docs/contributing/contributing.md).
+[contribution guide](./CONTRIBUTING.md).
 
 ### Gitcoin program
 
