@@ -30,7 +30,7 @@ tags:
     description: Query app version
 schemes:
   - https
-  host: titan.cybernode.ai/lcd/
+host: lcd.cyber.cybernode.ai
 securityDefinitions:
   kms:
     type: basic

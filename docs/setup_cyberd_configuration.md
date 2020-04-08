@@ -273,10 +273,10 @@ index_all_keys = false
 ```bash
 index_keys = "tx.hash,tx.height,...etc.."
 
-index_all_keys = all
+index_all_keys = true
 ```
 
-### Naming 
+### Naming
 
 To setup up your node moniker please refer to *line 16* and type in whatever you want to have as moniker:
 

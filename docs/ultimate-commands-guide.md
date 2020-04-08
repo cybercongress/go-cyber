@@ -5,7 +5,7 @@
 It is possible to interact with cyber even if you don't have your own node. All you need to do is install `cyberdcli` on your machine using the script below (just paste it in the console):
 
 ```bash
-bash < <(curl -s https://mars.cybernode.ai/go-cyber/install_cyberdcli_v0.1.6.sh)
+bash < <(curl -s https://raw.githubusercontent.com/cybercongress/go-cyber/master/scripts/install_cyberdcli_v0.1.6.sh)
 ```
 
 To start using the client without an own node, you have to configure some parameter Such as: [key storage](#keyring-manipulation-settings), [connetion to a remote node](#usefull-client-configuration), etc.
