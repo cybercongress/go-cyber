@@ -6,11 +6,7 @@
 
 **Merged pull requests:**
 
-- upd to cli-install script [\#516](https://github.com/cybercongress/go-cyber/pull/516) ([mrlp4](https://github.com/mrlp4))
-- update ci script for changelog generator [\#515](https://github.com/cybercongress/go-cyber/pull/515) ([SaveTheAles](https://github.com/SaveTheAles))
-- update repo name at changelog generator [\#514](https://github.com/cybercongress/go-cyber/pull/514) ([SaveTheAles](https://github.com/SaveTheAles))
-- Improve band and rank params init [\#513](https://github.com/cybercongress/go-cyber/pull/513) ([litvintech](https://github.com/litvintech))
-- Upd genesis hash at run\_validator [\#512](https://github.com/cybercongress/go-cyber/pull/512) ([mrlp4](https://github.com/mrlp4))
+- docs\_update [\#517](https://github.com/cybercongress/go-cyber/pull/517) ([mrlp4](https://github.com/mrlp4))
 
 ## [v0.1.6](https://github.com/cybercongress/go-cyber/tree/v0.1.6) (2020-04-03)
 [Full Changelog](https://github.com/cybercongress/go-cyber/compare/euler-5...v0.1.6)
@@ -51,6 +47,11 @@
 
 **Merged pull requests:**
 
+- upd to cli-install script [\#516](https://github.com/cybercongress/go-cyber/pull/516) ([mrlp4](https://github.com/mrlp4))
+- update ci script for changelog generator [\#515](https://github.com/cybercongress/go-cyber/pull/515) ([SaveTheAles](https://github.com/SaveTheAles))
+- update repo name at changelog generator [\#514](https://github.com/cybercongress/go-cyber/pull/514) ([SaveTheAles](https://github.com/SaveTheAles))
+- Improve band and rank params init [\#513](https://github.com/cybercongress/go-cyber/pull/513) ([litvintech](https://github.com/litvintech))
+- Upd genesis hash at run\_validator [\#512](https://github.com/cybercongress/go-cyber/pull/512) ([mrlp4](https://github.com/mrlp4))
 - Euler-6 release [\#511](https://github.com/cybercongress/go-cyber/pull/511) ([litvintech](https://github.com/litvintech))
 - Updated README [\#510](https://github.com/cybercongress/go-cyber/pull/510) ([litvintech](https://github.com/litvintech))
 - Remove http client [\#509](https://github.com/cybercongress/go-cyber/pull/509) ([litvintech](https://github.com/litvintech))
@@ -79,7 +80,7 @@
 - fixed title ultimate guide; fixed folders names [\#441](https://github.com/cybercongress/go-cyber/pull/441) ([mrlp4](https://github.com/mrlp4))
 
 ## [euler-5](https://github.com/cybercongress/go-cyber/tree/euler-5) (2019-12-20)
-[Full Changelog](https://github.com/cybercongress/go-cyber/compare/v0.1.5-t...euler-5)
+[Full Changelog](https://github.com/cybercongress/go-cyber/compare/v0.1.5-rc1...euler-5)
 
 **Closed issues:**
 
@@ -130,20 +131,8 @@
 - Added stat for used for linking band [\#417](https://github.com/cybercongress/go-cyber/pull/417) ([litvintech](https://github.com/litvintech))
 - \#320 add advanced guides [\#390](https://github.com/cybercongress/go-cyber/pull/390) ([SaveTheAles](https://github.com/SaveTheAles))
 
-## [v0.1.5-t](https://github.com/cybercongress/go-cyber/tree/v0.1.5-t) (2019-11-01)
-[Full Changelog](https://github.com/cybercongress/go-cyber/compare/v0.1.5-rc1...v0.1.5-t)
-
 ## [v0.1.5-rc1](https://github.com/cybercongress/go-cyber/tree/v0.1.5-rc1) (2019-11-01)
-[Full Changelog](https://github.com/cybercongress/go-cyber/compare/euler-5rc1...v0.1.5-rc1)
-
-**Merged pull requests:**
-
-- Added max block band params and validation [\#421](https://github.com/cybercongress/go-cyber/pull/421) ([litvintech](https://github.com/litvintech))
-- 318 advanced export [\#416](https://github.com/cybercongress/go-cyber/pull/416) ([litvintech](https://github.com/litvintech))
-- Remove outdated whitepaper from docs [\#414](https://github.com/cybercongress/go-cyber/pull/414) ([SaveTheAles](https://github.com/SaveTheAles))
-
-## [euler-5rc1](https://github.com/cybercongress/go-cyber/tree/euler-5rc1) (2019-10-16)
-[Full Changelog](https://github.com/cybercongress/go-cyber/compare/v0.1.4...euler-5rc1)
+[Full Changelog](https://github.com/cybercongress/go-cyber/compare/v0.1.4...v0.1.5-rc1)
 
 **Closed issues:**
 
@@ -186,6 +175,9 @@
 
 **Merged pull requests:**
 
+- Added max block band params and validation [\#421](https://github.com/cybercongress/go-cyber/pull/421) ([litvintech](https://github.com/litvintech))
+- 318 advanced export [\#416](https://github.com/cybercongress/go-cyber/pull/416) ([litvintech](https://github.com/litvintech))
+- Remove outdated whitepaper from docs [\#414](https://github.com/cybercongress/go-cyber/pull/414) ([SaveTheAles](https://github.com/SaveTheAles))
 - Added makefile for rank, added tag CUDA for daemon build [\#411](https://github.com/cybercongress/go-cyber/pull/411) ([litvintech](https://github.com/litvintech))
 - Band refactoring [\#408](https://github.com/cybercongress/go-cyber/pull/408) ([litvintech](https://github.com/litvintech))
 - Damping factor and tolerance as onchain params [\#407](https://github.com/cybercongress/go-cyber/pull/407) ([litvintech](https://github.com/litvintech))
