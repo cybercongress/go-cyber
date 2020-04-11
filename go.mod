@@ -3,7 +3,7 @@ module github.com/cybercongress/go-cyber
 go 1.13
 
 require (
-	github.com/cosmos/cosmos-sdk v0.38.2
+	github.com/cosmos/cosmos-sdk v0.38.3
 	github.com/cosmwasm/wasmd v0.7.1
 	github.com/gorilla/mux v1.7.3
 	github.com/ipfs/go-cid v0.0.3
@@ -14,6 +14,6 @@ require (
 	github.com/stretchr/testify v1.5.1
 	github.com/tendermint/btcd v0.1.1
 	github.com/tendermint/go-amino v0.15.1
-	github.com/tendermint/tendermint v0.33.2
+	github.com/tendermint/tendermint v0.33.3
 	github.com/tendermint/tm-db v0.5.0
 )
