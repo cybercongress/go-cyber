@@ -6,6 +6,7 @@
 
 **Merged pull requests:**
 
+- Upgrade sdk and tm versions due to security issue [\#519](https://github.com/cybercongress/go-cyber/pull/519) ([litvintech](https://github.com/litvintech))
 - docs\_update [\#517](https://github.com/cybercongress/go-cyber/pull/517) ([mrlp4](https://github.com/mrlp4))
 
 ## [v0.1.6](https://github.com/cybercongress/go-cyber/tree/v0.1.6) (2020-04-03)
