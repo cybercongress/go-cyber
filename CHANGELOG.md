@@ -4,6 +4,10 @@
 
 [Full Changelog](https://github.com/cybercongress/go-cyber/compare/v0.1.6...HEAD)
 
+**Closed issues:**
+
+- Security upgrade with bump to 0.38.3/0.33.3 [\#518](https://github.com/cybercongress/go-cyber/issues/518)
+
 **Merged pull requests:**
 
 - Upgrade sdk and tm versions due to security issue [\#519](https://github.com/cybercongress/go-cyber/pull/519) ([litvintech](https://github.com/litvintech))
