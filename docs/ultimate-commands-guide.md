@@ -399,7 +399,7 @@ cyberdcli config --get <parameter_name>
   --chain-id=euler-6
 ```
 
-Example of a link command:
+The `cid-from` is the IPFS hash of the keyword that you want to make searchable. Example of a link command:
 
 ```bash 
 cyberdcli link --cid-from QmWDYzTXarWYy9UKC7Ro4xMCdSVseQPbmdnmTYsJ9zGTpK --cid-to QmVgxX3TVntSNRiQ1Kd8sE8zvEKkbEgb8PaMnA4N7w7pK3 --from fuckgoogle --chain-id euler-6 --yes
