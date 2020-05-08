@@ -7,9 +7,11 @@
 **Closed issues:**
 
 - Security upgrade with bump to 0.38.3/0.33.3 [\#518](https://github.com/cybercongress/go-cyber/issues/518)
+- Support easy install with brew tap [\#426](https://github.com/cybercongress/go-cyber/issues/426)
 
 **Merged pull requests:**
 
+- fix\_daemon\_name [\#523](https://github.com/cybercongress/go-cyber/pull/523) ([mrlp4](https://github.com/mrlp4))
 - Upgrade sdk and tm versions due to security issue [\#519](https://github.com/cybercongress/go-cyber/pull/519) ([litvintech](https://github.com/litvintech))
 - docs\_update [\#517](https://github.com/cybercongress/go-cyber/pull/517) ([mrlp4](https://github.com/mrlp4))
 
@@ -214,7 +216,7 @@
 - Problem with install NVIDIA drivers  [\#326](https://github.com/cybercongress/go-cyber/pull/326) ([wimel](https://github.com/wimel))
 - update run\_validator [\#325](https://github.com/cybercongress/go-cyber/pull/325) ([wimel](https://github.com/wimel))
 - \#320 add multisig guide create and send [\#324](https://github.com/cybercongress/go-cyber/pull/324) ([SaveTheAles](https://github.com/SaveTheAles))
-- Some Dan's fixes [\#323](https://github.com/cybercongress/go-cyber/pull/323) ([marzipanstar](https://github.com/marzipanstar))
+- Some Dan's fixes [\#323](https://github.com/cybercongress/go-cyber/pull/323) ([ghost](https://github.com/ghost))
 - Proposal of the new distribution [\#322](https://github.com/cybercongress/go-cyber/pull/322) ([xhipster](https://github.com/xhipster))
 - Cosmos-sdk upgrade to 0.34.4 [\#314](https://github.com/cybercongress/go-cyber/pull/314) ([litvintech](https://github.com/litvintech))
 - Updated docs for dev env setup [\#312](https://github.com/cybercongress/go-cyber/pull/312) ([litvintech](https://github.com/litvintech))
