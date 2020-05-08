@@ -213,7 +213,7 @@ Cuda compilation tools, release 9.1, V9.1.85
 
 ```bash
 export DAEMON_HOME=$HOME/.cyberd
-export DAEMON_NAME=cyber
+export DAEMON_NAME=cyberd
 ```
 
 To make those variables persistent add them to the end of the **`$HOME/.profile`** and log-out/log-in, or do:
