@@ -10,7 +10,7 @@
 </div>
 
 <div align="center">
- <h3>Whitepaper - <a href="https://ipfs.io/ipfs/QmceNpj6HfS81PcCaQXrFMQf7LR5FTLkdG9sbSRNy3UXoZ">cyber: Computing the knowledge of the Great Web</a></h1>
+ <h3>Whitepaper - <a href="https://ipfs.io/ipfs/QmQ1Vong13MDNxixDyUdjniqqEj8sjuNEBYMyhQU4gQgq3">cyber: Computing the knowledge of the Great Web</a></h1>
 </div>
 
 <div align="center">
