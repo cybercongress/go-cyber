@@ -24,14 +24,18 @@ RAM: 32 GB
 SSD: 256 GB
 Connection: 100Mb, Fiber, Stable and low-latency connection
 GPU: Nvidia GeForce(or Tesla/Titan/Quadro) with CUDA-cores; at least 6gb of memory*
-Software: Docker, Ubuntu 16.04/18.04 LTS
+Software: Ubuntu 18.04 LTS
 ```
 
-*Cyberd runs well on consumer-grade cards like Geforce GTX 1070, but expect load growth. We advise to use Error Correction compatible cards from Tesla or Quadro families.*
+*Cyberd runs well on consumer-grade cards like Geforce GTX 1070, but we expect load growth and advise to use Error Correction compatible cards from Tesla or Quadro families. Also, make sure your card is compatible with >=v.410 of NVIDIA drivers.*
 
-But, of course, the hardware is your own choice and technically it might be possible to run the chain on "even - 1 CUDA core GPU", but, you should be aware of stability and a decline in calculation speed.
+What about RAM? The minimal ammount, which will fit a node (with ~100K links in the chain): 10 GB. It migth be possiple to start a node with a lower ammount of RAM, but we migth not be able to support these cases.
+
+Of course, the hardware is your own choice and technically it might be possible to run the node on "even - 1 CUDA core GPU", but you should be aware of stability and in a decline in the calculation speed of the rank.
 
 ## Validator setup
+
+*To avoid possible misconfiguration issues and to simplify the setup of `$ENV`, we recommend to perform all the commands as `root` (here root - is literally root, not just a user with root priveliges)*
 
 ### Third-party software
 
@@ -45,25 +49,25 @@ As long as the current implementation of `cyber` is written in [Go](https://gola
 
 For `euler-6` Cyberd requires at least Go version 1.13+. Install it according to the official [guide](https://golang.org/doc/install):
 
-1. Download the archive:
+- Download the archive:
 
 ```bash
-wget https://dl.google.com/go/go1.13.9.linux-amd64.tar.gz
+wget https://dl.google.com/go/go1.13.11.linux-amd64.tar.gz
 ```
 
-2. Extract it into `/usr/local`, creating a Go tree in `/usr/local/go`:
+- Extract it into `/usr/local`, creating a Go tree in `/usr/local/go`:
 
 ```bash
-tar -C /usr/local -xzf go1.13.9.linux-amd64.tar.gz
+tar -C /usr/local -xzf go1.13.11.linux-amd64.tar.gz
 ```
 
-3. Add `/usr/local/go/bin` to the PATH environment variable. You can do this by adding this line to your `/etc/profile` (for installation on the whole system) or `$HOME/.profile`:
+- Add `/usr/local/go/bin` to the PATH environment variable. You can do this by adding this line to your `/etc/profile` (for installation on the whole system) or `$HOME/.bashrc`:
 
 ```bash
 export PATH=$PATH:/usr/local/go/bin
 ```
 
-4. Do `source` for the file with your `$PATH` variable or just log-out/log-in:
+- Do `source` for the file with your `$PATH` variable or just log-out/log-in:
 
 ```bash
 source /etc/profile
@@ -72,10 +76,10 @@ source /etc/profile
 or
 
 ```bash
-source $HOME/.profile
+source $HOME/.bashrc
 ```
 
-5. To check your installation run
+- To check your installation run
 
 ```bash
 `go version`
@@ -84,12 +88,12 @@ source $HOME/.profile
 This will let you know if everything was installed correctly. As an output, you should see the following (version number may vary, of course):
 
 ```bash
-go version go1.13.8 linux/amd64
+go version go1.13.11 linux/amd64
 ```
 
-#### Installing Nvidia drivers 
+#### Installing Nvidia drivers
 
-1. To proceed, first, add the `ppa:graphics-drivers/ppa` repository into your system (you might see some warnings - press `enter`):
+To proceed, first, add the `ppa:graphics-drivers/ppa` repository into your system (you might see some warnings - press `enter`):
 
 ```bash
 sudo add-apt-repository ppa:graphics-drivers/ppa
@@ -99,13 +103,13 @@ sudo add-apt-repository ppa:graphics-drivers/ppa
 sudo apt update
 ```
 
-2. Install Ubuntu-drivers:
+Install Ubuntu-drivers:
 
 ```bash
 sudo apt install -y ubuntu-drivers-common
 ```
 
-3. Next, identify your graphic card model and the recommended drivers:
+Next, identify your graphic card model and the recommended drivers:
 
 ```bash
 ubuntu-drivers devices
@@ -125,7 +129,7 @@ driver   : nvidia-driver-440 - third-party free recommended
 driver   : xserver-xorg-video-nouveau - distro free builtin
 ```
 
-4. We need the **410+** drivers release. As you can see that v440 is recommended. The command below will install the recommended version of the drivers:
+We need the **410+** drivers release. As you can see that v440 is recommended. The command below will install the recommended version of the drivers:
 
 ```bash
 sudo ubuntu-drivers autoinstall
@@ -154,9 +158,9 @@ Processing triggers for initramfs-tools (0.130ubuntu3.1) ...
 update-initramfs: Generating /boot/initrd.img-4.15.0-45-generic
 ```
 
-5. Reboot the system for the changes to take effect.
+Reboot the system for the changes to take effect.
 
-6. Check the installed drivers:
+Check the installed drivers:
 
 ```bash
 nvidia-smi
@@ -192,7 +196,7 @@ Simply run:
 apt install nvidia-cuda-toolkit
 ```
 
-Any version above 9.1 is OK. To check the version run: `
+Any version above 9.1 is OK. To check the version run:
 
 ```bash
 nvcc --version
@@ -209,20 +213,20 @@ Cuda compilation tools, release 9.1, V9.1.85
 
 ### Launching Cyberd fullnode
 
-1. Add environment variables:
+Add environment variables:
 
 ```bash
 export DAEMON_HOME=$HOME/.cyberd
 export DAEMON_NAME=cyberd
 ```
 
-To make those variables persistent add them to the end of the **`$HOME/.profile`** and log-out/log-in, or do:
+To make those variables persistent add them to the end of the **`$HOME/.bashrc`** and log-out/log-in, or do:
 
 ```bash
-source ~/.profile
+source ~/.bashrc
 ```
 
-2. Make a directories tree for storing your daemon:
+Make a directories tree for storing your daemon:
 
 ```bash
 mkdir $HOME/.cyberd
@@ -231,38 +235,50 @@ mkdir -p $DAEMON_HOME/upgrade_manager/genesis
 mkdir -p $DAEMON_HOME/upgrade_manager/genesis/bin
 ```
 
-3. Download cosmosd repo and build cosmosd:
+Download cosmosd (upgrade manager for Cosmos SDK) of version 2.0 and build it:
 
 ```bash
-git clone https://github.com/regen-network/cosmosd
-cd cosmosd
+wget https://github.com/regen-network/cosmosd/archive/0.2.0.tar.gz
+tar -xzf 0.2.0.tar.gz
+cd cosmosd-0.2.0/
 go build
 mv cosmosd $DAEMON_HOME/
 chmod +x $DAEMON_HOME/cosmosd
 ```
 
-4. Clone the go-cyber repo, checkout to the necessary version (`master` by default):
+Clone the go-cyber repo, checkout to the necessary version (`master` by default):
 
 ```bash
 cd ~
 git clone https://github.com/cybercongress/go-cyber
 ```
 
-5. Build cyber~Rank CUDA kernel:
+Build cyber~Rank CUDA kernel:
 
 ```bash
 cd ~/go-cyber/x/rank/cuda/
 make
 ```
 
-5. Build cyber daemon (as a result you should see `cyberd` and `cyberdcli` files inside of the `go-cyber/build/` folder):
+Build cyber daemon (as a result you should see `cyberd` and `cyberdcli` files inside of the `go-cyber/build/` folder):
 
 ```bash
 cd ~/go-cyber
 make build
 ```
 
-6. Copy the binaries to an apropriate locations and add execute permitions to them:
+If you are getting an error about the `libgo_cosmwasm.so` library missing, please download and build cosmwasm version 0.7.2 (smart-contracts module for Cosmos SDK) then copy the missing libraries, and re-build `cyberd`:
+
+```bash
+wget https://github.com/CosmWasm/go-cosmwasm/archive/v0.7.2.tar.gz
+tar -xzf v0.7.2.tar.gz
+cd go-cosmwasm-0.7.2/
+make build
+cp ./api/libgo_cosmwasm.so /usr/lib/
+cp ./api/libgo_cosmwasm.dylib /usr/lib/
+```
+
+Copy cyberd the binaries to an apropriate locations and add execute permitions to them:
 
 ```bash
 cp build/cyberd $DAEMON_HOME/upgrade_manager/genesis/bin
@@ -271,14 +287,14 @@ cp build/cyberd /usr/local/bin/
 chmod +x $DAEMON_HOME/upgrade_manager/genesis/bin/cyberd
 ```
 
-7. Initialize cyber daemon:
+Initialize cyber daemon (don't forget to change the node moniker):
 
 ```bash
 cd $DAEMON_HOME/upgrade_manager/genesis/bin
 ./cyberd init <your_node_moniker> --home $DAEMON_HOME
 ```
 
-8. Your folder with cyberd must look like this after initialization:
+Your folder with cyberd must look like this after initialization:
 
 ```bash
 root@node:~/.cyberd# tree
@@ -299,24 +315,24 @@ root@node:~/.cyberd# tree
 
 As a result of this operation, the `data` and `config` folders should appear inside of your *$DAEMON_HOME/* folder.
 
-8. Download `genesis.json` and place into your `.cyberd/config`:
+Download `genesis.json` and place into your `.cyberd/config`:
 
 ```bash
 cd $DAEMON_HOME/config
 wget -O genesis.json https://ipfs.io/ipfs/QmZHpLc3H5RMXp3Z4LURNpKgNfXd3NZ8pZLYbjNFPL6T5n
 ```
 
-9. Setup private peers in `config.toml`. You can find them on our [forum](https://ai.cybercongress.ai/t/euler-6-testnet-faq/65).
+Setup private peers in `config.toml`. You can find them on our [forum](https://ai.cybercongress.ai/t/euler-6-testnet-faq/65).
 
 ### Setup cyberd as a service (Ubuntu)
 
-1. Increase resource limits for [Tendermint](https://tendermint.com):
+Increase resource limits for [Tendermint](https://tendermint.com):
 
 ```bash
 ulimit -n 4096
 ```
 
-2. Make cyberd a system service. This will help you easily start/stop cyberd and run it in the background:
+Make cyberd a system service. This will help you easily start/stop cyberd and run it in the background:
 
 ```bash
 sudo nano /etc/systemd/system/cyberd.service
@@ -344,7 +360,7 @@ LimitNOFILE=4096
 WantedBy=multi-user.target
 ```
 
-If you need to enable search of the node add the flag `--allow-search=true` right after `--compute-rank-on-gpu=true`. If you need to run a rest-server alongside `cberd` here is a service file for it (do `sudo nano /etc/systemd/system/cyberdcli-rest.service` and paste the following), just make sure you'll replace `ubuntu` to your user name and group:
+If you need to enable search of the node add the flag `--allow-search=true` right after `--compute-rank-on-gpu=true`. If you need to run a rest-server alongside `cyberd` here is a service file for it (do `sudo nano /etc/systemd/system/cyberdcli-rest.service` and paste the following), just make sure you'll replace `ubuntu` to your user name and group:
 
 ```bash
 [Unit]
@@ -384,7 +400,7 @@ cp build/cyberdcli /usr/local/bin/
 
 When all of the above steps are completed and cyberdcli-rest service has been started, you should have Swagger-ui available at `http://localhost:1317/swagger-ui/` .
 
-3. Run cyberd:
+Run cyberd:
 
 Reload `systemd` after the creation of the new service:
 
@@ -404,7 +420,7 @@ Check node status:
 sudo systemctl status cyberd
 ```
 
-Enable service:
+Enable the service to start with the system:
 
 ```bash
 sudo systemctl enable cyberd
@@ -413,7 +429,7 @@ sudo systemctl enable cyberd
 Check logs:
 
 ```bash
-journalctl -u cyberd -f --lines 50
+journalctl -u cyberd -f --lines 20
 ```
 
 If you need to stop the node:
@@ -436,7 +452,7 @@ Additional information about the chain is available via an API endpoint at: `loc
 
 E.G. the number of active validators is available at: `localhost:26657/validators`
 
-4. If your node did not launch correctly from the genesis, you need to set the current link to cosmosd for cyber daemon:
+If your node did not launch correctly from the genesis, you need to set the current link to cosmosd for cyber daemon:
 
 ```bash
 ln -s $DAEMON_HOME/upgrade_manager/genesis current
@@ -452,11 +468,11 @@ ln -s $DAEMON_HOME/upgrade_manager/upgrades current
 
 ## Validator start
 
-After your node has successfully synced, you can run a validator.
+After your node has successfully sycned, you can run your validator.
 
 ### Prepare a staking address
 
-We included 1 million Ethereum addresses, over 10000 Cosmos addresses and all of `euler-4` validators addresses into the genesis file. This means that there's a huge chance that you already have some EUL tokens. Here are 3 ways to check this:
+We included ~1 million Ethereum addresses, over 10000 Cosmos addresses and all of `euler-4` validators addresses into the genesis file. This means that there's a huge chance that you already have some EUL tokens. Here are 3 ways to check this:
 
 If you already have a cyberd address with EUL and know the seed phrase or your private key, just restore it into your local Keystore:
 
@@ -618,5 +634,5 @@ If your validator got slashed, it will get jailed.
 If it happens the operator must unjail the validator manually:
 
 ```bash
-cyberdcli tx slashing unjail --from=<your_key_name> --chain-id euler-5
+cyberdcli tx slashing unjail --from=<your_key_name> --chain-id euler-6
 ```
