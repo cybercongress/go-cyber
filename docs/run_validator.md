@@ -27,15 +27,15 @@ GPU: Nvidia GeForce(or Tesla/Titan/Quadro) with CUDA-cores; at least 6gb of memo
 Software: Ubuntu 18.04 LTS
 ```
 
-*Cyberd runs well on consumer-grade cards like Geforce GTX 1070, but expecting load growth, we advise to use Error Correction compatible cards from Tesla or Quadro families. Also make sure your card is compatible with >=v.410 of NVIDIA drivers.*
+*Cyberd runs well on consumer-grade cards like Geforce GTX 1070, but expect load growth. We advise to use Error Correction compatible cards from Tesla or Quadro families. Also, make sure your card is compatible with >=v.410 of NVIDIA drivers.*
 
-What about RAM - minimal ammount, which will fit node (with ~100K links in chain) - 10 GB. It migth be possiple to start node with lower ammount of RAM, but we migth not be able to support those cases.
+What about RAM? The minimal ammount, which will fit a node (with ~100K links in the chain): 10 GB. It migth be possiple to start a node with a lower ammount of RAM, but we migth not be able to support these cases.
 
-And, of course, the hardware is your own choice and technically it might be possible to run the node on "even - 1 CUDA core GPU", but, you should be aware of stability and a decline in calculations speed.
+Of course, the hardware is your own choice and technically it might be possible to run the node on "even - 1 CUDA core GPU", but you should be aware of stability and a decline in calculation speed.
 
 ## Validator setup
 
-*To avoid possible misconfiguration issues and simplify `$ENV` setup we recommend to perform all actions as `root` user (here root - is literally root, not just the user with root priveliges)*
+*To avoid possible misconfiguration issues and to simplify the setup of `$ENV`, we recommend to perform all the commands as `root` (here root - is literally root, not just a user with root priveliges)*
 
 ### Third-party software
 
@@ -267,7 +267,7 @@ cd ~/go-cyber
 make build
 ```
 
-If during this step you getting error about `libgo_cosmwasm.so` missing, please download and build cosmwasm of version 0.7.2(smart-contracts module for Cosmos SDK) then copy missing libraries, and re-build `cyberd` as above:
+If you are getting an error about the `libgo_cosmwasm.so` library missing, please download and build cosmwasm version 0.7.2 (smart-contracts module for Cosmos SDK) then copy the missing libraries, and re-build `cyberd`:
 
 ```bash
 wget https://github.com/CosmWasm/go-cosmwasm/archive/v0.7.2.tar.gz
@@ -287,7 +287,7 @@ cp build/cyberd /usr/local/bin/
 chmod +x $DAEMON_HOME/upgrade_manager/genesis/bin/cyberd
 ```
 
-Initialize cyber daemon (don't forget to change node moniker):
+Initialize cyber daemon (don't forget to change the node moniker):
 
 ```bash
 cd $DAEMON_HOME/upgrade_manager/genesis/bin
@@ -420,7 +420,7 @@ Check node status:
 sudo systemctl status cyberd
 ```
 
-Enable service to start with the system:
+Enable the service to start with the system:
 
 ```bash
 sudo systemctl enable cyberd
@@ -468,7 +468,7 @@ ln -s $DAEMON_HOME/upgrade_manager/upgrades current
 
 ## Validator start
 
-After your node has been synced successfully, you can run a validator.
+After your node has successfully sycned, you can run your validator.
 
 ### Prepare a staking address
 
