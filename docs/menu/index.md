@@ -1,21 +1,21 @@
 ---
 headless: true
 ---
-- [Whitepaper]({{< relref "/docs/cyberd/cyberd.md" >}})
+- [Whitepaper]({{< relref "/docs/go-cyber/cyberd.md" >}})
 - Usage:
-  - [Run the validator]({{< relref "/docs/cyberd/run_validator.md" >}})
-  - [Supported GPUs list]({{< relref "/docs/cyberd/supported_gpu_list.md" >}})
-  - [CLI guide]({{< relref "/docs/cyberd/ultimate-commands-guide.md" >}})
-  - [Get EUL]({{< relref "/docs/cyberd/get_CYB.md" >}})
-  - [Port forwarding]({{< relref "/docs/cyberd/port_forwarding_guide.md" >}})
-  - [Cyberd Ledger guide]({{< relref "/docs/cyberd/cyberd_Ledger_guide.md" >}})
-  - [Multisig guide]({{< relref "/docs/cyberd/multisig_guide.md" >}})
-  - [Run validator with Tendermint and Ledger]({{< relref "/docs/cyberd/validator_launch_with_tendermintKMS_and_ledger.md" >}})
-  - [Set up config.toml in the right way]({{< relref "/docs/cyberd/setup_cyberd_configuration.md" >}})
+  - [Run the validator]({{< relref "/docs/go-cyber/run_validator.md" >}})
+  - [Supported GPUs list]({{< relref "/docs/go-cyber/supported_gpu_list.md" >}})
+  - [CLI guide]({{< relref "/docs/go-cyber/ultimate-commands-guide.md" >}})
+  - [Get EUL]({{< relref "/docs/go-cyber/get_CYB.md" >}})
+  - [Port forwarding]({{< relref "/docs/go-cyber/port_forwarding_guide.md" >}})
+  - [Cyberd Ledger guide]({{< relref "/docs/go-cyber/cyberd_Ledger_guide.md" >}})
+  - [Multisig guide]({{< relref "/docs/go-cyber/multisig_guide.md" >}})
+  - [Run validator with Tendermint and Ledger]({{< relref "/docs/go-cyber/validator_launch_with_tendermintKMS_and_ledger.md" >}})
+  - [Set up config.toml in the right way]({{< relref "/docs/go-cyber/setup_cyberd_configuration.md" >}})
 - Dev environment:
-  - [Setup development environment]({{< relref "/docs/cyberd/setup_dev_env.md" >}})
+  - [Setup development environment]({{< relref "/docs/go-cyber/setup_dev_env.md" >}})
 - Specs:
-  - [RPC]({{< relref "/docs/cyberd/rpc.md" >}})
-  - [Keystore]({{< relref "/docs/cyberd/keystore.md" >}})
-- [CHANGELOG]({{< relref "/docs/cyberd/Changelog.md" >}})
-- [CONTRIBUTING]({{< relref "/docs/cyberd/Contributing.md" >}})
+  - [RPC]({{< relref "/docs/go-cyber/rpc.md" >}})
+  - [Keystore]({{< relref "/docs/go-cyber/keystore.md" >}})
+- [CHANGELOG]({{< relref "/docs/go-cyber/Changelog.md" >}})
+- [CONTRIBUTING]({{< relref "/docs/go-cyber/Contributing.md" >}})
