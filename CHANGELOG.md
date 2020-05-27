@@ -11,6 +11,9 @@
 
 **Merged pull requests:**
 
+- upd repo name to go-cyber [\#527](https://github.com/cybercongress/go-cyber/pull/527) ([mrlp4](https://github.com/mrlp4))
+- docs\_fixes [\#526](https://github.com/cybercongress/go-cyber/pull/526) ([mrlp4](https://github.com/mrlp4))
+- fixes\_tun\_val\_guide [\#525](https://github.com/cybercongress/go-cyber/pull/525) ([mrlp4](https://github.com/mrlp4))
 - fix\_daemon\_name [\#523](https://github.com/cybercongress/go-cyber/pull/523) ([mrlp4](https://github.com/mrlp4))
 - Upgrade sdk and tm versions due to security issue [\#519](https://github.com/cybercongress/go-cyber/pull/519) ([litvintech](https://github.com/litvintech))
 - docs\_update [\#517](https://github.com/cybercongress/go-cyber/pull/517) ([mrlp4](https://github.com/mrlp4))
