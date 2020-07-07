@@ -6,11 +6,13 @@
 
 **Closed issues:**
 
+- Upgrade to sdk 38.5 and tm 33.6 [\#530](https://github.com/cybercongress/go-cyber/issues/530)
 - Security upgrade with bump to 0.38.3/0.33.3 [\#518](https://github.com/cybercongress/go-cyber/issues/518)
 - Support easy install with brew tap [\#426](https://github.com/cybercongress/go-cyber/issues/426)
 
 **Merged pull requests:**
 
+- Upgraded to sdk 38.5 and tm 33.6 [\#531](https://github.com/cybercongress/go-cyber/pull/531) ([litvintech](https://github.com/litvintech))
 - upd repo name to go-cyber [\#527](https://github.com/cybercongress/go-cyber/pull/527) ([mrlp4](https://github.com/mrlp4))
 - docs\_fixes [\#526](https://github.com/cybercongress/go-cyber/pull/526) ([mrlp4](https://github.com/mrlp4))
 - fixes\_tun\_val\_guide [\#525](https://github.com/cybercongress/go-cyber/pull/525) ([mrlp4](https://github.com/mrlp4))
