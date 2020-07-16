@@ -82,7 +82,7 @@ source $HOME/.bashrc
 - To check your installation run
 
 ```bash
-`go version`
+go version
 ```
 
 This will let you know if everything was installed correctly. As an output, you should see the following (version number may vary, of course):
