@@ -12,6 +12,7 @@
 
 **Merged pull requests:**
 
+- Master docs update [\#532](https://github.com/cybercongress/go-cyber/pull/532) ([mrlp4](https://github.com/mrlp4))
 - Upgraded to sdk 38.5 and tm 33.6 [\#531](https://github.com/cybercongress/go-cyber/pull/531) ([litvintech](https://github.com/litvintech))
 - upd repo name to go-cyber [\#527](https://github.com/cybercongress/go-cyber/pull/527) ([mrlp4](https://github.com/mrlp4))
 - docs\_fixes [\#526](https://github.com/cybercongress/go-cyber/pull/526) ([mrlp4](https://github.com/mrlp4))
