@@ -590,3 +590,97 @@ docker exec eiler-5 cyberdcli query staking validator <operator_address>
 ```bash
  cyberdcli query staking redelegations <delegator_address>
 ```
+
+## Governance and voting
+
+### Query specific proposal
+
+```bash
+cyberdcli q gov proposal <proposal_id> --trust-node
+```
+
+### Query all proposals
+
+```bash
+cyberdcli q gov proposals --trust-node
+```
+
+### Query votes on proposal
+
+```bash
+cyberdcli q gov votes --trust-node
+```
+
+### Query parameters from governance module
+
+```bash
+cyberdcli q gov params
+```
+
+### Vote for specific proposal
+
+```bash
+cyberdcli tx gov vote <proposal_id> <vote_option:_yes_no_abstain> --from <your_key_name> --chain-id euler-6
+```
+
+### Submit text proposal
+
+```bash
+cyberdcli tx gov submit-proposal --title="Test Proposal" --description="My awesome proposal" --type="Text" --deposit="10eul" --from <your_key_name> --chain-id euler-6
+```
+
+### Submit community spend proposal
+
+```bash
+cyberdcli tx gov submit-proposal community-pool-spend <path/to/proposal.json> --from <key_or_address> --chain-id euler-6
+```
+
+Where `proposal.json` is a file, structured in following way:
+
+```json
+{
+  "title": "Community Pool Spend",
+  "description": "Pay me some Euls!",
+  "recipient": "cyber1s5afhd6gxevu37mkqcvvsj8qeylhn0rz46zdlq",
+  "amount": [
+    {
+      "denom": "eul",
+      "amount": "10000"
+    }
+  ],
+  "deposit": [
+    {
+      "denom": "eul",
+      "amount": "10000"
+    }
+  ]
+}
+```
+
+### Submit chain parameters change proposal
+
+```bash
+cyberdcli tx gov submit-proposal param-change <path/to/proposal.json> --from=<key_or_address> --chain-id euler-6
+```
+
+Where `proposal.json` is a file, structured in following way:
+
+```json
+{
+  "title": "Staking Param Change",
+  "description": "Update max validators",
+  "changes": [
+    {
+      "subspace": "staking",
+      "key": "MaxValidators",
+      "value": 105
+    }
+  ],
+  "deposit": [
+    {
+      "denom": "stake",
+      "amount": "10000"
+    }
+  ]
+}
+```

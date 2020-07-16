@@ -82,7 +82,7 @@ source $HOME/.bashrc
 - To check your installation run
 
 ```bash
-`go version`
+go version
 ```
 
 This will let you know if everything was installed correctly. As an output, you should see the following (version number may vary, of course):
@@ -235,12 +235,11 @@ mkdir -p $DAEMON_HOME/upgrade_manager/genesis
 mkdir -p $DAEMON_HOME/upgrade_manager/genesis/bin
 ```
 
-Download cosmosd (upgrade manager for Cosmos SDK) of version 2.0 and build it:
+Download cosmosd (upgrade manager for Cosmos SDK) and build it (commit no older than 984175f required):
 
 ```bash
-wget https://github.com/regen-network/cosmosd/archive/0.2.0.tar.gz
-tar -xzf 0.2.0.tar.gz
-cd cosmosd-0.2.0/
+git clone https://github.com/regen-network/cosmosd.git
+cd cosmosd/
 go build
 mv cosmosd $DAEMON_HOME/
 chmod +x $DAEMON_HOME/cosmosd
@@ -352,6 +351,7 @@ ExecStart=/home/ubuntu/.cyberd/cosmosd start --compute-rank-on-gpu=true
 Environment=DAEMON_HOME=/home/ubuntu/.cyberd
 Environment=DAEMON_NAME=cyberd
 Environment=GAIA_HOME=/home/ubuntu/.cyberd
+Environment=DAEMON_RESTART_AFTER_UPGRADE=on
 Restart=always
 RestartSec=3m
 LimitNOFILE=4096
