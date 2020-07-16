@@ -332,12 +332,6 @@ You can more of them on our [forum](https://ai.cybercongress.ai/t/euler-6-testne
 
 ### Setup cyberd as a service (Ubuntu)
 
-Increase resource limits for [Tendermint](https://tendermint.com):
-
-```bash
-ulimit -n 4096
-```
-
 Make cyberd a system service. This will help you easily start/stop cyberd and run it in the background:
 
 ```bash
