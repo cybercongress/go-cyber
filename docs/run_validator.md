@@ -321,7 +321,14 @@ cd $DAEMON_HOME/config
 wget -O genesis.json https://ipfs.io/ipfs/QmZHpLc3H5RMXp3Z4LURNpKgNfXd3NZ8pZLYbjNFPL6T5n
 ```
 
-Setup private peers in `config.toml`. You can find them on our [forum](https://ai.cybercongress.ai/t/euler-6-testnet-faq/65).
+Setup private peers in `config.toml`.
+
+```bash
+# Comma separated list of nodes to keep persistent connections to
+persistent_peers = "d0518ce9881a4b0c5872e5e9b7c4ea8d760dad3f@85.10.207.173:26656,0f7d8d5bb8e831a67d29d5950cff0f0ecafbab54@195.201.105.229:36656,30d949f592baf210dd2fc500c83f087f7ce95a84@86.57.254.202:36656"
+```
+
+You can more of them on our [forum](https://ai.cybercongress.ai/t/euler-6-testnet-faq/65), the more the better for now.
 
 ### Setup cyberd as a service (Ubuntu)
 

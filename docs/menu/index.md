@@ -12,6 +12,7 @@ headless: true
   - [Multisig guide]({{< relref "/docs/go-cyber/multisig_guide.md" >}})
   - [Run validator with Tendermint and Ledger]({{< relref "/docs/go-cyber/validator_launch_with_tendermintKMS_and_ledger.md" >}})
   - [Set up config.toml in the right way]({{< relref "/docs/go-cyber/setup_cyberd_configuration.md" >}})
+  - [Upgrade guide]({{< relref "/docs/go-cyber/upgrade_guide.md" >}})
 - Dev environment:
   - [Setup development environment]({{< relref "/docs/go-cyber/setup_dev_env.md" >}})
 - Specs:
