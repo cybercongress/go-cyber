@@ -49,47 +49,47 @@ As long as the current implementation of `cyber` is written in [Go](https://gola
 
 For `euler-6` Cyberd requires at least Go version 1.13+. Install it according to the official [guide](https://golang.org/doc/install):
 
-- Download the archive:
+1. Download the archive:
 
-```bash
-wget https://dl.google.com/go/go1.13.11.linux-amd64.tar.gz
-```
+    ```bash
+    wget https://dl.google.com/go/go1.13.11.linux-amd64.tar.gz
+    ```
 
-- Extract it into `/usr/local`, creating a Go tree in `/usr/local/go`:
+2. Extract it into `/usr/local`, creating a Go tree in `/usr/local/go`:
 
-```bash
-tar -C /usr/local -xzf go1.13.11.linux-amd64.tar.gz
-```
+    ```bash
+    tar -C /usr/local -xzf go1.13.11.linux-amd64.tar.gz
+    ```
 
-- Add `/usr/local/go/bin` to the PATH environment variable. You can do this by adding this line to your `/etc/profile` (for installation on the whole system) or `$HOME/.bashrc`:
+3. Add `/usr/local/go/bin` to the PATH environment variable. You can do this by adding this line to your `/etc/profile` (for installation on the whole system) or `$HOME/.bashrc`:
 
-```bash
-export PATH=$PATH:/usr/local/go/bin
-```
+    ```bash
+    export PATH=$PATH:/usr/local/go/bin
+    ```
 
-- Do `source` for the file with your `$PATH` variable or just log-out/log-in:
+4. Do `source` for the file with your `$PATH` variable or just log-out/log-in:
 
-```bash
-source /etc/profile
-```
+    ```bash
+    source /etc/profile
+    ```
 
-or
+    or
 
-```bash
-source $HOME/.bashrc
-```
+    ```bash
+    source $HOME/.bashrc
+    ```
 
-- To check your installation run
+5. To check your installation run
 
-```bash
-go version
-```
+    ```bash
+    go version
+    ```
 
-This will let you know if everything was installed correctly. As an output, you should see the following (version number may vary, of course):
+    This will let you know if everything was installed correctly. As an output, you should see the following (version number may vary, of course):
 
-```bash
-go version go1.13.11 linux/amd64
-```
+    ```bash
+    go version go1.13.11 linux/amd64
+    ```
 
 #### Installing Nvidia drivers
 
@@ -332,6 +332,8 @@ You can more of them on our [forum](https://ai.cybercongress.ai/t/euler-6-testne
 
 ### Setup cyberd as a service (Ubuntu)
 
+#### Service setup for cyber node
+
 Make cyberd a system service. This will help you easily start/stop cyberd and run it in the background:
 
 ```bash
@@ -361,7 +363,11 @@ LimitNOFILE=4096
 WantedBy=multi-user.target
 ```
 
-If you need to enable search of the node add the flag `--allow-search=true` right after `--compute-rank-on-gpu=true`. If you need to run a rest-server alongside `cyberd` here is a service file for it (do `sudo nano /etc/systemd/system/cyberdcli-rest.service` and paste the following), just make sure you'll replace `ubuntu` to your user name and group:
+If you need to enable search of the node add the flag `--allow-search=true` right after `--compute-rank-on-gpu=true`.
+
+#### Run rest service with cyberdcli
+
+If you need to run a rest-server alongside `cyberd` here is a service file for it (do `sudo nano /etc/systemd/system/cyberdcli-rest.service` and paste the following), just make sure you'll replace `ubuntu` to your user name and group:
 
 ```bash
 [Unit]
@@ -379,16 +385,13 @@ RestartSec=30
 WantedBy=multi-user.target
 ```
 
-There's a possibility to build and run swagger-ui for your node to get a better experience with the rest-server. To get it up you'll have to install `static` library for Go: 
+**Run swagger-ui on top of cyberdcli rest server**
 
-```bash
-go get github.com/rakyll/statik
-```
-
-Then `cd` to the go-cyber repo and set static file for swagger-ui:
+There's a possibility to build and run swagger-ui for your node to get a better experience with the rest-server. To get it up you'll have to `cd` to the go-cyber repo, install `static` library for Go and set static file for swagger-ui:
 
 ```bash
 cd <path_to_go-cyber>/go-cyber/
+apt install golang-statik
 statik -src=cmd/cyberdcli/swagger-ui -dest=cmd/cyberdcli/lcd -f
 ```
 
@@ -401,7 +404,7 @@ cp build/cyberdcli /usr/local/bin/
 
 When all of the above steps are completed and cyberdcli-rest service has been started, you should have Swagger-ui available at `http://localhost:1317/swagger-ui/` .
 
-Run cyberd:
+#### Launch cyberd
 
 Reload `systemd` after the creation of the new service:
 

@@ -2,6 +2,8 @@
 
 Upgrade to newer version of binaries will be covered in this guide. Go-cyber using [cosmosd](https://github.com/regen-network/cosmosd) upgrade manager and [upgrade module](https://docs.cosmos.network/master/modules/upgrade/) for on-chain upgrades.
 
+If you set up your node using this [Run validator guide](https://github.com/cybercongress/go-cyber/blob/master/docs/run_validator.md) it should be pretty eady to prepare for upgrade.
+
 ## Definition
 
 Current upgrade named Darwin, so all further referencies will be made to that name. Overal upgrade process is basically tied to changing binary file of the cyberd to new version, at the same time for all validator nodes. Governance proposal for upgrade will define name for upgrade and block in the chain, when this upgrade should happen. New binary file must be pre-compiled (or downloaded), and placed rigth inside `.cyberd` folder. Whole uprade process is as simple as theese steps:
@@ -186,17 +188,47 @@ And here thats it for preparation side. It everythng set correctly upgrade will 
 
 ## Upgrade itself
 
-When upgrade proposal will be submited and upgrade block will come, cosmosd will do following on all nodes across the chain:
+When upgrade proposal will be submited and upgrade block will come, cosmosd will do following on all nodes across the chain automatically:
 
 - Stop cyber node
 
 - Change `current` link to` -> .cyberd/upgrade_manager/upgrades/darwin`
 
-- Automatically start node
+- Start node
 
-As soon as there will be more than ~66.66% of voting power at succeded validators chain will continue block production.
+As soon as there will be more than ~66.66% of voting power at succesfully upgraded validators, chain will continue block production.
+
+**Important**
+
+This manual would not cover docker setup, for that case you'll have to manually build new conatiner and start it over the node state, instead of old one, manually at/or after the time of the upgrade.
 
 ## Manual upgrade
 
-If something is goes wrong and cosmosd didn't restart with new binary at given time on upgrade you need do this:
-...
+If something goes wrong and cosmosd didn't start with new binary at upgrade block you need do following:
+
+1. Stop cyber node:
+
+    ```bash
+     service cyberd stop
+    ```
+
+2. Go to .cyberd directory and remove current link:
+
+    ```bash
+    cd /$DAEMON_HOME/upgrade_manager/
+    rm current
+    ```
+
+3. Create new symbolic link to directory with upgraded binary
+
+    ```bash
+    ln -s /$DAEMON_HOME/upgrade_manager/upgrades/darwin/ /$DAEMON_HOME/upgrade_manager/current
+    ```
+
+    that will point cosmosd to correct binary location.
+
+4. Start cyberd service
+
+    ```bash
+    service cyberd start
+    ```
