@@ -4,6 +4,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkbank "github.com/cosmos/cosmos-sdk/x/bank"
 	"github.com/cosmos/cosmos-sdk/x/params"
+
 	"github.com/cybercongress/go-cyber/types/coin"
 	"github.com/cybercongress/go-cyber/x/bank/internal/types"
 )
@@ -92,7 +93,7 @@ func (k Keeper) InputOutputCoins(
 func (k Keeper) DelegateCoins(ctx sdk.Context, delegatorAddr, moduleAccAddr sdk.AccAddress, amt sdk.Coins) error {
 	err := k.Keeper.DelegateCoins(ctx, delegatorAddr, moduleAccAddr, amt)
 	if err == nil {
-		k.onCoinsTransfer(ctx, nil, moduleAccAddr)
+		k.onCoinsTransfer(ctx, delegatorAddr, nil)
 	}
 	return err
 }
