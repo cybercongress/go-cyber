@@ -174,7 +174,7 @@ And verify upgrade_manager folder from .cyberd directory looks like this:
 
 ```bash
 .
-├── current -> /root/.cyberd/upgrade_manager/genesiss
+├── current -> /root/.cyberd/upgrade_manager/genesis
 ├── genesis
 │   └── bin
 │       └── cyberd
