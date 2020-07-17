@@ -174,7 +174,7 @@ And verify upgrade_manager folder from .cyberd directory looks like this:
 
 ```bash
 .
-├── current -> /root/.cyberd/genesis/bin
+├── current -> /root/.cyberd/upgrade_manager/genesiss
 ├── genesis
 │   └── bin
 │       └── cyberd
@@ -186,7 +186,7 @@ And verify upgrade_manager folder from .cyberd directory looks like this:
 
 And here thats it for preparation side. It everythng set correctly upgrade will happen automatically.
 
-After upgrade current link will be automatically changed to ```current -> /root/.cyberd/upgrades/darwin/bin```
+After upgrade current link will be automatically changed to ```current -> /root/.cyberd/upgrade_manager/upgrades/darwin```
 
 ## Upgrade itself
 
