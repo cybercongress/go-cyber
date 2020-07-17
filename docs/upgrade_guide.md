@@ -1,22 +1,22 @@
 # How to upgrade cyber node with cosmosd
 
-Upgrade to newer version of binaries will be covered in this guide. Go-cyber using [cosmosd](https://github.com/regen-network/cosmosd) upgrade manager for on-chain upgrades.
+Upgrade to newer version of binaries will be covered in this guide. Go-cyber using [cosmosd](https://github.com/regen-network/cosmosd) upgrade manager and [upgrade module](https://docs.cosmos.network/master/modules/upgrade/) for on-chain upgrades.
 
 ## Definition
 
-Current upgrade named Darwin, so all further referencies will be made to that name. Overal upgrade process is basically tied to changing binary file of the cyberd to new version, at the same time for all validator nodes. Governance proposal for upgrade wii define name for upgrade and block in the chain, when this upgrade should happen. New binary file must be pre-compiled (or downloaded), and placed rigth inside `.cyberd` folder. Whole uprade process is as simple as theese steps:
+Current upgrade named Darwin, so all further referencies will be made to that name. Overal upgrade process is basically tied to changing binary file of the cyberd to new version, at the same time for all validator nodes. Governance proposal for upgrade will define name for upgrade and block in the chain, when this upgrade should happen. New binary file must be pre-compiled (or downloaded), and placed rigth inside `.cyberd` folder. Whole uprade process is as simple as theese steps:
 
-- newly compiled `cyberd` binary file is being placed into correct folder
+- newly compiled `cyberd` binary file is being placed into correct directory
 
 - when desired upgrade block comes `cosmosd` catches event and stops cyber node
 
-- `cosmosd` starting node from new binary file from the folder with upgrade name
+- `cosmosd` starting node from new binary file from the directory with upgrade name
 
 ### Cosmosd explained
 
 [Cosmosd](https://github.com/regen-network/cosmosd) is a tool designed by [Regen-Network](https://github.com/regen-network) devs. It is designed for smooth and configurable management of upgrading binaries as a live chain is upgraded, as well as makes syncing a full node for genesis simplier. The upgrade manager will monitor the stdout of the daemon to look for messages from the upgrade module indicating a pending or required upgrade and act appropriately.
 
-Since the version 0.1.6 special module has been integrated to cyber, which add possibility to make new kind of proposal called `software-upgrade`. This proposal, if passed, set specific block or time when upgrade should happen as well as specifies unique upgrade name. By default cosmosd is launching deamon file that is located under `DAEMON_HOME/upgrade_manager/genesis/` folder. When upgrade time comes `cyberd` generates to it's stdout sting looks like following:
+Since the version 0.1.6 (Euler-6) upgrade module has been integrated to cyber, which add possibility to make new kind of proposal called `software-upgrade`. This proposal, if passed, set specific block or time when upgrade should happen as well as specifies unique upgrade name. By default cosmosd is launching deamon file that is located under `DAEMON_HOME/upgrade_manager/genesis/` folder. When upgrade time comes `cyberd` generates to it's stdout sting looks like following:
 
 ```bash
 Jul 16 17:25:11 mars cosmosd[5791]: E[2020-07-16|17:25:11.325] UPGRADE "darwin" NEEDED at height: 2000:     module=main
@@ -77,6 +77,8 @@ chmod +x $DAEMON_HOME/cosmosd
 service cyberd start
 ```
 
+Attention - please, build cosmosd from latest master and double-check your version
+
 ### Cyberd.service check
 
 Cyberd.service responsibe for cyberd operation must be 100% similar to current [doc](https://github.com/cybercongress/go-cyber/blob/master/docs/run_validator.md).
@@ -126,7 +128,7 @@ systemctl daemon-reload
 
 ### Prepraing new cyberd binary
 
-Upgrade will be released with tag 0.1.6.3, so technically all that required to get it is pull changes inside cloned go-cyber repo:
+Upgrade will be released with tag v0.1.6.3, so technically all that required to get it is pull changes inside cloned go-cyber repo:
 
 ```bash
 cd /<path_to_go-cyber>/go-cyber/
@@ -164,7 +166,7 @@ To check that everything builded correclty run:
 $DAEMON_HOME/upgrade_manager/upgrades/darwin/bin/cyberd version
 ```
 
-Version must be `0.1.6.3`.
+Version must be `v0.1.6.3`.
 
 And verify upgrade_manager folder from .cyberd directory looks like this:
 
@@ -193,3 +195,8 @@ When upgrade proposal will be submited and upgrade block will come, cosmosd will
 - Automatically start node
 
 As soon as there will be more than ~66.66% of voting power at succeded validators chain will continue block production.
+
+## Manual upgrade
+
+If something is goes wrong and cosmosd didn't restart with new binary at given time on upgrade you need do this:
+...
