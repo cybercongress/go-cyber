@@ -186,6 +186,8 @@ And verify upgrade_manager folder from .cyberd directory looks like this:
 
 And here thats it for preparation side. It everythng set correctly upgrade will happen automatically.
 
+After upgrade current link will be automatically changed to ```current -> /root/.cyberd/upgrades/darwin/bin```
+
 ## Upgrade itself
 
 When upgrade proposal will be submited and upgrade block will come, cosmosd will do following on all nodes across the chain automatically:
