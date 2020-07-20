@@ -67,6 +67,8 @@ cosmosd-0.2.0
 
 you are on the wrong version, and will have to correct this.
 
+In case when you removed cosmosd directory, it's advised to clone repo again and rebuild cosmosd to make sure you on 100% correct version.
+
 To get correct version do the following:
 
 ```bash
@@ -134,7 +136,7 @@ Upgrade will be released with tag v0.1.6.3, so technically all that required to 
 
 ```bash
 cd /<path_to_go-cyber>/go-cyber/
-git reset --hard 
+git reset --hard
 git checkout master
 git pull
 ```
@@ -150,7 +152,7 @@ make build
 
 After all above done, new `cyberd` and `cyberdcli` binaries must appear inside ~/go-cyber/build/.
 
-Next we need to create folders tree with upgrade name and place binaries to appropriate location:
+Next we need to create folders tree with upgrade name and place binaries to appropriate location (all of the following execute form `go-cyber` directory):
 
 ```bash
 mkdir $DAEMON_HOME/upgrade_manager/upgrades/
@@ -170,7 +172,15 @@ $DAEMON_HOME/upgrade_manager/upgrades/darwin/bin/cyberd version
 
 Version must be `v0.1.6.3`.
 
-And verify upgrade_manager folder from .cyberd directory looks like this:
+And verify upgrade_manager folder from .cyberd directory looks like following, run
+
+```bash
+tree
+```
+
+**it migth require installing tree**
+
+then check that your upgrade_manager directory looks similar:
 
 ```bash
 .
