@@ -69,20 +69,20 @@ jobs:
             cd ~/workdir
             git clone -q --depth 1 https://${DOCS_GITHUB_TOKEN}@github.com/cybercongress/congress.git
       - deploy:
-          name: Update docs from cyberd repo
+          name: Update docs from go-cyber repo
           working_directory: ~/workdir/congress
           command: |
             # We need to remove current files in folder to avoid duplicating renamed files
-            rm -rf ./site/content/docs/cyberd/*
-            cp -r ~/build/docs/. ./site/content/docs/cyberd/
-            cp ~/build/CHANGELOG.md ./site/content/docs/cyberd/Changelog.md
-            cp ~/build/CONTRIBUTING.md ./site/content/docs/cyberd/Contributing.md
-            git add -N site/content/docs/cyberd
-            diff=$(git diff site/content/docs/cyberd/)
+            rm -rf ./site/content/docs/go-cyber/*
+            cp -r ~/build/docs/. ./site/content/docs/go-cyber/
+            cp ~/build/CHANGELOG.md ./site/content/docs/go-cyber/Changelog.md
+            cp ~/build/CONTRIBUTING.md ./site/content/docs/go-cyber/Contributing.md
+            git add -N site/content/docs/go-cyber
+            diff=$(git diff site/content/docs/go-cyber/)
             if [[  -n  "$diff" ]]; then
               git config user.email "cybercongress42@gmail.com"
               git config user.name "Cyber Admin"
-              git add site/content/docs/cyberd/
+              git add site/content/docs/go-cyber/
               git commit -m "Circle CI: Update Docs"
               # Push quietly to prevent showing the token in log
               git push -q https://${DOCS_GITHUB_TOKEN}@github.com/cybercongress/congress.git master
