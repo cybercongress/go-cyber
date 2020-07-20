@@ -12,6 +12,7 @@
 
 **Merged pull requests:**
 
+- fixes to upgrade guide [\#537](https://github.com/cybercongress/go-cyber/pull/537) ([mrlp4](https://github.com/mrlp4))
 - Update script.sh [\#536](https://github.com/cybercongress/go-cyber/pull/536) ([SaveTheAles](https://github.com/SaveTheAles))
 - Update naming for docs build to go-cyber [\#535](https://github.com/cybercongress/go-cyber/pull/535) ([SaveTheAles](https://github.com/SaveTheAles))
 - Software upgrade documentation [\#534](https://github.com/cybercongress/go-cyber/pull/534) ([litvintech](https://github.com/litvintech))
