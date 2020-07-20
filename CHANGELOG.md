@@ -12,6 +12,7 @@
 
 **Merged pull requests:**
 
+- Update naming for docs build to go-cyber [\#535](https://github.com/cybercongress/go-cyber/pull/535) ([SaveTheAles](https://github.com/SaveTheAles))
 - Software upgrade documentation [\#534](https://github.com/cybercongress/go-cyber/pull/534) ([litvintech](https://github.com/litvintech))
 - Delegation tracking and Darwin upgrade [\#533](https://github.com/cybercongress/go-cyber/pull/533) ([litvintech](https://github.com/litvintech))
 - Master docs update [\#532](https://github.com/cybercongress/go-cyber/pull/532) ([mrlp4](https://github.com/mrlp4))
