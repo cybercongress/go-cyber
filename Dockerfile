@@ -130,7 +130,7 @@ COPY --from=build_stage_cuda /usr/lib/libgo_cosmwasm.dylib /usr/lib/libgo_cosmwa
 ###############################################################################
 
 COPY start_script.sh /start_script.sh
-COPY entrypoint1.sh /entrypoint.sh
+COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x start_script.sh
 RUN chmod +x /entrypoint.sh
 
