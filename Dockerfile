@@ -138,13 +138,13 @@ RUN chmod +x /entrypoint.sh
 ###############################################################################
 RUN cd / && rm -fR $BUILD_DIR $HOME/.rustup $HOME/.cargo $HOME/.cache $HOME/go \
 && apt-get remove -y --auto-remove \
-ca-certificates \
+#ca-certificates \
 make gcc g++ \
-curl \
+#curl \
 git \
 nvidia-cuda-toolkit \
-; \
-rm -rf /var/lib/apt/lists/*; \
+#; \
+#rm -rf /var/lib/apt/lists/*; \
 rm -fR /tmp/*;
 
 # Start
