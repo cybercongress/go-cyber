@@ -136,16 +136,16 @@ RUN chmod +x /entrypoint.sh
 
 # Cleanup for runtime container
 ###############################################################################
-RUN cd / && rm -fR $BUILD_DIR $HOME/.rustup $HOME/.cargo $HOME/.cache $HOME/go \
-&& apt-get remove -y --auto-remove \
+#RUN cd / && rm -fR $BUILD_DIR $HOME/.rustup $HOME/.cargo $HOME/.cache $HOME/go 
+#&& apt-get remove -y --auto-remove \
 #ca-certificates \
-make gcc g++ \
+#make gcc g++ \
 #curl \
-git \
-nvidia-cuda-toolkit \
+#git \
+#nvidia-cuda-toolkit \
 #; \
 #rm -rf /var/lib/apt/lists/*; \
-rm -fR /tmp/*;
+#rm -fR /tmp/*;
 
 # Start
 ###############################################################################
