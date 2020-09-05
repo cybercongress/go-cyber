@@ -3,7 +3,9 @@ package exported
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkbank "github.com/cosmos/cosmos-sdk/x/bank"
+
 	cbd "github.com/cybercongress/go-cyber/types"
+	"github.com/cybercongress/go-cyber/x/bank/internal/keeper"
 	"github.com/cybercongress/go-cyber/x/bank/internal/types"
 )
 
@@ -21,6 +23,8 @@ type Keeper interface {
 	GetAccStakePercentage(sdk.Context, sdk.AccAddress) float64
 
 	GetTotalSupply(sdk.Context) int64
+
+	Hooks() keeper.Hooks
 }
 
 type IndexedKeeper interface {
