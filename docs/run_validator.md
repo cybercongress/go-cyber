@@ -233,6 +233,9 @@ mkdir $HOME/.cyberd
 mkdir -p $DAEMON_HOME/upgrade_manager
 mkdir -p $DAEMON_HOME/upgrade_manager/genesis
 mkdir -p $DAEMON_HOME/upgrade_manager/genesis/bin
+mkdir -p $DAEMON_HOME/upgrade_manager/upgrades
+mkdir -p $DAEMON_HOME/upgrade_manager/upgrades/darwin
+mkdir -p $DAEMON_HOME/upgrade_manager/upgrades/darwin/bin
 ```
 
 Download cosmosd (upgrade manager for Cosmos SDK) and build it (commit no older than 984175f required):
@@ -263,6 +266,7 @@ Build cyber daemon (as a result you should see `cyberd` and `cyberdcli` files in
 
 ```bash
 cd ~/go-cyber
+git checkout v0.1.6.2
 make build
 ```
 
@@ -286,6 +290,31 @@ cp build/cyberd /usr/local/bin/
 chmod +x $DAEMON_HOME/upgrade_manager/genesis/bin/cyberd
 ```
 
+Do the same for Darwin upgrade binaries
+
+```bash
+cd ~/go-cyber
+git checkout v0.1.6.3
+make build
+```
+
+And copy newest binaries to apropiate location:
+
+```bash
+cp build/cyberd $DAEMON_HOME/upgrade_manager/upgrades/darwin/bin
+cp build/cyberdcli /usr/local/bin/
+cp build/cyberd /usr/local/bin/
+chmod +x $DAEMON_HOME/upgrade_manager/upgrades/darwin/bin/cyberd
+```
+
+**Important** 
+
+Currently Euler-6 network is running on Darwin upgrade, so if you planning to sync from scratch just proceed to node launch, otherwise, if you would like to deploy backup create symlink to current binary:
+
+```bash
+ln -s /$DAEMON_HOME/upgrade_manager/upgrades/darwin/ /$DAEMON_HOME/upgrade_manager/current
+```
+
 Initialize cyber daemon (don't forget to change the node moniker):
 
 ```bash
@@ -307,9 +336,13 @@ root@node:~/.cyberd# tree
 ├── data
 │   └── priv_validator_state.json
 └── upgrade_manager
-    └── genesis
-        └── bin
-            └── cyberd
+    ├── genesis
+    │   └── bin
+    │       └── cyberd
+    └──upgrades
+        └── darwin
+            └── bin
+                └── cyberd
 ```
 
 As a result of this operation, the `data` and `config` folders should appear inside of your *$DAEMON_HOME/* folder.
@@ -350,7 +383,7 @@ After=network-online.target
 [Service]
 User=ubuntu
 WorkingDirectory=/home/ubuntu/.cyberd/
-ExecStart=/home/ubuntu/.cyberd/cosmosd start --compute-rank-on-gpu=true
+ExecStart=/home/ubuntu/.cyberd/cosmosd start --compute-rank-on-gpu=true --home /home/ubuntu/.cyberd
 Environment=DAEMON_HOME=/home/ubuntu/.cyberd
 Environment=DAEMON_NAME=cyberd
 Environment=GAIA_HOME=/home/ubuntu/.cyberd
