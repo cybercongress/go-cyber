@@ -7,11 +7,14 @@
 **Closed issues:**
 
 - Upgrade to sdk 38.5 and tm 33.6 [\#530](https://github.com/cybercongress/go-cyber/issues/530)
+- Delegations not indexed with bank module wrapper [\#521](https://github.com/cybercongress/go-cyber/issues/521)
 - Security upgrade with bump to 0.38.3/0.33.3 [\#518](https://github.com/cybercongress/go-cyber/issues/518)
+- Euler-6 release [\#463](https://github.com/cybercongress/go-cyber/issues/463)
 - Support easy install with brew tap [\#426](https://github.com/cybercongress/go-cyber/issues/426)
 
 **Merged pull requests:**
 
+- upgrade\_fixes\_to\_run\_val [\#545](https://github.com/cybercongress/go-cyber/pull/545) ([mrlp4](https://github.com/mrlp4))
 - fixes to upgrade guide [\#537](https://github.com/cybercongress/go-cyber/pull/537) ([mrlp4](https://github.com/mrlp4))
 - Update script.sh [\#536](https://github.com/cybercongress/go-cyber/pull/536) ([SaveTheAles](https://github.com/SaveTheAles))
 - Update naming for docs build to go-cyber [\#535](https://github.com/cybercongress/go-cyber/pull/535) ([SaveTheAles](https://github.com/SaveTheAles))
