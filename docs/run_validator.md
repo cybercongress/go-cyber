@@ -312,7 +312,7 @@ chmod +x $DAEMON_HOME/upgrade_manager/upgrades/darwin/bin/cyberd
 Currently Euler-6 network is running on Darwin upgrade, so if you planning to sync from scratch just proceed to node launch, otherwise, if you would like to deploy backup create symlink to current binary:
 
 ```bash
-ln -s /$DAEMON_HOME/upgrade_manager/upgrades/darwin/ /$DAEMON_HOME/upgrade_manager/current
+ln -s $DAEMON_HOME/upgrade_manager/upgrades/darwin/ /$DAEMON_HOME/upgrade_manager/current
 ```
 
 Initialize cyber daemon (don't forget to change the node moniker):
