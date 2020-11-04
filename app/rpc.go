@@ -16,7 +16,7 @@ import (
 
 type RankedCid struct {
 	Cid  link.Cid `json:"cid"`
-	Rank float64  `amino:"unsafe" json:"rank"`
+	Rank uint64  `json:"rank"`
 }
 
 func (app *CyberdApp) RpcContext() sdk.Context {
@@ -63,7 +63,7 @@ func (app *CyberdApp) Top(page, perPage int) ([]RankedCid, int, error) {
 	return result, size, nil
 }
 
-func (app *CyberdApp) Rank(cid string, proof bool) (float64, []merkle.Proof, error) {
+func (app *CyberdApp) Rank(cid string, proof bool) (uint64, []merkle.Proof, error) {
 
 	cidNumber, exists := app.cidNumKeeper.GetCidNumber(app.RpcContext(), link.Cid(cid))
 	if !exists || cidNumber > app.rankStateKeeper.GetLastCidNum() {

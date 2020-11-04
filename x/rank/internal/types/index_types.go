@@ -7,11 +7,11 @@ import (
 
 type RankedCidNumber struct {
 	number link.CidNumber
-	rank   float64
+	rank   uint64
 }
 
 func (c RankedCidNumber) GetNumber() link.CidNumber { return c.number }
-func (c RankedCidNumber) GetRank() float64          { return c.rank }
+func (c RankedCidNumber) GetRank() uint64           { return c.rank }
 
 //
 // Local type for sorting
@@ -49,7 +49,7 @@ type SearchIndex interface {
 	Load(links link.Links)
 	Search(cidNumber link.CidNumber, page, perPage int) ([]RankedCidNumber, int, error)
 	Top(page, perPage int) ([]RankedCidNumber, int, error)
-	GetRankValue(cidNumber link.CidNumber) float64
+	GetRankValue(cidNumber link.CidNumber) uint64
 	PutNewLinks(links []link.CompactLink)
 	PutNewRank(rank Rank)
 }
@@ -71,6 +71,6 @@ func (i NoopSearchIndex) Top(page, perPage int) ([]RankedCidNumber, int, error) 
 }
 func (i NoopSearchIndex) PutNewLinks(links []link.CompactLink) {}
 func (i NoopSearchIndex) PutNewRank(rank Rank)                 {}
-func (i NoopSearchIndex) GetRankValue(cidNumber link.CidNumber) float64 {
+func (i NoopSearchIndex) GetRankValue(cidNumber link.CidNumber) uint64 {
 	return 0
 }

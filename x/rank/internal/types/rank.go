@@ -3,7 +3,7 @@ package types
 import (
 	"crypto/sha256"
 	"encoding/binary"
-	"math"
+	"fmt"
 	"sort"
 	"time"
 
@@ -14,29 +14,38 @@ import (
 )
 
 type Rank struct {
-	Values     []float64
+	Values     []uint64
 	MerkleTree *merkle.Tree
 	CidCount   uint64
 	TopCIDs	   []RankedCidNumber
 }
 
 func NewRank(values []float64, logger log.Logger, fullTree bool) Rank {
+
 	start := time.Now()
+	rankUint := make([]uint64, len(values))
+	for i, f64 := range values {
+		rankUint[i] = uint64(f64*1e20)
+	}
+	fmt.Println("Rank converting to uint: ", "time", time.Since(start))
+
+	start = time.Now()
 	merkleTree := merkle.NewTree(sha256.New(), fullTree)
-	for _, f64 := range values {
+	for _, u64 := range rankUint {
 		rankBytes := make([]byte, 8)
-		binary.LittleEndian.PutUint64(rankBytes, math.Float64bits(f64))
+		binary.LittleEndian.PutUint64(rankBytes, u64)
 		merkleTree.Push(rankBytes)
 	}
 	logger.Info("Rank constructing tree", "time", time.Since(start))
+	fmt.Printf("Rank merkle root hash: %x\n", merkleTree.RootHash())
 
 	// NOTE fulltree true if search index enabled
 	var newSortedCIDs []RankedCidNumber
 	if (fullTree == true) {
-		newSortedCIDs = BuildTop(values, 1000)
+		newSortedCIDs = BuildTop(rankUint, 1000)
 	}
 
-	return Rank{Values: values, MerkleTree: merkleTree, CidCount: uint64(len(values)), TopCIDs: newSortedCIDs}
+	return Rank{Values: rankUint, MerkleTree: merkleTree, CidCount: uint64(len(values)), TopCIDs: newSortedCIDs}
 }
 
 func NewFromMerkle(cidCount uint64, treeBytes []byte) Rank {
@@ -68,7 +77,7 @@ func (r *Rank) CopyWithoutTree() Rank {
 		return Rank{Values: nil, MerkleTree: nil, CidCount: 0, TopCIDs: nil}
 	}
 
-	copiedValues := make([]float64, len(r.Values))
+	copiedValues := make([]uint64, len(r.Values))
 	n := copy(copiedValues, r.Values)
 	// SHOULD NOT HAPPEN
 	if n != len(r.Values) {
@@ -84,7 +93,7 @@ func (r *Rank) AddNewCids(currentCidCount uint64) {
 
 	// add new cids with rank = 0
 	if r.Values != nil {
-		r.Values = append(r.Values, make([]float64, newCidsCount)...)
+		r.Values = append(r.Values, make([]uint64, newCidsCount)...)
 	}
 
 	// extend merkle tree
@@ -96,7 +105,7 @@ func (r *Rank) AddNewCids(currentCidCount uint64) {
 	r.CidCount = currentCidCount
 }
 
-func BuildTop(values []float64, size int) []RankedCidNumber {
+func BuildTop(values []uint64, size int) []RankedCidNumber {
 	newSortedCIDs := make(sortableCidNumbers, 0, len(values))
 	for cid, rank := range values {
 		if (rank == 0) { continue } // NOTE math.IsNaN(rank) check removed after rank fix

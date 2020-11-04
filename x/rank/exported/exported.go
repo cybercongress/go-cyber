@@ -21,7 +21,7 @@ type StateKeeper interface {
 	Search(cidNumber link.CidNumber, page, perPage int) ([]types.RankedCidNumber, int, error)
 	Top(page, perPage int) ([]types.RankedCidNumber, int, error)
 
-	GetRankValue(link.CidNumber) float64
+	GetRankValue(link.CidNumber) uint64
 	GetNetworkRankHash() []byte
 
 	GetLastCidNum() link.CidNumber
