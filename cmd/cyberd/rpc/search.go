@@ -19,3 +19,12 @@ func Search(ctx *rpctypes.Context, cid string, page, perPage int) (*ResultSearch
 	links, totalSize, err := cyberdApp.Search(cid, page, perPage)
 	return &ResultSearch{links, totalSize, page, perPage}, err
 }
+
+func Backlinks(ctx *rpctypes.Context, cid string, page, perPage int) (*ResultSearch, error) {
+	if perPage == 0 {
+		perPage = 100
+	}
+	links, totalSize, err := cyberdApp.Backlinks(cid, page, perPage)
+	return &ResultSearch{links, totalSize, page, perPage}, err
+}
+
