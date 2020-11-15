@@ -23,10 +23,10 @@ func IsLinkExist(ctx *rpctypes.Context, from string, to string, address string) 
 }
 
 type LinkRequest struct {
-	Fee        auth.StdFee `json:"fee"`
-	Msgs       []link.Msg  `json:"msgs"`
-	Signatures []Signature `json:"signatures"`
-	Memo       string      `json:"memo"`
+	Fee        auth.StdFee         `json:"fee"`
+	Msgs       []link.MsgCyberlink `json:"msgs"`
+	Signatures []Signature         `json:"signatures"`
+	Memo       string              `json:"memo"`
 }
 
 func (r LinkRequest) GetFee() auth.StdFee        { return r.Fee }

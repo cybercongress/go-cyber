@@ -3,13 +3,13 @@ package app
 import (
 	"encoding/json"
 	"log"
+
 	"github.com/cosmos/cosmos-sdk/codec"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/slashing"
 	"github.com/cosmos/cosmos-sdk/x/staking"
-	"github.com/cybercongress/go-cyber/x/link"
 	abci "github.com/tendermint/tendermint/abci/types"
 	tmtypes "github.com/tendermint/tendermint/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 // ExportAppStateAndValidators export the state of gaia for a genesis file
@@ -18,10 +18,10 @@ func (app *CyberdApp) ExportAppStateAndValidators(forZeroHeight bool, jailWhiteL
 
 	ctx := app.NewContext(true, abci.Header{Height: app.LastBlockHeight()})
 
-	err = link.WriteGenesis(ctx, app.cidNumKeeper, app.linkIndexedKeeper, app.Logger())
-	if err != nil {
-		return nil, nil, err
-	}
+	//err = link.WriteGenesis(ctx, app.cidNumKeeper, app.linkIndexedKeeper, app.Logger())
+	//if err != nil {
+	//	return nil, nil, err
+	//}
 
 	if forZeroHeight {
 		app.prepForZeroHeightGenesis(ctx, jailWhiteList)

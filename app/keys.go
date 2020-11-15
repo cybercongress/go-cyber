@@ -13,7 +13,11 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/supply"
 	"github.com/cosmos/cosmos-sdk/x/upgrade"
 	"github.com/cosmos/cosmos-sdk/x/evidence"
-	"github.com/cosmwasm/wasmd/x/wasm"
+	"github.com/CosmWasm/wasmd/x/wasm"
+
+	"github.com/cybercongress/go-cyber/x/bandwidth"
+	"github.com/cybercongress/go-cyber/x/link"
+	"github.com/cybercongress/go-cyber/x/rank"
 )
 
 type cyberdAppDbKeys struct {
@@ -29,12 +33,9 @@ type cyberdAppDbKeys struct {
 	upgrade  	   *sdk.KVStoreKey
 	evidence	   *sdk.KVStoreKey
 
-	cidNum         *sdk.KVStoreKey
-	cidNumReverse  *sdk.KVStoreKey
 	links          *sdk.KVStoreKey
 	rank           *sdk.KVStoreKey
-	accBandwidth   *sdk.KVStoreKey
-	blockBandwidth *sdk.KVStoreKey
+	bandwidth      *sdk.KVStoreKey
 
 	wasm 		   *sdk.KVStoreKey
 
@@ -56,14 +57,10 @@ func NewCyberdAppDbKeys() cyberdAppDbKeys {
 		upgrade:  sdk.NewKVStoreKey(upgrade.StoreKey),
 		evidence: sdk.NewKVStoreKey(evidence.StoreKey),
 
-		cidNum:         sdk.NewKVStoreKey("cid_index"), // TODO
-		cidNumReverse:  sdk.NewKVStoreKey("cid_index_reverse"),
-		links:          sdk.NewKVStoreKey("cyberlinks"),
-		rank:           sdk.NewKVStoreKey("rank"),
-		accBandwidth:   sdk.NewKVStoreKey("acc_bandwidth"),
-		blockBandwidth: sdk.NewKVStoreKey("block_spent_bandwidth"),
-
-		wasm:			sdk.NewKVStoreKey(wasm.StoreKey),
+		links:    sdk.NewKVStoreKey(link.StoreKey),
+		rank:     sdk.NewKVStoreKey(rank.StoreKey),
+		bandwidth:sdk.NewKVStoreKey(bandwidth.StoreKey),
+		wasm:	  sdk.NewKVStoreKey(wasm.StoreKey),
 
 		tStake:   sdk.NewTransientStoreKey(staking.TStoreKey),
 		tParams:  sdk.NewTransientStoreKey(params.TStoreKey),
@@ -72,8 +69,8 @@ func NewCyberdAppDbKeys() cyberdAppDbKeys {
 
 func (k cyberdAppDbKeys) GetStoreKeys() []*sdk.KVStoreKey {
 	return []*sdk.KVStoreKey{
-		k.main, k.auth, k.cidNum, k.cidNumReverse, k.links, k.rank, k.stake, k.supply, k.gov,
-		k.slashing, k.params, k.distr, k.accBandwidth, k.blockBandwidth, k.mint, k.upgrade, k.evidence, k.wasm,
+		k.main, k.auth, k.links, k.rank, k.stake, k.supply, k.gov,
+		k.slashing, k.params, k.distr, k.bandwidth, k.mint, k.upgrade, k.evidence, k.wasm,
 	}
 }
 

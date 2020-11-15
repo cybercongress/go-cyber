@@ -11,9 +11,9 @@ import (
 	"github.com/spf13/cobra"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/cybercongress/go-cyber/x/rank/client/rest"
 	"github.com/cybercongress/go-cyber/x/rank/client/cli"
-	"github.com/cybercongress/go-cyber/x/rank/internal/keeper"
+	"github.com/cybercongress/go-cyber/x/rank/client/rest"
+	//"github.com/cybercongress/go-cyber/x/rank/keeper"
 )
 
 // type check to ensure the interface is properly implemented
@@ -60,20 +60,18 @@ func (AppModuleBasic) GetQueryCmd(cdc *codec.Codec) *cobra.Command {
 
 type AppModule struct {
 	AppModuleBasic
-	RankKeeper StateKeeper
+	RankKeeper *StateKeeper
 }
 
 // NewAppModule creates a new AppModule Object
-func NewAppModule(rankKeeper StateKeeper) AppModule {
+func NewAppModule(rankKeeper *StateKeeper) AppModule {
 	return AppModule{
 		AppModuleBasic: AppModuleBasic{},
 		RankKeeper:     rankKeeper,
 	}
 }
 
-func (am AppModule) RegisterInvariants(ir sdk.InvariantRegistry) {
-	keeper.RegisterInvariants(ir, am.RankKeeper)
-}
+func (am AppModule) RegisterInvariants(ir sdk.InvariantRegistry) {}
 
 func (am AppModule) Route() string { return "" }
 
@@ -84,23 +82,24 @@ func (am AppModule) QuerierRoute() string    {
 }
 
 func (am AppModule) NewQuerierHandler() sdk.Querier {
-	return NewQuerier(am.RankKeeper)
+	return NewQuerier(*am.RankKeeper)
 }
 
 func (am AppModule) InitGenesis(ctx sdk.Context, data json.RawMessage) []abci.ValidatorUpdate {
 	var genesisState GenesisState
 	ModuleCdc.MustUnmarshalJSON(data, &genesisState)
-	InitGenesis(ctx, am.RankKeeper, genesisState)
+	InitGenesis(ctx, *am.RankKeeper, genesisState)
 	return []abci.ValidatorUpdate{}
 }
 
 func (am AppModule) ExportGenesis(ctx sdk.Context) json.RawMessage {
-	gs := ExportGenesis(ctx, am.RankKeeper)
+	gs := ExportGenesis(ctx, *am.RankKeeper)
 	return ModuleCdc.MustMarshalJSON(gs)
 }
 
 func (am AppModule) BeginBlock(_ sdk.Context, _ abci.RequestBeginBlock) {}
 
-func (am AppModule) EndBlock(_ sdk.Context, _ abci.RequestEndBlock) []abci.ValidatorUpdate {
+func (am AppModule) EndBlock(ctx sdk.Context, _ abci.RequestEndBlock) []abci.ValidatorUpdate {
+	EndBlocker(ctx, am.RankKeeper)
 	return []abci.ValidatorUpdate{}
 }

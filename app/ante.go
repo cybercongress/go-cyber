@@ -1,84 +1,90 @@
 package app
 
 import (
-	"fmt"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/auth/ante"
 	"github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
+
+	"github.com/cybercongress/go-cyber/x/bandwidth"
 )
 
-// NewAnteHandler returns an AnteHandler that checks and increments sequence
-// numbers, checks signatures & account numbers, and deducts fees from the first
-// signer.
-func NewAnteHandler(ak keeper.AccountKeeper, supplyKeeper types.SupplyKeeper, sigGasConsumer ante.SignatureVerificationGasConsumer) sdk.AnteHandler {
+func NewAnteHandler(
+	ak keeper.AccountKeeper,
+	abk *bandwidth.BandwidthMeter,
+	supplyKeeper types.SupplyKeeper,
+	sigGasConsumer ante.SignatureVerificationGasConsumer,
+) sdk.AnteHandler {
 	return sdk.ChainAnteDecorators(
-		NewSetUpContextDecorator(), // outermost AnteDecorator. SetUpContext must be called first
+		ante.NewSetUpContextDecorator(),
 		ante.NewMempoolFeeDecorator(),
 		ante.NewValidateBasicDecorator(),
 		ante.NewValidateMemoDecorator(ak),
 		ante.NewConsumeGasForTxSizeDecorator(ak),
-		ante.NewSetPubKeyDecorator(ak), // SetPubKeyDecorator must be called before all signature verification decorators
+		ante.NewSetPubKeyDecorator(ak),
 		ante.NewValidateSigCountDecorator(ak),
-		//ante.NewDeductFeeDecorator(ak, supplyKeeper),
+		ante.NewDeductFeeDecorator(ak, supplyKeeper),
+		NewDeductBandwidthDecorator(ak, abk),
 		ante.NewSigGasConsumeDecorator(ak, sigGasConsumer),
 		ante.NewSigVerificationDecorator(ak),
-		ante.NewIncrementSequenceDecorator(ak), // innermost AnteDecorator
+		ante.NewIncrementSequenceDecorator(ak),
 	)
 }
 
 var (
-	_ GasTx = (*types.StdTx)(nil) // assert StdTx implements GasTx
+	_ FeeTx = (*types.StdTx)(nil)
 )
 
-// GasTx defines a Tx with a GetGas() method which is needed to use SetUpContextDecorator
-type GasTx interface {
+type FeeTx interface {
 	sdk.Tx
 	GetGas() uint64
+	GetFee() sdk.Coins
+	FeePayer() sdk.AccAddress
 }
 
-// SetUpContextDecorator sets the GasMeter in the Context and wraps the next AnteHandler with a defer clause
-// to recover from any downstream OutOfGas panics in the AnteHandler chain to return an error with information
-// on gas provided and gas used.
-// CONTRACT: Must be first decorator in the chain
-// CONTRACT: Tx must implement GasTx interface
-type SetUpContextDecorator struct{}
 
-func NewSetUpContextDecorator() SetUpContextDecorator {
-	return SetUpContextDecorator{}
+type DeductBandwidthDecorator struct {
+	ak         auth.AccountKeeper
+	bm		   *bandwidth.BandwidthMeter
 }
 
-func (sud SetUpContextDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
-	// all transactions must implement GasTx
-	gasTx, ok := tx.(GasTx)
+func NewDeductBandwidthDecorator(ak auth.AccountKeeper, bm *bandwidth.BandwidthMeter) DeductBandwidthDecorator {
+	return DeductBandwidthDecorator{
+		ak:         ak,
+		bm: bm,
+	}
+}
+
+func (dbd DeductBandwidthDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
+	feeTx, ok := tx.(FeeTx)
 	if !ok {
-		newCtx = ctx.WithGasMeter(sdk.NewInfiniteGasMeter())
-		return newCtx, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "Tx must be GasTx")
+		return ctx, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "Tx must be a FeeTx")
 	}
 
-	newCtx = ctx.WithGasMeter(sdk.NewInfiniteGasMeter())
+	feePayer := feeTx.FeePayer()
+	feePayerAcc := dbd.ak.GetAccount(ctx, feePayer)
 
-	// Decorator will catch an OutOfGasPanic caused in the next antehandler
-	// AnteHandlers must have their own defer/recover in order for the BaseApp
-	// to know how much gas was used! This is because the GasMeter is created in
-	// the AnteHandler, but if it panics the context won't be set properly in
-	// runTx's recover call.
-	defer func() {
-		if r := recover(); r != nil {
-			switch rType := r.(type) {
-			case sdk.ErrorOutOfGas:
-				log := fmt.Sprintf(
-					"out of gas in location: %v; gasWanted: %d, gasUsed: %d",
-					rType.Descriptor, gasTx.GetGas(), newCtx.GasMeter().GasConsumed())
+	if feePayerAcc == nil {
+		return ctx, sdkerrors.Wrapf(sdkerrors.ErrUnknownAddress, "fee payer address: %s does not exist", feePayer)
+	}
 
-				err = sdkerrors.Wrap(sdkerrors.ErrOutOfGas, log)
-			default:
-				panic(r)
-			}
-		}
-	}()
+	txCost := dbd.bm.GetPricedTxCost(ctx, tx)
+	accountBandwidth := dbd.bm.GetCurrentAccountBandwidth(ctx, feePayerAcc.GetAddress())
 
-	return next(newCtx, tx, simulate)
+	currentBlockSpentBandwidth := dbd.bm.GetCurrentBlockSpentBandwidth(ctx)
+	maxBlockBandwidth := dbd.bm.GetMaxBlockBandwidth(ctx)
+
+	if !accountBandwidth.HasEnoughRemained(txCost) {
+		return ctx, bandwidth.ErrNotEnoughBandwidth
+	} else if (uint64(txCost) + currentBlockSpentBandwidth) > maxBlockBandwidth  {
+		return ctx, bandwidth.ErrExceededMaxBlockBandwidth
+	} else {
+		dbd.bm.ConsumeAccountBandwidth(ctx, accountBandwidth, txCost)
+		dbd.bm.AddToBlockBandwidth(txCost)
+	}
+
+	return next(ctx, tx, simulate)
 }
+

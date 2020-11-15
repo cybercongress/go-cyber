@@ -6,37 +6,32 @@ import (
 	"fmt"
 
 	"github.com/cosmos/cosmos-sdk/client/flags"
-	//"github.com/cosmos/cosmos-sdk/client/keys"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	"github.com/cosmos/cosmos-sdk/x/auth/exported"
+	authexported "github.com/cosmos/cosmos-sdk/x/auth/exported"
 
 	"net"
 	"os"
 	"path/filepath"
 
 	clientkeys "github.com/cosmos/cosmos-sdk/client/keys"
-	"github.com/cosmos/cosmos-sdk/crypto/keys"
-	//"github.com/cosmos/cosmos-sdk/x/genaccounts"
-	"github.com/cosmos/cosmos-sdk/x/genutil"
-
-	"github.com/cybercongress/go-cyber/app"
-	"github.com/cybercongress/go-cyber/types/coin"
 	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/cosmos/cosmos-sdk/crypto/keys"
+	srvconfig "github.com/cosmos/cosmos-sdk/server/config"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
-	//"github.com/cosmos/cosmos-sdk/client"
-	tmos "github.com/tendermint/tendermint/libs/os"
-	//authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	srvconfig "github.com/cosmos/cosmos-sdk/server/config"
+	"github.com/cosmos/cosmos-sdk/x/genutil"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	tmconfig "github.com/tendermint/tendermint/config"
 	"github.com/tendermint/tendermint/crypto"
-	//cmn "github.com/tendermint/tendermint/libs/common"
+	tmos "github.com/tendermint/tendermint/libs/os"
 	"github.com/tendermint/tendermint/types"
 	tmtime "github.com/tendermint/tendermint/types/time"
+
+	"github.com/cybercongress/go-cyber/app"
+	coin "github.com/cybercongress/go-cyber/types"
 
 	"github.com/cosmos/cosmos-sdk/server"
 )
@@ -45,8 +40,8 @@ var (
 	flagNodeDirPrefix     = "node-dir-prefix"
 	flagNumValidators     = "v"
 	flagOutputDir         = "output-dir"
-	flagNodeDaemonHome    = "node-cyberd-home"
-	flagNodeCLIHome       = "node-cyberdcli-home"
+	flagNodeDaemonHome    = "node-daemon-home"
+	flagNodeCLIHome       = "node-cli-home"
 	flagStartingIPAddress = "starting-ip-address"
 )
 
@@ -58,7 +53,7 @@ func testnetCmd(ctx *server.Context, cdc *codec.Codec,
 
 	cmd := &cobra.Command{
 		Use:   "testnet",
-		Short: "Initialize files for a Cyberd testnet",
+		Short: "Initialize files for a Cyber testnet",
 		Long: `testnet will create "v" number of directories and populate each with
 necessary files (private validator, genesis, config, etc.).
 
@@ -72,15 +67,15 @@ Example:
 
 			outputDir := viper.GetString(flagOutputDir)
 			chainID := viper.GetString(flags.FlagChainID)
+			minGasPrices := viper.GetString(server.FlagMinGasPrices)
 			nodeDirPrefix := viper.GetString(flagNodeDirPrefix)
 			nodeDaemonHome := viper.GetString(flagNodeDaemonHome)
 			nodeCLIHome := viper.GetString(flagNodeCLIHome)
 			startingIPAddress := viper.GetString(flagStartingIPAddress)
 			numValidators := viper.GetInt(flagNumValidators)
 
-			//return initTestnet(config, cdc)
 			return InitTestnet(cmd, config, cdc, mbm, genAccIterator, outputDir, chainID,
-				nodeDirPrefix, nodeDaemonHome, nodeCLIHome, startingIPAddress, numValidators)
+				minGasPrices, nodeDirPrefix, nodeDaemonHome, nodeCLIHome, startingIPAddress, numValidators)
 		},
 	}
 
@@ -103,7 +98,9 @@ Example:
 		"Starting IP address (192.168.0.1 results in persistent peers list ID0@192.168.0.1:46656, ID1@192.168.0.2:46656, ...)")
 
 	cmd.Flags().String(flags.FlagChainID, "", "genesis file chain-id, if left blank will be randomly created")
-
+	cmd.Flags().String(
+		server.FlagMinGasPrices, fmt.Sprintf("0.000006%s", sdk.DefaultBondDenom),
+		"Minimum gas prices to accept for transactions; All fees in a tx must meet this minimum (e.g. 0.01photino,0.001stake)")
 	cmd.Flags().String(flags.FlagKeyringBackend, flags.DefaultKeyringBackend, "Select keyring's backend (os|file|test)")
 
 	return cmd
@@ -113,26 +110,24 @@ const nodeDirPerm = 0755
 
 func InitTestnet(cmd *cobra.Command, config *tmconfig.Config, cdc *codec.Codec,
 	mbm module.BasicManager, genAccIterator genutiltypes.GenesisAccountsIterator,
-	outputDir, chainID, nodeDirPrefix, nodeDaemonHome,
+	outputDir, chainID, minGasPrices, nodeDirPrefix, nodeDaemonHome,
 	nodeCLIHome, startingIPAddress string, numValidators int) error {
 
 	if chainID == "" {
 		//chainID = "chain-" + cmn.RandStr(6)
-		chainID = "euler-x"
+		chainID = "dev"
 	}
-
-	//outDir := viper.GetString(flagOutputDir)
-	//numValidators := viper.GetInt(flagNumValidators)
 
 	monikers := make([]string, numValidators)
 	nodeIDs := make([]string, numValidators)
 	valPubKeys := make([]crypto.PubKey, numValidators)
 
 	cyberdConfig := srvconfig.DefaultConfig()
+	cyberdConfig.MinGasPrices = minGasPrices
 
 	var (
-		accs     []exported.GenesisAccount
-		genFiles []string
+		genAccounts []authexported.GenesisAccount
+		genFiles 	[]string
 	)
 
 	inBuf := bufio.NewReader(cmd.InOrStdin())
@@ -208,23 +203,18 @@ func InitTestnet(cmd *cobra.Command, config *tmconfig.Config, cdc *codec.Codec,
 		coins := sdk.Coins{
 			sdk.NewCoin(coin.CYB, accStakingTokens),
 		}
-		accs = append(accs, auth.NewBaseAccount(addr, coins.Sort(), nil, 0, 0))
+		genAccounts = append(genAccounts, auth.NewBaseAccount(addr, coins.Sort(), nil, 0, 0))
 
-
-		rate := int64(i+1)*10
-		maxRate := int64(2*(i+1))*10
-		maxRateChange := int64(2*(i+1))
 		valTokens := sdk.TokensFromConsensusPower(50000000)
-
 		msg := staking.NewMsgCreateValidator(
 			sdk.ValAddress(addr),
 			valPubKeys[i],
 			sdk.NewCoin(coin.CYB, valTokens),
-			staking.NewDescription(nodeDirName, nodeDirName, "fuckgoogle.page", "keybase", "AI"),
+			staking.NewDescription(nodeDirName, nodeDirName, "", "", ""),
 			staking.NewCommissionRates(
-				sdk.NewDecWithPrec(rate, 2),
-				sdk.NewDecWithPrec(maxRate, 2),
-				sdk.NewDecWithPrec(maxRateChange, 2)),
+				sdk.NewDecWithPrec(10, 2),
+				sdk.NewDecWithPrec(40, 2),
+				sdk.NewDecWithPrec(5, 2)),
 			sdk.OneInt(),
 		)
 
@@ -256,7 +246,7 @@ func InitTestnet(cmd *cobra.Command, config *tmconfig.Config, cdc *codec.Codec,
 
 	}
 
-	if err := initGenFiles(cdc, mbm, chainID, accs, genFiles, numValidators); err != nil {
+	if err := initGenFiles(cdc, mbm, chainID, genAccounts, genFiles, numValidators); err != nil {
 		return err
 	}
 
@@ -273,8 +263,15 @@ func InitTestnet(cmd *cobra.Command, config *tmconfig.Config, cdc *codec.Codec,
 }
 
 func initGenFiles(cdc *codec.Codec, mbm module.BasicManager, chainID string,
-	genAccounts []exported.GenesisAccount, genFiles []string, numValidators int,
+	genAccounts []authexported.GenesisAccount, genFiles []string, numValidators int,
 ) error {
+	//appGenState := mbm.DefaultGenesis()
+	//authDataBz := appGenState[auth.ModuleName]
+	//var authGenState auth.GenesisState
+	//cdc.MustUnmarshalJSON(authDataBz, &authGenState)
+	//authGenState.Accounts = genAccounts
+	//appGenState[auth.ModuleName] = cdc.MustMarshalJSON(authGenState)
+
 	appGenState := app.NewDefaultGenesisState()
 	appGenState.AuthData.Accounts = genAccounts
 	appGenState.Pool.NotBondedTokens = sdk.ZeroInt()
@@ -339,7 +336,6 @@ func collectGenFiles(
 			return err
 		}
 
-		//nodeAppState, err := genAppStateFromConfig(cdc, config, initCfg, *genDoc, genAccIterator)
 		nodeAppState, err := genutil.GenAppStateFromConfig(cdc, config, initCfg, *genDoc, genAccIterator)
 		if err != nil {
 			return err
@@ -401,43 +397,3 @@ func writeFile(name string, dir string, contents []byte) error {
 
 	return nil
 }
-
-//func genAppStateFromConfig(
-//	cdc *codec.Codec, config *cfg.Config, initCfg genutil.InitConfig, genDoc types.GenesisDoc,
-//) (appState json.RawMessage, err error) {
-//
-//	genFile := config.GenesisFile()
-//	var (
-//		appGenTxs       []auth.StdTx
-//		persistentPeers string
-//		genTxs          []json.RawMessage
-//		jsonRawTx       json.RawMessage
-//	)
-//
-//	// process genesis transactions, else create default genesis.json
-//	appGenTxs, persistentPeers, err = collectStdTxs(cdc, config.Moniker, initCfg.GenTxsDir, genDoc)
-//	if err != nil {
-//		return
-//	}
-//
-//	genTxs = make([]json.RawMessage, len(appGenTxs))
-//	config.P2P.PersistentPeers = persistentPeers
-//
-//	for i, stdTx := range appGenTxs {
-//		jsonRawTx, err = cdc.MarshalJSON(stdTx)
-//		if err != nil {
-//			return
-//		}
-//		genTxs[i] = jsonRawTx
-//	}
-//
-//	cfg.WriteConfigFile(filepath.Join(config.RootDir, "config", "config.toml"), config)
-//
-//	appState, err = app.CyberdAppGenStateJSON(cdc, genDoc, genTxs)
-//	if err != nil {
-//		return
-//	}
-//
-//	err = util.ExportGenesisFile(genFile, initCfg.ChainID, nil, appState)
-//	return
-//}

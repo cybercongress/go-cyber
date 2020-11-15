@@ -3,13 +3,14 @@ package cli
 import (
 	"fmt"
 
-	"github.com/cybercongress/go-cyber/x/rank/internal/types"
-	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/spf13/cobra"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/context"
+	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/codec"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/spf13/cobra"
+
+	"github.com/cybercongress/go-cyber/x/rank/types"
 )
 
 // GetQueryCmd returns the cli query commands for the minting module.
