@@ -2,8 +2,12 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"path"
+
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
+	"github.com/cosmos/cosmos-sdk/client/keys"
 	"github.com/cosmos/cosmos-sdk/client/lcd"
 	"github.com/cosmos/cosmos-sdk/client/rpc"
 	"github.com/cosmos/cosmos-sdk/version"
@@ -12,17 +16,13 @@ import (
 	authrest "github.com/cosmos/cosmos-sdk/x/auth/client/rest"
 	"github.com/cosmos/cosmos-sdk/x/bank"
 	bankcmd "github.com/cosmos/cosmos-sdk/x/bank/client/cli"
-	"github.com/cybercongress/go-cyber/app"
-	cyberdcmd "github.com/cybercongress/go-cyber/cmd/cyberdcli/commands"
-	"path"
-
-	"github.com/cybercongress/go-cyber/cmd/cyberdcli/commands/keys"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/tendermint/go-amino"
 	"github.com/tendermint/tendermint/libs/cli"
-	"os"
-	_ "github.com/cybercongress/go-cyber/cmd/cyberdcli/lcd/statik"
+
+	"github.com/cybercongress/go-cyber/app"
+	//_ "github.com/cybercongress/go-cyber/cmd/cyberdcli/lcd/statik"
 )
 
 func main() {
@@ -35,11 +35,8 @@ func main() {
 
 	rootCmd := &cobra.Command{
 		Use:   "cybercli",
-		Short: "Command Line Interface for interacting with cyberd",
+		Short: "CLI for interacting with Cyber",
 	}
-
-	// todo: hack till we don't handle with all merkle proofs
-	//viper.SetDefault(client.FlagTrustNode, true)
 
 	rootCmd.PersistentFlags().String(flags.FlagChainID, "", "Chain ID of tendermint node")
 	rootCmd.PersistentPreRunE = func(_ *cobra.Command, _ []string) error {
@@ -60,11 +57,6 @@ func main() {
 		version.Cmd,
 		flags.NewCompletionCmd(rootCmd, true),
 	)
-
-	rootCmd.AddCommand(
-		flags.PostCommands(
-			cyberdcmd.LinkTxCmd(cdc),
-		)...)
 
 	executor := cli.PrepareMainCmd(rootCmd, "CYBER", app.DefaultCLIHome)
 
@@ -92,7 +84,6 @@ func queryCmd(cdc *amino.Codec) *cobra.Command {
 		flags.LineBreak,
 	)
 
-	// add modules' query commands
 	app.ModuleBasics.AddQueryCommands(queryCmd, cdc)
 
 	return queryCmd
@@ -116,10 +107,8 @@ func txCmd(cdc *amino.Codec) *cobra.Command {
 		flags.LineBreak,
 	)
 
-	// add modules' tx commands
 	app.ModuleBasics.AddTxCommands(txCmd, cdc)
 
-	// remove auth and bank commands as they're mounted under the root tx command
 	var cmdsToRemove []*cobra.Command
 
 	for _, cmd := range txCmd.Commands() {
@@ -133,9 +122,6 @@ func txCmd(cdc *amino.Codec) *cobra.Command {
 	return txCmd
 }
 
-// registerRoutes registers the routes from the different modules for the LCD.
-// NOTE: details on the routes added for each module are in the module documentation
-// NOTE: If making updates here you also need to update the test helper in client/lcd/test_helper.go
 func registerRoutes(rs *lcd.RestServer) {
 	client.RegisterRoutes(rs.CliCtx, rs.Mux)
 	authrest.RegisterTxRoutes(rs.CliCtx, rs.Mux)

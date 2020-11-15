@@ -1,48 +1,41 @@
 package link
 
 import (
-	"github.com/cybercongress/go-cyber/x/link/exported"
-	"github.com/cybercongress/go-cyber/x/link/internal/keeper"
-	"github.com/cybercongress/go-cyber/x/link/internal/types"
+	"github.com/cybercongress/go-cyber/x/link/keeper"
+	"github.com/cybercongress/go-cyber/x/link/types"
 )
 
 const (
-	ModuleName = types.ModuleName
-	StoreKey   = types.StoreKey
-	RouterKey  = types.RouterKey
+	ModuleName 		= types.ModuleName
+	StoreKey	    = types.StoreKey
+	QuerierRoute	= types.QuerierRoute
+	RouterKey  		= types.RouterKey
 )
 
 var (
-	// keeper
-	NewLinkKeeper      = keeper.NewLinkKeeper
-	NewIndexedKeeper   = keeper.NewIndexedKeeper
-	NewCidNumberKeeper = keeper.NewCidNumberKeeper
+	NewKeeper          = keeper.NewKeeper
+	NewIndexKeeper     = keeper.NewIndexKeeper
+	NewQuerier         = keeper.NewQuerier
 
-	// types
-	RegisterCodec = types.RegisterCodec
-	NewMsg        = types.NewMsg
-	NewLink       = types.NewLink
+	NewMsgCyberlink	   = types.NewMsgCyberlink
+	RegisterCodec      = types.RegisterCodec
+	NewLink       	   = types.NewLink
 
-	ErrCyberlinkExist = types.ErrCyberlinkExist
-	ErrInvalidCid 	  = types.ErrInvalidCid
-	ErrZeroLinks      = types.ErrZeroLinks
+	ErrCidNotFound 	   = types.ErrCidNotFound
 )
 
 type (
-	// exported
-    Keeper          = exported.KeeperI
-    IndexedKeeper   = exported.IndexedKeeperI
-    CidNumberKeeper = exported.CidNumberKeeperI
+	GraphKeeper     = keeper.GraphKeeper
+	IndexKeeper   	= keeper.IndexKeeper
 
-	// types
-	Msg         = types.Msg
-	Links       = types.Links
-	CidLinks    = types.CidLinks
-	Cid         = types.Cid
-	CidNumber   = types.CidNumber
-	CidsFilter  = types.CidsFilter
-	Link        = types.Link
-	CompactLink = types.CompactLink
-	LinkFilter  = types.LinkFilter
-
+	MsgCyberlink    = types.MsgCyberlink
+	//AccNumber   	= types.AccNumber
+	Cid				= types.Cid
+	CidNumber		= types.CidNumber
+	CidLinks    	= types.CidLinks
+	CidsFilter  	= types.CidsFilter
+	Link        	= types.Link
+	Links       	= types.Links
+	CompactLink 	= types.CompactLink
+	LinkFilter  	= types.LinkFilter
 )

@@ -5,6 +5,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/types/module"
+	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
 
@@ -24,8 +25,6 @@ var (
 
 
 type AppModuleBasic struct{}
-
-var _ module.AppModuleBasic = AppModuleBasic{}
 
 func (AppModuleBasic) Name() string {
 	return ModuleName
@@ -60,18 +59,18 @@ func (AppModuleBasic) GetQueryCmd(cdc *codec.Codec) *cobra.Command {
 type AppModule struct {
 	AppModuleBasic
 
-	AccountBandwidthKeeper    AccountBandwidthKeeper
-	BlockSpentBandwidthKeeper BlockSpentBandwidthKeeper
+	AccountKeeper             auth.AccountKeeper
+	BandwidthMeter			  *BandwidthMeter
 }
 
 func NewAppModule(
-	accountBandwidthKeeper AccountBandwidthKeeper,
-	blockSpentBandwidthKeeper BlockSpentBandwidthKeeper,
+	ak auth.AccountKeeper,
+	bmk *BandwidthMeter,
 ) AppModule {
 	return AppModule{
 		AppModuleBasic:            AppModuleBasic{},
-		AccountBandwidthKeeper:    accountBandwidthKeeper,
-		BlockSpentBandwidthKeeper: blockSpentBandwidthKeeper,
+		AccountKeeper:		  ak,
+		BandwidthMeter:		  bmk,
 	}
 }
 
@@ -90,23 +89,25 @@ func (am AppModule) QuerierRoute() string {
 }
 
 func (am AppModule) NewQuerierHandler() sdk.Querier {
-	return NewQuerier(am.AccountBandwidthKeeper)
+	return NewQuerier(am.BandwidthMeter)
 }
 
 func (am AppModule) BeginBlock(_ sdk.Context, _ abci.RequestBeginBlock) {}
 
-func (am AppModule) EndBlock(sdk.Context, abci.RequestEndBlock) []abci.ValidatorUpdate {
+func (am AppModule) EndBlock(ctx sdk.Context, _ abci.RequestEndBlock) []abci.ValidatorUpdate {
+	EndBlocker(ctx, am.BandwidthMeter)
 	return []abci.ValidatorUpdate{}
 }
 
-// Cannot InitAccountsBandwidthGenesis from here
 func (am AppModule) InitGenesis(ctx sdk.Context, data json.RawMessage) []abci.ValidatorUpdate {
 	var genesisState GenesisState
 	ModuleCdc.MustUnmarshalJSON(data, &genesisState)
+
+	InitGenesis(ctx, am.BandwidthMeter, am.AccountKeeper, genesisState)
 	return []abci.ValidatorUpdate{}
 }
 
 func (am AppModule) ExportGenesis(ctx sdk.Context) json.RawMessage {
-	gs := ExportGenesis(ctx, am.AccountBandwidthKeeper)
+	gs := ExportGenesis(ctx, am.BandwidthMeter)
 	return ModuleCdc.MustMarshalJSON(gs)
 }

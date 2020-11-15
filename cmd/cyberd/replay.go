@@ -22,14 +22,15 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/server"
-	"github.com/cosmos/cosmos-sdk/store"
+	storetypes "github.com/cosmos/cosmos-sdk/store/types"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 func replayCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "replay <root-dir>",
-		Short: "Replay gaia transactions",
+		Short: "Replay cyber transactions",
 		RunE: func(_ *cobra.Command, args []string) error {
 			return replayTxs(args[0])
 		},
@@ -101,9 +102,11 @@ func replayTxs(rootDir string) error {
 	// Application
 	fmt.Fprintln(os.Stderr, "Creating application")
 	gapp := app.NewCyberdApp(
-		ctx.Logger, appDB, traceStoreWriter, true, uint(1), map[int64]bool{},
+		ctx.Logger, appDB, traceStoreWriter, true, uint(1),
+		app.GetEnabledProposals(),
+		map[int64]bool{},
 		computeUnit, searchEnabled,
-		baseapp.SetPruning(store.PruneNothing), // nothing
+		baseapp.SetPruning(storetypes.PruneEverything), // nothing
 	)
 
 	// Genesis

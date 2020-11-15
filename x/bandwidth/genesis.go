@@ -2,20 +2,20 @@ package bandwidth
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cybercongress/go-cyber/x/bandwidth/internal/types"
+	"github.com/cosmos/cosmos-sdk/x/auth"
+
+	"github.com/cybercongress/go-cyber/x/bandwidth/types"
 )
 
 // Genesis accounts should contains fully restored bandwidth on block 0
-func InitAccountsBandwidthGenesis(ctx sdk.Context, handler types.BandwidthMeter,
-	keeper AccountBandwidthKeeper, addresses []sdk.AccAddress, data GenesisState) {
-
-	keeper.SetParams(ctx, data.Params)
-	for _, address := range addresses {
-		accMaxBw := handler.GetAccMaxBandwidth(ctx, address)
-		keeper.SetAccountBandwidth(ctx, types.NewGenesisAccountBandwidth(address, accMaxBw))
+func InitGenesis(ctx sdk.Context, bm *BandwidthMeter, ak auth.AccountKeeper, data GenesisState) {
+	bm.SetParams(ctx, data.Params)
+	for _, address := range ak.GetAllAccounts(ctx) {
+		accMaxBw := bm.GetAccountMaxBandwidth(ctx, address.GetAddress())
+		bm.SetAccountBandwidth(ctx, types.NewGenesisAccountBandwidth(address.GetAddress(), accMaxBw))
 	}
 }
 
-func ExportGenesis(ctx sdk.Context, keeper AccountBandwidthKeeper) GenesisState {
-	return NewGenesisState(keeper.GetParams(ctx))
+func ExportGenesis(ctx sdk.Context, bm *BandwidthMeter) GenesisState {
+	return NewGenesisState(bm.GetParams(ctx))
 }
