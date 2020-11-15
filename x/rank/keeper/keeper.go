@@ -157,7 +157,7 @@ func (s *StateKeeper) Top(page, perPage int) ([]types.RankedCidNumber, int, erro
 	return s.index.Top(page, perPage)
 }
 
-func (s *StateKeeper) GetRankValue(cidNumber link.CidNumber) float64 {
+func (s *StateKeeper) GetRankValue(cidNumber link.CidNumber) uint64 {
 	return s.index.GetRankValue(cidNumber)
 }
 
