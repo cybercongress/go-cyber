@@ -153,11 +153,19 @@ func (s *StateKeeper) Search(cidNumber link.CidNumber, page, perPage int) ([]typ
 	return s.index.Search(cidNumber, page, perPage)
 }
 
+func (s *StateKeeper) Backlinks(cidNumber link.CidNumber, page, perPage int) ([]types.RankedCidNumber, int, error) {
+	return s.index.Backlinks(cidNumber, page, perPage)
+}
+
 func (s *StateKeeper) Top(page, perPage int) ([]types.RankedCidNumber, int, error) {
 	return s.index.Top(page, perPage)
 }
 
-func (s *StateKeeper) GetRankValue(cidNumber link.CidNumber) uint64 {
+func (s *StateKeeper) Accounts(account uint64, page, perPage int) (map[link.CidNumber]link.CidNumber, int, error) {
+	return s.index.Accounts(account, page, perPage)
+}
+
+func (s *StateKeeper) GetRankValue(cidNumber link.CidNumber) float64 {
 	return s.index.GetRankValue(cidNumber)
 }
 

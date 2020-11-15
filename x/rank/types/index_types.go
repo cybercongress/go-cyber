@@ -49,6 +49,8 @@ type SearchIndex interface {
 	Run() GetError
 	Load(links link.Links)
 	Search(cidNumber link.CidNumber, page, perPage int) ([]RankedCidNumber, int, error)
+	Backlinks(cidNumber link.CidNumber, page, perPage int) ([]RankedCidNumber, int, error)
+	Accounts(account uint64, page, perPage int) (map[link.CidNumber]link.CidNumber, int, error)
 	Top(page, perPage int) ([]RankedCidNumber, int, error)
 	GetRankValue(cidNumber link.CidNumber) uint64
 	PutNewLinks(links []link.CompactLink)
@@ -65,10 +67,16 @@ func (i NoopSearchIndex) Run() GetError {
 
 func (i NoopSearchIndex) Load(links link.Links) {}
 func (i NoopSearchIndex) Search(cidNumber link.CidNumber, page, perPage int) ([]RankedCidNumber, int, error) {
-	return nil, 0, errors.New("search is not enabled on this node")
+	return nil, 0, errors.New("The search API is not enabled on this node")
+}
+func (i NoopSearchIndex) Backlinks(cidNumber link.CidNumber, page, perPage int) ([]RankedCidNumber, int, error) {
+	return nil, 0, errors.New("The search API is not enabled on this node")
+}
+func (i NoopSearchIndex) Accounts(account uint64, page, perPage int) (map[link.CidNumber]link.CidNumber, int, error) {
+	return nil, 0, errors.New("The search API is not enabled on this node")
 }
 func (i NoopSearchIndex) Top(page, perPage int) ([]RankedCidNumber, int, error) {
-	return nil, 0, errors.New("search and top is not enabled on this node")
+	return nil, 0, errors.New("The search API is not enabled on this node")
 }
 func (i NoopSearchIndex) PutNewLinks(links []link.CompactLink) {}
 func (i NoopSearchIndex) PutNewRank(rank Rank)                 {}

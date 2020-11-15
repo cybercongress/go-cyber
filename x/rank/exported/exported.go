@@ -16,6 +16,8 @@ type StateKeeper interface {
 	GetIndexError() error
 
 	Search(cidNumber link.CidNumber, page, perPage int) ([]types.RankedCidNumber, int, error)
+	Backlinks(cidNumber link.CidNumber, page, perPage int) ([]types.RankedCidNumber, int, error)
+	Accounts(account uint64, page, perPage int) (map[link.CidNumber]link.CidNumber, int, error)
 	Top(page, perPage int) ([]types.RankedCidNumber, int, error)
 
 	GetRankValue(link.CidNumber) uint64

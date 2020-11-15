@@ -15,22 +15,16 @@ func SetCyberdApp(cApp *app.CyberdApp) {
 
 var Routes = map[string]*rpcserver.RPCFunc{
 	"search":                  rpcserver.NewRPCFunc(Search, "cid,page,perPage"),
+	"backlinks":               rpcserver.NewRPCFunc(Backlinks, "cid,page,perPage"),
 	"top":                     rpcserver.NewRPCFunc(Top, "page,perPage"),
 	"rank":                    rpcserver.NewRPCFunc(Rank, "cid,proof"),
 	"account":                 rpcserver.NewRPCFunc(Account, "address"),
 	"account_bandwidth":       rpcserver.NewRPCFunc(AccountBandwidth, "address"),
+	"account_links":		   rpcserver.NewRPCFunc(AccountLinks, "address,page,perPage"),
 	"is_link_exist":           rpcserver.NewRPCFunc(IsLinkExist, "from,to,address"),
 	"current_bandwidth_price": rpcserver.NewRPCFunc(CurrentBandwidthPrice, ""),
 	"current_network_load":    rpcserver.NewRPCFunc(CurrentNetworkLoad, ""),
 	"index_stats":             rpcserver.NewRPCFunc(IndexStats, ""),
-
-	// TODO remove this for euler-6 release
-	"staking/validators": rpcserver.NewRPCFunc(StakingValidators, "page,limit,status"),
-	"staking/pool":       rpcserver.NewRPCFunc(StakingPool, ""),
-
-	// TODO remove this for euler-6 release
-	"submit_signed_link": rpcserver.NewRPCFunc(SignedMsgHandler(UnmarshalLinkRequestFn), "data"),
-	"submit_signed_send": rpcserver.NewRPCFunc(SignedMsgHandler(UnmarshalSendRequestFn), "data"),
 }
 
 func init() {

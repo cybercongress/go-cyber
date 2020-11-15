@@ -46,6 +46,28 @@ func (app *CyberdApp) Search(cid string, page, perPage int) ([]RankedCid, int, e
 	return result, size, nil
 }
 
+func (app *CyberdApp) Backlinks(cid string, page, perPage int) ([]RankedCid, int, error) {
+
+	ctx := app.RpcContext()
+	cidNumber, exists := app.cidNumKeeper.GetCidNumber(ctx, link.Cid(cid))
+	if !exists || cidNumber > app.rankStateKeeper.GetLastCidNum() {
+		return nil, 0, errors.New("no such cid found")
+	}
+
+	rankedCidNumbers, size, err := app.rankStateKeeper.Backlinks(cidNumber, page, perPage)
+
+	if err != nil {
+		return nil, size, err
+	}
+
+	result := make([]RankedCid, 0, len(rankedCidNumbers))
+	for _, c := range rankedCidNumbers {
+		result = append(result, RankedCid{Cid: app.cidNumKeeper.GetCid(ctx, c.GetNumber()), Rank: c.GetRank()})
+	}
+
+	return result, size, nil
+}
+
 func (app *CyberdApp) Top(page, perPage int) ([]RankedCid, int, error) {
 
 	ctx := app.RpcContext()
@@ -87,6 +109,25 @@ func (app *CyberdApp) Account(address sdk.AccAddress) exported.Account {
 
 func (app *CyberdApp) AccountBandwidth(address sdk.AccAddress) bw.AcсountBandwidth {
 	return app.bandwidthMeter.GetCurrentAccountBandwidth(app.RpcContext(), address)
+}
+
+func (app *CyberdApp) AccountLinks(address sdk.AccAddress, page, perPage int) ([]link.Link, int, error) {
+	ctx := app.RpcContext()
+
+	acc := app.accountKeeper.GetAccount(ctx, address)
+
+	if acc != nil {
+		accNumber := cbd.AccNumber(acc.GetAccountNumber())
+		links, total, _ := app.rankStateKeeper.Accounts(uint64(accNumber), page, perPage)
+
+		result := make([]link.Link, 0, len(links))
+		for j, c := range links {
+			result = append(result, link.Link{From: app.cidNumKeeper.GetCid(ctx, j), To: app.cidNumKeeper.GetCid(ctx, c)})
+		}
+		return result, total, nil
+	} else {
+		return nil, 0, nil
+	}
 }
 
 func (app *CyberdApp) IsLinkExist(from link.Cid, to link.Cid, address sdk.AccAddress) bool {
