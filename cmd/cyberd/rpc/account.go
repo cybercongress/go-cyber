@@ -33,7 +33,7 @@ func Account(ctx *rpctypes.Context, address string) (*ResultAccount, error) {
 	}, nil
 }
 
-func AccountBandwidth(ctx *rpctypes.Context, address string) (*bw.AccountBandwidth, error) {
+func AccountBandwidth(ctx *rpctypes.Context, address string) (*bw.AcсountBandwidth, error) {
 
 	accAddress, err := types.AccAddressFromBech32(address)
 	if err != nil {

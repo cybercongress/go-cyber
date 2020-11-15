@@ -32,9 +32,9 @@ import (
 )
 
 const (
-	flagGpuEnabled                = "compute-rank-on-gpu"
-	flagSearchEnabled             = "allow-search"
-	flagInvCheckPeriod            = "inv-check-period"
+	flagGpuEnabled     = "compute-rank-on-gpu"
+	flagSearchEnabled  = "allow-search"
+	flagInvCheckPeriod = "inv-check-period"
 )
 
 var invCheckPeriod uint
@@ -42,7 +42,6 @@ var gpuEnabled     bool
 var searchEnabled  bool
 
 func main() {
-
 	cdc := app.MakeCodec()
 
 	app.SetConfig()
@@ -51,7 +50,7 @@ func main() {
 	cobra.EnableCommandSorting = false
 	rootCmd := &cobra.Command{
 		Use:               "cyberd",
-		Short:             "Cyberd Daemon (server)",
+		Short:             "Cyber Daemon (server)",
 		PersistentPreRunE: server.PersistentPreRunEFn(ctx),
 	}
 
@@ -68,7 +67,7 @@ func main() {
 	rootCmd.AddCommand(AddGenesisAccountCmd(ctx, cdc, app.DefaultNodeHome, app.DefaultCLIHome))
 	rootCmd.AddCommand(flags.NewCompletionCmd(rootCmd, true))
 	rootCmd.AddCommand(testnetCmd(ctx, cdc, app.ModuleBasics, auth.GenesisAccountIterator{}))
-	//rootCmd.AddCommand(replayCmd())
+	rootCmd.AddCommand(replayCmd())
 	rootCmd.AddCommand(debug.Cmd(cdc))
 
 	server.AddCommands(ctx, cdc, rootCmd, newApp, exportAppStateAndTMValidators)
@@ -93,6 +92,11 @@ func newApp(logger log.Logger, db dbm.DB, traceStore io.Writer) abci.Application
 		cache = store.NewCommitKVStoreCacheManager()
 	}
 
+	pruningOpts, err := server.GetPruningOptionsFromFlags()
+	if err != nil {
+		panic(err)
+	}
+
 	skipUpgradeHeights := make(map[int64]bool)
 	for _, h := range viper.GetIntSlice(server.FlagUnsafeSkipUpgrades) {
 		skipUpgradeHeights[int64(h)] = true
@@ -104,9 +108,13 @@ func newApp(logger log.Logger, db dbm.DB, traceStore io.Writer) abci.Application
 	}
 
 	cyberdApp := app.NewCyberdApp(
-		logger, db, traceStore, true, invCheckPeriod, skipUpgradeHeights,
-		computeUnit, searchEnabled,
-		baseapp.SetPruning(store.PruneNothing),
+		logger, db, traceStore, true,
+		invCheckPeriod,
+		app.GetEnabledProposals(),
+		skipUpgradeHeights,
+		computeUnit,
+		searchEnabled,
+		baseapp.SetPruning(pruningOpts),
 		baseapp.SetMinGasPrices(viper.GetString(server.FlagMinGasPrices)),
 		baseapp.SetHaltHeight(viper.GetUint64(server.FlagHaltHeight)),
 		baseapp.SetHaltTime(viper.GetUint64(server.FlagHaltTime)),
@@ -126,11 +134,17 @@ func exportAppStateAndTMValidators(
 	}
 
 	if height != -1 {
-		capp := app.NewCyberdApp(logger, db, traceStore, true, uint(1), map[int64]bool{}, computeUnit, false)
+		capp := app.NewCyberdApp(logger, db, traceStore, true, uint(1), app.GetEnabledProposals(), map[int64]bool{}, computeUnit, false)
+
+		err := capp.LoadHeight(height)
+		if err != nil {
+			return nil, nil, err
+		}
+
 		return capp.ExportAppStateAndValidators(forZeroHeight, jailWhiteList)
 	}
 
-	capp := app.NewCyberdApp(logger, db, traceStore, true, uint(1), map[int64]bool{}, computeUnit, false)
+	capp := app.NewCyberdApp(logger, db, traceStore, true, uint(1), app.GetEnabledProposals(), map[int64]bool{}, computeUnit, false)
 	return capp.ExportAppStateAndValidators(forZeroHeight, jailWhiteList)
 }
 

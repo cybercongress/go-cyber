@@ -1,9 +1,8 @@
 package rank
 
 import (
-	"github.com/cybercongress/go-cyber/x/rank/exported"
-	"github.com/cybercongress/go-cyber/x/rank/internal/keeper"
-	"github.com/cybercongress/go-cyber/x/rank/internal/types"
+	"github.com/cybercongress/go-cyber/x/rank/keeper"
+	"github.com/cybercongress/go-cyber/x/rank/types"
 )
 
 const (
@@ -12,31 +11,25 @@ const (
 	StoreKey   			   = types.StoreKey
 	QuerierRoute           = types.QuerierRoute
 	QueryParameters        = types.QueryParameters
-	QueryCalculationWindow = types.QueryCalculationWindow
-	QueryDampingFactor     = types.QueryDampingFactor
-	QueryTolerance         = types.QueryTolerance
 	CPU        			   = types.CPU
 	GPU        			   = types.GPU
 )
 
 var (
-	// keeper
-	NewStateKeeper 		= keeper.NewStateKeeper
+	NewKeeper 			= keeper.NewKeeper
 	NewQuerier          = keeper.NewQuerier
 	NewGenesisState     = types.NewGenesisState
 	DefaultGenesisState = types.DefaultGenesisState
 	ValidateGenesis     = types.ValidateGenesis
-	ParamKeyTable  		= types.ParamKeyTable
-	NewParams	        = types.NewParams
 	DefaultParams       = types.DefaultParams
-
-	ModuleCdc           = types.ModuleCdc
+	ModuleCdc			= types.ModuleCdc
 )
 
 type (
-	StateKeeper  = exported.StateKeeper
+	StateKeeper  = keeper.StateKeeper
 
 	GenesisState = types.GenesisState
 	Params       = types.Params
 	ComputeUnit  = types.ComputeUnit
 )
+

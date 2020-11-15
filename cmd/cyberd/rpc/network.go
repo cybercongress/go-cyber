@@ -9,7 +9,6 @@ type ResultIndexStats struct {
 	Objects    uint64 `json:"cidsCount"`
 	Cyberlinks uint64 `json:"linksCount"`
 	Subjects   uint64 `json:"accountsCount"`
-	Karma      uint64 `json:"totalKarma"`
 }
 
 func IndexStats(ctx *rpctypes.Context) (*ResultIndexStats, error) {
@@ -18,6 +17,5 @@ func IndexStats(ctx *rpctypes.Context) (*ResultIndexStats, error) {
 	stats.Objects    = cyberdApp.CidsCount()
 	stats.Cyberlinks = cyberdApp.LinksCount()
 	stats.Subjects   = cyberdApp.AccsCount()
-	stats.Karma      = cyberdApp.CurrentTotalKarma()
 	return stats, nil
 }

@@ -3,13 +3,14 @@ package cli
 import (
 	"fmt"
 
-	"github.com/cybercongress/go-cyber/x/bandwidth/internal/types"
-	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/spf13/cobra"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/context"
+	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/codec"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/spf13/cobra"
+
+	"github.com/cybercongress/go-cyber/x/bandwidth/types"
 )
 
 // GetQueryCmd returns the cli query commands for the bandwidth module.
@@ -25,22 +26,15 @@ func GetQueryCmd(cdc *codec.Codec) *cobra.Command {
 	bandwidthQueryCmd.AddCommand(
 		flags.GetCommands(
 			GetCmdQueryParams(cdc),
-			GetCmdQueryDesirableBandwidth(cdc),
-			GetCmdQueryMaxBlockBandwidth(cdc),
-			GetCmdQueryRecoveryPeriod(cdc),
-			GetCmdQueryAdjustPricePeriod(cdc),
-			GetCmdQueryBaseCreditPrice(cdc),
-			GetCmdQueryTxCost(cdc),
-			GetCmdQueryLinkMsgCost(cdc),
-			GetCmdQueryNonLinkMsgCost(cdc),
+			//GetCmdQueryPrice(cdc), TODO Amino:JSON float* support requires `amino:"unsafe"`.
+			//GetCmdQueryLoad(cdc), TODO Amino:JSON float* support requires `amino:"unsafe"`.
+			GetCmdQueryAccount(cdc),
 		)...,
 	)
 
 	return bandwidthQueryCmd
 }
 
-// GetCmdQueryParams implements a command to return the current minting
-// parameters.
 func GetCmdQueryParams(cdc *codec.Codec) *cobra.Command {
 	return &cobra.Command{
 		Use:   "params",
@@ -65,211 +59,84 @@ func GetCmdQueryParams(cdc *codec.Codec) *cobra.Command {
 	}
 }
 
-// GetCmdQueryDesirableBandwidth implements a command to return the current
-// desirable bandwidth of network.
-func GetCmdQueryDesirableBandwidth(cdc *codec.Codec) *cobra.Command {
+func GetCmdQueryLoad(cdc *codec.Codec) *cobra.Command {
 	return &cobra.Command{
-		Use:   "desirable",
-		Short: "Query the current desirable bandwidth",
+		Use:   "load",
+		Short: "Query the bandwidth load",
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cliCtx := context.NewCLIContext().WithCodec(cdc)
 
-			route := fmt.Sprintf("custom/%s/%s", types.QuerierRoute, types.QueryDesirableBandwidth)
+			route := fmt.Sprintf("custom/%s/%s", types.QuerierRoute, types.QueryLoad)
 			res, _, err := cliCtx.QueryWithData(route, nil)
 			if err != nil {
 				return err
 			}
 
-			var band sdk.Int
-			if err := cdc.UnmarshalJSON(res, &band); err != nil {
+			var resp types.ResultLoad
+			if err := cdc.UnmarshalJSON(res, &resp); err != nil {
 				return err
 			}
 
-			return cliCtx.PrintOutput(band)
+			return cliCtx.PrintOutput(resp)
 		},
 	}
 }
 
-// GetCmdQueryMaxBlockBandwidth implements a command to return the current max
-// block bandwidth value.
-func GetCmdQueryMaxBlockBandwidth(cdc *codec.Codec) *cobra.Command {
+func GetCmdQueryPrice(cdc *codec.Codec) *cobra.Command {
 	return &cobra.Command{
-		Use:   "max-block",
-		Short: "Query the current max block bandwidth",
+		Use:   "price",
+		Short: "Query the bandwidth price",
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cliCtx := context.NewCLIContext().WithCodec(cdc)
 
-			route := fmt.Sprintf("custom/%s/%s", types.QuerierRoute, types.QueryMaxBlockBandwidth)
+			route := fmt.Sprintf("custom/%s/%s", types.QuerierRoute, types.QueryPrice)
 			res, _, err := cliCtx.QueryWithData(route, nil)
 			if err != nil {
 				return err
 			}
 
-			var factor sdk.Int
-			if err := cdc.UnmarshalJSON(res, &factor); err != nil {
+			var resp types.ResultPrice
+			if err := cdc.UnmarshalJSON(res, &resp); err != nil {
 				return err
 			}
 
-			return cliCtx.PrintOutput(factor)
+			return cliCtx.PrintOutput(res)
 		},
 	}
 }
 
-// GetCmdQueryRecoveryPeriod implements a command to return the current bandwidth
-// recovery period.
-func GetCmdQueryRecoveryPeriod(cdc *codec.Codec) *cobra.Command {
+func GetCmdQueryAccount(cdc *codec.Codec) *cobra.Command {
 	return &cobra.Command{
-		Use:   "recovery-period",
-		Short: "Query the current bandwidth recovery period",
-		Args:  cobra.NoArgs,
+		Use:   "status [account]",
+		Short: "Query the account bandwidth [account-addr]",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cliCtx := context.NewCLIContext().WithCodec(cdc)
 
-			route := fmt.Sprintf("custom/%s/%s", types.QuerierRoute, types.QueryRecoveryPeriod)
-			res, _, err := cliCtx.QueryWithData(route, nil)
+			addr, err := sdk.AccAddressFromBech32(args[0])
 			if err != nil {
 				return err
 			}
 
-			var period sdk.Int
-			if err := cdc.UnmarshalJSON(res, &period); err != nil {
-				return err
-			}
-
-			return cliCtx.PrintOutput(period)
-		},
-	}
-}
-
-// GetCmdQueryAdjustPricePeriod implements a command to return the current bandwidth
-// adjust price period.
-func GetCmdQueryAdjustPricePeriod(cdc *codec.Codec) *cobra.Command {
-	return &cobra.Command{
-		Use:   "price-period",
-		Short: "Query the current bandwidth adjust price period",
-		Args:  cobra.NoArgs,
-		RunE: func(cmd *cobra.Command, args []string) error {
-			cliCtx := context.NewCLIContext().WithCodec(cdc)
-
-			route := fmt.Sprintf("custom/%s/%s", types.QuerierRoute, types.QueryAdjustPricePeriod)
-			res, _, err := cliCtx.QueryWithData(route, nil)
+			bz, err := cdc.MarshalJSON(types.NewQueryAccountParams(addr))
 			if err != nil {
 				return err
 			}
 
-			var period sdk.Int
-			if err := cdc.UnmarshalJSON(res, &period); err != nil {
-				return err
-			}
-
-			return cliCtx.PrintOutput(period)
-		},
-	}
-}
-
-// GetCmdQueryBaseCreditPrice implements a command to return the current bandwidth
-// base credit price.
-func GetCmdQueryBaseCreditPrice(cdc *codec.Codec) *cobra.Command {
-	return &cobra.Command{
-		Use:   "credit-price",
-		Short: "Query the current bandwidth base credit price",
-		Args:  cobra.NoArgs,
-		RunE: func(cmd *cobra.Command, args []string) error {
-			cliCtx := context.NewCLIContext().WithCodec(cdc)
-
-			route := fmt.Sprintf("custom/%s/%s", types.QuerierRoute, types.QueryBaseCreditPrice)
-			res, _, err := cliCtx.QueryWithData(route, nil)
+			route := fmt.Sprintf("custom/%s/%s", types.QuerierRoute, types.QueryAccount)
+			res, _, err := cliCtx.QueryWithData(route, bz)
 			if err != nil {
 				return err
 			}
 
-			var price sdk.Dec
-			if err := cdc.UnmarshalJSON(res, &price); err != nil {
+			var resp types.AcсountBandwidth
+			if err := cdc.UnmarshalJSON(res, &resp); err != nil {
 				return err
 			}
 
-			return cliCtx.PrintOutput(price)
-		},
-	}
-}
-
-// GetCmdQueryTxCost implements a command to return the current bandwidth
-// cost of Tx.
-func GetCmdQueryTxCost(cdc *codec.Codec) *cobra.Command {
-	return &cobra.Command{
-		Use:   "tx-cost",
-		Short: "Query the current bandwidth cost of Tx",
-		Args:  cobra.NoArgs,
-		RunE: func(cmd *cobra.Command, args []string) error {
-			cliCtx := context.NewCLIContext().WithCodec(cdc)
-
-			route := fmt.Sprintf("custom/%s/%s", types.QuerierRoute, types.QueryTxCost)
-			res, _, err := cliCtx.QueryWithData(route, nil)
-			if err != nil {
-				return err
-			}
-
-			var cost sdk.Int
-			if err := cdc.UnmarshalJSON(res, &cost); err != nil {
-				return err
-			}
-
-			return cliCtx.PrintOutput(cost)
-		},
-	}
-}
-
-
-// GetCmdQueryLinkMsgCost implements a command to return the current bandwidth
-// cost of link msg.
-func GetCmdQueryLinkMsgCost(cdc *codec.Codec) *cobra.Command {
-	return &cobra.Command{
-		Use:   "link-cost",
-		Short: "Query the current bandwidth cost of Link Msg",
-		Args:  cobra.NoArgs,
-		RunE: func(cmd *cobra.Command, args []string) error {
-			cliCtx := context.NewCLIContext().WithCodec(cdc)
-
-			route := fmt.Sprintf("custom/%s/%s", types.QuerierRoute, types.QueryLinkMsgCost)
-			res, _, err := cliCtx.QueryWithData(route, nil)
-			if err != nil {
-				return err
-			}
-
-			var cost sdk.Int
-			if err := cdc.UnmarshalJSON(res, &cost); err != nil {
-				return err
-			}
-
-			return cliCtx.PrintOutput(cost)
-		},
-	}
-}
-
-// GetCmdQueryNonLinkMsgCost implements a command to return the current bandwidth
-// cost of non-link Msg.
-func GetCmdQueryNonLinkMsgCost(cdc *codec.Codec) *cobra.Command {
-	return &cobra.Command{
-		Use:   "non-link-cost",
-		Short: "Query the current bandwidth cost of non-Link Msg",
-		Args:  cobra.NoArgs,
-		RunE: func(cmd *cobra.Command, args []string) error {
-			cliCtx := context.NewCLIContext().WithCodec(cdc)
-
-			route := fmt.Sprintf("custom/%s/%s", types.QuerierRoute, types.QueryNonLinkMsgCost)
-			res, _, err := cliCtx.QueryWithData(route, nil)
-			if err != nil {
-				return err
-			}
-
-			var cost sdk.Int
-			if err := cdc.UnmarshalJSON(res, &cost); err != nil {
-				return err
-			}
-
-			return cliCtx.PrintOutput(cost)
+			return cliCtx.PrintOutput(resp)
 		},
 	}
 }

@@ -2,11 +2,11 @@ package link
 
 import (
 	"bufio"
+	"fmt"
 	"os"
 	"path/filepath"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/tendermint/tendermint/libs/log"
 
 	"github.com/cybercongress/go-cyber/util"
 )
@@ -17,14 +17,14 @@ const (
 )
 
 func InitGenesis(
-	ctx sdk.Context, cidNumKeeper CidNumberKeeper, linkIndexedKeeper IndexedKeeper, logger log.Logger,
+	ctx sdk.Context, gk GraphKeeper, ik *IndexKeeper,
 ) (err error) {
-
 	linksFilePath := util.RootifyPath(LinksFileName)
 	linksFile, err := os.Open(linksFilePath)
 	if err != nil {
 		if os.IsNotExist(err) {
-			logger.Info("File with links not found. Empty set will be used")
+			//logger.Info("File with cyberlinks not found. Empty set will be used")
+			fmt.Println("File with cyberlinks not found. Empty set will be used")
 			return nil
 		}
 		return
@@ -32,22 +32,22 @@ func InitGenesis(
 	reader := bufio.NewReader(linksFile) // 4096 bytes chunk size
 
 	// initialize slices to read data
-	err = cidNumKeeper.LoadFromReader(ctx, reader)
+	err = gk.LoadFromReader(ctx, reader)
 	if err != nil {
 		return
 	}
 
 	// Read all links
-	err = linkIndexedKeeper.LoadFromReader(ctx, reader)
+	err = ik.LoadFromReader(ctx, reader)
 	if err != nil {
 		return
 	}
-
+	fmt.Println("Loaded graph!")
 	return
 }
 
 func WriteGenesis(
-	ctx sdk.Context, cidNumKeeper CidNumberKeeper, linkIndexedKeeper IndexedKeeper, logger log.Logger,
+	ctx sdk.Context, gk GraphKeeper, ik *IndexKeeper,
 ) (err error) {
 
 	linksFilePath := util.RootifyPath(LinksExportFileName)
@@ -64,11 +64,11 @@ func WriteGenesis(
 	}
 
 	writer := bufio.NewWriter(linksFile) // 4096 byte chunk
-	err = cidNumKeeper.WriteCids(ctx, writer)
+	err = gk.WriteCids(ctx, writer)
 	if err != nil {
 		return
 	}
-	err = linkIndexedKeeper.WriteLinks(ctx, writer)
+	err = ik.WriteLinks(ctx, writer)
 	if err != nil {
 		return
 	}
@@ -79,6 +79,7 @@ func WriteGenesis(
 	}
 	err = linksFile.Close()
 
-	logger.Info("Cids and cyberlinks exported. File created.", "path", linksFilePath)
+	//logger.Info("CIDs and cyberlinks exported. File created.", "path", linksFilePath)
+	fmt.Println("CIDs and cyberlinks exported.")
 	return
 }
