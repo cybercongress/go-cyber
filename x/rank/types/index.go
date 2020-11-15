@@ -240,7 +240,7 @@ func (i *BaseSearchIndex) handleBacklink(link link.CompactLink) {
 	}
 }
 
-func (i *BaseSearchIndex) GetRankValue(cid link.CidNumber) float64 {
+func (i *BaseSearchIndex) GetRankValue(cid link.CidNumber) uint64 {
 	if i.rank.Values == nil || uint64(len(i.rank.Values)) <= uint64(cid) {
 		return 0
 	}

@@ -165,7 +165,7 @@ func (s *StateKeeper) Accounts(account uint64, page, perPage int) (map[link.CidN
 	return s.index.Accounts(account, page, perPage)
 }
 
-func (s *StateKeeper) GetRankValue(cidNumber link.CidNumber) float64 {
+func (s *StateKeeper) GetRankValue(cidNumber link.CidNumber) uint64 {
 	return s.index.GetRankValue(cidNumber)
 }
 
