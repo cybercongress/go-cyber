@@ -77,7 +77,7 @@ func GetCmdQuerySourceRoutes(queryRoute string, cdc *codec.Codec) *cobra.Command
 			fmt.Sprintf(`Query routes from an individual source account.
 
 Example:
-$ %s query energy routes-from cosmosvaloper1gghjut3ccd8ay0zduzj64hwre2fxs9ldmqhffj
+$ %s query energy routes-from cyber1p5ygqrqcw5cn59em9dpgmk7jcnu5twc6mkxlsp
 `,
 				version.ClientName,
 			),
@@ -120,7 +120,7 @@ func GetCmdQueryDestinationRoutes(queryRoute string, cdc *codec.Codec) *cobra.Co
 			fmt.Sprintf(`Query routes to an individual destination account.
 
 Example:
-$ %s query energy routes-to cosmosvaloper1gghjut3ccd8ay0zduzj64hwre2fxs9ldmqhffj
+$ %s query energy routes-to cyber19wyeu0fh8lc8ajjq84q9fkwkrwrxxf98su97pc
 `,
 				version.ClientName,
 			),
@@ -163,7 +163,7 @@ func GetCmdQuerySourceRoutedEnergy(queryRoute string, cdc *codec.Codec) *cobra.C
 			fmt.Sprintf(`Query energy routed from an individual source account.
 
 Example:
-$ %s query energy routed-from cosmosvaloper1gghjut3ccd8ay0zduzj64hwre2fxs9ldmqhffj
+$ %s query energy routed-from cyber1p5ygqrqcw5cn59em9dpgmk7jcnu5twc6mkxlsp
 `,
 				version.ClientName,
 			),
@@ -206,7 +206,7 @@ func GetCmdQueryDestinationRoutedEnergy(queryRoute string, cdc *codec.Codec) *co
 			fmt.Sprintf(`Query energy routed on an individual destination account.
 
 Example:
-$ %s query energy routed-to cosmosvaloper1gghjut3ccd8ay0zduzj64hwre2fxs9ldmqhffj
+$ %s query energy routed-to cyber19wyeu0fh8lc8ajjq84q9fkwkrwrxxf98su97pc
 `,
 				version.ClientName,
 			),
@@ -249,7 +249,7 @@ func GetCmdQueryRoute(queryRoute string, cdc *codec.Codec) *cobra.Command {
 			fmt.Sprintf(`Query energy route for given source and destination accounts.
 
 Example:
-$ %s query energy route cosmosvaloper1gghjut3ccd8ay0zduzj64hwre2fxs9ldmqhffj cosmosvaloper1gghjut3ccd8ay0zduzj64hwre2fxs9ldmqhffj
+$ %s query energy route cyber1p5ygqrqcw5cn59em9dpgmk7jcnu5twc6mkxlsp cyber19wyeu0fh8lc8ajjq84q9fkwkrwrxxf98su97pc
 `,
 				version.ClientName,
 			),

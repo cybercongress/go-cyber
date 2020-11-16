@@ -48,7 +48,7 @@ func GetCmdCreateEnergyRoute(cdc *codec.Codec) *cobra.Command {
 			fmt.Sprintf(`Create energy route from from your address to destination address with provided alias.
 
 Example:
-$ %s tx energy create-route cosmosvaloper1l2rsakp388kuv9k8qzq6lrm9taddae7fpx59wm cosmosvaloper1l2rsakp388kuv9k8qzq6lrm9taddae7fpx59wm alias --from mykey
+$ %s tx energy create-route cyber1p5ygqrqcw5cn59em9dpgmk7jcnu5twc6mkxlsp cyber19wyeu0fh8lc8ajjq84q9fkwkrwrxxf98su97pc alias --from mykey
 `,
 				version.ClientName,
 			),
@@ -79,7 +79,7 @@ func GetCmdEditEnergyRoute(cdc *codec.Codec) *cobra.Command {
 			fmt.Sprintf(`Route energy from an amount of liquid coins to a destination account from your wallet.
 
 Example:
-$ %s tx energy edit-route cosmosvaloper1l2rsakp388kuv9k8qzq6lrm9taddae7fpx59wm 1000stake --from mykey
+$ %s tx energy edit-route cyber19wyeu0fh8lc8ajjq84q9fkwkrwrxxf98su97pc 1000stake --from mykey
 `,
 				version.ClientName,
 			),
@@ -115,7 +115,7 @@ func GetCmdDeleteEnergyRoute(cdc *codec.Codec) *cobra.Command {
 			fmt.Sprintf(`Delete yours energy route to destination address.
 
 Example:
-$ %s tx energy delete-route cosmosvaloper1l2rsakp388kuv9k8qzq6lrm9taddae7fpx59wm cosmosvaloper1l2rsakp388kuv9k8qzq6lrm9taddae7fpx59wm --from mykey
+$ %s tx energy delete-route cyber1p5ygqrqcw5cn59em9dpgmk7jcnu5twc6mkxlsp cyber19wyeu0fh8lc8ajjq84q9fkwkrwrxxf98su97pc --from mykey
 `,
 				version.ClientName,
 			),
@@ -146,7 +146,7 @@ func GetCmdEditEnergyRouteAlias(cdc *codec.Codec) *cobra.Command {
 			fmt.Sprintf(`Delete yours energy route to destination address.
 
 Example:
-$ %s tx energy edit-route-alias cosmosvaloper1l2rsakp388kuv9k8qzq6lrm9taddae7fpx59wm alias --from mykey
+$ %s tx energy edit-route-alias cyber19wyeu0fh8lc8ajjq84q9fkwkrwrxxf98su97pc alias --from mykey
 `,
 				version.ClientName,
 			),

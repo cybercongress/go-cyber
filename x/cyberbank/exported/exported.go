@@ -12,11 +12,6 @@ type Keeper interface {
 	sdkbank.Keeper
 
 	AddHook(types.CoinsTransferHook)
-
-	//SetStakingKeeper(types.StakingKeeper)
-	//SetSupplyKeeper(types.SupplyKeeper)
-	//SetPowerKeeper(types.PowerKeeper)
-
 	//GetAccountUnboundedStake(sdk.Context, sdk.AccAddress) int64
 	//GetAccountBoundedStake(sdk.Context, sdk.AccAddress) int64
 	//GetAccountTotalStake(sdk.Context, sdk.AccAddress) int64
@@ -24,13 +19,3 @@ type Keeper interface {
 	//GetTotalSupply(sdk.Context) int64
 	OnCoinsTransfer(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress)
 }
-
-//type IndexedKeeper interface {
-//	Keeper
-//
-//	Load(sdk.Context, sdk.Context)
-//	FixUserStake(ctx sdk.Context) bool
-//	UpdateStake(cbd.AccNumber, int64)
-//	GetTotalStakes() map[cbd.AccNumber]uint64
-//	EndBlocker(sdk.Context)
-//}

@@ -1,6 +1,7 @@
 package energy
 
 import (
+	"github.com/cybercongress/go-cyber/x/energy/exported"
 	"github.com/cybercongress/go-cyber/x/energy/keeper"
 	"github.com/cybercongress/go-cyber/x/energy/types"
 )
@@ -20,6 +21,7 @@ var (
 )
 
 type (
+	EnergyKeeper 		      = exported.EnergyKeeper
 	Keeper                    = keeper.Keeper
 	Route				  	  = types.Route
 	Routes				  	  = types.Routes

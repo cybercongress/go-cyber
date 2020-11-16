@@ -3,13 +3,16 @@ package keeper
 import (
 	"fmt"
 
-	//"github.com/tendermint/tendermint/crypto"
 	"github.com/tendermint/tendermint/libs/log"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	"github.com/cybercongress/go-cyber/x/energy/exported"
 	"github.com/cybercongress/go-cyber/x/energy/types"
 )
+
+var _ = exported.EnergyKeeper(nil)
 
 // Keeper of the power store
 type Keeper struct {

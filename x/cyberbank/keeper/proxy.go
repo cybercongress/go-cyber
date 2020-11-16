@@ -3,29 +3,27 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/bank"
-	"github.com/cosmos/cosmos-sdk/x/staking"
 	"github.com/cosmos/cosmos-sdk/x/supply"
 
 	ctypes "github.com/cybercongress/go-cyber/types"
 	"github.com/cybercongress/go-cyber/x/cyberbank/types"
-	"github.com/cybercongress/go-cyber/x/energy"
 )
 
 var _ bank.Keeper = (*Proxy)(nil)
 
 type Proxy struct {
 	bk	bank.Keeper
-	sk	staking.Keeper
-	sp	supply.Keeper
-	ek  energy.Keeper
+	sk	types.StakingKeeper
+	sp	types.SupplyKeeper
+	ek  types.EnergyKeeper
 
 	coinsTransferHooks []types.CoinsTransferHook
 }
 
-func Wrap(bk *bank.Keeper, sk *staking.Keeper, sp supply.Keeper) *Proxy {
+func Wrap(bk *bank.Keeper, sk types.StakingKeeper, sp supply.Keeper) *Proxy {
 	return &Proxy{
 		bk: *bk,
-		sk: *sk,
+		sk: sk,
 		sp: sp,
 		coinsTransferHooks: make([]types.CoinsTransferHook, 0),
 	}
@@ -35,8 +33,8 @@ func (p *Proxy) AddHook(hook types.CoinsTransferHook) {
 	p.coinsTransferHooks = append(p.coinsTransferHooks, hook)
 }
 
-func (k *Proxy) SetEnergyKeeper(ek *energy.Keeper) {
-	k.ek = *ek
+func (k *Proxy) SetEnergyKeeper(ek types.EnergyKeeper) {
+	k.ek = ek
 }
 
 func (p *Proxy) OnCoinsTransfer(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress) {
