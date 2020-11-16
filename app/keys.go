@@ -1,10 +1,12 @@
 package app
 
 import (
+	"github.com/CosmWasm/wasmd/x/wasm"
 	bam "github.com/cosmos/cosmos-sdk/baseapp"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	distr "github.com/cosmos/cosmos-sdk/x/distribution"
+	"github.com/cosmos/cosmos-sdk/x/evidence"
 	"github.com/cosmos/cosmos-sdk/x/gov"
 	"github.com/cosmos/cosmos-sdk/x/mint"
 	"github.com/cosmos/cosmos-sdk/x/params"
@@ -12,10 +14,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	"github.com/cosmos/cosmos-sdk/x/supply"
 	"github.com/cosmos/cosmos-sdk/x/upgrade"
-	"github.com/cosmos/cosmos-sdk/x/evidence"
-	"github.com/CosmWasm/wasmd/x/wasm"
 
 	"github.com/cybercongress/go-cyber/x/bandwidth"
+	"github.com/cybercongress/go-cyber/x/energy"
 	"github.com/cybercongress/go-cyber/x/link"
 	"github.com/cybercongress/go-cyber/x/rank"
 )
@@ -36,7 +37,7 @@ type cyberdAppDbKeys struct {
 	links          *sdk.KVStoreKey
 	rank           *sdk.KVStoreKey
 	bandwidth      *sdk.KVStoreKey
-
+	energy         *sdk.KVStoreKey
 	wasm 		   *sdk.KVStoreKey
 
 	tStake         *sdk.TransientStoreKey
@@ -60,6 +61,7 @@ func NewCyberdAppDbKeys() cyberdAppDbKeys {
 		links:    sdk.NewKVStoreKey(link.StoreKey),
 		rank:     sdk.NewKVStoreKey(rank.StoreKey),
 		bandwidth:sdk.NewKVStoreKey(bandwidth.StoreKey),
+		energy:	  sdk.NewKVStoreKey(energy.StoreKey),
 		wasm:	  sdk.NewKVStoreKey(wasm.StoreKey),
 
 		tStake:   sdk.NewTransientStoreKey(staking.TStoreKey),
@@ -70,7 +72,7 @@ func NewCyberdAppDbKeys() cyberdAppDbKeys {
 func (k cyberdAppDbKeys) GetStoreKeys() []*sdk.KVStoreKey {
 	return []*sdk.KVStoreKey{
 		k.main, k.auth, k.links, k.rank, k.stake, k.supply, k.gov,
-		k.slashing, k.params, k.distr, k.bandwidth, k.mint, k.upgrade, k.evidence, k.wasm,
+		k.slashing, k.params, k.distr, k.bandwidth, k.mint, k.upgrade, k.evidence, k.wasm, k.energy,
 	}
 }
 

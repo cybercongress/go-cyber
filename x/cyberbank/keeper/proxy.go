@@ -8,6 +8,7 @@ import (
 
 	ctypes "github.com/cybercongress/go-cyber/types"
 	"github.com/cybercongress/go-cyber/x/cyberbank/types"
+	"github.com/cybercongress/go-cyber/x/energy"
 )
 
 var _ bank.Keeper = (*Proxy)(nil)
@@ -16,6 +17,7 @@ type Proxy struct {
 	bk	bank.Keeper
 	sk	staking.Keeper
 	sp	supply.Keeper
+	ek  energy.Keeper
 
 	coinsTransferHooks []types.CoinsTransferHook
 }
@@ -33,7 +35,11 @@ func (p *Proxy) AddHook(hook types.CoinsTransferHook) {
 	p.coinsTransferHooks = append(p.coinsTransferHooks, hook)
 }
 
-func (p *Proxy) onCoinsTransfer(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress) {
+func (k *Proxy) SetEnergyKeeper(ek *energy.Keeper) {
+	k.ek = *ek
+}
+
+func (p *Proxy) OnCoinsTransfer(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress) {
 	for _, hook := range p.coinsTransferHooks {
 		hook(ctx, from, to)
 	}
@@ -69,7 +75,12 @@ func (k Proxy) GetAccountStakePercentage(ctx sdk.Context, addr sdk.AccAddress) f
 }
 
 func (k Proxy) GetAccountTotalStake(ctx sdk.Context, addr sdk.AccAddress) int64 {
-	return k.GetAccountUnboundedStake(ctx, addr) + k.GetAccountBoundedStake(ctx, addr)
+	return k.GetAccountUnboundedStake(ctx, addr) + k.GetAccountBoundedStake(ctx, addr) + k.GetAccountPower(ctx, addr)
+}
+
+func (k Proxy) GetAccountPower(ctx sdk.Context, addr sdk.AccAddress) int64 {
+	power := k.ek.GetRoutedToEnergy(ctx, addr)
+	return power.Int64()
 }
 
 // -----------------------------------------------------------------
@@ -82,7 +93,7 @@ func (p Proxy) InputOutputCoins(ctx sdk.Context, inputs []bank.Input, outputs []
 func (p Proxy) SendCoins(ctx sdk.Context, fromAddr sdk.AccAddress, toAddr sdk.AccAddress, amt sdk.Coins) error {
 	err := p.bk.SendCoins(ctx, fromAddr, toAddr, amt)
 	if err == nil {
-		p.onCoinsTransfer(ctx, fromAddr, toAddr)
+		p.OnCoinsTransfer(ctx, fromAddr, toAddr)
 	}
 	return err
 }
@@ -90,7 +101,7 @@ func (p Proxy) SendCoins(ctx sdk.Context, fromAddr sdk.AccAddress, toAddr sdk.Ac
 func (p Proxy) SubtractCoins(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coins) (sdk.Coins, error) {
 	coins, err := p.bk.SubtractCoins(ctx, addr, amt)
 	if err == nil {
-		p.onCoinsTransfer(ctx, nil, addr)
+		p.OnCoinsTransfer(ctx, nil, addr)
 	}
 	return coins, err
 }
@@ -98,7 +109,7 @@ func (p Proxy) SubtractCoins(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coins
 func (p Proxy) AddCoins(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coins) (sdk.Coins, error) {
 	coins, err := p.bk.AddCoins(ctx, addr, amt)
 	if err == nil {
-		p.onCoinsTransfer(ctx, nil, addr)
+		p.OnCoinsTransfer(ctx, nil, addr)
 	}
 	return coins, err
 }
@@ -118,7 +129,7 @@ func (p Proxy) BlacklistedAddr(addr sdk.AccAddress) bool {
 func (p Proxy) DelegateCoins(ctx sdk.Context, delegatorAddr, moduleAccAddr sdk.AccAddress, amt sdk.Coins) error {
 	err := p.bk.DelegateCoins(ctx, delegatorAddr, moduleAccAddr, amt)
 	if err == nil {
-		p.onCoinsTransfer(ctx, delegatorAddr, nil)
+		p.OnCoinsTransfer(ctx, delegatorAddr, nil)
 	}
 	return err
 }
@@ -126,7 +137,7 @@ func (p Proxy) DelegateCoins(ctx sdk.Context, delegatorAddr, moduleAccAddr sdk.A
 func (p Proxy) UndelegateCoins(ctx sdk.Context, moduleAccAddr, delegatorAddr sdk.AccAddress, amt sdk.Coins) error {
 	err := p.bk.UndelegateCoins(ctx, moduleAccAddr, delegatorAddr, amt)
 	if err == nil {
-		p.onCoinsTransfer(ctx, nil, delegatorAddr)
+		p.OnCoinsTransfer(ctx, nil, delegatorAddr)
 	}
 	return err
 }

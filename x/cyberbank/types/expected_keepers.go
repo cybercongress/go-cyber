@@ -48,6 +48,10 @@ type AccountKeeper interface {
 //	SetCoins(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coins) error
 //}
 
+type EnergyKeeper interface {
+	GetRoutedToEnergy(ctx sdk.Context, delegate sdk.AccAddress) sdk.Int
+}
+
 type StakingKeeper interface {
 	GetAllDelegatorDelegations(ctx sdk.Context, delegator sdk.AccAddress) []stakingtypes.Delegation
 }
