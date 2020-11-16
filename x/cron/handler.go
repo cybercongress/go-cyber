@@ -52,7 +52,7 @@ func handleMsgAddJob(ctx sdk.Context, k keeper.Keeper, msg types.MsgAddJob) (*sd
 		sdk.NewEvent(
 			types.EventTypeAddJob,
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-			sdk.NewAttribute(types.AttributeKeyJobContract, string(msg.Contract)),
+			sdk.NewAttribute(types.AttributeKeyJobContract, msg.Contract.String()),
 			sdk.NewAttribute(types.AttributeKeyJobTrigger, msg.Trigger.String()),
 			sdk.NewAttribute(types.AttributeKeyJobLoad, msg.Load.String()),
 			sdk.NewAttribute(types.AttributeKeyJobLabel, msg.Label),
@@ -73,7 +73,7 @@ func handleMsgRemoveJob(ctx sdk.Context, k keeper.Keeper, msg types.MsgRemoveJob
 		sdk.NewEvent(
 			types.EventTypeRemoveJob,
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-			sdk.NewAttribute(types.AttributeKeyJobContract, string(msg.Contract)),
+			sdk.NewAttribute(types.AttributeKeyJobContract, msg.Contract.String()),
 		),
 	)
 
@@ -90,7 +90,7 @@ func handleMsgChangeJobCID(ctx sdk.Context, k keeper.Keeper, msg types.MsgChange
 		sdk.NewEvent(
 			types.EventTypeChangeJobCID,
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-			sdk.NewAttribute(types.AttributeKeyJobContract, string(msg.Contract)),
+			sdk.NewAttribute(types.AttributeKeyJobContract,msg.Contract.String()),
 			sdk.NewAttribute(types.AttributeKeyJobCID, string(msg.CID)),
 		),
 	)
@@ -108,7 +108,7 @@ func handleMsgChangeJobAlias(ctx sdk.Context, k keeper.Keeper, msg types.MsgChan
 		sdk.NewEvent(
 			types.EventTypeChangeJobLabel,
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-			sdk.NewAttribute(types.AttributeKeyJobContract, string(msg.Contract)),
+			sdk.NewAttribute(types.AttributeKeyJobContract, msg.Contract.String()),
 			sdk.NewAttribute(types.AttributeKeyJobLabel, msg.Label),
 		),
 	)
@@ -126,7 +126,7 @@ func handleMsgChangeJobCallData(ctx sdk.Context, k keeper.Keeper, msg types.MsgC
 		sdk.NewEvent(
 			types.EventTypeChangeJobCallData,
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-			sdk.NewAttribute(types.AttributeKeyJobContract, string(msg.Contract)),
+			sdk.NewAttribute(types.AttributeKeyJobContract, msg.Contract.String()),
 			sdk.NewAttribute(types.AttributeKeyJobCallData, msg.CallData),
 		),
 	)
@@ -144,7 +144,7 @@ func handleMsgChangeJobGasPrice(ctx sdk.Context, k keeper.Keeper, msg types.MsgC
 		sdk.NewEvent(
 			types.EventTypeChangeJobGasPrice,
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-			sdk.NewAttribute(types.AttributeKeyJobContract, string(msg.Contract)),
+			sdk.NewAttribute(types.AttributeKeyJobContract, msg.Contract.String()),
 			sdk.NewAttribute(types.AttributeKeyJobGasPrice, string(msg.GasPrice)),
 		),
 	)
@@ -162,7 +162,7 @@ func handleMsgChangeJobPeriod(ctx sdk.Context, k keeper.Keeper, msg types.MsgCha
 		sdk.NewEvent(
 			types.EventTypeChangeJobPeriod,
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-			sdk.NewAttribute(types.AttributeKeyJobContract, string(msg.Contract)),
+			sdk.NewAttribute(types.AttributeKeyJobContract, msg.Contract.String()),
 			sdk.NewAttribute(types.AttributeKeyJobPeriod, string(msg.Period)),
 		),
 	)
@@ -180,7 +180,7 @@ func handleMsgChangeJobBlock(ctx sdk.Context, k keeper.Keeper, msg types.MsgChan
 		sdk.NewEvent(
 			types.EventTypeChangeJobBlock,
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-			sdk.NewAttribute(types.AttributeKeyJobContract, string(msg.Contract)),
+			sdk.NewAttribute(types.AttributeKeyJobContract, msg.Contract.String()),
 			sdk.NewAttribute(types.AttributeKeyJobBlock, string(msg.Block)),
 		),
 	)
