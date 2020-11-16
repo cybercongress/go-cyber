@@ -86,10 +86,30 @@ func (k *IndexedKeeper) InitGenesis(ctx sdk.Context) {
 }
 
 func (k *IndexedKeeper) EndBlocker(ctx sdk.Context) {
+
 	for _, addr := range k.accountToUpdate {
-		stake := k.Proxy.GetAccountTotalStake(ctx, addr)
+		stake := k.GetAccountTotalStake(ctx, addr)
+
+		// sandbox debugging
+		//fmt.Printf("[%s] %s \n", addr.String(), strconv.FormatUint(uint64(stake), 10))
+
+		//accNum := k.accountKeeper.GetAccount(ctx, addr).GetAccountNumber()
+		//k.userNewTotalStake[accNum] = uint64(stake)
+		//account := k.accountKeeper.GetAccount(ctx, addr)
+		//if account != nil {
+		//	accNum := account.GetAccountNumber()
+		//	k.userNewTotalStake[accNum] = uint64(stake)
+		//}
 		accountNumber := k.accountKeeper.GetAccount(ctx, addr).GetAccountNumber()
 		k.userNewTotalStake[accountNumber] = uint64(stake)
 	}
+
+	//sandbox debugging
+	//for _, account := range k.accountKeeper.GetAllAccounts(ctx) {
+	//	stakeBank := uint64(k.GetAccountTotalStake(ctx, account.GetAddress()))
+	//	stakeIndex := uint64(k.userNewTotalStake[ account.GetAccountNumber() ])
+	//	fmt.Printf("STAKE: account: %s index: %s bank: %s \n", account.GetAddress(), strconv.FormatUint(stakeIndex, 10), strconv.FormatUint(stakeBank,10))
+	//}
+
 	k.accountToUpdate = make([]sdk.AccAddress, 0)
 }

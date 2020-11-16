@@ -21,6 +21,7 @@ import (
 
 	ctypes "github.com/cybercongress/go-cyber/types"
 	"github.com/cybercongress/go-cyber/x/bandwidth"
+	"github.com/cybercongress/go-cyber/x/energy"
 	"github.com/cybercongress/go-cyber/x/rank"
 )
 
@@ -46,6 +47,7 @@ type GenesisState struct {
 	Evidence      evidence.GenesisState		`json:"evidence"`
 	BandwidthData bandwidth.GenesisState    `json:"bandwidth"`
 	RankData      rank.GenesisState         `json:"rank"`
+	EnergyData    energy.GenesisState       `json:"energy"`
 	WasmData      wasm.GenesisState         `json:"wasm"`
 }
 
@@ -63,7 +65,7 @@ func NewGenesisState(
 	mintData mint.GenesisState, distrData distr.GenesisState,
 	govData gov.GenesisState, supplyData supply.GenesisState,
 	slashingData slashing.GenesisState, bandwidthData bandwidth.GenesisState,
-	rankData rank.GenesisState, crisisData crisis.GenesisState,
+	rankData rank.GenesisState, energyData energy.GenesisState, crisisData crisis.GenesisState,
 	evidenceData evidence.GenesisState, wasmData wasm.GenesisState,
 ) GenesisState {
 
@@ -78,6 +80,7 @@ func NewGenesisState(
 		GovData:       govData,
 		BandwidthData: bandwidthData,
 		RankData:      rankData,
+		EnergyData:    energyData,
 		Crisis:        crisisData,
 		Evidence: 	   evidenceData,
 		WasmData:      wasmData,
@@ -167,6 +170,7 @@ func NewDefaultGenesisState() GenesisState {
 		RankData: rank.GenesisState{
 			Params: 	rank.DefaultParams(),
 		},
+		EnergyData: energy.DefaultGenesisState(),
 		Crisis: crisis.GenesisState{
 			ConstantFee: sdk.NewCoin(ctypes.CYB, sdk.NewInt(ctypes.Giga*10)),
 		},
