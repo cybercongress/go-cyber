@@ -390,6 +390,9 @@ extern "C" {
         cudaMemcpy(rank, d_rank, cidsSize * sizeof(double), cudaMemcpyDeviceToHost);
         /*-------------------------------------------------------------------*/
 
+        free(inLinksStartIndex);
+        free(outLinksStartIndex);
+        free(compressedInLinksCount);
 
         cudaFree(d_rank);
         cudaFree(d_prevRank);
