@@ -6,14 +6,26 @@
 
 **Closed issues:**
 
+- Disable karma calculations [\#552](https://github.com/cybercongress/go-cyber/issues/552)
+- Upgrade to Launchpad [\#550](https://github.com/cybercongress/go-cyber/issues/550)
+- Test onchain upgrade against docker container [\#541](https://github.com/cybercongress/go-cyber/issues/541)
 - Upgrade to sdk 38.5 and tm 33.6 [\#530](https://github.com/cybercongress/go-cyber/issues/530)
 - Delegations not indexed with bank module wrapper [\#521](https://github.com/cybercongress/go-cyber/issues/521)
 - Security upgrade with bump to 0.38.3/0.33.3 [\#518](https://github.com/cybercongress/go-cyber/issues/518)
+- Rename cyberdcli [\#481](https://github.com/cybercongress/go-cyber/issues/481)
 - Euler-6 release [\#463](https://github.com/cybercongress/go-cyber/issues/463)
+- Md style error in  run\_validator.md [\#445](https://github.com/cybercongress/go-cyber/issues/445)
 - Support easy install with brew tap [\#426](https://github.com/cybercongress/go-cyber/issues/426)
+- Validator setup using Tendermint KMS + Ledger  [\#393](https://github.com/cybercongress/go-cyber/issues/393)
+- Delegation of energy and power [\#329](https://github.com/cybercongress/go-cyber/issues/329)
+- Daemon for autoclaiming of validators rewards [\#280](https://github.com/cybercongress/go-cyber/issues/280)
 
 **Merged pull requests:**
 
+- Fixed freeing of allocated memory [\#571](https://github.com/cybercongress/go-cyber/pull/571) ([litvintech](https://github.com/litvintech))
+- Energy module [\#565](https://github.com/cybercongress/go-cyber/pull/565) ([litvintech](https://github.com/litvintech))
+- Uints rank's values [\#564](https://github.com/cybercongress/go-cyber/pull/564) ([litvintech](https://github.com/litvintech))
+- Extra APIs [\#563](https://github.com/cybercongress/go-cyber/pull/563) ([litvintech](https://github.com/litvintech))
 - upgrade\_fixes\_to\_run\_val [\#545](https://github.com/cybercongress/go-cyber/pull/545) ([mrlp4](https://github.com/mrlp4))
 - fixes to upgrade guide [\#537](https://github.com/cybercongress/go-cyber/pull/537) ([mrlp4](https://github.com/mrlp4))
 - Update script.sh [\#536](https://github.com/cybercongress/go-cyber/pull/536) ([SaveTheAles](https://github.com/SaveTheAles))
