@@ -8,7 +8,7 @@ import (
 
 type RankAndProofResult struct {
 	Proofs []merkle.Proof `json:"proofs"`
-	Rank   uint64          `json:"rank"`
+	Rank   float64        `amino:"unsafe" json:"rank"`
 }
 
 func Rank(ctx *rpctypes.Context, cid string, proof bool) (*RankAndProofResult, error) {
