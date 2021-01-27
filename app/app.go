@@ -238,7 +238,7 @@ func NewCyberdApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest
 	)
 
 	app.stakingKeeper = *stakingKeeper.SetHooks(
-		staking.NewMultiStakingHooks(app.distrKeeper.Hooks(), app.slashingKeeper.Hooks()),
+		staking.NewMultiStakingHooks(app.distrKeeper.Hooks(), app.slashingKeeper.Hooks(), app.bankKeeper.Hooks()),
 	)
 
 	app.bankKeeper.AddHook(bandwidth.CollectAddressesWithStakeChange())
