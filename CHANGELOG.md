@@ -6,12 +6,28 @@
 
 **Closed issues:**
 
+- Disable karma calculations [\#552](https://github.com/cybercongress/go-cyber/issues/552)
+- Upgrade to Launchpad [\#550](https://github.com/cybercongress/go-cyber/issues/550)
+- Test onchain upgrade against docker container [\#541](https://github.com/cybercongress/go-cyber/issues/541)
 - Upgrade to sdk 38.5 and tm 33.6 [\#530](https://github.com/cybercongress/go-cyber/issues/530)
+- Delegations not indexed with bank module wrapper [\#521](https://github.com/cybercongress/go-cyber/issues/521)
 - Security upgrade with bump to 0.38.3/0.33.3 [\#518](https://github.com/cybercongress/go-cyber/issues/518)
+- Rename cyberdcli [\#481](https://github.com/cybercongress/go-cyber/issues/481)
+- Euler-6 release [\#463](https://github.com/cybercongress/go-cyber/issues/463)
+- Md style error in  run\_validator.md [\#445](https://github.com/cybercongress/go-cyber/issues/445)
 - Support easy install with brew tap [\#426](https://github.com/cybercongress/go-cyber/issues/426)
+- Validator setup using Tendermint KMS + Ledger  [\#393](https://github.com/cybercongress/go-cyber/issues/393)
+- Delegation of energy and power [\#329](https://github.com/cybercongress/go-cyber/issues/329)
+- Daemon for autoclaiming of validators rewards [\#280](https://github.com/cybercongress/go-cyber/issues/280)
 
 **Merged pull requests:**
 
+- Fixed call of rank rpc endpoint [\#572](https://github.com/cybercongress/go-cyber/pull/572) ([litvintech](https://github.com/litvintech))
+- Fixed freeing of allocated memory [\#571](https://github.com/cybercongress/go-cyber/pull/571) ([litvintech](https://github.com/litvintech))
+- Energy module [\#565](https://github.com/cybercongress/go-cyber/pull/565) ([litvintech](https://github.com/litvintech))
+- Uints rank's values [\#564](https://github.com/cybercongress/go-cyber/pull/564) ([litvintech](https://github.com/litvintech))
+- Extra APIs [\#563](https://github.com/cybercongress/go-cyber/pull/563) ([litvintech](https://github.com/litvintech))
+- upgrade\_fixes\_to\_run\_val [\#545](https://github.com/cybercongress/go-cyber/pull/545) ([mrlp4](https://github.com/mrlp4))
 - fixes to upgrade guide [\#537](https://github.com/cybercongress/go-cyber/pull/537) ([mrlp4](https://github.com/mrlp4))
 - Update script.sh [\#536](https://github.com/cybercongress/go-cyber/pull/536) ([SaveTheAles](https://github.com/SaveTheAles))
 - Update naming for docs build to go-cyber [\#535](https://github.com/cybercongress/go-cyber/pull/535) ([SaveTheAles](https://github.com/SaveTheAles))
@@ -178,12 +194,12 @@
 - Fix pictures in whitepaper [\#303](https://github.com/cybercongress/go-cyber/issues/303)
 - Error during rewards withdrawal  [\#302](https://github.com/cybercongress/go-cyber/issues/302)
 - Merkle proofs for link storage [\#299](https://github.com/cybercongress/go-cyber/issues/299)
-- Finish Proof of Code genesis drop [\#294](https://github.com/cybercongress/go-cyber/issues/294)
 - Add backup and restore validator keys guide. [\#286](https://github.com/cybercongress/go-cyber/issues/286)
 - Move bandwidth and rank constants to params store [\#284](https://github.com/cybercongress/go-cyber/issues/284)
 - Cyberadmin telegram-bot for cyberd [\#281](https://github.com/cybercongress/go-cyber/issues/281)
 - Align current network capabilities with cyberCongress pricing model [\#262](https://github.com/cybercongress/go-cyber/issues/262)
 - Add keystore doc [\#256](https://github.com/cybercongress/go-cyber/issues/256)
+- Finish Proof of Code genesis drop [\#294](https://github.com/cybercongress/go-cyber/issues/294)
 - Full validating quorum [\#195](https://github.com/cybercongress/go-cyber/issues/195)
 - Infinity race problem. [\#172](https://github.com/cybercongress/go-cyber/issues/172)
 - Rank calculation period automatic adjustment [\#142](https://github.com/cybercongress/go-cyber/issues/142)
@@ -490,7 +506,6 @@
 **Closed issues:**
 
 - Cid validation [\#93](https://github.com/cybercongress/go-cyber/issues/93)
-- Make up cyberd landing [\#87](https://github.com/cybercongress/go-cyber/issues/87)
 - Update to cosmos-sdk version 0.26.1 [\#79](https://github.com/cybercongress/go-cyber/issues/79)
 - Add possibility to join for new validators. [\#75](https://github.com/cybercongress/go-cyber/issues/75)
 - Calculate rank using GPU [\#74](https://github.com/cybercongress/go-cyber/issues/74)
@@ -498,6 +513,7 @@
 - Build node releases with cleveldb [\#59](https://github.com/cybercongress/go-cyber/issues/59)
 - Remove 'cosmosaccaddr' prefix from cyberd address [\#39](https://github.com/cybercongress/go-cyber/issues/39)
 - Create cyberd PoC based on Cosmos SDK [\#37](https://github.com/cybercongress/go-cyber/issues/37)
+- Make up cyberd landing [\#87](https://github.com/cybercongress/go-cyber/issues/87)
 - Draw logo for cyberd [\#16](https://github.com/cybercongress/go-cyber/issues/16)
 - Build basic economic model [\#1](https://github.com/cybercongress/go-cyber/issues/1)
 
