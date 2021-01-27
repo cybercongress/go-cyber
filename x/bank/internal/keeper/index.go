@@ -87,10 +87,8 @@ func (s *IndexedKeeper) GetTotalStakes() map[cbd.AccNumber]uint64 {
 // Performs stakes updates for accountKeeper touched in current block
 func (s *IndexedKeeper) EndBlocker(ctx sdk.Context) {
 	for _, addr := range s.accsToUpdate {
+		if s.accountKeeper.GetAccount(ctx, addr) == nil { continue }
 		stake := s.Keeper.GetAccountTotalStake(ctx, addr)
-		if s.accountKeeper.GetAccount(ctx, addr) == nil {
-			continue
-		}
 		accNum := cbd.AccNumber(s.accountKeeper.GetAccount(ctx, addr).GetAccountNumber())
 		s.userNewTotalStake[accNum] = uint64(stake)
 		account := s.accountKeeper.GetAccount(ctx, addr)
