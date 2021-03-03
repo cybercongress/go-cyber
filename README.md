@@ -45,11 +45,11 @@ _____________
 ### Blockchain
 
 [![chain](https://img.shields.io/badge/Chain-Euler--6-success.svg?style=flat-square)](https://github.com/cybercongress/cyberd/blob/master/docs/run_validator.md)
-[![block](https://img.shields.io/badge/dynamic/json?color=blue&label=Block%20Height&query=%24.result.height&url=https://titan.cybernode.ai/api/index_stats&style=flat-square)]()
-[![cyberlinks](https://img.shields.io/badge/dynamic/json?color=blue&label=Cyberlinks&query=%24.result.linksCount&url=https://titan.cybernode.ai/api/index_stats&style=flat-square)]()
-[![cids](https://img.shields.io/badge/dynamic/json?color=blue&label=CIDs&query=%24.result.cidsCount&url=https://titan.cybernode.ai/api/index_stats&style=flat-square)]()
-[![agents](https://img.shields.io/badge/dynamic/json?color=blue&label=Web3%20Agents&query=%24.result.accsCount&url=https://titan.cybernode.ai/api/index_stats&style=flat-square)]()
-[![validators](https://img.shields.io/badge/dynamic/json?label=Validators&query=%24.result.validators.length&url=https://titan.cybernode.ai/api/validators%3F&style=flat-square)]()
+[![block](https://img.shields.io/badge/dynamic/json?color=blue&label=Block%20Height&query=%24.result.height&url=https://rpc.euler-6.cybernode.ai/index_stats&style=flat-square)]()
+[![cyberlinks](https://img.shields.io/badge/dynamic/json?color=blue&label=Cyberlinks&query=%24.result.linksCount&url=https://rpc.euler-6.cybernode.ai/index_stats&style=flat-square)]()
+[![cids](https://img.shields.io/badge/dynamic/json?color=blue&label=CIDs&query=%24.result.cidsCount&url=https://rpc.euler-6.cybernode.ai/index_stats&style=flat-square)]()
+[![agents](https://img.shields.io/badge/dynamic/json?color=blue&label=Web3%20Agents&query=%24.result.accountsCount&url=https://rpc.euler-6.cybernode.ai/index_stats&style=flat-square)]()
+[![validators](https://img.shields.io/badge/dynamic/json?label=Validators&query=%24.result.validators.length&url=https://rpc.euler-6.cybernode.ai/validators%3F&style=flat-square)]()
 
 ### Community
 
