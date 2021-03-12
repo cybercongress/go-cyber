@@ -82,12 +82,12 @@ RUN make build \
 ###############################################################################
 
 #FROM rustlang/rust:nightly as build_stage_rust
-RUN curl https://sh.rustup.rs -sSf | sh -s -- -y 
-RUN wget --quiet https://github.com/CosmWasm/cosmwasm/archive/${COSMWASM_VER}.tar.gz -P /tmp 
-RUN tar xzf /tmp/v${COSMWASM_VER}.tar.gz -C $BUILD_DIR 
-RUN cd $BUILD_DIR/wasmvm-${COSMWASM_VER}/ && make build 
-RUN cp $BUILD_DIR/wasmvm-${COSMWASM_VER}/api/libgo_cosmwasm.so /usr/lib/ 
-RUN cp $BUILD_DIR/wasmvm-${COSMWASM_VER}/api/libgo_cosmwasm.dylib /usr/lib/
+RUN curl https://sh.rustup.rs -sSf | sh -s -- -y \
+ && wget --quiet https://github.com/CosmWasm/cosmwasm/archive/${COSMWASM_VER}.tar.gz -P /tmp \
+ && tar xzf /tmp/v${COSMWASM_VER}.tar.gz -C $BUILD_DIR \
+ && cd $BUILD_DIR/wasmvm-${COSMWASM_VER}/ && make build \
+ && cp $BUILD_DIR/wasmvm-${COSMWASM_VER}/api/libgo_cosmwasm.so /usr/lib/ \
+ && cp $BUILD_DIR/wasmvm-${COSMWASM_VER}/api/libgo_cosmwasm.dylib /usr/lib/
 
 ###############################################################################
 # Create runtime cyber image
