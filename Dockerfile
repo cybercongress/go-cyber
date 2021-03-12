@@ -12,7 +12,7 @@ ENV DAEMON_RESTART_AFTER_UPGRADE=on
 ENV GAIA_HOME ${DAEMON_HOME}
 ENV DAEMON_NAME cyberd
 ENV BUILD_DIR /build
-ENV COSMWASM_VER "v0.7.2"
+ENV COSMWASM_VER "0.7.2"
 ENV PATH /usr/local/go/bin:/root/.cargo/bin:/root/.cyberd/scripts:$PATH
 
 
@@ -83,8 +83,8 @@ RUN make build \
 
 #FROM rustlang/rust:nightly as build_stage_rust
 RUN curl https://sh.rustup.rs -sSf | sh -s -- -y \
- && wget --quiet https://github.com/CosmWasm/cosmwasm/archive/${COSMWASM_VER}.tar.gz -P /tmp \
- && tar xzf /tmp/${COSMWASM_VER}.tar.gz -C $BUILD_DIR \
+ && wget --quiet https://github.com/CosmWasm/cosmwasm/archive/v${COSMWASM_VER}.tar.gz -P /tmp \
+ && tar xzf /tmp/v${COSMWASM_VER}.tar.gz -C $BUILD_DIR \
  && cd $BUILD_DIR/cosmwasm-${COSMWASM_VER}/ && make build \
  && cp $BUILD_DIR/cosmwasm-${COSMWASM_VER}/api/libgo_cosmwasm.so /usr/lib/ \
  && cp $BUILD_DIR/cosmwasm-${COSMWASM_VER}/api/libgo_cosmwasm.dylib /usr/lib/
