@@ -72,7 +72,7 @@ RUN make build \
 # Compile cyberd for darwin upgrade version
 ###############################################################################
 WORKDIR /sources
-RUN git checkout v0.1.6.3
+RUN git checkout v0.1.6.5
 RUN make build \
 && ./build/cyberd version \
 && cp  ./build/cyberd /cyberd/upgrade_manager/upgrades/darwin/bin/cyberd
