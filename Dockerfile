@@ -12,7 +12,7 @@ ENV DAEMON_RESTART_AFTER_UPGRADE=on
 ENV GAIA_HOME ${DAEMON_HOME}
 ENV DAEMON_NAME cyberd
 ENV BUILD_DIR /build
-ENV COSMWASM_VER "0.7.2"
+ENV COSMWASM_VER "v0.7.2"
 ENV PATH /usr/local/go/bin:/root/.cargo/bin:/root/.cyberd/scripts:$PATH
 
 
