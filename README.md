@@ -1,6 +1,6 @@
-# Bostrom: Superintelligence grow here
+# Bostrom: Superintelligence 🔵 grow here
 
-Special to HackAtom RU! Community Preview of Bostrom network.
+Special to [HackAtom RU](https://cyber.page/search/hackatom_ru)! Community Preview of Bostrom network.
 
 From Euler to Bostrom evolution we have:
 
@@ -9,12 +9,17 @@ From Euler to Bostrom evolution we have:
 3. Routing of Energy
 4. EntropyRank + experimental reputation
 5. Programs earn from execution fees!
-5. Cron module!
-6. VM bindings to Knowledge Graph
-7. Backlinks
-8. No documentation yet
+6. Cron module!
+7. Supercharged VM
+8. VM bindings to Knowledge Graph
+9. Backlinks
+10. No documentation yet
+
+PS: Try [cyber.page](https://cyber.page/brain) on Euler-6 network
 
 --------
+
+### Setup
 
 Chain-ID: bostromdev-1
 
@@ -24,7 +29,7 @@ Build: ```make install```
 
 Run: ```cyber start ```
 
-* default mode for now CPU but GPU also supported
+* default mode set to CPU for current testnet
 
 Bostrom (cyber) - v0.2.0-alpha1
 - RPC: [167.172.103.118:26657](167.172.103.118:26657)
@@ -67,3 +72,5 @@ Repo with cosmwasm' [bindings](https://github.com/cybercongress/cyber-cosmwasm) 
 - [#fuckgoogle](https://t.me/fuckgoogle)
 - [Cyber Russian Community](https://t.me/cyber_russian_community)
 - [HackAtom RU](https://t.me/hackAtomRU)
+
+
