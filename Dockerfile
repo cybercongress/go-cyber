@@ -3,9 +3,9 @@
 ###########################################################################################
 FROM nvidia/cuda:10.2-base as build_stage_cuda
 
-ENV GO_VERSION 1.15.10
+ENV GO_VERSION 1.16.2
 ENV GO_ARCH 'linux-amd64'
-ENV GO_BIN_SHA '4aa1267517df32f2bf1cc3d55dfc27d0c6b2c2b0989449c96dd19273ccca051d'
+ENV GO_BIN_SHA '542e936b19542e62679766194364f45141fde55169db2d8d01046555ca9eb4b8'
 ENV DAEMON_HOME /root/.cyber
 ENV DAEMON_RESTART_AFTER_UPGRADE=on
 ENV GAIA_HOME ${DAEMON_HOME}
