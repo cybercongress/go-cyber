@@ -2,16 +2,16 @@ package bandwidth
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	//"github.com/cosmos/cosmos-sdk/x/params"
-	"github.com/cybercongress/go-cyber/x/bandwidth/internal/types"
+
+	"github.com/cybercongress/go-cyber/x/bandwidth/keeper"
 )
 
 var accountsToUpdate = make([]sdk.AccAddress, 0)
 
 // user to recover and update bandwidth for accounts with changed stake
-func updateAccMaxBandwidth(ctx sdk.Context, meter types.BandwidthMeter) {
+func updateAccountMaxBandwidth(ctx sdk.Context, meter *keeper.BandwidthMeter) {
 	for _, addr := range accountsToUpdate {
-		meter.UpdateAccMaxBandwidth(ctx, addr)
+		meter.UpdateAccountMaxBandwidth(ctx, addr)
 	}
 	accountsToUpdate = make([]sdk.AccAddress, 0)
 }
@@ -36,12 +36,25 @@ func CollectAddressesWithStakeChange() func(ctx sdk.Context, from sdk.AccAddress
 // 2. For accounts with updated on current block stake adjust max bandwidth. Why not update on `onCoinsTransfer`?
 //  Because for some bound related operations, coins already added/reduced from accounts, but not added to
 //  validator\delegator pool.
-func EndBlocker(ctx sdk.Context, bk AccountBandwidthKeeper, meter types.BandwidthMeter) {
-	params := bk.GetParams(ctx)
-	if ctx.BlockHeight() != 0 && ctx.BlockHeight()%params.AdjustPricePeriod == 0 {
-		meter.AdjustPrice(ctx)
+func EndBlocker(ctx sdk.Context, bm *keeper.BandwidthMeter) {
+
+	params := bm.GetParams(ctx)
+	if ctx.BlockHeight() != 0 && uint64(ctx.BlockHeight())%params.AdjustPricePeriod == 0 {
+		bm.AdjustPrice(ctx)
 	}
-	meter.CommitBlockBandwidth(ctx)
-	meter.CommitTotalKarma(ctx)
-	updateAccMaxBandwidth(ctx, meter)
+
+	bm.CommitBlockBandwidth(ctx)
+	updateAccountMaxBandwidth(ctx, bm)
+
+	// TODO Sandbbox to remove
+	//store := ctx.KVStore(bm.StoreKey)
+	//iterator := sdk.KVStorePrefixIterator(store, types.AccountStoreKeyPrefix)
+	//defer iterator.Close()
+	//
+	//for iterator.Valid() {
+	//	var ab types.AccountBandwidth
+	//	bm.Cdc.UnmarshalBinaryBare(iterator.Value(), &ab)
+	//	fmt.Println("Acc:", ab)
+	//	iterator.Next()
+	//}
 }

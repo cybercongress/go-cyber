@@ -5,26 +5,23 @@ import (
 	"github.com/tendermint/tendermint/libs/log"
 
 	"github.com/cybercongress/go-cyber/merkle"
-	"github.com/cybercongress/go-cyber/x/link"
-	"github.com/cybercongress/go-cyber/x/rank/internal/types"
+	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
+	"github.com/cybercongress/go-cyber/x/rank/types"
 )
 
 type StateKeeper interface {
-	SetParams(sdk.Context, types.Params)
-	GetParams(sdk.Context) types.Params
-
 	Load(sdk.Context, log.Logger)
+
 	BuildSearchIndex(log.Logger) types.SearchIndex
-
-	EndBlocker(sdk.Context, log.Logger)
-
-	Search(cidNumber link.CidNumber, page, perPage int) ([]types.RankedCidNumber, int, error)
-	Top(page, perPage int) ([]types.RankedCidNumber, int, error)
-
-	GetRankValue(link.CidNumber) float64
-	GetNetworkRankHash() []byte
-
-	GetLastCidNum() link.CidNumber
-	GetMerkleTree() *merkle.Tree
 	GetIndexError() error
+
+	Search(cidNumber graphtypes.CidNumber, page, perPage uint32) ([]types.RankedCidNumber, uint32, error)
+	Backlinks(cidNumber graphtypes.CidNumber, page, perPage uint32) ([]types.RankedCidNumber, uint32, error)
+	Top(page, perPage uint32) ([]types.RankedCidNumber, uint32, error)
+
+	GetRankValue(graphtypes.CidNumber) uint64
+	GetNetworkRankHash() []byte
+	GetLastCidNum() graphtypes.CidNumber
+	GetMerkleTree() *merkle.Tree
+	GetLatestBlockNumber(ctx sdk.Context) uint64
 }

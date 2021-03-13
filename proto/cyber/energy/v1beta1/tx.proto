@@ -1,0 +1,60 @@
+syntax = "proto3";
+package cyber.energy.v1beta1;
+
+import "gogoproto/gogo.proto";
+
+import "cosmos_proto/coin.proto";
+
+option go_package = "github.com/cybercongress/go-cyber/x/energy/types";
+
+service Msg{
+    rpc CreateEnergyRoute(MsgCreateEnergyRoute) returns (MsgCreateEnergyRouteResponse);
+    rpc EditEnergyRoute(MsgEditEnergyRoute) returns (MsgEditEnergyRouteResponse);
+    rpc DeleteEnergyRoute(MsgDeleteEnergyRoute) returns (MsgDeleteEnergyRouteResponse);
+    rpc EditEnergyRouteAlias(MsgEditEnergyRouteAlias) returns (MsgEditEnergyRouteAliasResponse);
+}
+
+message MsgCreateEnergyRoute {
+    option (gogoproto.equal)           = false;
+    option (gogoproto.goproto_getters) = false;
+
+    string source      = 1 [(gogoproto.jsontag) = "source", (gogoproto.moretags) = "yaml:\"source\""];
+    string destination = 2 [(gogoproto.jsontag) = "destination", (gogoproto.moretags) = "yaml:\"destination\""];
+    string alias       = 3 [(gogoproto.jsontag) = "alias", (gogoproto.moretags) = "yaml:\"alias\""];
+}
+
+message MsgEditEnergyRoute {
+    option (gogoproto.equal)           = false;
+    option (gogoproto.goproto_getters) = false;
+
+    string source = 1 [(gogoproto.jsontag) = "source", (gogoproto.moretags) = "yaml:\"source\""];
+    string destination = 2 [(gogoproto.jsontag) = "destination", (gogoproto.moretags) = "yaml:\"destination\""];
+    cosmos.base.v1beta1.Coin value = 3 [
+           (gogoproto.jsontag) = "value",
+           (gogoproto.moretags) = "yaml:\"value\"",
+           (gogoproto.nullable) = false,
+           (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.Coin"
+   ];
+}
+
+message MsgDeleteEnergyRoute {
+    option (gogoproto.equal)           = false;
+    option (gogoproto.goproto_getters) = false;
+
+    string source = 1 [(gogoproto.jsontag) = "source", (gogoproto.moretags) = "yaml:\"source\""];
+    string destination = 2 [(gogoproto.jsontag) = "destination", (gogoproto.moretags) = "yaml:\"destination\""];
+}
+
+message MsgEditEnergyRouteAlias {
+    option (gogoproto.equal)           = false;
+    option (gogoproto.goproto_getters) = false;
+
+    string source = 1 [(gogoproto.jsontag) = "source", (gogoproto.moretags) = "yaml:\"source\""];
+    string destination = 2 [(gogoproto.jsontag) = "destination", (gogoproto.moretags) = "yaml:\"destination\""];
+    string alias = 3 [(gogoproto.jsontag) = "alias", (gogoproto.moretags) = "yaml:\"alias\""];
+}
+
+message MsgCreateEnergyRouteResponse {}
+message MsgEditEnergyRouteResponse {}
+message MsgDeleteEnergyRouteResponse {}
+message MsgEditEnergyRouteAliasResponse {}

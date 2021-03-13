@@ -8,5 +8,8 @@ void calculate_rank(
     uint64_t *outLinksUsers,                                  /*all outgoing links from all users*/
     double *rank,                                             /* array index - cid index*/
     double dampingFactor,                                     /* value of damping factor*/
-    double tolerance                                          /* value of needed tolerance */
+    double tolerance,                                          /* value of needed tolerance */
+    double *entropy,
+    double *luminosity,
+    double *karma
 );

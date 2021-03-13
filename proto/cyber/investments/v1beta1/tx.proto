@@ -1,0 +1,71 @@
+syntax = "proto3";
+package cyber.investments.v1beta1;
+
+import "gogoproto/gogo.proto";
+
+import "cosmos_proto/coin.proto";
+
+option go_package = "github.com/cybercongress/go-cyber/x/investments/types";
+
+service Msg{
+    rpc Invest(MsgInvest) returns (MsgInvestResponse);
+    rpc CreateResource(MsgCreateResource) returns (MsgCreateResourceResponse);
+    rpc RedeemResource(MsgRedeemResource) returns (MsgRedeemResourceResponse);
+}
+
+message MsgInvest {
+    option (gogoproto.equal)           = false;
+    option (gogoproto.goproto_getters) = false;
+
+    string investor  = 1 [(gogoproto.jsontag) = "investor", (gogoproto.moretags) = "yaml:\"investor\""];
+    cosmos.base.v1beta1.Coin amount = 2 [
+                                           (gogoproto.jsontag) = "amount",
+                                           (gogoproto.moretags) = "yaml:\"amount\"",
+                                           (gogoproto.nullable) = false,
+                                           (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.Coin"
+                                           ];
+    string resource  = 3 [(gogoproto.jsontag) = "resource", (gogoproto.moretags) = "yaml:\"resource\""];
+    int64 end_time   = 4 [(gogoproto.jsontag) = "end_time", (gogoproto.moretags) = "yaml:\"end_time\""];
+}
+
+message MsgInvestResponse {}
+
+message MsgCreateResource {
+    option (gogoproto.equal)           = false;
+    option (gogoproto.goproto_getters) = false;
+
+    string sender  = 1 [
+        (gogoproto.jsontag) = "sender",
+        (gogoproto.moretags) = "yaml:\"sender\""
+    ];
+    cosmos.base.v1beta1.Coin resource = 2 [
+        (gogoproto.jsontag) = "resource",
+        (gogoproto.moretags) = "yaml:\"resource\"",
+        (gogoproto.nullable) = false,
+        (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.Coin"
+    ];
+    string receiver  = 3 [
+        (gogoproto.jsontag) = "receiver",
+        (gogoproto.moretags) = "yaml:\"receiver\""
+    ];
+}
+
+message MsgCreateResourceResponse {}
+
+message MsgRedeemResource {
+    option (gogoproto.equal)           = false;
+    option (gogoproto.goproto_getters) = false;
+
+    string sender  = 1 [
+        (gogoproto.jsontag) = "sender",
+        (gogoproto.moretags) = "yaml:\"sender\""
+    ];
+    cosmos.base.v1beta1.Coin resource = 2 [
+        (gogoproto.jsontag) = "resource",
+        (gogoproto.moretags) = "yaml:\"resource\"",
+        (gogoproto.nullable) = false,
+        (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.Coin"
+    ];
+}
+
+message MsgRedeemResourceResponse {}

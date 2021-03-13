@@ -1,0 +1,13 @@
+syntax = "proto3";
+package cyber.energy.v1beta1;
+
+import "gogoproto/gogo.proto";
+import "cyber/energy/v1beta1/params.proto";
+import "cyber/energy/v1beta1/energy.proto";
+
+option go_package = "github.com/cybercongress/go-cyber/x/energy/types";
+
+message GenesisState {
+    cyber.energy.v1beta1.Params params = 1 [(gogoproto.nullable) = false];
+    repeated cyber.energy.v1beta1.Route routes = 2 [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "Routes"];
+}

@@ -1,0 +1,22 @@
+syntax = "proto3";
+package cyber.bandwidth.v1beta1;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/cybercongress/go-cyber/x/bandwidth/types";
+
+message AccountBandwidth {
+    string address            = 1;
+    uint64 remained_value     = 2;
+    uint64 last_updated_block = 3;
+    uint64 max_value          = 4;
+}
+
+message Price {
+    string price = 1 [
+         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+         (gogoproto.jsontag) = "price",
+         (gogoproto.nullable)   = false,
+         (gogoproto.moretags) = "yaml:\"price\""
+     ];
+}

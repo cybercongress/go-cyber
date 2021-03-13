@@ -1,0 +1,63 @@
+syntax = "proto3";
+package cyber.cron.v1beta1;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cyber/cron/v1beta1/params.proto";
+import "cyber/cron/v1beta1/cron.proto";
+
+option go_package = "github.com/cybercongress/go-cyber/x/cron/types";
+
+service Query {
+    rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+        option (google.api.http).get = "/cyber/cron/v1beta1/cron/params";
+    }
+
+    rpc Job(QueryJobParamsRequest) returns (QueryJobResponse) {
+        option (google.api.http).get = "/cyber/cron/v1beta1/cron/job";
+    }
+
+    rpc JobStats(QueryJobParamsRequest) returns (QueryJobStatsResponse) {
+        option (google.api.http).get = "/cyber/cron/v1beta1/cron/job_stats";
+    }
+
+    rpc Jobs(QueryJobsRequest) returns (QueryJobsResponse) {
+        option (google.api.http).get = "/cyber/cron/v1beta1/cron/jobs";
+    }
+
+    rpc JobsStats(QueryJobsStatsRequest) returns (QueryJobsStatsResponse) {
+        option (google.api.http).get = "/cyber/cron/v1beta1/cron/jobs_stats";
+    }
+}
+
+message QueryParamsRequest {}
+
+message QueryParamsResponse{
+    cyber.cron.v1beta1.Params params = 1 [(gogoproto.nullable) = false ];
+}
+
+message QueryJobParamsRequest {
+    string creator  = 1;
+    string contract = 2;
+    string label    = 3;
+}
+
+message QueryJobResponse {
+    cyber.cron.v1beta1.Job job = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryJobStatsResponse {
+    cyber.cron.v1beta1.JobStats job_stats = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryJobsRequest{}
+
+message QueryJobsResponse {
+    repeated cyber.cron.v1beta1.Job jobs = 1 [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "Jobs"];
+}
+
+message QueryJobsStatsRequest{}
+
+message QueryJobsStatsResponse{
+    repeated cyber.cron.v1beta1.JobStats jobs_stats = 1 [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "JobsStats"];
+}

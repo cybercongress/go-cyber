@@ -1,19 +1,22 @@
 package cli
 
 import (
-	"fmt"
+	//"fmt"
+	"context"
+	"strconv"
 
-	"github.com/cybercongress/go-cyber/x/rank/internal/types"
-	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/spf13/cobra"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/client/context"
-	"github.com/cosmos/cosmos-sdk/codec"
+	//"github.com/cosmos/cosmos-sdk/client/context"
+	"github.com/cosmos/cosmos-sdk/client/flags"
+	//"github.com/cosmos/cosmos-sdk/codec"
+	//sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/spf13/cobra"
+
+	"github.com/cybercongress/go-cyber/types/query"
+	"github.com/cybercongress/go-cyber/x/rank/types"
 )
 
-// GetQueryCmd returns the cli query commands for the minting module.
-func GetQueryCmd(cdc *codec.Codec) *cobra.Command {
+func GetQueryCmd() *cobra.Command {
 	rankingQueryCmd := &cobra.Command{
 		Use:                        types.ModuleName,
 		Short:                      "Querying commands for the rank module",
@@ -23,117 +26,269 @@ func GetQueryCmd(cdc *codec.Codec) *cobra.Command {
 	}
 
 	rankingQueryCmd.AddCommand(
-		flags.GetCommands(
-			GetCmdQueryParams(cdc),
-			GetCmdQueryCalculationWindow(cdc),
-			GetCmdQueryDampingFactor(cdc),
-			GetCmdQueryTolerance(cdc),
-		)...,
+		GetCmdQueryParams(),
+		GetCmdQueryRank(),
+		GetCmdQuerySearch(),
+		GetCmdQueryBacklinks(),
+		GetCmdQueryTop(),
+		GetCmdQueryIsLinkExist(),
+		GetCmdQueryIsAnyLinkExist(),
 	)
 
 	return rankingQueryCmd
 }
 
-// GetCmdQueryParams implements a command to return the current minting
-// parameters.
-func GetCmdQueryParams(cdc *codec.Codec) *cobra.Command {
-	return &cobra.Command{
+
+func GetCmdQueryParams() *cobra.Command {
+	cmd := &cobra.Command{
 		Use:   "params",
 		Short: "Query the current rank parameters",
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cliCtx := context.NewCLIContext().WithCodec(cdc)
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+			queryClient := types.NewQueryClient(clientCtx)
 
-			route := fmt.Sprintf("custom/%s/%s", types.QuerierRoute, types.QueryParameters)
-			res, _, err := cliCtx.QueryWithData(route, nil)
+			res, err := queryClient.Params(
+				context.Background(),
+				&types.QueryParamsRequest{},
+			)
 			if err != nil {
 				return err
 			}
 
-			var params types.Params
-			if err := cdc.UnmarshalJSON(res, &params); err != nil {
-				return err
-			}
-
-			return cliCtx.PrintOutput(params)
+			return clientCtx.PrintProto(res)
 		},
 	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
 }
 
-// GetCmdQueryCalculationWindow implements a command to return the current rank
-// calculation window.
-func GetCmdQueryCalculationWindow(cdc *codec.Codec) *cobra.Command {
-	return &cobra.Command{
-		Use:   "window",
-		Short: "Query the current rank calculation window",
-		Args:  cobra.NoArgs,
+func GetCmdQueryRank() *cobra.Command{
+	cmd := &cobra.Command{
+		Use:   "rank [cid]",
+		Short: "Query the current rank of given CID",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cliCtx := context.NewCLIContext().WithCodec(cdc)
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+			queryClient := types.NewQueryClient(clientCtx)
 
-			route := fmt.Sprintf("custom/%s/%s", types.QuerierRoute, types.QueryCalculationWindow)
-			res, _, err := cliCtx.QueryWithData(route, nil)
+			res, err := queryClient.Rank(
+				context.Background(),
+				&types.QueryRankRequest{Cid: args[0]},
+			)
 			if err != nil {
 				return err
 			}
 
-			var window sdk.Int
-			if err := cdc.UnmarshalJSON(res, &window); err != nil {
-				return err
-			}
-
-			return cliCtx.PrintOutput(window)
+			return clientCtx.PrintProto(res)
 		},
 	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
 }
 
-// GetCmdQueryDampingFactor implements a command to return the current rank
-// damping factor value.
-func GetCmdQueryDampingFactor(cdc *codec.Codec) *cobra.Command {
-	return &cobra.Command{
-		Use:   "damping-factor",
-		Short: "Query the current rank damping factor value",
-		Args:  cobra.NoArgs,
+func GetCmdQuerySearch() *cobra.Command{
+	cmd := &cobra.Command{
+		Use:   "search [cid] [page] [limit]",
+		Short: "Query search of given CID",
+		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cliCtx := context.NewCLIContext().WithCodec(cdc)
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+			queryClient := types.NewQueryClient(clientCtx)
 
-			route := fmt.Sprintf("custom/%s/%s", types.QuerierRoute, types.QueryDampingFactor)
-			res, _, err := cliCtx.QueryWithData(route, nil)
+			var page, limit uint32
+			if len(args) == 3 {
+				p, err := strconv.ParseUint(args[1], 10, 32)
+				if err != nil {
+					return err
+				}
+				page = uint32(p)
+				l, err := strconv.ParseUint(args[2], 10, 32)
+				if err != nil {
+					return err
+				}
+				limit = uint32(l)
+			} else {
+				page = 0
+				limit = 10
+			}
+
+			res, err := queryClient.Search(
+				context.Background(),
+				&types.QuerySearchRequest{Cid: args[0], Pagination: &query.PageRequest{Page: page, PerPage: limit}},
+			)
 			if err != nil {
 				return err
 			}
 
-			var factor sdk.Dec
-			if err := cdc.UnmarshalJSON(res, &factor); err != nil {
-				return err
-			}
-
-			return cliCtx.PrintOutput(factor)
+			return clientCtx.PrintProto(res)
 		},
 	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
 }
 
-// GetCmdQueryDampingFactor implements a command to return the current rank
-// damping factor value.
-func GetCmdQueryTolerance(cdc *codec.Codec) *cobra.Command {
-	return &cobra.Command{
-		Use:   "tolerance",
-		Short: "Query the current rank tolerance",
-		Args:  cobra.NoArgs,
+func GetCmdQueryBacklinks() *cobra.Command{
+	cmd := &cobra.Command{
+		Use:   "backlinks [cid] [page] [limit]",
+		Short: "Query backlinks of given CID",
+		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cliCtx := context.NewCLIContext().WithCodec(cdc)
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+			queryClient := types.NewQueryClient(clientCtx)
 
-			route := fmt.Sprintf("custom/%s/%s", types.QuerierRoute, types.QueryTolerance)
-			res, _, err := cliCtx.QueryWithData(route, nil)
+			var page, limit uint32
+			if len(args) == 3 {
+				p, err := strconv.ParseUint(args[1], 10, 32)
+				if err != nil {
+					return err
+				}
+				page = uint32(p)
+				l, err := strconv.ParseUint(args[2], 10, 32)
+				if err != nil {
+					return err
+				}
+				limit = uint32(l)
+			} else {
+				page = 0
+				limit = 10
+			}
+
+			res, err := queryClient.Backlinks(
+				context.Background(),
+				&types.QuerySearchRequest{Cid: args[0], Pagination: &query.PageRequest{Page: page, PerPage: limit}},
+			)
 			if err != nil {
 				return err
 			}
 
-			var tolerance sdk.Dec
-			if err := cdc.UnmarshalJSON(res, &tolerance); err != nil {
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func GetCmdQueryTop() *cobra.Command{
+	cmd := &cobra.Command{
+		Use:   "top",
+		Short: "Query top",
+		Args:  cobra.MinimumNArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+			queryClient := types.NewQueryClient(clientCtx)
+
+			var page, limit uint32
+			if len(args) == 2 {
+				p, err := strconv.ParseUint(args[1], 10, 32)
+				if err != nil {
+					return err
+				}
+				page = uint32(p)
+				l, err := strconv.ParseUint(args[2], 10, 32)
+				if err != nil {
+					return err
+				}
+				limit = uint32(l)
+			} else {
+				page = 0
+				limit = 10
+			}
+
+			res, err := queryClient.Top(
+				context.Background(),
+				&query.PageRequest{Page: page, PerPage: limit},
+			)
+			if err != nil {
 				return err
 			}
 
-			return cliCtx.PrintOutput(tolerance)
+			return clientCtx.PrintProto(res)
 		},
 	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func GetCmdQueryIsLinkExist() *cobra.Command{
+	cmd := &cobra.Command{
+		Use:   "is-exist [from] [to] [account]",
+		Short: "Query is link exist between cids for given account",
+		Args:  cobra.ExactArgs(3),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+			queryClient := types.NewQueryClient(clientCtx)
+
+			res, err := queryClient.IsLinkExist(
+				context.Background(),
+				&types.QueryIsLinkExistRequest{args[0], args[1], args[2]},
+			)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func GetCmdQueryIsAnyLinkExist() *cobra.Command{
+	cmd := &cobra.Command{
+		Use:   "is-exist-any [from] [to]",
+		Short: "Query is any link exist between cids",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+			queryClient := types.NewQueryClient(clientCtx)
+
+			res, err := queryClient.IsAnyLinkExist(
+				context.Background(),
+				&types.QueryIsAnyLinkExistRequest{args[0], args[1]},
+			)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
 }

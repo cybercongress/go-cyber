@@ -1,0 +1,115 @@
+syntax = "proto3";
+package cyber.cron.v1beta1;
+
+import "gogoproto/gogo.proto";
+
+import "cyber/cron/v1beta1/cron.proto";
+import "cosmos_proto/coin.proto";
+
+option go_package = "github.com/cybercongress/go-cyber/x/cron/types";
+
+service Msg{
+    rpc CronAddJob(MsgCronAddJob) returns (MsgCronAddJobResponse);
+    rpc CronRemoveJob(MsgCronRemoveJob) returns (MsgCronRemoveJobResponse);
+    rpc CronChangeJobCID(MsgCronChangeJobCID) returns (MsgCronChangeJobCIDResponse);
+    rpc CronChangeJobLabel(MsgCronChangeJobLabel) returns (MsgCronChangeJobLabelResponse);
+    rpc CronChangeJobCallData(MsgCronChangeJobCallData) returns (MsgCronChangeJobCallDataResponse);
+    rpc CronChangeJobGasPrice(MsgCronChangeJobGasPrice) returns (MsgCronChangeJobGasPriceResponse);
+    rpc CronChangeJobPeriod(MsgCronChangeJobPeriod) returns (MsgCronChangeJobPeriodResponse);
+    rpc CronChangeJobBlock(MsgCronChangeJobBlock) returns (MsgCronChangeJobBlockResponse);
+}
+
+message MsgCronAddJob {
+    option (gogoproto.equal)           = false;
+    option (gogoproto.goproto_getters) = false;
+
+    string creator  = 1 [(gogoproto.jsontag) = "creator", (gogoproto.moretags) = "yaml:\"creator\""];
+    string contract = 2 [(gogoproto.jsontag) = "contract", (gogoproto.moretags) = "yaml:\"contract\""];
+    Trigger trigger = 3 [(gogoproto.jsontag) = "trigger", (gogoproto.moretags) = "yaml:\"trigger\""];
+    Load load       = 4 [(gogoproto.jsontag) = "load", (gogoproto.moretags) = "yaml:\"load\""];
+    string label    = 5 [(gogoproto.jsontag) = "label", (gogoproto.moretags) = "yaml:\"label\""];
+    string cid      = 6 [(gogoproto.jsontag) = "cid", (gogoproto.moretags) = "yaml:\"cid\""];
+}
+
+message MsgCronRemoveJob {
+    option (gogoproto.equal)           = false;
+    option (gogoproto.goproto_getters) = false;
+
+    string creator  = 1 [(gogoproto.jsontag) = "creator", (gogoproto.moretags) = "yaml:\"creator\""];
+    string contract = 2 [(gogoproto.jsontag) = "contract", (gogoproto.moretags) = "yaml:\"contract\""];
+    string label    = 3 [(gogoproto.jsontag) = "label", (gogoproto.moretags) = "yaml:\"label\""];
+}
+
+message MsgCronChangeJobCID {
+    option (gogoproto.equal)           = false;
+    option (gogoproto.goproto_getters) = false;
+
+    string creator  = 1 [(gogoproto.jsontag) = "creator", (gogoproto.moretags) = "yaml:\"creator\""];
+    string contract = 2 [(gogoproto.jsontag) = "contract", (gogoproto.moretags) = "yaml:\"contract\""];
+    string label    = 3 [(gogoproto.jsontag) = "label", (gogoproto.moretags) = "yaml:\"label\""];
+    string cid      = 4 [(gogoproto.jsontag) = "cid", (gogoproto.moretags) = "yaml:\"cid\""];
+}
+
+message MsgCronChangeJobLabel {
+    option (gogoproto.equal)           = false;
+    option (gogoproto.goproto_getters) = false;
+
+    string creator   = 1 [(gogoproto.jsontag) = "creator", (gogoproto.moretags) = "yaml:\"creator\""];
+    string contract  = 2 [(gogoproto.jsontag) = "contract", (gogoproto.moretags) = "yaml:\"contract\""];
+    string label     = 3 [(gogoproto.jsontag) = "label", (gogoproto.moretags) = "yaml:\"label\""];
+    string new_label = 4 [(gogoproto.jsontag) = "new_label", (gogoproto.moretags) = "yaml:\"new_label\""];
+}
+
+message MsgCronChangeJobCallData {
+    option (gogoproto.equal)           = false;
+    option (gogoproto.goproto_getters) = false;
+
+    string creator   = 1 [(gogoproto.jsontag) = "creator", (gogoproto.moretags) = "yaml:\"creator\""];
+    string contract  = 2 [(gogoproto.jsontag) = "contract", (gogoproto.moretags) = "yaml:\"contract\""];
+    string label     = 3 [(gogoproto.jsontag) = "label", (gogoproto.moretags) = "yaml:\"label\""];
+    string call_data = 4 [(gogoproto.jsontag) = "call_data", (gogoproto.moretags) = "yaml:\"call_data\""];
+}
+
+message MsgCronChangeJobGasPrice {
+    option (gogoproto.equal)           = false;
+    option (gogoproto.goproto_getters) = false;
+
+    string creator   = 1 [(gogoproto.jsontag) = "creator", (gogoproto.moretags) = "yaml:\"creator\""];
+    string contract  = 2 [(gogoproto.jsontag) = "contract", (gogoproto.moretags) = "yaml:\"contract\""];
+    string label     = 3 [(gogoproto.jsontag) = "label", (gogoproto.moretags) = "yaml:\"label\""];
+    cosmos.base.v1beta1.Coin gas_price = 4 [
+                                           (gogoproto.jsontag) = "gas_price",
+                                           (gogoproto.moretags) = "yaml:\"gas_price\"",
+                                           (gogoproto.nullable) = false,
+                                           (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.Coin"
+                                           ];
+}
+
+message MsgCronChangeJobPeriod {
+    option (gogoproto.equal)           = false;
+    option (gogoproto.goproto_getters) = false;
+
+    string creator   = 1 [(gogoproto.jsontag) = "creator", (gogoproto.moretags) = "yaml:\"creator\""];
+    string contract  = 2 [(gogoproto.jsontag) = "contract", (gogoproto.moretags) = "yaml:\"contract\""];
+    string label     = 3 [(gogoproto.jsontag) = "label", (gogoproto.moretags) = "yaml:\"label\""];
+    uint64 period    = 4 [(gogoproto.jsontag) = "period", (gogoproto.moretags) = "yaml:\"period\""];
+}
+
+message MsgCronChangeJobBlock {
+    option (gogoproto.equal)           = false;
+    option (gogoproto.goproto_getters) = false;
+
+    string creator   = 1 [(gogoproto.jsontag) = "creator", (gogoproto.moretags) = "yaml:\"creator\""];
+    string contract  = 2 [(gogoproto.jsontag) = "contract", (gogoproto.moretags) = "yaml:\"contract\""];
+    string label     = 3 [(gogoproto.jsontag) = "label", (gogoproto.moretags) = "yaml:\"label\""];
+    uint64 block     = 4 [(gogoproto.jsontag) = "block", (gogoproto.moretags) = "yaml:\"block\""];
+}
+
+message MsgCronAddJobResponse {}
+message MsgCronRemoveJobResponse {}
+message MsgCronChangeJobCIDResponse {}
+message MsgCronChangeJobLabelResponse {}
+message MsgCronChangeJobCallDataResponse {}
+message MsgCronChangeJobGasPriceResponse {}
+message MsgCronChangeJobPeriodResponse {}
+message MsgCronChangeJobBlockResponse {}

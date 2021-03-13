@@ -1,0 +1,64 @@
+syntax = "proto3";
+package cyber.bandwidth.v1beta1;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos_proto/coin.proto";
+import "cyber/bandwidth/v1beta1/params.proto";
+import "cyber/bandwidth/v1beta1/bandwidth.proto";
+
+option go_package = "github.com/cybercongress/go-cyber/x/bandwidth/types";
+
+service Query {
+    rpc Load(QueryLoadRequest) returns (QueryLoadResponse) {
+        option (google.api.http).get = "/cyber/bandwidth/v1beta1/bandwidth/load";
+    }
+
+    rpc Price(QueryPriceRequest) returns (QueryPriceResponse) {
+        option (google.api.http).get = "/cyber/bandwidth/v1beta1/bandwidth/price";
+    }
+
+    rpc Account(QueryAccountRequest) returns (QueryAccountResponse) {
+        option (google.api.http).get = "/cyber/bandwidth/v1beta1/bandwidth/account/{address}";
+    }
+
+    rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+        option (google.api.http).get = "/cyber/bandwidth/v1beta1/bandwidth/params";
+    }
+}
+
+message QueryLoadRequest {}
+
+message QueryLoadResponse {
+    cosmos.base.v1beta1.DecProto load = 1 [
+        (gogoproto.jsontag) = "load",
+        (gogoproto.moretags) = "yaml:\"load\"",
+        (gogoproto.nullable) = false,
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.DecProto"
+    ];
+}
+
+message QueryPriceRequest {}
+
+message QueryPriceResponse {
+    cosmos.base.v1beta1.DecProto price = 1 [
+        (gogoproto.jsontag) = "price",
+        (gogoproto.moretags) = "yaml:\"price\"",
+        (gogoproto.nullable) = false,
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.DecProto"
+    ];
+}
+
+message QueryAccountRequest {
+    string address = 1;
+}
+
+message QueryAccountResponse {
+    cyber.bandwidth.v1beta1.AccountBandwidth account_bandwidth = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryParamsRequest {}
+
+message QueryParamsResponse{
+    cyber.bandwidth.v1beta1.Params params = 1 [(gogoproto.nullable) = false ];
+}

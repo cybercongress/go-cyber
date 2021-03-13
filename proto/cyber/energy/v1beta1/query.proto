@@ -1,0 +1,72 @@
+syntax = "proto3";
+package cyber.energy.v1beta1;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cyber/energy/v1beta1/energy.proto";
+import "cyber/energy/v1beta1/params.proto";
+import "cosmos_proto/coin.proto";
+
+option go_package = "github.com/cybercongress/go-cyber/x/energy/types";
+
+service Query {
+    rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+        option (google.api.http).get = "/cyber/energy/v1beta1/energy/params";
+    }
+    rpc SourceRoutes(QuerySourceRequest) returns (QueryRoutesResponse) {
+        option (google.api.http).get = "/cyber/energy/v1beta1/energy/source_routes";
+    }
+    rpc DestinationRoutes (QueryDestinationRequest) returns (QueryRoutesResponse) {
+        option (google.api.http).get = "/cyber/energy/v1beta1/energy/destination_routes";
+    }
+    rpc DestinationRoutedEnergy (QueryDestinationRequest) returns (QueryRoutedEnergyResponse) {
+        option (google.api.http).get = "/cyber/energy/v1beta1/energy/destination_routed_energy";
+    }
+    rpc SourceRoutedEnergy (QuerySourceRequest) returns (QueryRoutedEnergyResponse) {
+        option (google.api.http).get = "/cyber/energy/v1beta1/energy/source_routed_energy";
+    }
+    rpc Route (QueryRouteRequest) returns (QueryRouteResponse) {
+        option (google.api.http).get = "/cyber/energy/v1beta1/energy/route";
+    }
+    rpc Routes(QueryRoutesRequest) returns (QueryRoutesResponse) {
+        option (google.api.http).get = "/cyber/energy/v1beta1/energy/routes";
+    }
+}
+
+message QueryParamsRequest {}
+
+message QueryParamsResponse{
+    cyber.energy.v1beta1.Params params = 1 [(gogoproto.nullable) = false ];
+}
+
+message QuerySourceRequest {
+    string source = 1;
+}
+
+message QueryDestinationRequest {
+    string destination = 1;
+}
+
+message QueryRouteRequest {
+    string source = 1;
+    string destination = 2;
+}
+
+message QueryRoutesRequest {}
+
+message QueryRouteResponse {
+    cyber.energy.v1beta1.Route route = 1;
+}
+
+message QueryRoutesResponse {
+    repeated cyber.energy.v1beta1.Route routes = 1 [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "Routes"];
+}
+
+message QueryRoutedEnergyResponse {
+    repeated cosmos.base.v1beta1.Coin value = 1 [
+        (gogoproto.jsontag) = "value",
+        (gogoproto.moretags) = "yaml:\"value\"",
+        (gogoproto.nullable) = false,
+        (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+    ];
+}

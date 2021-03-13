@@ -2,8 +2,13 @@ package rank
 
 import (
 	"encoding/json"
+	"fmt"
+	"context"
+	"github.com/cosmos/cosmos-sdk/client"
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
+	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 
-	"github.com/cosmos/cosmos-sdk/client/context"
+	//"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
@@ -11,9 +16,11 @@ import (
 	"github.com/spf13/cobra"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/cybercongress/go-cyber/x/rank/client/rest"
 	"github.com/cybercongress/go-cyber/x/rank/client/cli"
-	"github.com/cybercongress/go-cyber/x/rank/internal/keeper"
+	"github.com/cybercongress/go-cyber/x/rank/client/rest"
+
+	"github.com/cybercongress/go-cyber/x/rank/keeper"
+	"github.com/cybercongress/go-cyber/x/rank/types"
 )
 
 // type check to ensure the interface is properly implemented
@@ -22,85 +29,114 @@ var (
 	_ module.AppModuleBasic = AppModuleBasic{}
 )
 
+// Module init related flags
+const (
+	FlagComputeGPU = "compute-gpu"
+	FlagSearchAPI  = "search-api"
+)
+
 // app module Basics object
-type AppModuleBasic struct{}
+type AppModuleBasic struct{
+	cdc codec.Marshaler
+}
 
 func (AppModuleBasic) Name() string {
-	return ModuleName
+	return types.ModuleName
 }
 
-func (AppModuleBasic) RegisterCodec(cdc *codec.Codec) {}
+func (AppModuleBasic) RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {}
 
-func (AppModuleBasic) DefaultGenesis() json.RawMessage {
-	return ModuleCdc.MustMarshalJSON(DefaultGenesisState())
+func (AppModuleBasic) DefaultGenesis(cdc codec.JSONMarshaler) json.RawMessage {
+	return cdc.MustMarshalJSON(types.DefaultGenesisState())
 }
 
-// Validation check of the Genesis
-func (AppModuleBasic) ValidateGenesis(bz json.RawMessage) error {
-	var data GenesisState
-	err := ModuleCdc.UnmarshalJSON(bz, &data)
-	if err != nil {
-		return err
+func (AppModuleBasic) ValidateGenesis(cdc codec.JSONMarshaler, _ client.TxEncodingConfig, bz json.RawMessage) error {
+	var data types.GenesisState
+	if err := cdc.UnmarshalJSON(bz, &data); err != nil {
+		return fmt.Errorf("failed to unmarshal %s genesis state: %w", types.ModuleName, err)
 	}
-	return ValidateGenesis(data)
+	return types.ValidateGenesis(&data)
 }
 
-// register rest routes
-func (AppModuleBasic) RegisterRESTRoutes(ctx context.CLIContext, rtr *mux.Router) {
-	rest.RegisterRoutes(ctx, rtr)
+func (AppModuleBasic) RegisterRESTRoutes(clientCtx client.Context, rtr *mux.Router) {
+	rest.RegisterRoutes(clientCtx, rtr)
 }
 
-// get the root tx command of this module
-func (AppModuleBasic) GetTxCmd(_ *codec.Codec) *cobra.Command { return nil }
-
-// get the root query command of this module
-func (AppModuleBasic) GetQueryCmd(cdc *codec.Codec) *cobra.Command {
-	return cli.GetQueryCmd(cdc)
+func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *runtime.ServeMux) {
+	_ = types.RegisterQueryHandlerClient(context.Background(), mux, types.NewQueryClient(clientCtx))
 }
+
+// GetQueryCmd returns the root tx command for the posts module.
+func (AppModuleBasic) GetTxCmd() *cobra.Command {
+	return nil
+}
+
+// GetTxCmd returns the root query command for the posts module.
+func (AppModuleBasic) GetQueryCmd() *cobra.Command {
+	return cli.GetQueryCmd()
+}
+
+func (AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegistry) {}
 
 type AppModule struct {
 	AppModuleBasic
-	RankKeeper StateKeeper
+	rk *keeper.StateKeeper
 }
 
-// NewAppModule creates a new AppModule Object
-func NewAppModule(rankKeeper StateKeeper) AppModule {
+func (am AppModule) RegisterServices(cfg module.Configurator) {
+	types.RegisterQueryServer(cfg.QueryServer(), am.rk)
+}
+
+func NewAppModule(rankKeeper *keeper.StateKeeper) AppModule {
 	return AppModule{
 		AppModuleBasic: AppModuleBasic{},
-		RankKeeper:     rankKeeper,
+		rk:             rankKeeper,
 	}
 }
 
-func (am AppModule) RegisterInvariants(ir sdk.InvariantRegistry) {
-	keeper.RegisterInvariants(ir, am.RankKeeper)
+func AddModuleInitFlags(startCmd *cobra.Command) {
+	startCmd.Flags().Bool(FlagComputeGPU, false, "Compute on GPU")
+	startCmd.Flags().Bool(FlagSearchAPI, true, "Run search API")
 }
 
-func (am AppModule) Route() string { return "" }
-
-func (am AppModule) NewHandler() sdk.Handler { return nil }
-
-func (am AppModule) QuerierRoute() string    {
-	return QuerierRoute
+func (AppModule) Name() string {
+	return types.ModuleName
 }
 
-func (am AppModule) NewQuerierHandler() sdk.Querier {
-	return NewQuerier(am.RankKeeper)
+func (am AppModule) RegisterInvariants(_ sdk.InvariantRegistry) {}
+
+func (am AppModule) Route() sdk.Route {
+	return sdk.Route{}
 }
 
-func (am AppModule) InitGenesis(ctx sdk.Context, data json.RawMessage) []abci.ValidatorUpdate {
-	var genesisState GenesisState
-	ModuleCdc.MustUnmarshalJSON(data, &genesisState)
-	InitGenesis(ctx, am.RankKeeper, genesisState)
+func (am AppModule) NewHandler() sdk.Handler {
+	return nil
+}
+
+func (am AppModule) QuerierRoute() string {
+	return types.QuerierRoute
+}
+
+func (am AppModule) LegacyQuerierHandler(legacyQuerierCdc *codec.LegacyAmino) sdk.Querier {
+	return keeper.NewQuerier(am.rk, legacyQuerierCdc)
+}
+
+func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONMarshaler, data json.RawMessage) []abci.ValidatorUpdate {
+	var genesisState types.GenesisState
+	cdc.MustUnmarshalJSON(data, &genesisState)
+
+	keeper.InitGenesis(ctx, *am.rk, genesisState)
 	return []abci.ValidatorUpdate{}
 }
 
-func (am AppModule) ExportGenesis(ctx sdk.Context) json.RawMessage {
-	gs := ExportGenesis(ctx, am.RankKeeper)
-	return ModuleCdc.MustMarshalJSON(gs)
+func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONMarshaler) json.RawMessage {
+	gs := keeper.ExportGenesis(ctx, *am.rk)
+	return cdc.MustMarshalJSON(gs)
 }
 
 func (am AppModule) BeginBlock(_ sdk.Context, _ abci.RequestBeginBlock) {}
 
-func (am AppModule) EndBlock(_ sdk.Context, _ abci.RequestEndBlock) []abci.ValidatorUpdate {
+func (am AppModule) EndBlock(ctx sdk.Context, _ abci.RequestEndBlock) []abci.ValidatorUpdate {
+	EndBlocker(ctx, am.rk)
 	return []abci.ValidatorUpdate{}
 }

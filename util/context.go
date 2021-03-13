@@ -3,11 +3,11 @@ package util
 import (
 	"github.com/cosmos/cosmos-sdk/store"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/tendermint/tendermint/abci/types"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	"github.com/tendermint/tm-db"
 )
 
-func NewContextWithMSVersion(db db.DB, version int64, keys ...*sdk.KVStoreKey) (sdk.Context, error) {
+func NewContextWithMSVersion(db db.DB, version int64, keys map[string]*sdk.KVStoreKey) (sdk.Context, error) {
 
 	ms := store.NewCommitMultiStore(db)
 
@@ -21,5 +21,5 @@ func NewContextWithMSVersion(db db.DB, version int64, keys ...*sdk.KVStoreKey) (
 		return sdk.Context{}, err
 	}
 
-	return sdk.NewContext(ms, types.Header{Height: version}, false, nil), nil
+	return sdk.NewContext(ms, tmproto.Header{Height: version}, false, nil), nil
 }

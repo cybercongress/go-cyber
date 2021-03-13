@@ -2,16 +2,23 @@ package bandwidth
 
 import (
 	"encoding/json"
+	"fmt"
 
+	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
+	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	"github.com/gorilla/mux"
+	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
 
 	"github.com/cybercongress/go-cyber/x/bandwidth/client/cli"
 	"github.com/cybercongress/go-cyber/x/bandwidth/client/rest"
+	"github.com/cybercongress/go-cyber/x/bandwidth/keeper"
+	"github.com/cybercongress/go-cyber/x/bandwidth/types"
 
-	"github.com/cosmos/cosmos-sdk/client/context"
+	"context"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	abci "github.com/tendermint/tendermint/abci/types"
 )
@@ -23,90 +30,107 @@ var (
 )
 
 
-type AppModuleBasic struct{}
-
-var _ module.AppModuleBasic = AppModuleBasic{}
+type AppModuleBasic struct{
+	cdc codec.Marshaler
+}
 
 func (AppModuleBasic) Name() string {
-	return ModuleName
+	return types.ModuleName
 }
 
-func (AppModuleBasic) RegisterCodec(cdc *codec.Codec) {}
+func (AppModuleBasic) RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {}
 
-func (AppModuleBasic) DefaultGenesis() json.RawMessage {
-	return ModuleCdc.MustMarshalJSON(DefaultGenesisState())
+func (AppModuleBasic) DefaultGenesis(cdc codec.JSONMarshaler) json.RawMessage {
+	return cdc.MustMarshalJSON(types.DefaultGenesisState())
 }
 
-func (AppModuleBasic) ValidateGenesis(bz json.RawMessage) error {
-	var data GenesisState
-	err := ModuleCdc.UnmarshalJSON(bz, &data)
-	if err != nil {
-		return err
+func (AppModuleBasic) ValidateGenesis(cdc codec.JSONMarshaler, _ client.TxEncodingConfig, bz json.RawMessage) error {
+	var data types.GenesisState
+	if err := cdc.UnmarshalJSON(bz, &data); err != nil {
+		return fmt.Errorf("failed to unmarshal %s genesis state: %w", types.ModuleName, err)
 	}
-	return ValidateGenesis(data)
+	return types.ValidateGenesis(&data)
 }
 
-func (AppModuleBasic) RegisterRESTRoutes(ctx context.CLIContext, rtr *mux.Router) {
-	rest.RegisterRoutes(ctx, rtr)
+func (AppModuleBasic) RegisterRESTRoutes(clientCtx client.Context, rtr *mux.Router) {
+	rest.RegisterRoutes(clientCtx, rtr)
 }
 
-func (AppModuleBasic) GetTxCmd(_ *codec.Codec) *cobra.Command { return nil }
-
-// get the root query command of this module
-func (AppModuleBasic) GetQueryCmd(cdc *codec.Codec) *cobra.Command {
-	return cli.GetQueryCmd(cdc)
+func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *runtime.ServeMux) {
+	_ = types.RegisterQueryHandlerClient(context.Background(), mux, types.NewQueryClient(clientCtx))
 }
+
+// GetQueryCmd returns the root tx command for the posts module.
+func (AppModuleBasic) GetTxCmd() *cobra.Command {
+	return nil
+}
+
+// GetTxCmd returns the root query command for the posts module.
+func (AppModuleBasic) GetQueryCmd() *cobra.Command {
+	return cli.GetQueryCmd()
+}
+
+func (AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegistry) {}
 
 type AppModule struct {
 	AppModuleBasic
+	ak             authkeeper.AccountKeeper
+	bm			   *keeper.BandwidthMeter
+}
 
-	AccountBandwidthKeeper    AccountBandwidthKeeper
-	BlockSpentBandwidthKeeper BlockSpentBandwidthKeeper
+func (am AppModule) RegisterServices(cfg module.Configurator) {
+	types.RegisterQueryServer(cfg.QueryServer(), am.bm)
 }
 
 func NewAppModule(
-	accountBandwidthKeeper AccountBandwidthKeeper,
-	blockSpentBandwidthKeeper BlockSpentBandwidthKeeper,
+	ak authkeeper.AccountKeeper,
+	bm *keeper.BandwidthMeter,
 ) AppModule {
 	return AppModule{
-		AppModuleBasic:            AppModuleBasic{},
-		AccountBandwidthKeeper:    accountBandwidthKeeper,
-		BlockSpentBandwidthKeeper: blockSpentBandwidthKeeper,
+		AppModuleBasic:       AppModuleBasic{},
+		ak:		  ak,
+		bm:		  bm,
 	}
 }
 
 func (AppModule) Name() string {
-	return ModuleName
+	return types.ModuleName
 }
 
-func (am AppModule) RegisterInvariants(ir sdk.InvariantRegistry) {}
+func (am AppModule) RegisterInvariants(_ sdk.InvariantRegistry) {}
 
-func (am AppModule) Route() string           { return "" }
+func (am AppModule) Route() sdk.Route {
+	return sdk.Route{}
+}
 
-func (am AppModule) NewHandler() sdk.Handler { return nil }
+func (am AppModule) NewHandler() sdk.Handler {
+	return nil
+}
 
 func (am AppModule) QuerierRoute() string {
-	return QuerierRoute
+	return types.QuerierRoute
 }
 
-func (am AppModule) NewQuerierHandler() sdk.Querier {
-	return NewQuerier(am.AccountBandwidthKeeper)
+func (am AppModule) LegacyQuerierHandler(legacyQuerierCdc *codec.LegacyAmino) sdk.Querier {
+	return keeper.NewQuerier(am.bm, legacyQuerierCdc)
+}
+
+func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONMarshaler, data json.RawMessage) []abci.ValidatorUpdate {
+	var genesisState types.GenesisState
+	cdc.MustUnmarshalJSON(data, &genesisState)
+
+	keeper.InitGenesis(ctx, am.bm, am.ak, genesisState)
+	return []abci.ValidatorUpdate{}
+}
+
+func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONMarshaler) json.RawMessage {
+	gs := keeper.ExportGenesis(ctx, am.bm)
+	return cdc.MustMarshalJSON(gs)
 }
 
 func (am AppModule) BeginBlock(_ sdk.Context, _ abci.RequestBeginBlock) {}
 
-func (am AppModule) EndBlock(sdk.Context, abci.RequestEndBlock) []abci.ValidatorUpdate {
+func (am AppModule) EndBlock(ctx sdk.Context, _ abci.RequestEndBlock) []abci.ValidatorUpdate {
+	EndBlocker(ctx, am.bm)
 	return []abci.ValidatorUpdate{}
-}
-
-// Cannot InitAccountsBandwidthGenesis from here
-func (am AppModule) InitGenesis(ctx sdk.Context, data json.RawMessage) []abci.ValidatorUpdate {
-	var genesisState GenesisState
-	ModuleCdc.MustUnmarshalJSON(data, &genesisState)
-	return []abci.ValidatorUpdate{}
-}
-
-func (am AppModule) ExportGenesis(ctx sdk.Context) json.RawMessage {
-	gs := ExportGenesis(ctx, am.AccountBandwidthKeeper)
-	return ModuleCdc.MustMarshalJSON(gs)
 }

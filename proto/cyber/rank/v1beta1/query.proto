@@ -1,0 +1,104 @@
+syntax = "proto3";
+package cyber.rank.v1beta1;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+
+import "cyber/rank/v1beta1/params.proto";
+import "cyber/base/query/v1beta1/pagination.proto";
+
+option go_package = "github.com/cybercongress/go-cyber/x/rank/types";
+
+service Query {
+    rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+        option (google.api.http).get = "/cyber/rank/v1beta1/rank/params";
+    }
+
+    rpc Rank(QueryRankRequest) returns (QueryRankResponse) {
+        option (google.api.http).get = "/cyber/rank/v1beta1/rank/rank/{cid}";
+    }
+
+    rpc Search(QuerySearchRequest) returns (QuerySearchResponse) {
+        option (google.api.http).get = "/cyber/rank/v1beta1/rank/search/{cid}";
+    }
+
+    rpc Backlinks(QuerySearchRequest) returns (QuerySearchResponse) {
+        option (google.api.http).get = "/cyber/rank/v1beta1/rank/backlinks/{cid}";
+    }
+
+    rpc Top(cyber.base.query.v1beta1.PageRequest) returns (QuerySearchResponse) {
+        option (google.api.http).get = "/cyber/rank/v1beta1/rank/top";
+    }
+
+    rpc IsLinkExist(QueryIsLinkExistRequest) returns (QueryLinkExistResponse) {
+        option (google.api.http).get = "/cyber/rank/v1beta1/is_link_exist";
+    }
+
+    rpc IsAnyLinkExist(QueryIsAnyLinkExistRequest) returns (QueryLinkExistResponse) {
+        option (google.api.http).get = "/cyber/rank/v1beta1/is_any_link_exist";
+    }
+
+    rpc Karmas(QueryKarmasRequest) returns (QueryKarmasResponse) {
+        option (google.api.http).get = "/cyber/rank/v1beta1/karmas";
+    }
+}
+
+message QueryParamsRequest {}
+
+message QueryParamsResponse{
+    cyber.rank.v1beta1.Params params = 1 [(gogoproto.nullable) = false ];
+}
+
+message QueryRankRequest {
+    option (gogoproto.equal) = false;
+    option (gogoproto.goproto_getters) = false;
+
+    string cid = 1;
+}
+
+message QueryRankResponse{
+    uint64 rank = 1;
+}
+
+message QuerySearchRequest {
+    option (gogoproto.equal) = false;
+    option (gogoproto.goproto_getters) = false;
+
+    string cid = 1;
+    cyber.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+message QuerySearchResponse {
+    repeated cyber.rank.v1beta1.RankedCid result = 1 [(gogoproto.nullable) = false];
+    cyber.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message RankedCid {
+    string cid = 1 [(gogoproto.jsontag) = "cid", (gogoproto.moretags) = "yaml:\"cid\""];
+    uint64 rank = 2 [(gogoproto.jsontag) = "rank", (gogoproto.moretags) = "yaml:\"rank\""];
+}
+
+message QueryTopRequest {}
+
+
+message QueryIsLinkExistRequest {
+    string from = 1;
+    string to = 2;
+    string address = 3;
+}
+
+message QueryIsAnyLinkExistRequest {
+    string from = 1;
+    string to = 2;
+}
+
+message QueryLinkExistResponse {
+    // TODO move to bool... wtf with protobuf? omitempty shit
+    uint32 exist = 1;
+}
+
+message QueryKarmasRequest {}
+
+message QueryKarmasResponse {
+    map<string, uint64> karmas = 1;
+}

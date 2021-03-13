@@ -1,11 +1,77 @@
 #!/usr/bin/make -f
 
-VERSION := $(shell echo $(shell git describe --tags) | sed 's/^v//')
-COMMIT := $(shell git log -1 --format='%H')
-LEDGER_ENABLED ?= true
-CUDA_ENABLED ?= true
+PACKAGES_NOSIMULATION=$(shell go list ./...)
+BINDIR ?= $(GOPATH)/bin
 
 export GO111MODULE = on
+
+all: tools lint test
+
+include contrib/devtools/Makefile
+
+
+########################################
+### Dependencies
+
+go-mod-cache: go.sum
+	@echo "--> Download go modules to local cache"
+	@go mod download
+.PHONY: go-mod-cache
+
+# TODO return this back, workaround around tm's logs in local devenv
+go.sum: go.mod
+	@echo "--> Ensure dependencies have not been modified"
+	@#go mod verify
+	@#go mod tidy
+
+########################################
+### Testing
+
+#SIM_NUM_BLOCKS ?= 50
+#SIM_BLOCK_SIZE ?= 50
+#SIM_COMMIT ?= true
+#
+#test: test-unit
+#test-all: test-unit test-race test-cover
+#
+#test-unit:
+#	@VERSION=$(VERSION) go test -mod=readonly $(PACKAGES_NOSIMULATION)
+#
+#test-race:
+#	@VERSION=$(VERSION) go test -mod=readonly -race $(PACKAGES_NOSIMULATION)
+#
+#test-cover:
+#	@go test -mod=readonly -timeout 30m -race -coverprofile=coverage.txt -covermode=atomic -tags='ledger test_ledger_mock' ./...
+#
+#test-build: build
+#	@go test -mod=readonly -p 4 `go list ./cli_test/...` -tags=cli_test -v
+#
+#benchmark:
+#	@go test -mod=readonly -bench=. ./...
+#
+#.PHONY: test test-all test-unit test-race
+#
+#.PHONY: \
+
+lint:
+	$(BINDIR)/golangci-lint run
+	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "*.pb.go" | xargs gofmt -d -s
+	go mod verify
+.PHONY: lint
+
+format:
+	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "*.pb.go" | xargs gofmt -w -s
+	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "*.pb.go" | xargs misspell -w
+	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "*.pb.go" | xargs goimports -w -local github.com/cybercongress/cyber
+.PHONY: format
+
+proto-all: proto-tools proto-gen proto-swagger-gen
+
+proto-gen:
+	@./scripts/protocgen.sh
+
+proto-swagger-gen:
+	@./scripts/protoc-swagger-gen.sh
 
 # process build tags
 
@@ -33,16 +99,6 @@ ifeq ($(LEDGER_ENABLED),true)
   endif
 endif
 
-ifeq ($(CUDA_ENABLED),true)
-    NVCC_RESULT := $(shell which nvcc 2> NULL)
-    NVCC_TEST := $(notdir $(NVCC_RESULT))
-    ifeq ($(NVCC_TEST),nvcc)
-        build_tags += cuda
-    else
-        $(error CUDA not installed for GPU support, please install or set CUDA_ENABLED=false)
-    endif
-endif
-
 ifeq ($(WITH_CLEVELDB),yes)
   build_tags += gcc
 endif
@@ -57,11 +113,11 @@ build_tags_comma_sep := $(subst $(whitespace),$(comma),$(build_tags))
 # process linker flags
 
 ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=cyber \
-		  -X github.com/cosmos/cosmos-sdk/version.ServerName=cyberd \
-		  -X github.com/cosmos/cosmos-sdk/version.ClientName=cyberdcli \
+		  -X github.com/cosmos/cosmos-sdk/version.AppName=cyber \
 		  -X github.com/cosmos/cosmos-sdk/version.Version=$(VERSION) \
 		  -X github.com/cosmos/cosmos-sdk/version.Commit=$(COMMIT) \
-		  -X "github.com/cosmos/cosmos-sdk/version.BuildTags=$(build_tags_comma_sep)"
+		  -X "github.com/cosmos/cosmos-sdk/version.BuildTags=$(build_tags_comma_sep)" \
+		  -X github.com/cosmos/cosmos-sdk/types.reDnmString=[a-zA-Z][a-zA-Z0-9/:]{2,127}
 
 ifeq ($(WITH_CLEVELDB),yes)
   ldflags += -X github.com/cosmos/cosmos-sdk/types.DBBackend=cleveldb
@@ -71,33 +127,71 @@ ldflags := $(strip $(ldflags))
 
 BUILD_FLAGS := -tags "$(build_tags)" -ldflags '$(ldflags)'
 
+# The below include contains the tools target.
 
-all: install
+all: tools install lint
+
+# The below include contains the tools.
 
 build: go.sum
 ifeq ($(OS),Windows_NT)
-	go build $(BUILD_FLAGS) -o build/cyberd.exe ./cmd/cyberd
-	go build $(BUILD_FLAGS) -o build/cyberdcli.exe ./cmd/cyberdcli
+	go build $(BUILD_FLAGS) -o build/cyber.exe ./cmd/cyber
 else
-	go build $(BUILD_FLAGS) -o build/cyberd ./cmd/cyberd
-	go build $(BUILD_FLAGS) -o build/cyberdcli ./cmd/cyberdcli
+	go build $(BUILD_FLAGS) -o build/cyber ./cmd/cyber
 endif
 
 build-linux: go.sum
-	LEDGER_ENABLED=false GOOS=linux GOARCH=amd64 $(MAKE) build
+	#LEDGER_ENABLED=false GOOS=linux GOARCH=amd64 $(MAKE) build
+	mkdir -p ./build
+	docker build --tag cybercongress/cyber ./
+	docker create --name temp cybercongress/cyber:latest
+	docker cp temp:/usr/bin/cyber ./build/
+	#docker cp temp:/usr/local/bin/terracli ./build/
+	docker rm temp
+
+#build-contract-tests-hooks:
+#ifeq ($(OS),Windows_NT)
+#	go build -mod=readonly $(BUILD_FLAGS) -o build/contract_tests.exe ./cmd/contract_tests
+#else
+#	go build -mod=readonly $(BUILD_FLAGS) -o build/contract_tests ./cmd/contract_tests
+#endif
 
 install: go.sum
-	go install $(BUILD_FLAGS) ./cmd/cyberd
-	go install $(BUILD_FLAGS) ./cmd/cyberdcli
+	go install $(BUILD_FLAGS) ./cmd/cyber
 
-########################################
-### Tools & dependencies
+#update-swagger-docs: statik
+#	$(BINDIR)/statik -src=client/docs/swagger-ui -dest=client/docs -f -m
+#	@if [ -n "$(git status --porcelain)" ]; then \
+#        echo "Swagger docs are out of sync";\
+#        exit 1;\
+#    else \
+#    	echo "Swagger docs are in sync";\
+#    fi
 
-go.sum: go.mod
-	@echo "--> Ensuring dependencies have not been modified"
-	@go mod verify
+###############################################################################
+###                                Localnet                                 ###
+###############################################################################
 
-clean:
-	rm -rf build/
+build-docker-cybernode: build-linux
+	$(MAKE) -C networks/local
 
-.PHONY: all build-linux install clean build test-all
+# Run a 4-node testnet locally
+localnet-start: localnet-stop
+	@if ! [ -f build/node0/cyber/config/genesis.json ]; then docker run --rm -v $(CURDIR)/build:/cyber:Z cybercongress/cyber testnet --v 4 -o . --starting-ip-address 192.168.10.2 --keyring-backend=test ; fi
+	docker-compose up -d
+
+# Stop testnet
+localnet-stop:
+	docker-compose down
+
+#test-docker:
+#	@docker build -f contrib/Dockerfile.test -t ${TEST_DOCKER_REPO}:$(shell git rev-parse --short HEAD) .
+#	@docker tag ${TEST_DOCKER_REPO}:$(shell git rev-parse --short HEAD) ${TEST_DOCKER_REPO}:$(shell git rev-parse --abbrev-ref HEAD | sed 's#/#_#g')
+#	@docker tag ${TEST_DOCKER_REPO}:$(shell git rev-parse --short HEAD) ${TEST_DOCKER_REPO}:latest
+#
+#test-docker-push: test-docker
+#	@docker push ${TEST_DOCKER_REPO}:$(shell git rev-parse --short HEAD)
+#	@docker push ${TEST_DOCKER_REPO}:$(shell git rev-parse --abbrev-ref HEAD | sed 's#/#_#g')
+#	@docker push ${TEST_DOCKER_REPO}:latest
+
+#.PHONY: update-swagger-docs
