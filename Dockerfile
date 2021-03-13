@@ -64,6 +64,7 @@ WORKDIR /sources
 # TODO: Update brach to master before merge\relaese
 RUN git checkout bostrom-dev
 RUN make install
+RUN which cyber
 COPY /usr/local/go/bin/cyber /cyber/cosmovisor/genesis/bin
 
 ###########################################################################################
