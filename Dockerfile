@@ -62,9 +62,7 @@ RUN cp ./build/libcbdrank.so /usr/lib/ && cp cbdrank.h /usr/lib/
 ###########################################################################################
 WORKDIR /sources
 RUN git checkout master
-RUN make build \
-&& ./build/cyber version \
-&& cp ./build/cyber /cyber/cosmovisor/genesis/bin/cyber
+RUN make install
 
 ###########################################################################################
 # Build wasmvm
@@ -104,7 +102,9 @@ WORKDIR /
 ###########################################################################################
 COPY --from=build_stage_cuda /cyber /cyber
 
-COPY --from=build_stage_cuda /sources/build/cyber /usr/bin/cyber
+COPY --from=build_stage_cuda /usr/bin/cosmovisor /usr/bin/cosmovisor
+
+COPY --from=build_stage_cuda /usr/local/go/bin/cyber /usr/bin/cyber
 
 COPY --from=build_stage_cuda /usr/lib/cbdrank.h /usr/lib/cbdrank.h
 COPY --from=build_stage_cuda /usr/lib/libcbdrank.so /usr/lib/libcbdrank.so
