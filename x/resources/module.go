@@ -1,4 +1,4 @@
-package investments
+package resources
 
 import (
 	"encoding/json"
@@ -15,9 +15,9 @@ import (
 	"github.com/spf13/cobra"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/cybercongress/go-cyber/x/investments/client/cli"
-	"github.com/cybercongress/go-cyber/x/investments/keeper"
-	"github.com/cybercongress/go-cyber/x/investments/types"
+	"github.com/cybercongress/go-cyber/x/resources/client/cli"
+	"github.com/cybercongress/go-cyber/x/resources/keeper"
+	"github.com/cybercongress/go-cyber/x/resources/types"
 )
 
 var (

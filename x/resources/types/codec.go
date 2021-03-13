@@ -10,14 +10,14 @@ import (
 )
 
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(MsgInvest{}, "cyber/MsgInvest", nil)
+	cdc.RegisterConcrete(MsgConvert{}, "cyber/MsgConvert", nil)
 	cdc.RegisterConcrete(MsgCreateResource{}, "cyber/MsgCreateResource", nil)
 	cdc.RegisterConcrete(MsgRedeemResource{}, "cyber/MsgRedeemResource", nil)
 }
 
 func RegisterInterfaces(registry types.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgInvest{},
+		&MsgConvert{},
 		&MsgCreateResource{},
 		&MsgRedeemResource{},
 	)

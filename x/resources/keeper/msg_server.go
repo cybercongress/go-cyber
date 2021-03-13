@@ -6,7 +6,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/cybercongress/go-cyber/x/investments/types"
+	"github.com/cybercongress/go-cyber/x/resources/types"
 )
 
 type msgServer struct {
@@ -21,31 +21,31 @@ func NewMsgServerImpl(
 	}
 }
 
-func (k msgServer) Invest(goCtx context.Context, msg *types.MsgInvest) (*types.MsgInvestResponse, error) {
+func (k msgServer) Convert(goCtx context.Context, msg *types.MsgConvert) (*types.MsgConvertResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	investor, err := sdk.AccAddressFromBech32(msg.Investor)
+	agent, err := sdk.AccAddressFromBech32(msg.Agent)
 	if err != nil {
 		return nil, err
 	}
 
-	err = k.PutInvestment(ctx, investor, msg.Amount, msg.Resource, msg.EndTime) // TODO return minted amount and pass to event
+	err = k.ConvertResource(ctx, agent, msg.Amount, msg.Resource, msg.EndTime) // TODO return minted amount and pass to event
 	if err != nil {
 		return nil, err
 	}
 
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
-			types.EventTypeInvest,
+			types.EventTypeConvert,
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-			sdk.NewAttribute(types.AttributeKeyInvestor, msg.Investor),
+			sdk.NewAttribute(types.AttributeKeyAgent, msg.Agent),
 			sdk.NewAttribute(types.AttributeKeyAmount, msg.Amount.String()),
 			sdk.NewAttribute(types.AttributeKeyResource, msg.Resource),
 			sdk.NewAttribute(types.AttributeKeyEndTime, strconv.FormatInt(msg.EndTime, 10)),
 		),
 	)
 
-	return &types.MsgInvestResponse{}, nil
+	return &types.MsgConvertResponse{}, nil
 }
 
 func (k msgServer) CreateResource(goCtx context.Context, msg *types.MsgCreateResource) (*types.MsgCreateResourceResponse, error) {

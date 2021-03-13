@@ -1,12 +1,12 @@
-package investments
+package resources
 
 import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	"github.com/cybercongress/go-cyber/x/investments/keeper"
-	"github.com/cybercongress/go-cyber/x/investments/types"
+	"github.com/cybercongress/go-cyber/x/resources/keeper"
+	"github.com/cybercongress/go-cyber/x/resources/types"
 )
 
 func NewHandler(
@@ -18,8 +18,8 @@ func NewHandler(
 		ctx = ctx.WithEventManager(sdk.NewEventManager())
 
 		switch msg := msg.(type) {
-		case *types.MsgInvest:
-			res, err := msgServer.Invest(sdk.WrapSDKContext(ctx), msg)
+		case *types.MsgConvert:
+			res, err := msgServer.Convert(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 		case *types.MsgCreateResource:
 			res, err := msgServer.CreateResource(sdk.WrapSDKContext(ctx), msg)

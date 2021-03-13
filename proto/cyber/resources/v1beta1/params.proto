@@ -1,9 +1,9 @@
 syntax = "proto3";
-package cyber.investments.v1beta1;
+package cyber.resources.v1beta1;
 
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/cybercongress/go-cyber/x/investments/types";
+option go_package = "github.com/cybercongress/go-cyber/x/resources/types";
 
 message Params {
     option (gogoproto.equal)           = false;

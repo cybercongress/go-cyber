@@ -15,7 +15,7 @@ import (
 	wasmplugins "github.com/cybercongress/go-cyber/plugins"
 	"github.com/cybercongress/go-cyber/x/cron"
 	"github.com/cybercongress/go-cyber/x/energy"
-	"github.com/cybercongress/go-cyber/x/investments"
+	"github.com/cybercongress/go-cyber/x/resources"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec/types"
@@ -120,8 +120,8 @@ import (
 	cronkeeper "github.com/cybercongress/go-cyber/x/cron/keeper"
 	crontypes "github.com/cybercongress/go-cyber/x/cron/types"
 
-	investmentskeeper "github.com/cybercongress/go-cyber/x/investments/keeper"
-	investmentstypes "github.com/cybercongress/go-cyber/x/investments/types"
+	resourceskeeper "github.com/cybercongress/go-cyber/x/resources/keeper"
+	resourcestypes "github.com/cybercongress/go-cyber/x/resources/types"
 	stakingwrap "github.com/cybercongress/go-cyber/x/staking"
 )
 
@@ -216,7 +216,7 @@ var (
 		rank.AppModuleBasic{},
 		energy.AppModuleBasic{},
 		cron.AppModuleBasic{},
-		investments.AppModuleBasic{},
+		resources.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -229,7 +229,7 @@ var (
 		govtypes.ModuleName:            	{authtypes.Burner},
 		ibctransfertypes.ModuleName:    	{authtypes.Minter, authtypes.Burner},
 		energytypes.EnergyPoolName: 		nil,
-		investmentstypes.InvestmentsName: 	{authtypes.Minter},
+		resourcestypes.ResourcesName: 	    {authtypes.Minter},
 	}
 
     // module accounts that are allowed to receive tokens
@@ -285,11 +285,12 @@ type App struct {
 	RankKeeper      *rankkeeper.StateKeeper
 	EnergyKeeper    energykeeper.Keeper
 	CronKeeper      cronkeeper.Keeper
-	InvestmentsKeeper  investmentskeeper.Keeper
+	InvestmentsKeeper  resourceskeeper.Keeper
 
 	// make scoped keepers public for test purposes
 	ScopedIBCKeeper      capabilitykeeper.ScopedKeeper
 	ScopedTransferKeeper capabilitykeeper.ScopedKeeper
+	scopedWasmKeeper     capabilitykeeper.ScopedKeeper
 
 	// the module manager
 	mm *module.Manager
@@ -299,7 +300,7 @@ type App struct {
 // NewSimApp returns a reference to an initialized SimApp.
 func New(
 	logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest bool, skipUpgradeHeights map[int64]bool,
-	homePath string, invCheckPeriod uint, enabledProposals []wasm.ProposalType, appOpts servertypes.AppOptions, baseAppOptions ...func(*baseapp.BaseApp),
+	homePath string, invCheckPeriod uint, wasmOpts []wasm.Option, enabledProposals []wasm.ProposalType, appOpts servertypes.AppOptions, baseAppOptions ...func(*baseapp.BaseApp),
 ) *App {
 	encodingConfig := MakeEncodingConfig()
 	appCodec := encodingConfig.Marshaler
@@ -318,7 +319,7 @@ func New(
 		govtypes.StoreKey, paramstypes.StoreKey, ibchost.StoreKey, upgradetypes.StoreKey,
 		evidencetypes.StoreKey, ibctransfertypes.StoreKey, capabilitytypes.StoreKey,
 		wasm.StoreKey, graphtypes.StoreKey, bandwidthtypes.StoreKey, ranktypes.StoreKey,
-		energytypes.StoreKey, crontypes.StoreKey, investmentstypes.StoreKey,
+		energytypes.StoreKey, crontypes.StoreKey, resourcestypes.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey)
@@ -344,6 +345,7 @@ func New(
 	// grant capabilities for the ibc and ibc-transfer modules
 	scopedIBCKeeper := app.CapabilityKeeper.ScopeToModule(ibchost.ModuleName)
 	scopedTransferKeeper := app.CapabilityKeeper.ScopeToModule(ibctransfertypes.ModuleName)
+	scopedWasmKeeper := app.CapabilityKeeper.ScopeToModule(wasm.ModuleName)
 
 	// add keepers
 	app.AccountKeeper = authkeeper.NewAccountKeeper(
@@ -401,7 +403,6 @@ func New(
 	// Create static IBC router, add transfer route, then set and seal it
 	ibcRouter := porttypes.NewRouter()
 	ibcRouter.AddRoute(ibctransfertypes.ModuleName, transferModule)
-	app.IBCKeeper.SetRouter(ibcRouter)
 
 	// Create evidence Keeper for to register the IBC light client misbehaviour evidence route
 	evidenceKeeper := evidencekeeper.NewKeeper(
@@ -458,7 +459,7 @@ func New(
 		Custom: parser.ParseCustom,
 	}
 
-	var wasmRouter = bApp.Router()
+	//var wasmRouter = bApp.Router()
 	wasmDir := filepath.Join(homePath, "wasm")
 
 	wasmConfig, err := wasm.ReadWasmConfig(appOpts)
@@ -467,11 +468,27 @@ func New(
 	}
 	// The last arguments can contain custom message handlers, and custom query handlers,
 	// if we want to allow any custom callbacks
-	supportedFeatures := "staking,cyber"
-	app.WasmKeeper = wasm.NewKeeper(appCodec, keys[wasm.StoreKey], app.GetSubspace(wasm.ModuleName),
-		app.AccountKeeper, app.BankKeeper, app.StakingKeeper, app.DistrKeeper,
-		wasmRouter, wasmDir, wasmConfig, supportedFeatures,
-		customEncoders, queryPlugins,
+	supportedFeatures := "staking,stargate,cyber"
+
+	app.WasmKeeper = wasm.NewKeeper(
+		appCodec,
+		keys[wasm.StoreKey],
+		app.GetSubspace(wasm.ModuleName),
+		app.AccountKeeper,
+		app.BankKeeper,
+		app.StakingKeeper,
+		app.DistrKeeper,
+		app.IBCKeeper.ChannelKeeper,
+		&app.IBCKeeper.PortKeeper,
+		scopedWasmKeeper,
+		app.Router(),
+		app.GRPCQueryRouter(),
+		wasmDir,
+		wasmConfig,
+		supportedFeatures,
+		customEncoders,
+		queryPlugins,
+		wasmOpts...,
 	)
 
 	// -------
@@ -480,6 +497,8 @@ func New(
 	if len(enabledProposals) != 0 {
 		govRouter.AddRoute(wasm.RouterKey, wasm.NewWasmProposalHandler(app.WasmKeeper, enabledProposals))
 	}
+	ibcRouter.AddRoute(wasm.ModuleName, wasm.NewIBCHandler(app.WasmKeeper))
+	app.IBCKeeper.SetRouter(ibcRouter)
 
 	app.GovKeeper = govkeeper.NewKeeper(appCodec, keys[govtypes.StoreKey], app.GetSubspace(govtypes.ModuleName),
 		app.AccountKeeper, app.BankKeeper, &stakingKeeper,
@@ -488,8 +507,8 @@ func New(
 
 	app.CronKeeper = cronkeeper.NewKeeper(appCodec, keys[crontypes.StoreKey], app.WasmKeeper, app.CyberbankKeeper, app.AccountKeeper, app.GetSubspace(crontypes.ModuleName), app.Router())
 
-	app.InvestmentsKeeper = investmentskeeper.NewKeeper(
-		appCodec, keys[investmentstypes.StoreKey], app.AccountKeeper, app.CyberbankKeeper.Proxy,
+	app.InvestmentsKeeper = resourceskeeper.NewKeeper(
+		appCodec, keys[resourcestypes.StoreKey], app.AccountKeeper, app.CyberbankKeeper.Proxy,
 	)
 
 	// -------
@@ -525,14 +544,14 @@ func New(
 		transferModule,
 
 		// TODO pass appCodec?
-		wasm.NewAppModule(&app.WasmKeeper, app.StakingKeeper),
+		wasm.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper),
 		cyberbank.NewAppModule(app.CyberbankKeeper),
 		bandwidth.NewAppModule(app.AccountKeeper, app.BandwidthMeter),
 		graph.NewAppModule(appCodec, app.GraphKeeper, app.IndexKeeper, app.AccountKeeper, app.CyberbankKeeper),
 		rank.NewAppModule(app.RankKeeper),
 		energy.NewAppModule(app.EnergyKeeper),
 		cron.NewAppModule(app.CronKeeper),
-		investments.NewAppModule(app.InvestmentsKeeper),
+		resources.NewAppModule(app.InvestmentsKeeper),
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that

@@ -14,7 +14,7 @@ import (
 	"github.com/tendermint/tendermint/libs/log"
 
 	ctypes "github.com/cybercongress/go-cyber/types"
-	"github.com/cybercongress/go-cyber/x/investments/types"
+	"github.com/cybercongress/go-cyber/x/resources/types"
 )
 
 type Keeper struct {
@@ -30,8 +30,8 @@ func NewKeeper(
 	ak 	authkeeper.AccountKeeper,
 	bk  bankkeeper.Keeper,
 ) Keeper {
-	if addr := ak.GetModuleAddress(types.InvestmentsName); addr == nil {
-		panic(fmt.Sprintf("%s module account has not been set", types.InvestmentsName))
+	if addr := ak.GetModuleAddress(types.ResourcesName); addr == nil {
+		panic(fmt.Sprintf("%s module account has not been set", types.ResourcesName))
 	}
 
 	keeper := Keeper{
@@ -47,9 +47,9 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
 
-func (k Keeper) PutInvestment(
+func (k Keeper) ConvertResource(
 	ctx sdk.Context,
-	investor sdk.AccAddress,
+	agent sdk.AccAddress,
 	amount sdk.Coin,
 	resource string,
 	length int64,
@@ -59,11 +59,11 @@ func (k Keeper) PutInvestment(
 		return types.ErrNotAvailableLength
 	}
 
-	err := k.AddTimeLockedCoinsToAccount(ctx, investor, sdk.NewCoins(amount), length)
+	err := k.AddTimeLockedCoinsToAccount(ctx, agent, sdk.NewCoins(amount), length)
 	if err != nil {
 		return sdkerrors.Wrapf(types.ErrTimeLockCoins, err.Error())
 	}
-	err = k.Mint(ctx, investor, amount, resource, length)
+	err = k.Mint(ctx, agent, amount, resource, length)
 	if err != nil {
 		return sdkerrors.Wrapf(types.ErrIssueCoins, err.Error())
 	}
@@ -231,11 +231,11 @@ func (k Keeper) Mint(ctx sdk.Context, recipientAddr sdk.AccAddress, amt sdk.Coin
 	//fmt.Println("SupplyMul:", smul)
 	//fmt.Println("[*] MINT VOLT || AMPER:", toMint.Amount)
 
-	err := k.bankKeeper.MintCoins(ctx, types.InvestmentsName, sdk.NewCoins(toMint))
+	err := k.bankKeeper.MintCoins(ctx, types.ResourcesName, sdk.NewCoins(toMint))
 	if err != nil {
 		return sdkerrors.Wrapf(types.ErrMintCoins, recipientAddr.String())
 	}
-	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.InvestmentsName, recipientAddr, sdk.NewCoins(toMint))
+	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ResourcesName, recipientAddr, sdk.NewCoins(toMint))
 	if err != nil {
 		return sdkerrors.Wrapf(types.ErrSendMintedCoins, recipientAddr.String())
 	}

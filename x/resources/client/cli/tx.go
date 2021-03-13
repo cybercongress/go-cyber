@@ -14,12 +14,12 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 
 	ctypes "github.com/cybercongress/go-cyber/types"
-	"github.com/cybercongress/go-cyber/x/investments/types"
+	"github.com/cybercongress/go-cyber/x/resources/types"
 )
 
 
 func NewTxCmd() *cobra.Command {
-	investmentTxCmd := &cobra.Command{
+	resourcesTxCmd := &cobra.Command{
 		Use:                        types.ModuleName,
 		Short:                      fmt.Sprintf("%s transactions subcommands", types.ModuleName),
 		DisableFlagParsing:         true,
@@ -27,23 +27,23 @@ func NewTxCmd() *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
-	investmentTxCmd.AddCommand(
-		GetCmdPutInvestment(),
+	resourcesTxCmd.AddCommand(
+		GetCmdConvert(),
 	)
 
-	return investmentTxCmd
+	return resourcesTxCmd
 }
 
-func GetCmdPutInvestment() *cobra.Command {
+func GetCmdConvert() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "put-investment [amount] [resource] [end-time]",
+		Use:   "convert [amount] [resource] [end-time]",
 		Args:  cobra.ExactArgs(3),
 		Short: "Short",
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`Long.
 
 Example:
-$ %s tx investment put-investment 10000cyb 100000 --from mykey
+$ %s tx resources convert 10000cyb 100000 --from mykey
 `,
 				version.Version,
 			),
@@ -54,7 +54,7 @@ $ %s tx investment put-investment 10000cyb 100000 --from mykey
 				return err
 			}
 
-			investor := clientCtx.GetFromAddress()
+			agent := clientCtx.GetFromAddress()
 
 			amount, err := sdk.ParseCoinNormalized(args[0])
 			if err != nil {
@@ -74,7 +74,7 @@ $ %s tx investment put-investment 10000cyb 100000 --from mykey
 				return fmt.Errorf("block period %s not a valid uint, please input a valid block period", args[1])
 			}
 
-			msg := types.NewMsgInvest(investor, amount, args[1], int64(endBlock))
+			msg := types.NewMsgConvert(agent, amount, args[1], int64(endBlock))
 
 			if err := msg.ValidateBasic(); err != nil {
 				return err

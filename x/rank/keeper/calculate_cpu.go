@@ -1,11 +1,10 @@
 package keeper
 
 import (
-	"fmt"
 	//"fmt"
 	//"encoding/binary"
 	"math"
-//"math/big"
+	//"math/big"
 	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
 	"github.com/cybercongress/go-cyber/x/rank/types"
 )
@@ -56,13 +55,13 @@ func calculateRankCPU(ctx *types.CalculationContext) types.EMState {
 		steps++
 	}
 
-	esum := entropyCalc(ctx, entropy)
-	lsum := luminosityCalc(rank, entropy, luminosity)
-	ksum := karmaCalc(ctx, luminosity, karma)
+	_ = entropyCalc(ctx, entropy)
+	_ = luminosityCalc(rank, entropy, luminosity)
+	_ = karmaCalc(ctx, luminosity, karma)
 
-	fmt.Println("ESUM:", esum)
-	fmt.Println("LSUM:", lsum)
-	fmt.Println("KSUM:", ksum)
+	//fmt.Println("ESUM:", esum)
+	//fmt.Println("LSUM:", lsum)
+	//fmt.Println("KSUM:", ksum)
 
 	return types.EMState{
 		rank,

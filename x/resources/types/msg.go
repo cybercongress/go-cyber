@@ -5,30 +5,29 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	ctypes "github.com/cybercongress/go-cyber/types"
-	//"github.com/cybercongress/go-cyber/x/investment/types"
 )
 
-func NewMsgInvest(
-	investor sdk.AccAddress,
+func NewMsgConvert(
+	agent sdk.AccAddress,
 	amount sdk.Coin,
 	resource string,
 	endtime int64,
-) *MsgInvest {
-	return &MsgInvest{
-		Investor: investor.String(),
+) *MsgConvert {
+	return &MsgConvert{
+		Agent: agent.String(),
 		Amount:   amount,
 		Resource: resource,
 		EndTime:  endtime,
 	}
 }
 
-func (msg MsgInvest) Route() string { return RouterKey }
+func (msg MsgConvert) Route() string { return RouterKey }
 
-func (msg MsgInvest) Type() string { return ActionInvest }
+func (msg MsgConvert) Type() string { return ActionConvert }
 
-func (msg MsgInvest) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Investor); if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid investor address: %s", err)
+func (msg MsgConvert) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.Agent); if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid agent address: %s", err)
 	}
 
 	if msg.Amount.Denom != ctypes.CYB {
@@ -54,12 +53,12 @@ func (msg MsgInvest) ValidateBasic() error {
 	return nil
 }
 
-func (msg MsgInvest) GetSignBytes() []byte {
+func (msg MsgConvert) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&msg))
 }
 
-func (msg MsgInvest) GetSigners() []sdk.AccAddress {
-	addr, _ := sdk.AccAddressFromBech32(msg.Investor)
+func (msg MsgConvert) GetSigners() []sdk.AccAddress {
+	addr, _ := sdk.AccAddressFromBech32(msg.Agent)
 	return []sdk.AccAddress{addr}
 }
 

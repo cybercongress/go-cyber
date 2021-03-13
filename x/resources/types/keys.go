@@ -1,14 +1,14 @@
 package types
 
 const (
-	ModuleName 		= "investment"
+	ModuleName 		= "resources"
 	StoreKey 		= ModuleName
 	RouterKey 		= ModuleName
 	QuerierRoute 	= ModuleName
 
-	InvestmentsName = "investments"
+	ResourcesName = "resources"
 
-	ActionInvest    	  = "invest"
+	ActionConvert    	  = "convert"
 	ActionCreateResource  = "create_resource"
 	ActionRedeemResource  = "redeem_resource"
 )

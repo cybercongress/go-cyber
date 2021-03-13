@@ -189,10 +189,12 @@ func newApp(logger log.Logger, db dbm.DB, traceStore io.Writer, appOpts serverty
 		panic(err)
 	}
 
+	var emptyWasmOpts []wasm.Option
 	return app.New(
 		logger, db, traceStore, true, skipUpgradeHeights,
 		cast.ToString(appOpts.Get(flags.FlagHome)),
 		cast.ToUint(appOpts.Get(server.FlagInvCheckPeriod)),
+		emptyWasmOpts,
 		app.GetEnabledProposals(),
 		appOpts,
 		baseapp.SetPruning(pruningOpts),
@@ -220,14 +222,15 @@ func createAppAndExport(
 		return servertypes.ExportedApp{}, errors.New("application home not set")
 	}
 
+	var emptyWasmOpts []wasm.Option
 	if height != -1 {
-		cyber = app.New(logger, db, traceStore, false, map[int64]bool{}, "", uint(1), app.GetEnabledProposals(), appOpts)
+		cyber = app.New(logger, db, traceStore, false, map[int64]bool{}, "", uint(1), emptyWasmOpts, app.GetEnabledProposals(), appOpts)
 
 		if err := cyber.LoadHeight(height); err != nil {
             return servertypes.ExportedApp{}, err
 		}
 	} else {
-		cyber = app.New(logger, db, traceStore, true, map[int64]bool{}, "", uint(1), app.GetEnabledProposals(), appOpts)
+		cyber = app.New(logger, db, traceStore, true, map[int64]bool{}, "", uint(1), emptyWasmOpts, app.GetEnabledProposals(), appOpts)
 	}
 
 	return cyber.ExportAppStateAndValidators(forZeroHeight, jailWhiteList)
