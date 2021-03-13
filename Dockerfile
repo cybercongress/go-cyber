@@ -64,7 +64,7 @@ WORKDIR /sources
 # TODO: Update brach to master before merge\relaese
 RUN git checkout bostrom-dev
 RUN make build
-COPY build/cyber /cyber/cosmovisor/genesis/bin
+COPY ./build/cyber /cyber/cosmovisor/genesis/bin
 
 ###########################################################################################
 # Build wasmvm
