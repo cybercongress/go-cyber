@@ -2,6 +2,7 @@
 
 if [ ! -f "/root/.cyber/config/node_key.json" ]
 then
+  mkdir /root/.cyber
   mkdir /root/.cyber/config/
   cyber init ${NODE_MONIKER}
   cp /genesis.json /root/.cyber/config/
