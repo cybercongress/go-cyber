@@ -12,7 +12,7 @@ ENV GAIA_HOME ${DAEMON_HOME}
 ENV DAEMON_NAME cyber
 ENV BUILD_DIR /build
 #ENV COSMWASM_VER "0.7.2"
-ENV PATH /usr/local/go/bin:/root/.cargo/bin:/root/.cyberd/scripts:$PATH
+ENV PATH /usr/local/go/bin:/root/.cargo/bin:/root/.cyber/scripts:$PATH
 
 
 # Install required dev tools to compile cyberd
