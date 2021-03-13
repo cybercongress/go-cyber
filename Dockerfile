@@ -104,7 +104,7 @@ WORKDIR /
 ###########################################################################################
 COPY --from=build_stage_cuda /cyber /cyber
 
-COPY --from=build_stage_cuda /usr/local/bin/cosmovisor /usr/local/bin/cosmovisor
+COPY --from=build_stage_cuda /usr/bin/cosmovisor /usr/local/bin/cosmovisor
 
 COPY --from=build_stage_cuda /usr/lib/cbdrank.h /usr/lib/cbdrank.h
 COPY --from=build_stage_cuda /usr/lib/libcbdrank.so /usr/lib/libcbdrank.so
