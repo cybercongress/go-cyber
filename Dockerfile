@@ -1,60 +1,140 @@
-# Simple usage with a mounted data directory:
-# > docker build -t gaia .
-# > docker run -it -p 46657:46657 -p 46656:46656 -v ~/.gaiad:/gaia/.gaiad -v ~/.gaiacli:/gaia/.gaiacli gaia gaiad init
-# > docker run -it -p 46657:46657 -p 46656:46656 -v ~/.gaiad:/gaia/.gaiad -v ~/.gaiacli:/gaia/.gaiacli gaia gaiad start
-FROM golang:1.15-alpine3.12 AS build-env
+###########################################################################################
+# Build cyber
+###########################################################################################
+FROM nvidia/cuda:10.2-base as build_stage_cuda
 
-# this comes from standard alpine nightly file
-#  https://github.com/rust-lang/docker-rust-nightly/blob/master/alpine3.12/Dockerfile
-# with some changes to support our toolchain, etc
-RUN set -eux; apk add --no-cache ca-certificates build-base;
+ENV GO_VERSION 1.15.10
+ENV GO_ARCH 'linux-amd64'
+ENV GO_BIN_SHA '4aa1267517df32f2bf1cc3d55dfc27d0c6b2c2b0989449c96dd19273ccca051d'
+ENV DAEMON_HOME /root/.cyber
+ENV DAEMON_RESTART_AFTER_UPGRADE=on
+ENV GAIA_HOME ${DAEMON_HOME}
+ENV DAEMON_NAME cyber
+ENV BUILD_DIR /build
+#ENV COSMWASM_VER "0.7.2"
+ENV PATH /usr/local/go/bin:/root/.cargo/bin:/root/.cyberd/scripts:$PATH
 
-RUN apk add git
-# NOTE: add these to run with LEDGER_ENABLED=true
-# RUN apk add libusb-dev linux-headers
 
-# Set up dependencies
-#ENV PACKAGES curl make git libc-dev bash gcc linux-headers eudev-dev python3
+# Install required dev tools to compile cyberd
+###########################################################################################
+RUN apt-get update && apt-get install -y --no-install-recommends wget git
 
-# Set working directory for the build
-#WORKDIR /go/src/github.com/cybercongress/cyber
+# Install golang
+###########################################################################################
+RUN url="https://golang.org/dl/go${GO_VERSION}.${GO_ARCH}.tar.gz" && \
+    wget -O go.tgz "$url" && \
+    echo "${GO_BIN_SHA} *go.tgz" | sha256sum -c - && \
+    tar -C /usr/local -xzf go.tgz &&\
+    rm go.tgz
 
-# Add source files
-#COPY . .
+ENV PATH="/usr/local/go/bin:$PATH"
+RUN apt-get -y install --no-install-recommends \
+    ca-certificates \
+    make gcc g++ \
+    wget \
+    curl \
+    git \
+    nvidia-cuda-toolkit \
+&& go version
 
-# Install minimum necessary dependencies, build Cosmos SDK, remove packages
-#RUN apk add --no-cache $PACKAGES && \
-#    make install
+# Create appropriate folders layout
+###########################################################################################
+ RUN mkdir -p /cyber/cosmovisor/genesis/bin 
 
-WORKDIR /code
-COPY . .
+# Compile cosmovisor
+###########################################################################################
+ RUN git clone https://github.com/cosmos/cosmos-sdk.git $BUILD_DIR \
+ && cd $BUILD_DIR/cosmovisor/ \
+ && make cosmovisor \
+ && cp cosmovisor /usr/bin/cosmovisor \
+ && chmod +x /usr/bin/cosmovisor \
+ && rm -fR $BUILD_DIR/* && rm -fR $BUILD_DIR/.*[a-z]
 
-# See https://github.com/CosmWasm/wasmvm/releases
-ADD https://github.com/CosmWasm/wasmvm/releases/download/v0.13.0/libwasmvm_muslc.a /lib/libwasmvm_muslc.a
-RUN sha256sum /lib/libwasmvm_muslc.a | grep 39dc389cc6b556280cbeaebeda2b62cf884993137b83f90d1398ac47d09d3900
 
-# force it to use static lib (from above) not standard libgo_cosmwasm.so file
-RUN LEDGER_ENABLED=false BUILD_TAGS=muslc make install
+# Compile cuda kernel
+###########################################################################################
+COPY . /sources
+WORKDIR /sources/x/rank/cuda
+RUN make build
+RUN cp ./build/libcbdrank.so /usr/lib/ && cp cbdrank.h /usr/lib/
 
-# --------------------------------------------------------
+# Compile cyberd for genesis version
+###########################################################################################
+WORKDIR /sources
+RUN git checkout master
+RUN make build \
+&& ./build/cyber version \
+&& cp ./build/cyber /cyber/cosmovisor/genesis/bin/cyber
 
-# Final image
-FROM alpine:edge
+###########################################################################################
+# Build wasmvm
+###########################################################################################
 
-ENV CYBER /cyber
+#FROM rustlang/rust:nightly as build_stage_rust
+#RUN curl https://sh.rustup.rs -sSf | sh -s -- -y \
+# && wget --quiet https://github.com/CosmWasm/cosmwasm/archive/v${COSMWASM_VER}.tar.gz -P /tmp \
+# && tar xzf /tmp/v${COSMWASM_VER}.tar.gz -C $BUILD_DIR \
+# && cd $BUILD_DIR/cosmwasm-${COSMWASM_VER}/ && make build \
+# && cp $BUILD_DIR/cosmwasm-${COSMWASM_VER}/api/libgo_cosmwasm.so /usr/lib/ \
+# && cp $BUILD_DIR/cosmwasm-${COSMWASM_VER}/api/libgo_cosmwasm.dylib /usr/lib/
 
-# Install ca-certificates
-RUN apk add --update ca-certificates
+###########################################################################################
+# Create runtime cyber image
+###########################################################################################
+FROM nvidia/cuda:10.2-base
 
-RUN addgroup cyber && \
-    adduser -S -G cyber cyber -h "$CYBER"
+ENV DAEMON_HOME /root/.cyber
+ENV DAEMON_RESTART_AFTER_UPGRADE=on
+ENV GAIA_HOME ${DAEMON_HOME}
+ENV DAEMON_NAME cyber
 
-USER cyber
+# Install useful dev tools
+###########################################################################################
+RUN apt-get update && apt-get install -y --no-install-recommends wget curl
 
-WORKDIR $CYBER
+# Download genesis file and links file from IPFS
+###########################################################################################
+# To slow using ipget, currently we use gateway
+# PUT needed CID_OF_GENESIS and CID_OF_CONFIG here
+RUN wget -O /genesis.json https://ipfs.io/ipfs/QmYS6UdU1VFqkYjQDahxiESntk8pFCZkwMANqf1a8ZNDfy
 
-# Copy over binaries from the build-env
-COPY --from=build-env /go/bin/cyber /usr/bin/cyber
+WORKDIR /
 
-# Run gaiad by default, omit entrypoint to ease using container with gaiacli
-CMD ["cyber", "--help"]
+# Copy compiled kernel and binaries for current bin version
+###########################################################################################
+COPY --from=build_stage_cuda /cyber /cyber
+
+COPY --from=build_stage_cuda /sources/build/cyber /usr/bin/cyber
+
+COPY --from=build_stage_cuda /usr/lib/cbdrank.h /usr/lib/cbdrank.h
+COPY --from=build_stage_cuda /usr/lib/libcbdrank.so /usr/lib/libcbdrank.so
+
+#COPY --from=build_stage_cuda /usr/lib/libgo_cosmwasm.so /usr/lib/libgo_cosmwasm.so
+#COPY --from=build_stage_cuda /usr/lib/libgo_cosmwasm.dylib /usr/lib/libgo_cosmwasm.dylib
+
+# Copy startup scripts
+###########################################################################################
+
+COPY start_script.sh /start_script.sh
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x start_script.sh
+RUN chmod +x /entrypoint.sh
+
+# Cleanup for runtime container
+###########################################################################################
+#RUN cd / && rm -fR $BUILD_DIR $HOME/.rustup $HOME/.cargo $HOME/.cache $HOME/go 
+#&& apt-get remove -y --auto-remove \
+#ca-certificates \
+#make gcc g++ \
+#curl \
+#git \
+#nvidia-cuda-toolkit \
+#; \
+#rm -rf /var/lib/apt/lists/*; \
+#rm -fR /tmp/*;
+
+# Start
+###########################################################################################
+EXPOSE 26656 26657 1317
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["./start_script.sh"]
