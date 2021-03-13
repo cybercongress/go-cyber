@@ -134,11 +134,8 @@ all: tools install lint
 # The below include contains the tools.
 
 build: go.sum
-ifeq ($(OS),Windows_NT)
-	go build $(BUILD_FLAGS) -o build/cyber.exe ./cmd/cyber
-else
 	go build $(BUILD_FLAGS) -o build/cyber ./cmd/cyber
-endif
+
 
 build-linux: go.sum
 	#LEDGER_ENABLED=false GOOS=linux GOARCH=amd64 $(MAKE) build
