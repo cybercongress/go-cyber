@@ -10,8 +10,8 @@ import (
 	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 
-	"github.com/tendermint/tendermint/libs/log"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	"github.com/tendermint/tendermint/libs/log"
 
 	ctypes "github.com/cybercongress/go-cyber/types"
 	"github.com/cybercongress/go-cyber/x/investments/types"
@@ -222,14 +222,14 @@ func (k Keeper) Mint(ctx sdk.Context, recipientAddr sdk.AccAddress, amt sdk.Coin
 		toMint = ctypes.NewAmperCoin(base.Mul(cycles).Mul(tmul).Mul(smul).TruncateInt64())
 	}
 
-	fmt.Println("[CYB]-->[VOLT || AMPER]")
-	fmt.Println("Amount CYB:", amt.Amount)
-	fmt.Println("Length:", length)
-	fmt.Println("Cycles:", cycles)
-	fmt.Println("Base:", base)
-	fmt.Println("TimeMul:", tmul)
-	fmt.Println("SupplyMul:", smul)
-	fmt.Println("[*] MINT VOLT || AMPER:", toMint.Amount)
+	//fmt.Println("[CYB]-->[VOLT || AMPER]")
+	//fmt.Println("Amount CYB:", amt.Amount)
+	//fmt.Println("Length:", length)
+	//fmt.Println("Cycles:", cycles)
+	//fmt.Println("Base:", base)
+	//fmt.Println("TimeMul:", tmul)
+	//fmt.Println("SupplyMul:", smul)
+	//fmt.Println("[*] MINT VOLT || AMPER:", toMint.Amount)
 
 	err := k.bankKeeper.MintCoins(ctx, types.InvestmentsName, sdk.NewCoins(toMint))
 	if err != nil {
@@ -262,8 +262,8 @@ func PeriodCheck(ctx sdk.Context, length int64) bool {
 	//default:
 	//	availableLength = 300
 	//}
-	//return length <= availableLength
-	return true
+	return length <= 2*24*60*60 // mock for 2 days
+	//return true
 }
 
 func TimeMultiplier(cycles sdk.Dec) sdk.Dec {
@@ -276,7 +276,7 @@ func TimeMultiplier(cycles sdk.Dec) sdk.Dec {
 
 func SupplyMultiplier(ctx sdk.Context, bk bankkeeper.Keeper, denom string) sdk.Dec {
 	supply := bk.GetSupply(ctx).GetTotal().AmountOf(denom)
-	fmt.Println("Supply:", supply)
+	//fmt.Println("Supply:", supply)
 	if supply.Int64() < ctypes.Giga*9 {
 		return sdk.OneDec().Sub((sdk.NewDecFromInt(supply).QuoInt64(ctypes.Giga*10)))
 	} else {

@@ -1,8 +1,6 @@
 package app
 
 import (
-	"fmt"
-
 	"github.com/CosmWasm/wasmd/x/wasm"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -13,8 +11,9 @@ import (
 	//bank "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	ctypes "github.com/cybercongress/go-cyber/types"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
+
+	ctypes "github.com/cybercongress/go-cyber/types"
 
 	//ctypes "github.com/cybercongress/go-cyber/types"
 	bandwidthkeeper "github.com/cybercongress/go-cyber/x/bandwidth/keeper"
@@ -108,7 +107,7 @@ func (drd DeductFeeBandRouterDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, s
 	}
 
 	if nativeFlag {
-		fmt.Println("[*] Native fee tx routing")
+		//fmt.Println("[*] Native fee tx routing")
 		if !feeTx.GetFee().IsZero() {
 			err = DeductFees(drd.bk, ctx, feePayerAcc, feeTx.GetFee(), nil)
 			if err != nil {
@@ -119,7 +118,7 @@ func (drd DeductFeeBandRouterDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, s
 		return next(ctx, tx, simulate)
 	}
 	if wasmExecuteFlag {
-		fmt.Println("[*] Execute fee split tx routing")
+		//fmt.Println("[*] Execute fee split tx routing")
 		if !feeTx.GetFee().IsZero() {
 			err = DeductFees(drd.bk, ctx, feePayerAcc, feeTx.GetFee(), ai2pay)
 			if err != nil {
@@ -129,7 +128,7 @@ func (drd DeductFeeBandRouterDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, s
 
 		return next(ctx, tx, simulate)
 	}
-	fmt.Println("[*] Bandwidth link tx routing")
+	//fmt.Println("[*] Bandwidth link tx routing")
 
 	txCost := drd.bm.GetPricedTxCost(ctx, tx)
 	accountBandwidth := drd.bm.GetCurrentAccountBandwidth(ctx, feePayerAcc.GetAddress())
@@ -142,7 +141,7 @@ func (drd DeductFeeBandRouterDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, s
 	} else if (txCost + currentBlockSpentBandwidth) > maxBlockBandwidth  {
 		return ctx, bandwidthtypes.ErrExceededMaxBlockBandwidth // TODO check cyberlink script why this error?
 	} else {
-		fmt.Println("-- bandwidth consumed: ", txCost)
+		//fmt.Println("-- bandwidth consumed: ", txCost)
 		drd.bm.ConsumeAccountBandwidth(ctx, accountBandwidth, txCost)
 
 		if !ctx.IsCheckTx() {
@@ -163,7 +162,7 @@ func DeductFees(bankKeeper bankkeeper.Keeper, ctx sdk.Context, acc authtypes.Acc
 	}
 
 	if ai == nil {
-		fmt.Println("-- fee native payed: ", fees)
+		//fmt.Println("-- fee native payed: ", fees)
 		err := bankKeeper.SendCoinsFromAccountToModule(ctx, acc.GetAddress(), types.FeeCollectorName, fees)
 		if err != nil {
 			return sdkerrors.Wrapf(sdkerrors.ErrInsufficientFunds, err.Error())
@@ -179,13 +178,13 @@ func DeductFees(bankKeeper bankkeeper.Keeper, ctx sdk.Context, acc authtypes.Acc
 		toValidatorsAmount := sdk.NewCoins(sdk.NewCoin(ctypes.CYB, toValidators.RoundInt()))
 		toContractAmount := sdk.NewCoins(sdk.NewCoin(ctypes.CYB, toContract.RoundInt()))
 
-		fmt.Println("-- fee split contract payed: ", toContractAmount)
+		//fmt.Println("-- fee split contract payed: ", toContractAmount)
 		err := bankKeeper.SendCoins(ctx, acc.GetAddress(), ai, toContractAmount)
 		if err != nil {
 			return sdkerrors.Wrapf(sdkerrors.ErrInsufficientFunds, err.Error())
 		}
 
-		fmt.Println("-- fee split validator payed: ", toValidatorsAmount)
+		//fmt.Println("-- fee split validator payed: ", toValidatorsAmount)
 		err = bankKeeper.SendCoinsFromAccountToModule(ctx, acc.GetAddress(), types.FeeCollectorName, toValidatorsAmount)
 		if err != nil {
 			return sdkerrors.Wrapf(sdkerrors.ErrInsufficientFunds, err.Error())
@@ -229,7 +228,7 @@ func (mfd MempoolFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate b
 	// if this is a CheckTx. This is only for local mempool purposes, and thus
 	// is only ran on check tx.
 	if ctx.IsCheckTx() && !simulate && !linksFlag {
-		fmt.Println("[*] Tx fee mempool check")
+		//fmt.Println("[*] Tx fee mempool check")
 		minGasPrices := ctx.MinGasPrices()
 		if !minGasPrices.IsZero() {
 			requiredFees := make(sdk.Coins, len(minGasPrices))
@@ -247,7 +246,7 @@ func (mfd MempoolFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate b
 			}
 		}
 	} else {
-		fmt.Println("[*] Tx fee mempool no check")
+		//fmt.Println("[*] Tx fee mempool no check")
 	}
 	return next(ctx, tx, simulate)
 }
