@@ -61,7 +61,8 @@ RUN cp ./build/libcbdrank.so /usr/lib/ && cp cbdrank.h /usr/lib/
 # Compile cyberd for genesis version
 ###########################################################################################
 WORKDIR /sources
-RUN git checkout master
+# TODO: Update brach to master before merge\relaese
+RUN git checkout bostrom-dev
 RUN make install
 COPY /usr/local/go/bin/cyber /cyber/cosmovisor/genesis/bin
 
