@@ -63,9 +63,8 @@ RUN cp ./build/libcbdrank.so /usr/lib/ && cp cbdrank.h /usr/lib/
 WORKDIR /sources
 # TODO: Update brach to master before merge\relaese
 RUN git checkout bostrom-dev
-RUN make install
-RUN which cyber
-COPY /usr/local/go/bin/cyber /cyber/cosmovisor/genesis/bin
+RUN make build
+COPY build/cyber /cyber/cosmovisor/genesis/bin
 
 ###########################################################################################
 # Build wasmvm
