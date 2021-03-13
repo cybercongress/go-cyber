@@ -1,9 +1,17 @@
 #!/bin/sh
 
+if [ ! -d "/root/.cyber/" ]
+then
+  mkdir /root/.cyber/
+  mkdir /root/.cyber/config/
+  cyber init ${NODE_MONIKER}
+  cp /genesis.json /root/.cyber/config/
+#  cp /config.toml  /root/.cyber/config/
+  cp -r /cyber/cosmovisor/  /root/.cyber
+fi
+
 if [ ! -f "/root/.cyber/config/node_key.json" ]
 then
-  mkdir /root/.cyber
-  mkdir /root/.cyber/config/
   cyber init ${NODE_MONIKER}
   cp /genesis.json /root/.cyber/config/
 #  cp /config.toml  /root/.cyber/config/
