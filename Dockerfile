@@ -11,7 +11,7 @@ ENV DAEMON_RESTART_AFTER_UPGRADE=on
 ENV GAIA_HOME ${DAEMON_HOME}
 ENV DAEMON_NAME cyber
 ENV BUILD_DIR /build
-#ENV COSMWASM_VER "0.7.2"
+ENV COSMWASM_VER "0.13.0"
 ENV PATH /usr/local/go/bin:/root/.cargo/bin:/root/.cyber/scripts:$PATH
 
 
@@ -58,8 +58,20 @@ WORKDIR /sources/x/rank/cuda
 RUN make build
 RUN cp ./build/libcbdrank.so /usr/lib/ && cp cbdrank.h /usr/lib/
 
+###########################################################################################
+# Build wasmvm
+###########################################################################################
+
+FROM rustlang/rust:nightly as build_stage_rust
+RUN wget --quiet https://github.com/CosmWasm/wasmvm/archive/v${COSMWASM_VER}.tar.gz -P /tmp \
+ && tar xzf /tmp/v${COSMWASM_VER}.tar.gz -C $BUILD_DIR \
+ && cd $BUILD_DIR/wasmvm-${COSMWASM_VER}/ && make build \
+ && cp $BUILD_DIR/wasmvm-${COSMWASM_VER}/api/libgo_cosmwasm.so /usr/lib/ \
+ && cp $BUILD_DIR/wasmvm-${COSMWASM_VER}/api/libgo_cosmwasm.dylib /usr/lib/
+
 # Compile cyberd for genesis version
 ###########################################################################################
+
 ADD https://github.com/CosmWasm/wasmvm/releases/download/v0.13.0/libwasmvm_muslc.a /lib/libwasmvm_muslc.a
 RUN sha256sum /lib/libwasmvm_muslc.a | grep 39dc389cc6b556280cbeaebeda2b62cf884993137b83f90d1398ac47d09d3900
 
@@ -69,17 +81,7 @@ RUN git checkout bostrom-dev
 RUN make build
 COPY ./build/cyber /cyber/cosmovisor/genesis/bin
 
-###########################################################################################
-# Build wasmvm
-###########################################################################################
 
-#FROM rustlang/rust:nightly as build_stage_rust
-#RUN curl https://sh.rustup.rs -sSf | sh -s -- -y \
-# && wget --quiet https://github.com/CosmWasm/cosmwasm/archive/v${COSMWASM_VER}.tar.gz -P /tmp \
-# && tar xzf /tmp/v${COSMWASM_VER}.tar.gz -C $BUILD_DIR \
-# && cd $BUILD_DIR/cosmwasm-${COSMWASM_VER}/ && make build \
-# && cp $BUILD_DIR/cosmwasm-${COSMWASM_VER}/api/libgo_cosmwasm.so /usr/lib/ \
-# && cp $BUILD_DIR/cosmwasm-${COSMWASM_VER}/api/libgo_cosmwasm.dylib /usr/lib/
 
 ###########################################################################################
 # Create runtime cyber image
@@ -112,8 +114,8 @@ COPY --from=build_stage_cuda /usr/bin/cosmovisor /usr/local/bin/cosmovisor
 COPY --from=build_stage_cuda /usr/lib/cbdrank.h /usr/lib/cbdrank.h
 COPY --from=build_stage_cuda /usr/lib/libcbdrank.so /usr/lib/libcbdrank.so
 
-#COPY --from=build_stage_cuda /usr/lib/libgo_cosmwasm.so /usr/lib/libgo_cosmwasm.so
-#COPY --from=build_stage_cuda /usr/lib/libgo_cosmwasm.dylib /usr/lib/libgo_cosmwasm.dylib
+COPY --from=build_stage_rust /usr/lib/libgo_cosmwasm.so /usr/lib/libgo_cosmwasm.so
+COPY --from=build_stage_rust /usr/lib/libgo_cosmwasm.dylib /usr/lib/libgo_cosmwasm.dylib
 
 # Copy startup scripts
 ###########################################################################################
