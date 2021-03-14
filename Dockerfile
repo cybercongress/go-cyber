@@ -111,8 +111,8 @@ COPY --from=build_stage_cuda /usr/bin/cosmovisor /usr/local/bin/cosmovisor
 COPY --from=build_stage_cuda /usr/lib/cbdrank.h /usr/lib/cbdrank.h
 COPY --from=build_stage_cuda /usr/lib/libcbdrank.so /usr/lib/libcbdrank.so
 
-COPY --from=build_stage_rust /usr/lib/libgo_cosmwasm.so /usr/lib/libgo_cosmwasm.so
-COPY --from=build_stage_rust /usr/lib/libgo_cosmwasm.dylib /usr/lib/libgo_cosmwasm.dylib
+COPY --from=build_stage_cuda /usr/lib/libgo_cosmwasm.so /usr/lib/libgo_cosmwasm.so
+COPY --from=build_stage_cuda /usr/lib/libgo_cosmwasm.dylib /usr/lib/libgo_cosmwasm.dylib
 
 # Copy startup scripts
 ###########################################################################################
