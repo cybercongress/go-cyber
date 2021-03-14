@@ -117,9 +117,9 @@ COPY --from=build_stage_cuda /usr/lib/libwasmvm.dylib /usr/lib/libwasmvm.dylib
 # Copy startup scripts
 ###########################################################################################
 
-COPY start_script.sh /start_script.sh
+COPY start_script.sh start_script.sh
 COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /start_script.sh
+RUN chmod +x start_script.sh
 RUN chmod +x /entrypoint.sh
 
 # Cleanup for runtime container
@@ -139,4 +139,4 @@ RUN chmod +x /entrypoint.sh
 ###########################################################################################
 EXPOSE 26656 26657 1317
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["/start_script.sh"]
+CMD ["./start_script.sh"]
