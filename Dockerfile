@@ -12,7 +12,7 @@ ENV GAIA_HOME ${DAEMON_HOME}
 ENV DAEMON_NAME cyber
 ENV BUILD_DIR /build
 ENV COSMWASM_VER "0.13.0"
-ENV PATH /usr/local/go/bin:/root/.cargo/bin:/root/.cyber/scripts:$PATH
+ENV PATH /usr/local/go/bin:/root/.cargo/bin:/root/cargo/env:/root/.cyber/scripts:$PATH
 
 
 # Install required dev tools to compile cyberd
@@ -62,12 +62,12 @@ RUN cp ./build/libcbdrank.so /usr/lib/ && cp cbdrank.h /usr/lib/
 # Build wasmvm
 ###########################################################################################
 
-FROM rustlang/rust:nightly as build_stage_rust
+RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
 RUN wget --quiet https://github.com/CosmWasm/wasmvm/archive/v${COSMWASM_VER}.tar.gz -P /tmp \
  && tar xzf /tmp/v${COSMWASM_VER}.tar.gz -C $BUILD_DIR \
  && cd $BUILD_DIR/wasmvm-${COSMWASM_VER}/ && make build \
- && cp $BUILD_DIR/wasmvm-${COSMWASM_VER}/api/libgo_cosmwasm.so /usr/lib/ \
- && cp $BUILD_DIR/wasmvm-${COSMWASM_VER}/api/libgo_cosmwasm.dylib /usr/lib/
+ && cp $BUILD_DIR/wasmvm-${COSMWASM_VER}/api/libwasmvm.so /usr/lib/ \
+ && cp $BUILD_DIR/wasmvm-${COSMWASM_VER}/api/libwasmvm.dylib /usr/lib/
 
 # Compile cyberd for genesis version
 ###########################################################################################
