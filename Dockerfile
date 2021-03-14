@@ -62,9 +62,8 @@ RUN cp ./build/libcbdrank.so /usr/lib/ && cp cbdrank.h /usr/lib/
 # Build wasmvm
 ###########################################################################################
 
-FROM rustlang/rust:nightly as build_stage_rust
-RUN curl https://sh.rustup.rs -sSf | sh -s -- -y \
- && wget --quiet https://github.com/CosmWasm/wasmvm/archive/v${COSMWASM_VER}.tar.gz -P /tmp \
+FROM rustlang/rust:latest as build_stage_rust
+RUN wget --quiet https://github.com/CosmWasm/wasmvm/archive/v${COSMWASM_VER}.tar.gz -P /tmp \
  && tar xzf /tmp/v${COSMWASM_VER}.tar.gz -C $BUILD_DIR \
  && cd $BUILD_DIR/wasmvm-${COSMWASM_VER}/ && make build \
  && cp $BUILD_DIR/wasmvm-${COSMWASM_VER}/api/libgo_cosmwasm.so /usr/lib/ \
