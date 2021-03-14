@@ -33,5 +33,6 @@ then
   return 0
 else
   echo "exec"
+  wait 500000
   exec "$@"
 fi
