@@ -6,6 +6,7 @@ then
   mkdir /root/.cyber/config/
   /cyber/cosmovisor/genesis/bin/cyber init ${NODE_MONIKER}
   cp -r /cyber/cosmovisor/  /root/.cyber
+  echo "inited cyber"
 fi
 
 if [ ! -f "/root/.cyber/config/node_key.json" ]
@@ -28,7 +29,9 @@ fi
 
 if [ "$2" = 'init' ]
 then
+  echo "return0"
   return 0
 else
+  echo "exec"
   exec "$@"
 fi
