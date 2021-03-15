@@ -97,8 +97,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends wget curl
 # Download genesis file and links file from IPFS
 ###########################################################################################
 # To slow using ipget, currently we use gateway
-# PUT needed CID_OF_GENESIS and CID_OF_CONFIG here
-RUN wget -O /genesis.json https://ipfs.io/ipfs/QmYS6UdU1VFqkYjQDahxiESntk8pFCZkwMANqf1a8ZNDfy
+# PUT needed CID_OF_GENESIS here
+RUN wget -O /genesis.json https://ipfs.io/ipfs/QmSB76Ggfswc9AxwHmSAP7QCigW7fqaX9RfXs51uUreVwH
 
 WORKDIR /
 
@@ -127,6 +127,6 @@ RUN chmod +x /entrypoint.sh
 
 #  Start
 ###############################################################################
-EXPOSE 26656 26657
+EXPOSE 26656 26657 1317 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["./start_script.sh"]
