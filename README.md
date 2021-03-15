@@ -2,6 +2,8 @@
 
 Special to [HackAtom RU](https://cyber.page/search/hackatom_ru)! Community Preview of Bostrom network.
 
+![](./brain.png)
+
 From Euler to Bostrom evolution we have:
 
 1. Stargate upgrade / IBC
