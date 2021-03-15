@@ -119,26 +119,14 @@ COPY --from=build_stage_cuda /usr/lib/libwasmvm.dylib /usr/lib/libwasmvm.dylib
 # Copy startup scripts
 ###########################################################################################
 
-COPY start_script.sh /start_script.sh
+COPY start_script.sh start_script.sh
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x start_script.sh
 RUN chmod +x /entrypoint.sh
 
-# Cleanup for runtime container
-###########################################################################################
-#RUN cd / && rm -fR $BUILD_DIR $HOME/.rustup $HOME/.cargo $HOME/.cache $HOME/go 
-#&& apt-get remove -y --auto-remove \
-#ca-certificates \
-#make gcc g++ \
-#curl \
-#git \
-#nvidia-cuda-toolkit \
-#; \
-#rm -rf /var/lib/apt/lists/*; \
-#rm -fR /tmp/*;
 
-# Start
-###########################################################################################
-EXPOSE 26656 26657 1317
+#  Start
+###############################################################################
+EXPOSE 26656 26657
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["./start_script.sh"]
