@@ -76,6 +76,7 @@ WORKDIR /sources
 # TODO: Update brach to master before merge\relaese
 RUN git checkout bostrom-dev \
  && make build \
+ && chmod +x ./build/cyber \
  && cp ./build/cyber /cyber/cosmovisor/genesis/bin/
 
 
