@@ -1,39 +1,15 @@
 #!/bin/sh
 
-echo "test"
-
-if [ -z "${COMPUTE_RANK_ON_GPU}" ]
-then
-  COMPUTE_GPU=true
-else
-  COMPUTE_GPU="${COMPUTE_RANK_ON_GPU}"
-fi
-
-if [ -z "${ALLOW_SEARCH}" ]
-then
-  ALLOW_SEARCH_FLAG=false
-else
-  ALLOW_SEARCH_FLAG="${ALLOW_SEARCH}"
-fi
-
-#export $(cat /.env) &
 ulimit -n 4096 &
+
 # Start the first process
-/usr/local/bin/cosmovisor start --compute-rank-on-gpu=${COMPUTE_GPU} --allow-search=${ALLOW_SEARCH_FLAG} --home /root/.cyber  &
-#status=$?
-#if [ $status -ne 0 ]; then
-#  echo "Failed to start cyberd: $status"
-#  exit $status
-#fi
-#
-## Start the second process
-## PUT needed CHAIN_ID here
-#cyberdcli rest-server  --trust-node --chain-id=euler-6 --laddr=tcp://0.0.0.0:1317 --indent --home=/root/.cyberdcli
-#status=$?
-#if [ $status -ne 0 ]; then
-#  echo "Failed to start cyberd light-client: $status"
-#  exit $status
-#fi
+
+/usr/local/bin/cosmovisor start --home /root/.cyber  &
+
+if [ $status -ne 0 ]; then
+  echo "Failed to start cyberd light-client: $status"
+  exit $status
+fi
 
 # Naive check runs checks once a minute to see if either of the processes exited.
 # This illustrates part of the heavy lifting you need to do if you want to run
