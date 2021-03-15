@@ -3,7 +3,7 @@
 ###########################################################################################
 FROM nvidia/cuda:10.2-base as build_stage_cuda
 
-ENV GO_VERSION 1.16.2
+ENV GO_VERSION '1.16.2'
 ENV GO_ARCH 'linux-amd64'
 ENV GO_BIN_SHA '542e936b19542e62679766194364f45141fde55169db2d8d01046555ca9eb4b8'
 ENV DAEMON_HOME /root/.cyber
@@ -61,7 +61,7 @@ RUN cp ./build/libcbdrank.so /usr/lib/ && cp cbdrank.h /usr/lib/
 ###########################################################################################
 # Build wasmvm
 ###########################################################################################
-
+WORKDIR /
 RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
 RUN wget --quiet https://github.com/CosmWasm/wasmvm/archive/v${COSMWASM_VER}.tar.gz -P /tmp \
  && tar xzf /tmp/v${COSMWASM_VER}.tar.gz -C $BUILD_DIR \
@@ -76,8 +76,7 @@ WORKDIR /sources
 # TODO: Update brach to master before merge\relaese
 RUN git checkout bostrom-dev
 RUN make build
-COPY ./build/cyber /cyber/cosmovisor/genesis/bin
-
+COPY /sources/build/cyber /cyber/cosmovisor/genesis/bin/
 
 
 ###########################################################################################
