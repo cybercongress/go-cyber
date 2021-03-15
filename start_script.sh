@@ -1,5 +1,7 @@
 #!/bin/sh
 
+echo "test"
+
 if [ -z "${COMPUTE_RANK_ON_GPU}" ]
 then
   COMPUTE_GPU=true
