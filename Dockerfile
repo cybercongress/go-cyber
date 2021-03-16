@@ -28,13 +28,13 @@ RUN wget -O go.tgz https://golang.org/dl/go1.16.2.linux-amd64.tar.gz && \
 
 ENV PATH="/usr/local/go/bin:$PATH"
 RUN apt-get -y install --no-install-recommends \
+    build-essential\
     ca-certificates \
     make gcc g++ \
     wget \
     curl \
     git \
     nvidia-cuda-toolkit \
-    ca-certificates \
 && go version
 
 # Create appropriate folders layout
@@ -92,7 +92,7 @@ ENV DAEMON_NAME cyber
 
 # Install useful dev tools
 ###########################################################################################
-RUN apt-get update && apt-get install -y --no-install-recommends wget curl ca-certificates
+RUN apt-get update && apt-get install -y --no-install-recommends wget curl ca-certificates build-essential
 
 # Download genesis file and links file from IPFS
 ###########################################################################################
