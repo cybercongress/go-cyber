@@ -62,7 +62,7 @@ RUN cp ./build/libcbdrank.so /usr/lib/ && cp cbdrank.h /usr/lib/
 ###########################################################################################
 WORKDIR /
 RUN curl https://sh.rustup.rs -sSf | sh -s -- -y \
- && wget --quiet https://github.com/CosmWasm/wasmvm/archive/v${COSMWASM_VER}.tar.gz -P /tmp \
+ && wget --quiet https://github.com/CosmWasm/wasmvm/archive/v${COSMWASM_VER}.tar.gz --no-check-certificate -P /tmp \
  && tar xzf /tmp/v${COSMWASM_VER}.tar.gz -C $BUILD_DIR \
  && cd $BUILD_DIR/wasmvm-${COSMWASM_VER}/ && make build \
  && cp $BUILD_DIR/wasmvm-${COSMWASM_VER}/api/libwasmvm.so /usr/lib/ \
