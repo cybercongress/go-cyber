@@ -97,7 +97,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends wget curl
 ###########################################################################################
 # To slow using ipget, currently we use gateway
 # PUT needed CID_OF_GENESIS here
-RUN wget -O /genesis.json https://ipfs.io/ipfs/QmSB76Ggfswc9AxwHmSAP7QCigW7fqaX9RfXs51uUreVwH
+RUN wget -O /genesis.json https://ipfs.io/ipfs/QmSB76Ggfswc9AxwHmSAP7QCigW7fqaX9RfXs51uUreVwH --no-check-certificate
 
 WORKDIR /
 
