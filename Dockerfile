@@ -1,7 +1,7 @@
 ###########################################################################################
 # Build cyber
 ###########################################################################################
-FROM nvidia/cuda:10.2-base-ubuntu18.04  as build_stage_cuda
+FROM ubuntu:18.04  as build_stage_cuda
 
 ENV GO_VERSION '1.16.2'
 ENV GO_ARCH 'linux-amd64'
@@ -83,7 +83,7 @@ RUN git checkout bostrom-dev \
 ###########################################################################################
 # Create runtime cyber image
 ###########################################################################################
-FROM nvidia/cuda:10.2-base
+FROM ubuntu:18.04
 
 ENV DAEMON_HOME /root/.cyber
 ENV DAEMON_RESTART_AFTER_UPGRADE=on
