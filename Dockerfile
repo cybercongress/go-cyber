@@ -34,6 +34,7 @@ RUN apt-get -y install --no-install-recommends \
     curl \
     git \
     nvidia-cuda-toolkit \
+    ca-certificates \
 && go version
 
 # Create appropriate folders layout
@@ -62,7 +63,7 @@ RUN cp ./build/libcbdrank.so /usr/lib/ && cp cbdrank.h /usr/lib/
 ###########################################################################################
 WORKDIR /
 RUN curl https://sh.rustup.rs -sSf | sh -s -- -y \
- && wget --quiet https://github.com/CosmWasm/wasmvm/archive/v${COSMWASM_VER}.tar.gz --no-check-certificate -P /tmp \
+ && wget --quiet https://github.com/CosmWasm/wasmvm/archive/v${COSMWASM_VER}.tar.gz -P /tmp \
  && tar xzf /tmp/v${COSMWASM_VER}.tar.gz -C $BUILD_DIR \
  && cd $BUILD_DIR/wasmvm-${COSMWASM_VER}/ && make build \
  && cp $BUILD_DIR/wasmvm-${COSMWASM_VER}/api/libwasmvm.so /usr/lib/ \
@@ -91,13 +92,13 @@ ENV DAEMON_NAME cyber
 
 # Install useful dev tools
 ###########################################################################################
-RUN apt-get update && apt-get install -y --no-install-recommends wget curl
+RUN apt-get update && apt-get install -y --no-install-recommends wget curl ca-certificates
 
 # Download genesis file and links file from IPFS
 ###########################################################################################
 # To slow using ipget, currently we use gateway
 # PUT needed CID_OF_GENESIS here
-RUN wget -O /genesis.json https://ipfs.io/ipfs/QmSB76Ggfswc9AxwHmSAP7QCigW7fqaX9RfXs51uUreVwH --no-check-certificate
+RUN wget -O /genesis.json https://ipfs.io/ipfs/QmSB76Ggfswc9AxwHmSAP7QCigW7fqaX9RfXs51uUreVwH 
 
 WORKDIR /
 
