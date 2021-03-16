@@ -17,7 +17,7 @@ ENV PATH /usr/local/go/bin:/root/.cargo/bin:/root/cargo/env:/root/.cyber/scripts
 
 # Install required dev tools to compile cyberd
 ###########################################################################################
-RUN apt-get update && apt-get install -y --no-install-recommends wget git
+RUN apt-get update && apt-get install -y --no-install-recommends wget git ca-certificates
 
 # Install golang
 ###########################################################################################
@@ -28,8 +28,6 @@ RUN wget -O go.tgz https://golang.org/dl/go1.16.2.linux-amd64.tar.gz && \
 
 ENV PATH="/usr/local/go/bin:$PATH"
 RUN apt-get -y install --no-install-recommends \
-    build-essential\
-    ca-certificates \
     make gcc g++ \
     wget \
     curl \
@@ -92,7 +90,7 @@ ENV DAEMON_NAME cyber
 
 # Install useful dev tools
 ###########################################################################################
-RUN apt-get update && apt-get install -y --no-install-recommends wget curl ca-certificates build-essential
+RUN apt-get update && apt-get install -y --no-install-recommends wget curl ca-certificates 
 
 # Download genesis file and links file from IPFS
 ###########################################################################################
