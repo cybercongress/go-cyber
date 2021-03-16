@@ -2,7 +2,7 @@
 
 PACKAGES_NOSIMULATION=$(shell go list ./...)
 BINDIR ?= $(GOPATH)/bin
-
+CUDA_ENABLED ?= true
 export GO111MODULE = on
 
 all: tools lint test
@@ -97,6 +97,16 @@ ifeq ($(LEDGER_ENABLED),true)
       endif
     endif
   endif
+endif
+
+ifeq ($(CUDA_ENABLED),true)
+    NVCC_RESULT := $(shell which nvcc 2> NULL)
+    NVCC_TEST := $(notdir $(NVCC_RESULT))
+    ifeq ($(NVCC_TEST),nvcc)
+        build_tags += cuda
+    else
+        $(error CUDA not installed for GPU support, please install or set CUDA_ENABLED=false)
+    endif
 endif
 
 ifeq ($(WITH_CLEVELDB),yes)
