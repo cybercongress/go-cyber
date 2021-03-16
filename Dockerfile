@@ -21,8 +21,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends wget git
 
 # Install golang
 ###########################################################################################
-RUN url="https://golang.org/dl/go${GO_VERSION}.${GO_ARCH}.tar.gz" && \
-    wget -O go.tgz "$url" && \
+RUN wget -O go.tgz https://golang.org/dl/go1.16.2.linux-amd64.tar.gz && \
     echo "${GO_BIN_SHA} *go.tgz" | sha256sum -c - && \
     tar -C /usr/local -xzf go.tgz &&\
     rm go.tgz
