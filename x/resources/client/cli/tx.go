@@ -74,7 +74,7 @@ $ %s tx resources convert 10000cyb 100000 --from mykey
 				return fmt.Errorf("block period %s not a valid uint, please input a valid block period", args[1])
 			}
 
-			msg := types.NewMsgConvert(agent, amount, args[1], int64(endBlock))
+			msg := types.NewMsgConvert(agent, amount, args[1], endBlock)
 
 			if err := msg.ValidateBasic(); err != nil {
 				return err

@@ -29,7 +29,7 @@ func (k msgServer) Convert(goCtx context.Context, msg *types.MsgConvert) (*types
 		return nil, err
 	}
 
-	err = k.ConvertResource(ctx, agent, msg.Amount, msg.Resource, msg.EndTime) // TODO return minted amount and pass to event
+	err = k.ConvertResource(ctx, agent, msg.Amount, msg.Resource, int64(msg.EndTime)) // TODO return minted amount and pass to event
 	if err != nil {
 		return nil, err
 	}
@@ -41,7 +41,7 @@ func (k msgServer) Convert(goCtx context.Context, msg *types.MsgConvert) (*types
 			sdk.NewAttribute(types.AttributeKeyAgent, msg.Agent),
 			sdk.NewAttribute(types.AttributeKeyAmount, msg.Amount.String()),
 			sdk.NewAttribute(types.AttributeKeyResource, msg.Resource),
-			sdk.NewAttribute(types.AttributeKeyEndTime, strconv.FormatInt(msg.EndTime, 10)),
+			sdk.NewAttribute(types.AttributeKeyEndTime, strconv.FormatUint(msg.EndTime, 10)),
 		),
 	)
 

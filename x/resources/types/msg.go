@@ -11,7 +11,7 @@ func NewMsgConvert(
 	agent sdk.AccAddress,
 	amount sdk.Coin,
 	resource string,
-	endtime int64,
+	endtime uint64,
 ) *MsgConvert {
 	return &MsgConvert{
 		Agent: agent.String(),

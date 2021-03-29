@@ -25,7 +25,7 @@ message MsgConvert {
                                            (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.Coin"
                                            ];
     string resource  = 3 [(gogoproto.jsontag) = "resource", (gogoproto.moretags) = "yaml:\"resource\""];
-    int64 end_time   = 4 [(gogoproto.jsontag) = "end_time", (gogoproto.moretags) = "yaml:\"end_time\""];
+    uint64 end_time   = 4 [(gogoproto.jsontag) = "end_time", (gogoproto.moretags) = "yaml:\"end_time\""];
 }
 
 message MsgConvertResponse {}
