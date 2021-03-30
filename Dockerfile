@@ -18,7 +18,7 @@ ENV PATH /usr/local/go/bin:/root/.cargo/bin:/root/.cyberd/scripts:$PATH
 
 # Install required dev tools to compile cyberd
 ###############################################################################
-RUN apt-get update && apt-get install -y --no-install-recommends wget git
+RUN apt-get update && apt-get install -y --no-install-recommends wget git ca-certificates
 
 # Install golang
 ###############################################################################
@@ -30,7 +30,6 @@ RUN url="https://golang.org/dl/go${GO_VERSION}.${GO_ARCH}.tar.gz" && \
 
 ENV PATH="/usr/local/go/bin:$PATH"
 RUN apt-get -y install --no-install-recommends \
-    ca-certificates \
     make gcc g++ \
     wget \
     curl \
