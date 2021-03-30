@@ -1,7 +1,7 @@
 ###############################################################################
 # Build cyber
 ###############################################################################
-FROM nvidia/cuda:10.2-base as build_stage_cuda
+FROM ubuntu:18.04 as build_stage_cuda
 
 ENV GO_VERSION 1.13.14
 ENV GO_ARCH 'linux-amd64'
