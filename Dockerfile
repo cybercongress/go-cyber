@@ -52,13 +52,7 @@ RUN apt-get -y install --no-install-recommends \
  && chmod +x /cyberd/cosmosd \
  && rm -fR $BUILD_DIR/* && rm -fR $BUILD_DIR/.*[a-z]
 
-
-# Compile cuda kernel
-###############################################################################
 COPY . /sources
-WORKDIR /sources/x/rank/cuda
-RUN make build
-RUN cp ./build/libcbdrank.so /usr/lib/ && cp cbdrank.h /usr/lib/
 
 # Compile cyberd for genesis version
 ###############################################################################
@@ -75,6 +69,12 @@ RUN git checkout v0.1.6.5
 RUN make build \
 && ./build/cyberd version \
 && cp  ./build/cyberd /cyberd/upgrade_manager/upgrades/darwin/bin/cyberd
+
+# Compile cuda kernel
+###############################################################################
+WORKDIR /sources/x/rank/cuda
+RUN make build
+RUN cp ./build/libcbdrank.so /usr/lib/ && cp cbdrank.h /usr/lib/
 
 ###############################################################################
 # Build wasmvm
