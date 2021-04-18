@@ -69,8 +69,8 @@ RUN make build \
 ###############################################################################
 WORKDIR /sources
 RUN git checkout v0.1.6.5
-RUN cd x/rank/cuda
-RUN make build
+WORKDIR /sources/x/rank/cuda
+RUN make 
 RUN cp ./build/libcbdrank.so /usr/lib/ && cp cbdrank.h /usr/lib/
 WORKDIR /sources
 RUN make build \
