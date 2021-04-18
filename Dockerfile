@@ -34,7 +34,7 @@ RUN apt-get -y install --no-install-recommends \
     wget \
     curl \
     git \
-#    nvidia-cuda-toolkit \
+    nvidia-cuda-toolkit \
 && go version
 
 # Create appropriate folders layout
