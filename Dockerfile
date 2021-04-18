@@ -80,8 +80,7 @@ RUN make build \
 # Build wasmvm
 ###############################################################################
 
-FROM rustlang/rust:nightly as build_stage_rust
-RUN curl https://sh.rustup.rs -sSf | sh -s -- -y \
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh \
  && wget --quiet https://github.com/CosmWasm/wasmvm/archive/refs/tags/v${COSMWASM_VER}.tar.gz -P /tmp \
  && tar xzf /tmp/v${COSMWASM_VER}.tar.gz -C $BUILD_DIR \
  && cd $BUILD_DIR/wasmvm-${COSMWASM_VER}/ && make build \
