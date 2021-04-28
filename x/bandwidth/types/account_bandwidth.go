@@ -36,11 +36,12 @@ func (bs *AccountBandwidth) Recover(currentBlock uint64, recoveryPeriod uint64) 
 	bs.LastUpdatedBlock = currentBlock
 }
 
-func (bs *AccountBandwidth) Consume(bandwidthToConsume uint64) {
+func (bs *AccountBandwidth) Consume(bandwidthToConsume uint64) error {
 	bs.RemainedValue = bs.RemainedValue - bandwidthToConsume
 	if bs.RemainedValue < 0 {
-		panic("Negative bandwidth!")
+		return ErrNotEnoughBandwidth
 	}
+	return nil
 }
 
 func (bs AccountBandwidth) HasEnoughRemained(bandwidthToConsume uint64) bool {

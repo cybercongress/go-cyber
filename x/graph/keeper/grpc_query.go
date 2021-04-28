@@ -15,13 +15,15 @@ import (
 
 var _ types.QueryServer = GraphKeeper{}
 
+// TODO developers endpoint, remove before release
 func (gk GraphKeeper) OutLinks(goCtx context.Context, req *types.QueryLinksRequest) (*types.QueryLinksResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	_, outLinks, _ := gk.GetAllLinks(ctx)
 	cidNum, exist := gk.GetCidNumber(ctx, types.Cid(req.Cid)); if exist != true {
-		return nil, sdkerrors.Wrap(types.ErrCidNotFound, "")
+		return nil, sdkerrors.Wrap(types.ErrCidNotFound, req.Cid)
 	}
+	// TODO add pagination
+	_, outLinks, _ := gk.GetAllLinks(ctx)
 
 	links := outLinks[cidNum]
 	data := make([]string, 0)
@@ -33,13 +35,15 @@ func (gk GraphKeeper) OutLinks(goCtx context.Context, req *types.QueryLinksReque
 	return &types.QueryLinksResponse{Cids: data}, nil
 }
 
+// TODO developers endpoint, remove before release
 func (gk GraphKeeper) InLinks(goCtx context.Context, req *types.QueryLinksRequest) (*types.QueryLinksResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	inLinks, _, _ := gk.GetAllLinks(ctx)
 	cidNum, exist := gk.GetCidNumber(ctx, types.Cid(req.Cid)); if exist != true {
-		return nil, sdkerrors.Wrap(types.ErrCidNotFound, "")
+		return nil, sdkerrors.Wrap(types.ErrCidNotFound, req.Cid)
 	}
+	// TODO add pagination
+	inLinks, _, _ := gk.GetAllLinks(ctx)
 
 	links := inLinks[cidNum]
 	data := make([]string, 0)

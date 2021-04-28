@@ -3,9 +3,10 @@ package types
 import sdk "github.com/cosmos/cosmos-sdk/types"
 
 const (
-	CYB = "nick"
-	VOLT = "volt"
+	CYB   = "boot"
+	VOLT  = "volt"
 	AMPER = "amper"
+	SCYB  = "sboot"
 )
 
 const (

@@ -19,6 +19,7 @@ import (
 	"github.com/cybercongress/go-cyber/x/bandwidth/types"
 
 	"context"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	abci "github.com/tendermint/tendermint/abci/types"
 )
@@ -57,13 +58,13 @@ func (AppModuleBasic) RegisterRESTRoutes(clientCtx client.Context, rtr *mux.Rout
 }
 
 func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *runtime.ServeMux) {
-	_ = types.RegisterQueryHandlerClient(context.Background(), mux, types.NewQueryClient(clientCtx))
+	if err := types.RegisterQueryHandlerClient(context.Background(), mux, types.NewQueryClient(clientCtx)); err != nil {
+		panic(err)
+	}
 }
 
 // GetQueryCmd returns the root tx command for the posts module.
-func (AppModuleBasic) GetTxCmd() *cobra.Command {
-	return nil
-}
+func (AppModuleBasic) GetTxCmd() *cobra.Command { return nil }
 
 // GetTxCmd returns the root query command for the posts module.
 func (AppModuleBasic) GetQueryCmd() *cobra.Command {
@@ -74,20 +75,18 @@ func (AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegistry) 
 
 type AppModule struct {
 	AppModuleBasic
+
 	ak             authkeeper.AccountKeeper
 	bm			   *keeper.BandwidthMeter
 }
 
-func (am AppModule) RegisterServices(cfg module.Configurator) {
-	types.RegisterQueryServer(cfg.QueryServer(), am.bm)
-}
-
 func NewAppModule(
+	cdc codec.Marshaler,
 	ak authkeeper.AccountKeeper,
 	bm *keeper.BandwidthMeter,
 ) AppModule {
 	return AppModule{
-		AppModuleBasic:       AppModuleBasic{},
+		AppModuleBasic: AppModuleBasic{cdc: cdc},
 		ak:		  ak,
 		bm:		  bm,
 	}
@@ -103,12 +102,12 @@ func (am AppModule) Route() sdk.Route {
 	return sdk.Route{}
 }
 
-func (am AppModule) NewHandler() sdk.Handler {
-	return nil
-}
-
 func (am AppModule) QuerierRoute() string {
 	return types.QuerierRoute
+}
+
+func (am AppModule) RegisterServices(cfg module.Configurator) {
+	types.RegisterQueryServer(cfg.QueryServer(), am.bm)
 }
 
 func (am AppModule) LegacyQuerierHandler(legacyQuerierCdc *codec.LegacyAmino) sdk.Querier {
@@ -118,7 +117,6 @@ func (am AppModule) LegacyQuerierHandler(legacyQuerierCdc *codec.LegacyAmino) sd
 func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONMarshaler, data json.RawMessage) []abci.ValidatorUpdate {
 	var genesisState types.GenesisState
 	cdc.MustUnmarshalJSON(data, &genesisState)
-
 	keeper.InitGenesis(ctx, am.bm, am.ak, genesisState)
 	return []abci.ValidatorUpdate{}
 }

@@ -32,6 +32,7 @@ type Rank struct {
 
 func NewRank(state EMState, logger log.Logger, fullTree bool) Rank {
 
+	// TODO separate mul impl for cpu and gpu
 	start := time.Now()
 	cidsCount := uint64(len(state.RankValues))
 
@@ -59,7 +60,7 @@ func NewRank(state EMState, logger log.Logger, fullTree bool) Rank {
 	}
 	state.KarmaValues = make([]float64, 0)
 
-	//fmt.Println("Rank converting to uint: ", "time", time.Since(start))
+	logger.Info("EMState constructing to uint", "time", time.Since(start))
 
 	start = time.Now()
 	merkleTree := merkle.NewTree(sha256.New(), fullTree)
@@ -69,7 +70,6 @@ func NewRank(state EMState, logger log.Logger, fullTree bool) Rank {
 		merkleTree.Push(rankBytes)
 	}
 	logger.Info("Rank constructing tree", "time", time.Since(start))
-	//fmt.Printf("Rank merkle root hash: %x\n", merkleTree.RootHash())
 
 	// NOTE fulltree true if search index enabled
 	var newSortedCIDs []RankedCidNumber
@@ -199,7 +199,7 @@ func (r *Rank) AddNewCids(currentCidCount uint64) {
 func BuildTop(values []uint64, size int) []RankedCidNumber {
 	newSortedCIDs := make(sortableCidNumbers, 0, len(values))
 	for cid, rank := range values {
-		if (rank == 0) { continue } // NOTE math.IsNaN(rank) check removed after rank fix
+		if (rank == 0) { continue }
 		newRankedCid := RankedCidNumber{graphtypes.CidNumber(cid), rank}
 		newSortedCIDs = append(newSortedCIDs, newRankedCid)
 	}

@@ -7,12 +7,12 @@ import (
 )
 
 func (bk BandwidthMeter) SetBlockBandwidth(ctx sdk.Context, blockNumber uint64, value uint64) {
-	store := ctx.KVStore(bk.StoreKey)
+	store := ctx.KVStore(bk.storeKey)
 	store.Set(types.BlockStoreKey(blockNumber), sdk.Uint64ToBigEndian(value))
 }
 
 func (bk BandwidthMeter) GetValuesForPeriod(ctx sdk.Context, period uint64) map[uint64]uint64 {
-	store := ctx.KVStore(bk.StoreKey)
+	store := ctx.KVStore(bk.storeKey)
 
 	windowStart := ctx.BlockHeight() - int64(period) + 1
 	if windowStart <= 0 {

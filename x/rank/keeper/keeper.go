@@ -5,32 +5,31 @@ import (
 	"encoding/binary"
 	"strconv"
 
-	"github.com/cosmos/cosmos-sdk/telemetry"
 	"github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
 	"github.com/cybercongress/go-cyber/merkle"
 	graphkeeper "github.com/cybercongress/go-cyber/x/graph/keeper"
 	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
-	//graphkeeper "github.com/cybercongress/go-cyber/x/graph/keeper"
 	"github.com/cybercongress/go-cyber/x/rank/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/tendermint/tendermint/libs/log"
 
+	"fmt"
 	"time"
 )
 
 type StateKeeper struct {
 
-	networkCidRank types.Rank // array linksIndex is cid number
-	nextCidRank    types.Rank // array linksIndex is cid number
+	networkCidRank types.Rank
+	nextCidRank    types.Rank
 
 	rankCalculationFinished bool
 	cidCount                int64
 
-	hasNewLinksForPeriod bool // indicates if new links where submitted for rank calc period
+	hasNewLinksForPeriod bool
 
 	rankCalcChan chan types.Rank
 	rankErrChan  chan error
@@ -50,8 +49,13 @@ type StateKeeper struct {
 }
 
 func NewKeeper(
-	key sdk.StoreKey, paramSpace    paramstypes.Subspace, allowSearch bool, stakeIndex types.StakeKeeper,
-	graphIndexedKeeper *graphkeeper.IndexKeeper, graphKeeper types.GraphKeeper, accountKeeper keeper.AccountKeeper,
+	key 				sdk.StoreKey,
+	paramSpace 			paramstypes.Subspace,
+	allowSearch 		bool,
+	stakeIndex 			types.StakeKeeper,
+	graphIndexedKeeper 	*graphkeeper.IndexKeeper,
+	graphKeeper 		types.GraphKeeper,
+	accountKeeper 		keeper.AccountKeeper,
 	unit types.ComputeUnit,
 ) *StateKeeper {
 	if !paramSpace.HasKeyTable() {
@@ -108,14 +112,13 @@ func (s *StateKeeper) BuildSearchIndex(logger log.Logger) types.SearchIndex {
 }
 
 func (s *StateKeeper) EndBlocker(ctx sdk.Context) {
-	defer telemetry.ModuleMeasureSince(types.ModuleName, time.Now(), telemetry.MetricKeyEndBlocker)
-
 	s.StoreLatestBlockNumber(ctx, uint64(ctx.BlockHeight()))
 	currentCidsCount := s.graphKeeper.GetCidsCount(ctx)
 
 	s.index.PutNewLinks(s.graphIndexedKeeper.GetCurrentBlockNewLinks())
 
-	blockHasNewLinks := s.graphIndexedKeeper.EndBlocker() // calling here
+	// TODO refactoring
+	blockHasNewLinks := s.graphIndexedKeeper.EndBlocker()
 	s.hasNewLinksForPeriod = s.hasNewLinksForPeriod || blockHasNewLinks
 
 	params := s.GetParams(ctx)
@@ -136,7 +139,7 @@ func (s *StateKeeper) EndBlocker(ctx sdk.Context) {
 		s.applyNextRank(ctx)
 
 		s.cidCount = int64(currentCidsCount)
-		stakeChanged := s.stakeKeeper.DetectUsersStakeAmperChange(ctx)
+		stakeChanged := s.stakeKeeper.DetectUsersStakeAmpereChange(ctx)
 
 		// start new calculation
 		if s.hasNewLinksForPeriod || stakeChanged {
@@ -149,7 +152,11 @@ func (s *StateKeeper) EndBlocker(ctx sdk.Context) {
 	}
 
 	s.networkCidRank.AddNewCids(currentCidsCount)
-	s.StoreLatestMerkleTree(ctx, s.getNetworkMerkleTreeAsBytes())
+	networkMerkleTreeAsBytes := s.getNetworkMerkleTreeAsBytes()
+	s.Logger(ctx).Info(
+		"Latest Rank", "hash", fmt.Sprintf("%X", networkMerkleTreeAsBytes),
+	)
+	s.StoreLatestMerkleTree(ctx, networkMerkleTreeAsBytes)
 }
 
 func (s *StateKeeper) startRankCalculation(ctx sdk.Context, dampingFactor float64, tolerance float64) {
@@ -172,7 +179,7 @@ func (s *StateKeeper) checkRankCalcFinished(ctx sdk.Context, block bool) {
 				s.handleNextRank(ctx, newRank)
 				return
 			case err := <-s.rankErrChan:
-				s.Logger(ctx).Error("Error during rank calculation, call devs! " + err.Error())
+				s.Logger(ctx).Error("Error during cyber~Rank calculation, call cyber_devs! " + err.Error())
 				panic(err.Error())
 			default:
 				if !block {
@@ -188,7 +195,11 @@ func (s *StateKeeper) checkRankCalcFinished(ctx sdk.Context, block bool) {
 
 func (s *StateKeeper) handleNextRank(ctx sdk.Context, newRank types.Rank) {
 	s.nextCidRank = newRank
-	s.StoreNextMerkleTree(ctx, s.getNextMerkleTreeAsBytes())
+	nextMerkleTreeAsBytes := s.getNextMerkleTreeAsBytes()
+	s.Logger(ctx).Info(
+		"Next Rank", "hash", fmt.Sprintf("%X", nextMerkleTreeAsBytes),
+	)
+	s.StoreNextMerkleTree(ctx, nextMerkleTreeAsBytes)
 	s.StoreNextRankCidCount(ctx, newRank.CidCount)
 	s.rankCalculationFinished = true
 }
@@ -196,11 +207,6 @@ func (s *StateKeeper) handleNextRank(ctx sdk.Context, newRank types.Rank) {
 func (s *StateKeeper) applyNextRank(ctx sdk.Context) {
 	if !s.nextCidRank.IsEmpty() {
 		s.networkCidRank = s.nextCidRank
-
-		//s.nextCidRank.Clear()
-		//s.networkCidRank.EntropyValues = nil
-		//s.networkCidRank.LuminosityValues = nil
-
 		s.index.PutNewRank(s.networkCidRank)
 	}
 	s.nextCidRank.Clear()
@@ -242,6 +248,19 @@ func (s *StateKeeper) GetMerkleTree() *merkle.Tree {
 	return s.networkCidRank.MerkleTree
 }
 
+func (s *StateKeeper) GetKarma(accountNumber uint64) (karma uint64) {
+	return s.networkCidRank.KarmaValues[accountNumber]
+}
+
+func (s *StateKeeper) GetEntropy(cidNum graphtypes.CidNumber) uint64 {
+	return s.networkCidRank.EntropyValues[cidNum]
+}
+
+func (s *StateKeeper) GetLuminosity(cidNum graphtypes.CidNumber) uint64 {
+	return s.networkCidRank.LuminosityValues[cidNum]
+}
+
+// TODO remove before release (with API endoint)
 func (s *StateKeeper) GetKarmas(ctx sdk.Context) (karmas map[string]uint64) {
 	karmas = make(map[string]uint64)
 	for _, acc := range s.accountKeeper.GetAllAccounts(ctx) {

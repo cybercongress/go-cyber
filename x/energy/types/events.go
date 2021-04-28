@@ -1,17 +1,16 @@
 package types
 
-// power module event types
 const (
-	EventTypeCreateEnergyRoute   	= "create_energy_route"
-	EventTypeEditEnergyRoute 		= "edit_energy_route"
-	EventTypeDeleteEnergyRoute 		= "delete_energy_route"
-	EventTypeEditEnergyRouteAlias 	= "edit_energy_route_alias"
+	EventTypeCreateRoute   	= "create_route"
+	EventTypeEditRoute 		= "edit_route"
+	EventTypeDeleteRoute 	= "delete_route"
+	EventTypeEditRouteAlias = "edit_route_alias"
 
 
-	AttributeKeySource    			= "source"
-	AttributeKeyDestination 		= "destination"
-	AttributeKeyAlias 				= "alias"
-	AttributeKeyAmount	  			= "value"
+	AttributeKeySource      = "source"
+	AttributeKeyDestination = "destination"
+	AttributeKeyAlias       = "alias"
+	AttributeKeyValue       = "value"
 
-	AttributeValueCategory   		= ModuleName
+	AttributeValueCategory  = ModuleName
 )

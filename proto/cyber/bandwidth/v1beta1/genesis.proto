@@ -2,10 +2,10 @@ syntax = "proto3";
 package cyber.bandwidth.v1beta1;
 
 import "gogoproto/gogo.proto";
-import "cyber/bandwidth/v1beta1/params.proto";
+import "cyber/bandwidth/v1beta1/types.proto";
 
 option go_package = "github.com/cybercongress/go-cyber/x/bandwidth/types";
 
 message GenesisState {
-    cyber.bandwidth.v1beta1.Params params = 1 [(gogoproto.nullable) = false];
+    Params params = 1 [(gogoproto.nullable) = false];
 }

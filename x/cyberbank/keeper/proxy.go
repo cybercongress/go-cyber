@@ -57,10 +57,6 @@ func (k Proxy) GetTotalSupplyAmper(ctx sdk.Context) int64 {
 	return k.bk.GetSupply(ctx).GetTotal().AmountOf(ctypes.AMPER).Int64()
 }
 
-func (k Proxy) GetAccountUnboundedStake(ctx sdk.Context, addr sdk.AccAddress) int64 {
-	return k.bk.GetBalance(ctx, addr, ctypes.CYB).Amount.Int64()
-}
-
 func (k Proxy) GetAccountStakePercentageVolt(ctx sdk.Context, addr sdk.AccAddress) float64 {
 	a := k.GetAccountTotalStakeVolt(ctx, addr)
 	aFloat := float64(a)
@@ -82,17 +78,6 @@ func (k Proxy) GetAccountTotalStakeAmper(ctx sdk.Context, addr sdk.AccAddress) i
 	return k.bk.GetBalance(ctx, addr, ctypes.AMPER).Amount.Int64() + k.GetRoutedTo(ctx, addr).AmountOf(ctypes.AMPER).Int64()
 }
 
-//func (k Proxy) GetAccountPower(ctx sdk.Context, addr sdk.AccAddress) int64 {
-//	power := k.ek.GetRoutedToEnergy(ctx, addr)
-//	// TODO return
-//	c := sdk.Coin{}
-//	if power == c {
-//		return 0
-//	} else {
-//		return power.Amount.Int64()
-//	}
-//}
-
 func (k Proxy) GetRoutedTo(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins {
 	return k.ek.GetRoutedToEnergy(ctx, addr)
 }
@@ -103,10 +88,14 @@ func (p *Proxy) InputOutputCoins(ctx sdk.Context, inputs []banktypes.Input, outp
 	err := p.bk.InputOutputCoins(ctx, inputs, outputs)
 	if err == nil {
 		for _, i := range inputs {
-			p.OnCoinsTransfer(ctx, sdk.AccAddress(i.Address), nil)
+			if i.Coins.AmountOf(ctypes.VOLT).IsZero() || i.Coins.AmountOf(ctypes.AMPER).IsZero() {
+				p.OnCoinsTransfer(ctx, sdk.AccAddress(i.Address), nil)
+			}
 		}
 		for _, j := range outputs {
-			p.OnCoinsTransfer(ctx, nil, sdk.AccAddress(j.Address))
+			if j.Coins.AmountOf(ctypes.VOLT).IsZero() || j.Coins.AmountOf(ctypes.AMPER).IsZero() {
+				p.OnCoinsTransfer(ctx, nil, sdk.AccAddress(j.Address))
+			}
 		}
 	}
 	return err
@@ -114,7 +103,7 @@ func (p *Proxy) InputOutputCoins(ctx sdk.Context, inputs []banktypes.Input, outp
 
 func (p *Proxy) SubtractCoins(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coins) error {
 	err := p.bk.SubtractCoins(ctx, addr, amt)
-	if err == nil {
+	if err == nil && (amt.AmountOf(ctypes.VOLT).IsZero() || amt.AmountOf(ctypes.AMPER).IsZero()) {
 		p.OnCoinsTransfer(ctx, addr, nil)
 	}
 	return err
@@ -122,7 +111,7 @@ func (p *Proxy) SubtractCoins(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coin
 
 func (p Proxy) AddCoins(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coins) error {
 	err := p.bk.AddCoins(ctx, addr, amt)
-	if err == nil {
+	if err == nil && (amt.AmountOf(ctypes.VOLT).IsZero() || amt.AmountOf(ctypes.AMPER).IsZero())  {
 		p.OnCoinsTransfer(ctx, nil, addr)
 	}
 	return err
@@ -130,13 +119,11 @@ func (p Proxy) AddCoins(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coins) err
 
 func (p *Proxy) SendCoins(ctx sdk.Context, fromAddr sdk.AccAddress, toAddr sdk.AccAddress, amt sdk.Coins) error {
 	err := p.bk.SendCoins(ctx, fromAddr, toAddr, amt)
-	if err == nil {
+	if err == nil && (amt.AmountOf(ctypes.VOLT).IsZero() || amt.AmountOf(ctypes.AMPER).IsZero())  {
 		p.OnCoinsTransfer(ctx, fromAddr, toAddr)
 	}
 	return err
 }
-
-// -----------------------------------------------------------------
 
 func (p *Proxy) DenomMetadata(ctx context.Context, request *banktypes.QueryDenomMetadataRequest) (*banktypes.QueryDenomMetadataResponse, error) {
 	return p.bk.DenomMetadata(ctx, request)
@@ -146,12 +133,10 @@ func (p *Proxy) DenomsMetadata(ctx context.Context, request *banktypes.QueryDeno
 	return p.bk.DenomsMetadata(ctx, request)
 }
 
-// -----------------------------------------------------------------
-
 func (p *Proxy) SendCoinsFromModuleToAccount(ctx sdk.Context, senderModule string, recipientAddr sdk.AccAddress, amt sdk.Coins) error {
 	err := p.bk.SendCoinsFromModuleToAccount(ctx, senderModule, recipientAddr, amt)
 
-	if err == nil {
+	if err == nil && (amt.AmountOf(ctypes.VOLT).IsZero() || amt.AmountOf(ctypes.AMPER).IsZero())  {
 		p.OnCoinsTransfer(ctx, p.ak.GetModuleAddress(senderModule), recipientAddr)
 	}
 	return err
@@ -160,7 +145,7 @@ func (p *Proxy) SendCoinsFromModuleToAccount(ctx sdk.Context, senderModule strin
 func (p *Proxy) SendCoinsFromModuleToModule(ctx sdk.Context, senderModule, recipientModule string, amt sdk.Coins) error {
 	err := p.bk.SendCoinsFromModuleToModule(ctx, senderModule, recipientModule, amt)
 
-	if err == nil {
+	if err == nil && (amt.AmountOf(ctypes.VOLT).IsZero() || amt.AmountOf(ctypes.AMPER).IsZero())  {
 		p.OnCoinsTransfer(ctx, p.ak.GetModuleAddress(senderModule), p.ak.GetModuleAddress(recipientModule))
 	}
 	return err
@@ -169,13 +154,11 @@ func (p *Proxy) SendCoinsFromModuleToModule(ctx sdk.Context, senderModule, recip
 func (p *Proxy) SendCoinsFromAccountToModule(ctx sdk.Context, senderAddr sdk.AccAddress, recipientModule string, amt sdk.Coins) error {
 	err := p.bk.SendCoinsFromAccountToModule(ctx, senderAddr, recipientModule, amt)
 
-	if err == nil {
+	if err == nil && (amt.AmountOf(ctypes.VOLT).IsZero() || amt.AmountOf(ctypes.AMPER).IsZero())  {
 		p.OnCoinsTransfer(ctx, senderAddr, p.ak.GetModuleAddress(recipientModule))
 	}
 	return err
 }
-
-// -----------------------------------------------------------------
 
 func (p *Proxy) ValidateBalance(ctx sdk.Context, addr sdk.AccAddress) error {
 	return p.bk.ValidateBalance(ctx, addr)
@@ -241,8 +224,6 @@ func (p *Proxy) BlockedAddr(addr sdk.AccAddress) bool {
 	return p.bk.BlockedAddr(addr)
 }
 
-// -----------------------------------------------------------------
-
 func (p *Proxy) InitGenesis(context sdk.Context, state *banktypes.GenesisState) {
 	p.bk.InitGenesis(context, state)
 }
@@ -271,8 +252,6 @@ func (p *Proxy) IterateAllDenomMetaData(ctx sdk.Context, cb func(banktypes.Metad
 	p.bk.IterateAllDenomMetaData(ctx, cb)
 }
 
-// ----------------------------------------------
-
 func (p *Proxy) DelegateCoinsFromAccountToModule(ctx sdk.Context, senderAddr sdk.AccAddress, recipientModule string, amt sdk.Coins) error {
 	return p.bk.DelegateCoinsFromAccountToModule(ctx, senderAddr, recipientModule, amt)
 }
@@ -296,8 +275,6 @@ func (p *Proxy) DelegateCoins(ctx sdk.Context, delegatorAddr, moduleAccAddr sdk.
 func (p *Proxy) UndelegateCoins(ctx sdk.Context, moduleAccAddr, delegatorAddr sdk.AccAddress, amt sdk.Coins) error {
 	return p.bk.UndelegateCoins(ctx, moduleAccAddr, delegatorAddr, amt)
 }
-
-// ----------------------------------------------
 
 func (p *Proxy) MarshalSupply(supplyI bankexported.SupplyI) ([]byte, error) {
 	return p.bk.MarshalSupply(supplyI)

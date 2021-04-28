@@ -1,15 +1,14 @@
 package cli
 
 import (
-	//"fmt"
 	"context"
 	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/client"
-	//"github.com/cosmos/cosmos-sdk/client/context"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
+	"github.com/ipfs/go-cid"
 	"github.com/cosmos/cosmos-sdk/client/flags"
-	//"github.com/cosmos/cosmos-sdk/codec"
-	//sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/spf13/cobra"
 
 	"github.com/cybercongress/go-cyber/types/query"
@@ -33,6 +32,9 @@ func GetQueryCmd() *cobra.Command {
 		GetCmdQueryTop(),
 		GetCmdQueryIsLinkExist(),
 		GetCmdQueryIsAnyLinkExist(),
+		GetCmdQueryEntropy(),
+		GetCmdQueryLuminosity(),
+		GetCmdQueryKarma(),
 	)
 
 	return rankingQueryCmd
@@ -80,6 +82,10 @@ func GetCmdQueryRank() *cobra.Command{
 			}
 			queryClient := types.NewQueryClient(clientCtx)
 
+			if _, err := cid.Decode(args[0]); err != nil {
+				return graphtypes.ErrInvalidCid
+			}
+
 			res, err := queryClient.Rank(
 				context.Background(),
 				&types.QueryRankRequest{Cid: args[0]},
@@ -108,6 +114,10 @@ func GetCmdQuerySearch() *cobra.Command{
 				return err
 			}
 			queryClient := types.NewQueryClient(clientCtx)
+
+			if _, err := cid.Decode(args[0]); err != nil {
+				return graphtypes.ErrInvalidCid
+			}
 
 			var page, limit uint32
 			if len(args) == 3 {
@@ -154,6 +164,10 @@ func GetCmdQueryBacklinks() *cobra.Command{
 				return err
 			}
 			queryClient := types.NewQueryClient(clientCtx)
+
+			if _, err := cid.Decode(args[0]); err != nil {
+				return graphtypes.ErrInvalidCid
+			}
 
 			var page, limit uint32
 			if len(args) == 3 {
@@ -247,9 +261,22 @@ func GetCmdQueryIsLinkExist() *cobra.Command{
 			}
 			queryClient := types.NewQueryClient(clientCtx)
 
+			if _, err := cid.Decode(args[0]); err != nil {
+				return graphtypes.ErrInvalidCid
+			}
+
+			if _, err := cid.Decode(args[1]); err != nil {
+				return graphtypes.ErrInvalidCid
+			}
+
+			address, err := sdk.AccAddressFromBech32(args[2])
+			if err != nil {
+				return err
+			}
+
 			res, err := queryClient.IsLinkExist(
 				context.Background(),
-				&types.QueryIsLinkExistRequest{args[0], args[1], args[2]},
+				&types.QueryIsLinkExistRequest{args[0], args[1], address.String()},
 			)
 			if err != nil {
 				return err
@@ -276,9 +303,117 @@ func GetCmdQueryIsAnyLinkExist() *cobra.Command{
 			}
 			queryClient := types.NewQueryClient(clientCtx)
 
+			if _, err := cid.Decode(args[0]); err != nil {
+				return graphtypes.ErrInvalidCid
+			}
+
+			if _, err := cid.Decode(args[1]); err != nil {
+				return graphtypes.ErrInvalidCid
+			}
+
 			res, err := queryClient.IsAnyLinkExist(
 				context.Background(),
 				&types.QueryIsAnyLinkExistRequest{args[0], args[1]},
+			)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func GetCmdQueryEntropy() *cobra.Command{
+	cmd := &cobra.Command{
+		Use:   "entropy [cid]",
+		Short: "Query the current entropy of given CID",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+			queryClient := types.NewQueryClient(clientCtx)
+
+			if _, err := cid.Decode(args[0]); err != nil {
+				return graphtypes.ErrInvalidCid
+			}
+
+			res, err := queryClient.Entropy(
+				context.Background(),
+				&types.QueryEntropyRequest{Cid: args[0]},
+			)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func GetCmdQueryLuminosity() *cobra.Command{
+	cmd := &cobra.Command{
+		Use:   "luminosity [cid]",
+		Short: "Query the current entropy of given CID",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+			queryClient := types.NewQueryClient(clientCtx)
+
+			if _, err := cid.Decode(args[0]); err != nil {
+				return graphtypes.ErrInvalidCid
+			}
+
+			res, err := queryClient.Luminosity(
+				context.Background(),
+				&types.QueryLuminosityRequest{Cid: args[0]},
+			)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func GetCmdQueryKarma() *cobra.Command{
+	cmd := &cobra.Command{
+		Use:   "karma [address]",
+		Short: "Query the current entropy of given CID",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+			queryClient := types.NewQueryClient(clientCtx)
+
+			address, err := sdk.AccAddressFromBech32(args[0])
+			if err != nil {
+				return err
+			}
+
+			res, err := queryClient.Karma(
+				context.Background(),
+				&types.QueryKarmaRequest{Address: address.String()},
 			)
 			if err != nil {
 				return err

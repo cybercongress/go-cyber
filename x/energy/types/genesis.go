@@ -13,7 +13,6 @@ func DefaultGenesisState() *GenesisState {
 	}
 }
 
-func ValidateGenesis(_ GenesisState) error {
-	// TODO add validation
-	return nil
+func ValidateGenesis(state GenesisState) error {
+	return state.Params.Validate()
 }

@@ -26,7 +26,7 @@ func (gk GraphKeeper) GetCidNumber(ctx sdk.Context, cid types.Cid) (types.CidNum
 	cidIndexAsBytes := store.Get(types.CidStoreKey(cid))
 
 	if cidIndexAsBytes != nil {
-		return types.CidNumber(types.BigEndianToUint64(cidIndexAsBytes)), true
+		return types.CidNumber(sdk.BigEndianToUint64(cidIndexAsBytes)), true
 	}
 
 	return 0, false
@@ -57,7 +57,7 @@ func (gk GraphKeeper) GetOrPutCidNumber(ctx sdk.Context, cid types.Cid) types.Ci
 
 		return types.CidNumber(lastIndex)
 	}
-	return types.CidNumber(types.BigEndianToUint64(cidIndexAsBytes))
+	return types.CidNumber(sdk.BigEndianToUint64(cidIndexAsBytes))
 }
 
 func (gk GraphKeeper) GetCidsCount(ctx sdk.Context) uint64 {
@@ -68,7 +68,7 @@ func (gk GraphKeeper) GetCidsCount(ctx sdk.Context) uint64 {
 		return 0
 	}
 
-	return types.BigEndianToUint64(lastIndexAsBytes) + 1
+	return sdk.BigEndianToUint64(lastIndexAsBytes) + 1
 }
 
 func (gk GraphKeeper) SetLastCidIndex(ctx sdk.Context, lastCidIndex uint64) {
@@ -90,7 +90,7 @@ func (gk GraphKeeper) IterateCids(ctx sdk.Context, process func(types.Cid, types
 
 	for iterator.Valid() {
 		// [1:0] because we have prefix []byte{0x01} for cids
-		process(types.Cid(iterator.Key()[1:]), types.CidNumber(types.BigEndianToUint64(iterator.Value())))
+		process(types.Cid(iterator.Key()[1:]), types.CidNumber(sdk.BigEndianToUint64(iterator.Value())))
 		iterator.Next()
 	}
 }

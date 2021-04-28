@@ -5,8 +5,6 @@ import (
 	"net/http"
 
 	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/codec"
-
 	"github.com/cosmos/cosmos-sdk/types/rest"
 	"github.com/gorilla/mux"
 
@@ -72,13 +70,10 @@ func queryAmountCidsHandlerFn(cliCtx client.Context) http.HandlerFunc {
 func queryOutLinksHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
-		cid := vars["cid"]
+		params := types.NewQueryLinksParams(vars["cid"])
 
-		params := types.QueryLinksParams{cid}
-
-		bz, err := codec.MarshalJSONIndent(cliCtx.LegacyAmino, params)
-		if err != nil {
-			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
+		bz, err := cliCtx.LegacyAmino.MarshalJSON(params)
+		if rest.CheckBadRequestError(w, err) {
 			return
 		}
 
@@ -102,13 +97,10 @@ func queryOutLinksHandlerFn(cliCtx client.Context) http.HandlerFunc {
 func queryInLinksHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
-		cid := vars["cid"]
+		params := types.NewQueryLinksParams(vars["cid"])
 
-		params := types.QueryLinksParams{cid}
-
-		bz, err := codec.MarshalJSONIndent(cliCtx.LegacyAmino, params)
-		if err != nil {
-			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
+		bz, err := cliCtx.LegacyAmino.MarshalJSON(params)
+		if rest.CheckBadRequestError(w, err) {
 			return
 		}
 

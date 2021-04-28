@@ -24,16 +24,16 @@ func NewTxCmd() *cobra.Command {
 	}
 
 	energyTxCmd.AddCommand(
-		GetCmdCreateEnergyRoute(),
-		GetCmdEditEnergyRoute(),
-		GetCmdDeleteEnergyRoute(),
-		GetCmdEditEnergyRouteAlias(),
+		GetCmdCreateRoute(),
+		GetCmdEditRoute(),
+		GetCmdDeleteRoute(),
+		GetCmdEditRouteAlias(),
 	)
 
 	return energyTxCmd
 }
 
-func GetCmdCreateEnergyRoute() *cobra.Command {
+func GetCmdCreateRoute() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "create-route [destination-addr] [alias]",
 		Args:  cobra.ExactArgs(2),
@@ -50,7 +50,7 @@ func GetCmdCreateEnergyRoute() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgCreateEnergyRoute(src, dst, args[1])
+			msg := types.NewMsgCreateRoute(src, dst, args[1])
 
 			err = msg.ValidateBasic()
 			if err != nil {
@@ -63,15 +63,14 @@ func GetCmdCreateEnergyRoute() *cobra.Command {
 
 	flags.AddTxFlagsToCmd(cmd)
 
-
 	return cmd
 }
 
-func GetCmdEditEnergyRoute() *cobra.Command {
+func GetCmdEditRoute() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "edit-route [destination-addr] [value]",
 		Args:  cobra.ExactArgs(2),
-		Short: "Route energy value to destination address",
+		Short: "Route energy value to destination address, value will be set",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -89,7 +88,7 @@ func GetCmdEditEnergyRoute() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgEditEnergyRoute(src, dst, amount)
+			msg := types.NewMsgEditRoute(src, dst, amount)
 
 			err = msg.ValidateBasic()
 			if err != nil {
@@ -105,7 +104,7 @@ func GetCmdEditEnergyRoute() *cobra.Command {
 	return cmd
 }
 
-func GetCmdDeleteEnergyRoute() *cobra.Command {
+func GetCmdDeleteRoute() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "delete-route [destination-addr]",
 		Args:  cobra.ExactArgs(1),
@@ -122,7 +121,7 @@ func GetCmdDeleteEnergyRoute() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgDeleteEnergyRoute(src, dst)
+			msg := types.NewMsgDeleteRoute(src, dst)
 			err = msg.ValidateBasic()
 			if err != nil {
 				return err
@@ -137,7 +136,7 @@ func GetCmdDeleteEnergyRoute() *cobra.Command {
 	return cmd
 }
 
-func GetCmdEditEnergyRouteAlias() *cobra.Command {
+func GetCmdEditRouteAlias() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "edit-route-alias [destination-addr] [alias]",
 		Args:  cobra.ExactArgs(2),
@@ -154,7 +153,7 @@ func GetCmdEditEnergyRouteAlias() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgEditEnergyRouteAlias(src, dst, args[1])
+			msg := types.NewMsgEditRouteAlias(src, dst, args[1])
 
 			err = msg.ValidateBasic()
 			if err != nil {

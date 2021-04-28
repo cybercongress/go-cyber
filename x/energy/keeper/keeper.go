@@ -3,14 +3,13 @@ package keeper
 import (
 	"fmt"
 
+	"github.com/cosmos/cosmos-sdk/telemetry"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	ctypes "github.com/cybercongress/go-cyber/types"
 	"github.com/tendermint/tendermint/libs/log"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 
 	"github.com/cybercongress/go-cyber/x/energy/exported"
 	"github.com/cybercongress/go-cyber/x/energy/types"
@@ -21,7 +20,7 @@ var _ = exported.EnergyKeeper(nil)
 type Keeper struct {
 	storeKey      sdk.StoreKey
 	cdc           codec.BinaryMarshaler
-	accountKeeper authkeeper.AccountKeeper
+	accountKeeper types.AccountKeeper
 	proxyKeeper   types.BankKeeper
 	paramSpace    paramstypes.Subspace
 }
@@ -30,7 +29,7 @@ func NewKeeper(
 	cdc codec.BinaryMarshaler,
 	key sdk.StoreKey,
 	bk types.BankKeeper,
-	ak authkeeper.AccountKeeper,
+	ak types.AccountKeeper,
 	paramSpace paramstypes.Subspace,
 ) Keeper {
 	if addr := ak.GetModuleAddress(types.EnergyPoolName); addr == nil {
@@ -74,10 +73,11 @@ func (k Keeper) CreateEnergyRoute(ctx sdk.Context, src, dst sdk.AccAddress, alia
 		return types.ErrRouteExist
 	}
 
-	_, found = k.GetRoute(ctx, dst, src)
-	if found {
-		return types.ErrReverseRoute
-	}
+	// TODO test reverse routes
+	//_, found = k.GetRoute(ctx, dst, src)
+	//if found {
+	//	return types.ErrReverseRoute
+	//}
 
 	routes := k.GetSourceRoutes(ctx, src, k.MaxSourceRoutes(ctx))
 	if uint32(len(routes)) == k.MaxSourceRoutes(ctx) {
@@ -90,15 +90,13 @@ func (k Keeper) CreateEnergyRoute(ctx sdk.Context, src, dst sdk.AccAddress, alia
 		k.accountKeeper.SetAccount(ctx, acc)
 	}
 
-	k.SetRoute(ctx, types.NewRoute(src, dst, alias, sdk.Coins{}))
+	k.SetRoute(ctx, src, dst, types.NewRoute(src, dst, alias, sdk.Coins{}))
 
 	return nil
 }
 
 func (k Keeper) EditEnergyRoute(ctx sdk.Context, src, dst sdk.AccAddress, value sdk.Coin) error {
-	if value.Denom != ctypes.VOLT && value.Denom != ctypes.AMPER {
-		return types.ErrWrongDenom
-	}
+	defer telemetry.IncrCounter(1.0, types.ModuleName, "routed")
 
 	route, found := k.GetRoute(ctx, src, dst)
 	if !found {
@@ -106,7 +104,6 @@ func (k Keeper) EditEnergyRoute(ctx sdk.Context, src, dst sdk.AccAddress, value 
 	}
 
 	energy := k.GetRoutedToEnergy(ctx, dst)
-	fmt.Println("ENERGY: ", energy)
 
 	if !route.Value.IsValid() {
 		coins := sdk.NewCoins(value)
@@ -119,9 +116,6 @@ func (k Keeper) EditEnergyRoute(ctx sdk.Context, src, dst sdk.AccAddress, value 
 			diff := sdk.NewCoin(value.Denom, value.Amount.Sub(route.Value.AmountOf(value.Denom)))
 			coins := sdk.NewCoins(diff)
 
-			fmt.Println("Energy +++ diff (sent A->M)", diff)
-			fmt.Println("Energy +++ energy+diff (set routed)", energy.Add(diff))
-
 			if err := k.proxyKeeper.SendCoinsFromAccountToModule(ctx, src, types.EnergyPoolName, coins); err != nil {
 				return err
 			}
@@ -129,9 +123,6 @@ func (k Keeper) EditEnergyRoute(ctx sdk.Context, src, dst sdk.AccAddress, value 
 		} else {
 			diff := sdk.NewCoin(value.Denom, route.Value.AmountOf(value.Denom).Sub(value.Amount))
 			coins := sdk.NewCoins(diff)
-
-			fmt.Println("Energy --- diff (sent M->A)", diff)
-			fmt.Println("Energy --- energy-diff (set routed)", energy.Sub(coins))
 
 			if err := k.proxyKeeper.SendCoinsFromModuleToAccount(ctx, types.EnergyPoolName, src, coins); err != nil {
 				return err
@@ -150,12 +141,8 @@ func (k Keeper) EditEnergyRoute(ctx sdk.Context, src, dst sdk.AccAddress, value 
 		newValues = sdk.NewCoins(sdk.NewCoin(ctypes.VOLT, volts), value)
 	}
 
-	fmt.Println("Energy *** newValues", newValues)
+	k.SetRoute(ctx, src, dst, types.NewRoute(src, dst, route.Alias, newValues))
 
-	k.SetRoute(ctx, types.NewRoute(src, dst, route.Alias, newValues))
-
-	// TODO migrate from on coins callback to on coins in proxy methods callback
-	// TODO but SendCoinsFromModuleToAccount and others will pass modules, not both src,dst
 	k.proxyKeeper.OnCoinsTransfer(ctx, src, dst)
 
 	return nil
@@ -174,7 +161,7 @@ func (k Keeper) DeleteEnergyRoute(ctx sdk.Context, src, dst sdk.AccAddress) erro
 	energy := k.GetRoutedToEnergy(ctx, dst)
 	k.SetRoutedEnergy(ctx, dst, energy.Sub(route.Value))
 
-	k.RemoveRoute(ctx, route)
+	k.RemoveRoute(ctx, src, dst)
 
 	k.proxyKeeper.OnCoinsTransfer(ctx, src, dst)
 
@@ -187,15 +174,21 @@ func (k Keeper) EditEnergyRouteAlias(ctx sdk.Context, src, dst sdk.AccAddress, a
 		return types.ErrRouteNotExist
 	}
 
-	k.SetRoute(ctx, types.NewRoute(src, dst, alias, route.Value))
+	k.SetRoute(ctx, src, dst, types.NewRoute(src, dst, alias, route.Value))
 
 	return nil
 }
 
 func (k Keeper) SetRoutes(ctx sdk.Context, routes types.Routes) error {
 	for _, route := range routes {
-		src, _ := sdk.AccAddressFromBech32(route.Source)
-		dst, _ := sdk.AccAddressFromBech32(route.Destination)
+		src, err := sdk.AccAddressFromBech32(route.Source)
+		if err != nil {
+			return err
+		}
+		dst, err := sdk.AccAddressFromBech32(route.Destination)
+		if err != nil {
+			return err
+		}
 
 		if err := k.proxyKeeper.SendCoinsFromAccountToModule(ctx, src, types.EnergyPoolName, route.Value); err != nil {
 			return err
@@ -208,36 +201,25 @@ func (k Keeper) SetRoutes(ctx sdk.Context, routes types.Routes) error {
 			k.SetRoutedEnergy(ctx, dst, energy.Add(route.Value...))
 		}
 
-		k.SetRoute(ctx, types.NewRoute(src, dst, route.Alias, route.Value))
+		k.SetRoute(ctx, src, dst, types.NewRoute(src, dst, route.Alias, route.Value))
 		k.proxyKeeper.OnCoinsTransfer(ctx, src, dst)
 	}
 	return nil
 }
-
-//______________________________________________________________________
 
 func (k Keeper) MaxSourceRoutes(ctx sdk.Context) (res uint32) {
 	k.paramSpace.Get(ctx, types.KeyMaxRoutes, &res)
 	return
 }
 
-//______________________________________________________________________
-
-func (k Keeper) SetRoute(ctx sdk.Context, route types.Route) {
+func (k Keeper) SetRoute(ctx sdk.Context, src, dst sdk.AccAddress, route types.Route) {
 	store := ctx.KVStore(k.storeKey)
-	b := k.cdc.MustMarshalBinaryBare(&route)
 
-	src, _ := sdk.AccAddressFromBech32(route.Source)
-	dst, _ := sdk.AccAddressFromBech32(route.Destination)
-
-	store.Set(types.GetRouteKey(src, dst), b)
+	store.Set(types.GetRouteKey(src, dst), types.MustMarshalRoute(k.cdc, route))
 }
 
-func (k Keeper) RemoveRoute(ctx sdk.Context, route types.Route) {
+func (k Keeper) RemoveRoute(ctx sdk.Context, src, dst sdk.AccAddress) {
 	store := ctx.KVStore(k.storeKey)
-
-	src, _ := sdk.AccAddressFromBech32(route.Source)
-	dst, _ := sdk.AccAddressFromBech32(route.Destination)
 
 	store.Delete(types.GetRouteKey(src, dst))
 }
@@ -245,15 +227,9 @@ func (k Keeper) RemoveRoute(ctx sdk.Context, route types.Route) {
 func (k Keeper) SetRoutedEnergy(ctx sdk.Context, dst sdk.AccAddress, amount sdk.Coins) {
 	store := ctx.KVStore(k.storeKey)
 	value := types.NewValue(amount)
+
 	store.Set(types.GetRoutedEnergyByDestinationKey(dst), k.cdc.MustMarshalBinaryBare(&value))
 }
-
-//func (k Keeper) RemoveRoutedPower(ctx sdk.Context, delegate sdk.AccAddress) {
-//	store := ctx.KVStore(k.storeKey)
-//	store.Delete(types.GetRoutedEnergyByDestinationKey(delegate))
-//}
-
-//______________________________________________________________________
 
 func (k Keeper) GetRoute(ctx sdk.Context, src, dst sdk.AccAddress) (route types.Route, found bool) {
 	store := ctx.KVStore(k.storeKey)
@@ -264,7 +240,7 @@ func (k Keeper) GetRoute(ctx sdk.Context, src, dst sdk.AccAddress) (route types.
 		return route, false
 	}
 
-	k.cdc.MustUnmarshalBinaryBare(value, &route)
+	route = types.MustUnmarshalRoute(k.cdc, value)
 
 	return route, true
 }
@@ -285,8 +261,7 @@ func (k Keeper) IterateAllRoutes(ctx sdk.Context, cb func(route types.Route) (st
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-		var route types.Route
-		k.cdc.MustUnmarshalBinaryBare(iterator.Value(), &route)
+		route := types.MustUnmarshalRoute(k.cdc, iterator.Value())
 		if cb(route) {
 			break
 		}
@@ -300,8 +275,7 @@ func (k Keeper) GetDestinationRoutes(ctx sdk.Context, dst sdk.AccAddress) (route
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-		var route types.Route
-		k.cdc.MustUnmarshalBinaryBare(iterator.Value(), &route)
+		route := types.MustUnmarshalRoute(k.cdc, iterator.Value())
 		rdst, _ := sdk.AccAddressFromBech32(route.Destination)
 		if rdst.Equals(dst) {
 			routes = append(routes, route)
@@ -322,8 +296,7 @@ func (k Keeper) GetSourceRoutes(ctx sdk.Context, src sdk.AccAddress,
 
 	i := 0
 	for ; iterator.Valid() && i < int(maxRetrieve); iterator.Next() {
-		var route types.Route
-		k.cdc.MustUnmarshalBinaryBare(iterator.Value(), &route)
+		route := types.MustUnmarshalRoute(k.cdc, iterator.Value())
 		routes[i] = route
 		i++
 	}
@@ -355,7 +328,7 @@ func (k Keeper) GetRoutedFromEnergy(ctx sdk.Context, src sdk.AccAddress) (amount
 		var route types.Route
 		k.cdc.MustUnmarshalBinaryBare(iterator.Value(), &route)
 		if amount.IsValid() {
-			amount = amount.Add(route.GetValue()...)
+			amount = amount.Add(route.Value...)
 		} else {
 			amount = route.Value
 		}

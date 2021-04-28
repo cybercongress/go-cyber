@@ -6,8 +6,7 @@ package types
 import (
 	context "context"
 	fmt "fmt"
-	_ "github.com/cosmos/cosmos-sdk/types"
-	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
+	types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/gogo/protobuf/gogoproto"
 	grpc1 "github.com/gogo/protobuf/grpc"
 	proto "github.com/gogo/protobuf/proto"
@@ -30,27 +29,27 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-type MsgCronAddJob struct {
-	Creator  string   `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator" yaml:"creator"`
-	Contract string   `protobuf:"bytes,2,opt,name=contract,proto3" json:"contract" yaml:"contract"`
-	Trigger  *Trigger `protobuf:"bytes,3,opt,name=trigger,proto3" json:"trigger" yaml:"trigger"`
-	Load     *Load    `protobuf:"bytes,4,opt,name=load,proto3" json:"load" yaml:"load"`
-	Label    string   `protobuf:"bytes,5,opt,name=label,proto3" json:"label" yaml:"label"`
-	Cid      string   `protobuf:"bytes,6,opt,name=cid,proto3" json:"cid" yaml:"cid"`
+type MsgAddJob struct {
+	Creator  string  `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty" yaml:"creator"`
+	Contract string  `protobuf:"bytes,2,opt,name=contract,proto3" json:"contract,omitempty" yaml:"contract"`
+	Trigger  Trigger `protobuf:"bytes,3,opt,name=trigger,proto3" json:"trigger" yaml:"trigger"`
+	Load     Load    `protobuf:"bytes,4,opt,name=load,proto3" json:"load" yaml:"load"`
+	Label    string  `protobuf:"bytes,5,opt,name=label,proto3" json:"label,omitempty" yaml:"label"`
+	Cid      string  `protobuf:"bytes,6,opt,name=cid,proto3" json:"cid,omitempty" yaml:"cid"`
 }
 
-func (m *MsgCronAddJob) Reset()         { *m = MsgCronAddJob{} }
-func (m *MsgCronAddJob) String() string { return proto.CompactTextString(m) }
-func (*MsgCronAddJob) ProtoMessage()    {}
-func (*MsgCronAddJob) Descriptor() ([]byte, []int) {
+func (m *MsgAddJob) Reset()         { *m = MsgAddJob{} }
+func (m *MsgAddJob) String() string { return proto.CompactTextString(m) }
+func (*MsgAddJob) ProtoMessage()    {}
+func (*MsgAddJob) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e3ac466c209dfdea, []int{0}
 }
-func (m *MsgCronAddJob) XXX_Unmarshal(b []byte) error {
+func (m *MsgAddJob) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgCronAddJob) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgAddJob) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgCronAddJob.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgAddJob.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -60,36 +59,36 @@ func (m *MsgCronAddJob) XXX_Marshal(b []byte, deterministic bool) ([]byte, error
 		return b[:n], nil
 	}
 }
-func (m *MsgCronAddJob) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgCronAddJob.Merge(m, src)
+func (m *MsgAddJob) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgAddJob.Merge(m, src)
 }
-func (m *MsgCronAddJob) XXX_Size() int {
+func (m *MsgAddJob) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgCronAddJob) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgCronAddJob.DiscardUnknown(m)
+func (m *MsgAddJob) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgAddJob.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgCronAddJob proto.InternalMessageInfo
+var xxx_messageInfo_MsgAddJob proto.InternalMessageInfo
 
-type MsgCronRemoveJob struct {
-	Creator  string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator" yaml:"creator"`
-	Contract string `protobuf:"bytes,2,opt,name=contract,proto3" json:"contract" yaml:"contract"`
-	Label    string `protobuf:"bytes,3,opt,name=label,proto3" json:"label" yaml:"label"`
+type MsgRemoveJob struct {
+	Creator  string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty" yaml:"creator"`
+	Contract string `protobuf:"bytes,2,opt,name=contract,proto3" json:"contract,omitempty" yaml:"contract"`
+	Label    string `protobuf:"bytes,3,opt,name=label,proto3" json:"label,omitempty" yaml:"label"`
 }
 
-func (m *MsgCronRemoveJob) Reset()         { *m = MsgCronRemoveJob{} }
-func (m *MsgCronRemoveJob) String() string { return proto.CompactTextString(m) }
-func (*MsgCronRemoveJob) ProtoMessage()    {}
-func (*MsgCronRemoveJob) Descriptor() ([]byte, []int) {
+func (m *MsgRemoveJob) Reset()         { *m = MsgRemoveJob{} }
+func (m *MsgRemoveJob) String() string { return proto.CompactTextString(m) }
+func (*MsgRemoveJob) ProtoMessage()    {}
+func (*MsgRemoveJob) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e3ac466c209dfdea, []int{1}
 }
-func (m *MsgCronRemoveJob) XXX_Unmarshal(b []byte) error {
+func (m *MsgRemoveJob) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgCronRemoveJob) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgRemoveJob) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgCronRemoveJob.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgRemoveJob.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -99,37 +98,37 @@ func (m *MsgCronRemoveJob) XXX_Marshal(b []byte, deterministic bool) ([]byte, er
 		return b[:n], nil
 	}
 }
-func (m *MsgCronRemoveJob) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgCronRemoveJob.Merge(m, src)
+func (m *MsgRemoveJob) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgRemoveJob.Merge(m, src)
 }
-func (m *MsgCronRemoveJob) XXX_Size() int {
+func (m *MsgRemoveJob) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgCronRemoveJob) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgCronRemoveJob.DiscardUnknown(m)
+func (m *MsgRemoveJob) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgRemoveJob.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgCronRemoveJob proto.InternalMessageInfo
+var xxx_messageInfo_MsgRemoveJob proto.InternalMessageInfo
 
-type MsgCronChangeJobCID struct {
-	Creator  string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator" yaml:"creator"`
-	Contract string `protobuf:"bytes,2,opt,name=contract,proto3" json:"contract" yaml:"contract"`
-	Label    string `protobuf:"bytes,3,opt,name=label,proto3" json:"label" yaml:"label"`
-	Cid      string `protobuf:"bytes,4,opt,name=cid,proto3" json:"cid" yaml:"cid"`
+type MsgChangeJobCID struct {
+	Creator  string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty" yaml:"creator"`
+	Contract string `protobuf:"bytes,2,opt,name=contract,proto3" json:"contract,omitempty" yaml:"contract"`
+	Label    string `protobuf:"bytes,3,opt,name=label,proto3" json:"label,omitempty" yaml:"label"`
+	Cid      string `protobuf:"bytes,4,opt,name=cid,proto3" json:"cid,omitempty" yaml:"cid"`
 }
 
-func (m *MsgCronChangeJobCID) Reset()         { *m = MsgCronChangeJobCID{} }
-func (m *MsgCronChangeJobCID) String() string { return proto.CompactTextString(m) }
-func (*MsgCronChangeJobCID) ProtoMessage()    {}
-func (*MsgCronChangeJobCID) Descriptor() ([]byte, []int) {
+func (m *MsgChangeJobCID) Reset()         { *m = MsgChangeJobCID{} }
+func (m *MsgChangeJobCID) String() string { return proto.CompactTextString(m) }
+func (*MsgChangeJobCID) ProtoMessage()    {}
+func (*MsgChangeJobCID) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e3ac466c209dfdea, []int{2}
 }
-func (m *MsgCronChangeJobCID) XXX_Unmarshal(b []byte) error {
+func (m *MsgChangeJobCID) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgCronChangeJobCID) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgChangeJobCID) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgCronChangeJobCID.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgChangeJobCID.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -139,37 +138,37 @@ func (m *MsgCronChangeJobCID) XXX_Marshal(b []byte, deterministic bool) ([]byte,
 		return b[:n], nil
 	}
 }
-func (m *MsgCronChangeJobCID) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgCronChangeJobCID.Merge(m, src)
+func (m *MsgChangeJobCID) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgChangeJobCID.Merge(m, src)
 }
-func (m *MsgCronChangeJobCID) XXX_Size() int {
+func (m *MsgChangeJobCID) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgCronChangeJobCID) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgCronChangeJobCID.DiscardUnknown(m)
+func (m *MsgChangeJobCID) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgChangeJobCID.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgCronChangeJobCID proto.InternalMessageInfo
+var xxx_messageInfo_MsgChangeJobCID proto.InternalMessageInfo
 
-type MsgCronChangeJobLabel struct {
-	Creator  string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator" yaml:"creator"`
-	Contract string `protobuf:"bytes,2,opt,name=contract,proto3" json:"contract" yaml:"contract"`
-	Label    string `protobuf:"bytes,3,opt,name=label,proto3" json:"label" yaml:"label"`
-	NewLabel string `protobuf:"bytes,4,opt,name=new_label,json=newLabel,proto3" json:"new_label" yaml:"new_label"`
+type MsgChangeJobLabel struct {
+	Creator  string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty" yaml:"creator"`
+	Contract string `protobuf:"bytes,2,opt,name=contract,proto3" json:"contract,omitempty" yaml:"contract"`
+	Label    string `protobuf:"bytes,3,opt,name=label,proto3" json:"label,omitempty" yaml:"label"`
+	NewLabel string `protobuf:"bytes,4,opt,name=new_label,json=newLabel,proto3" json:"new_label,omitempty" yaml:"new_label"`
 }
 
-func (m *MsgCronChangeJobLabel) Reset()         { *m = MsgCronChangeJobLabel{} }
-func (m *MsgCronChangeJobLabel) String() string { return proto.CompactTextString(m) }
-func (*MsgCronChangeJobLabel) ProtoMessage()    {}
-func (*MsgCronChangeJobLabel) Descriptor() ([]byte, []int) {
+func (m *MsgChangeJobLabel) Reset()         { *m = MsgChangeJobLabel{} }
+func (m *MsgChangeJobLabel) String() string { return proto.CompactTextString(m) }
+func (*MsgChangeJobLabel) ProtoMessage()    {}
+func (*MsgChangeJobLabel) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e3ac466c209dfdea, []int{3}
 }
-func (m *MsgCronChangeJobLabel) XXX_Unmarshal(b []byte) error {
+func (m *MsgChangeJobLabel) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgCronChangeJobLabel) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgChangeJobLabel) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgCronChangeJobLabel.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgChangeJobLabel.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -179,37 +178,37 @@ func (m *MsgCronChangeJobLabel) XXX_Marshal(b []byte, deterministic bool) ([]byt
 		return b[:n], nil
 	}
 }
-func (m *MsgCronChangeJobLabel) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgCronChangeJobLabel.Merge(m, src)
+func (m *MsgChangeJobLabel) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgChangeJobLabel.Merge(m, src)
 }
-func (m *MsgCronChangeJobLabel) XXX_Size() int {
+func (m *MsgChangeJobLabel) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgCronChangeJobLabel) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgCronChangeJobLabel.DiscardUnknown(m)
+func (m *MsgChangeJobLabel) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgChangeJobLabel.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgCronChangeJobLabel proto.InternalMessageInfo
+var xxx_messageInfo_MsgChangeJobLabel proto.InternalMessageInfo
 
-type MsgCronChangeJobCallData struct {
-	Creator  string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator" yaml:"creator"`
-	Contract string `protobuf:"bytes,2,opt,name=contract,proto3" json:"contract" yaml:"contract"`
-	Label    string `protobuf:"bytes,3,opt,name=label,proto3" json:"label" yaml:"label"`
-	CallData string `protobuf:"bytes,4,opt,name=call_data,json=callData,proto3" json:"call_data" yaml:"call_data"`
+type MsgChangeJobCallData struct {
+	Creator  string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty" yaml:"creator"`
+	Contract string `protobuf:"bytes,2,opt,name=contract,proto3" json:"contract,omitempty" yaml:"contract"`
+	Label    string `protobuf:"bytes,3,opt,name=label,proto3" json:"label,omitempty" yaml:"label"`
+	CallData string `protobuf:"bytes,4,opt,name=call_data,json=callData,proto3" json:"call_data,omitempty" yaml:"call_data"`
 }
 
-func (m *MsgCronChangeJobCallData) Reset()         { *m = MsgCronChangeJobCallData{} }
-func (m *MsgCronChangeJobCallData) String() string { return proto.CompactTextString(m) }
-func (*MsgCronChangeJobCallData) ProtoMessage()    {}
-func (*MsgCronChangeJobCallData) Descriptor() ([]byte, []int) {
+func (m *MsgChangeJobCallData) Reset()         { *m = MsgChangeJobCallData{} }
+func (m *MsgChangeJobCallData) String() string { return proto.CompactTextString(m) }
+func (*MsgChangeJobCallData) ProtoMessage()    {}
+func (*MsgChangeJobCallData) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e3ac466c209dfdea, []int{4}
 }
-func (m *MsgCronChangeJobCallData) XXX_Unmarshal(b []byte) error {
+func (m *MsgChangeJobCallData) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgCronChangeJobCallData) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgChangeJobCallData) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgCronChangeJobCallData.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgChangeJobCallData.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -219,37 +218,37 @@ func (m *MsgCronChangeJobCallData) XXX_Marshal(b []byte, deterministic bool) ([]
 		return b[:n], nil
 	}
 }
-func (m *MsgCronChangeJobCallData) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgCronChangeJobCallData.Merge(m, src)
+func (m *MsgChangeJobCallData) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgChangeJobCallData.Merge(m, src)
 }
-func (m *MsgCronChangeJobCallData) XXX_Size() int {
+func (m *MsgChangeJobCallData) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgCronChangeJobCallData) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgCronChangeJobCallData.DiscardUnknown(m)
+func (m *MsgChangeJobCallData) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgChangeJobCallData.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgCronChangeJobCallData proto.InternalMessageInfo
+var xxx_messageInfo_MsgChangeJobCallData proto.InternalMessageInfo
 
-type MsgCronChangeJobGasPrice struct {
-	Creator  string                                  `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator" yaml:"creator"`
-	Contract string                                  `protobuf:"bytes,2,opt,name=contract,proto3" json:"contract" yaml:"contract"`
-	Label    string                                  `protobuf:"bytes,3,opt,name=label,proto3" json:"label" yaml:"label"`
-	GasPrice github_com_cosmos_cosmos_sdk_types.Coin `protobuf:"bytes,4,opt,name=gas_price,json=gasPrice,proto3,casttype=github.com/cosmos/cosmos-sdk/types.Coin" json:"gas_price" yaml:"gas_price"`
+type MsgChangeJobGasPrice struct {
+	Creator  string     `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty" yaml:"creator"`
+	Contract string     `protobuf:"bytes,2,opt,name=contract,proto3" json:"contract,omitempty" yaml:"contract"`
+	Label    string     `protobuf:"bytes,3,opt,name=label,proto3" json:"label,omitempty" yaml:"label"`
+	GasPrice types.Coin `protobuf:"bytes,4,opt,name=gas_price,json=gasPrice,proto3" json:"gas_price" yaml:"gas_price"`
 }
 
-func (m *MsgCronChangeJobGasPrice) Reset()         { *m = MsgCronChangeJobGasPrice{} }
-func (m *MsgCronChangeJobGasPrice) String() string { return proto.CompactTextString(m) }
-func (*MsgCronChangeJobGasPrice) ProtoMessage()    {}
-func (*MsgCronChangeJobGasPrice) Descriptor() ([]byte, []int) {
+func (m *MsgChangeJobGasPrice) Reset()         { *m = MsgChangeJobGasPrice{} }
+func (m *MsgChangeJobGasPrice) String() string { return proto.CompactTextString(m) }
+func (*MsgChangeJobGasPrice) ProtoMessage()    {}
+func (*MsgChangeJobGasPrice) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e3ac466c209dfdea, []int{5}
 }
-func (m *MsgCronChangeJobGasPrice) XXX_Unmarshal(b []byte) error {
+func (m *MsgChangeJobGasPrice) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgCronChangeJobGasPrice) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgChangeJobGasPrice) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgCronChangeJobGasPrice.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgChangeJobGasPrice.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -259,37 +258,37 @@ func (m *MsgCronChangeJobGasPrice) XXX_Marshal(b []byte, deterministic bool) ([]
 		return b[:n], nil
 	}
 }
-func (m *MsgCronChangeJobGasPrice) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgCronChangeJobGasPrice.Merge(m, src)
+func (m *MsgChangeJobGasPrice) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgChangeJobGasPrice.Merge(m, src)
 }
-func (m *MsgCronChangeJobGasPrice) XXX_Size() int {
+func (m *MsgChangeJobGasPrice) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgCronChangeJobGasPrice) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgCronChangeJobGasPrice.DiscardUnknown(m)
+func (m *MsgChangeJobGasPrice) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgChangeJobGasPrice.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgCronChangeJobGasPrice proto.InternalMessageInfo
+var xxx_messageInfo_MsgChangeJobGasPrice proto.InternalMessageInfo
 
-type MsgCronChangeJobPeriod struct {
-	Creator  string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator" yaml:"creator"`
-	Contract string `protobuf:"bytes,2,opt,name=contract,proto3" json:"contract" yaml:"contract"`
-	Label    string `protobuf:"bytes,3,opt,name=label,proto3" json:"label" yaml:"label"`
-	Period   uint64 `protobuf:"varint,4,opt,name=period,proto3" json:"period" yaml:"period"`
+type MsgChangeJobPeriod struct {
+	Creator  string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty" yaml:"creator"`
+	Contract string `protobuf:"bytes,2,opt,name=contract,proto3" json:"contract,omitempty" yaml:"contract"`
+	Label    string `protobuf:"bytes,3,opt,name=label,proto3" json:"label,omitempty" yaml:"label"`
+	Period   uint64 `protobuf:"varint,4,opt,name=period,proto3" json:"period,omitempty" yaml:"period"`
 }
 
-func (m *MsgCronChangeJobPeriod) Reset()         { *m = MsgCronChangeJobPeriod{} }
-func (m *MsgCronChangeJobPeriod) String() string { return proto.CompactTextString(m) }
-func (*MsgCronChangeJobPeriod) ProtoMessage()    {}
-func (*MsgCronChangeJobPeriod) Descriptor() ([]byte, []int) {
+func (m *MsgChangeJobPeriod) Reset()         { *m = MsgChangeJobPeriod{} }
+func (m *MsgChangeJobPeriod) String() string { return proto.CompactTextString(m) }
+func (*MsgChangeJobPeriod) ProtoMessage()    {}
+func (*MsgChangeJobPeriod) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e3ac466c209dfdea, []int{6}
 }
-func (m *MsgCronChangeJobPeriod) XXX_Unmarshal(b []byte) error {
+func (m *MsgChangeJobPeriod) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgCronChangeJobPeriod) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgChangeJobPeriod) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgCronChangeJobPeriod.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgChangeJobPeriod.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -299,37 +298,37 @@ func (m *MsgCronChangeJobPeriod) XXX_Marshal(b []byte, deterministic bool) ([]by
 		return b[:n], nil
 	}
 }
-func (m *MsgCronChangeJobPeriod) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgCronChangeJobPeriod.Merge(m, src)
+func (m *MsgChangeJobPeriod) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgChangeJobPeriod.Merge(m, src)
 }
-func (m *MsgCronChangeJobPeriod) XXX_Size() int {
+func (m *MsgChangeJobPeriod) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgCronChangeJobPeriod) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgCronChangeJobPeriod.DiscardUnknown(m)
+func (m *MsgChangeJobPeriod) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgChangeJobPeriod.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgCronChangeJobPeriod proto.InternalMessageInfo
+var xxx_messageInfo_MsgChangeJobPeriod proto.InternalMessageInfo
 
-type MsgCronChangeJobBlock struct {
-	Creator  string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator" yaml:"creator"`
-	Contract string `protobuf:"bytes,2,opt,name=contract,proto3" json:"contract" yaml:"contract"`
-	Label    string `protobuf:"bytes,3,opt,name=label,proto3" json:"label" yaml:"label"`
-	Block    uint64 `protobuf:"varint,4,opt,name=block,proto3" json:"block" yaml:"block"`
+type MsgChangeJobBlock struct {
+	Creator  string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty" yaml:"creator"`
+	Contract string `protobuf:"bytes,2,opt,name=contract,proto3" json:"contract,omitempty" yaml:"contract"`
+	Label    string `protobuf:"bytes,3,opt,name=label,proto3" json:"label,omitempty" yaml:"label"`
+	Block    uint64 `protobuf:"varint,4,opt,name=block,proto3" json:"block,omitempty" yaml:"block"`
 }
 
-func (m *MsgCronChangeJobBlock) Reset()         { *m = MsgCronChangeJobBlock{} }
-func (m *MsgCronChangeJobBlock) String() string { return proto.CompactTextString(m) }
-func (*MsgCronChangeJobBlock) ProtoMessage()    {}
-func (*MsgCronChangeJobBlock) Descriptor() ([]byte, []int) {
+func (m *MsgChangeJobBlock) Reset()         { *m = MsgChangeJobBlock{} }
+func (m *MsgChangeJobBlock) String() string { return proto.CompactTextString(m) }
+func (*MsgChangeJobBlock) ProtoMessage()    {}
+func (*MsgChangeJobBlock) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e3ac466c209dfdea, []int{7}
 }
-func (m *MsgCronChangeJobBlock) XXX_Unmarshal(b []byte) error {
+func (m *MsgChangeJobBlock) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgCronChangeJobBlock) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgChangeJobBlock) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgCronChangeJobBlock.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgChangeJobBlock.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -339,33 +338,33 @@ func (m *MsgCronChangeJobBlock) XXX_Marshal(b []byte, deterministic bool) ([]byt
 		return b[:n], nil
 	}
 }
-func (m *MsgCronChangeJobBlock) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgCronChangeJobBlock.Merge(m, src)
+func (m *MsgChangeJobBlock) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgChangeJobBlock.Merge(m, src)
 }
-func (m *MsgCronChangeJobBlock) XXX_Size() int {
+func (m *MsgChangeJobBlock) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgCronChangeJobBlock) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgCronChangeJobBlock.DiscardUnknown(m)
+func (m *MsgChangeJobBlock) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgChangeJobBlock.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgCronChangeJobBlock proto.InternalMessageInfo
+var xxx_messageInfo_MsgChangeJobBlock proto.InternalMessageInfo
 
-type MsgCronAddJobResponse struct {
+type MsgAddJobResponse struct {
 }
 
-func (m *MsgCronAddJobResponse) Reset()         { *m = MsgCronAddJobResponse{} }
-func (m *MsgCronAddJobResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgCronAddJobResponse) ProtoMessage()    {}
-func (*MsgCronAddJobResponse) Descriptor() ([]byte, []int) {
+func (m *MsgAddJobResponse) Reset()         { *m = MsgAddJobResponse{} }
+func (m *MsgAddJobResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgAddJobResponse) ProtoMessage()    {}
+func (*MsgAddJobResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e3ac466c209dfdea, []int{8}
 }
-func (m *MsgCronAddJobResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgAddJobResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgCronAddJobResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgAddJobResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgCronAddJobResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgAddJobResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -375,33 +374,33 @@ func (m *MsgCronAddJobResponse) XXX_Marshal(b []byte, deterministic bool) ([]byt
 		return b[:n], nil
 	}
 }
-func (m *MsgCronAddJobResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgCronAddJobResponse.Merge(m, src)
+func (m *MsgAddJobResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgAddJobResponse.Merge(m, src)
 }
-func (m *MsgCronAddJobResponse) XXX_Size() int {
+func (m *MsgAddJobResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgCronAddJobResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgCronAddJobResponse.DiscardUnknown(m)
+func (m *MsgAddJobResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgAddJobResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgCronAddJobResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgAddJobResponse proto.InternalMessageInfo
 
-type MsgCronRemoveJobResponse struct {
+type MsgRemoveJobResponse struct {
 }
 
-func (m *MsgCronRemoveJobResponse) Reset()         { *m = MsgCronRemoveJobResponse{} }
-func (m *MsgCronRemoveJobResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgCronRemoveJobResponse) ProtoMessage()    {}
-func (*MsgCronRemoveJobResponse) Descriptor() ([]byte, []int) {
+func (m *MsgRemoveJobResponse) Reset()         { *m = MsgRemoveJobResponse{} }
+func (m *MsgRemoveJobResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgRemoveJobResponse) ProtoMessage()    {}
+func (*MsgRemoveJobResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e3ac466c209dfdea, []int{9}
 }
-func (m *MsgCronRemoveJobResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgRemoveJobResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgCronRemoveJobResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgRemoveJobResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgCronRemoveJobResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgRemoveJobResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -411,33 +410,33 @@ func (m *MsgCronRemoveJobResponse) XXX_Marshal(b []byte, deterministic bool) ([]
 		return b[:n], nil
 	}
 }
-func (m *MsgCronRemoveJobResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgCronRemoveJobResponse.Merge(m, src)
+func (m *MsgRemoveJobResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgRemoveJobResponse.Merge(m, src)
 }
-func (m *MsgCronRemoveJobResponse) XXX_Size() int {
+func (m *MsgRemoveJobResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgCronRemoveJobResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgCronRemoveJobResponse.DiscardUnknown(m)
+func (m *MsgRemoveJobResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgRemoveJobResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgCronRemoveJobResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgRemoveJobResponse proto.InternalMessageInfo
 
-type MsgCronChangeJobCIDResponse struct {
+type MsgChangeJobCIDResponse struct {
 }
 
-func (m *MsgCronChangeJobCIDResponse) Reset()         { *m = MsgCronChangeJobCIDResponse{} }
-func (m *MsgCronChangeJobCIDResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgCronChangeJobCIDResponse) ProtoMessage()    {}
-func (*MsgCronChangeJobCIDResponse) Descriptor() ([]byte, []int) {
+func (m *MsgChangeJobCIDResponse) Reset()         { *m = MsgChangeJobCIDResponse{} }
+func (m *MsgChangeJobCIDResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgChangeJobCIDResponse) ProtoMessage()    {}
+func (*MsgChangeJobCIDResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e3ac466c209dfdea, []int{10}
 }
-func (m *MsgCronChangeJobCIDResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgChangeJobCIDResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgCronChangeJobCIDResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgChangeJobCIDResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgCronChangeJobCIDResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgChangeJobCIDResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -447,33 +446,33 @@ func (m *MsgCronChangeJobCIDResponse) XXX_Marshal(b []byte, deterministic bool) 
 		return b[:n], nil
 	}
 }
-func (m *MsgCronChangeJobCIDResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgCronChangeJobCIDResponse.Merge(m, src)
+func (m *MsgChangeJobCIDResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgChangeJobCIDResponse.Merge(m, src)
 }
-func (m *MsgCronChangeJobCIDResponse) XXX_Size() int {
+func (m *MsgChangeJobCIDResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgCronChangeJobCIDResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgCronChangeJobCIDResponse.DiscardUnknown(m)
+func (m *MsgChangeJobCIDResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgChangeJobCIDResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgCronChangeJobCIDResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgChangeJobCIDResponse proto.InternalMessageInfo
 
-type MsgCronChangeJobLabelResponse struct {
+type MsgChangeJobLabelResponse struct {
 }
 
-func (m *MsgCronChangeJobLabelResponse) Reset()         { *m = MsgCronChangeJobLabelResponse{} }
-func (m *MsgCronChangeJobLabelResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgCronChangeJobLabelResponse) ProtoMessage()    {}
-func (*MsgCronChangeJobLabelResponse) Descriptor() ([]byte, []int) {
+func (m *MsgChangeJobLabelResponse) Reset()         { *m = MsgChangeJobLabelResponse{} }
+func (m *MsgChangeJobLabelResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgChangeJobLabelResponse) ProtoMessage()    {}
+func (*MsgChangeJobLabelResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e3ac466c209dfdea, []int{11}
 }
-func (m *MsgCronChangeJobLabelResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgChangeJobLabelResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgCronChangeJobLabelResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgChangeJobLabelResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgCronChangeJobLabelResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgChangeJobLabelResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -483,33 +482,33 @@ func (m *MsgCronChangeJobLabelResponse) XXX_Marshal(b []byte, deterministic bool
 		return b[:n], nil
 	}
 }
-func (m *MsgCronChangeJobLabelResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgCronChangeJobLabelResponse.Merge(m, src)
+func (m *MsgChangeJobLabelResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgChangeJobLabelResponse.Merge(m, src)
 }
-func (m *MsgCronChangeJobLabelResponse) XXX_Size() int {
+func (m *MsgChangeJobLabelResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgCronChangeJobLabelResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgCronChangeJobLabelResponse.DiscardUnknown(m)
+func (m *MsgChangeJobLabelResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgChangeJobLabelResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgCronChangeJobLabelResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgChangeJobLabelResponse proto.InternalMessageInfo
 
-type MsgCronChangeJobCallDataResponse struct {
+type MsgChangeJobCallDataResponse struct {
 }
 
-func (m *MsgCronChangeJobCallDataResponse) Reset()         { *m = MsgCronChangeJobCallDataResponse{} }
-func (m *MsgCronChangeJobCallDataResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgCronChangeJobCallDataResponse) ProtoMessage()    {}
-func (*MsgCronChangeJobCallDataResponse) Descriptor() ([]byte, []int) {
+func (m *MsgChangeJobCallDataResponse) Reset()         { *m = MsgChangeJobCallDataResponse{} }
+func (m *MsgChangeJobCallDataResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgChangeJobCallDataResponse) ProtoMessage()    {}
+func (*MsgChangeJobCallDataResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e3ac466c209dfdea, []int{12}
 }
-func (m *MsgCronChangeJobCallDataResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgChangeJobCallDataResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgCronChangeJobCallDataResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgChangeJobCallDataResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgCronChangeJobCallDataResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgChangeJobCallDataResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -519,33 +518,33 @@ func (m *MsgCronChangeJobCallDataResponse) XXX_Marshal(b []byte, deterministic b
 		return b[:n], nil
 	}
 }
-func (m *MsgCronChangeJobCallDataResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgCronChangeJobCallDataResponse.Merge(m, src)
+func (m *MsgChangeJobCallDataResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgChangeJobCallDataResponse.Merge(m, src)
 }
-func (m *MsgCronChangeJobCallDataResponse) XXX_Size() int {
+func (m *MsgChangeJobCallDataResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgCronChangeJobCallDataResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgCronChangeJobCallDataResponse.DiscardUnknown(m)
+func (m *MsgChangeJobCallDataResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgChangeJobCallDataResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgCronChangeJobCallDataResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgChangeJobCallDataResponse proto.InternalMessageInfo
 
-type MsgCronChangeJobGasPriceResponse struct {
+type MsgChangeJobGasPriceResponse struct {
 }
 
-func (m *MsgCronChangeJobGasPriceResponse) Reset()         { *m = MsgCronChangeJobGasPriceResponse{} }
-func (m *MsgCronChangeJobGasPriceResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgCronChangeJobGasPriceResponse) ProtoMessage()    {}
-func (*MsgCronChangeJobGasPriceResponse) Descriptor() ([]byte, []int) {
+func (m *MsgChangeJobGasPriceResponse) Reset()         { *m = MsgChangeJobGasPriceResponse{} }
+func (m *MsgChangeJobGasPriceResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgChangeJobGasPriceResponse) ProtoMessage()    {}
+func (*MsgChangeJobGasPriceResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e3ac466c209dfdea, []int{13}
 }
-func (m *MsgCronChangeJobGasPriceResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgChangeJobGasPriceResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgCronChangeJobGasPriceResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgChangeJobGasPriceResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgCronChangeJobGasPriceResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgChangeJobGasPriceResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -555,33 +554,33 @@ func (m *MsgCronChangeJobGasPriceResponse) XXX_Marshal(b []byte, deterministic b
 		return b[:n], nil
 	}
 }
-func (m *MsgCronChangeJobGasPriceResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgCronChangeJobGasPriceResponse.Merge(m, src)
+func (m *MsgChangeJobGasPriceResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgChangeJobGasPriceResponse.Merge(m, src)
 }
-func (m *MsgCronChangeJobGasPriceResponse) XXX_Size() int {
+func (m *MsgChangeJobGasPriceResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgCronChangeJobGasPriceResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgCronChangeJobGasPriceResponse.DiscardUnknown(m)
+func (m *MsgChangeJobGasPriceResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgChangeJobGasPriceResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgCronChangeJobGasPriceResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgChangeJobGasPriceResponse proto.InternalMessageInfo
 
-type MsgCronChangeJobPeriodResponse struct {
+type MsgChangeJobPeriodResponse struct {
 }
 
-func (m *MsgCronChangeJobPeriodResponse) Reset()         { *m = MsgCronChangeJobPeriodResponse{} }
-func (m *MsgCronChangeJobPeriodResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgCronChangeJobPeriodResponse) ProtoMessage()    {}
-func (*MsgCronChangeJobPeriodResponse) Descriptor() ([]byte, []int) {
+func (m *MsgChangeJobPeriodResponse) Reset()         { *m = MsgChangeJobPeriodResponse{} }
+func (m *MsgChangeJobPeriodResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgChangeJobPeriodResponse) ProtoMessage()    {}
+func (*MsgChangeJobPeriodResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e3ac466c209dfdea, []int{14}
 }
-func (m *MsgCronChangeJobPeriodResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgChangeJobPeriodResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgCronChangeJobPeriodResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgChangeJobPeriodResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgCronChangeJobPeriodResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgChangeJobPeriodResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -591,33 +590,33 @@ func (m *MsgCronChangeJobPeriodResponse) XXX_Marshal(b []byte, deterministic boo
 		return b[:n], nil
 	}
 }
-func (m *MsgCronChangeJobPeriodResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgCronChangeJobPeriodResponse.Merge(m, src)
+func (m *MsgChangeJobPeriodResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgChangeJobPeriodResponse.Merge(m, src)
 }
-func (m *MsgCronChangeJobPeriodResponse) XXX_Size() int {
+func (m *MsgChangeJobPeriodResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgCronChangeJobPeriodResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgCronChangeJobPeriodResponse.DiscardUnknown(m)
+func (m *MsgChangeJobPeriodResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgChangeJobPeriodResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgCronChangeJobPeriodResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgChangeJobPeriodResponse proto.InternalMessageInfo
 
-type MsgCronChangeJobBlockResponse struct {
+type MsgChangeJobBlockResponse struct {
 }
 
-func (m *MsgCronChangeJobBlockResponse) Reset()         { *m = MsgCronChangeJobBlockResponse{} }
-func (m *MsgCronChangeJobBlockResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgCronChangeJobBlockResponse) ProtoMessage()    {}
-func (*MsgCronChangeJobBlockResponse) Descriptor() ([]byte, []int) {
+func (m *MsgChangeJobBlockResponse) Reset()         { *m = MsgChangeJobBlockResponse{} }
+func (m *MsgChangeJobBlockResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgChangeJobBlockResponse) ProtoMessage()    {}
+func (*MsgChangeJobBlockResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e3ac466c209dfdea, []int{15}
 }
-func (m *MsgCronChangeJobBlockResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgChangeJobBlockResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgCronChangeJobBlockResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgChangeJobBlockResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgCronChangeJobBlockResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgChangeJobBlockResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -627,96 +626,91 @@ func (m *MsgCronChangeJobBlockResponse) XXX_Marshal(b []byte, deterministic bool
 		return b[:n], nil
 	}
 }
-func (m *MsgCronChangeJobBlockResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgCronChangeJobBlockResponse.Merge(m, src)
+func (m *MsgChangeJobBlockResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgChangeJobBlockResponse.Merge(m, src)
 }
-func (m *MsgCronChangeJobBlockResponse) XXX_Size() int {
+func (m *MsgChangeJobBlockResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgCronChangeJobBlockResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgCronChangeJobBlockResponse.DiscardUnknown(m)
+func (m *MsgChangeJobBlockResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgChangeJobBlockResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgCronChangeJobBlockResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgChangeJobBlockResponse proto.InternalMessageInfo
 
 func init() {
-	proto.RegisterType((*MsgCronAddJob)(nil), "cyber.cron.v1beta1.MsgCronAddJob")
-	proto.RegisterType((*MsgCronRemoveJob)(nil), "cyber.cron.v1beta1.MsgCronRemoveJob")
-	proto.RegisterType((*MsgCronChangeJobCID)(nil), "cyber.cron.v1beta1.MsgCronChangeJobCID")
-	proto.RegisterType((*MsgCronChangeJobLabel)(nil), "cyber.cron.v1beta1.MsgCronChangeJobLabel")
-	proto.RegisterType((*MsgCronChangeJobCallData)(nil), "cyber.cron.v1beta1.MsgCronChangeJobCallData")
-	proto.RegisterType((*MsgCronChangeJobGasPrice)(nil), "cyber.cron.v1beta1.MsgCronChangeJobGasPrice")
-	proto.RegisterType((*MsgCronChangeJobPeriod)(nil), "cyber.cron.v1beta1.MsgCronChangeJobPeriod")
-	proto.RegisterType((*MsgCronChangeJobBlock)(nil), "cyber.cron.v1beta1.MsgCronChangeJobBlock")
-	proto.RegisterType((*MsgCronAddJobResponse)(nil), "cyber.cron.v1beta1.MsgCronAddJobResponse")
-	proto.RegisterType((*MsgCronRemoveJobResponse)(nil), "cyber.cron.v1beta1.MsgCronRemoveJobResponse")
-	proto.RegisterType((*MsgCronChangeJobCIDResponse)(nil), "cyber.cron.v1beta1.MsgCronChangeJobCIDResponse")
-	proto.RegisterType((*MsgCronChangeJobLabelResponse)(nil), "cyber.cron.v1beta1.MsgCronChangeJobLabelResponse")
-	proto.RegisterType((*MsgCronChangeJobCallDataResponse)(nil), "cyber.cron.v1beta1.MsgCronChangeJobCallDataResponse")
-	proto.RegisterType((*MsgCronChangeJobGasPriceResponse)(nil), "cyber.cron.v1beta1.MsgCronChangeJobGasPriceResponse")
-	proto.RegisterType((*MsgCronChangeJobPeriodResponse)(nil), "cyber.cron.v1beta1.MsgCronChangeJobPeriodResponse")
-	proto.RegisterType((*MsgCronChangeJobBlockResponse)(nil), "cyber.cron.v1beta1.MsgCronChangeJobBlockResponse")
+	proto.RegisterType((*MsgAddJob)(nil), "cyber.cron.v1beta1.MsgAddJob")
+	proto.RegisterType((*MsgRemoveJob)(nil), "cyber.cron.v1beta1.MsgRemoveJob")
+	proto.RegisterType((*MsgChangeJobCID)(nil), "cyber.cron.v1beta1.MsgChangeJobCID")
+	proto.RegisterType((*MsgChangeJobLabel)(nil), "cyber.cron.v1beta1.MsgChangeJobLabel")
+	proto.RegisterType((*MsgChangeJobCallData)(nil), "cyber.cron.v1beta1.MsgChangeJobCallData")
+	proto.RegisterType((*MsgChangeJobGasPrice)(nil), "cyber.cron.v1beta1.MsgChangeJobGasPrice")
+	proto.RegisterType((*MsgChangeJobPeriod)(nil), "cyber.cron.v1beta1.MsgChangeJobPeriod")
+	proto.RegisterType((*MsgChangeJobBlock)(nil), "cyber.cron.v1beta1.MsgChangeJobBlock")
+	proto.RegisterType((*MsgAddJobResponse)(nil), "cyber.cron.v1beta1.MsgAddJobResponse")
+	proto.RegisterType((*MsgRemoveJobResponse)(nil), "cyber.cron.v1beta1.MsgRemoveJobResponse")
+	proto.RegisterType((*MsgChangeJobCIDResponse)(nil), "cyber.cron.v1beta1.MsgChangeJobCIDResponse")
+	proto.RegisterType((*MsgChangeJobLabelResponse)(nil), "cyber.cron.v1beta1.MsgChangeJobLabelResponse")
+	proto.RegisterType((*MsgChangeJobCallDataResponse)(nil), "cyber.cron.v1beta1.MsgChangeJobCallDataResponse")
+	proto.RegisterType((*MsgChangeJobGasPriceResponse)(nil), "cyber.cron.v1beta1.MsgChangeJobGasPriceResponse")
+	proto.RegisterType((*MsgChangeJobPeriodResponse)(nil), "cyber.cron.v1beta1.MsgChangeJobPeriodResponse")
+	proto.RegisterType((*MsgChangeJobBlockResponse)(nil), "cyber.cron.v1beta1.MsgChangeJobBlockResponse")
 }
 
 func init() { proto.RegisterFile("cyber/cron/v1beta1/tx.proto", fileDescriptor_e3ac466c209dfdea) }
 
 var fileDescriptor_e3ac466c209dfdea = []byte{
-	// 879 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xd4, 0x57, 0xcf, 0x6b, 0xe3, 0x46,
-	0x14, 0xb6, 0x62, 0x27, 0x71, 0x66, 0x9b, 0x36, 0x68, 0x9b, 0x46, 0x2b, 0x63, 0x8f, 0x57, 0x14,
-	0xb2, 0x5b, 0x76, 0x25, 0x92, 0x2d, 0x14, 0xb6, 0x50, 0xa8, 0xbd, 0xa5, 0x3f, 0xc8, 0x42, 0x10,
-	0x7b, 0xda, 0x4b, 0x18, 0x49, 0x83, 0x56, 0x44, 0xd6, 0x18, 0x49, 0xf9, 0x45, 0xef, 0x25, 0x50,
-	0x0a, 0xfd, 0x13, 0xf2, 0xbf, 0xf4, 0x92, 0x63, 0x4e, 0xa5, 0xa7, 0xa1, 0x24, 0x97, 0xe2, 0x4b,
-	0xc1, 0xb7, 0xf6, 0x50, 0x8a, 0x66, 0x46, 0x63, 0xc5, 0x56, 0x5c, 0xe5, 0x54, 0x7c, 0xb2, 0xe7,
-	0x7b, 0xdf, 0x7b, 0x6f, 0xde, 0xf7, 0xa4, 0x79, 0x23, 0xd0, 0x72, 0xcf, 0x1c, 0x1c, 0x5b, 0x6e,
-	0x4c, 0x22, 0xeb, 0x78, 0xc7, 0xc1, 0x29, 0xda, 0xb1, 0xd2, 0x53, 0x73, 0x18, 0x93, 0x94, 0xa8,
-	0x2a, 0x33, 0x9a, 0x99, 0xd1, 0x14, 0x46, 0xfd, 0x43, 0x9f, 0xf8, 0x84, 0x99, 0xad, 0xec, 0x1f,
-	0x67, 0xea, 0xed, 0x92, 0x30, 0xcc, 0x8d, 0x9b, 0xb7, 0x5c, 0x92, 0x0c, 0x48, 0x72, 0xc0, 0xfd,
-	0x5c, 0x12, 0x08, 0x83, 0xf1, 0x43, 0x1d, 0xac, 0xbf, 0x4e, 0xfc, 0x7e, 0x4c, 0xa2, 0x2f, 0x3d,
-	0xef, 0x3b, 0xe2, 0xa8, 0x9f, 0x81, 0x55, 0x37, 0xc6, 0x28, 0x25, 0xb1, 0xa6, 0x74, 0x95, 0x27,
-	0x6b, 0xbd, 0xf6, 0x88, 0xc2, 0x1c, 0x1a, 0x53, 0xf8, 0xfe, 0x19, 0x1a, 0x84, 0x2f, 0x0d, 0x01,
-	0x18, 0x76, 0x6e, 0x52, 0x3f, 0x07, 0x4d, 0x97, 0x44, 0x69, 0x8c, 0xdc, 0x54, 0x5b, 0x62, 0x9e,
-	0x70, 0x44, 0xa1, 0xc4, 0xc6, 0x14, 0x7e, 0x20, 0x5c, 0x05, 0x62, 0xd8, 0xd2, 0xa8, 0xbe, 0x01,
-	0xab, 0x69, 0x1c, 0xf8, 0x3e, 0x8e, 0xb5, 0x7a, 0x57, 0x79, 0xf2, 0x60, 0xb7, 0x65, 0xce, 0xd6,
-	0x6e, 0xbe, 0xe1, 0x14, 0xbe, 0x25, 0xc1, 0x9f, 0x6c, 0x49, 0x00, 0x86, 0x9d, 0x9b, 0xd4, 0xaf,
-	0x40, 0x23, 0x24, 0xc8, 0xd3, 0x1a, 0x2c, 0xa4, 0x56, 0x16, 0x72, 0x8f, 0x20, 0xaf, 0xb7, 0x35,
-	0xa2, 0x90, 0x31, 0xc7, 0x14, 0x3e, 0xe0, 0xc1, 0xb2, 0x95, 0x61, 0x33, 0x50, 0xb5, 0xc0, 0x72,
-	0x88, 0x1c, 0x1c, 0x6a, 0xcb, 0xac, 0xac, 0x47, 0x23, 0x0a, 0x39, 0x30, 0xa6, 0xf0, 0x3d, 0x41,
-	0xcf, 0x96, 0x86, 0xcd, 0x61, 0x75, 0x1b, 0xd4, 0xdd, 0xc0, 0xd3, 0x56, 0x18, 0x7d, 0x73, 0x44,
-	0x61, 0xb6, 0x1c, 0x53, 0x08, 0x84, 0x00, 0x81, 0x67, 0xd8, 0x19, 0xf4, 0xb2, 0x79, 0x7e, 0x01,
-	0x6b, 0x7f, 0x5c, 0xc0, 0x9a, 0xf1, 0x8b, 0x02, 0x36, 0x44, 0x23, 0x6c, 0x3c, 0x20, 0xc7, 0xf8,
-	0xff, 0xeb, 0x85, 0x2c, 0xb7, 0x5e, 0xad, 0xdc, 0x42, 0x15, 0x7f, 0x2a, 0xe0, 0xa1, 0xa8, 0xa2,
-	0xff, 0x0e, 0x45, 0x7e, 0x56, 0x45, 0xff, 0xdb, 0x57, 0x0b, 0x52, 0x48, 0xde, 0xb7, 0xc6, 0x3d,
-	0xfa, 0x76, 0xbe, 0x04, 0x36, 0xa7, 0x2b, 0xde, 0x63, 0xc1, 0x16, 0xa4, 0xe6, 0x2f, 0xc0, 0x5a,
-	0x84, 0x4f, 0x0e, 0xb8, 0x13, 0xaf, 0xfc, 0xf1, 0x88, 0xc2, 0x09, 0x38, 0xa6, 0x70, 0x83, 0x3b,
-	0x4a, 0xc8, 0xb0, 0x9b, 0x11, 0x3e, 0xd9, 0x9b, 0x6a, 0xfe, 0x8f, 0x4b, 0x40, 0x9b, 0x69, 0x3e,
-	0x0a, 0xc3, 0x57, 0x28, 0x45, 0x0b, 0xa4, 0x86, 0x8b, 0xc2, 0xf0, 0xc0, 0x43, 0x29, 0x2a, 0xaa,
-	0x21, 0xc1, 0x89, 0x1a, 0x12, 0xca, 0x12, 0x8a, 0x32, 0x0b, 0x6a, 0xfc, 0x5a, 0xa2, 0xc6, 0xd7,
-	0x28, 0xd9, 0x8f, 0x03, 0x17, 0x2f, 0x8a, 0x1a, 0xe7, 0x0a, 0x58, 0xf3, 0x51, 0x36, 0x36, 0x02,
-	0x17, 0x8b, 0x53, 0xf4, 0x91, 0xc9, 0x67, 0x89, 0xe9, 0xa0, 0x04, 0xcb, 0x63, 0xb4, 0x4f, 0x82,
-	0xa8, 0xb7, 0x7f, 0x49, 0x61, 0x2d, 0x53, 0x4b, 0xfa, 0x4c, 0xd4, 0x92, 0x90, 0xf1, 0x37, 0x85,
-	0xdb, 0x7e, 0x90, 0xbe, 0x3b, 0x72, 0x4c, 0x97, 0x0c, 0x2c, 0x1e, 0x4d, 0xfc, 0x3c, 0x4f, 0xbc,
-	0x43, 0x2b, 0x3d, 0x1b, 0xe2, 0x84, 0x45, 0xb4, 0x9b, 0xbe, 0x50, 0xac, 0x20, 0xec, 0x3f, 0x0a,
-	0xf8, 0x68, 0x5a, 0xd8, 0x7d, 0x1c, 0x07, 0xc4, 0x5b, 0x14, 0x59, 0x5f, 0x80, 0x95, 0x21, 0xdb,
-	0x30, 0x93, 0xb4, 0xd1, 0x6b, 0x8d, 0x28, 0x14, 0xc8, 0x98, 0xc2, 0x75, 0xee, 0xc2, 0xd7, 0x86,
-	0x2d, 0x0c, 0x05, 0x01, 0xfe, 0x52, 0x66, 0x8f, 0x9c, 0x5e, 0x48, 0xdc, 0xc3, 0x45, 0xa9, 0xdf,
-	0x02, 0xcb, 0x4e, 0xb6, 0x5f, 0x51, 0x3e, 0x73, 0x60, 0xc0, 0xc4, 0x81, 0x2d, 0x0d, 0x9b, 0xc3,
-	0x85, 0xda, 0xb7, 0x64, 0xe9, 0xfc, 0xba, 0x62, 0xe3, 0x64, 0x48, 0xa2, 0x04, 0x1b, 0xba, 0x7c,
-	0xdb, 0xe4, 0xf8, 0x94, 0xb6, 0x36, 0x68, 0x95, 0x0c, 0x25, 0x69, 0x86, 0xa0, 0x5d, 0x7a, 0x82,
-	0x4b, 0x82, 0x01, 0xba, 0x77, 0x9d, 0x6b, 0xf3, 0x38, 0xf9, 0xdb, 0x2e, 0x39, 0x5d, 0xd0, 0x29,
-	0x7f, 0x70, 0xe7, 0x6d, 0x85, 0x75, 0x36, 0x27, 0xec, 0xfe, 0xb4, 0x0a, 0xea, 0xaf, 0x13, 0x5f,
-	0x7d, 0x0b, 0x40, 0xe1, 0xce, 0xf6, 0xb8, 0xec, 0x66, 0x73, 0x4b, 0x27, 0xfd, 0xe9, 0x7f, 0x52,
-	0xf2, 0x1c, 0xaa, 0x0b, 0xd6, 0x6f, 0x5f, 0x43, 0x3e, 0x9e, 0xe3, 0x2b, 0x59, 0xfa, 0xb3, 0x2a,
-	0x2c, 0x99, 0x24, 0x04, 0x1b, 0x33, 0xb7, 0x84, 0xed, 0x39, 0x11, 0x8a, 0x44, 0xdd, 0xaa, 0x48,
-	0x94, 0xd9, 0x62, 0xa0, 0x96, 0x4c, 0xe8, 0xa7, 0x55, 0xc2, 0x30, 0xaa, 0xbe, 0x53, 0x99, 0x2a,
-	0x73, 0x7e, 0x0f, 0x36, 0xcb, 0x47, 0xe1, 0xb3, 0x4a, 0xbb, 0x17, 0x6c, 0xfd, 0xd3, 0xfb, 0xb0,
-	0xef, 0x4c, 0x2e, 0x27, 0x4f, 0xa5, 0xe4, 0x39, 0xbb, 0x5a, 0xf2, 0xe9, 0xe7, 0x5c, 0x3d, 0x02,
-	0x0f, 0xcb, 0x4e, 0xe7, 0x4f, 0xaa, 0x04, 0xe3, 0x5c, 0x7d, 0xb7, 0x3a, 0xf7, 0xce, 0x26, 0xf3,
-	0x33, 0xb1, 0x52, 0x93, 0x19, 0xb5, 0x5a, 0x93, 0x6f, 0xbd, 0x8f, 0xbd, 0x6f, 0x2e, 0xaf, 0x3b,
-	0xca, 0xd5, 0x75, 0x47, 0xf9, 0xfd, 0xba, 0xa3, 0xfc, 0x7c, 0xd3, 0xa9, 0x5d, 0xdd, 0x74, 0x6a,
-	0xbf, 0xdd, 0x74, 0x6a, 0x6f, 0xcd, 0xe2, 0x8c, 0xcb, 0xc2, 0xba, 0x24, 0xf2, 0x63, 0x9c, 0x24,
-	0x96, 0x4f, 0x9e, 0xf3, 0xaf, 0xb5, 0x53, 0xfe, 0xbd, 0xc6, 0xe6, 0x9d, 0xb3, 0xc2, 0x3e, 0xc8,
-	0x5e, 0xfc, 0x1b, 0x00, 0x00, 0xff, 0xff, 0xee, 0x73, 0xb6, 0xe6, 0x11, 0x0e, 0x00, 0x00,
+	// 795 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x96, 0xcd, 0x4e, 0xdb, 0x4a,
+	0x14, 0xc7, 0x63, 0x12, 0x02, 0x19, 0xb8, 0x7c, 0x18, 0x04, 0xc6, 0x70, 0x9d, 0x68, 0xae, 0x40,
+	0xb9, 0xba, 0x17, 0xa7, 0xd0, 0x5d, 0x77, 0x04, 0xa4, 0xaa, 0x15, 0xa9, 0x22, 0xab, 0x52, 0xa5,
+	0x6e, 0xe8, 0xd8, 0x9e, 0x0e, 0x56, 0x1d, 0x4f, 0x64, 0xbb, 0x7c, 0xbc, 0x45, 0x37, 0x7d, 0x87,
+	0x6e, 0xfa, 0x02, 0x5d, 0x76, 0x81, 0xd8, 0x54, 0x62, 0xd9, 0x55, 0xd4, 0x86, 0x07, 0xa8, 0x94,
+	0x27, 0xa8, 0x3c, 0x33, 0x19, 0x42, 0x3e, 0x70, 0x56, 0x55, 0x76, 0xd6, 0xfc, 0x7f, 0xe7, 0xcc,
+	0xf9, 0xcf, 0x78, 0xce, 0x0c, 0xd8, 0x74, 0x2e, 0x6d, 0x1c, 0x56, 0x9c, 0x90, 0x06, 0x95, 0xb3,
+	0x3d, 0x1b, 0xc7, 0x68, 0xaf, 0x12, 0x5f, 0x98, 0xcd, 0x90, 0xc6, 0x54, 0x55, 0x99, 0x68, 0x26,
+	0xa2, 0x29, 0x44, 0x7d, 0x95, 0x50, 0x42, 0x99, 0x5c, 0x49, 0xbe, 0x38, 0xa9, 0x1b, 0xc3, 0xd2,
+	0x5c, 0x36, 0x71, 0x24, 0xf4, 0x75, 0x87, 0x46, 0x0d, 0x1a, 0x9d, 0xf0, 0x40, 0x87, 0x7a, 0x01,
+	0x17, 0xe0, 0xd5, 0x14, 0x28, 0xd4, 0x22, 0x72, 0xe0, 0xba, 0xcf, 0xa9, 0xad, 0xfe, 0x0f, 0x66,
+	0x9c, 0x10, 0xa3, 0x98, 0x86, 0x9a, 0x52, 0x52, 0xca, 0x85, 0xaa, 0xda, 0x69, 0x15, 0x17, 0x2e,
+	0x51, 0xc3, 0x7f, 0x02, 0x85, 0x00, 0xad, 0x2e, 0xa2, 0x56, 0xc0, 0xac, 0x43, 0x83, 0x38, 0x44,
+	0x4e, 0xac, 0x4d, 0x31, 0x7c, 0xa5, 0xd3, 0x2a, 0x2e, 0x0a, 0x5c, 0x28, 0xd0, 0x92, 0x90, 0x5a,
+	0x03, 0x33, 0x71, 0xe8, 0x11, 0x82, 0x43, 0x2d, 0x5b, 0x52, 0xca, 0x73, 0xfb, 0x9b, 0xe6, 0xa0,
+	0x43, 0xf3, 0x25, 0x47, 0xaa, 0x6b, 0xd7, 0xad, 0x62, 0xe6, 0x6e, 0x7e, 0x11, 0x09, 0xad, 0x6e,
+	0x0e, 0xf5, 0x00, 0xe4, 0x7c, 0x8a, 0x5c, 0x2d, 0xc7, 0x72, 0x69, 0xc3, 0x72, 0x1d, 0x53, 0xe4,
+	0x56, 0x57, 0x44, 0xa2, 0x39, 0x9e, 0x28, 0x89, 0x81, 0x16, 0x0b, 0x55, 0x77, 0xc0, 0xb4, 0x8f,
+	0x6c, 0xec, 0x6b, 0xd3, 0xac, 0xfe, 0xa5, 0x4e, 0xab, 0x38, 0x2f, 0xa8, 0x64, 0x18, 0x5a, 0x5c,
+	0x56, 0x4b, 0x20, 0xeb, 0x78, 0xae, 0x96, 0x67, 0xd4, 0x42, 0xa7, 0x55, 0x04, 0xc2, 0xa5, 0xe7,
+	0x42, 0x2b, 0x91, 0xe0, 0x47, 0x05, 0xcc, 0xd7, 0x22, 0x62, 0xe1, 0x06, 0x3d, 0xc3, 0x7f, 0x60,
+	0x2d, 0x65, 0xe5, 0xd9, 0x07, 0x2b, 0x87, 0x5f, 0x14, 0xb0, 0x58, 0x8b, 0xc8, 0xe1, 0x29, 0x0a,
+	0x48, 0x52, 0xd7, 0xe1, 0xb3, 0xa3, 0x09, 0x29, 0xad, 0xbb, 0xa8, 0xb9, 0xd1, 0x8b, 0xfa, 0x4d,
+	0x01, 0xcb, 0xbd, 0xc5, 0x1f, 0xb3, 0xb8, 0x09, 0x29, 0x7f, 0x0f, 0x14, 0x02, 0x7c, 0x7e, 0xc2,
+	0x59, 0x6e, 0x62, 0xb5, 0xd3, 0x2a, 0x2e, 0x71, 0x56, 0x4a, 0xd0, 0x9a, 0x0d, 0xf0, 0x39, 0xab,
+	0x1c, 0xde, 0x28, 0x60, 0xf5, 0xde, 0x66, 0x20, 0xdf, 0x3f, 0x42, 0x31, 0x9a, 0x20, 0x4b, 0x0e,
+	0xf2, 0xfd, 0x13, 0x17, 0xc5, 0x68, 0xd0, 0x92, 0x94, 0x92, 0xd4, 0xa2, 0x72, 0xf8, 0xab, 0xcf,
+	0xd2, 0x53, 0x14, 0xd5, 0x43, 0xcf, 0xc1, 0x93, 0x62, 0xa9, 0x0e, 0x0a, 0x04, 0x25, 0x8d, 0xcf,
+	0x73, 0xb0, 0xe8, 0x14, 0x1b, 0x26, 0xef, 0x86, 0xa6, 0x8d, 0x22, 0x2c, 0x5b, 0xc5, 0x21, 0xf5,
+	0x82, 0xaa, 0x26, 0x5a, 0x85, 0x70, 0x2c, 0x23, 0xa1, 0x35, 0x4b, 0x84, 0x31, 0x78, 0xa5, 0x00,
+	0xb5, 0xd7, 0x71, 0x1d, 0x87, 0x1e, 0x75, 0x27, 0xc5, 0xef, 0xbf, 0x20, 0xdf, 0x64, 0x05, 0x31,
+	0xb3, 0xb9, 0xea, 0x72, 0xa7, 0x55, 0xfc, 0x8b, 0x83, 0x7c, 0x1c, 0x5a, 0x02, 0x80, 0x5f, 0xfb,
+	0x4e, 0x57, 0xd5, 0xa7, 0xce, 0xbb, 0x49, 0xf1, 0xb1, 0x03, 0xa6, 0xed, 0xa4, 0x1e, 0x61, 0xa3,
+	0x87, 0x63, 0xc3, 0xd0, 0xe2, 0x32, 0x5c, 0x61, 0x1e, 0xf8, 0xfd, 0x65, 0xe1, 0xa8, 0x49, 0x83,
+	0x08, 0xc3, 0x35, 0xf6, 0x4f, 0xca, 0x5e, 0x2c, 0xc7, 0x37, 0xc0, 0x7a, 0x5f, 0x2f, 0x94, 0xd2,
+	0x26, 0xd8, 0x18, 0xe8, 0x34, 0x52, 0x34, 0xc0, 0xd6, 0xb0, 0x63, 0x3b, 0x4a, 0xef, 0x9e, 0x01,
+	0xa9, 0x6f, 0x01, 0x7d, 0xf0, 0x8f, 0x19, 0x35, 0x35, 0xdb, 0x86, 0xae, 0xb8, 0xff, 0x39, 0x0f,
+	0xb2, 0xb5, 0x88, 0xa8, 0x2f, 0x40, 0x5e, 0x5c, 0xd2, 0x7f, 0x0f, 0xbb, 0xe8, 0xe4, 0x1a, 0xe8,
+	0xdb, 0x0f, 0xca, 0xdd, 0xbc, 0xea, 0x2b, 0x50, 0xb8, 0xbb, 0xab, 0x4a, 0x23, 0x62, 0x24, 0xa1,
+	0x97, 0xd3, 0x08, 0x99, 0xf8, 0x0d, 0x98, 0xbf, 0x77, 0xd9, 0xfc, 0x33, 0x22, 0xb2, 0x17, 0xd2,
+	0xff, 0x1b, 0x03, 0x92, 0x33, 0xbc, 0x05, 0x0b, 0x7d, 0x37, 0xc2, 0x76, 0x5a, 0x38, 0xc3, 0xf4,
+	0xdd, 0xb1, 0x30, 0x39, 0x0f, 0x05, 0xcb, 0x83, 0x9d, 0xba, 0x9c, 0x5a, 0xa9, 0x20, 0xf5, 0x47,
+	0xe3, 0x92, 0x43, 0x27, 0x94, 0x7d, 0x34, 0x75, 0xc2, 0x2e, 0x99, 0x3e, 0x61, 0xff, 0x7f, 0xa9,
+	0x7a, 0x60, 0xb1, 0xbf, 0x8d, 0xed, 0xa4, 0x25, 0xe1, 0x9c, 0x6e, 0x8e, 0xc7, 0x0d, 0xdd, 0x34,
+	0xde, 0x68, 0x52, 0x37, 0x8d, 0x61, 0xe9, 0x9b, 0x76, 0xef, 0xbc, 0x54, 0xeb, 0xd7, 0x3f, 0x8d,
+	0xcc, 0xa7, 0xb6, 0x91, 0xb9, 0x6e, 0x1b, 0xca, 0x4d, 0xdb, 0x50, 0x7e, 0xb4, 0x0d, 0xe5, 0xc3,
+	0xad, 0x91, 0xb9, 0xb9, 0x35, 0x32, 0xdf, 0x6f, 0x8d, 0xcc, 0x6b, 0x93, 0x78, 0xf1, 0xe9, 0x7b,
+	0xdb, 0x74, 0x68, 0xa3, 0xc2, 0x52, 0x3b, 0x34, 0x20, 0x21, 0x8e, 0xa2, 0x0a, 0xa1, 0xbb, 0xfc,
+	0x1d, 0x7d, 0xc1, 0x5f, 0xd2, 0xec, 0x05, 0x6d, 0xe7, 0xd9, 0x4b, 0xf9, 0xf1, 0xef, 0x00, 0x00,
+	0x00, 0xff, 0xff, 0x1e, 0xd9, 0x1b, 0x3d, 0xab, 0x0b, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -731,14 +725,14 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
-	CronAddJob(ctx context.Context, in *MsgCronAddJob, opts ...grpc.CallOption) (*MsgCronAddJobResponse, error)
-	CronRemoveJob(ctx context.Context, in *MsgCronRemoveJob, opts ...grpc.CallOption) (*MsgCronRemoveJobResponse, error)
-	CronChangeJobCID(ctx context.Context, in *MsgCronChangeJobCID, opts ...grpc.CallOption) (*MsgCronChangeJobCIDResponse, error)
-	CronChangeJobLabel(ctx context.Context, in *MsgCronChangeJobLabel, opts ...grpc.CallOption) (*MsgCronChangeJobLabelResponse, error)
-	CronChangeJobCallData(ctx context.Context, in *MsgCronChangeJobCallData, opts ...grpc.CallOption) (*MsgCronChangeJobCallDataResponse, error)
-	CronChangeJobGasPrice(ctx context.Context, in *MsgCronChangeJobGasPrice, opts ...grpc.CallOption) (*MsgCronChangeJobGasPriceResponse, error)
-	CronChangeJobPeriod(ctx context.Context, in *MsgCronChangeJobPeriod, opts ...grpc.CallOption) (*MsgCronChangeJobPeriodResponse, error)
-	CronChangeJobBlock(ctx context.Context, in *MsgCronChangeJobBlock, opts ...grpc.CallOption) (*MsgCronChangeJobBlockResponse, error)
+	AddJob(ctx context.Context, in *MsgAddJob, opts ...grpc.CallOption) (*MsgAddJobResponse, error)
+	RemoveJob(ctx context.Context, in *MsgRemoveJob, opts ...grpc.CallOption) (*MsgRemoveJobResponse, error)
+	ChangeJobCID(ctx context.Context, in *MsgChangeJobCID, opts ...grpc.CallOption) (*MsgChangeJobCIDResponse, error)
+	ChangeJobLabel(ctx context.Context, in *MsgChangeJobLabel, opts ...grpc.CallOption) (*MsgChangeJobLabelResponse, error)
+	ChangeJobCallData(ctx context.Context, in *MsgChangeJobCallData, opts ...grpc.CallOption) (*MsgChangeJobCallDataResponse, error)
+	ChangeJobGasPrice(ctx context.Context, in *MsgChangeJobGasPrice, opts ...grpc.CallOption) (*MsgChangeJobGasPriceResponse, error)
+	ChangeJobPeriod(ctx context.Context, in *MsgChangeJobPeriod, opts ...grpc.CallOption) (*MsgChangeJobPeriodResponse, error)
+	ChangeJobBlock(ctx context.Context, in *MsgChangeJobBlock, opts ...grpc.CallOption) (*MsgChangeJobBlockResponse, error)
 }
 
 type msgClient struct {
@@ -749,72 +743,72 @@ func NewMsgClient(cc grpc1.ClientConn) MsgClient {
 	return &msgClient{cc}
 }
 
-func (c *msgClient) CronAddJob(ctx context.Context, in *MsgCronAddJob, opts ...grpc.CallOption) (*MsgCronAddJobResponse, error) {
-	out := new(MsgCronAddJobResponse)
-	err := c.cc.Invoke(ctx, "/cyber.cron.v1beta1.Msg/CronAddJob", in, out, opts...)
+func (c *msgClient) AddJob(ctx context.Context, in *MsgAddJob, opts ...grpc.CallOption) (*MsgAddJobResponse, error) {
+	out := new(MsgAddJobResponse)
+	err := c.cc.Invoke(ctx, "/cyber.cron.v1beta1.Msg/AddJob", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) CronRemoveJob(ctx context.Context, in *MsgCronRemoveJob, opts ...grpc.CallOption) (*MsgCronRemoveJobResponse, error) {
-	out := new(MsgCronRemoveJobResponse)
-	err := c.cc.Invoke(ctx, "/cyber.cron.v1beta1.Msg/CronRemoveJob", in, out, opts...)
+func (c *msgClient) RemoveJob(ctx context.Context, in *MsgRemoveJob, opts ...grpc.CallOption) (*MsgRemoveJobResponse, error) {
+	out := new(MsgRemoveJobResponse)
+	err := c.cc.Invoke(ctx, "/cyber.cron.v1beta1.Msg/RemoveJob", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) CronChangeJobCID(ctx context.Context, in *MsgCronChangeJobCID, opts ...grpc.CallOption) (*MsgCronChangeJobCIDResponse, error) {
-	out := new(MsgCronChangeJobCIDResponse)
-	err := c.cc.Invoke(ctx, "/cyber.cron.v1beta1.Msg/CronChangeJobCID", in, out, opts...)
+func (c *msgClient) ChangeJobCID(ctx context.Context, in *MsgChangeJobCID, opts ...grpc.CallOption) (*MsgChangeJobCIDResponse, error) {
+	out := new(MsgChangeJobCIDResponse)
+	err := c.cc.Invoke(ctx, "/cyber.cron.v1beta1.Msg/ChangeJobCID", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) CronChangeJobLabel(ctx context.Context, in *MsgCronChangeJobLabel, opts ...grpc.CallOption) (*MsgCronChangeJobLabelResponse, error) {
-	out := new(MsgCronChangeJobLabelResponse)
-	err := c.cc.Invoke(ctx, "/cyber.cron.v1beta1.Msg/CronChangeJobLabel", in, out, opts...)
+func (c *msgClient) ChangeJobLabel(ctx context.Context, in *MsgChangeJobLabel, opts ...grpc.CallOption) (*MsgChangeJobLabelResponse, error) {
+	out := new(MsgChangeJobLabelResponse)
+	err := c.cc.Invoke(ctx, "/cyber.cron.v1beta1.Msg/ChangeJobLabel", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) CronChangeJobCallData(ctx context.Context, in *MsgCronChangeJobCallData, opts ...grpc.CallOption) (*MsgCronChangeJobCallDataResponse, error) {
-	out := new(MsgCronChangeJobCallDataResponse)
-	err := c.cc.Invoke(ctx, "/cyber.cron.v1beta1.Msg/CronChangeJobCallData", in, out, opts...)
+func (c *msgClient) ChangeJobCallData(ctx context.Context, in *MsgChangeJobCallData, opts ...grpc.CallOption) (*MsgChangeJobCallDataResponse, error) {
+	out := new(MsgChangeJobCallDataResponse)
+	err := c.cc.Invoke(ctx, "/cyber.cron.v1beta1.Msg/ChangeJobCallData", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) CronChangeJobGasPrice(ctx context.Context, in *MsgCronChangeJobGasPrice, opts ...grpc.CallOption) (*MsgCronChangeJobGasPriceResponse, error) {
-	out := new(MsgCronChangeJobGasPriceResponse)
-	err := c.cc.Invoke(ctx, "/cyber.cron.v1beta1.Msg/CronChangeJobGasPrice", in, out, opts...)
+func (c *msgClient) ChangeJobGasPrice(ctx context.Context, in *MsgChangeJobGasPrice, opts ...grpc.CallOption) (*MsgChangeJobGasPriceResponse, error) {
+	out := new(MsgChangeJobGasPriceResponse)
+	err := c.cc.Invoke(ctx, "/cyber.cron.v1beta1.Msg/ChangeJobGasPrice", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) CronChangeJobPeriod(ctx context.Context, in *MsgCronChangeJobPeriod, opts ...grpc.CallOption) (*MsgCronChangeJobPeriodResponse, error) {
-	out := new(MsgCronChangeJobPeriodResponse)
-	err := c.cc.Invoke(ctx, "/cyber.cron.v1beta1.Msg/CronChangeJobPeriod", in, out, opts...)
+func (c *msgClient) ChangeJobPeriod(ctx context.Context, in *MsgChangeJobPeriod, opts ...grpc.CallOption) (*MsgChangeJobPeriodResponse, error) {
+	out := new(MsgChangeJobPeriodResponse)
+	err := c.cc.Invoke(ctx, "/cyber.cron.v1beta1.Msg/ChangeJobPeriod", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) CronChangeJobBlock(ctx context.Context, in *MsgCronChangeJobBlock, opts ...grpc.CallOption) (*MsgCronChangeJobBlockResponse, error) {
-	out := new(MsgCronChangeJobBlockResponse)
-	err := c.cc.Invoke(ctx, "/cyber.cron.v1beta1.Msg/CronChangeJobBlock", in, out, opts...)
+func (c *msgClient) ChangeJobBlock(ctx context.Context, in *MsgChangeJobBlock, opts ...grpc.CallOption) (*MsgChangeJobBlockResponse, error) {
+	out := new(MsgChangeJobBlockResponse)
+	err := c.cc.Invoke(ctx, "/cyber.cron.v1beta1.Msg/ChangeJobBlock", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -823,189 +817,189 @@ func (c *msgClient) CronChangeJobBlock(ctx context.Context, in *MsgCronChangeJob
 
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
-	CronAddJob(context.Context, *MsgCronAddJob) (*MsgCronAddJobResponse, error)
-	CronRemoveJob(context.Context, *MsgCronRemoveJob) (*MsgCronRemoveJobResponse, error)
-	CronChangeJobCID(context.Context, *MsgCronChangeJobCID) (*MsgCronChangeJobCIDResponse, error)
-	CronChangeJobLabel(context.Context, *MsgCronChangeJobLabel) (*MsgCronChangeJobLabelResponse, error)
-	CronChangeJobCallData(context.Context, *MsgCronChangeJobCallData) (*MsgCronChangeJobCallDataResponse, error)
-	CronChangeJobGasPrice(context.Context, *MsgCronChangeJobGasPrice) (*MsgCronChangeJobGasPriceResponse, error)
-	CronChangeJobPeriod(context.Context, *MsgCronChangeJobPeriod) (*MsgCronChangeJobPeriodResponse, error)
-	CronChangeJobBlock(context.Context, *MsgCronChangeJobBlock) (*MsgCronChangeJobBlockResponse, error)
+	AddJob(context.Context, *MsgAddJob) (*MsgAddJobResponse, error)
+	RemoveJob(context.Context, *MsgRemoveJob) (*MsgRemoveJobResponse, error)
+	ChangeJobCID(context.Context, *MsgChangeJobCID) (*MsgChangeJobCIDResponse, error)
+	ChangeJobLabel(context.Context, *MsgChangeJobLabel) (*MsgChangeJobLabelResponse, error)
+	ChangeJobCallData(context.Context, *MsgChangeJobCallData) (*MsgChangeJobCallDataResponse, error)
+	ChangeJobGasPrice(context.Context, *MsgChangeJobGasPrice) (*MsgChangeJobGasPriceResponse, error)
+	ChangeJobPeriod(context.Context, *MsgChangeJobPeriod) (*MsgChangeJobPeriodResponse, error)
+	ChangeJobBlock(context.Context, *MsgChangeJobBlock) (*MsgChangeJobBlockResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
 type UnimplementedMsgServer struct {
 }
 
-func (*UnimplementedMsgServer) CronAddJob(ctx context.Context, req *MsgCronAddJob) (*MsgCronAddJobResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CronAddJob not implemented")
+func (*UnimplementedMsgServer) AddJob(ctx context.Context, req *MsgAddJob) (*MsgAddJobResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddJob not implemented")
 }
-func (*UnimplementedMsgServer) CronRemoveJob(ctx context.Context, req *MsgCronRemoveJob) (*MsgCronRemoveJobResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CronRemoveJob not implemented")
+func (*UnimplementedMsgServer) RemoveJob(ctx context.Context, req *MsgRemoveJob) (*MsgRemoveJobResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RemoveJob not implemented")
 }
-func (*UnimplementedMsgServer) CronChangeJobCID(ctx context.Context, req *MsgCronChangeJobCID) (*MsgCronChangeJobCIDResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CronChangeJobCID not implemented")
+func (*UnimplementedMsgServer) ChangeJobCID(ctx context.Context, req *MsgChangeJobCID) (*MsgChangeJobCIDResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChangeJobCID not implemented")
 }
-func (*UnimplementedMsgServer) CronChangeJobLabel(ctx context.Context, req *MsgCronChangeJobLabel) (*MsgCronChangeJobLabelResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CronChangeJobLabel not implemented")
+func (*UnimplementedMsgServer) ChangeJobLabel(ctx context.Context, req *MsgChangeJobLabel) (*MsgChangeJobLabelResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChangeJobLabel not implemented")
 }
-func (*UnimplementedMsgServer) CronChangeJobCallData(ctx context.Context, req *MsgCronChangeJobCallData) (*MsgCronChangeJobCallDataResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CronChangeJobCallData not implemented")
+func (*UnimplementedMsgServer) ChangeJobCallData(ctx context.Context, req *MsgChangeJobCallData) (*MsgChangeJobCallDataResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChangeJobCallData not implemented")
 }
-func (*UnimplementedMsgServer) CronChangeJobGasPrice(ctx context.Context, req *MsgCronChangeJobGasPrice) (*MsgCronChangeJobGasPriceResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CronChangeJobGasPrice not implemented")
+func (*UnimplementedMsgServer) ChangeJobGasPrice(ctx context.Context, req *MsgChangeJobGasPrice) (*MsgChangeJobGasPriceResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChangeJobGasPrice not implemented")
 }
-func (*UnimplementedMsgServer) CronChangeJobPeriod(ctx context.Context, req *MsgCronChangeJobPeriod) (*MsgCronChangeJobPeriodResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CronChangeJobPeriod not implemented")
+func (*UnimplementedMsgServer) ChangeJobPeriod(ctx context.Context, req *MsgChangeJobPeriod) (*MsgChangeJobPeriodResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChangeJobPeriod not implemented")
 }
-func (*UnimplementedMsgServer) CronChangeJobBlock(ctx context.Context, req *MsgCronChangeJobBlock) (*MsgCronChangeJobBlockResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CronChangeJobBlock not implemented")
+func (*UnimplementedMsgServer) ChangeJobBlock(ctx context.Context, req *MsgChangeJobBlock) (*MsgChangeJobBlockResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChangeJobBlock not implemented")
 }
 
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
 	s.RegisterService(&_Msg_serviceDesc, srv)
 }
 
-func _Msg_CronAddJob_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgCronAddJob)
+func _Msg_AddJob_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgAddJob)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).CronAddJob(ctx, in)
+		return srv.(MsgServer).AddJob(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/cyber.cron.v1beta1.Msg/CronAddJob",
+		FullMethod: "/cyber.cron.v1beta1.Msg/AddJob",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).CronAddJob(ctx, req.(*MsgCronAddJob))
+		return srv.(MsgServer).AddJob(ctx, req.(*MsgAddJob))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_CronRemoveJob_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgCronRemoveJob)
+func _Msg_RemoveJob_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgRemoveJob)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).CronRemoveJob(ctx, in)
+		return srv.(MsgServer).RemoveJob(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/cyber.cron.v1beta1.Msg/CronRemoveJob",
+		FullMethod: "/cyber.cron.v1beta1.Msg/RemoveJob",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).CronRemoveJob(ctx, req.(*MsgCronRemoveJob))
+		return srv.(MsgServer).RemoveJob(ctx, req.(*MsgRemoveJob))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_CronChangeJobCID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgCronChangeJobCID)
+func _Msg_ChangeJobCID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgChangeJobCID)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).CronChangeJobCID(ctx, in)
+		return srv.(MsgServer).ChangeJobCID(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/cyber.cron.v1beta1.Msg/CronChangeJobCID",
+		FullMethod: "/cyber.cron.v1beta1.Msg/ChangeJobCID",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).CronChangeJobCID(ctx, req.(*MsgCronChangeJobCID))
+		return srv.(MsgServer).ChangeJobCID(ctx, req.(*MsgChangeJobCID))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_CronChangeJobLabel_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgCronChangeJobLabel)
+func _Msg_ChangeJobLabel_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgChangeJobLabel)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).CronChangeJobLabel(ctx, in)
+		return srv.(MsgServer).ChangeJobLabel(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/cyber.cron.v1beta1.Msg/CronChangeJobLabel",
+		FullMethod: "/cyber.cron.v1beta1.Msg/ChangeJobLabel",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).CronChangeJobLabel(ctx, req.(*MsgCronChangeJobLabel))
+		return srv.(MsgServer).ChangeJobLabel(ctx, req.(*MsgChangeJobLabel))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_CronChangeJobCallData_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgCronChangeJobCallData)
+func _Msg_ChangeJobCallData_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgChangeJobCallData)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).CronChangeJobCallData(ctx, in)
+		return srv.(MsgServer).ChangeJobCallData(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/cyber.cron.v1beta1.Msg/CronChangeJobCallData",
+		FullMethod: "/cyber.cron.v1beta1.Msg/ChangeJobCallData",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).CronChangeJobCallData(ctx, req.(*MsgCronChangeJobCallData))
+		return srv.(MsgServer).ChangeJobCallData(ctx, req.(*MsgChangeJobCallData))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_CronChangeJobGasPrice_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgCronChangeJobGasPrice)
+func _Msg_ChangeJobGasPrice_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgChangeJobGasPrice)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).CronChangeJobGasPrice(ctx, in)
+		return srv.(MsgServer).ChangeJobGasPrice(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/cyber.cron.v1beta1.Msg/CronChangeJobGasPrice",
+		FullMethod: "/cyber.cron.v1beta1.Msg/ChangeJobGasPrice",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).CronChangeJobGasPrice(ctx, req.(*MsgCronChangeJobGasPrice))
+		return srv.(MsgServer).ChangeJobGasPrice(ctx, req.(*MsgChangeJobGasPrice))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_CronChangeJobPeriod_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgCronChangeJobPeriod)
+func _Msg_ChangeJobPeriod_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgChangeJobPeriod)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).CronChangeJobPeriod(ctx, in)
+		return srv.(MsgServer).ChangeJobPeriod(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/cyber.cron.v1beta1.Msg/CronChangeJobPeriod",
+		FullMethod: "/cyber.cron.v1beta1.Msg/ChangeJobPeriod",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).CronChangeJobPeriod(ctx, req.(*MsgCronChangeJobPeriod))
+		return srv.(MsgServer).ChangeJobPeriod(ctx, req.(*MsgChangeJobPeriod))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_CronChangeJobBlock_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgCronChangeJobBlock)
+func _Msg_ChangeJobBlock_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgChangeJobBlock)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).CronChangeJobBlock(ctx, in)
+		return srv.(MsgServer).ChangeJobBlock(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/cyber.cron.v1beta1.Msg/CronChangeJobBlock",
+		FullMethod: "/cyber.cron.v1beta1.Msg/ChangeJobBlock",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).CronChangeJobBlock(ctx, req.(*MsgCronChangeJobBlock))
+		return srv.(MsgServer).ChangeJobBlock(ctx, req.(*MsgChangeJobBlock))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1015,43 +1009,43 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*MsgServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "CronAddJob",
-			Handler:    _Msg_CronAddJob_Handler,
+			MethodName: "AddJob",
+			Handler:    _Msg_AddJob_Handler,
 		},
 		{
-			MethodName: "CronRemoveJob",
-			Handler:    _Msg_CronRemoveJob_Handler,
+			MethodName: "RemoveJob",
+			Handler:    _Msg_RemoveJob_Handler,
 		},
 		{
-			MethodName: "CronChangeJobCID",
-			Handler:    _Msg_CronChangeJobCID_Handler,
+			MethodName: "ChangeJobCID",
+			Handler:    _Msg_ChangeJobCID_Handler,
 		},
 		{
-			MethodName: "CronChangeJobLabel",
-			Handler:    _Msg_CronChangeJobLabel_Handler,
+			MethodName: "ChangeJobLabel",
+			Handler:    _Msg_ChangeJobLabel_Handler,
 		},
 		{
-			MethodName: "CronChangeJobCallData",
-			Handler:    _Msg_CronChangeJobCallData_Handler,
+			MethodName: "ChangeJobCallData",
+			Handler:    _Msg_ChangeJobCallData_Handler,
 		},
 		{
-			MethodName: "CronChangeJobGasPrice",
-			Handler:    _Msg_CronChangeJobGasPrice_Handler,
+			MethodName: "ChangeJobGasPrice",
+			Handler:    _Msg_ChangeJobGasPrice_Handler,
 		},
 		{
-			MethodName: "CronChangeJobPeriod",
-			Handler:    _Msg_CronChangeJobPeriod_Handler,
+			MethodName: "ChangeJobPeriod",
+			Handler:    _Msg_ChangeJobPeriod_Handler,
 		},
 		{
-			MethodName: "CronChangeJobBlock",
-			Handler:    _Msg_CronChangeJobBlock_Handler,
+			MethodName: "ChangeJobBlock",
+			Handler:    _Msg_ChangeJobBlock_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "cyber/cron/v1beta1/tx.proto",
 }
 
-func (m *MsgCronAddJob) Marshal() (dAtA []byte, err error) {
+func (m *MsgAddJob) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1061,12 +1055,12 @@ func (m *MsgCronAddJob) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgCronAddJob) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgAddJob) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgCronAddJob) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgAddJob) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1085,30 +1079,26 @@ func (m *MsgCronAddJob) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x2a
 	}
-	if m.Load != nil {
-		{
-			size, err := m.Load.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintTx(dAtA, i, uint64(size))
+	{
+		size, err := m.Load.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
 		}
-		i--
-		dAtA[i] = 0x22
+		i -= size
+		i = encodeVarintTx(dAtA, i, uint64(size))
 	}
-	if m.Trigger != nil {
-		{
-			size, err := m.Trigger.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintTx(dAtA, i, uint64(size))
+	i--
+	dAtA[i] = 0x22
+	{
+		size, err := m.Trigger.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
 		}
-		i--
-		dAtA[i] = 0x1a
+		i -= size
+		i = encodeVarintTx(dAtA, i, uint64(size))
 	}
+	i--
+	dAtA[i] = 0x1a
 	if len(m.Contract) > 0 {
 		i -= len(m.Contract)
 		copy(dAtA[i:], m.Contract)
@@ -1126,7 +1116,7 @@ func (m *MsgCronAddJob) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgCronRemoveJob) Marshal() (dAtA []byte, err error) {
+func (m *MsgRemoveJob) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1136,12 +1126,12 @@ func (m *MsgCronRemoveJob) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgCronRemoveJob) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgRemoveJob) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgCronRemoveJob) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgRemoveJob) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1170,7 +1160,7 @@ func (m *MsgCronRemoveJob) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgCronChangeJobCID) Marshal() (dAtA []byte, err error) {
+func (m *MsgChangeJobCID) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1180,12 +1170,12 @@ func (m *MsgCronChangeJobCID) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgCronChangeJobCID) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgChangeJobCID) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgCronChangeJobCID) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgChangeJobCID) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1221,7 +1211,7 @@ func (m *MsgCronChangeJobCID) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgCronChangeJobLabel) Marshal() (dAtA []byte, err error) {
+func (m *MsgChangeJobLabel) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1231,12 +1221,12 @@ func (m *MsgCronChangeJobLabel) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgCronChangeJobLabel) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgChangeJobLabel) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgCronChangeJobLabel) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgChangeJobLabel) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1272,7 +1262,7 @@ func (m *MsgCronChangeJobLabel) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgCronChangeJobCallData) Marshal() (dAtA []byte, err error) {
+func (m *MsgChangeJobCallData) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1282,12 +1272,12 @@ func (m *MsgCronChangeJobCallData) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgCronChangeJobCallData) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgChangeJobCallData) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgCronChangeJobCallData) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgChangeJobCallData) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1323,7 +1313,7 @@ func (m *MsgCronChangeJobCallData) MarshalToSizedBuffer(dAtA []byte) (int, error
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgCronChangeJobGasPrice) Marshal() (dAtA []byte, err error) {
+func (m *MsgChangeJobGasPrice) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1333,12 +1323,12 @@ func (m *MsgCronChangeJobGasPrice) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgCronChangeJobGasPrice) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgChangeJobGasPrice) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgCronChangeJobGasPrice) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgChangeJobGasPrice) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1377,7 +1367,7 @@ func (m *MsgCronChangeJobGasPrice) MarshalToSizedBuffer(dAtA []byte) (int, error
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgCronChangeJobPeriod) Marshal() (dAtA []byte, err error) {
+func (m *MsgChangeJobPeriod) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1387,12 +1377,12 @@ func (m *MsgCronChangeJobPeriod) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgCronChangeJobPeriod) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgChangeJobPeriod) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgCronChangeJobPeriod) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgChangeJobPeriod) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1426,7 +1416,7 @@ func (m *MsgCronChangeJobPeriod) MarshalToSizedBuffer(dAtA []byte) (int, error) 
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgCronChangeJobBlock) Marshal() (dAtA []byte, err error) {
+func (m *MsgChangeJobBlock) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1436,12 +1426,12 @@ func (m *MsgCronChangeJobBlock) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgCronChangeJobBlock) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgChangeJobBlock) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgCronChangeJobBlock) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgChangeJobBlock) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1475,7 +1465,7 @@ func (m *MsgCronChangeJobBlock) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgCronAddJobResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgAddJobResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1485,12 +1475,12 @@ func (m *MsgCronAddJobResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgCronAddJobResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgAddJobResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgCronAddJobResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgAddJobResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1498,7 +1488,7 @@ func (m *MsgCronAddJobResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgCronRemoveJobResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgRemoveJobResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1508,12 +1498,12 @@ func (m *MsgCronRemoveJobResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgCronRemoveJobResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgRemoveJobResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgCronRemoveJobResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgRemoveJobResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1521,7 +1511,7 @@ func (m *MsgCronRemoveJobResponse) MarshalToSizedBuffer(dAtA []byte) (int, error
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgCronChangeJobCIDResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgChangeJobCIDResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1531,12 +1521,12 @@ func (m *MsgCronChangeJobCIDResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgCronChangeJobCIDResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgChangeJobCIDResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgCronChangeJobCIDResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgChangeJobCIDResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1544,7 +1534,7 @@ func (m *MsgCronChangeJobCIDResponse) MarshalToSizedBuffer(dAtA []byte) (int, er
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgCronChangeJobLabelResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgChangeJobLabelResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1554,12 +1544,12 @@ func (m *MsgCronChangeJobLabelResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgCronChangeJobLabelResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgChangeJobLabelResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgCronChangeJobLabelResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgChangeJobLabelResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1567,7 +1557,7 @@ func (m *MsgCronChangeJobLabelResponse) MarshalToSizedBuffer(dAtA []byte) (int, 
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgCronChangeJobCallDataResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgChangeJobCallDataResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1577,12 +1567,12 @@ func (m *MsgCronChangeJobCallDataResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgCronChangeJobCallDataResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgChangeJobCallDataResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgCronChangeJobCallDataResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgChangeJobCallDataResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1590,7 +1580,7 @@ func (m *MsgCronChangeJobCallDataResponse) MarshalToSizedBuffer(dAtA []byte) (in
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgCronChangeJobGasPriceResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgChangeJobGasPriceResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1600,12 +1590,12 @@ func (m *MsgCronChangeJobGasPriceResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgCronChangeJobGasPriceResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgChangeJobGasPriceResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgCronChangeJobGasPriceResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgChangeJobGasPriceResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1613,7 +1603,7 @@ func (m *MsgCronChangeJobGasPriceResponse) MarshalToSizedBuffer(dAtA []byte) (in
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgCronChangeJobPeriodResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgChangeJobPeriodResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1623,12 +1613,12 @@ func (m *MsgCronChangeJobPeriodResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgCronChangeJobPeriodResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgChangeJobPeriodResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgCronChangeJobPeriodResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgChangeJobPeriodResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1636,7 +1626,7 @@ func (m *MsgCronChangeJobPeriodResponse) MarshalToSizedBuffer(dAtA []byte) (int,
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgCronChangeJobBlockResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgChangeJobBlockResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1646,12 +1636,12 @@ func (m *MsgCronChangeJobBlockResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgCronChangeJobBlockResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgChangeJobBlockResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgCronChangeJobBlockResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgChangeJobBlockResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1670,7 +1660,7 @@ func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *MsgCronAddJob) Size() (n int) {
+func (m *MsgAddJob) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1684,12 +1674,54 @@ func (m *MsgCronAddJob) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
-	if m.Trigger != nil {
-		l = m.Trigger.Size()
+	l = m.Trigger.Size()
+	n += 1 + l + sovTx(uint64(l))
+	l = m.Load.Size()
+	n += 1 + l + sovTx(uint64(l))
+	l = len(m.Label)
+	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
-	if m.Load != nil {
-		l = m.Load.Size()
+	l = len(m.Cid)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgRemoveJob) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Contract)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Label)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgChangeJobCID) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Contract)
+	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
 	l = len(m.Label)
@@ -1703,53 +1735,7 @@ func (m *MsgCronAddJob) Size() (n int) {
 	return n
 }
 
-func (m *MsgCronRemoveJob) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Creator)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	l = len(m.Contract)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	l = len(m.Label)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	return n
-}
-
-func (m *MsgCronChangeJobCID) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Creator)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	l = len(m.Contract)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	l = len(m.Label)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	l = len(m.Cid)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	return n
-}
-
-func (m *MsgCronChangeJobLabel) Size() (n int) {
+func (m *MsgChangeJobLabel) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1774,7 +1760,7 @@ func (m *MsgCronChangeJobLabel) Size() (n int) {
 	return n
 }
 
-func (m *MsgCronChangeJobCallData) Size() (n int) {
+func (m *MsgChangeJobCallData) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1799,7 +1785,7 @@ func (m *MsgCronChangeJobCallData) Size() (n int) {
 	return n
 }
 
-func (m *MsgCronChangeJobGasPrice) Size() (n int) {
+func (m *MsgChangeJobGasPrice) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1822,7 +1808,7 @@ func (m *MsgCronChangeJobGasPrice) Size() (n int) {
 	return n
 }
 
-func (m *MsgCronChangeJobPeriod) Size() (n int) {
+func (m *MsgChangeJobPeriod) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1846,7 +1832,7 @@ func (m *MsgCronChangeJobPeriod) Size() (n int) {
 	return n
 }
 
-func (m *MsgCronChangeJobBlock) Size() (n int) {
+func (m *MsgChangeJobBlock) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1870,7 +1856,7 @@ func (m *MsgCronChangeJobBlock) Size() (n int) {
 	return n
 }
 
-func (m *MsgCronAddJobResponse) Size() (n int) {
+func (m *MsgAddJobResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1879,7 +1865,7 @@ func (m *MsgCronAddJobResponse) Size() (n int) {
 	return n
 }
 
-func (m *MsgCronRemoveJobResponse) Size() (n int) {
+func (m *MsgRemoveJobResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1888,7 +1874,7 @@ func (m *MsgCronRemoveJobResponse) Size() (n int) {
 	return n
 }
 
-func (m *MsgCronChangeJobCIDResponse) Size() (n int) {
+func (m *MsgChangeJobCIDResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1897,7 +1883,7 @@ func (m *MsgCronChangeJobCIDResponse) Size() (n int) {
 	return n
 }
 
-func (m *MsgCronChangeJobLabelResponse) Size() (n int) {
+func (m *MsgChangeJobLabelResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1906,7 +1892,7 @@ func (m *MsgCronChangeJobLabelResponse) Size() (n int) {
 	return n
 }
 
-func (m *MsgCronChangeJobCallDataResponse) Size() (n int) {
+func (m *MsgChangeJobCallDataResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1915,7 +1901,7 @@ func (m *MsgCronChangeJobCallDataResponse) Size() (n int) {
 	return n
 }
 
-func (m *MsgCronChangeJobGasPriceResponse) Size() (n int) {
+func (m *MsgChangeJobGasPriceResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1924,7 +1910,7 @@ func (m *MsgCronChangeJobGasPriceResponse) Size() (n int) {
 	return n
 }
 
-func (m *MsgCronChangeJobPeriodResponse) Size() (n int) {
+func (m *MsgChangeJobPeriodResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1933,7 +1919,7 @@ func (m *MsgCronChangeJobPeriodResponse) Size() (n int) {
 	return n
 }
 
-func (m *MsgCronChangeJobBlockResponse) Size() (n int) {
+func (m *MsgChangeJobBlockResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1948,7 +1934,7 @@ func sovTx(x uint64) (n int) {
 func sozTx(x uint64) (n int) {
 	return sovTx(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *MsgCronAddJob) Unmarshal(dAtA []byte) error {
+func (m *MsgAddJob) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1971,10 +1957,10 @@ func (m *MsgCronAddJob) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgCronAddJob: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgAddJob: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgCronAddJob: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgAddJob: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -2070,9 +2056,6 @@ func (m *MsgCronAddJob) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if m.Trigger == nil {
-				m.Trigger = &Trigger{}
-			}
 			if err := m.Trigger.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
@@ -2105,9 +2088,6 @@ func (m *MsgCronAddJob) Unmarshal(dAtA []byte) error {
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
-			}
-			if m.Load == nil {
-				m.Load = &Load{}
 			}
 			if err := m.Load.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
@@ -2201,7 +2181,7 @@ func (m *MsgCronAddJob) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgCronRemoveJob) Unmarshal(dAtA []byte) error {
+func (m *MsgRemoveJob) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2224,10 +2204,10 @@ func (m *MsgCronRemoveJob) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgCronRemoveJob: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgRemoveJob: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgCronRemoveJob: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgRemoveJob: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -2350,7 +2330,7 @@ func (m *MsgCronRemoveJob) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgCronChangeJobCID) Unmarshal(dAtA []byte) error {
+func (m *MsgChangeJobCID) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2373,10 +2353,10 @@ func (m *MsgCronChangeJobCID) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgCronChangeJobCID: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgChangeJobCID: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgCronChangeJobCID: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgChangeJobCID: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -2531,7 +2511,7 @@ func (m *MsgCronChangeJobCID) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgCronChangeJobLabel) Unmarshal(dAtA []byte) error {
+func (m *MsgChangeJobLabel) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2554,10 +2534,10 @@ func (m *MsgCronChangeJobLabel) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgCronChangeJobLabel: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgChangeJobLabel: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgCronChangeJobLabel: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgChangeJobLabel: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -2712,7 +2692,7 @@ func (m *MsgCronChangeJobLabel) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgCronChangeJobCallData) Unmarshal(dAtA []byte) error {
+func (m *MsgChangeJobCallData) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2735,10 +2715,10 @@ func (m *MsgCronChangeJobCallData) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgCronChangeJobCallData: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgChangeJobCallData: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgCronChangeJobCallData: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgChangeJobCallData: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -2893,7 +2873,7 @@ func (m *MsgCronChangeJobCallData) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgCronChangeJobGasPrice) Unmarshal(dAtA []byte) error {
+func (m *MsgChangeJobGasPrice) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2916,10 +2896,10 @@ func (m *MsgCronChangeJobGasPrice) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgCronChangeJobGasPrice: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgChangeJobGasPrice: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgCronChangeJobGasPrice: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgChangeJobGasPrice: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -3075,7 +3055,7 @@ func (m *MsgCronChangeJobGasPrice) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgCronChangeJobPeriod) Unmarshal(dAtA []byte) error {
+func (m *MsgChangeJobPeriod) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3098,10 +3078,10 @@ func (m *MsgCronChangeJobPeriod) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgCronChangeJobPeriod: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgChangeJobPeriod: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgCronChangeJobPeriod: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgChangeJobPeriod: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -3243,7 +3223,7 @@ func (m *MsgCronChangeJobPeriod) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgCronChangeJobBlock) Unmarshal(dAtA []byte) error {
+func (m *MsgChangeJobBlock) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3266,10 +3246,10 @@ func (m *MsgCronChangeJobBlock) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgCronChangeJobBlock: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgChangeJobBlock: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgCronChangeJobBlock: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgChangeJobBlock: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -3411,7 +3391,7 @@ func (m *MsgCronChangeJobBlock) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgCronAddJobResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgAddJobResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3434,10 +3414,10 @@ func (m *MsgCronAddJobResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgCronAddJobResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgAddJobResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgCronAddJobResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgAddJobResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:
@@ -3464,7 +3444,7 @@ func (m *MsgCronAddJobResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgCronRemoveJobResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgRemoveJobResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3487,10 +3467,10 @@ func (m *MsgCronRemoveJobResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgCronRemoveJobResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgRemoveJobResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgCronRemoveJobResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgRemoveJobResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:
@@ -3517,7 +3497,7 @@ func (m *MsgCronRemoveJobResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgCronChangeJobCIDResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgChangeJobCIDResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3540,10 +3520,10 @@ func (m *MsgCronChangeJobCIDResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgCronChangeJobCIDResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgChangeJobCIDResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgCronChangeJobCIDResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgChangeJobCIDResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:
@@ -3570,7 +3550,7 @@ func (m *MsgCronChangeJobCIDResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgCronChangeJobLabelResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgChangeJobLabelResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3593,10 +3573,10 @@ func (m *MsgCronChangeJobLabelResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgCronChangeJobLabelResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgChangeJobLabelResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgCronChangeJobLabelResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgChangeJobLabelResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:
@@ -3623,7 +3603,7 @@ func (m *MsgCronChangeJobLabelResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgCronChangeJobCallDataResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgChangeJobCallDataResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3646,10 +3626,10 @@ func (m *MsgCronChangeJobCallDataResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgCronChangeJobCallDataResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgChangeJobCallDataResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgCronChangeJobCallDataResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgChangeJobCallDataResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:
@@ -3676,7 +3656,7 @@ func (m *MsgCronChangeJobCallDataResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgCronChangeJobGasPriceResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgChangeJobGasPriceResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3699,10 +3679,10 @@ func (m *MsgCronChangeJobGasPriceResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgCronChangeJobGasPriceResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgChangeJobGasPriceResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgCronChangeJobGasPriceResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgChangeJobGasPriceResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:
@@ -3729,7 +3709,7 @@ func (m *MsgCronChangeJobGasPriceResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgCronChangeJobPeriodResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgChangeJobPeriodResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3752,10 +3732,10 @@ func (m *MsgCronChangeJobPeriodResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgCronChangeJobPeriodResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgChangeJobPeriodResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgCronChangeJobPeriodResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgChangeJobPeriodResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:
@@ -3782,7 +3762,7 @@ func (m *MsgCronChangeJobPeriodResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgCronChangeJobBlockResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgChangeJobBlockResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3805,10 +3785,10 @@ func (m *MsgCronChangeJobBlockResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgCronChangeJobBlockResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgChangeJobBlockResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgCronChangeJobBlockResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgChangeJobBlockResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:

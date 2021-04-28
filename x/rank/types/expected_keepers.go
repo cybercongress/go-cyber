@@ -7,8 +7,8 @@ import (
 )
 
 type StakeKeeper interface {
-	DetectUsersStakeAmperChange(ctx sdk.Context) bool
-	GetTotalStakesAmper() map[uint64]uint64
+	DetectUsersStakeAmpereChange(ctx sdk.Context) bool
+	GetTotalStakesAmpere() map[uint64]uint64
 }
 
 type GraphIndexedKeeper interface {

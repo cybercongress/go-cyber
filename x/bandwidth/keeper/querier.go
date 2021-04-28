@@ -18,8 +18,10 @@ func NewQuerier(bm *BandwidthMeter, legacyQuerierCdc *codec.LegacyAmino) sdk.Que
 			return queryLoad(ctx, req, bm, legacyQuerierCdc)
 		case types.QueryPrice:
 			return queryPrice(ctx, req, bm, legacyQuerierCdc)
+		case types.QueryDesirableBandwidth:
+			return queryDesirableBandwidth(ctx, req, bm, legacyQuerierCdc)
 		case types.QueryAccount:
-			return queryAccount(ctx, req, *bm, legacyQuerierCdc)
+			return queryAccountBandwidth(ctx, req, *bm, legacyQuerierCdc)
 		default:
 			return nil, sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "unknown query path: %s", path[0])
 		}
@@ -57,17 +59,26 @@ func queryPrice(_ sdk.Context, _ abci.RequestQuery, bm *BandwidthMeter, legacyQu
 	return res, nil
 }
 
-func queryAccount(ctx sdk.Context, req abci.RequestQuery, bm BandwidthMeter, legacyQuerierCdc *codec.LegacyAmino,) ([]byte, error) {
-	var params types.QueryAccountRequest
+func queryDesirableBandwidth(ctx sdk.Context, _ abci.RequestQuery, bm *BandwidthMeter, legacyQuerierCdc *codec.LegacyAmino,) ([]byte, error) {
+	desirableBandwidth := bm.GetDesirableBandwidth(ctx)
+	res, err := codec.MarshalJSONIndent(legacyQuerierCdc, types.QueryDesirableBandwidthResponse{DesirableBandwidth: desirableBandwidth})
+	if err != nil {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
+	}
+
+	return res, nil
+}
+
+func queryAccountBandwidth(ctx sdk.Context, req abci.RequestQuery, bm BandwidthMeter, legacyQuerierCdc *codec.LegacyAmino,) ([]byte, error) {
+	var params types.QueryAccountBandwidthParams
 
 	err := legacyQuerierCdc.UnmarshalJSON(req.Data, &params); if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
 
-	addr, _ := sdk.AccAddressFromBech32(params.Address)
-	ab := bm.GetCurrentAccountBandwidth(ctx, addr)
+	accountBandwidth := bm.GetCurrentAccountBandwidth(ctx, params.Address)
 
-	res, err := codec.MarshalJSONIndent(legacyQuerierCdc, types.QueryAccountResponse{AccountBandwidth: ab})
+	res, err := codec.MarshalJSONIndent(legacyQuerierCdc, types.QueryAccountResponse{AccountBandwidth: accountBandwidth})
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
 	}

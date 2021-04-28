@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/gorilla/mux"
 
@@ -25,13 +24,18 @@ func registerQueryRoutes(cliCtx client.Context, r *mux.Router) {
 		"/bandwidth/price",
 		priceHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc(
+		"/bandwidth/desirable",
+		desirableBandwidthHandlerFn(cliCtx)).Methods("GET")
+	r.HandleFunc(
 		"/bandwidth/account/{address}",
 		accountBandwidthHandlerFn(cliCtx)).Methods("GET")
 }
 
 func queryParamsHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+
 		route := fmt.Sprintf("custom/%s/%s", types.QuerierRoute, types.QueryParameters)
+
 		res, height, err := cliCtx.QueryWithData(route, nil)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusNotFound, err.Error())
@@ -50,7 +54,9 @@ func queryParamsHandlerFn(cliCtx client.Context) http.HandlerFunc {
 
 func networkLoadHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+
 		route := fmt.Sprintf("custom/%s/%s", types.QuerierRoute, types.QueryLoad)
+
 		res, height, err := cliCtx.QueryWithData(route, nil)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusNotFound, err.Error())
@@ -69,7 +75,9 @@ func networkLoadHandlerFn(cliCtx client.Context) http.HandlerFunc {
 
 func priceHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+
 		route := fmt.Sprintf("custom/%s/%s", types.QuerierRoute, types.QueryPrice)
+
 		res, height, err := cliCtx.QueryWithData(route, nil)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusNotFound, err.Error())
@@ -86,22 +94,41 @@ func priceHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	}
 }
 
-func
-accountBandwidthHandlerFn(cliCtx client.Context) http.HandlerFunc {
+func desirableBandwidthHandlerFn(cliCtx client.Context) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		route := fmt.Sprintf("custom/%s/%s", types.QuerierRoute, types.QueryDesirableBandwidth)
+
+		res, height, err := cliCtx.QueryWithData(route, nil)
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusNotFound, err.Error())
+			return
+		}
+
+		cliCtx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, cliCtx, r)
+		if !ok {
+			return
+		}
+
+		cliCtx = cliCtx.WithHeight(height)
+		rest.PostProcessResponse(w, cliCtx, res)
+	}
+}
+
+func accountBandwidthHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
-		accountAddr := vars["address"]
 
-		addr, err := sdk.AccAddressFromBech32(accountAddr)
+		addr, err := sdk.AccAddressFromBech32(vars["address"])
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
 			return
 		}
 
-		request := types.QueryAccountRequest{Address: addr.String()}
-		bz, err := codec.MarshalJSONIndent(cliCtx.LegacyAmino, request)
-		if err != nil {
-			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
+		params := types.NewQueryAccountBandwidthParams(addr)
+
+		bz, err := cliCtx.LegacyAmino.MarshalJSON(params)
+		if rest.CheckBadRequestError(w, err) {
 			return
 		}
 

@@ -7,26 +7,11 @@ const (
 	StoreKey 		= ModuleName
   	RouterKey 		= ModuleName
 	QuerierRoute 	= ModuleName
-
-	ActionCronAddJob 			= "add_job"
-	ActionCronRemoveJob 		= "remove_job"
-	ActionCronChangeJobLabel 	= "change_label"
-	ActionCronChangeJobCID 		= "change_cid"
-	ActionCronChangeJobCallData = "change_call_data"
-	ActionCronChangeJobGasPrice = "change_gas_price"
-	ActionCronChangeJobPeriod   = "change_period"
-	ActionCronChangeJobBlock    = "change_block"
-
-	QueryParams		= "params"
-	QueryJob		= "job"
-	QueryJobStats   = "job_stats"
-	QueryJobs		= "jobs"
-	QueryJobsStats  = "jobs_stats"
 )
 
 var (
-	JobKey          = []byte{0x00}
-	JobStatsKey		= []byte{0x01}
+	JobKey               = []byte{0x00}
+	JobStatsKey		     = []byte{0x01}
 )
 
 func GetJobKey(contract, creator sdk.AccAddress, label string) []byte {

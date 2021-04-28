@@ -29,6 +29,12 @@ func NewQuerier(sk *StateKeeper, legacyQuerierCdc *codec.LegacyAmino) sdk.Querie
 			return queryIsLinkExist(ctx, req, sk, legacyQuerierCdc)
 		case types.QueryIsAnyLinkExist:
 			return queryIsAnyLinkExist(ctx, req, sk, legacyQuerierCdc)
+		case types.QueryKarma:
+			return queryKarma(ctx, req, sk, legacyQuerierCdc)
+		case types.QueryEntropy:
+			return queryEntropy(ctx, req, sk, legacyQuerierCdc)
+		case types.QueryLuminosity:
+			return queryLuminosity(ctx, req, sk, legacyQuerierCdc)
 		case types.QueryKarmas:
 			return queryKarmas(ctx, req, sk, legacyQuerierCdc)
 		default:
@@ -49,14 +55,14 @@ func queryParams(ctx sdk.Context, _ abci.RequestQuery, sk StateKeeper, legacyQue
 }
 
 func queryRank(ctx sdk.Context, req abci.RequestQuery, sk *StateKeeper, legacyQuerierCdc *codec.LegacyAmino,) ([]byte, error) {
-	var params types.QueryRankRequest
+	var params types.QueryRankParams
 
 	err := legacyQuerierCdc.UnmarshalJSON(req.Data, &params); if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
 
 	cidNum, exist := sk.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(params.Cid)); if exist != true {
-		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, "")
+		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, params.Cid)
 	}
 
 	rankValue := sk.index.GetRankValue(cidNum)
@@ -70,7 +76,7 @@ func queryRank(ctx sdk.Context, req abci.RequestQuery, sk *StateKeeper, legacyQu
 }
 
 func querySearch(ctx sdk.Context, req abci.RequestQuery, sk *StateKeeper, legacyQuerierCdc *codec.LegacyAmino,) ([]byte, error) {
-	var params types.QuerySearchRequest
+	var params types.QuerySearchParams
 
 	err := legacyQuerierCdc.UnmarshalJSON(req.Data, &params); if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
@@ -80,9 +86,9 @@ func querySearch(ctx sdk.Context, req abci.RequestQuery, sk *StateKeeper, legacy
 		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, "")
 	}
 
-	rankedCidNumbers, totalSize, err := sk.index.Search(cidNum, params.Pagination.Page, params.Pagination.PerPage)
+	rankedCidNumbers, totalSize, err := sk.index.Search(cidNum, params.Page, params.PerPage)
 	if err != nil {
-		panic(err)
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
 	}
 
 	result := make([]types.RankedCid, 0, len(rankedCidNumbers))
@@ -99,19 +105,19 @@ func querySearch(ctx sdk.Context, req abci.RequestQuery, sk *StateKeeper, legacy
 }
 
 func queryBacklinks(ctx sdk.Context, req abci.RequestQuery, sk *StateKeeper, legacyQuerierCdc *codec.LegacyAmino,) ([]byte, error) {
-	var params types.QuerySearchRequest
+	var params types.QuerySearchParams
 
 	err := legacyQuerierCdc.UnmarshalJSON(req.Data, &params); if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
 
 	cidNum, exist := sk.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(params.Cid)); if exist != true {
-		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, "")
+		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, params.Cid)
 	}
 
-	rankedCidNumbers, totalSize, err := sk.index.Backlinks(cidNum, params.Pagination.Page, params.Pagination.PerPage)
+	rankedCidNumbers, totalSize, err := sk.index.Backlinks(cidNum, params.Page, params.PerPage)
 	if err != nil {
-		panic(err)
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
 	}
 
 	result := make([]types.RankedCid, 0, len(rankedCidNumbers))
@@ -128,7 +134,7 @@ func queryBacklinks(ctx sdk.Context, req abci.RequestQuery, sk *StateKeeper, leg
 }
 
 func queryTop(ctx sdk.Context, req abci.RequestQuery, sk *StateKeeper, legacyQuerierCdc *codec.LegacyAmino,) ([]byte, error) {
-	var params querytypes.PageRequest
+	var params types.QueryTopParams
 
 	err := legacyQuerierCdc.UnmarshalJSON(req.Data, &params); if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
@@ -136,7 +142,7 @@ func queryTop(ctx sdk.Context, req abci.RequestQuery, sk *StateKeeper, legacyQue
 
 	topRankedCidNumbers, totalSize, err := sk.index.Top(params.Page, params.PerPage)
 	if err != nil {
-		panic(err)
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
 	}
 
 	result := make([]types.RankedCid, 0, len(topRankedCidNumbers))
@@ -153,35 +159,35 @@ func queryTop(ctx sdk.Context, req abci.RequestQuery, sk *StateKeeper, legacyQue
 }
 
 func queryIsLinkExist(ctx sdk.Context, req abci.RequestQuery, sk *StateKeeper, legacyQuerierCdc *codec.LegacyAmino,) ([]byte, error) {
-	var params types.QueryIsLinkExistRequest
+	var params types.QueryIsLinkExistParams
 
 	err := legacyQuerierCdc.UnmarshalJSON(req.Data, &params); if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
 
 	cidNumFrom, exist := sk.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(params.From)); if exist != true {
-		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, "")
+		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, params.From)
 	}
 
 	cidNumTo, exist := sk.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(params.To)); if exist != true {
-		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, "")
+		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, params.To)
 	}
-	addr, err := sdk.AccAddressFromBech32(params.Address); if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, err.Error())
-	}
-	accountNum := sk.accountKeeper.GetAccount(ctx, addr).GetAccountNumber()
 
-	resp := uint32(0)
+	var accountNum uint64
+	account := sk.accountKeeper.GetAccount(ctx, params.Address)
+	if account != nil {
+		accountNum = account.GetAccountNumber()
+	} else {
+		return nil, sdkerrors.Wrap(graphtypes.ErrInvalidAccount, params.Address.String())
+	}
+
 	exists := sk.graphIndexedKeeper.IsLinkExist(graphtypes.CompactLink{
 		uint64(cidNumFrom),
 		uint64(cidNumTo),
 		accountNum,
 	})
-	if exists {
-		resp = uint32(1)
-	}
 
-	res, err := codec.MarshalJSONIndent(legacyQuerierCdc, &types.QueryLinkExistResponse{Exist: resp})
+	res, err := codec.MarshalJSONIndent(legacyQuerierCdc, &types.QueryLinkExistResponse{Exist: exists})
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
 	}
@@ -190,27 +196,23 @@ func queryIsLinkExist(ctx sdk.Context, req abci.RequestQuery, sk *StateKeeper, l
 }
 
 func queryIsAnyLinkExist(ctx sdk.Context, req abci.RequestQuery, sk *StateKeeper, legacyQuerierCdc *codec.LegacyAmino,) ([]byte, error) {
-	var params types.QueryIsAnyLinkExistRequest
+	var params types.QueryIsAnyLinkExistParams
 
 	err := legacyQuerierCdc.UnmarshalJSON(req.Data, &params); if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
 
 	cidNumFrom, exist := sk.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(params.From)); if exist != true {
-		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, "")
+		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, params.From)
 	}
 
 	cidNumTo, exist := sk.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(params.To)); if exist != true {
-		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, "")
+		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, params.To)
 	}
 
-	resp := uint32(0)
 	exists := sk.graphIndexedKeeper.IsAnyLinkExist(cidNumFrom, cidNumTo)
-	if exists {
-		resp = uint32(1)
-	}
 
-	res, err := codec.MarshalJSONIndent(legacyQuerierCdc, &types.QueryLinkExistResponse{Exist: resp})
+	res, err := codec.MarshalJSONIndent(legacyQuerierCdc, &types.QueryLinkExistResponse{Exist: exists})
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
 	}
@@ -218,13 +220,75 @@ func queryIsAnyLinkExist(ctx sdk.Context, req abci.RequestQuery, sk *StateKeeper
 	return res, nil
 }
 
-func queryKarmas(ctx sdk.Context, req abci.RequestQuery, sk *StateKeeper, legacyQuerierCdc *codec.LegacyAmino,) ([]byte, error) {
-	var params types.QueryKarmasRequest
+func queryEntropy(ctx sdk.Context, req abci.RequestQuery, sk *StateKeeper, legacyQuerierCdc *codec.LegacyAmino,) ([]byte, error) {
+	var params types.QueryEntropyParams
 
 	err := legacyQuerierCdc.UnmarshalJSON(req.Data, &params); if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
 
+	cidNum, exist := sk.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(params.Cid)); if exist != true {
+		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, params.Cid)
+	}
+
+	entropy := sk.GetEntropy(cidNum)
+
+	res, err := codec.MarshalJSONIndent(legacyQuerierCdc, &types.QueryEntropyResponse{Entropy: entropy})
+	if err != nil {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
+	}
+
+	return res, nil
+}
+
+func queryLuminosity(ctx sdk.Context, req abci.RequestQuery, sk *StateKeeper, legacyQuerierCdc *codec.LegacyAmino,) ([]byte, error) {
+	var params types.QueryLuminosityParams
+
+	err := legacyQuerierCdc.UnmarshalJSON(req.Data, &params); if err != nil {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
+	}
+
+	cidNum, exist := sk.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(params.Cid)); if exist != true {
+		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, params.Cid)
+	}
+
+	luminosity := sk.GetLuminosity(cidNum)
+
+	res, err := codec.MarshalJSONIndent(legacyQuerierCdc, &types.QueryLuminosityResponse{Luminosity: luminosity})
+	if err != nil {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
+	}
+
+	return res, nil
+}
+
+func queryKarma(ctx sdk.Context, req abci.RequestQuery, sk *StateKeeper, legacyQuerierCdc *codec.LegacyAmino,) ([]byte, error) {
+	var params types.QueryKarmaParams
+
+	err := legacyQuerierCdc.UnmarshalJSON(req.Data, &params); if err != nil {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
+	}
+
+	var accountNum uint64
+	account := sk.accountKeeper.GetAccount(ctx, params.Address)
+	if account != nil {
+		accountNum = account.GetAccountNumber()
+	} else {
+		return nil, sdkerrors.Wrap(graphtypes.ErrInvalidAccount, params.Address.String())
+	}
+
+	karma := sk.GetKarma(accountNum)
+
+	res, err := codec.MarshalJSONIndent(legacyQuerierCdc, &types.QueryKarmaResponse{Karma: karma})
+	if err != nil {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
+	}
+
+	return res, nil
+}
+
+// TODO remove before release this dev endpoint
+func queryKarmas(ctx sdk.Context, _ abci.RequestQuery, sk *StateKeeper, legacyQuerierCdc *codec.LegacyAmino,) ([]byte, error) {
 	karmas := sk.GetKarmas(ctx)
 
 	res, err := codec.MarshalJSONIndent(legacyQuerierCdc, &types.QueryKarmasResponse{Karmas: karmas})

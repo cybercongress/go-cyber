@@ -1,19 +1,13 @@
 package rest
-// The packages below are commented out at first to prevent an error if this file isn't initially saved.
-import (
-	// "bytes"
-	// "net/http"
 
+import (
 	"net/http"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/rest"
-	//"github.com/cosmos/cosmos-sdk/x/auth/client/utils"
 	"github.com/gorilla/mux"
-
-	//"github.com/cosmos/cosmos-sdk/client/context"
 
 	"github.com/cybercongress/go-cyber/x/energy/types"
 )
@@ -21,21 +15,21 @@ import (
 func registerTxRoutes(cliCtx client.Context, r *mux.Router) {
 	r.HandleFunc(
 		"/energy/create_route",
-		createEnergyRouteHandler(cliCtx)).Methods("POST")
+		createRouteHandler(cliCtx)).Methods("POST")
 	r.HandleFunc(
 		"/energy/edit_route",
-		editEnergyRouteHandler(cliCtx)).Methods("PUT")
+		editRouteHandler(cliCtx)).Methods("PUT")
 	r.HandleFunc(
 		"/energy/delete_route",
-		deleteEnergyRouteHandler(cliCtx)).Methods("DELETE")
+		deleteRouteHandler(cliCtx)).Methods("DELETE")
 	r.HandleFunc(
 		"/energy/edit_alias",
-		editEnergyRouteAliasHandler(cliCtx)).Methods("PUT")
+		editRouteAliasHandler(cliCtx)).Methods("PUT")
 }
 
-func createEnergyRouteHandler(clientCtx client.Context) http.HandlerFunc {
+func createRouteHandler(clientCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req CreateEnergyRouteReq
+		var req CreateRouteReq
 
 		if !rest.ReadRESTReq(w, r, clientCtx.LegacyAmino, &req) {
 			rest.WriteErrorResponse(w, http.StatusBadRequest, "failed to parse request")
@@ -59,7 +53,7 @@ func createEnergyRouteHandler(clientCtx client.Context) http.HandlerFunc {
 			return
 		}
 
-		msg := types.NewMsgCreateEnergyRoute(src, dst, req.Alias)
+		msg := types.NewMsgCreateRoute(src, dst, req.Alias)
 
 		if rest.CheckBadRequestError(w, msg.ValidateBasic()) {
 			return
@@ -69,9 +63,9 @@ func createEnergyRouteHandler(clientCtx client.Context) http.HandlerFunc {
 	}
 }
 
-func editEnergyRouteHandler(clientCtx client.Context) http.HandlerFunc {
+func editRouteHandler(clientCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req EditEnergyRouteReq
+		var req EditRouteReq
 
 		if !rest.ReadRESTReq(w, r, clientCtx.LegacyAmino, &req) {
 			rest.WriteErrorResponse(w, http.StatusBadRequest, "failed to parse request")
@@ -101,7 +95,7 @@ func editEnergyRouteHandler(clientCtx client.Context) http.HandlerFunc {
 			return
 		}
 
-		msg := types.NewMsgEditEnergyRoute(src, dst, value)
+		msg := types.NewMsgEditRoute(src, dst, value)
 
 		if rest.CheckBadRequestError(w, msg.ValidateBasic()) {
 			return
@@ -111,9 +105,9 @@ func editEnergyRouteHandler(clientCtx client.Context) http.HandlerFunc {
 	}
 }
 
-func deleteEnergyRouteHandler(clientCtx client.Context) http.HandlerFunc {
+func deleteRouteHandler(clientCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req DeleteEnergyRouteReq
+		var req DeleteRouteReq
 
 		if !rest.ReadRESTReq(w, r, clientCtx.LegacyAmino, &req) {
 			rest.WriteErrorResponse(w, http.StatusBadRequest, "failed to parse request")
@@ -137,7 +131,7 @@ func deleteEnergyRouteHandler(clientCtx client.Context) http.HandlerFunc {
 			return
 		}
 
-		msg := types.NewMsgDeleteEnergyRoute(src, dst)
+		msg := types.NewMsgDeleteRoute(src, dst)
 
 		if rest.CheckBadRequestError(w, msg.ValidateBasic()) {
 			return
@@ -147,9 +141,9 @@ func deleteEnergyRouteHandler(clientCtx client.Context) http.HandlerFunc {
 	}
 }
 
-func editEnergyRouteAliasHandler(clientCtx client.Context) http.HandlerFunc {
+func editRouteAliasHandler(clientCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req EditEnergyRouteAliasReq
+		var req EditRouteAliasReq
 
 		if !rest.ReadRESTReq(w, r, clientCtx.LegacyAmino, &req) {
 			rest.WriteErrorResponse(w, http.StatusBadRequest, "failed to parse request")
@@ -173,7 +167,7 @@ func editEnergyRouteAliasHandler(clientCtx client.Context) http.HandlerFunc {
 			return
 		}
 
-		msg := types.NewMsgEditEnergyRouteAlias(src, dst, req.Alias)
+		msg := types.NewMsgEditRouteAlias(src, dst, req.Alias)
 
 		if rest.CheckBadRequestError(w, msg.ValidateBasic()) {
 			return

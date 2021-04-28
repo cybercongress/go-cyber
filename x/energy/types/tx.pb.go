@@ -6,8 +6,7 @@ package types
 import (
 	context "context"
 	fmt "fmt"
-	_ "github.com/cosmos/cosmos-sdk/types"
-	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
+	types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/gogo/protobuf/gogoproto"
 	grpc1 "github.com/gogo/protobuf/grpc"
 	proto "github.com/gogo/protobuf/proto"
@@ -30,24 +29,24 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-type MsgCreateEnergyRoute struct {
-	Source      string `protobuf:"bytes,1,opt,name=source,proto3" json:"source" yaml:"source"`
-	Destination string `protobuf:"bytes,2,opt,name=destination,proto3" json:"destination" yaml:"destination"`
-	Alias       string `protobuf:"bytes,3,opt,name=alias,proto3" json:"alias" yaml:"alias"`
+type MsgCreateRoute struct {
+	Source      string `protobuf:"bytes,1,opt,name=source,proto3" json:"source,omitempty" yaml:"source"`
+	Destination string `protobuf:"bytes,2,opt,name=destination,proto3" json:"destination,omitempty" yaml:"destination"`
+	Alias       string `protobuf:"bytes,3,opt,name=alias,proto3" json:"alias,omitempty" yaml:"alias"`
 }
 
-func (m *MsgCreateEnergyRoute) Reset()         { *m = MsgCreateEnergyRoute{} }
-func (m *MsgCreateEnergyRoute) String() string { return proto.CompactTextString(m) }
-func (*MsgCreateEnergyRoute) ProtoMessage()    {}
-func (*MsgCreateEnergyRoute) Descriptor() ([]byte, []int) {
+func (m *MsgCreateRoute) Reset()         { *m = MsgCreateRoute{} }
+func (m *MsgCreateRoute) String() string { return proto.CompactTextString(m) }
+func (*MsgCreateRoute) ProtoMessage()    {}
+func (*MsgCreateRoute) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e37ef182071be00f, []int{0}
 }
-func (m *MsgCreateEnergyRoute) XXX_Unmarshal(b []byte) error {
+func (m *MsgCreateRoute) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgCreateEnergyRoute) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgCreateRoute) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgCreateEnergyRoute.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgCreateRoute.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -57,36 +56,36 @@ func (m *MsgCreateEnergyRoute) XXX_Marshal(b []byte, deterministic bool) ([]byte
 		return b[:n], nil
 	}
 }
-func (m *MsgCreateEnergyRoute) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgCreateEnergyRoute.Merge(m, src)
+func (m *MsgCreateRoute) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgCreateRoute.Merge(m, src)
 }
-func (m *MsgCreateEnergyRoute) XXX_Size() int {
+func (m *MsgCreateRoute) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgCreateEnergyRoute) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgCreateEnergyRoute.DiscardUnknown(m)
+func (m *MsgCreateRoute) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgCreateRoute.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgCreateEnergyRoute proto.InternalMessageInfo
+var xxx_messageInfo_MsgCreateRoute proto.InternalMessageInfo
 
-type MsgEditEnergyRoute struct {
-	Source      string                                  `protobuf:"bytes,1,opt,name=source,proto3" json:"source" yaml:"source"`
-	Destination string                                  `protobuf:"bytes,2,opt,name=destination,proto3" json:"destination" yaml:"destination"`
-	Value       github_com_cosmos_cosmos_sdk_types.Coin `protobuf:"bytes,3,opt,name=value,proto3,casttype=github.com/cosmos/cosmos-sdk/types.Coin" json:"value" yaml:"value"`
+type MsgEditRoute struct {
+	Source      string     `protobuf:"bytes,1,opt,name=source,proto3" json:"source,omitempty" yaml:"source"`
+	Destination string     `protobuf:"bytes,2,opt,name=destination,proto3" json:"destination,omitempty" yaml:"destination"`
+	Value       types.Coin `protobuf:"bytes,3,opt,name=value,proto3" json:"value" yaml:"value"`
 }
 
-func (m *MsgEditEnergyRoute) Reset()         { *m = MsgEditEnergyRoute{} }
-func (m *MsgEditEnergyRoute) String() string { return proto.CompactTextString(m) }
-func (*MsgEditEnergyRoute) ProtoMessage()    {}
-func (*MsgEditEnergyRoute) Descriptor() ([]byte, []int) {
+func (m *MsgEditRoute) Reset()         { *m = MsgEditRoute{} }
+func (m *MsgEditRoute) String() string { return proto.CompactTextString(m) }
+func (*MsgEditRoute) ProtoMessage()    {}
+func (*MsgEditRoute) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e37ef182071be00f, []int{1}
 }
-func (m *MsgEditEnergyRoute) XXX_Unmarshal(b []byte) error {
+func (m *MsgEditRoute) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgEditEnergyRoute) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgEditRoute) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgEditEnergyRoute.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgEditRoute.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -96,35 +95,35 @@ func (m *MsgEditEnergyRoute) XXX_Marshal(b []byte, deterministic bool) ([]byte, 
 		return b[:n], nil
 	}
 }
-func (m *MsgEditEnergyRoute) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgEditEnergyRoute.Merge(m, src)
+func (m *MsgEditRoute) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgEditRoute.Merge(m, src)
 }
-func (m *MsgEditEnergyRoute) XXX_Size() int {
+func (m *MsgEditRoute) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgEditEnergyRoute) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgEditEnergyRoute.DiscardUnknown(m)
+func (m *MsgEditRoute) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgEditRoute.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgEditEnergyRoute proto.InternalMessageInfo
+var xxx_messageInfo_MsgEditRoute proto.InternalMessageInfo
 
-type MsgDeleteEnergyRoute struct {
-	Source      string `protobuf:"bytes,1,opt,name=source,proto3" json:"source" yaml:"source"`
-	Destination string `protobuf:"bytes,2,opt,name=destination,proto3" json:"destination" yaml:"destination"`
+type MsgDeleteRoute struct {
+	Source      string `protobuf:"bytes,1,opt,name=source,proto3" json:"source,omitempty" yaml:"source"`
+	Destination string `protobuf:"bytes,2,opt,name=destination,proto3" json:"destination,omitempty" yaml:"destination"`
 }
 
-func (m *MsgDeleteEnergyRoute) Reset()         { *m = MsgDeleteEnergyRoute{} }
-func (m *MsgDeleteEnergyRoute) String() string { return proto.CompactTextString(m) }
-func (*MsgDeleteEnergyRoute) ProtoMessage()    {}
-func (*MsgDeleteEnergyRoute) Descriptor() ([]byte, []int) {
+func (m *MsgDeleteRoute) Reset()         { *m = MsgDeleteRoute{} }
+func (m *MsgDeleteRoute) String() string { return proto.CompactTextString(m) }
+func (*MsgDeleteRoute) ProtoMessage()    {}
+func (*MsgDeleteRoute) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e37ef182071be00f, []int{2}
 }
-func (m *MsgDeleteEnergyRoute) XXX_Unmarshal(b []byte) error {
+func (m *MsgDeleteRoute) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgDeleteEnergyRoute) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgDeleteRoute) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgDeleteEnergyRoute.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgDeleteRoute.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -134,36 +133,36 @@ func (m *MsgDeleteEnergyRoute) XXX_Marshal(b []byte, deterministic bool) ([]byte
 		return b[:n], nil
 	}
 }
-func (m *MsgDeleteEnergyRoute) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgDeleteEnergyRoute.Merge(m, src)
+func (m *MsgDeleteRoute) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgDeleteRoute.Merge(m, src)
 }
-func (m *MsgDeleteEnergyRoute) XXX_Size() int {
+func (m *MsgDeleteRoute) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgDeleteEnergyRoute) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgDeleteEnergyRoute.DiscardUnknown(m)
+func (m *MsgDeleteRoute) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgDeleteRoute.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgDeleteEnergyRoute proto.InternalMessageInfo
+var xxx_messageInfo_MsgDeleteRoute proto.InternalMessageInfo
 
-type MsgEditEnergyRouteAlias struct {
-	Source      string `protobuf:"bytes,1,opt,name=source,proto3" json:"source" yaml:"source"`
-	Destination string `protobuf:"bytes,2,opt,name=destination,proto3" json:"destination" yaml:"destination"`
-	Alias       string `protobuf:"bytes,3,opt,name=alias,proto3" json:"alias" yaml:"alias"`
+type MsgEditRouteAlias struct {
+	Source      string `protobuf:"bytes,1,opt,name=source,proto3" json:"source,omitempty" yaml:"source"`
+	Destination string `protobuf:"bytes,2,opt,name=destination,proto3" json:"destination,omitempty" yaml:"destination"`
+	Alias       string `protobuf:"bytes,3,opt,name=alias,proto3" json:"alias,omitempty" yaml:"alias"`
 }
 
-func (m *MsgEditEnergyRouteAlias) Reset()         { *m = MsgEditEnergyRouteAlias{} }
-func (m *MsgEditEnergyRouteAlias) String() string { return proto.CompactTextString(m) }
-func (*MsgEditEnergyRouteAlias) ProtoMessage()    {}
-func (*MsgEditEnergyRouteAlias) Descriptor() ([]byte, []int) {
+func (m *MsgEditRouteAlias) Reset()         { *m = MsgEditRouteAlias{} }
+func (m *MsgEditRouteAlias) String() string { return proto.CompactTextString(m) }
+func (*MsgEditRouteAlias) ProtoMessage()    {}
+func (*MsgEditRouteAlias) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e37ef182071be00f, []int{3}
 }
-func (m *MsgEditEnergyRouteAlias) XXX_Unmarshal(b []byte) error {
+func (m *MsgEditRouteAlias) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgEditEnergyRouteAlias) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgEditRouteAlias) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgEditEnergyRouteAlias.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgEditRouteAlias.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -173,33 +172,33 @@ func (m *MsgEditEnergyRouteAlias) XXX_Marshal(b []byte, deterministic bool) ([]b
 		return b[:n], nil
 	}
 }
-func (m *MsgEditEnergyRouteAlias) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgEditEnergyRouteAlias.Merge(m, src)
+func (m *MsgEditRouteAlias) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgEditRouteAlias.Merge(m, src)
 }
-func (m *MsgEditEnergyRouteAlias) XXX_Size() int {
+func (m *MsgEditRouteAlias) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgEditEnergyRouteAlias) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgEditEnergyRouteAlias.DiscardUnknown(m)
+func (m *MsgEditRouteAlias) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgEditRouteAlias.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgEditEnergyRouteAlias proto.InternalMessageInfo
+var xxx_messageInfo_MsgEditRouteAlias proto.InternalMessageInfo
 
-type MsgCreateEnergyRouteResponse struct {
+type MsgCreateRouteResponse struct {
 }
 
-func (m *MsgCreateEnergyRouteResponse) Reset()         { *m = MsgCreateEnergyRouteResponse{} }
-func (m *MsgCreateEnergyRouteResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgCreateEnergyRouteResponse) ProtoMessage()    {}
-func (*MsgCreateEnergyRouteResponse) Descriptor() ([]byte, []int) {
+func (m *MsgCreateRouteResponse) Reset()         { *m = MsgCreateRouteResponse{} }
+func (m *MsgCreateRouteResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgCreateRouteResponse) ProtoMessage()    {}
+func (*MsgCreateRouteResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e37ef182071be00f, []int{4}
 }
-func (m *MsgCreateEnergyRouteResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgCreateRouteResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgCreateEnergyRouteResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgCreateRouteResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgCreateEnergyRouteResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgCreateRouteResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -209,33 +208,33 @@ func (m *MsgCreateEnergyRouteResponse) XXX_Marshal(b []byte, deterministic bool)
 		return b[:n], nil
 	}
 }
-func (m *MsgCreateEnergyRouteResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgCreateEnergyRouteResponse.Merge(m, src)
+func (m *MsgCreateRouteResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgCreateRouteResponse.Merge(m, src)
 }
-func (m *MsgCreateEnergyRouteResponse) XXX_Size() int {
+func (m *MsgCreateRouteResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgCreateEnergyRouteResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgCreateEnergyRouteResponse.DiscardUnknown(m)
+func (m *MsgCreateRouteResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgCreateRouteResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgCreateEnergyRouteResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgCreateRouteResponse proto.InternalMessageInfo
 
-type MsgEditEnergyRouteResponse struct {
+type MsgEditRouteResponse struct {
 }
 
-func (m *MsgEditEnergyRouteResponse) Reset()         { *m = MsgEditEnergyRouteResponse{} }
-func (m *MsgEditEnergyRouteResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgEditEnergyRouteResponse) ProtoMessage()    {}
-func (*MsgEditEnergyRouteResponse) Descriptor() ([]byte, []int) {
+func (m *MsgEditRouteResponse) Reset()         { *m = MsgEditRouteResponse{} }
+func (m *MsgEditRouteResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgEditRouteResponse) ProtoMessage()    {}
+func (*MsgEditRouteResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e37ef182071be00f, []int{5}
 }
-func (m *MsgEditEnergyRouteResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgEditRouteResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgEditEnergyRouteResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgEditRouteResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgEditEnergyRouteResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgEditRouteResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -245,33 +244,33 @@ func (m *MsgEditEnergyRouteResponse) XXX_Marshal(b []byte, deterministic bool) (
 		return b[:n], nil
 	}
 }
-func (m *MsgEditEnergyRouteResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgEditEnergyRouteResponse.Merge(m, src)
+func (m *MsgEditRouteResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgEditRouteResponse.Merge(m, src)
 }
-func (m *MsgEditEnergyRouteResponse) XXX_Size() int {
+func (m *MsgEditRouteResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgEditEnergyRouteResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgEditEnergyRouteResponse.DiscardUnknown(m)
+func (m *MsgEditRouteResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgEditRouteResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgEditEnergyRouteResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgEditRouteResponse proto.InternalMessageInfo
 
-type MsgDeleteEnergyRouteResponse struct {
+type MsgDeleteRouteResponse struct {
 }
 
-func (m *MsgDeleteEnergyRouteResponse) Reset()         { *m = MsgDeleteEnergyRouteResponse{} }
-func (m *MsgDeleteEnergyRouteResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgDeleteEnergyRouteResponse) ProtoMessage()    {}
-func (*MsgDeleteEnergyRouteResponse) Descriptor() ([]byte, []int) {
+func (m *MsgDeleteRouteResponse) Reset()         { *m = MsgDeleteRouteResponse{} }
+func (m *MsgDeleteRouteResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgDeleteRouteResponse) ProtoMessage()    {}
+func (*MsgDeleteRouteResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e37ef182071be00f, []int{6}
 }
-func (m *MsgDeleteEnergyRouteResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgDeleteRouteResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgDeleteEnergyRouteResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgDeleteRouteResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgDeleteEnergyRouteResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgDeleteRouteResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -281,33 +280,33 @@ func (m *MsgDeleteEnergyRouteResponse) XXX_Marshal(b []byte, deterministic bool)
 		return b[:n], nil
 	}
 }
-func (m *MsgDeleteEnergyRouteResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgDeleteEnergyRouteResponse.Merge(m, src)
+func (m *MsgDeleteRouteResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgDeleteRouteResponse.Merge(m, src)
 }
-func (m *MsgDeleteEnergyRouteResponse) XXX_Size() int {
+func (m *MsgDeleteRouteResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgDeleteEnergyRouteResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgDeleteEnergyRouteResponse.DiscardUnknown(m)
+func (m *MsgDeleteRouteResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgDeleteRouteResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgDeleteEnergyRouteResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgDeleteRouteResponse proto.InternalMessageInfo
 
-type MsgEditEnergyRouteAliasResponse struct {
+type MsgEditRouteAliasResponse struct {
 }
 
-func (m *MsgEditEnergyRouteAliasResponse) Reset()         { *m = MsgEditEnergyRouteAliasResponse{} }
-func (m *MsgEditEnergyRouteAliasResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgEditEnergyRouteAliasResponse) ProtoMessage()    {}
-func (*MsgEditEnergyRouteAliasResponse) Descriptor() ([]byte, []int) {
+func (m *MsgEditRouteAliasResponse) Reset()         { *m = MsgEditRouteAliasResponse{} }
+func (m *MsgEditRouteAliasResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgEditRouteAliasResponse) ProtoMessage()    {}
+func (*MsgEditRouteAliasResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e37ef182071be00f, []int{7}
 }
-func (m *MsgEditEnergyRouteAliasResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgEditRouteAliasResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgEditEnergyRouteAliasResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgEditRouteAliasResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgEditEnergyRouteAliasResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgEditRouteAliasResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -317,66 +316,63 @@ func (m *MsgEditEnergyRouteAliasResponse) XXX_Marshal(b []byte, deterministic bo
 		return b[:n], nil
 	}
 }
-func (m *MsgEditEnergyRouteAliasResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgEditEnergyRouteAliasResponse.Merge(m, src)
+func (m *MsgEditRouteAliasResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgEditRouteAliasResponse.Merge(m, src)
 }
-func (m *MsgEditEnergyRouteAliasResponse) XXX_Size() int {
+func (m *MsgEditRouteAliasResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgEditEnergyRouteAliasResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgEditEnergyRouteAliasResponse.DiscardUnknown(m)
+func (m *MsgEditRouteAliasResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgEditRouteAliasResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgEditEnergyRouteAliasResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgEditRouteAliasResponse proto.InternalMessageInfo
 
 func init() {
-	proto.RegisterType((*MsgCreateEnergyRoute)(nil), "cyber.energy.v1beta1.MsgCreateEnergyRoute")
-	proto.RegisterType((*MsgEditEnergyRoute)(nil), "cyber.energy.v1beta1.MsgEditEnergyRoute")
-	proto.RegisterType((*MsgDeleteEnergyRoute)(nil), "cyber.energy.v1beta1.MsgDeleteEnergyRoute")
-	proto.RegisterType((*MsgEditEnergyRouteAlias)(nil), "cyber.energy.v1beta1.MsgEditEnergyRouteAlias")
-	proto.RegisterType((*MsgCreateEnergyRouteResponse)(nil), "cyber.energy.v1beta1.MsgCreateEnergyRouteResponse")
-	proto.RegisterType((*MsgEditEnergyRouteResponse)(nil), "cyber.energy.v1beta1.MsgEditEnergyRouteResponse")
-	proto.RegisterType((*MsgDeleteEnergyRouteResponse)(nil), "cyber.energy.v1beta1.MsgDeleteEnergyRouteResponse")
-	proto.RegisterType((*MsgEditEnergyRouteAliasResponse)(nil), "cyber.energy.v1beta1.MsgEditEnergyRouteAliasResponse")
+	proto.RegisterType((*MsgCreateRoute)(nil), "cyber.energy.v1beta1.MsgCreateRoute")
+	proto.RegisterType((*MsgEditRoute)(nil), "cyber.energy.v1beta1.MsgEditRoute")
+	proto.RegisterType((*MsgDeleteRoute)(nil), "cyber.energy.v1beta1.MsgDeleteRoute")
+	proto.RegisterType((*MsgEditRouteAlias)(nil), "cyber.energy.v1beta1.MsgEditRouteAlias")
+	proto.RegisterType((*MsgCreateRouteResponse)(nil), "cyber.energy.v1beta1.MsgCreateRouteResponse")
+	proto.RegisterType((*MsgEditRouteResponse)(nil), "cyber.energy.v1beta1.MsgEditRouteResponse")
+	proto.RegisterType((*MsgDeleteRouteResponse)(nil), "cyber.energy.v1beta1.MsgDeleteRouteResponse")
+	proto.RegisterType((*MsgEditRouteAliasResponse)(nil), "cyber.energy.v1beta1.MsgEditRouteAliasResponse")
 }
 
 func init() { proto.RegisterFile("cyber/energy/v1beta1/tx.proto", fileDescriptor_e37ef182071be00f) }
 
 var fileDescriptor_e37ef182071be00f = []byte{
-	// 525 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xd4, 0x55, 0xbf, 0x6f, 0xd3, 0x40,
-	0x18, 0xb5, 0x1b, 0xb5, 0x82, 0x2b, 0x08, 0xf5, 0x14, 0xa9, 0xa9, 0x29, 0x3e, 0xb0, 0x84, 0xa8,
-	0x90, 0x72, 0x6e, 0x53, 0xb1, 0x74, 0x23, 0xa5, 0x02, 0x21, 0x65, 0xf1, 0xc8, 0x82, 0x6c, 0xe7,
-	0x74, 0x58, 0x24, 0xbe, 0xc8, 0xdf, 0xa5, 0xaa, 0x25, 0xfe, 0x00, 0x46, 0x36, 0x36, 0xd4, 0x3f,
-	0xa7, 0x1b, 0x15, 0x13, 0x03, 0xb2, 0x50, 0xb2, 0xa0, 0x8c, 0x19, 0x99, 0x50, 0xee, 0xe2, 0x60,
-	0xd5, 0x31, 0x0a, 0x5b, 0x3b, 0x25, 0xf7, 0xbd, 0xf7, 0xbd, 0xbb, 0xe7, 0x77, 0x3f, 0xd0, 0x83,
-	0x30, 0x0d, 0x58, 0xe2, 0xb2, 0x98, 0x25, 0x3c, 0x75, 0x4f, 0x0f, 0x02, 0x26, 0xfd, 0x03, 0x57,
-	0x9e, 0xd1, 0x41, 0x22, 0xa4, 0xc0, 0x75, 0x05, 0x53, 0x0d, 0xd3, 0x39, 0x6c, 0xd5, 0xb9, 0xe0,
-	0x42, 0x11, 0xdc, 0xd9, 0x3f, 0xcd, 0xb5, 0xb6, 0x43, 0x01, 0x7d, 0x01, 0x6f, 0x35, 0x10, 0x8a,
-	0x28, 0xd6, 0x80, 0xf3, 0xd5, 0x44, 0xf5, 0x0e, 0xf0, 0xe3, 0x84, 0xf9, 0x92, 0x9d, 0x28, 0x29,
-	0x4f, 0x0c, 0x25, 0xc3, 0x87, 0x68, 0x03, 0xc4, 0x30, 0x09, 0x59, 0xc3, 0x7c, 0x68, 0xee, 0xdd,
-	0x6e, 0xdf, 0x9f, 0x64, 0x64, 0x5e, 0x99, 0x66, 0xe4, 0x6e, 0xea, 0xf7, 0x7b, 0x47, 0x8e, 0x1e,
-	0x3b, 0xde, 0x1c, 0xc0, 0x2f, 0xd1, 0x66, 0x97, 0x81, 0x8c, 0x62, 0x5f, 0x46, 0x22, 0x6e, 0xac,
-	0xa9, 0xce, 0xc7, 0x93, 0x8c, 0x14, 0xcb, 0xd3, 0x8c, 0x60, 0xdd, 0x5e, 0x28, 0x3a, 0x5e, 0x91,
-	0x82, 0x5d, 0xb4, 0xee, 0xf7, 0x22, 0x1f, 0x1a, 0x35, 0x25, 0xb1, 0x33, 0xc9, 0x88, 0x2e, 0x4c,
-	0x33, 0x72, 0x47, 0x37, 0xab, 0xa1, 0xe3, 0xe9, 0xf2, 0xd1, 0xad, 0x8f, 0xe7, 0xc4, 0xf8, 0x75,
-	0x4e, 0x0c, 0xe7, 0xf3, 0x1a, 0xc2, 0x1d, 0xe0, 0x27, 0xdd, 0x48, 0x5e, 0x1f, 0x3f, 0x29, 0x5a,
-	0x3f, 0xf5, 0x7b, 0x43, 0xa6, 0xfc, 0x6c, 0xb6, 0x76, 0xa8, 0xce, 0x83, 0x06, 0x3e, 0xb0, 0x3c,
-	0x3a, 0x7a, 0x2c, 0xa2, 0xb8, 0xfd, 0xea, 0x22, 0x23, 0xc6, 0xcc, 0xae, 0xe2, 0xff, 0xb5, 0xab,
-	0x86, 0xce, 0xef, 0x8c, 0x3c, 0xe1, 0x91, 0x7c, 0x37, 0x0c, 0x68, 0x28, 0xfa, 0xae, 0x56, 0x99,
-	0xff, 0x34, 0xa1, 0xfb, 0xde, 0x95, 0xe9, 0x80, 0x81, 0x52, 0xf2, 0xb4, 0x42, 0xe1, 0xcb, 0x7c,
-	0xd1, 0x59, 0xbf, 0x60, 0x3d, 0x76, 0x8d, 0xb2, 0x2e, 0x2c, 0xf0, 0x9b, 0x89, 0xb6, 0xcb, 0xd1,
-	0x3d, 0x9f, 0x05, 0x7c, 0x73, 0xf7, 0xa3, 0x8d, 0x76, 0x97, 0x1d, 0x30, 0x8f, 0xc1, 0x40, 0xc4,
-	0xc0, 0x9c, 0x5d, 0x64, 0x95, 0x3d, 0x2f, 0x50, 0xdd, 0x5d, 0x8a, 0x6c, 0x81, 0x3f, 0x42, 0xa4,
-	0xe2, 0x8b, 0xe5, 0x94, 0xd6, 0x8f, 0x1a, 0xaa, 0x75, 0x80, 0x63, 0x40, 0x5b, 0xe5, 0x63, 0xfe,
-	0x94, 0x2e, 0xbb, 0x45, 0xe8, 0xb2, 0x15, 0x5b, 0xad, 0xd5, 0xb9, 0xf9, 0xe4, 0xb8, 0x8f, 0xee,
-	0x5d, 0x3d, 0x89, 0x7b, 0x95, 0x32, 0x57, 0x98, 0xd6, 0xfe, 0xaa, 0xcc, 0xc5, 0x74, 0x80, 0xb6,
-	0xca, 0xdb, 0xbb, 0xda, 0x63, 0x89, 0xfb, 0x0f, 0x8f, 0x95, 0x19, 0xe0, 0x0f, 0xa8, 0xbe, 0x74,
-	0xcb, 0x36, 0x57, 0x5d, 0xbe, 0xa2, 0x5b, 0xcf, 0xfe, 0x8b, 0x9e, 0xcf, 0xde, 0x7e, 0x7d, 0x31,
-	0xb2, 0xcd, 0xcb, 0x91, 0x6d, 0xfe, 0x1c, 0xd9, 0xe6, 0xa7, 0xb1, 0x6d, 0x5c, 0x8e, 0x6d, 0xe3,
-	0xfb, 0xd8, 0x36, 0xde, 0xec, 0x17, 0x6f, 0x8a, 0x99, 0x74, 0x28, 0x62, 0x9e, 0x30, 0x00, 0x97,
-	0x8b, 0xa6, 0x7e, 0x5b, 0xce, 0xf2, 0xd7, 0x45, 0xdd, 0x1b, 0xc1, 0x86, 0x7a, 0x14, 0x0e, 0xff,
-	0x04, 0x00, 0x00, 0xff, 0xff, 0x24, 0xa0, 0x36, 0x82, 0x7a, 0x06, 0x00, 0x00,
+	// 474 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x94, 0x4f, 0x6f, 0xd3, 0x30,
+	0x18, 0xc6, 0x13, 0xaa, 0x4d, 0xda, 0xdb, 0x31, 0x31, 0xab, 0x2a, 0x5d, 0x10, 0x2e, 0xb2, 0x10,
+	0xff, 0x04, 0x0e, 0x1b, 0x17, 0xc4, 0x8d, 0x8e, 0x1d, 0x7b, 0xc9, 0x11, 0x0e, 0xc8, 0xc9, 0x5e,
+	0x99, 0xa0, 0x36, 0xae, 0x62, 0x67, 0x5a, 0xbf, 0x05, 0x07, 0xae, 0x48, 0x1c, 0xf9, 0x0c, 0x7c,
+	0x82, 0x1e, 0x77, 0xe4, 0x54, 0x41, 0xfb, 0x0d, 0xfa, 0x09, 0xd0, 0xec, 0xa5, 0xf3, 0x60, 0x63,
+	0x3b, 0x4d, 0xdc, 0x22, 0x3f, 0xbf, 0xc7, 0x7e, 0xf2, 0xe4, 0x8d, 0xe1, 0x6e, 0x36, 0x4e, 0xb1,
+	0x8c, 0xb1, 0xc0, 0x52, 0x8e, 0xe3, 0x83, 0xed, 0x14, 0x8d, 0xd8, 0x8e, 0xcd, 0x21, 0x1f, 0x95,
+	0xca, 0x28, 0xd2, 0xb2, 0x32, 0x77, 0x32, 0x3f, 0x91, 0xa3, 0x96, 0x54, 0x52, 0x59, 0x20, 0x3e,
+	0x7e, 0x72, 0x6c, 0x74, 0x3b, 0x53, 0x7a, 0xa8, 0xf4, 0x7b, 0x27, 0x64, 0x2a, 0x2f, 0x9c, 0xc0,
+	0xbe, 0x84, 0xb0, 0xd1, 0xd7, 0x72, 0xb7, 0x44, 0x61, 0x30, 0x51, 0x95, 0x41, 0xf2, 0x18, 0x56,
+	0xb5, 0xaa, 0xca, 0x0c, 0x3b, 0xe1, 0xbd, 0xf0, 0xd1, 0x5a, 0x6f, 0x73, 0x31, 0xed, 0xde, 0x1c,
+	0x8b, 0xe1, 0xe0, 0x15, 0x73, 0xeb, 0x2c, 0x39, 0x01, 0xc8, 0x4b, 0x68, 0xee, 0xa3, 0x36, 0x79,
+	0x21, 0x4c, 0xae, 0x8a, 0xce, 0x0d, 0xcb, 0xb7, 0x17, 0xd3, 0x2e, 0x71, 0xbc, 0x27, 0xb2, 0xc4,
+	0x47, 0xc9, 0x03, 0x58, 0x11, 0x83, 0x5c, 0xe8, 0x4e, 0xc3, 0x7a, 0x6e, 0x2d, 0xa6, 0xdd, 0x75,
+	0xe7, 0xb1, 0xcb, 0x2c, 0x71, 0x32, 0xfb, 0x1e, 0xc2, 0x7a, 0x5f, 0xcb, 0xbd, 0xfd, 0xdc, 0x5c,
+	0x63, 0xba, 0x3d, 0x58, 0x39, 0x10, 0x83, 0x0a, 0x6d, 0xba, 0xe6, 0xce, 0x16, 0x77, 0xf5, 0xf1,
+	0x54, 0x68, 0xac, 0x9b, 0xe6, 0xbb, 0x2a, 0x2f, 0x7a, 0xad, 0xc9, 0xb4, 0x1b, 0x9c, 0x86, 0xb7,
+	0x2e, 0x96, 0x38, 0x37, 0xab, 0x6c, 0xb7, 0x6f, 0x70, 0x80, 0xd7, 0xd9, 0x2d, 0xfb, 0x1a, 0xc2,
+	0xa6, 0xdf, 0xd9, 0xeb, 0xe3, 0x26, 0xff, 0xaf, 0xcf, 0xda, 0x81, 0xf6, 0xd9, 0xa9, 0x4b, 0x50,
+	0x8f, 0x54, 0xa1, 0x91, 0xb5, 0xa1, 0xe5, 0x67, 0x5f, 0xae, 0x3b, 0x87, 0xd7, 0xe5, 0x52, 0xb9,
+	0x03, 0x5b, 0x7f, 0xbd, 0x6d, 0x2d, 0xee, 0x7c, 0x6e, 0x40, 0xa3, 0xaf, 0x25, 0x11, 0xd0, 0xf4,
+	0x67, 0xfc, 0x3e, 0x3f, 0xef, 0xe7, 0xe1, 0x67, 0x33, 0x45, 0x4f, 0xaf, 0x42, 0xd5, 0x47, 0x91,
+	0x77, 0xb0, 0x76, 0x3a, 0xa6, 0xec, 0x42, 0xeb, 0x92, 0x89, 0x9e, 0x5c, 0xce, 0x2c, 0x37, 0x17,
+	0xd0, 0xf4, 0xe7, 0xe8, 0xe2, 0xfc, 0x1e, 0xf5, 0x8f, 0xfc, 0xe7, 0xf4, 0x48, 0x3e, 0xc2, 0xc6,
+	0x1f, 0x23, 0xf3, 0xf0, 0xf2, 0x80, 0x16, 0x8c, 0xe2, 0x2b, 0x82, 0xf5, 0x59, 0xbd, 0x64, 0xf2,
+	0x8b, 0x06, 0xdf, 0x66, 0x34, 0x98, 0xcc, 0x68, 0x78, 0x34, 0xa3, 0xe1, 0xcf, 0x19, 0x0d, 0x3f,
+	0xcd, 0x69, 0x70, 0x34, 0xa7, 0xc1, 0x8f, 0x39, 0x0d, 0xde, 0x3e, 0x97, 0xb9, 0xf9, 0x50, 0xa5,
+	0x3c, 0x53, 0xc3, 0xd8, 0x6e, 0x9e, 0xa9, 0x42, 0x96, 0xa8, 0x75, 0x2c, 0xd5, 0x33, 0x77, 0x31,
+	0x1e, 0xd6, 0x57, 0xa3, 0x19, 0x8f, 0x50, 0xa7, 0xab, 0xf6, 0x46, 0x7b, 0xf1, 0x3b, 0x00, 0x00,
+	0xff, 0xff, 0xf0, 0xbb, 0xa8, 0x55, 0x37, 0x05, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -391,10 +387,10 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
-	CreateEnergyRoute(ctx context.Context, in *MsgCreateEnergyRoute, opts ...grpc.CallOption) (*MsgCreateEnergyRouteResponse, error)
-	EditEnergyRoute(ctx context.Context, in *MsgEditEnergyRoute, opts ...grpc.CallOption) (*MsgEditEnergyRouteResponse, error)
-	DeleteEnergyRoute(ctx context.Context, in *MsgDeleteEnergyRoute, opts ...grpc.CallOption) (*MsgDeleteEnergyRouteResponse, error)
-	EditEnergyRouteAlias(ctx context.Context, in *MsgEditEnergyRouteAlias, opts ...grpc.CallOption) (*MsgEditEnergyRouteAliasResponse, error)
+	CreateRoute(ctx context.Context, in *MsgCreateRoute, opts ...grpc.CallOption) (*MsgCreateRouteResponse, error)
+	EditRoute(ctx context.Context, in *MsgEditRoute, opts ...grpc.CallOption) (*MsgEditRouteResponse, error)
+	DeleteRoute(ctx context.Context, in *MsgDeleteRoute, opts ...grpc.CallOption) (*MsgDeleteRouteResponse, error)
+	EditRouteAlias(ctx context.Context, in *MsgEditRouteAlias, opts ...grpc.CallOption) (*MsgEditRouteAliasResponse, error)
 }
 
 type msgClient struct {
@@ -405,36 +401,36 @@ func NewMsgClient(cc grpc1.ClientConn) MsgClient {
 	return &msgClient{cc}
 }
 
-func (c *msgClient) CreateEnergyRoute(ctx context.Context, in *MsgCreateEnergyRoute, opts ...grpc.CallOption) (*MsgCreateEnergyRouteResponse, error) {
-	out := new(MsgCreateEnergyRouteResponse)
-	err := c.cc.Invoke(ctx, "/cyber.energy.v1beta1.Msg/CreateEnergyRoute", in, out, opts...)
+func (c *msgClient) CreateRoute(ctx context.Context, in *MsgCreateRoute, opts ...grpc.CallOption) (*MsgCreateRouteResponse, error) {
+	out := new(MsgCreateRouteResponse)
+	err := c.cc.Invoke(ctx, "/cyber.energy.v1beta1.Msg/CreateRoute", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) EditEnergyRoute(ctx context.Context, in *MsgEditEnergyRoute, opts ...grpc.CallOption) (*MsgEditEnergyRouteResponse, error) {
-	out := new(MsgEditEnergyRouteResponse)
-	err := c.cc.Invoke(ctx, "/cyber.energy.v1beta1.Msg/EditEnergyRoute", in, out, opts...)
+func (c *msgClient) EditRoute(ctx context.Context, in *MsgEditRoute, opts ...grpc.CallOption) (*MsgEditRouteResponse, error) {
+	out := new(MsgEditRouteResponse)
+	err := c.cc.Invoke(ctx, "/cyber.energy.v1beta1.Msg/EditRoute", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) DeleteEnergyRoute(ctx context.Context, in *MsgDeleteEnergyRoute, opts ...grpc.CallOption) (*MsgDeleteEnergyRouteResponse, error) {
-	out := new(MsgDeleteEnergyRouteResponse)
-	err := c.cc.Invoke(ctx, "/cyber.energy.v1beta1.Msg/DeleteEnergyRoute", in, out, opts...)
+func (c *msgClient) DeleteRoute(ctx context.Context, in *MsgDeleteRoute, opts ...grpc.CallOption) (*MsgDeleteRouteResponse, error) {
+	out := new(MsgDeleteRouteResponse)
+	err := c.cc.Invoke(ctx, "/cyber.energy.v1beta1.Msg/DeleteRoute", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) EditEnergyRouteAlias(ctx context.Context, in *MsgEditEnergyRouteAlias, opts ...grpc.CallOption) (*MsgEditEnergyRouteAliasResponse, error) {
-	out := new(MsgEditEnergyRouteAliasResponse)
-	err := c.cc.Invoke(ctx, "/cyber.energy.v1beta1.Msg/EditEnergyRouteAlias", in, out, opts...)
+func (c *msgClient) EditRouteAlias(ctx context.Context, in *MsgEditRouteAlias, opts ...grpc.CallOption) (*MsgEditRouteAliasResponse, error) {
+	out := new(MsgEditRouteAliasResponse)
+	err := c.cc.Invoke(ctx, "/cyber.energy.v1beta1.Msg/EditRouteAlias", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -443,101 +439,101 @@ func (c *msgClient) EditEnergyRouteAlias(ctx context.Context, in *MsgEditEnergyR
 
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
-	CreateEnergyRoute(context.Context, *MsgCreateEnergyRoute) (*MsgCreateEnergyRouteResponse, error)
-	EditEnergyRoute(context.Context, *MsgEditEnergyRoute) (*MsgEditEnergyRouteResponse, error)
-	DeleteEnergyRoute(context.Context, *MsgDeleteEnergyRoute) (*MsgDeleteEnergyRouteResponse, error)
-	EditEnergyRouteAlias(context.Context, *MsgEditEnergyRouteAlias) (*MsgEditEnergyRouteAliasResponse, error)
+	CreateRoute(context.Context, *MsgCreateRoute) (*MsgCreateRouteResponse, error)
+	EditRoute(context.Context, *MsgEditRoute) (*MsgEditRouteResponse, error)
+	DeleteRoute(context.Context, *MsgDeleteRoute) (*MsgDeleteRouteResponse, error)
+	EditRouteAlias(context.Context, *MsgEditRouteAlias) (*MsgEditRouteAliasResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
 type UnimplementedMsgServer struct {
 }
 
-func (*UnimplementedMsgServer) CreateEnergyRoute(ctx context.Context, req *MsgCreateEnergyRoute) (*MsgCreateEnergyRouteResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateEnergyRoute not implemented")
+func (*UnimplementedMsgServer) CreateRoute(ctx context.Context, req *MsgCreateRoute) (*MsgCreateRouteResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateRoute not implemented")
 }
-func (*UnimplementedMsgServer) EditEnergyRoute(ctx context.Context, req *MsgEditEnergyRoute) (*MsgEditEnergyRouteResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method EditEnergyRoute not implemented")
+func (*UnimplementedMsgServer) EditRoute(ctx context.Context, req *MsgEditRoute) (*MsgEditRouteResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EditRoute not implemented")
 }
-func (*UnimplementedMsgServer) DeleteEnergyRoute(ctx context.Context, req *MsgDeleteEnergyRoute) (*MsgDeleteEnergyRouteResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteEnergyRoute not implemented")
+func (*UnimplementedMsgServer) DeleteRoute(ctx context.Context, req *MsgDeleteRoute) (*MsgDeleteRouteResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteRoute not implemented")
 }
-func (*UnimplementedMsgServer) EditEnergyRouteAlias(ctx context.Context, req *MsgEditEnergyRouteAlias) (*MsgEditEnergyRouteAliasResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method EditEnergyRouteAlias not implemented")
+func (*UnimplementedMsgServer) EditRouteAlias(ctx context.Context, req *MsgEditRouteAlias) (*MsgEditRouteAliasResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EditRouteAlias not implemented")
 }
 
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
 	s.RegisterService(&_Msg_serviceDesc, srv)
 }
 
-func _Msg_CreateEnergyRoute_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgCreateEnergyRoute)
+func _Msg_CreateRoute_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgCreateRoute)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).CreateEnergyRoute(ctx, in)
+		return srv.(MsgServer).CreateRoute(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/cyber.energy.v1beta1.Msg/CreateEnergyRoute",
+		FullMethod: "/cyber.energy.v1beta1.Msg/CreateRoute",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).CreateEnergyRoute(ctx, req.(*MsgCreateEnergyRoute))
+		return srv.(MsgServer).CreateRoute(ctx, req.(*MsgCreateRoute))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_EditEnergyRoute_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgEditEnergyRoute)
+func _Msg_EditRoute_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgEditRoute)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).EditEnergyRoute(ctx, in)
+		return srv.(MsgServer).EditRoute(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/cyber.energy.v1beta1.Msg/EditEnergyRoute",
+		FullMethod: "/cyber.energy.v1beta1.Msg/EditRoute",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).EditEnergyRoute(ctx, req.(*MsgEditEnergyRoute))
+		return srv.(MsgServer).EditRoute(ctx, req.(*MsgEditRoute))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_DeleteEnergyRoute_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgDeleteEnergyRoute)
+func _Msg_DeleteRoute_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgDeleteRoute)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).DeleteEnergyRoute(ctx, in)
+		return srv.(MsgServer).DeleteRoute(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/cyber.energy.v1beta1.Msg/DeleteEnergyRoute",
+		FullMethod: "/cyber.energy.v1beta1.Msg/DeleteRoute",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).DeleteEnergyRoute(ctx, req.(*MsgDeleteEnergyRoute))
+		return srv.(MsgServer).DeleteRoute(ctx, req.(*MsgDeleteRoute))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_EditEnergyRouteAlias_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgEditEnergyRouteAlias)
+func _Msg_EditRouteAlias_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgEditRouteAlias)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).EditEnergyRouteAlias(ctx, in)
+		return srv.(MsgServer).EditRouteAlias(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/cyber.energy.v1beta1.Msg/EditEnergyRouteAlias",
+		FullMethod: "/cyber.energy.v1beta1.Msg/EditRouteAlias",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).EditEnergyRouteAlias(ctx, req.(*MsgEditEnergyRouteAlias))
+		return srv.(MsgServer).EditRouteAlias(ctx, req.(*MsgEditRouteAlias))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -547,27 +543,27 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*MsgServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "CreateEnergyRoute",
-			Handler:    _Msg_CreateEnergyRoute_Handler,
+			MethodName: "CreateRoute",
+			Handler:    _Msg_CreateRoute_Handler,
 		},
 		{
-			MethodName: "EditEnergyRoute",
-			Handler:    _Msg_EditEnergyRoute_Handler,
+			MethodName: "EditRoute",
+			Handler:    _Msg_EditRoute_Handler,
 		},
 		{
-			MethodName: "DeleteEnergyRoute",
-			Handler:    _Msg_DeleteEnergyRoute_Handler,
+			MethodName: "DeleteRoute",
+			Handler:    _Msg_DeleteRoute_Handler,
 		},
 		{
-			MethodName: "EditEnergyRouteAlias",
-			Handler:    _Msg_EditEnergyRouteAlias_Handler,
+			MethodName: "EditRouteAlias",
+			Handler:    _Msg_EditRouteAlias_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "cyber/energy/v1beta1/tx.proto",
 }
 
-func (m *MsgCreateEnergyRoute) Marshal() (dAtA []byte, err error) {
+func (m *MsgCreateRoute) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -577,12 +573,12 @@ func (m *MsgCreateEnergyRoute) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgCreateEnergyRoute) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgCreateRoute) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgCreateEnergyRoute) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgCreateRoute) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -611,7 +607,7 @@ func (m *MsgCreateEnergyRoute) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgEditEnergyRoute) Marshal() (dAtA []byte, err error) {
+func (m *MsgEditRoute) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -621,12 +617,12 @@ func (m *MsgEditEnergyRoute) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgEditEnergyRoute) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgEditRoute) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgEditEnergyRoute) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgEditRoute) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -658,7 +654,7 @@ func (m *MsgEditEnergyRoute) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgDeleteEnergyRoute) Marshal() (dAtA []byte, err error) {
+func (m *MsgDeleteRoute) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -668,12 +664,12 @@ func (m *MsgDeleteEnergyRoute) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgDeleteEnergyRoute) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgDeleteRoute) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgDeleteEnergyRoute) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgDeleteRoute) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -695,7 +691,7 @@ func (m *MsgDeleteEnergyRoute) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgEditEnergyRouteAlias) Marshal() (dAtA []byte, err error) {
+func (m *MsgEditRouteAlias) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -705,12 +701,12 @@ func (m *MsgEditEnergyRouteAlias) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgEditEnergyRouteAlias) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgEditRouteAlias) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgEditEnergyRouteAlias) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgEditRouteAlias) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -739,7 +735,7 @@ func (m *MsgEditEnergyRouteAlias) MarshalToSizedBuffer(dAtA []byte) (int, error)
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgCreateEnergyRouteResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgCreateRouteResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -749,12 +745,12 @@ func (m *MsgCreateEnergyRouteResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgCreateEnergyRouteResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgCreateRouteResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgCreateEnergyRouteResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgCreateRouteResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -762,7 +758,7 @@ func (m *MsgCreateEnergyRouteResponse) MarshalToSizedBuffer(dAtA []byte) (int, e
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgEditEnergyRouteResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgEditRouteResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -772,12 +768,12 @@ func (m *MsgEditEnergyRouteResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgEditEnergyRouteResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgEditRouteResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgEditEnergyRouteResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgEditRouteResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -785,7 +781,7 @@ func (m *MsgEditEnergyRouteResponse) MarshalToSizedBuffer(dAtA []byte) (int, err
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgDeleteEnergyRouteResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgDeleteRouteResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -795,12 +791,12 @@ func (m *MsgDeleteEnergyRouteResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgDeleteEnergyRouteResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgDeleteRouteResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgDeleteEnergyRouteResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgDeleteRouteResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -808,7 +804,7 @@ func (m *MsgDeleteEnergyRouteResponse) MarshalToSizedBuffer(dAtA []byte) (int, e
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgEditEnergyRouteAliasResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgEditRouteAliasResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -818,12 +814,12 @@ func (m *MsgEditEnergyRouteAliasResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgEditEnergyRouteAliasResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgEditRouteAliasResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgEditEnergyRouteAliasResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgEditRouteAliasResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -842,7 +838,7 @@ func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *MsgCreateEnergyRoute) Size() (n int) {
+func (m *MsgCreateRoute) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -863,7 +859,7 @@ func (m *MsgCreateEnergyRoute) Size() (n int) {
 	return n
 }
 
-func (m *MsgEditEnergyRoute) Size() (n int) {
+func (m *MsgEditRoute) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -882,7 +878,7 @@ func (m *MsgEditEnergyRoute) Size() (n int) {
 	return n
 }
 
-func (m *MsgDeleteEnergyRoute) Size() (n int) {
+func (m *MsgDeleteRoute) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -899,7 +895,7 @@ func (m *MsgDeleteEnergyRoute) Size() (n int) {
 	return n
 }
 
-func (m *MsgEditEnergyRouteAlias) Size() (n int) {
+func (m *MsgEditRouteAlias) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -920,7 +916,7 @@ func (m *MsgEditEnergyRouteAlias) Size() (n int) {
 	return n
 }
 
-func (m *MsgCreateEnergyRouteResponse) Size() (n int) {
+func (m *MsgCreateRouteResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -929,7 +925,7 @@ func (m *MsgCreateEnergyRouteResponse) Size() (n int) {
 	return n
 }
 
-func (m *MsgEditEnergyRouteResponse) Size() (n int) {
+func (m *MsgEditRouteResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -938,7 +934,7 @@ func (m *MsgEditEnergyRouteResponse) Size() (n int) {
 	return n
 }
 
-func (m *MsgDeleteEnergyRouteResponse) Size() (n int) {
+func (m *MsgDeleteRouteResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -947,7 +943,7 @@ func (m *MsgDeleteEnergyRouteResponse) Size() (n int) {
 	return n
 }
 
-func (m *MsgEditEnergyRouteAliasResponse) Size() (n int) {
+func (m *MsgEditRouteAliasResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -962,7 +958,7 @@ func sovTx(x uint64) (n int) {
 func sozTx(x uint64) (n int) {
 	return sovTx(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *MsgCreateEnergyRoute) Unmarshal(dAtA []byte) error {
+func (m *MsgCreateRoute) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -985,10 +981,10 @@ func (m *MsgCreateEnergyRoute) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgCreateEnergyRoute: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgCreateRoute: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgCreateEnergyRoute: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgCreateRoute: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1111,7 +1107,7 @@ func (m *MsgCreateEnergyRoute) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgEditEnergyRoute) Unmarshal(dAtA []byte) error {
+func (m *MsgEditRoute) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1134,10 +1130,10 @@ func (m *MsgEditEnergyRoute) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgEditEnergyRoute: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgEditRoute: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgEditEnergyRoute: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgEditRoute: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1261,7 +1257,7 @@ func (m *MsgEditEnergyRoute) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgDeleteEnergyRoute) Unmarshal(dAtA []byte) error {
+func (m *MsgDeleteRoute) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1284,10 +1280,10 @@ func (m *MsgDeleteEnergyRoute) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgDeleteEnergyRoute: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgDeleteRoute: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgDeleteEnergyRoute: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgDeleteRoute: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1378,7 +1374,7 @@ func (m *MsgDeleteEnergyRoute) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgEditEnergyRouteAlias) Unmarshal(dAtA []byte) error {
+func (m *MsgEditRouteAlias) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1401,10 +1397,10 @@ func (m *MsgEditEnergyRouteAlias) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgEditEnergyRouteAlias: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgEditRouteAlias: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgEditEnergyRouteAlias: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgEditRouteAlias: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1527,7 +1523,7 @@ func (m *MsgEditEnergyRouteAlias) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgCreateEnergyRouteResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgCreateRouteResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1550,10 +1546,10 @@ func (m *MsgCreateEnergyRouteResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgCreateEnergyRouteResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgCreateRouteResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgCreateEnergyRouteResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgCreateRouteResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:
@@ -1580,7 +1576,7 @@ func (m *MsgCreateEnergyRouteResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgEditEnergyRouteResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgEditRouteResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1603,10 +1599,10 @@ func (m *MsgEditEnergyRouteResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgEditEnergyRouteResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgEditRouteResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgEditEnergyRouteResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgEditRouteResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:
@@ -1633,7 +1629,7 @@ func (m *MsgEditEnergyRouteResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgDeleteEnergyRouteResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgDeleteRouteResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1656,10 +1652,10 @@ func (m *MsgDeleteEnergyRouteResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgDeleteEnergyRouteResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgDeleteRouteResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgDeleteEnergyRouteResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgDeleteRouteResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:
@@ -1686,7 +1682,7 @@ func (m *MsgDeleteEnergyRouteResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgEditEnergyRouteAliasResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgEditRouteAliasResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1709,10 +1705,10 @@ func (m *MsgEditEnergyRouteAliasResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgEditEnergyRouteAliasResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgEditRouteAliasResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgEditEnergyRouteAliasResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgEditRouteAliasResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:

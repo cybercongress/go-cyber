@@ -7,8 +7,8 @@ import (
 )
 
 const (
-	Source           = "src"
-	Destination      = "dst"
+	Source      = "src"
+	Destination = "dst"
 )
 
 // RegisterRoutes registers power-related REST handlers to a router
@@ -17,29 +17,25 @@ func RegisterRoutes(cliCtx client.Context, r *mux.Router) {
 	registerTxRoutes(cliCtx, r)
 }
 
-type CreateEnergyRouteReq struct {
+type CreateRouteReq struct {
 	BaseReq rest.BaseReq 		`json:"base_req" yaml:"base_req"`
-	//Source 		 string 		`json:"source" yaml:"source"`
 	Destination  string 		`json:"destination" yaml:"destination"`
 	Alias 		 string 		`json:"alias" yaml:"alias"`
 }
 
-type EditEnergyRouteReq struct {
+type EditRouteReq struct {
 	BaseReq rest.BaseReq 		`json:"base_req" yaml:"base_req"`
-	//Source 		 string 		`json:"source" yaml:"source"`
 	Destination  string 		`json:"destination" yaml:"destination"`
 	Value 		 string 		`json:"value" yaml:"value"`
 }
 
-type DeleteEnergyRouteReq struct {
+type DeleteRouteReq struct {
 	BaseReq rest.BaseReq 		`json:"base_req" yaml:"base_req"`
-	//Source 		 string 		`json:"source" yaml:"source"`
 	Destination  string 		`json:"destination" yaml:"destination"`
 }
 
-type EditEnergyRouteAliasReq struct {
+type EditRouteAliasReq struct {
 	BaseReq rest.BaseReq 		`json:"base_req" yaml:"base_req"`
-	//Source 		 string		    `json:"source" yaml:"source"`
 	Destination  string		    `json:"destination" yaml:"destination"`
 	Alias 		 string 		`json:"alias" yaml:"alias"`
 }

@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -44,15 +45,13 @@ func queryParams(ctx sdk.Context, k Keeper, legacyQuerierCdc *codec.LegacyAmino)
 }
 
 func querySourceRoutes(ctx sdk.Context, req abci.RequestQuery, k Keeper, legacyQuerierCdc *codec.LegacyAmino) ([]byte, error) {
-	var params types.QuerySourceRequest
+	var params types.QuerySourceParams
 
 	err := legacyQuerierCdc.UnmarshalJSON(req.Data, &params); if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
 
-	addr, _ := sdk.AccAddressFromBech32(params.Source)
-
-	routes := k.GetSourceRoutes(ctx, addr, 10)
+	routes := k.GetSourceRoutes(ctx, params.Source, 16)
 
 	res, err := codec.MarshalJSONIndent(legacyQuerierCdc, routes)
 	if err != nil {
@@ -63,15 +62,13 @@ func querySourceRoutes(ctx sdk.Context, req abci.RequestQuery, k Keeper, legacyQ
 }
 
 func queryDestinationRoutes(ctx sdk.Context, req abci.RequestQuery, k Keeper, legacyQuerierCdc *codec.LegacyAmino) ([]byte, error) {
-	var params types.QueryDestinationRequest
+	var params types.QueryDestinationParams
 
 	err := legacyQuerierCdc.UnmarshalJSON(req.Data, &params); if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
 
-	addr, _ := sdk.AccAddressFromBech32(params.Destination)
-
-	routes := k.GetDestinationRoutes(ctx, addr)
+	routes := k.GetDestinationRoutes(ctx, params.Destination)
 
 	res, err := codec.MarshalJSONIndent(legacyQuerierCdc, routes)
 	if err != nil {
@@ -82,15 +79,13 @@ func queryDestinationRoutes(ctx sdk.Context, req abci.RequestQuery, k Keeper, le
 }
 
 func queryDestinationRoutedEnergy(ctx sdk.Context, req abci.RequestQuery, k Keeper, legacyQuerierCdc *codec.LegacyAmino) ([]byte, error) {
-	var params types.QueryDestinationRequest
+	var params types.QueryDestinationParams
 
 	err := legacyQuerierCdc.UnmarshalJSON(req.Data, &params); if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
 
-	addr, _ := sdk.AccAddressFromBech32(params.Destination)
-
-	routedEnergy := k.GetRoutedToEnergy(ctx, addr)
+	routedEnergy := k.GetRoutedToEnergy(ctx, params.Destination)
 
 	res, err := codec.MarshalJSONIndent(legacyQuerierCdc, routedEnergy)
 	if err != nil {
@@ -101,15 +96,13 @@ func queryDestinationRoutedEnergy(ctx sdk.Context, req abci.RequestQuery, k Keep
 }
 
 func querySourceRoutedEnergy(ctx sdk.Context, req abci.RequestQuery, k Keeper, legacyQuerierCdc *codec.LegacyAmino) ([]byte, error) {
-	var params types.QuerySourceRequest
+	var params types.QuerySourceParams
 
 	err := legacyQuerierCdc.UnmarshalJSON(req.Data, &params); if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
 
-	addr, _ := sdk.AccAddressFromBech32(params.Source)
-
-	routedEnergy := k.GetRoutedFromEnergy(ctx, addr)
+	routedEnergy := k.GetRoutedFromEnergy(ctx, params.Source)
 
 	res, err := codec.MarshalJSONIndent(legacyQuerierCdc, routedEnergy)
 	if err != nil {
@@ -120,16 +113,16 @@ func querySourceRoutedEnergy(ctx sdk.Context, req abci.RequestQuery, k Keeper, l
 }
 
 func queryRoute(ctx sdk.Context, req abci.RequestQuery, k Keeper, legacyQuerierCdc *codec.LegacyAmino) ([]byte, error) {
-	var params types.QueryRouteRequest
+	var params types.QueryRouteParams
 
 	err := legacyQuerierCdc.UnmarshalJSON(req.Data, &params); if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
 
-	src, _ := sdk.AccAddressFromBech32(params.Source)
-	dst, _ := sdk.AccAddressFromBech32(params.Destination)
-
-	route, _ := k.GetRoute(ctx, src, dst)
+	route, found := k.GetRoute(ctx, params.Source, params.Destination)
+	if !found {
+		return nil, types.ErrRouteNotExist
+	}
 
 	res, err := codec.MarshalJSONIndent(legacyQuerierCdc, route)
 	if err != nil {
@@ -140,7 +133,21 @@ func queryRoute(ctx sdk.Context, req abci.RequestQuery, k Keeper, legacyQuerierC
 }
 
 func queryRoutes(ctx sdk.Context, req abci.RequestQuery, k Keeper, legacyQuerierCdc *codec.LegacyAmino) ([]byte, error) {
+	var params types.QueryRoutesParams
+
+	err := legacyQuerierCdc.UnmarshalJSON(req.Data, &params)
+	if err != nil {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
+	}
+
 	routes := k.GetAllRoutes(ctx)
+
+	start, end := client.Paginate(len(routes),params.Page, params.Limit, len(routes))
+	if start < 0 || end < 0 {
+		routes = []types.Route{}
+	} else {
+		routes = routes[start:end]
+	}
 
 	res, err := codec.MarshalJSONIndent(legacyQuerierCdc, routes)
 	if err != nil {

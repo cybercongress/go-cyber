@@ -28,15 +28,15 @@ func NewTxCmd() *cobra.Command {
 	}
 
 	resourcesTxCmd.AddCommand(
-		GetCmdConvert(),
+		GetCmdInvestmint(),
 	)
 
 	return resourcesTxCmd
 }
 
-func GetCmdConvert() *cobra.Command {
+func GetCmdInvestmint() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "convert [amount] [resource] [end-time]",
+		Use:   "investmint [amount] [resource] [end-time]",
 		Args:  cobra.ExactArgs(3),
 		Short: "Short",
 		Long: strings.TrimSpace(
@@ -61,7 +61,7 @@ $ %s tx resources convert 10000cyb 100000 --from mykey
 				return fmt.Errorf("coin %s not a valid coin, please input a valid coin", args[0])
 			}
 
-			if amount.Denom != ctypes.CYB {
+			if amount.Denom != ctypes.SCYB {
 				return fmt.Errorf("coin %s not a valid coin, please input a valid coin", args[0])
 			}
 
@@ -69,12 +69,12 @@ $ %s tx resources convert 10000cyb 100000 --from mykey
 				return fmt.Errorf("resource %s not a valid resource, please input a valid resource", args[1])
 			}
 
-			endBlock, err := strconv.ParseUint(args[2], 10, 64)
+			length, err := strconv.ParseUint(args[2], 10, 64)
 			if err != nil {
 				return fmt.Errorf("block period %s not a valid uint, please input a valid block period", args[1])
 			}
 
-			msg := types.NewMsgConvert(agent, amount, args[1], endBlock)
+			msg := types.NewMsgInvestmint(agent, amount, args[1], length)
 
 			if err := msg.ValidateBasic(); err != nil {
 				return err

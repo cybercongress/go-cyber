@@ -46,7 +46,11 @@ func validateMaxRoutes(i interface{}) error {
 	}
 
 	if v == 0 {
-		return fmt.Errorf("max entries must be positive: %d", v)
+		return fmt.Errorf("max routes must be positive: %d", v)
+	}
+
+	if v > 32 {
+		return fmt.Errorf("max routes must be less than 32: %d", v)
 	}
 
 	return nil

@@ -2,13 +2,17 @@ package plugins
 
 import (
 	"encoding/json"
-	"fmt"
 
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmTypes "github.com/CosmWasm/wasmvm/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
+	crontypes "github.com/cybercongress/go-cyber/x/cron/types"
+	energytypes "github.com/cybercongress/go-cyber/x/energy/types"
+	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
+	resourcestypes "github.com/cybercongress/go-cyber/x/resources/types"
 )
 
 type WasmMsgParserInterface interface {
@@ -32,7 +36,10 @@ type WasmCustomMsg struct {
 }
 
 const (
-	WasmMsgParserRouteGraph   = "graph"
+	WasmMsgParserRouteGraph     = graphtypes.ModuleName
+	WasmMsgParserRouteCron      = crontypes.ModuleName
+	WasmMsgParserRouteEnergy    = energytypes.ModuleName
+	WasmMsgParserRouteResources = resourcestypes.ModuleName
 )
 
 func (p MsgParser) ParseCustom(contractAddr sdk.AccAddress, data json.RawMessage) ([]sdk.Msg, error) {
@@ -41,7 +48,6 @@ func (p MsgParser) ParseCustom(contractAddr sdk.AccAddress, data json.RawMessage
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
-	fmt.Println("[!] Wasm msg routed to module: ", customMsg.Route)
 
 	if parser, ok := p.Parsers[customMsg.Route]; ok {
 		return parser.ParseCustom(contractAddr, customMsg.MsgData)

@@ -7,12 +7,10 @@ import (
 
 func InitGenesis(ctx sdk.Context, k Keeper, data types.GenesisState) {
 	k.SetParams(ctx, data.Params)
-	//k.SetJobs(ctx, data.Jobs)
 }
 
 func ExportGenesis(ctx sdk.Context, k Keeper)  *types.GenesisState {
 	params := k.GetParams(ctx)
-	jobs := k.GetAllJobs(ctx)
 
-	return types.NewGenesisState(params, jobs)
+	return types.NewGenesisState(params)
 }

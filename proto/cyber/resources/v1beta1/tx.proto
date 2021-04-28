@@ -6,66 +6,23 @@ import "gogoproto/gogo.proto";
 import "cosmos_proto/coin.proto";
 
 option go_package = "github.com/cybercongress/go-cyber/x/resources/types";
+option (gogoproto.goproto_getters_all) = false;
+option (gogoproto.equal_all) = false;
 
 service Msg{
-    rpc Convert(MsgConvert) returns (MsgConvertResponse);
-    rpc CreateResource(MsgCreateResource) returns (MsgCreateResourceResponse);
-    rpc RedeemResource(MsgRedeemResource) returns (MsgRedeemResourceResponse);
+    rpc Investmint(MsgInvestmint) returns (MsgInvestmintResponse);
 }
 
-message MsgConvert {
-    option (gogoproto.equal)           = false;
-    option (gogoproto.goproto_getters) = false;
-
-    string agent  = 1 [(gogoproto.jsontag) = "agent", (gogoproto.moretags) = "yaml:\"agent\""];
-    cosmos.base.v1beta1.Coin amount = 2 [
-                                           (gogoproto.jsontag) = "amount",
-                                           (gogoproto.moretags) = "yaml:\"amount\"",
-                                           (gogoproto.nullable) = false,
-                                           (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.Coin"
-                                           ];
-    string resource  = 3 [(gogoproto.jsontag) = "resource", (gogoproto.moretags) = "yaml:\"resource\""];
-    uint64 end_time   = 4 [(gogoproto.jsontag) = "end_time", (gogoproto.moretags) = "yaml:\"end_time\""];
+message MsgInvestmint {
+    string agent                    = 1 [(gogoproto.moretags) = "yaml:\"agent\""];
+    cosmos.base.v1beta1.Coin amount = 2 [(gogoproto.moretags) = "yaml:\"amount\"", (gogoproto.nullable) = false];
+    string resource                 = 3 [(gogoproto.moretags) = "yaml:\"resource\""];
+    uint64 length                   = 4 [(gogoproto.moretags) = "yaml:\"length\""];
 }
 
-message MsgConvertResponse {}
-
-message MsgCreateResource {
-    option (gogoproto.equal)           = false;
-    option (gogoproto.goproto_getters) = false;
-
-    string sender  = 1 [
-        (gogoproto.jsontag) = "sender",
-        (gogoproto.moretags) = "yaml:\"sender\""
-    ];
-    cosmos.base.v1beta1.Coin resource = 2 [
-        (gogoproto.jsontag) = "resource",
-        (gogoproto.moretags) = "yaml:\"resource\"",
-        (gogoproto.nullable) = false,
-        (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.Coin"
-    ];
-    string receiver  = 3 [
-        (gogoproto.jsontag) = "receiver",
-        (gogoproto.moretags) = "yaml:\"receiver\""
-    ];
+message MsgInvestmintResponse {
+//    cosmos.base.v1beta1.Coin investmint_resource = 1 [
+//        (gogoproto.moretags) = "yaml:\"investmint_resource\"",
+//        (gogoproto.nullable) = false
+//    ];
 }
-
-message MsgCreateResourceResponse {}
-
-message MsgRedeemResource {
-    option (gogoproto.equal)           = false;
-    option (gogoproto.goproto_getters) = false;
-
-    string sender  = 1 [
-        (gogoproto.jsontag) = "sender",
-        (gogoproto.moretags) = "yaml:\"sender\""
-    ];
-    cosmos.base.v1beta1.Coin resource = 2 [
-        (gogoproto.jsontag) = "resource",
-        (gogoproto.moretags) = "yaml:\"resource\"",
-        (gogoproto.nullable) = false,
-        (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.Coin"
-    ];
-}
-
-message MsgRedeemResourceResponse {}

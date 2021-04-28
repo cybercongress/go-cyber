@@ -14,7 +14,6 @@ type RankedCidNumber struct {
 func (c RankedCidNumber) GetNumber() graphtypes.CidNumber { return c.number }
 func (c RankedCidNumber) GetRank() uint64           { return c.rank }
 
-//
 // Local type for sorting
 type cidLinks struct {
 	sortedLinks sortableCidNumbers

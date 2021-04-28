@@ -41,7 +41,6 @@ func NewAnteHandler(
 		ante.NewRejectFeeGranterDecorator(),
 		ante.NewSetPubKeyDecorator(ak), // SetPubKeyDecorator must be called before all signature verification decorators
 		ante.NewValidateSigCountDecorator(ak),
-		//ante.NewDeductFeeDecorator(ak, bankKeeper),
 		NewDeductFeeBandRouterDecorator(ak, bankKeeper, abk),
 		ante.NewSigGasConsumeDecorator(ak, sigGasConsumer),
 		ante.NewSigVerificationDecorator(ak, signModeHandler),
@@ -107,7 +106,6 @@ func (drd DeductFeeBandRouterDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, s
 	}
 
 	if nativeFlag {
-		//fmt.Println("[*] Native fee tx routing")
 		if !feeTx.GetFee().IsZero() {
 			err = DeductFees(drd.bk, ctx, feePayerAcc, feeTx.GetFee(), nil)
 			if err != nil {
@@ -118,7 +116,6 @@ func (drd DeductFeeBandRouterDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, s
 		return next(ctx, tx, simulate)
 	}
 	if wasmExecuteFlag {
-		//fmt.Println("[*] Execute fee split tx routing")
 		if !feeTx.GetFee().IsZero() {
 			err = DeductFees(drd.bk, ctx, feePayerAcc, feeTx.GetFee(), ai2pay)
 			if err != nil {
@@ -128,9 +125,8 @@ func (drd DeductFeeBandRouterDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, s
 
 		return next(ctx, tx, simulate)
 	}
-	//fmt.Println("[*] Bandwidth link tx routing")
 
-	txCost := drd.bm.GetPricedTxCost(ctx, tx)
+	txCost := drd.bm.GetPricedTotalCyberlinksCost(ctx, tx)
 	accountBandwidth := drd.bm.GetCurrentAccountBandwidth(ctx, feePayerAcc.GetAddress())
 
 	currentBlockSpentBandwidth := drd.bm.GetCurrentBlockSpentBandwidth(ctx)
@@ -139,15 +135,17 @@ func (drd DeductFeeBandRouterDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, s
 	if !accountBandwidth.HasEnoughRemained(txCost) {
 		return ctx, bandwidthtypes.ErrNotEnoughBandwidth
 	} else if (txCost + currentBlockSpentBandwidth) > maxBlockBandwidth  {
-		return ctx, bandwidthtypes.ErrExceededMaxBlockBandwidth // TODO check cyberlink script why this error?
-	} else {
-		//fmt.Println("-- bandwidth consumed: ", txCost)
-		drd.bm.ConsumeAccountBandwidth(ctx, accountBandwidth, txCost)
-
-		if !ctx.IsCheckTx() {
-			drd.bm.AddToBlockBandwidth(txCost)
-		}
+		return ctx, bandwidthtypes.ErrExceededMaxBlockBandwidth
 	}
+	// NOTE Moved to cyberlinks module, because need to consume bandwidth based on msgs, delete after tests
+	// case of autonomous cron programs
+	// } else {
+	//	drd.bm.ConsumeAccountBandwidth(ctx, accountBandwidth, txCost)
+	//
+	//	if !ctx.IsCheckTx() {
+	//		drd.bm.AddToBlockBandwidth(txCost)
+	//	}
+	//}
 
 	return next(ctx, tx, simulate)
 }
@@ -162,7 +160,6 @@ func DeductFees(bankKeeper bankkeeper.Keeper, ctx sdk.Context, acc authtypes.Acc
 	}
 
 	if ai == nil {
-		//fmt.Println("-- fee native payed: ", fees)
 		err := bankKeeper.SendCoinsFromAccountToModule(ctx, acc.GetAddress(), types.FeeCollectorName, fees)
 		if err != nil {
 			return sdkerrors.Wrapf(sdkerrors.ErrInsufficientFunds, err.Error())
@@ -178,13 +175,11 @@ func DeductFees(bankKeeper bankkeeper.Keeper, ctx sdk.Context, acc authtypes.Acc
 		toValidatorsAmount := sdk.NewCoins(sdk.NewCoin(ctypes.CYB, toValidators.RoundInt()))
 		toContractAmount := sdk.NewCoins(sdk.NewCoin(ctypes.CYB, toContract.RoundInt()))
 
-		//fmt.Println("-- fee split contract payed: ", toContractAmount)
 		err := bankKeeper.SendCoins(ctx, acc.GetAddress(), ai, toContractAmount)
 		if err != nil {
 			return sdkerrors.Wrapf(sdkerrors.ErrInsufficientFunds, err.Error())
 		}
 
-		//fmt.Println("-- fee split validator payed: ", toValidatorsAmount)
 		err = bankKeeper.SendCoinsFromAccountToModule(ctx, acc.GetAddress(), types.FeeCollectorName, toValidatorsAmount)
 		if err != nil {
 			return sdkerrors.Wrapf(sdkerrors.ErrInsufficientFunds, err.Error())
@@ -216,10 +211,10 @@ func (mfd MempoolFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate b
 	feeCoins := feeTx.GetFee()
 	gas := feeTx.GetGas()
 
-	linksFlag := true
+	cyberlinksNoFeeFlag := true
 	for _, msg := range tx.GetMsgs() {
 		if (msg.Route() != graphtypes.RouterKey) {
-			linksFlag = false
+			cyberlinksNoFeeFlag = false
 			break
 		}
 	}
@@ -227,8 +222,7 @@ func (mfd MempoolFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate b
 	// Ensure that the provided fees meet a minimum threshold for the validator,
 	// if this is a CheckTx. This is only for local mempool purposes, and thus
 	// is only ran on check tx.
-	if ctx.IsCheckTx() && !simulate && !linksFlag {
-		//fmt.Println("[*] Tx fee mempool check")
+	if ctx.IsCheckTx() && !simulate && !cyberlinksNoFeeFlag {
 		minGasPrices := ctx.MinGasPrices()
 		if !minGasPrices.IsZero() {
 			requiredFees := make(sdk.Coins, len(minGasPrices))
@@ -245,8 +239,6 @@ func (mfd MempoolFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate b
 				return ctx, sdkerrors.Wrapf(sdkerrors.ErrInsufficientFee, "insufficient fees; got: %s required: %s", feeCoins, requiredFees)
 			}
 		}
-	} else {
-		//fmt.Println("[*] Tx fee mempool no check")
 	}
 	return next(ctx, tx, simulate)
 }

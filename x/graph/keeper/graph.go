@@ -9,6 +9,7 @@ import (
 
 	. "github.com/cybercongress/go-cyber/types"
 	"github.com/cybercongress/go-cyber/x/graph/types"
+	"github.com/tendermint/tendermint/libs/log"
 
 	"io"
 
@@ -26,7 +27,8 @@ type GraphKeeper struct {
 }
 
 func NewKeeper(
-	cdc codec.BinaryMarshaler, storeKey sdk.StoreKey,
+	cdc codec.BinaryMarshaler,
+	storeKey sdk.StoreKey,
 ) GraphKeeper {
 	return GraphKeeper{
 		cdc: cdc,
@@ -34,10 +36,12 @@ func NewKeeper(
 	}
 }
 
+func (k GraphKeeper) Logger(ctx sdk.Context) log.Logger {
+	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
+}
+
 func (gk GraphKeeper) SaveLink(ctx sdk.Context, link types.CompactLink) {
-	defer func(){
-		telemetry.IncrCounter(1.0, types.ModuleName, "cyberlinks")
-	}()
+	defer telemetry.IncrCounter(1.0, types.ModuleName, "cyberlinks")
 
 	store := ctx.KVStore(gk.key)
 	store.Set(types.CyberlinksStoreKey(gk.GetLinksCount(ctx)), gk.cdc.MustMarshalBinaryBare(&link))
@@ -97,7 +101,7 @@ func (gk GraphKeeper) GetLinksCount(ctx sdk.Context) uint64 {
 	if linksCountAsBytes == nil {
 		return 0
 	}
-	return types.BigEndianToUint64(linksCountAsBytes)
+	return sdk.BigEndianToUint64(linksCountAsBytes)
 }
 
 // write links to writer in binary format: <links_count><cid_number_from><cid_number_to><acc_number>...
@@ -112,7 +116,6 @@ func (gk GraphKeeper) WriteLinks(ctx sdk.Context, writer io.Writer) (err error) 
 
 	gk.IterateLinks(ctx, func(link types.CompactLink) {
 		bytes := link.MarshalBinaryLink()
-		fmt.Println("bytes", bytes)
 		_, err = writer.Write(bytes)
 		if err != nil {
 			return

@@ -2,34 +2,45 @@ package types
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	ctypes "github.com/cybercongress/go-cyber/types"
 )
+
+const(
+	ActionCreateRoute 	 = "create_route"
+	ActionEditRoute 	 = "edit_route"
+	ActionDeleteRoute 	 = "delete_route"
+	ActionEditRouteAlias = "edit_route_alias"
+)
+
 
 var (
-	_ sdk.Msg = &MsgCreateEnergyRoute{}
-	_ sdk.Msg = &MsgEditEnergyRoute{}
-	_ sdk.Msg = &MsgDeleteEnergyRoute{}
-	_ sdk.Msg = &MsgEditEnergyRouteAlias{}
+	_ sdk.Msg = &MsgCreateRoute{}
+	_ sdk.Msg = &MsgEditRoute{}
+	_ sdk.Msg = &MsgDeleteRoute{}
+	_ sdk.Msg = &MsgEditRouteAlias{}
 )
 
-
-func NewMsgCreateEnergyRoute(src sdk.AccAddress, dst sdk.AccAddress, alias string) *MsgCreateEnergyRoute {
-	return &MsgCreateEnergyRoute{
+func NewMsgCreateRoute(src sdk.AccAddress, dst sdk.AccAddress, alias string) *MsgCreateRoute {
+	return &MsgCreateRoute{
 		Source: 	 src.String(),
 		Destination: dst.String(),
 		Alias:	     alias,
 	}
 }
 
-func (msg MsgCreateEnergyRoute) Route() string { return RouterKey }
+func (msg MsgCreateRoute) Route() string { return RouterKey }
 
-func (msg MsgCreateEnergyRoute) Type() string  { return ActionCreateEnergyRoute }
+func (msg MsgCreateRoute) Type() string  { return ActionCreateRoute }
 
-func (msg MsgCreateEnergyRoute) ValidateBasic() error {
-	if len(msg.Source) == 0 {
-		return ErrEmptySourceAddr
+func (msg MsgCreateRoute) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.Source)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid source address (%s)", err)
 	}
-	if len(msg.Destination) == 0 {
-		return ErrEmptyDestinationAddr
+	_, err = sdk.AccAddressFromBech32(msg.Destination)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid destination address (%s)", err)
 	}
 	if len(msg.Alias) == 0 && len(msg.Alias) < 64 {
 		return ErrWrongAlias
@@ -38,98 +49,119 @@ func (msg MsgCreateEnergyRoute) ValidateBasic() error {
 	return nil
 }
 
-func (msg MsgCreateEnergyRoute) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&msg))
+func (msg MsgCreateRoute) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(&msg)
+	return sdk.MustSortJSON(bz)
 }
 
-func (msg MsgCreateEnergyRoute) GetSigners() []sdk.AccAddress {
-	addr, _ := sdk.AccAddressFromBech32(msg.Source)
+func (msg MsgCreateRoute) GetSigners() []sdk.AccAddress {
+	addr, err := sdk.AccAddressFromBech32(msg.Source)
+	if err != nil {
+		panic(err)
+	}
 	return []sdk.AccAddress{addr}
 }
 
 
-func NewMsgEditEnergyRoute(src sdk.AccAddress, dst sdk.AccAddress, value sdk.Coin) *MsgEditEnergyRoute {
-	return &MsgEditEnergyRoute{
+func NewMsgEditRoute(src sdk.AccAddress, dst sdk.AccAddress, value sdk.Coin) *MsgEditRoute {
+	return &MsgEditRoute{
 		Source: 	 src.String(),
 		Destination: dst.String(),
 		Value:		 value,
 	}
 }
 
-func (msg MsgEditEnergyRoute) Route() string { return RouterKey }
+func (msg MsgEditRoute) Route() string { return RouterKey }
 
-func (msg MsgEditEnergyRoute) Type() string  { return ActionEditEnergyRoute }
+func (msg MsgEditRoute) Type() string  { return ActionEditRoute }
 
-func (msg MsgEditEnergyRoute) ValidateBasic() error {
-	if len(msg.Source) == 0 {
-		return ErrEmptySourceAddr
+func (msg MsgEditRoute) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.Source)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid source address (%s)", err)
 	}
-	if len(msg.Destination) == 0 {
-		return ErrEmptyDestinationAddr
+	_, err = sdk.AccAddressFromBech32(msg.Destination)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid destination address (%s)", err)
+	}
+	if msg.Value.Denom != ctypes.AMPER && msg.Value.Denom != ctypes.VOLT {
+		return ErrWrongDenom
 	}
 
 	return nil
 }
 
-func (msg MsgEditEnergyRoute) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&msg))
+func (msg MsgEditRoute) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(&msg)
+	return sdk.MustSortJSON(bz)
 }
 
-func (msg MsgEditEnergyRoute) GetSigners() []sdk.AccAddress {
-	addr, _ := sdk.AccAddressFromBech32(msg.Source)
+func (msg MsgEditRoute) GetSigners() []sdk.AccAddress {
+	addr, err := sdk.AccAddressFromBech32(msg.Source)
+	if err != nil {
+		panic(err)
+	}
 	return []sdk.AccAddress{addr}
 }
 
 
-func NewMsgDeleteEnergyRoute(src sdk.AccAddress, dst sdk.AccAddress) *MsgDeleteEnergyRoute {
-	return &MsgDeleteEnergyRoute{
+func NewMsgDeleteRoute(src sdk.AccAddress, dst sdk.AccAddress) *MsgDeleteRoute {
+	return &MsgDeleteRoute{
 		Source: 	 src.String(),
 		Destination: dst.String(),
 	}
 }
 
-func (msg MsgDeleteEnergyRoute) Route() string { return RouterKey }
+func (msg MsgDeleteRoute) Route() string { return RouterKey }
 
-func (msg MsgDeleteEnergyRoute) Type() string  { return ActionDeleteEnergyRoute }
+func (msg MsgDeleteRoute) Type() string  { return ActionDeleteRoute }
 
-func (msg MsgDeleteEnergyRoute) ValidateBasic() error {
-	if len(msg.Source) == 0 {
-		return ErrEmptySourceAddr
+func (msg MsgDeleteRoute) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.Source)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid source address (%s)", err)
 	}
-	if len(msg.Destination) == 0 {
-		return ErrEmptyDestinationAddr
+	_, err = sdk.AccAddressFromBech32(msg.Destination)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid destination address (%s)", err)
 	}
 
 	return nil
 }
 
-func (msg MsgDeleteEnergyRoute) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&msg))
+func (msg MsgDeleteRoute) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(&msg)
+	return sdk.MustSortJSON(bz)
 }
 
-func (msg MsgDeleteEnergyRoute) GetSigners() []sdk.AccAddress {
-	addr, _ := sdk.AccAddressFromBech32(msg.Source)
+func (msg MsgDeleteRoute) GetSigners() []sdk.AccAddress {
+	addr, err := sdk.AccAddressFromBech32(msg.Source)
+	if err != nil {
+		panic(err)
+	}
 	return []sdk.AccAddress{addr}
 }
 
-func NewMsgEditEnergyRouteAlias(src sdk.AccAddress, dst sdk.AccAddress, alias string) *MsgEditEnergyRouteAlias {
-	return &MsgEditEnergyRouteAlias{
+func NewMsgEditRouteAlias(src sdk.AccAddress, dst sdk.AccAddress, alias string) *MsgEditRouteAlias {
+	return &MsgEditRouteAlias{
 		Source: 	 src.String(),
 		Destination: dst.String(),
 		Alias:		 alias,
 	}
 }
 
-func (msg MsgEditEnergyRouteAlias) Route() string { return RouterKey }
+func (msg MsgEditRouteAlias) Route() string { return RouterKey }
 
-func (msg MsgEditEnergyRouteAlias) Type() string  { return ActionEditEnergyRouteAlias }
+func (msg MsgEditRouteAlias) Type() string  { return ActionEditRouteAlias }
 
-func (msg MsgEditEnergyRouteAlias) ValidateBasic() error {
-	if len(msg.Source) == 0 {
-		return ErrEmptySourceAddr
+func (msg MsgEditRouteAlias) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.Source)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid source address (%s)", err)
 	}
-	if len(msg.Destination) == 0 {
-		return ErrEmptyDestinationAddr
+	_, err = sdk.AccAddressFromBech32(msg.Destination)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid destination address (%s)", err)
 	}
 	if len(msg.Alias) == 0 && len(msg.Alias) < 64 {
 		return ErrWrongAlias
@@ -138,12 +170,16 @@ func (msg MsgEditEnergyRouteAlias) ValidateBasic() error {
 	return nil
 }
 
-func (msg MsgEditEnergyRouteAlias) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&msg))
+func (msg MsgEditRouteAlias) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(&msg)
+	return sdk.MustSortJSON(bz)
 }
 
-func (msg MsgEditEnergyRouteAlias) GetSigners() []sdk.AccAddress {
-	addr, _ := sdk.AccAddressFromBech32(msg.Source)
+func (msg MsgEditRouteAlias) GetSigners() []sdk.AccAddress {
+	addr, err := sdk.AccAddressFromBech32(msg.Source)
+	if err != nil {
+		panic(err)
+	}
 	return []sdk.AccAddress{addr}
 }
 

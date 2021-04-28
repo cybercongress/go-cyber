@@ -3,10 +3,11 @@ package cyber.cron.v1beta1;
 
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
-import "cyber/cron/v1beta1/params.proto";
-import "cyber/cron/v1beta1/cron.proto";
+import "cyber/cron/v1beta1/types.proto";
 
 option go_package = "github.com/cybercongress/go-cyber/x/cron/types";
+option (gogoproto.goproto_getters_all) = false;
+option (gogoproto.equal_all) = false;
 
 service Query {
     rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
@@ -33,7 +34,7 @@ service Query {
 message QueryParamsRequest {}
 
 message QueryParamsResponse{
-    cyber.cron.v1beta1.Params params = 1 [(gogoproto.nullable) = false ];
+    Params params = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryJobParamsRequest {
@@ -43,21 +44,21 @@ message QueryJobParamsRequest {
 }
 
 message QueryJobResponse {
-    cyber.cron.v1beta1.Job job = 1 [(gogoproto.nullable) = false];
+    Job job = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryJobStatsResponse {
-    cyber.cron.v1beta1.JobStats job_stats = 1 [(gogoproto.nullable) = false];
+    JobStats job_stats = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryJobsRequest{}
 
 message QueryJobsResponse {
-    repeated cyber.cron.v1beta1.Job jobs = 1 [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "Jobs"];
+    repeated Job jobs = 1 [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "Jobs"];
 }
 
 message QueryJobsStatsRequest{}
 
 message QueryJobsStatsResponse{
-    repeated cyber.cron.v1beta1.JobStats jobs_stats = 1 [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "JobsStats"];
+    repeated JobStats jobs_stats = 1 [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "JobsStats"];
 }

@@ -1,8 +1,6 @@
 package types
 
 import (
-	"encoding/binary"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -11,15 +9,6 @@ const (
 	RouterKey 	  		= ModuleName
 	StoreKey      	    = ModuleName
 	QuerierRoute  		= ModuleName
-
-	ActionCyberlink     = "cyberlink"
-
-	QueryLinks			= "links"
-	QueryLinksAmount	= "amount_links"
-	QueryCidsAmount		= "amount_cids"
-	QueryGraphStats		= "graph_stats"
-	QueryInLinks		= "in"
-	QueryOutLinks		= "out"
 )
 
 var (
@@ -42,12 +31,4 @@ func CidReverseStoreKey(num CidNumber) []byte {
 
 func CyberlinksStoreKey(id uint64) []byte {
 	return append(CyberlinkStoreKeyPrefix, sdk.Uint64ToBigEndian(id)...)
-}
-
-func BigEndianToUint64(bz []byte) uint64 {
-	if len(bz) == 0 {
-		return 0
-	}
-
-	return binary.BigEndian.Uint64(bz)
 }

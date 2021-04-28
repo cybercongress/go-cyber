@@ -1,9 +1,8 @@
 package types
 
-func NewGenesisState(params Params, jobs []Job) *GenesisState {
+func NewGenesisState(params Params) *GenesisState {
 	return &GenesisState{
 		Params: 	 params,
-		Jobs: 	 	 jobs,
 	}
 }
 
@@ -14,6 +13,5 @@ func DefaultGenesisState() *GenesisState {
 }
 
 func ValidateGenesis(_ GenesisState) error {
-	// TODO add validation
 	return nil
 }

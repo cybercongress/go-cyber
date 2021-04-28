@@ -2,12 +2,10 @@ syntax = "proto3";
 package cyber.cron.v1beta1;
 
 import "gogoproto/gogo.proto";
-import "cyber/cron/v1beta1/params.proto";
-import "cyber/cron/v1beta1/cron.proto";
+import "cyber/cron/v1beta1/types.proto";
 
 option go_package = "github.com/cybercongress/go-cyber/x/cron/types";
 
 message GenesisState {
-    cyber.cron.v1beta1.Params params = 1 [(gogoproto.nullable) = false];
-    repeated cyber.cron.v1beta1.Job jobs = 2 [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "Jobs"];
+    Params params = 1 [(gogoproto.nullable) = false];
 }

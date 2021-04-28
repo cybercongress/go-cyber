@@ -9,19 +9,6 @@ const (
 	QuerierRoute 				= ModuleName
 
 	EnergyPoolName  			= "energy_pool"
-
-	ActionCreateEnergyRoute 	= "create_energy_route"
-	ActionEditEnergyRoute 	    = "edit_energy_route"
-	ActionDeleteEnergyRoute 	= "delete_energy_route"
-	ActionEditEnergyRouteAlias  = "edit_energy_route_alias"
-
-	QueryParams 			     = "params"
-	QuerySourceRoutes   		 = "source_routes"
-	QueryDestinationRoutes 	     = "destination_routes"
-	QuerySourceRoutedEnergy      = "source_routed_energy"
-	QueryDestinationRoutedEnergy = "destination_routed_energy"
-	QueryRoute      			 = "route"
-	QueryRoutes      			 = "routes"
 )
 
 var (

@@ -91,7 +91,7 @@ func GetCmdOutLinks() *cobra.Command{
 
 func GetCmdLinksAmount() *cobra.Command{
 	cmd := &cobra.Command{
-		Use:   "amount-links",
+		Use:   "cyberlinks",
 		Short: "Query the links amount",
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -120,7 +120,7 @@ func GetCmdLinksAmount() *cobra.Command{
 
 func GetCmdCidsAmount() *cobra.Command{
 	cmd := &cobra.Command{
-		Use:   "amount-cids",
+		Use:   "cids",
 		Short: "Query the cids amount",
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -149,7 +149,7 @@ func GetCmdCidsAmount() *cobra.Command{
 
 func GetCmdGraphStats() *cobra.Command{
 	cmd := &cobra.Command{
-		Use:   "graph-stats",
+		Use:   "stats",
 		Short: "Query the graph stats",
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {

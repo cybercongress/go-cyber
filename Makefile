@@ -2,56 +2,22 @@
 
 PACKAGES_NOSIMULATION=$(shell go list ./...)
 BINDIR ?= $(GOPATH)/bin
-
+CUDA_ENABLED ?= false
 export GO111MODULE = on
 
 all: tools lint test
 
 include contrib/devtools/Makefile
 
-
-########################################
-### Dependencies
-
 go-mod-cache: go.sum
 	@echo "--> Download go modules to local cache"
 	@go mod download
 .PHONY: go-mod-cache
 
-# TODO return this back, workaround around tm's logs in local devenv
 go.sum: go.mod
 	@echo "--> Ensure dependencies have not been modified"
-	@#go mod verify
-	@#go mod tidy
-
-########################################
-### Testing
-
-#SIM_NUM_BLOCKS ?= 50
-#SIM_BLOCK_SIZE ?= 50
-#SIM_COMMIT ?= true
-#
-#test: test-unit
-#test-all: test-unit test-race test-cover
-#
-#test-unit:
-#	@VERSION=$(VERSION) go test -mod=readonly $(PACKAGES_NOSIMULATION)
-#
-#test-race:
-#	@VERSION=$(VERSION) go test -mod=readonly -race $(PACKAGES_NOSIMULATION)
-#
-#test-cover:
-#	@go test -mod=readonly -timeout 30m -race -coverprofile=coverage.txt -covermode=atomic -tags='ledger test_ledger_mock' ./...
-#
-#test-build: build
-#	@go test -mod=readonly -p 4 `go list ./cli_test/...` -tags=cli_test -v
-#
-#benchmark:
-#	@go test -mod=readonly -bench=. ./...
-#
-#.PHONY: test test-all test-unit test-race
-#
-#.PHONY: \
+	@go mod verify
+	@go mod tidy
 
 lint:
 	$(BINDIR)/golangci-lint run
@@ -146,27 +112,10 @@ build-linux: go.sum
 	docker build --tag cybercongress/cyber ./
 	docker create --name temp cybercongress/cyber:latest
 	docker cp temp:/usr/bin/cyber ./build/
-	#docker cp temp:/usr/local/bin/terracli ./build/
 	docker rm temp
-
-#build-contract-tests-hooks:
-#ifeq ($(OS),Windows_NT)
-#	go build -mod=readonly $(BUILD_FLAGS) -o build/contract_tests.exe ./cmd/contract_tests
-#else
-#	go build -mod=readonly $(BUILD_FLAGS) -o build/contract_tests ./cmd/contract_tests
-#endif
 
 install: go.sum
 	go install $(BUILD_FLAGS) ./cmd/cyber
-
-#update-swagger-docs: statik
-#	$(BINDIR)/statik -src=client/docs/swagger-ui -dest=client/docs -f -m
-#	@if [ -n "$(git status --porcelain)" ]; then \
-#        echo "Swagger docs are out of sync";\
-#        exit 1;\
-#    else \
-#    	echo "Swagger docs are in sync";\
-#    fi
 
 ###############################################################################
 ###                                Localnet                                 ###
@@ -183,15 +132,3 @@ localnet-start: localnet-stop
 # Stop testnet
 localnet-stop:
 	docker-compose down
-
-#test-docker:
-#	@docker build -f contrib/Dockerfile.test -t ${TEST_DOCKER_REPO}:$(shell git rev-parse --short HEAD) .
-#	@docker tag ${TEST_DOCKER_REPO}:$(shell git rev-parse --short HEAD) ${TEST_DOCKER_REPO}:$(shell git rev-parse --abbrev-ref HEAD | sed 's#/#_#g')
-#	@docker tag ${TEST_DOCKER_REPO}:$(shell git rev-parse --short HEAD) ${TEST_DOCKER_REPO}:latest
-#
-#test-docker-push: test-docker
-#	@docker push ${TEST_DOCKER_REPO}:$(shell git rev-parse --short HEAD)
-#	@docker push ${TEST_DOCKER_REPO}:$(shell git rev-parse --abbrev-ref HEAD | sed 's#/#_#g')
-#	@docker push ${TEST_DOCKER_REPO}:latest
-
-#.PHONY: update-swagger-docs

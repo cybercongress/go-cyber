@@ -66,18 +66,18 @@ func queryGraphStats(ctx sdk.Context, _ abci.RequestQuery, gk GraphKeeper, legac
 	return res, nil
 }
 
-// SANDBOX ZONE
+// TODO developers endpoint, remove before release
 func queryInLinks(ctx sdk.Context, req abci.RequestQuery, gk GraphKeeper, legacyQuerierCdc *codec.LegacyAmino,) ([]byte, error) {
 	var params types.QueryLinksParams
 
 	err := legacyQuerierCdc.UnmarshalJSON(req.Data, &params); if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
+	cidNum, exist := gk.GetCidNumber(ctx, types.Cid(params.Cid)); if exist != true {
+		return nil, sdkerrors.Wrap(types.ErrCidNotFound, params.Cid)
+	}
 
 	inLinks, _, _ := gk.GetAllLinks(ctx)
-	cidNum, exist := gk.GetCidNumber(ctx, types.Cid(params.Cid)); if exist != true {
-		return nil, sdkerrors.Wrap(types.ErrCidNotFound, "")
-	}
 
 	links := inLinks[cidNum]
 	data := make([]string, 0)
@@ -94,7 +94,7 @@ func queryInLinks(ctx sdk.Context, req abci.RequestQuery, gk GraphKeeper, legacy
 	return res, nil
 }
 
-// SANDBOX ZONE
+// TODO developers endpoint, remove before release
 func queryOutLinks(ctx sdk.Context, req abci.RequestQuery, gk GraphKeeper, legacyQuerierCdc *codec.LegacyAmino,) ([]byte, error) {
 	var params types.QueryLinksParams
 
@@ -102,10 +102,10 @@ func queryOutLinks(ctx sdk.Context, req abci.RequestQuery, gk GraphKeeper, legac
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
 
-	_, outLinks, _ := gk.GetAllLinks(ctx)
 	cidNum, exist := gk.GetCidNumber(ctx, types.Cid(params.Cid)); if exist != true {
-		return nil, sdkerrors.Wrap(types.ErrCidNotFound, "")
+		return nil, sdkerrors.Wrap(types.ErrCidNotFound, params.Cid)
 	}
+	_, outLinks, _ := gk.GetAllLinks(ctx)
 
 	links := outLinks[cidNum]
 	data := make([]string, 0)

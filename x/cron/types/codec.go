@@ -10,26 +10,26 @@ import (
 )
 
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(&MsgCronAddJob{}, "cyber/MsgCronAddJob", nil)
-	cdc.RegisterConcrete(&MsgCronRemoveJob{}, "cyber/MsgCronRemoveJob", nil)
-	cdc.RegisterConcrete(&MsgCronChangeJobCID{}, "cyber/MsgCronChangeJobCID", nil)
-	cdc.RegisterConcrete(&MsgCronChangeJobLabel{}, "cyber/MsgCronChangeJobLabel", nil)
-	cdc.RegisterConcrete(&MsgCronChangeJobCallData{}, "cyber/MsgCronChangeJobCallData", nil)
-	cdc.RegisterConcrete(&MsgCronChangeJobGasPrice{}, "cyber/MsgCronChangeJobGasPrice", nil)
-	cdc.RegisterConcrete(&MsgCronChangeJobPeriod{}, "cyber/MsgCronChangeJobPeriod", nil)
-	cdc.RegisterConcrete(&MsgCronChangeJobBlock{}, "cyber/MsgCronChangeJobBlock", nil)
+	cdc.RegisterConcrete(&MsgAddJob{}, "cyber/MsgAddJob", nil)
+	cdc.RegisterConcrete(&MsgRemoveJob{}, "cyber/MsgRemoveJob", nil)
+	cdc.RegisterConcrete(&MsgChangeJobCID{}, "cyber/MsgChangeJobCID", nil)
+	cdc.RegisterConcrete(&MsgChangeJobLabel{}, "cyber/MsgChangeJobLabel", nil)
+	cdc.RegisterConcrete(&MsgChangeJobCallData{}, "cyber/MsgChangeJobCallData", nil)
+	cdc.RegisterConcrete(&MsgChangeJobGasPrice{}, "cyber/MsgChangeJobGasPrice", nil)
+	cdc.RegisterConcrete(&MsgChangeJobPeriod{}, "cyber/MsgChangeJobPeriod", nil)
+	cdc.RegisterConcrete(&MsgChangeJobBlock{}, "cyber/MsgChangeJobBlock", nil)
 }
 
 func RegisterInterfaces(registry types.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgCronAddJob{},
-		&MsgCronRemoveJob{},
-		&MsgCronChangeJobCID{},
-		&MsgCronChangeJobLabel{},
-		&MsgCronChangeJobCallData{},
-		&MsgCronChangeJobGasPrice{},
-		&MsgCronChangeJobPeriod{},
-		&MsgCronChangeJobBlock{},
+		&MsgAddJob{},
+		&MsgRemoveJob{},
+		&MsgChangeJobCID{},
+		&MsgChangeJobLabel{},
+		&MsgChangeJobCallData{},
+		&MsgChangeJobGasPrice{},
+		&MsgChangeJobPeriod{},
+		&MsgChangeJobBlock{},
 	)
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)

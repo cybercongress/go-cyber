@@ -6,6 +6,10 @@ import (
 	"github.com/ipfs/go-cid"
 )
 
+const (
+	ActionCyberlink     = "cyberlink"
+)
+
 func NewMsgCyberlink(address sdk.AccAddress, links []Link) *MsgCyberlink {
 	return &MsgCyberlink{
 		Address: address.String(),
@@ -19,8 +23,9 @@ func (MsgCyberlink) Type()  string { return ActionCyberlink }
 
 func (msg MsgCyberlink) ValidateBasic() error {
 
-	if len(msg.Address) == 0 {
-		return sdkerrors.ErrInvalidAddress
+	_, err := sdk.AccAddressFromBech32(msg.Address)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid sender address (%s)", err)
 	}
 
 	if len(msg.Links) == 0 {

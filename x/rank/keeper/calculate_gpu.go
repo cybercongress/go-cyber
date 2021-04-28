@@ -35,7 +35,6 @@ func calculateRankGPU(ctx *types.CalculationContext, logger log.Logger) types.EM
 	outLinks := ctx.GetOutLinks()
 
 	cidsCount := ctx.GetCidsCount()
-	//linksCount := uint64(0)
 	stakesCount := len(ctx.GetStakes())
 
 	rank := make([]float64, cidsCount)
@@ -49,7 +48,6 @@ func calculateRankGPU(ctx *types.CalculationContext, logger log.Logger) types.EM
 	inLinksUsers := make([]uint64, 0)
 	outLinksUsers := make([]uint64, 0)
 
-	// TODO check previously existed but with account amount
 	stakes := make([]uint64, stakesCount)
 	for acc, stake := range ctx.GetStakes() {
 		stakes[uint64(acc)] = stake
@@ -110,7 +108,6 @@ func calculateRankGPU(ctx *types.CalculationContext, logger log.Logger) types.EM
 	logger.Info("Rank: data calculation", "time", time.Since(start))
 
 	//return rank
-
 	return types.EMState{
 		RankValues:       rank,
 		EntropyValues:    entropy,

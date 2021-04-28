@@ -28,7 +28,7 @@ func calculateRankCPU(ctx *types.CalculationContext) types.EMState {
 
 	rank := make([]float64, size)
 	entropy := make([]float64, size)
-	luminosity := make([]float64, size) // TODO need to pass to context amount of accounts! stakes <= all accounts (cause node includes modules accounts)
+	luminosity := make([]float64, size)
 	karma := make([]float64, len(ctx.GetStakes()))
 	defaultRank := (1.0 - dampingFactor) / float64(size)
 	danglingNodesSize := uint64(0)
@@ -55,13 +55,10 @@ func calculateRankCPU(ctx *types.CalculationContext) types.EMState {
 		steps++
 	}
 
+	// TODO return sum to API after implementation in GPU
 	_ = entropyCalc(ctx, entropy)
 	_ = luminosityCalc(rank, entropy, luminosity)
 	_ = karmaCalc(ctx, luminosity, karma)
-
-	//fmt.Println("ESUM:", esum)
-	//fmt.Println("LSUM:", lsum)
-	//fmt.Println("KSUM:", ksum)
 
 	return types.EMState{
 		rank,
@@ -156,10 +153,8 @@ func entropyCalc(ctx *types.CalculationContext, entropy []float64) (float64) {
 				if math.IsNaN(w) { w = float64(0) }
 				e -= w*math.Log2(w)
 				entropy[from] -= w*math.Log2(w)
-				//fmt.Println("LINK:", from,"->",to,"| USER:", user, "| LS:", stakes[user], "| TLS:", ois, "| W:", w,"| E:", -w*math.Log2(w))
 			}
 		}
-		//fmt.Println("--------\n")
 	}
 
 	return e
@@ -182,7 +177,6 @@ func karmaCalc(ctx *types.CalculationContext, light []float64, karma []float64) 
 	for from := range ctx.GetOutLinks() {
 		outStake := getOverallOutLinksStake(ctx, from)
 		inStake := getOverallInLinksStake(ctx, from)
-		//fmt.Println("FROM:",from,"OUT/IN ->", outStake,"/",inStake)
 		ois := outStake + inStake
 		for to := range ctx.GetOutLinks()[from] {
 			users := ctx.GetOutLinks()[from][to]
@@ -191,10 +185,8 @@ func karmaCalc(ctx *types.CalculationContext, light []float64, karma []float64) 
 				if math.IsNaN(w) { w = float64(0) }
 				karma[user] += w*float64(light[from])
 				k += w*float64(light[from])
-				//fmt.Println("USER:", user,"|",from,"->",to,"| S:", stakes[user], "| TLS:", ois, "| K:", w*float64(light[from]))
 			}
 		}
-		//fmt.Println("--------\n")
 	}
 
 	return k

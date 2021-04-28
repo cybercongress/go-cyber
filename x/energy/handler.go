@@ -4,30 +4,28 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	"github.com/cybercongress/go-cyber/x/energy/types"
 	"github.com/cybercongress/go-cyber/x/energy/keeper"
+	"github.com/cybercongress/go-cyber/x/energy/types"
 )
 
-func NewHandler(
-	k keeper.Keeper,
-) sdk.Handler {
+func NewHandler(k keeper.Keeper) sdk.Handler {
 	msgServer := keeper.NewMsgServerImpl(k)
 
 	return func(ctx sdk.Context, msg sdk.Msg) (*sdk.Result, error) {
 		ctx = ctx.WithEventManager(sdk.NewEventManager())
 
 		switch msg := msg.(type) {
-		case *types.MsgCreateEnergyRoute:
-			res, err := msgServer.CreateEnergyRoute(sdk.WrapSDKContext(ctx), msg)
+		case *types.MsgCreateRoute:
+			res, err := msgServer.CreateRoute(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgEditEnergyRoute:
-			res, err := msgServer.EditEnergyRoute(sdk.WrapSDKContext(ctx), msg)
+		case *types.MsgEditRoute:
+			res, err := msgServer.EditRoute(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgDeleteEnergyRoute:
-			res, err := msgServer.DeleteEnergyRoute(sdk.WrapSDKContext(ctx), msg)
+		case *types.MsgDeleteRoute:
+			res, err := msgServer.DeleteRoute(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgEditEnergyRouteAlias:
-			res, err := msgServer.EditEnergyRouteAlias(sdk.WrapSDKContext(ctx), msg)
+		case *types.MsgEditRouteAlias:
+			res, err := msgServer.EditRouteAlias(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 		default:
 			return nil, sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest,

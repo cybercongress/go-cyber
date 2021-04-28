@@ -10,18 +10,18 @@ import (
 )
 
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(&MsgCreateEnergyRoute{}, "cyber/MsgCreateEnergyRoute", nil)
-	cdc.RegisterConcrete(&MsgEditEnergyRoute{}, "cyber/MsgEditEnergyRoute", nil)
-	cdc.RegisterConcrete(&MsgDeleteEnergyRoute{}, "cyber/MsgDeleteEnergyRoute", nil)
-	cdc.RegisterConcrete(&MsgEditEnergyRouteAlias{}, "cyber/MsgEditEnergyRouteAlias", nil)
+	cdc.RegisterConcrete(&MsgCreateRoute{}, "cyber/MsgCreateRoute", nil)
+	cdc.RegisterConcrete(&MsgEditRoute{}, "cyber/MsgEditRoute", nil)
+	cdc.RegisterConcrete(&MsgDeleteRoute{}, "cyber/MsgDeleteRoute", nil)
+	cdc.RegisterConcrete(&MsgEditRouteAlias{}, "cyber/MsgEditRouteAlias", nil)
 }
 
 func RegisterInterfaces(registry types.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgCreateEnergyRoute{},
-		&MsgEditEnergyRoute{},
-		&MsgDeleteEnergyRoute{},
-		&MsgEditEnergyRouteAlias{},
+		&MsgCreateRoute{},
+		&MsgEditRoute{},
+		&MsgDeleteRoute{},
+		&MsgEditRouteAlias{},
 	)
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)

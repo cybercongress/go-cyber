@@ -7,7 +7,6 @@ import (
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 )
 
-// Parameter keys
 var (
 	KeyCalculationPeriod = []byte("CalculationPeriod")
 	KeyDampingFactor     = []byte("DampingFactor")
@@ -18,8 +17,6 @@ func ParamKeyTable() paramstypes.KeyTable {
 	return paramstypes.NewKeyTable().RegisterParamSet(&Params{})
 }
 
-
-// NewDefaultParams returns a default set of parameters.
 func DefaultParams() Params {
 	return Params{
 		CalculationPeriod: int64(5),
@@ -57,8 +54,8 @@ func validateCalculationPeriod(i interface{}) error {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 
-	if v <= int64(2) {
-		return fmt.Errorf("calculation period too low: %d", v)
+	if v < int64(5) {
+		return fmt.Errorf("calculation period is too low: %d", v)
 	}
 
 	return nil
@@ -71,8 +68,8 @@ func validateDampingFactor(i interface{}) error {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 
-	if v.LT(sdk.ZeroDec()) {
-		return fmt.Errorf("damping factor should be positive: %s", v)
+	if v.LTE(sdk.NewDecWithPrec(5,1)) {
+		return fmt.Errorf("damping factor should be more than 0.5: %s", v)
 	}
 
 	if v.GTE(sdk.OneDec()) {
@@ -90,11 +87,11 @@ func validateTolerance(i interface{}) error {
 	}
 
 	if v.GT(sdk.NewDecWithPrec(1, 3)) {
-		return fmt.Errorf("tolerance too low: %s", v)
+		return fmt.Errorf("tolerance is too low: %s", v)
 	}
 
 	if v.LT(sdk.NewDecWithPrec(1, 5)) {
-		return fmt.Errorf("tolerance too big: %s", v)
+		return fmt.Errorf("tolerance is too big: %s", v)
 	}
 
 	return nil

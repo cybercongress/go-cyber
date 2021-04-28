@@ -24,7 +24,6 @@ baseapp/data/*
 client/lcd/keys/*
 mytestnet
 testnet
-mytestnet_back
 
 # Testing
 coverage.txt
@@ -51,3 +50,6 @@ contract_tests/*
 
 # Wasm
 contracts
+
+# Scripts
+*.mjs

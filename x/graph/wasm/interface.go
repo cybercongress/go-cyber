@@ -46,7 +46,7 @@ func (WasmMsgParser) ParseCustom(contractAddr sdk.AccAddress, data json.RawMessa
 		return []sdk.Msg{sdkMsg.Cyberlink}, sdkMsg.Cyberlink.ValidateBasic()
 	}
 
-	return nil, sdkerrors.Wrap(wasm.ErrInvalidMsg, "Unknown variant of Link")
+	return nil, sdkerrors.Wrap(wasm.ErrInvalidMsg, "Unknown variant of Graph")
 }
 
 //--------------------------------------------------
@@ -67,8 +67,8 @@ func NewWasmQuerier(keeper keeper.GraphKeeper) WasmQuerier {
 func (WasmQuerier) Query(_ sdk.Context, _ wasmTypes.QueryRequest) ([]byte, error) { return nil, nil }
 
 type CosmosQuery struct {
-	CidsCount     *struct{} `json:"cids_count,omitempty"`
-	LinksCount    *struct{} `json:"links_count,omitempty"`
+	CidsCount     *struct{} `json:"get_cids_count,omitempty"`
+	LinksCount    *struct{} `json:"get_links_count,omitempty"`
 }
 
 type CidsCountQueryResponse struct {

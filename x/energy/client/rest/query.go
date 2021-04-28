@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/gorilla/mux"
 
@@ -14,6 +13,7 @@ import (
 	"github.com/cybercongress/go-cyber/x/energy/types"
 )
 
+// RegisterRoutes defines routes that get registered by the main application.
 func registerQueryRoutes(cliCtx client.Context, r *mux.Router) {
 	r.HandleFunc(
 		"/energy/parameters",
@@ -42,7 +42,6 @@ func registerQueryRoutes(cliCtx client.Context, r *mux.Router) {
 	r.HandleFunc(
 		"/energy/routes",
 		queryRoutesHandlerFn(cliCtx)).Methods("GET")
-
 }
 
 func queryParamsHandlerFn(cliCtx client.Context) http.HandlerFunc {
@@ -64,19 +63,17 @@ func querySourceRoutesHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		vars := mux.Vars(r)
-		src  := vars[Source]
 
-		addr, err := sdk.AccAddressFromBech32(src)
+		src, err := sdk.AccAddressFromBech32(vars[Source])
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
 			return
 		}
 
-		params := types.QuerySourceRequest{addr.String()}
+		params := types.NewQuerySourceParams(src)
 
-		bz, err := codec.MarshalJSONIndent(cliCtx.LegacyAmino, params)
-		if err != nil {
-			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
+		bz, err := cliCtx.LegacyAmino.MarshalJSON(params)
+		if rest.CheckBadRequestError(w, err) {
 			return
 		}
 
@@ -101,19 +98,17 @@ func queryDestinationRoutesHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		vars := mux.Vars(r)
-		dst  := vars[Destination]
 
-		addr, err := sdk.AccAddressFromBech32(dst)
+		dst, err := sdk.AccAddressFromBech32(vars[Destination])
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
 			return
 		}
 
-		params := types.QueryDestinationRequest{addr.String()}
+		params := types.NewQueryDestinationParams(dst)
 
-		bz, err := codec.MarshalJSONIndent(cliCtx.LegacyAmino, params)
-		if err != nil {
-			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
+		bz, err := cliCtx.LegacyAmino.MarshalJSON(params)
+		if rest.CheckBadRequestError(w, err) {
 			return
 		}
 
@@ -138,19 +133,17 @@ func querySourceRoutedEnergyHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		vars := mux.Vars(r)
-		src  := vars[Source]
 
-		addr, err := sdk.AccAddressFromBech32(src)
+		src, err := sdk.AccAddressFromBech32(vars[Source])
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
 			return
 		}
 
-		params := types.QuerySourceRequest{addr.String()}
+		params := types.NewQuerySourceParams(src)
 
-		bz, err := codec.MarshalJSONIndent(cliCtx.LegacyAmino, params)
-		if err != nil {
-			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
+		bz, err := cliCtx.LegacyAmino.MarshalJSON(params)
+		if rest.CheckBadRequestError(w, err) {
 			return
 		}
 
@@ -175,19 +168,17 @@ func queryDestinationRoutedEnergyHandlerFn(cliCtx client.Context) http.HandlerFu
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		vars := mux.Vars(r)
-		dst  := vars[Destination]
 
-		addr, err := sdk.AccAddressFromBech32(dst)
+		dst, err := sdk.AccAddressFromBech32(vars[Destination])
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
 			return
 		}
 
-		params := types.QueryDestinationRequest{addr.String()}
+		params := types.NewQueryDestinationParams(dst)
 
-		bz, err := codec.MarshalJSONIndent(cliCtx.LegacyAmino, params)
-		if err != nil {
-			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
+		bz, err := cliCtx.LegacyAmino.MarshalJSON(params)
+		if rest.CheckBadRequestError(w, err) {
 			return
 		}
 
@@ -212,21 +203,18 @@ func queryRouteHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		vars := mux.Vars(r)
-		src  := vars[Source]
-		dst  := vars[Destination]
 
-		addrS, err := sdk.AccAddressFromBech32(src)
-		addrD, err := sdk.AccAddressFromBech32(dst)
+		src, err := sdk.AccAddressFromBech32(vars[Source])
+		dst, err := sdk.AccAddressFromBech32(vars[Destination])
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
 			return
 		}
 
-		params := types.QueryRouteRequest{addrS.String(), addrD.String()}
+		params := types.NewQueryRouteParams(src, dst)
 
-		bz, err := codec.MarshalJSONIndent(cliCtx.LegacyAmino, params)
-		if err != nil {
-			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
+		bz, err := cliCtx.LegacyAmino.MarshalJSON(params)
+		if rest.CheckBadRequestError(w, err) {
 			return
 		}
 
@@ -249,9 +237,20 @@ func queryRouteHandlerFn(cliCtx client.Context) http.HandlerFunc {
 
 func queryRoutesHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		_, page, limit, err := rest.ParseHTTPArgsWithLimit(r, 0)
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
+			return
+		}
+
+		params := types.NewQueryRoutesParams(page, limit)
+		bz, err := cliCtx.LegacyAmino.MarshalJSON(params)
+		if rest.CheckBadRequestError(w, err) {
+			return
+		}
 
 		route := fmt.Sprintf("custom/%s/%s", types.QuerierRoute, types.QueryRoutes)
-		res, height, err := cliCtx.QueryWithData(route, nil)
+		res, height, err := cliCtx.QueryWithData(route, bz)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusNotFound, err.Error())
 			return

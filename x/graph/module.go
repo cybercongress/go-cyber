@@ -10,6 +10,7 @@ import (
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
+	bandwidthkeeper "github.com/cybercongress/go-cyber/x/bandwidth/keeper"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	abci "github.com/tendermint/tendermint/abci/types"
 	//"github.com/gogo/protobuf/codec"
@@ -27,7 +28,6 @@ import (
 	"github.com/cybercongress/go-cyber/x/graph/types"
 )
 
-// type check to ensure the interface is properly implemented
 var (
 	_ module.AppModule           = AppModule{}
 	_ module.AppModuleBasic      = AppModuleBasic{}
@@ -41,27 +41,24 @@ func (AppModuleBasic) Name() string {
 	return types.ModuleName
 }
 
-// RegisterLegacyAminoCodec registers the reports module's types for the given codec.
 func (AppModuleBasic) RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	types.RegisterLegacyAminoCodec(cdc)
 }
 
-// DefaultGenesis returns default genesis state as raw bytes for the reports module.
-func (AppModuleBasic) DefaultGenesis(cdc codec.JSONMarshaler) json.RawMessage {
+func (AppModuleBasic) DefaultGenesis(_ codec.JSONMarshaler) json.RawMessage { return nil }
+
+func (AppModuleBasic) ValidateGenesis(_ codec.JSONMarshaler, _ client.TxEncodingConfig, _ json.RawMessage) error {
 	return nil
 }
 
-func (AppModuleBasic) ValidateGenesis(cdc codec.JSONMarshaler, _ client.TxEncodingConfig, bz json.RawMessage) error {
-	return nil
-}
-
-// RegisterRESTRoutes registers the REST routes for the reports module.
 func (AppModuleBasic) RegisterRESTRoutes(clientCtx client.Context, rtr *mux.Router) {
 	rest.RegisterRoutes(clientCtx, rtr)
 }
 
 func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *runtime.ServeMux) {
-	_ = types.RegisterQueryHandlerClient(context.Background(), mux, types.NewQueryClient(clientCtx))
+	if err := types.RegisterQueryHandlerClient(context.Background(), mux, types.NewQueryClient(clientCtx)); err != nil {
+		panic(err)
+	}
 }
 
 func (AppModuleBasic) GetTxCmd() *cobra.Command {
@@ -76,19 +73,13 @@ func (AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegistry) 
 	types.RegisterInterfaces(registry)
 }
 
-//____________________________________________________________________________
-
 type AppModule struct {
 	AppModuleBasic
 	gk keeper.GraphKeeper
 	ik *keeper.IndexKeeper
 	ak authkeeper.AccountKeeper
 	bk *cyberbankkeeper.IndexedKeeper
-}
-
-func (am AppModule) RegisterServices(cfg module.Configurator) {
-	types.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(am.gk, am.ik, am.ak, am.bk))
-	types.RegisterQueryServer(cfg.QueryServer(), am.gk)
+	bm *bandwidthkeeper.BandwidthMeter
 }
 
 func NewAppModule(
@@ -97,13 +88,15 @@ func NewAppModule(
 	indexKeeper 	*keeper.IndexKeeper,
 	accountKeeper 	authkeeper.AccountKeeper,
 	bankKeeper      *cyberbankkeeper.IndexedKeeper,
+	bandwidthKeeper *bandwidthkeeper.BandwidthMeter,
 ) AppModule {
 	return AppModule{
-		AppModuleBasic: AppModuleBasic{cdc: cdc}, // TODO remove cdc?
+		AppModuleBasic: AppModuleBasic{cdc: cdc},
 		gk:             graphKeeper,
 		ik:             indexKeeper,
 		ak:             accountKeeper,
 		bk:				bankKeeper,
+		bm: 			bandwidthKeeper,
 	}
 }
 
@@ -111,36 +104,42 @@ func (AppModule) Name() string {
 	return types.ModuleName
 }
 
-func (am AppModule) RegisterInvariants(_ sdk.InvariantRegistry) {}
-
 func (am AppModule) Route() sdk.Route {
-	return sdk.NewRoute(types.RouterKey, NewHandler(am.gk, am.ik, am.ak, am.bk))
-}
-
-func (am AppModule) NewHandler() sdk.Handler {
-	return NewHandler(am.gk, am.ik, am.ak, am.bk)
+	return sdk.NewRoute(types.RouterKey, NewHandler(am.gk, am.ik, am.ak, am.bk, am.bm))
 }
 
 func (am AppModule) QuerierRoute() string {
 	return types.QuerierRoute
 }
 
+func (am AppModule) RegisterInvariants(_ sdk.InvariantRegistry) {}
+
+func (am AppModule) RegisterServices(cfg module.Configurator) {
+	types.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(am.gk, am.ik, am.ak, am.bk, am.bm))
+	types.RegisterQueryServer(cfg.QueryServer(), am.gk)
+}
+
 func (am AppModule) LegacyQuerierHandler(legacyQuerierCdc *codec.LegacyAmino) sdk.Querier {
 	return keeper.NewQuerier(am.gk, legacyQuerierCdc)
 }
 
-func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONMarshaler, data json.RawMessage) []abci.ValidatorUpdate {
-	_ = keeper.InitGenesis(ctx, am.gk, am.ik)
+func (am AppModule) InitGenesis(ctx sdk.Context, _ codec.JSONMarshaler, _ json.RawMessage) []abci.ValidatorUpdate {
+	err := keeper.InitGenesis(ctx, am.gk, am.ik)
+	if err != nil {
+		panic(err)
+	}
 	return []abci.ValidatorUpdate{}
 }
 
-func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONMarshaler) json.RawMessage {
-	_ = keeper.WriteGenesis(ctx, am.gk, am.ik)
+func (am AppModule) ExportGenesis(ctx sdk.Context, _ codec.JSONMarshaler) json.RawMessage {
+	err := keeper.WriteGenesis(ctx, am.gk, am.ik)
+	if err != nil {
+		panic(err)
+	}
 	return nil
 }
 
-func (am AppModule) BeginBlock(_ sdk.Context, _ abci.RequestBeginBlock) {
-}
+func (am AppModule) BeginBlock(_ sdk.Context, _ abci.RequestBeginBlock) {}
 
 func (am AppModule) EndBlock(_ sdk.Context, _ abci.RequestEndBlock) []abci.ValidatorUpdate {
 	return []abci.ValidatorUpdate{}

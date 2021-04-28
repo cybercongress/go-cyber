@@ -1,11 +1,11 @@
 package cli
 
 import (
-	"fmt"
-	"strings"
 	"context"
+	"fmt"
+
 	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/cosmos/cosmos-sdk/version"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/spf13/cobra"
 
 	"github.com/cosmos/cosmos-sdk/client"
@@ -37,16 +37,7 @@ func GetCmdQueryParams() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "params",
 		Args:  cobra.NoArgs,
-		Short: "Query the current energy module parameters information",
-		Long: strings.TrimSpace(
-			fmt.Sprintf(`Query values set as staking parameters.
-
-Example:
-$ %s query energy params
-`,
-				version.Version,
-			),
-		),
+		Short: "Query the current cron module parameters information",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -74,16 +65,7 @@ $ %s query energy params
 func GetCmdQueryJob() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "job [contract] [creator] [label]",
-		Short: "Short",
-		Long: strings.TrimSpace(
-			fmt.Sprintf(`Long.
-
-Example:
-$ %s query cron job cosmosvaloper1gghjut3ccd8ay0zduzj64hwre2fxs9ldmqhffj
-`,
-				version.Version,
-			),
-		),
+		Short: "Query job",
 		Args: cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -92,10 +74,19 @@ $ %s query cron job cosmosvaloper1gghjut3ccd8ay0zduzj64hwre2fxs9ldmqhffj
 			}
 			queryClient := types.NewQueryClient(clientCtx)
 
+			contract, err := sdk.AccAddressFromBech32(args[0])
+			if err != nil {
+				return err
+			}
+			creator, err := sdk.AccAddressFromBech32(args[1])
+			if err != nil {
+				return err
+			}
+
 			res, err := queryClient.Job(
 				context.Background(),
 				&types.QueryJobParamsRequest{
-					args[1], args[0], args[2],
+					contract.String(), creator.String(), args[2],
 				},
 			)
 
@@ -115,16 +106,7 @@ $ %s query cron job cosmosvaloper1gghjut3ccd8ay0zduzj64hwre2fxs9ldmqhffj
 func GetCmdQueryJobStats() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "job-stats [contract] [creator] [label]",
-		Short: "Short",
-		Long: strings.TrimSpace(
-			fmt.Sprintf(`Long.
-
-Example:
-$ %s query cron job-stats cosmosvaloper1gghjut3ccd8ay0zduzj64hwre2fxs9ldmqhffj
-`,
-				version.Version,
-			),
-		),
+		Short: "Query job stats",
 		Args: cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -133,10 +115,19 @@ $ %s query cron job-stats cosmosvaloper1gghjut3ccd8ay0zduzj64hwre2fxs9ldmqhffj
 			}
 			queryClient := types.NewQueryClient(clientCtx)
 
+			contract, err := sdk.AccAddressFromBech32(args[0])
+			if err != nil {
+				return err
+			}
+			creator, err := sdk.AccAddressFromBech32(args[1])
+			if err != nil {
+				return err
+			}
+
 			res, err := queryClient.JobStats(
 				context.Background(),
 				&types.QueryJobParamsRequest{
-					args[1], args[0], args[2],
+					contract.String(), creator.String(), args[2],
 				},
 			)
 
@@ -157,15 +148,6 @@ func GetCmdQueryJobs() *cobra.Command {
 	cmd :=  &cobra.Command{
 		Use:   "jobs",
 		Short: "Query all jobs",
-		Long: strings.TrimSpace(
-			fmt.Sprintf(`Long.
-
-Example:
-$ %s query cron jobs
-`,
-				version.Version,
-			),
-		),
 		Args: cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -196,15 +178,6 @@ func GetCmdQueryJobsStats() *cobra.Command {
 	cmd :=  &cobra.Command{
 		Use:   "jobs-stats",
 		Short: "Query all jobs stats",
-		Long: strings.TrimSpace(
-			fmt.Sprintf(`Long.
-
-Example:
-$ %s query cron jobs-stats
-`,
-				version.Version,
-			),
-		),
 		Args: cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)

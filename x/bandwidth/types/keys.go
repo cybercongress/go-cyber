@@ -8,11 +8,6 @@ const (
 	ModuleName 			= "bandwidth"
 	StoreKey			= ModuleName
 	QuerierRoute 		= ModuleName
-
-	QueryParameters		= "params"
-	QueryLoad			= "load"
-	QueryPrice			= "price"
-	QueryAccount		= "account"
 )
 
 var (
@@ -23,6 +18,7 @@ var (
 	BlockStoreKeyPrefix   = []byte{0x02}
 
 	LastBandwidthPrice    = append(GlobalStoreKeyPrefix, []byte("lastBandwidthPrice")...)
+	DesirableBandwidth    = append(GlobalStoreKeyPrefix, []byte("desirableBandwidth")...)
 )
 
 func AccountStoreKey(addr string) []byte {

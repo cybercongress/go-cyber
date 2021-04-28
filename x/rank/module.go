@@ -1,9 +1,10 @@
 package rank
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
-	"context"
+
 	"github.com/cosmos/cosmos-sdk/client"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
@@ -23,19 +24,16 @@ import (
 	"github.com/cybercongress/go-cyber/x/rank/types"
 )
 
-// type check to ensure the interface is properly implemented
 var (
 	_ module.AppModule      = AppModule{}
 	_ module.AppModuleBasic = AppModuleBasic{}
 )
 
-// Module init related flags
 const (
 	FlagComputeGPU = "compute-gpu"
 	FlagSearchAPI  = "search-api"
 )
 
-// app module Basics object
 type AppModuleBasic struct{
 	cdc codec.Marshaler
 }
@@ -63,15 +61,13 @@ func (AppModuleBasic) RegisterRESTRoutes(clientCtx client.Context, rtr *mux.Rout
 }
 
 func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *runtime.ServeMux) {
-	_ = types.RegisterQueryHandlerClient(context.Background(), mux, types.NewQueryClient(clientCtx))
+	if err := types.RegisterQueryHandlerClient(context.Background(), mux, types.NewQueryClient(clientCtx)); err != nil {
+		panic(err)
+	}
 }
 
-// GetQueryCmd returns the root tx command for the posts module.
-func (AppModuleBasic) GetTxCmd() *cobra.Command {
-	return nil
-}
+func (AppModuleBasic) GetTxCmd() *cobra.Command { return nil }
 
-// GetTxCmd returns the root query command for the posts module.
 func (AppModuleBasic) GetQueryCmd() *cobra.Command {
 	return cli.GetQueryCmd()
 }
@@ -80,6 +76,7 @@ func (AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegistry) 
 
 type AppModule struct {
 	AppModuleBasic
+
 	rk *keeper.StateKeeper
 }
 
@@ -87,9 +84,11 @@ func (am AppModule) RegisterServices(cfg module.Configurator) {
 	types.RegisterQueryServer(cfg.QueryServer(), am.rk)
 }
 
-func NewAppModule(rankKeeper *keeper.StateKeeper) AppModule {
+func NewAppModule(
+	cdc codec.Marshaler, rankKeeper *keeper.StateKeeper,
+) AppModule {
 	return AppModule{
-		AppModuleBasic: AppModuleBasic{},
+		AppModuleBasic: AppModuleBasic{cdc: cdc},
 		rk:             rankKeeper,
 	}
 }
@@ -109,10 +108,6 @@ func (am AppModule) Route() sdk.Route {
 	return sdk.Route{}
 }
 
-func (am AppModule) NewHandler() sdk.Handler {
-	return nil
-}
-
 func (am AppModule) QuerierRoute() string {
 	return types.QuerierRoute
 }
@@ -124,7 +119,6 @@ func (am AppModule) LegacyQuerierHandler(legacyQuerierCdc *codec.LegacyAmino) sd
 func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONMarshaler, data json.RawMessage) []abci.ValidatorUpdate {
 	var genesisState types.GenesisState
 	cdc.MustUnmarshalJSON(data, &genesisState)
-
 	keeper.InitGenesis(ctx, *am.rk, genesisState)
 	return []abci.ValidatorUpdate{}
 }

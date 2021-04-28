@@ -5,12 +5,17 @@ import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 
 option go_package = "github.com/cybercongress/go-cyber/x/graph/types";
+option (gogoproto.goproto_getters_all) = false;
+option (gogoproto.equal_all) = false;
 
 service Query {
+
+    // TODO add pagination on storage
     rpc InLinks(QueryLinksRequest) returns (QueryLinksResponse) {
         option (google.api.http).get = "/cyber/graph/v1beta1/in/{cid}";
     }
 
+    // TODO add pagination on storage
     rpc OutLinks(QueryLinksRequest) returns (QueryLinksResponse) {
         option (google.api.http).get = "/cyber/graph/v1beta1/out/{cid}";
     }
@@ -29,13 +34,6 @@ service Query {
 }
 
 message QueryLinksRequest {
-    option (gogoproto.equal) = false;
-    option (gogoproto.goproto_getters) = false;
-
-    string cid = 1;
-}
-
-message QueryLinksParams{
     string cid = 1;
 }
 

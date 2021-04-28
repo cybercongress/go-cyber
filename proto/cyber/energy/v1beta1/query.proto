@@ -3,11 +3,13 @@ package cyber.energy.v1beta1;
 
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
-import "cyber/energy/v1beta1/energy.proto";
-import "cyber/energy/v1beta1/params.proto";
+import "cyber/energy/v1beta1/types.proto";
 import "cosmos_proto/coin.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
 
 option go_package = "github.com/cybercongress/go-cyber/x/energy/types";
+option (gogoproto.goproto_getters_all) = false;
+option (gogoproto.equal_all) = false;
 
 service Query {
     rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
@@ -36,7 +38,7 @@ service Query {
 message QueryParamsRequest {}
 
 message QueryParamsResponse{
-    cyber.energy.v1beta1.Params params = 1 [(gogoproto.nullable) = false ];
+    Params params = 1 [(gogoproto.nullable) = false];
 }
 
 message QuerySourceRequest {
@@ -47,26 +49,30 @@ message QueryDestinationRequest {
     string destination = 1;
 }
 
+message QueryRoutedEnergyResponse {
+    repeated cosmos.base.v1beta1.Coin value = 1 [
+        (gogoproto.nullable) = false,
+        (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+    ];
+}
+
 message QueryRouteRequest {
     string source = 1;
     string destination = 2;
 }
 
-message QueryRoutesRequest {}
-
 message QueryRouteResponse {
-    cyber.energy.v1beta1.Route route = 1;
+    Route route = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryRoutesRequest {
+    cosmos.base.query.v1beta1.PageRequest pagination = 1;
 }
 
 message QueryRoutesResponse {
-    repeated cyber.energy.v1beta1.Route routes = 1 [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "Routes"];
-}
-
-message QueryRoutedEnergyResponse {
-    repeated cosmos.base.v1beta1.Coin value = 1 [
-        (gogoproto.jsontag) = "value",
-        (gogoproto.moretags) = "yaml:\"value\"",
+    repeated Route routes = 1 [
         (gogoproto.nullable) = false,
-        (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+        (gogoproto.castrepeated) = "Routes"
     ];
+    cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }

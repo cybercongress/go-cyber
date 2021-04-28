@@ -11,7 +11,6 @@ import (
 	"path/filepath"
 
 	"github.com/spf13/cobra"
-	ctypes "github.com/cybercongress/go-cyber/types"
 	tmconfig "github.com/tendermint/tendermint/config"
 	tmos "github.com/tendermint/tendermint/libs/os"
 	tmrand "github.com/tendermint/tendermint/libs/rand"
@@ -213,8 +212,8 @@ func InitTestnet(
 			sdk.NewCoin(sdk.DefaultBondDenom, valTokens),
 			stakingtypes.NewDescription(nodeDirName, "", "", "", ""),
 			stakingtypes.NewCommissionRates(sdk.OneDec(), sdk.OneDec(), sdk.OneDec()),
-			//sdk.OneInt(),
-			sdk.NewInt(ctypes.Giga*10),
+			sdk.OneInt(),
+			//sdk.NewInt(ctypes.Giga*10),
 		)
 		if err != nil {
 			return err
@@ -300,18 +299,18 @@ func initGenFiles(
 	bankGenState.Supply = supply
 
 	bankGenState.DenomMetadata = []banktypes.Metadata{
-		{
-			Description: "The native staking token of Bostrom",
-			DenomUnits: []*banktypes.DenomUnit{
-				{"cyb", uint32(0), nil},
-				{"kcyb", uint32(3), []string{"kilocyb"}},
-				{"mcyb", uint32(6), []string{"megacyb"}},
-				{"gcyb", uint32(9), []string{"gigacyb"}},
-				{"tcyb", uint32(12), []string{"teracyb"}},
-			},
-			Base:    "cyb",
-			Display: "cyb",
-		},
+		//{
+		//	Description: "The native staking token of Bostrom",
+		//	DenomUnits: []*banktypes.DenomUnit{
+		//		{"cyb", uint32(0), nil},
+		//		{"kcyb", uint32(3), []string{"kilocyb"}},
+		//		{"mcyb", uint32(6), []string{"megacyb"}},
+		//		{"gcyb", uint32(9), []string{"gigacyb"}},
+		//		{"tcyb", uint32(12), []string{"teracyb"}},
+		//	},
+		//	Base:    "cyb",
+		//	Display: "cyb",
+		//},
 	}
 
 	appGenState[banktypes.ModuleName] = clientCtx.JSONMarshaler.MustMarshalJSON(&bankGenState)

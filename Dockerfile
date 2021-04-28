@@ -2,7 +2,7 @@
 # > docker build -t gaia .
 # > docker run -it -p 46657:46657 -p 46656:46656 -v ~/.gaiad:/gaia/.gaiad -v ~/.gaiacli:/gaia/.gaiacli gaia gaiad init
 # > docker run -it -p 46657:46657 -p 46656:46656 -v ~/.gaiad:/gaia/.gaiad -v ~/.gaiacli:/gaia/.gaiacli gaia gaiad start
-FROM golang:1.15-alpine3.12 AS build-env
+FROM golang:1.16-alpine3.13 AS build-env
 
 # this comes from standard alpine nightly file
 #  https://github.com/rust-lang/docker-rust-nightly/blob/master/alpine3.12/Dockerfile
@@ -30,8 +30,8 @@ WORKDIR /code
 COPY . .
 
 # See https://github.com/CosmWasm/wasmvm/releases
-ADD https://github.com/CosmWasm/wasmvm/releases/download/v0.13.0/libwasmvm_muslc.a /lib/libwasmvm_muslc.a
-RUN sha256sum /lib/libwasmvm_muslc.a | grep 39dc389cc6b556280cbeaebeda2b62cf884993137b83f90d1398ac47d09d3900
+ADD https://github.com/CosmWasm/wasmvm/releases/download/v0.14.0/libwasmvm_muslc.a /lib/libwasmvm_muslc.a
+RUN sha256sum /lib/libwasmvm_muslc.a | grep 220b85158d1ae72008f099a7ddafe27f6374518816dd5873fd8be272c5418026
 
 # force it to use static lib (from above) not standard libgo_cosmwasm.so file
 RUN LEDGER_ENABLED=false BUILD_TAGS=muslc make install

@@ -1,0 +1,20 @@
+syntax = "proto3";
+package cyber.graph.v1beta1;
+
+import "gogoproto/gogo.proto";
+import "cyber/graph/v1beta1/types.proto";
+
+option go_package = "github.com/cybercongress/go-cyber/x/graph/types";
+option (gogoproto.goproto_getters_all) = false;
+option (gogoproto.equal_all) = false;
+
+service Msg {
+    rpc Cyberlink(MsgCyberlink) returns (MsgCyberlinkResponse);
+}
+
+message MsgCyberlink {
+    string address                          = 1 [(gogoproto.moretags) = "yaml:\"address\""];
+    repeated cyber.graph.v1beta1.Link links = 2 [(gogoproto.moretags) = "yaml:\"links\"", (gogoproto.nullable) = false];
+}
+
+message MsgCyberlinkResponse {}

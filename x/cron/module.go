@@ -3,6 +3,7 @@ package cron
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
@@ -32,9 +33,7 @@ type AppModuleBasic struct{
 	cdc codec.Marshaler
 }
 
-func (AppModuleBasic) Name() string {
-	return types.ModuleName
-}
+func (AppModuleBasic) Name() string { return types.ModuleName }
 
 // RegisterLegacyAminoCodec registers the reports module's types for the given codec.
 func (AppModuleBasic) RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
@@ -48,9 +47,8 @@ func (AppModuleBasic) DefaultGenesis(cdc codec.JSONMarshaler) json.RawMessage {
 
 func (AppModuleBasic) ValidateGenesis(cdc codec.JSONMarshaler, _ client.TxEncodingConfig, bz json.RawMessage) error {
 	var data types.GenesisState
-	err := cdc.UnmarshalJSON(bz, &data)
-	if err != nil {
-		return err
+	err := cdc.UnmarshalJSON(bz, &data); if err != nil {
+		return fmt.Errorf("failed to unmarshal %s genesis state: %w", types.ModuleName, err)
 	}
 	return types.ValidateGenesis(data)
 }
@@ -61,7 +59,9 @@ func (AppModuleBasic) RegisterRESTRoutes(clientCtx client.Context, rtr *mux.Rout
 }
 
 func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *runtime.ServeMux) {
-	_ = types.RegisterQueryHandlerClient(context.Background(), mux, types.NewQueryClient(clientCtx))
+	if err := types.RegisterQueryHandlerClient(context.Background(), mux, types.NewQueryClient(clientCtx)); err != nil {
+		panic(err)
+	}
 }
 
 func (AppModuleBasic) GetTxCmd() *cobra.Command {
@@ -76,21 +76,17 @@ func (AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegistry) 
 	types.RegisterInterfaces(registry)
 }
 
-//____________________________________________________________________________
-
 type AppModule struct {
 	AppModuleBasic
+
 	keeper        keeper.Keeper
 }
 
-func (am AppModule) RegisterServices(cfg module.Configurator) {
-	types.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(am.keeper))
-	types.RegisterQueryServer(cfg.QueryServer(), am.keeper)
-}
-
-func NewAppModule(k keeper.Keeper) AppModule {
+func NewAppModule(
+	cdc codec.Marshaler, k keeper.Keeper,
+) AppModule {
 	return AppModule{
-		AppModuleBasic:      AppModuleBasic{},
+		AppModuleBasic:      AppModuleBasic{cdc: cdc},
 		keeper:              k,
 	}
 }
@@ -105,12 +101,13 @@ func (am AppModule) Route() sdk.Route {
 	return sdk.NewRoute(types.RouterKey, NewHandler(am.keeper))
 }
 
-func (am AppModule) NewHandler() sdk.Handler {
-	return NewHandler(am.keeper)
-}
-
 func (AppModule) QuerierRoute() string {
 	return types.QuerierRoute
+}
+
+func (am AppModule) RegisterServices(cfg module.Configurator) {
+	types.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(am.keeper))
+	types.RegisterQueryServer(cfg.QueryServer(), am.keeper)
 }
 
 func (am AppModule) LegacyQuerierHandler(legacyQuerierCdc *codec.LegacyAmino) sdk.Querier {
@@ -119,7 +116,6 @@ func (am AppModule) LegacyQuerierHandler(legacyQuerierCdc *codec.LegacyAmino) sd
 
 func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONMarshaler, data json.RawMessage) []abci.ValidatorUpdate {
 	var genesisState types.GenesisState
-
 	cdc.MustUnmarshalJSON(data, &genesisState)
 	keeper.InitGenesis(ctx, am.keeper, genesisState)
 	return []abci.ValidatorUpdate{}
@@ -130,9 +126,10 @@ func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONMarshaler) json
 	return cdc.MustMarshalJSON(gs)
 }
 
-func (am AppModule) BeginBlock(_ sdk.Context, _ abci.RequestBeginBlock) {}
+func (am AppModule) BeginBlock(ctx sdk.Context, _ abci.RequestBeginBlock) {
+	BeginBlock(ctx, am.keeper)
+}
 
-func (am AppModule) EndBlock(ctx sdk.Context, _ abci.RequestEndBlock) []abci.ValidatorUpdate {
-	EndBlocker(ctx, am.keeper)
+func (am AppModule) EndBlock(_ sdk.Context, _ abci.RequestEndBlock) []abci.ValidatorUpdate {
 	return []abci.ValidatorUpdate{}
 }

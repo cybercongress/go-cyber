@@ -3,9 +3,11 @@ package keeper
 import (
 	"fmt"
 
+	"encoding/hex"
+
 	"github.com/CosmWasm/wasmd/x/wasm"
+	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"github.com/tendermint/tendermint/libs/log"
@@ -24,36 +26,34 @@ type Keeper struct {
 	storeKey      sdk.StoreKey
 	cdc           codec.BinaryMarshaler
 	wasmKeeper 	  wasm.Keeper
-	accountKeeper authkeeper.AccountKeeper
+	accountKeeper types.AccountKeeper
 	proxyKeeper   types.BankKeeper
 	paramspace    paramstypes.Subspace
-	router 		  types.Router
 }
 
 func NewKeeper(
 	cdc codec.BinaryMarshaler,
 	key sdk.StoreKey,
-	wk wasm.Keeper,
-	bk types.BankKeeper,
-	ak authkeeper.AccountKeeper,
+	bk  types.BankKeeper,
+	ak  types.AccountKeeper,
 	paramSpace paramstypes.Subspace,
-	router types.Router,
-) Keeper {
+) *Keeper {
 
 	if !paramSpace.HasKeyTable() {
 		paramSpace = paramSpace.WithKeyTable(types.ParamKeyTable())
 	}
 
-	keeper := Keeper{
+	return &Keeper{
 		storeKey:   key,
 		cdc:        cdc,
-		wasmKeeper: wk,
 		proxyKeeper:   bk,
 		accountKeeper: ak,
 		paramspace: paramSpace,
-		router: router,
 	}
-	return keeper
+}
+
+func (k *Keeper) SetWasmKeeper(ws wasm.Keeper) {
+	k.wasmKeeper = ws
 }
 
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {
@@ -69,7 +69,7 @@ func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
 	k.paramspace.SetParamSet(ctx, &params)
 }
 
-func (k Keeper) AddJob(
+func (k Keeper) SaveJob(
 	ctx sdk.Context, creator, contract sdk.AccAddress,
 	trigger types.Trigger, load types.Load,
 	label string, cid graphtypes.Cid,
@@ -79,10 +79,19 @@ func (k Keeper) AddJob(
 		return types.ErrBadTrigger
 	}
 
-	// TODO add push with higher fee an pull with lowest
-
-	if uint32(len(k.GetAllJobs(ctx))) >= k.MaxJobs(ctx) {
-		return types.ErrExceededMaxJobs
+	// if there are full slots but new one with higher fee than delete job with
+	// the smallest one fee and add new one with higher fee
+	jobs := k.GetAllJobs(ctx)
+	jobs.Sort()
+	if uint32(len(jobs)) == k.MaxJobs(ctx) {
+		if jobs[len(jobs)-1].Load.GasPrice.IsLT(load.GasPrice) {
+			cd, _ := sdk.AccAddressFromBech32(jobs[len(jobs)-1].Contract)
+			crd, _ := sdk.AccAddressFromBech32(jobs[len(jobs)-1].Creator)
+			k.DeleteJob(ctx, cd, crd, jobs[len(jobs)-1].Label)
+			k.DeleteJobStats(ctx, contract, creator, label)
+		} else {
+			return types.ErrExceededMaxJobs
+		}
 	}
 
 	k.SetJob(ctx, types.NewJob(
@@ -90,14 +99,18 @@ func (k Keeper) AddJob(
 		trigger, load,
 		label, string(cid),
 	))
+	// set last_block to current height to start count future ttl fee
 	k.SetJobStats(ctx, contract, creator, label,
-		types.NewStats(0,0, 0, uint64(ctx.BlockHeight())),
+		types.NewStats(
+			contract.String(), creator.String(), label,
+			0,0, 0, uint64(ctx.BlockHeight()),
+		),
 	)
 
 	return nil
 }
 
-func (k Keeper) RemoveJob(
+func (k Keeper) RemoveJobFull(
 	ctx sdk.Context, creator, contract sdk.AccAddress, label string,
 ) error {
 	job, found := k.GetJob(ctx, contract, creator, label)
@@ -110,11 +123,12 @@ func (k Keeper) RemoveJob(
 	}
 
 	k.DeleteJob(ctx, contract, creator, label)
+	k.DeleteJobStats(ctx, contract, creator, label)
 
 	return nil
 }
 
-func (k Keeper) ChangeJobCID(
+func (k Keeper) UpdateJobCID(
 	ctx sdk.Context, creator, contract sdk.AccAddress, label string,
 	cid graphtypes.Cid,
 ) error {
@@ -129,14 +143,14 @@ func (k Keeper) ChangeJobCID(
 
 	k.SetJob(ctx, types.NewJob(
 		job.Creator, job.Contract,
-		*job.Trigger, *job.Load,
+		job.Trigger, job.Load,
 		job.Label, string(cid),
 	))
 
 	return nil
 }
 
-func (k Keeper) ChangeJobLabel(
+func (k Keeper) UpdateJobLabel(
 	ctx sdk.Context, creator, contract sdk.AccAddress, label string,
 	labelNew string,
 ) error {
@@ -150,9 +164,16 @@ func (k Keeper) ChangeJobLabel(
 		return types.ErrNotAuthorized
 	}
 
+	if job.Label == labelNew {
+		return types.ErrBadLabel
+	}
+
+	k.DeleteJob(ctx, contract, creator, label)
+	k.DeleteJobStats(ctx, contract, creator, label)
+
 	k.SetJob(ctx, types.NewJob(
 		job.Creator, job.Contract,
-		*job.Trigger, *job.Load,
+		job.Trigger, job.Load,
 		labelNew, job.Cid,
 	))
 
@@ -160,16 +181,14 @@ func (k Keeper) ChangeJobLabel(
 	cr, _ := sdk.AccAddressFromBech32(job.Creator)
 	k.SetJobStats(ctx, ct, cr, labelNew,
 		types.NewStats(
+			ct.String(), cr.String(), labelNew,
 			jobStats.Calls, jobStats.Fees, jobStats.Fees, jobStats.LastBlock,
 	))
-
-	k.DeleteJob(ctx, contract, creator, label)
-	k.DeleteJobStats(ctx, contract, creator, label)
 
 	return nil
 }
 
-func (k Keeper) ChangeJobCallData(
+func (k Keeper) UpdateJobCallData(
 	ctx sdk.Context, creator, contract sdk.AccAddress, label string,
 	calldata string,
 ) error {
@@ -184,14 +203,14 @@ func (k Keeper) ChangeJobCallData(
 
 	k.SetJob(ctx, types.NewJob(
 		job.Creator, job.Contract,
-		*job.Trigger, types.NewLoad(calldata, job.Load.GasPrice),
+		job.Trigger, types.NewLoad(calldata, job.Load.GasPrice),
 		job.Label, job.Cid,
 	))
 
 	return nil
 }
 
-func (k Keeper) ChangeJobGasPrice(
+func (k Keeper) UpdateJobGasPrice(
 	ctx sdk.Context, creator, contract sdk.AccAddress, label string,
 	gasprice sdk.Coin,
 ) error {
@@ -208,14 +227,14 @@ func (k Keeper) ChangeJobGasPrice(
 
 	k.SetJob(ctx, types.NewJob(
 		job.Creator, job.Contract,
-		*job.Trigger, types.NewLoad(job.Load.CallData, gasprice),
+		job.Trigger, types.NewLoad(job.Load.CallData, gasprice),
 		job.Label, job.Cid,
 	))
 
 	return nil
 }
 
-func (k Keeper) ChangeJobPeriod(
+func (k Keeper) UpdateJobPeriod(
 	ctx sdk.Context, creator, contract sdk.AccAddress, label string,
 	period uint64,
 ) error {
@@ -234,14 +253,14 @@ func (k Keeper) ChangeJobPeriod(
 
 	k.SetJob(ctx, types.NewJob(
 		job.Creator, job.Contract,
-		types.NewTrigger(period, job.Trigger.Block), *job.Load,
+		types.NewTrigger(period, job.Trigger.Block), job.Load,
 		job.Label, job.Cid,
 	))
 
 	return nil
 }
 
-func (k Keeper) ChangeJobBlock(
+func (k Keeper) UpdateJobBlock(
 	ctx sdk.Context, creator, contract sdk.AccAddress, label string,
 	block uint64,
 ) error {
@@ -264,7 +283,7 @@ func (k Keeper) ChangeJobBlock(
 
 	k.SetJob(ctx, types.NewJob(
 		job.Creator, job.Contract,
-		types.NewTrigger(job.Trigger.Period, block), *job.Load,
+		types.NewTrigger(job.Trigger.Period, block), job.Load,
 		job.Label, job.Cid,
 	))
 
@@ -310,7 +329,7 @@ func (k Keeper) SetJobs(ctx sdk.Context, jobs types.Jobs) error {
 	for _, job := range jobs {
 		k.SetJob(ctx, types.NewJob(
 			job.Creator, job.Contract,
-			*job.Trigger, *job.Load,
+			job.Trigger, job.Load,
 			job.Label, job.Cid,
 		))
 	}
@@ -406,9 +425,32 @@ func (k Keeper) GetJobStats(ctx sdk.Context, contract, creator sdk.AccAddress, l
 	return stats, true
 }
 
-//______________________________________________________________________
+func (k Keeper) GetLowestFee(ctx sdk.Context) sdk.Coin {
+	jobs := k.GetAllJobs(ctx)
+	if len(jobs) == 0 {
+		return ctypes.NewCybCoin(0)
+	} else {
+		jobs.Sort()
+		return jobs[len(jobs)-1].Load.GasPrice
+	}
+}
 
-func (k Keeper) EndBlocker(ctx sdk.Context) {
+func (k Keeper) ExecuteJobsQueue(ctx sdk.Context) {
+	defer func() {
+		if r := recover(); r != nil {
+			switch rType := r.(type) {
+			case sdk.ErrorOutOfGas:
+				errorMsg := fmt.Sprintf(
+					"out of gas in location: %v; gasUsed: %d",
+					rType.Descriptor, ctx.GasMeter().GasConsumed(),
+				)
+				k.Logger(ctx).Error(sdkerrors.Wrap(sdkerrors.ErrOutOfGas, errorMsg).Error())
+			default:
+				// Not ErrorOutOfGas, so panic again.
+				panic(r)
+			}
+		}
+	}()
 
 	jobs := k.GetAllJobs(ctx)
 	jobs.Sort()
@@ -417,84 +459,58 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 	gasBeforeCron := ctx.GasMeter().GasConsumed()
 	gasUsedTotal := sdk.Gas(0)
 
-	// Allow recovery from OutOfGas panics so that we don't crash
-	// Deletes job which compromised cron execution
-	//var currentJob types.Job
-	defer func() {
-		if r := recover(); r != nil {
-			switch rType := r.(type) {
-			case sdk.ErrorOutOfGas:
-				//k.DeleteJob(ctx, currentJob.Contract, currentJob.Creator, currentJob.Label)
-				//k.DeleteJobStats(ctx, currentJob.Contract, currentJob.Creator, currentJob.Label)
-				log := fmt.Sprintf(
-					"out of gas in location: %v; gasUsed: %d",
-					rType.Descriptor, ctx.GasMeter().GasConsumed(),
-				)
-				k.Logger(ctx).Error(sdkerrors.Wrap(sdkerrors.ErrOutOfGas, log).Error())
-			default:
-				// Not ErrorOutOfGas, so panic again.
-				panic(r)
-			}
-		}
-	}()
+	feeTTL := k.FeeTTL(ctx)
+	maxJobs := k.MaxJobs(ctx)
+	maxGasPerJob := maxGas / maxJobs
 
 	k.Logger(ctx).Debug("Jobs in queue", "size", jobs.Len())
 
 	for i, job := range jobs {
 		if (job.Trigger.Period != 0 && ctx.BlockHeight()%int64(job.Trigger.Period) == 0) ||
 			(job.Trigger.Period == 0 && ctx.BlockHeight() == int64(job.Trigger.Block)) {
-			//currentJob = job
 			price := job.Load.GasPrice
 
-			k.Logger(ctx).Debug("Started job", "number", i, "price", price)
+			k.Logger(ctx).Debug("Started job", "number", i, "gas price", price)
 
 			cacheContext, writeFn := ctx.CacheContext()
-			gasBefore := ctx.GasMeter().GasConsumed()
+			cacheContext = cacheContext.WithGasMeter(sdk.NewGasMeter(sdk.Gas(maxGasPerJob)))
 
-			// if not enought remained so not call at all cause we cannot guarantee execution
-			// what if infinite gas (gas limit will be 0)
-			k.Logger(ctx).Debug("Gas stats",
+			k.Logger(ctx).Debug("Context gas stats before job execution",
 				"limit", ctx.GasMeter().Limit(),
 				"consumed to limit", ctx.GasMeter().GasConsumedToLimit(),
 				"consumed", ctx.GasMeter().GasConsumed(),
 			)
 
 			remained := ctx.GasMeter().Limit() - ctx.GasMeter().GasConsumedToLimit()
-			if remained < uint64(k.MaxGas(ctx)) {
-				k.Logger(ctx).Debug("Job break, not enough gas", "number", i)
+			if remained < uint64(maxGasPerJob) {
+				k.Logger(ctx).Debug("Job break, not enough gas", "job #", i)
 				break
 			}
 
-			// because we need events applied
-			msg := wasm.MsgExecuteContract{
-				job.Creator, // TODO job Contract self call
-				job.Contract,
-				[]byte(job.Load.CallData),
-				sdk.Coins{},
-			}
-			result, errExecute := k.runJob(cacheContext, &msg)
-			k.Logger(ctx).Debug("Job executed", "result", result)
-
-			//if i > 0 {
-			//	panic(sdk.ErrorOutOfGas{"Wasmer function execution"})
-			//}
-
-			gasUsed := ctx.GasMeter().GasConsumed() - gasBefore
-			if gasUsedTotal + gasUsed > uint64(maxGas) {
-				break
-			} else {
-				gasUsedTotal += gasUsed
-			}
-
+			// TODO leave only contract - delete creator, cause it will be same after base logic debug
 			contract, _ := sdk.AccAddressFromBech32(job.Contract)
 			creator, _ := sdk.AccAddressFromBech32(job.Creator)
+			result, errExecute := k.executeJobWithSudo(
+				cacheContext, contract, job.Load.CallData,
+			)
+			k.Logger(ctx).Debug("Job executed", "result", result)
+
+			gasUsedByJob := cacheContext.GasMeter().GasConsumed()
+			ctx.GasMeter().ConsumeGas(gasUsedByJob, "job execution")
+			if gasUsedTotal + gasUsedByJob > uint64(maxGas) {
+				break
+			} else {
+				gasUsedTotal += gasUsedByJob
+			}
+
 			js, _ := k.GetJobStats(ctx, contract, creator, job.Label)
-			amtGasFee := price.Amount.Int64() * int64(gasUsed)
-			amtTTLFee := (ctx.BlockHeight() - int64(js.LastBlock))*int64(k.FeeTTL(ctx))
+			// TODO move to more advanced fee system, 10X fee reducer applied (min 0.1 per gas)
+			amtGasFee := price.Amount.Int64() * int64(gasUsedByJob) / 10
+			amtTTLFee := (ctx.BlockHeight() - int64(js.LastBlock))*int64(feeTTL)
 			amtTotalFee := amtGasFee + amtTTLFee
 
-			k.Logger(ctx).Debug("Gas",
-				"used", gasUsed,
+			k.Logger(ctx).Debug("Gas job execution stats",
+				"used", gasUsedByJob,
 				"gas fee", amtGasFee,
 				"ttl fee", amtTTLFee,
 				"total fee", amtTotalFee,
@@ -508,42 +524,56 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 				k.DeleteJob(ctx, contract, creator, job.Label)
 				k.DeleteJobStats(ctx, contract, creator, job.Label)
 
-				k.Logger(ctx).Debug("Not enough contract balance, state not applied, job killed", "number", i)
+				k.Logger(ctx).Debug("Not enough contract balance, state not applied, job killed", "Job #", i)
 				continue
 			}
 
 			if errExecute != nil {
-				k.Logger(ctx).Debug("Job failed, state not applied", "number", i)
+				k.Logger(ctx).Debug("Job failed, state not applied", "Job #", i)
 				k.Logger(ctx).Debug("Failed with error: ", errExecute.Error())
 			} else {
-				writeFn()
-				k.Logger(ctx).Debug("Job finished, state applied", "number", i)
+				writeFn() // apply cached context
+				k.Logger(ctx).Debug("Job finished, state applied", "Job #", i)
 			}
 
 			k.SetJobStats(ctx, contract, creator, job.Label,
 				types.NewStats(
+					contract.String(), creator.String(), job.Label,
 					js.Calls+1, js.Fees+uint64(amtTotalFee),
-					js.Gas+gasUsed, uint64(ctx.BlockHeight())),
+					js.Gas+gasUsedByJob, uint64(ctx.BlockHeight())),
 			)
 
 			if ctx.BlockHeight() == int64(job.Trigger.Block) {
 				k.DeleteJob(ctx, contract, creator, job.Label)
 				k.DeleteJobStats(ctx, contract, creator, job.Label)
 
-				k.Logger(ctx).Debug("Job executed at given block, cleaned", "number", i)
+				k.Logger(ctx).Debug("Job executed at given block, deleted from queue", "Job #", i)
 			}
 		}
 	}
 
 	gasAfterCron := ctx.GasMeter().GasConsumed()
-	k.Logger(ctx).Debug("Total used", "gas", gasAfterCron-gasBeforeCron)
+	k.Logger(ctx).Debug("Total cron gas used", "Gas used", gasAfterCron-gasBeforeCron)
 }
 
-func (k Keeper) runJob(ctx sdk.Context, msg sdk.Msg) (*sdk.Result, error) {
-	handler := k.router.Route(ctx, msg.Route())
-	if handler == nil {
-		return nil, types.ErrInvalidRoute
-	}
+func (k Keeper) executeJobWithSudo(ctx sdk.Context, contract sdk.AccAddress, msg string) (*sdk.Result, error) {
+	defer func() {
+		if r := recover(); r != nil {
+			switch rType := r.(type) {
+			case sdk.ErrorOutOfGas:
+				errorMsg := fmt.Sprintf(
+					"out of gas in location: %v; gasUsed: %d",
+					rType.Descriptor, ctx.GasMeter().GasConsumed(),
+				)
+				k.Logger(ctx).Error(sdkerrors.Wrap(sdkerrors.ErrOutOfGas, errorMsg).Error())
+			default:
+				// Not ErrorOutOfGas, so panic again.
+				panic(r)
+			}
+		}
+		telemetry.IncrCounter(1.0, types.ModuleName, "executed")
+	}()
 
-	return handler(ctx, msg)
+	callData, _ := hex.DecodeString(msg)
+	return k.wasmKeeper.Sudo(ctx, contract, callData)
 }

@@ -6,6 +6,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/gorilla/mux"
 
 	"github.com/cosmos/cosmos-sdk/types/rest"
@@ -54,13 +55,23 @@ func queryJobHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		vars := mux.Vars(r)
-		contract  := vars[Contract]
-		creator  := vars[Creator]
 		label  := vars[Label]
 
-		params := types.QueryJobParamsRequest{
-			creator, contract, label,
+		creator, err := sdk.AccAddressFromBech32(vars[Creator])
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
+			return
 		}
+
+		contract, err := sdk.AccAddressFromBech32(vars[Contract])
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
+			return
+		}
+
+		params := types.NewQueryJobParams(
+			creator, contract, label,
+		)
 
 		bz, err := codec.MarshalJSONIndent(cliCtx.LegacyAmino, params)
 		if err != nil {
@@ -89,17 +100,26 @@ func queryJobStatsHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		vars := mux.Vars(r)
-		contract  := vars[Contract]
-		creator  := vars[Creator]
 		label  := vars[Label]
 
-		params := types.QueryJobParamsRequest{
-			creator, contract, label,
-		}
-
-		bz, err := codec.MarshalJSONIndent(cliCtx.LegacyAmino, params)
+		creator, err := sdk.AccAddressFromBech32(vars[Creator])
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
+			return
+		}
+
+		contract, err := sdk.AccAddressFromBech32(vars[Contract])
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
+			return
+		}
+
+		params := types.NewQueryJobParams(
+			creator, contract, label,
+		)
+
+		bz, err := cliCtx.LegacyAmino.MarshalJSON(params)
+		if rest.CheckBadRequestError(w, err) {
 			return
 		}
 

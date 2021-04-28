@@ -7,7 +7,9 @@ import (
 
 func InitGenesis(ctx sdk.Context, k Keeper, data types.GenesisState) {
 	k.SetParams(ctx, data.Params)
-	_ = k.SetRoutes(ctx, data.Routes)
+	err := k.SetRoutes(ctx, data.Routes); if err != nil {
+		panic(err)
+	}
 }
 
 func ExportGenesis(ctx sdk.Context, k Keeper) *types.GenesisState {

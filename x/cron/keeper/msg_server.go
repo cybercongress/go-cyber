@@ -21,15 +21,15 @@ func NewMsgServerImpl(
 	}
 }
 
-func (k msgServer) CronAddJob(goCtx context.Context, msg *types.MsgCronAddJob) (*types.MsgCronAddJobResponse, error) {
+func (k msgServer) AddJob(goCtx context.Context, msg *types.MsgAddJob) (*types.MsgAddJobResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	ct, _ := sdk.AccAddressFromBech32(msg.Contract)
 	cr, _ := sdk.AccAddressFromBech32(msg.Creator)
 
-	err := k.AddJob(
+	err := k.SaveJob(
 		ctx, cr, ct,
-		*msg.Trigger, *msg.Load,
+		msg.Trigger, msg.Load,
 		msg.Label, graph.Cid(msg.Cid),
 	)
 	if err != nil {
@@ -48,16 +48,16 @@ func (k msgServer) CronAddJob(goCtx context.Context, msg *types.MsgCronAddJob) (
 		),
 	)
 
-	return &types.MsgCronAddJobResponse{}, nil
+	return &types.MsgAddJobResponse{}, nil
 }
 
-func (k msgServer) CronRemoveJob(goCtx context.Context, msg *types.MsgCronRemoveJob) (*types.MsgCronRemoveJobResponse, error) {
+func (k msgServer) RemoveJob(goCtx context.Context, msg *types.MsgRemoveJob) (*types.MsgRemoveJobResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	ct, _ := sdk.AccAddressFromBech32(msg.Contract)
 	cr, _ := sdk.AccAddressFromBech32(msg.Creator)
 
-	err := k.RemoveJob(ctx, cr, ct, msg.Label)
+	err := k.RemoveJobFull(ctx, cr, ct, msg.Label)
 	if err != nil {
 		return nil, err
 	}
@@ -70,16 +70,16 @@ func (k msgServer) CronRemoveJob(goCtx context.Context, msg *types.MsgCronRemove
 		),
 	)
 
-	return &types.MsgCronRemoveJobResponse{}, nil
+	return &types.MsgRemoveJobResponse{}, nil
 }
 
-func (k msgServer) CronChangeJobCID(goCtx context.Context, msg *types.MsgCronChangeJobCID) (*types.MsgCronChangeJobCIDResponse, error) {
+func (k msgServer) ChangeJobCID(goCtx context.Context, msg *types.MsgChangeJobCID) (*types.MsgChangeJobCIDResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	ct, _ := sdk.AccAddressFromBech32(msg.Contract)
 	cr, _ := sdk.AccAddressFromBech32(msg.Creator)
 
-	err := k.ChangeJobCID(ctx, cr, ct, msg.Label, graph.Cid(msg.Cid))
+	err := k.UpdateJobCID(ctx, cr, ct, msg.Label, graph.Cid(msg.Cid))
 	if err != nil {
 		return nil, err
 	}
@@ -93,16 +93,16 @@ func (k msgServer) CronChangeJobCID(goCtx context.Context, msg *types.MsgCronCha
 		),
 	)
 
-	return &types.MsgCronChangeJobCIDResponse{}, nil
+	return &types.MsgChangeJobCIDResponse{}, nil
 }
 
-func (k msgServer) CronChangeJobLabel(goCtx context.Context, msg *types.MsgCronChangeJobLabel) (*types.MsgCronChangeJobLabelResponse, error) {
+func (k msgServer) ChangeJobLabel(goCtx context.Context, msg *types.MsgChangeJobLabel) (*types.MsgChangeJobLabelResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	ct, _ := sdk.AccAddressFromBech32(msg.Contract)
 	cr, _ := sdk.AccAddressFromBech32(msg.Creator)
 
-	err := k.ChangeJobLabel(ctx, cr, ct, msg.Label, msg.NewLabel)
+	err := k.UpdateJobLabel(ctx, cr, ct, msg.Label, msg.NewLabel)
 	if err != nil {
 		return nil, err
 	}
@@ -116,16 +116,16 @@ func (k msgServer) CronChangeJobLabel(goCtx context.Context, msg *types.MsgCronC
 		),
 	)
 
-	return &types.MsgCronChangeJobLabelResponse{}, nil
+	return &types.MsgChangeJobLabelResponse{}, nil
 }
 
-func (k msgServer) CronChangeJobCallData(goCtx context.Context, msg *types.MsgCronChangeJobCallData) (*types.MsgCronChangeJobCallDataResponse, error) {
+func (k msgServer) ChangeJobCallData(goCtx context.Context, msg *types.MsgChangeJobCallData) (*types.MsgChangeJobCallDataResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	ct, _ := sdk.AccAddressFromBech32(msg.Contract)
 	cr, _ := sdk.AccAddressFromBech32(msg.Creator)
 
-	err := k.ChangeJobCallData(ctx, cr, ct, msg.Label, msg.CallData)
+	err := k.UpdateJobCallData(ctx, cr, ct, msg.Label, msg.CallData)
 	if err != nil {
 		return nil, err
 	}
@@ -139,16 +139,16 @@ func (k msgServer) CronChangeJobCallData(goCtx context.Context, msg *types.MsgCr
 		),
 	)
 
-	return &types.MsgCronChangeJobCallDataResponse{}, nil
+	return &types.MsgChangeJobCallDataResponse{}, nil
 }
 
-func (k msgServer) CronChangeJobGasPrice(goCtx context.Context, msg *types.MsgCronChangeJobGasPrice) (*types.MsgCronChangeJobGasPriceResponse, error) {
+func (k msgServer) ChangeJobGasPrice(goCtx context.Context, msg *types.MsgChangeJobGasPrice) (*types.MsgChangeJobGasPriceResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	ct, _ := sdk.AccAddressFromBech32(msg.Contract)
 	cr, _ := sdk.AccAddressFromBech32(msg.Creator)
 
-	err := k.ChangeJobGasPrice(ctx, cr, ct, msg.Label, msg.GasPrice)
+	err := k.UpdateJobGasPrice(ctx, cr, ct, msg.Label, msg.GasPrice)
 	if err != nil {
 		return nil, err
 	}
@@ -162,16 +162,16 @@ func (k msgServer) CronChangeJobGasPrice(goCtx context.Context, msg *types.MsgCr
 		),
 	)
 
-	return &types.MsgCronChangeJobGasPriceResponse{}, nil
+	return &types.MsgChangeJobGasPriceResponse{}, nil
 }
 
-func (k msgServer) CronChangeJobPeriod(goCtx context.Context, msg *types.MsgCronChangeJobPeriod) (*types.MsgCronChangeJobPeriodResponse, error) {
+func (k msgServer) ChangeJobPeriod(goCtx context.Context, msg *types.MsgChangeJobPeriod) (*types.MsgChangeJobPeriodResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	ct, _ := sdk.AccAddressFromBech32(msg.Contract)
 	cr, _ := sdk.AccAddressFromBech32(msg.Creator)
 
-	err := k.ChangeJobPeriod(ctx, cr, ct, msg.Label, msg.Period)
+	err := k.UpdateJobPeriod(ctx, cr, ct, msg.Label, msg.Period)
 	if err != nil {
 		return nil, err
 	}
@@ -185,16 +185,16 @@ func (k msgServer) CronChangeJobPeriod(goCtx context.Context, msg *types.MsgCron
 		),
 	)
 
-	return &types.MsgCronChangeJobPeriodResponse{}, nil
+	return &types.MsgChangeJobPeriodResponse{}, nil
 }
 
-func (k msgServer) CronChangeJobBlock(goCtx context.Context, msg *types.MsgCronChangeJobBlock) (*types.MsgCronChangeJobBlockResponse, error) {
+func (k msgServer) ChangeJobBlock(goCtx context.Context, msg *types.MsgChangeJobBlock) (*types.MsgChangeJobBlockResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	ct, _ := sdk.AccAddressFromBech32(msg.Contract)
 	cr, _ := sdk.AccAddressFromBech32(msg.Creator)
 
-	err := k.ChangeJobBlock(ctx, cr, ct, msg.Label, msg.Block)
+	err := k.UpdateJobBlock(ctx, cr, ct, msg.Label, msg.Block)
 	if err != nil {
 		return nil, err
 	}
@@ -208,5 +208,5 @@ func (k msgServer) CronChangeJobBlock(goCtx context.Context, msg *types.MsgCronC
 		),
 	)
 
-	return &types.MsgCronChangeJobBlockResponse{}, nil
+	return &types.MsgChangeJobBlockResponse{}, nil
 }

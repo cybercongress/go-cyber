@@ -5,15 +5,6 @@ const (
 	StoreKey         = ModuleName
 	RouterKey        = ModuleName
 	QuerierRoute     = ModuleName
-
-	QueryParameters  	= "params"
-	QueryRank		 	= "rank"
-	QuerySearch      	= "search"
-	QueryBacklinks   	= "backlinks"
-	QueryTop		 	= "top"
-	QueryIsLinkExist 	= "is_link_exist"
-	QueryIsAnyLinkExist = "is_any_link_exist"
-	QueryKarmas 	 	= "karmas"
 )
 
 var (

@@ -1,0 +1,31 @@
+syntax = "proto3";
+package cyber.rank.v1beta1;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/cybercongress/go-cyber/x/rank/types";
+
+message Params {
+    option (gogoproto.equal)            = true;
+
+    int64 calculation_period = 1 [
+        (gogoproto.moretags) = "yaml:\"calculation_period\""
+    ];
+
+    string damping_factor = 2 [
+        (gogoproto.moretags)   = "yaml:\"damping_factor\"",
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+        (gogoproto.nullable)   = false
+    ];
+
+    string tolerance = 3 [
+        (gogoproto.moretags)   = "yaml:\"tolerance\"",
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+        (gogoproto.nullable)   = false
+    ];
+}
+
+message RankedCid {
+    string cid  = 1 [(gogoproto.moretags) = "yaml:\"cid\""];
+    uint64 rank = 2 [(gogoproto.moretags) = "yaml:\"rank\""];
+}

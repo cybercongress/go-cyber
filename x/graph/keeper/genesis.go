@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"bufio"
-	"fmt"
 	"os"
 	"path/filepath"
 
@@ -23,8 +22,7 @@ func InitGenesis(
 	linksFile, err := os.Open(linksFilePath)
 	if err != nil {
 		if os.IsNotExist(err) {
-			//logger.Info("File with cyberlinks not found. Empty set will be used")
-			fmt.Println("File with cyberlinks not found. Empty set will be used")
+			gk.Logger(ctx).Info("File with cyberlinks not found. Empty set will be used")
 			return nil
 		}
 		return err
@@ -42,7 +40,6 @@ func InitGenesis(
 	if err != nil {
 		return err
 	}
-	fmt.Println("Loaded graph!")
 	return
 }
 
@@ -79,7 +76,6 @@ func WriteGenesis(
 	}
 	err = linksFile.Close()
 
-	//logger.Info("CIDs and cyberlinks exported. File created.", "path", linksFilePath)
-	fmt.Println("Knowledge graph exported.")
+	gk.Logger(ctx).Info("CIDs and cyberlinks exported. File created.", "path", linksFilePath)
 	return
 }

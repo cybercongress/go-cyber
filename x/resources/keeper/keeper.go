@@ -6,39 +6,46 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
-	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
+	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/tendermint/tendermint/libs/log"
 
 	ctypes "github.com/cybercongress/go-cyber/types"
+	bandwithkeeper "github.com/cybercongress/go-cyber/x/bandwidth/keeper"
 	"github.com/cybercongress/go-cyber/x/resources/types"
 )
 
 type Keeper struct {
-	storeKey      	sdk.StoreKey
 	cdc 			codec.BinaryMarshaler
 	accountKeeper   types.AccountKeeper
-	bankKeeper      bankkeeper.Keeper
+	bankKeeper      types.BankKeeper
+	bandwidthMeter  *bandwithkeeper.BandwidthMeter
+	paramSpace      paramstypes.Subspace
 }
 
 func NewKeeper(
 	cdc codec.BinaryMarshaler,
-	key sdk.StoreKey,
-	ak 	authkeeper.AccountKeeper,
-	bk  bankkeeper.Keeper,
+	ak 	types.AccountKeeper,
+	bk  types.BankKeeper,
+	bm  *bandwithkeeper.BandwidthMeter,
+	paramSpace paramstypes.Subspace,
 ) Keeper {
 	if addr := ak.GetModuleAddress(types.ResourcesName); addr == nil {
 		panic(fmt.Sprintf("%s module account has not been set", types.ResourcesName))
 	}
 
+	if !paramSpace.HasKeyTable() {
+		paramSpace = paramSpace.WithKeyTable(types.ParamKeyTable())
+	}
+
 	keeper := Keeper{
-		storeKey:   	key,
 		cdc:        	cdc,
 		accountKeeper: 	ak,
 		bankKeeper:     bk,
+		bandwidthMeter: bm,
+		paramSpace:    paramSpace,
 	}
 	return keeper
 }
@@ -47,19 +54,43 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
 
+func (k Keeper) GetParams(ctx sdk.Context) (params types.Params) {
+	k.paramSpace.GetParamSet(ctx, &params)
+	return params
+}
+
+func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
+	k.paramSpace.SetParamSet(ctx, &params)
+}
+
+func (k Keeper) MaxSlots(ctx sdk.Context) (res uint32) {
+	k.paramSpace.Get(ctx, types.KeyMaxSlots, &res)
+	return
+}
+
+func (k Keeper) BaseVestingResource(ctx sdk.Context) (res sdk.Coin) {
+	k.paramSpace.Get(ctx, types.KeyBaseVestingResource, &res)
+	return
+}
+
+func (k Keeper) BaseVestingTime(ctx sdk.Context) (res uint64) {
+	k.paramSpace.Get(ctx, types.KeyBaseVestingTime, &res)
+	return
+}
+
 func (k Keeper) ConvertResource(
 	ctx sdk.Context,
 	agent sdk.AccAddress,
 	amount sdk.Coin,
 	resource string,
-	length int64,
+	length uint64,
 ) error {
 	lengthCheck := PeriodCheck(ctx, length)
 	if lengthCheck == false {
 		return types.ErrNotAvailableLength
 	}
 
-	err := k.AddTimeLockedCoinsToAccount(ctx, agent, sdk.NewCoins(amount), length)
+	err := k.AddTimeLockedCoinsToAccount(ctx, agent, sdk.NewCoins(amount), int64(length))
 	if err != nil {
 		return sdkerrors.Wrapf(types.ErrTimeLockCoins, err.Error())
 	}
@@ -78,7 +109,7 @@ func (k Keeper) AddTimeLockedCoinsToAccount(ctx sdk.Context, recipientAddr sdk.A
 
 	switch acc.(type) {
 	case *vestingtypes.PeriodicVestingAccount:
-		return k.AddTimeLockedCoinsToPeriodicVestingAccount(ctx, recipientAddr, amt, length)
+		return k.AddTimeLockedCoinsToPeriodicVestingAccount(ctx, recipientAddr, amt, length, false)
 	case *authtypes.BaseAccount:
 		return k.AddTimeLockedCoinsToBaseAccount(ctx, recipientAddr, amt, length)
 	default:
@@ -86,15 +117,15 @@ func (k Keeper) AddTimeLockedCoinsToAccount(ctx sdk.Context, recipientAddr sdk.A
 	}
 }
 
-func (k Keeper) AddTimeLockedCoinsToPeriodicVestingAccount(ctx sdk.Context, recipientAddr sdk.AccAddress, amt sdk.Coins, length int64) error {
-	k.addCoinsToVestingSchedule(ctx, recipientAddr, amt, length)
+func (k Keeper) AddTimeLockedCoinsToPeriodicVestingAccount(ctx sdk.Context, recipientAddr sdk.AccAddress, amt sdk.Coins, length int64, mergeSlot bool) error {
+	err := k.addCoinsToVestingSchedule(ctx, recipientAddr, amt, length, mergeSlot); if err != nil {
+		return err
+	}
 	return nil
 }
 
 func (k Keeper) AddTimeLockedCoinsToBaseAccount(ctx sdk.Context, recipientAddr sdk.AccAddress, amt sdk.Coins, length int64) error {
 	acc := k.accountKeeper.GetAccount(ctx, recipientAddr)
-	// transition the account to a periodic vesting account:
-	//coins := k.bankKeeper.GetBalance(ctx, acc.GetAddress(), ctypes.CYB)
 	bacc := authtypes.NewBaseAccount(acc.GetAddress(), acc.GetPubKey(), acc.GetAccountNumber(), acc.GetSequence())
 	newPeriods := vestingtypes.Periods{types.NewPeriod(amt, length)}
 	bva := vestingtypes.NewBaseVestingAccount(bacc, amt, ctx.BlockTime().Unix()+length)
@@ -103,11 +134,13 @@ func (k Keeper) AddTimeLockedCoinsToBaseAccount(ctx sdk.Context, recipientAddr s
 	return nil
 }
 
-func (k Keeper) addCoinsToVestingSchedule(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coins, length int64) {
+func (k Keeper) addCoinsToVestingSchedule(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coins, length int64, mergeSlot bool) error {
 	acc := k.accountKeeper.GetAccount(ctx, addr)
 	vacc := acc.(*vestingtypes.PeriodicVestingAccount)
+
 	// Add the new vesting coins to OriginalVesting
 	vacc.OriginalVesting = vacc.OriginalVesting.Add(amt...)
+
 	// update vesting periods
 	// EndTime = 100
 	// BlockTime  = 110
@@ -115,16 +148,28 @@ func (k Keeper) addCoinsToVestingSchedule(ctx sdk.Context, addr sdk.AccAddress, 
 	if vacc.EndTime < ctx.BlockTime().Unix() {
 		// edge case one - the vesting account's end time is in the past (ie, all previous vesting periods have completed)
 		// append a new period to the vesting account, update the end time, update the account in the store and return
-		newPeriodLength := (ctx.BlockTime().Unix() - vacc.EndTime) + length // 110 - 100 + 6 = 16
-		newPeriod := types.NewPeriod(amt, newPeriodLength)
-		vacc.VestingPeriods = append(vacc.VestingPeriods, newPeriod)
+		//newPeriodLength := (ctx.BlockTime().Unix() - vacc.EndTime) + length // 110 - 100 + 6 = 16
+		//newPeriod := types.NewPeriod(amt, newPeriodLength)
+		//vacc.VestingPeriods = append(vacc.VestingPeriods, newPeriod)
+		//vacc.EndTime = ctx.BlockTime().Unix() + length
+		//k.accountKeeper.SetAccount(ctx, vacc)
+		//return nil
+
+		// edge case one - the vesting account's end time is in the past (ie, all previous vesting periods have completed)
+		// delete all passed periods, add a new period to the vesting account, update the end time, update the account in the store and return
+		//newPeriodLength := (ctx.BlockTime().Unix() - vacc.EndTime) + length // 110 - 100 + 6 = 16
+		newPeriod := types.NewPeriod(amt, length)
+		vacc.VestingPeriods = append(vestingtypes.Periods{}, newPeriod)
+		vacc.StartTime = ctx.BlockTime().Unix()
 		vacc.EndTime = ctx.BlockTime().Unix() + length
+		vacc.OriginalVesting = newPeriod.Amount
 		k.accountKeeper.SetAccount(ctx, vacc)
-		return
+		return nil
 	}
 	// StartTime = 110
 	// BlockTime = 100
 	// length = 6
+	// this will not happen in case of resource module
 	if vacc.StartTime > ctx.BlockTime().Unix() {
 		// edge case two - the vesting account's start time is in the future (all periods have not started)
 		// update the start time to now and adjust the period lengths in place - a new period will be inserted in the next code block
@@ -138,6 +183,37 @@ func (k Keeper) addCoinsToVestingSchedule(ctx sdk.Context, addr sdk.AccAddress, 
 		}
 		vacc.VestingPeriods = updatedPeriods
 		vacc.StartTime = ctx.BlockTime().Unix()
+	}
+
+	if len(vacc.VestingPeriods) == int(k.MaxSlots(ctx)) && !mergeSlot {
+		// case when there are already filled slots and no one already passed
+		if vacc.StartTime + vacc.VestingPeriods[0].Length > ctx.BlockTime().Unix() {
+			return sdkerrors.Wrapf(types.ErrFullSlots, "not enough slots")
+		} else {
+			// TODO refactor next code blocks
+			// case when there are passed slots and we are clean them to free space to new ones
+			activePeriods := vestingtypes.Periods{}
+			accumulatedLength := int64(0)
+			shiftStartTime := int64(0)
+			for _, period := range vacc.VestingPeriods {
+				if vacc.StartTime + period.Length + accumulatedLength > ctx.BlockTime().Unix() {
+					activePeriods = append(activePeriods, period)
+				} else {
+					shiftStartTime += period.Length
+				}
+				accumulatedLength += period.Length
+			}
+
+			updatedPeriods := vestingtypes.Periods{}
+			updatedOriginalVesting := sdk.Coins{}
+			for _, period := range activePeriods {
+				updatedOriginalVesting = updatedOriginalVesting.Add(period.Amount...)
+				updatedPeriods = append(updatedPeriods, period)
+			}
+			vacc.OriginalVesting = updatedOriginalVesting.Add(amt...)
+			vacc.VestingPeriods = updatedPeriods
+			vacc.StartTime = vacc.StartTime + shiftStartTime
+		}
 	}
 
 	// logic for inserting a new vesting period into the existing vesting schedule
@@ -197,39 +273,20 @@ func (k Keeper) addCoinsToVestingSchedule(ctx sdk.Context, addr sdk.AccAddress, 
 		vacc.VestingPeriods = newPeriods
 	}
 	k.accountKeeper.SetAccount(ctx, vacc)
-	return
+	return nil
 }
 
-func (k Keeper) Mint(ctx sdk.Context, recipientAddr sdk.AccAddress, amt sdk.Coin, resource string, length int64) error {
+func (k Keeper) Mint(ctx sdk.Context, recipientAddr sdk.AccAddress, amt sdk.Coin, resource string, length uint64) error {
 	acc := k.accountKeeper.GetAccount(ctx, recipientAddr)
 	if acc == nil {
 		return sdkerrors.Wrapf(types.ErrAccountNotFound, recipientAddr.String())
 	}
 
-	if amt.Amount.Mod(sdk.NewInt(ctypes.Mega*1)).IsPositive() { // TODO min amount?
-		return sdkerrors.Wrapf(types.ErrMintCoins, recipientAddr.String())
+	toMint := k.CalculateInvestmint(ctx, amt, resource, length)
+
+	if toMint.IsZero() {
+		return sdkerrors.Wrapf(types.ErrLessThanOne, recipientAddr.String())
 	}
-
-	cycles := sdk.NewDec(length).QuoInt64(30).TruncateDec()
-	tmul := TimeMultiplier(cycles)
-	smul := SupplyMultiplier(ctx, k.bankKeeper, resource)
-	base := amt.Amount.Quo(sdk.NewInt(ctypes.Mega)).ToDec()
-
-	var toMint sdk.Coin
-	if resource == ctypes.VOLT {
-		toMint = ctypes.NewVoltCoin(base.Mul(cycles).Mul(tmul).Mul(smul).TruncateInt64())
-	} else {
-		toMint = ctypes.NewAmperCoin(base.Mul(cycles).Mul(tmul).Mul(smul).TruncateInt64())
-	}
-
-	//fmt.Println("[CYB]-->[VOLT || AMPER]")
-	//fmt.Println("Amount CYB:", amt.Amount)
-	//fmt.Println("Length:", length)
-	//fmt.Println("Cycles:", cycles)
-	//fmt.Println("Base:", base)
-	//fmt.Println("TimeMul:", tmul)
-	//fmt.Println("SupplyMul:", smul)
-	//fmt.Println("[*] MINT VOLT || AMPER:", toMint.Amount)
 
 	err := k.bankKeeper.MintCoins(ctx, types.ResourcesName, sdk.NewCoins(toMint))
 	if err != nil {
@@ -239,122 +296,37 @@ func (k Keeper) Mint(ctx sdk.Context, recipientAddr sdk.AccAddress, amt sdk.Coin
 	if err != nil {
 		return sdkerrors.Wrapf(types.ErrSendMintedCoins, recipientAddr.String())
 	}
-
-	return nil
-}
-
-// ***JUST SANDBOX***
-func PeriodCheck(ctx sdk.Context, length int64) bool {
-
-	//var availableLength int64
-	//passed := ctx.BlockTime().Sub(ctx.WithBlockHeight(1).BlockTime()).Seconds()
-	//
-	//switch {
-	////case passed > (time.Second * 3000).Seconds():
-	////	availableLength = 3000
-	////case passed > (time.Second * 1500).Seconds():
-	////	availableLength = 1500
-	////case passed > (time.Second * 1000).Seconds():
-	////	availableLength = 1000
-	//case passed > (time.Second * 500).Seconds():
-	//	//availableLength = 500
-	//	availableLength = 60 * 60 * 24 * 30 * 12
-	//default:
-	//	availableLength = 300
-	//}
-	return length <= 2*24*60*60 // mock for 2 days
-	//return true
-}
-
-func TimeMultiplier(cycles sdk.Dec) sdk.Dec {
-	if cycles.LT(sdk.NewDec(100)) {
-		return cycles.QuoInt64(10).Add(sdk.OneDec())
-	} else {
-		return sdk.NewDec(11)
-	}
-}
-
-func SupplyMultiplier(ctx sdk.Context, bk bankkeeper.Keeper, denom string) sdk.Dec {
-	supply := bk.GetSupply(ctx).GetTotal().AmountOf(denom)
-	//fmt.Println("Supply:", supply)
-	if supply.Int64() < ctypes.Giga*9 {
-		return sdk.OneDec().Sub((sdk.NewDecFromInt(supply).QuoInt64(ctypes.Giga*10)))
-	} else {
-		return sdk.NewDecWithPrec(1, 1)
-	}
-}
-
-//------------------------
-
-func(k Keeper) PutCreateResource(ctx sdk.Context, resource sdk.Coin, sender, receiver sdk.AccAddress) error {
-	creator, found := k.GetResource(ctx, resource.Denom)
-	if !found {
-		// sandbox, will be adding resource with throw params
-		err := k.SetResource(ctx, sender, resource.Denom); if err != nil {
-			return sdkerrors.Wrapf(types.ErrInvalidAccountType, "account: %s", sender.String())
-		}
-		err = k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.NewCoins(resource)); 		if err != nil {
-			return err
-		}
-		err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, receiver, sdk.NewCoins(resource)); 		if err != nil {
-			return err
-		}
-		//return sdkerrors.Wrapf(types.ErrResourceNotFound, "resource: %s", resource.Denom)
-	}
-	if !creator.Equals(sender) {
-		return sdkerrors.Wrapf(types.ErrNotAuthorized, "creator: %s, address: %s", creator, sender)
+	// adding converted resources to vesting schedule
+	err = k.AddTimeLockedCoinsToPeriodicVestingAccount(ctx, recipientAddr, sdk.NewCoins(toMint), int64(length), true)
+	if err != nil {
+		return sdkerrors.Wrapf(types.ErrTimeLockCoins, err.Error())
 	}
 
-	err := k.SetResource(ctx, sender, resource.Denom); if err != nil {
-		return sdkerrors.Wrapf(types.ErrInvalidAccountType, "account: %s", sender.String())
-	}
-	err = k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.NewCoins(resource)); if err != nil {
-		return err
-	}
-	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, receiver, sdk.NewCoins(resource)); if err != nil {
-		return err
+	if resource == ctypes.VOLT {
+		k.bandwidthMeter.AddToDesirableBandwidth(ctx, toMint.Amount.Uint64())
 	}
 
 	return nil
 }
 
-func(k Keeper) PutRedeemResource(ctx sdk.Context, resource sdk.Coin, sender sdk.AccAddress) error {
-	creator, found := k.GetResource(ctx, resource.Denom)
-	if !found {
-		return sdkerrors.Wrapf(types.ErrResourceNotFound, "resource: %s", resource.Denom)
-	}
-	if !creator.Equals(sender) {
-		return sdkerrors.Wrapf(types.ErrNotAuthorized, "creator: %s, address: %s", creator, sender)
-	}
+func (k Keeper) CalculateInvestmint(ctx sdk.Context, amt sdk.Coin, resource string, length uint64) sdk.Coin {
+	// TODO mocked configuration
+	//cycles := sdk.NewDec(int64(length)).QuoInt64(int64(k.BaseVestingTime(ctx)))
+	cycles := sdk.NewDec(int64(length)).QuoInt64(int64(10))
+	base := sdk.NewDec(amt.Amount.Int64()).QuoInt64(k.BaseVestingResource(ctx).Amount.Int64())
 
-	err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, sdk.NewCoins(resource)); if err != nil {
-		return err
+	var toMint sdk.Coin
+	// TODO implement algorithms from resources economy simulation for each resource
+	switch resource {
+	case ctypes.VOLT:
+		toMint = ctypes.NewVoltCoin(base.Mul(cycles).TruncateInt64())
+	case ctypes.AMPER:
+		toMint = ctypes.NewAmperCoin(base.Mul(cycles).TruncateInt64())
 	}
-	err = k.bankKeeper.BurnCoins(ctx, types.ModuleName, sdk.NewCoins(resource)); if err != nil {
-		return err
-	}
-
-	return nil
+	return toMint
 }
 
-func (k Keeper) GetResource(ctx sdk.Context, denom string) (addr sdk.AccAddress, exist bool) {
-	store := ctx.KVStore(k.storeKey)
-
-	bz := store.Get(types.ResourceStoreKey(denom))
-	if bz == nil {
-		return nil, false
-	}
-	err := addr.Unmarshal(bz); if err != nil {
-		return nil, false
-	}
-	return addr, true
-}
-
-func (k Keeper) SetResource(ctx sdk.Context, sender sdk.AccAddress, denom string) error {
-	store := ctx.KVStore(k.storeKey)
-	bz, err := sender.Marshal(); if err != nil {
-		return err
-	}
-	store.Set(types.ResourceStoreKey(denom), bz)
-	return nil
+func PeriodCheck(ctx sdk.Context, length uint64) bool {
+	// TODO mocked configuration
+	return length <= 2*24*60*60
 }

@@ -5,6 +5,8 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
+	bandwidthkeeper "github.com/cybercongress/go-cyber/x/bandwidth/keeper"
+	bandwidthtypes "github.com/cybercongress/go-cyber/x/bandwidth/types"
 
 	ctypes "github.com/cybercongress/go-cyber/types"
 	cyberbankkeeper "github.com/cybercongress/go-cyber/x/cyberbank/keeper"
@@ -18,6 +20,7 @@ type msgServer struct {
 	*IndexKeeper
 	authkeeper.AccountKeeper
 	*cyberbankkeeper.IndexedKeeper
+	*bandwidthkeeper.BandwidthMeter
 }
 
 // NewMsgServerImpl returns an implementation of the stored MsgServer interface
@@ -27,9 +30,14 @@ func NewMsgServerImpl(
 	ik *IndexKeeper,
 	ak authkeeper.AccountKeeper,
 	bk *cyberbankkeeper.IndexedKeeper,
+	bm *bandwidthkeeper.BandwidthMeter,
 ) types.MsgServer {
 	return &msgServer{
-		gk, ik, ak, bk,
+		gk,
+		ik,
+		ak,
+		bk,
+		bm,
 	}
 }
 
@@ -49,12 +57,24 @@ func (k msgServer) Cyberlink(goCtx context.Context, msg *types.MsgCyberlink) (*t
 		return nil, types.ErrInvalidAccount
 	}
 
-	if ampers, ok := k.GetTotalStakesAmper()[uint64(accNumber)]; ok {
+	if ampers, ok := k.GetTotalStakesAmpere()[uint64(accNumber)]; ok {
 		if ampers == 0 {
 			return nil, types.ErrZeroPower
 		}
 	} else {
 		return nil, types.ErrZeroPower
+	}
+
+	// NOTE moved from ante handler, because need to consume bandwidth by msgs
+	cost := uint64(k.GetCurrentCreditPrice().MulInt64(int64(len(msg.Links) * 100)).TruncateInt64())
+	accountBandwidth := k.GetCurrentAccountBandwidth(ctx, addr)
+	err = k.ConsumeAccountBandwidth(ctx, accountBandwidth, cost)
+	if err != nil {
+		return nil, bandwidthtypes.ErrNotEnoughBandwidth
+	}
+
+	if !ctx.IsCheckTx() {
+		k.AddToBlockBandwidth(cost)
 	}
 
 	for _, link := range msg.Links {

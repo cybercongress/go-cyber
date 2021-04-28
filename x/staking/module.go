@@ -5,13 +5,11 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-
-	//"github.com/cosmos/cosmos-sdk/x/auth"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
+	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 )
 
 var (
@@ -20,29 +18,32 @@ var (
 
 type AppModule struct {
 	staking.AppModule
-	authkeeper.AccountKeeper
-	stakingkeeper.Keeper
+	sk stakingkeeper.Keeper
+	bk bankkeeper.Keeper
+	ak authkeeper.AccountKeeper
 }
 
 func NewAppModule(
 	cdc codec.Marshaler,
 	stakingKeeper stakingkeeper.Keeper,
-	accKeeper authkeeper.AccountKeeper,
+	accountKeeper authkeeper.AccountKeeper,
 	bankKeeper bankkeeper.Keeper,
 ) AppModule {
 	return AppModule{
-		AppModule:  staking.NewAppModule(cdc, stakingKeeper, accKeeper, bankKeeper),
-		AccountKeeper: accKeeper,
-		Keeper: stakingKeeper,
+		AppModule:     staking.NewAppModule(cdc, stakingKeeper, accountKeeper, bankKeeper),
+		sk: stakingKeeper,
+		bk: bankKeeper,
+		ak: accountKeeper,
 	}
 }
 
-func NewHandler(ak authkeeper.AccountKeeper, sk stakingkeeper.Keeper) sdk.Handler {
-	//stakingHandler := staking.NewHandler(sk)
-	return WrapStakingHandler(ak, sk)
-	//return wrappedHandler
+func NewHandler(
+	sk stakingkeeper.Keeper,
+	bk bankkeeper.Keeper,
+) sdk.Handler {
+	return WrapStakingHandler(sk, bk)
 }
 
 func (am AppModule) Route() sdk.Route {
-	return sdk.NewRoute(stakingtypes.RouterKey, NewHandler(am.AccountKeeper, am.Keeper))
+	return sdk.NewRoute(stakingtypes.RouterKey, NewHandler(am.sk, am.bk))
 }

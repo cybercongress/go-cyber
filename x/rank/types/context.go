@@ -31,13 +31,13 @@ func NewCalcContext(
 
 	return &CalculationContext{
 
-		CidsCount:  int64(cidsCount), // ?
-		LinksCount: int64(linksCount), // ?
+		CidsCount:  int64(cidsCount),
+		LinksCount: int64(linksCount),
 
 		inLinks:  linkIndex.GetInLinks(),
 		outLinks: linkIndex.GetOutLinks(),
 
-		stakes: stakeKeeper.GetTotalStakesAmper(),
+		stakes: stakeKeeper.GetTotalStakesAmpere(),
 
 		FullTree: fullTree,
 

@@ -83,6 +83,7 @@ func GetCmdQuerySourceRoutes() *cobra.Command {
 			if err != nil {
 				return err
 			}
+
 			res, err := queryClient.SourceRoutes(
 				context.Background(),
 				&types.QuerySourceRequest{Source: src.String()},
@@ -117,6 +118,7 @@ func GetCmdQueryDestinationRoutes() *cobra.Command {
 			if err != nil {
 				return err
 			}
+
 			res, err := queryClient.DestinationRoutes(
 				context.Background(),
 				&types.QueryDestinationRequest{Destination: dst.String()},
@@ -259,9 +261,16 @@ func GetCmdQueryRoutes() *cobra.Command {
 			}
 			queryClient := types.NewQueryClient(clientCtx)
 
+			pageReq, err := client.ReadPageRequest(cmd.Flags())
+			if err != nil {
+				return err
+			}
+
 			res, err := queryClient.Routes(
 				context.Background(),
-				&types.QueryRoutesRequest{},
+				&types.QueryRoutesRequest{
+					Pagination: pageReq,
+				},
 			)
 			if err != nil {
 				return err

@@ -29,12 +29,7 @@ func NewWasmQuerier(keeper *keeper.StateKeeper) WasmQuerier {
 func (WasmQuerier) Query(_ sdk.Context, _ wasmTypes.QueryRequest) ([]byte, error) { return nil, nil }
 
 type CosmosQuery struct {
-	RankValueByID     *QueryRankValueByIdParams  `json:"rank_value_by_id,omitempty"`
-	RankValueByCid    *QueryRankValueByCidParams `json:"rank_value_by_cid,omitempty"`
-}
-
-type QueryRankValueByIdParams struct {
-	CidNumber uint64 `json:"cid_number"`
+	RankValueByCid    *QueryRankValueByCidParams `json:"get_rank_value_by_cid,omitempty"`
 }
 
 type QueryRankValueByCidParams struct {
@@ -55,10 +50,7 @@ func (querier WasmQuerier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([
 
 	var bz []byte
 
-	if query.RankValueByID != nil {
-		rank := querier.keeper.GetRankValueByNumber(query.RankValueByID.CidNumber)
-		bz, err = json.Marshal(RankQueryResponse{Rank: rank})
-	} else if query.RankValueByCid != nil {
+	if query.RankValueByCid != nil {
 		rank := querier.keeper.GetRankValueByCid(ctx, query.RankValueByCid.Cid)
 		bz, err = json.Marshal(RankQueryResponse{Rank: rank})
 	} else {

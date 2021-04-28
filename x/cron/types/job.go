@@ -16,8 +16,8 @@ func NewJob(
 	return Job{
 		Creator:  creator,
 		Contract: contract,
-		Trigger:  &trigger,
-		Load:     &load,
+		Trigger:  trigger,
+		Load:     load,
 		Label:    label,
 		Cid:      cid,
 	}
@@ -34,7 +34,8 @@ func (js Jobs) Sort() {
 func (js Jobs) Len() int { return len(js) }
 
 func (js Jobs) Less(i, j int) bool {
-	return js[i].GetLoad().GasPrice.Amount.GT(js[j].GetLoad().GasPrice.Amount)
+	return js[j].Load.GasPrice.IsLT(js[i].Load.GasPrice)
+	//return js[i].Load.GasPrice.Amount.GT(js[j].Load.GasPrice.Amount)
 }
 
 func (js Jobs) Swap(i, j int) { js[i], js[j] = js[j], js[i] }
@@ -50,12 +51,16 @@ func NewTrigger (period, block uint64) Trigger {
 }
 
 func NewStats (
+	creator, contract, label string,
 	calls, fees, gas, block uint64,
 ) JobStats {
 	return JobStats{
-		Calls: calls,
-		Fees: fees,
-		Gas: gas,
+		Creator:   creator,
+		Contract:  contract,
+		Label:     label,
+		Calls:     calls,
+		Fees:      fees,
+		Gas:       gas,
 		LastBlock: block,
 	}
 }

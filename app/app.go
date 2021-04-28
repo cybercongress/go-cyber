@@ -13,6 +13,7 @@ import (
 	"github.com/rakyll/statik/fs"
 
 	wasmplugins "github.com/cybercongress/go-cyber/plugins"
+	ctypes "github.com/cybercongress/go-cyber/types"
 	"github.com/cybercongress/go-cyber/x/cron"
 	"github.com/cybercongress/go-cyber/x/energy"
 	"github.com/cybercongress/go-cyber/x/resources"
@@ -109,10 +110,15 @@ import (
 
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmclient "github.com/CosmWasm/wasmd/x/wasm/client"
+	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	ibcclient "github.com/cosmos/cosmos-sdk/x/ibc/core/02-client"
 
+	bandwidthwasm "github.com/cybercongress/go-cyber/x/bandwidth/wasm"
+	cronwasm "github.com/cybercongress/go-cyber/x/cron/wasm"
+	energywasm "github.com/cybercongress/go-cyber/x/energy/wasm"
 	graphwasm "github.com/cybercongress/go-cyber/x/graph/wasm"
 	rankwasm "github.com/cybercongress/go-cyber/x/rank/wasm"
+	resourceswasm "github.com/cybercongress/go-cyber/x/resources/wasm"
 
 	energykeeper "github.com/cybercongress/go-cyber/x/energy/keeper"
 	energytypes "github.com/cybercongress/go-cyber/x/energy/types"
@@ -125,7 +131,9 @@ import (
 	stakingwrap "github.com/cybercongress/go-cyber/x/staking"
 )
 
-const appName = "Cyber"
+const (
+	appName = "Cyber"
+)
 
 // We pull these out so we can set them with LDFLAGS in the Makefile
 var (
@@ -134,15 +142,17 @@ var (
 
 	// If EnabledSpecificProposals is "", and this is "true", then enable all x/wasm proposals.
 	// If EnabledSpecificProposals is "", and this is not "true", then disable all x/wasm proposals.
-	ProposalsEnabled = "false"
+	ProposalsEnabled = "true"
 	// If set to non-empty string it must be comma-separated list of values that are all a subset
 	// of "EnableAllProposals" (takes precedence over ProposalsEnabled)
 	// https://github.com/CosmWasm/wasmd/blob/02a54d33ff2c064f3539ae12d75d027d9c665f05/x/wasm/internal/types/proposal.go#L28-L34
-	EnableSpecificProposals = ""
+	// TODO discuss extended set of proposals with team and community
+	//EnableSpecificProposals = "StoreCodeProposal,InstantiateContractProposal,MigrateContractProposal,ClearAdminProposal,PinCodes,UnpinCodes"
+	EnableSpecificProposals = "PinCodes,UnpinCodes"
 )
 
 // GetEnabledProposals parses the ProposalsEnabled / EnableSpecificProposals values to
-// produce a list of enabled proposals to pass into wasmd app.
+// produce a list of enabled proposals to pass into cyber app.
 func GetEnabledProposals() []wasm.ProposalType {
 	if EnableSpecificProposals == "" {
 		if ProposalsEnabled == "true" {
@@ -209,7 +219,6 @@ var (
 		transfer.AppModuleBasic{},
 		vesting.AppModuleBasic{},
 
-		wasm.AppModuleBasic{},
 		bandwidth.AppModuleBasic{},
 		cyberbank.AppModuleBasic{},
 		graph.AppModuleBasic{},
@@ -217,6 +226,7 @@ var (
 		energy.AppModuleBasic{},
 		cron.AppModuleBasic{},
 		resources.AppModuleBasic{},
+		wasm.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -229,7 +239,8 @@ var (
 		govtypes.ModuleName:            	{authtypes.Burner},
 		ibctransfertypes.ModuleName:    	{authtypes.Minter, authtypes.Burner},
 		energytypes.EnergyPoolName: 		nil,
-		resourcestypes.ResourcesName: 	    {authtypes.Minter},
+		resourcestypes.ResourcesName: 	    {authtypes.Minter, authtypes.Burner},
+		wasm.ModuleName:                	{authtypes.Burner},
 	}
 
     // module accounts that are allowed to receive tokens
@@ -249,12 +260,13 @@ var (
 type App struct {
 	*baseapp.BaseApp
 
+	appName string
+
 	legacyAmino       *codec.LegacyAmino
 	appCodec          codec.Marshaler
 	interfaceRegistry types.InterfaceRegistry
 
 	invCheckPeriod uint
-	appName string
 
 	// keys to access the substores
 	keys    map[string]*sdk.KVStoreKey
@@ -277,30 +289,29 @@ type App struct {
 	EvidenceKeeper   evidencekeeper.Keeper
 	TransferKeeper   ibctransferkeeper.Keeper
 
-	WasmKeeper      wasm.Keeper
 	BandwidthMeter  *bandwidthkeeper.BandwidthMeter
 	CyberbankKeeper *cyberbankkeeper.IndexedKeeper
 	GraphKeeper     graphkeeper.GraphKeeper
-	IndexKeeper     *graphkeeper.IndexKeeper // TODO move IndexKeeper to CycleContextKeeper
+	IndexKeeper     *graphkeeper.IndexKeeper
 	RankKeeper      *rankkeeper.StateKeeper
 	EnergyKeeper    energykeeper.Keeper
-	CronKeeper      cronkeeper.Keeper
-	InvestmentsKeeper  resourceskeeper.Keeper
+	CronKeeper      *cronkeeper.Keeper
+	ResourcesKeeper resourceskeeper.Keeper
+	WasmKeeper      wasm.Keeper
 
 	// make scoped keepers public for test purposes
 	ScopedIBCKeeper      capabilitykeeper.ScopedKeeper
 	ScopedTransferKeeper capabilitykeeper.ScopedKeeper
-	scopedWasmKeeper     capabilitykeeper.ScopedKeeper
 
 	// the module manager
 	mm *module.Manager
 }
 
-// New returns a reference to an initialized Gaia.
-// NewSimApp returns a reference to an initialized SimApp.
+// New returns a reference to an initialized Cyber Consensus Computer.
 func New(
 	logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest bool, skipUpgradeHeights map[int64]bool,
-	homePath string, invCheckPeriod uint, wasmOpts []wasm.Option, enabledProposals []wasm.ProposalType, appOpts servertypes.AppOptions, baseAppOptions ...func(*baseapp.BaseApp),
+	homePath string, invCheckPeriod uint, wasmOpts []wasm.Option, enabledProposals []wasm.ProposalType,
+	appOpts servertypes.AppOptions, baseAppOptions ...func(*baseapp.BaseApp),
 ) *App {
 	encodingConfig := MakeEncodingConfig()
 	appCodec := encodingConfig.Marshaler
@@ -311,15 +322,18 @@ func New(
 	bApp.SetCommitMultiStoreTracer(traceStore)
 	bApp.SetAppVersion(version.Version)
 	bApp.SetInterfaceRegistry(interfaceRegistry)
-	//bApp.GRPCQueryRouter().SetInterfaceRegistry(interfaceRegistry)
 
 	keys := sdk.NewKVStoreKeys(
 		authtypes.StoreKey, banktypes.StoreKey, stakingtypes.StoreKey,
 		minttypes.StoreKey, distrtypes.StoreKey, slashingtypes.StoreKey,
 		govtypes.StoreKey, paramstypes.StoreKey, ibchost.StoreKey, upgradetypes.StoreKey,
 		evidencetypes.StoreKey, ibctransfertypes.StoreKey, capabilitytypes.StoreKey,
-		wasm.StoreKey, graphtypes.StoreKey, bandwidthtypes.StoreKey, ranktypes.StoreKey,
-		energytypes.StoreKey, crontypes.StoreKey, resourcestypes.StoreKey,
+		bandwidthtypes.StoreKey,
+		graphtypes.StoreKey,
+		ranktypes.StoreKey,
+		energytypes.StoreKey,
+		crontypes.StoreKey,
+		wasm.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey)
@@ -337,11 +351,15 @@ func New(
 	}
 
 	app.ParamsKeeper = initParamsKeeper(appCodec, legacyAmino, keys[paramstypes.StoreKey], tkeys[paramstypes.TStoreKey])
+
 	// set the BaseApp's parameter store
 	bApp.SetParamStore(app.ParamsKeeper.Subspace(baseapp.Paramspace).WithKeyTable(paramskeeper.ConsensusParamsKeyTable()))
 
 	// add capability keeper and ScopeToModule for ibc module
-	app.CapabilityKeeper = capabilitykeeper.NewKeeper(appCodec, keys[capabilitytypes.StoreKey], memKeys[capabilitytypes.MemStoreKey])
+	app.CapabilityKeeper = capabilitykeeper.NewKeeper(
+		appCodec, keys[capabilitytypes.StoreKey], memKeys[capabilitytypes.MemStoreKey],
+	)
+
 	// grant capabilities for the ibc and ibc-transfer modules
 	scopedIBCKeeper := app.CapabilityKeeper.ScopeToModule(ibchost.ModuleName)
 	scopedTransferKeeper := app.CapabilityKeeper.ScopeToModule(ibctransfertypes.ModuleName)
@@ -349,29 +367,38 @@ func New(
 
 	// add keepers
 	app.AccountKeeper = authkeeper.NewAccountKeeper(
-		appCodec, keys[authtypes.StoreKey], app.GetSubspace(authtypes.ModuleName), authtypes.ProtoBaseAccount, maccPerms,
+		appCodec, keys[authtypes.StoreKey],
+		app.GetSubspace(authtypes.ModuleName), authtypes.ProtoBaseAccount, maccPerms,
 	)
 	app.BankKeeper = bankkeeper.NewBaseKeeper(
-		appCodec, keys[banktypes.StoreKey], app.AccountKeeper, app.GetSubspace(banktypes.ModuleName), app.ModuleAccountAddrs(),
+		appCodec, keys[banktypes.StoreKey],
+		app.AccountKeeper, app.GetSubspace(banktypes.ModuleName), app.ModuleAccountAddrs(),
 	)
 	stakingKeeper := stakingkeeper.NewKeeper(
-		appCodec, keys[stakingtypes.StoreKey], app.AccountKeeper, app.BankKeeper, app.GetSubspace(stakingtypes.ModuleName),
+		appCodec, keys[stakingtypes.StoreKey],
+		app.AccountKeeper, app.BankKeeper, app.GetSubspace(stakingtypes.ModuleName),
 	)
 	app.MintKeeper = mintkeeper.NewKeeper(
-		appCodec, keys[minttypes.StoreKey], app.GetSubspace(minttypes.ModuleName), &stakingKeeper,
+		appCodec, keys[minttypes.StoreKey],
+		app.GetSubspace(minttypes.ModuleName), &stakingKeeper,
 		app.AccountKeeper, app.BankKeeper, authtypes.FeeCollectorName,
 	)
 	app.DistrKeeper = distrkeeper.NewKeeper(
-		appCodec, keys[distrtypes.StoreKey], app.GetSubspace(distrtypes.ModuleName), app.AccountKeeper, app.BankKeeper,
+		appCodec, keys[distrtypes.StoreKey],
+		app.GetSubspace(distrtypes.ModuleName), app.AccountKeeper, app.BankKeeper,
 		&stakingKeeper, authtypes.FeeCollectorName, app.ModuleAccountAddrs(),
 	)
 	app.SlashingKeeper = slashingkeeper.NewKeeper(
-		appCodec, keys[slashingtypes.StoreKey], &stakingKeeper, app.GetSubspace(slashingtypes.ModuleName),
+		appCodec, keys[slashingtypes.StoreKey],
+		&stakingKeeper, app.GetSubspace(slashingtypes.ModuleName),
 	)
 	app.CrisisKeeper = crisiskeeper.NewKeeper(
-		app.GetSubspace(crisistypes.ModuleName), invCheckPeriod, app.BankKeeper, authtypes.FeeCollectorName,
+		app.GetSubspace(crisistypes.ModuleName),
+		invCheckPeriod, app.BankKeeper, authtypes.FeeCollectorName,
 	)
-	app.UpgradeKeeper = upgradekeeper.NewKeeper(skipUpgradeHeights, keys[upgradetypes.StoreKey], appCodec, homePath)
+	app.UpgradeKeeper = upgradekeeper.NewKeeper(
+		skipUpgradeHeights, keys[upgradetypes.StoreKey], appCodec, homePath,
+	)
 
 	// register the staking hooks
 	// NOTE: stakingKeeper above is passed by reference, so that it will contain these hooks
@@ -379,43 +406,10 @@ func New(
 		stakingtypes.NewMultiStakingHooks(app.DistrKeeper.Hooks(), app.SlashingKeeper.Hooks()),
 	)
 
-	// Create IBC Keeper
-	app.IBCKeeper = ibckeeper.NewKeeper(
-		appCodec, keys[ibchost.StoreKey], app.GetSubspace(ibchost.ModuleName), app.StakingKeeper, scopedIBCKeeper,
-	)
-
-	// register the proposal types
-	govRouter := govtypes.NewRouter()
-	govRouter.AddRoute(govtypes.RouterKey, govtypes.ProposalHandler).
-		AddRoute(paramproposal.RouterKey, params.NewParamChangeProposalHandler(app.ParamsKeeper)).
-		AddRoute(distrtypes.RouterKey, distr.NewCommunityPoolSpendProposalHandler(app.DistrKeeper)).
-		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.UpgradeKeeper)).
-		AddRoute(ibchost.RouterKey, ibcclient.NewClientUpdateProposalHandler(app.IBCKeeper.ClientKeeper))
-
-	// Create Transfer Keepers
-	app.TransferKeeper = ibctransferkeeper.NewKeeper(
-		appCodec, keys[ibctransfertypes.StoreKey], app.GetSubspace(ibctransfertypes.ModuleName),
-		app.IBCKeeper.ChannelKeeper, &app.IBCKeeper.PortKeeper,
-		app.AccountKeeper, app.BankKeeper, scopedTransferKeeper,
-	)
-	transferModule := transfer.NewAppModule(app.TransferKeeper)
-
-	// Create static IBC router, add transfer route, then set and seal it
-	ibcRouter := porttypes.NewRouter()
-	ibcRouter.AddRoute(ibctransfertypes.ModuleName, transferModule)
-
-	// Create evidence Keeper for to register the IBC light client misbehaviour evidence route
-	evidenceKeeper := evidencekeeper.NewKeeper(
-		appCodec, keys[evidencetypes.StoreKey], &app.StakingKeeper, app.SlashingKeeper,
-	)
-	// If evidence needs to be handled for the app, set routes in router here and seal
-	app.EvidenceKeeper = *evidenceKeeper
-
-	// -------
-
 	app.CyberbankKeeper = cyberbankkeeper.NewIndexedKeeper(
 		cyberbankkeeper.Wrap(&app.BankKeeper), app.AccountKeeper,
 	)
+
 	app.CyberbankKeeper.Proxy.AddHook(bandwidth.CollectAddressesWithStakeChange())
 
 	app.BandwidthMeter = bandwidthkeeper.NewBandwidthMeter(app.appCodec,
@@ -434,42 +428,74 @@ func New(
 		computeUnit,
 	)
 
-	app.EnergyKeeper = energykeeper.NewKeeper(appCodec, keys[energytypes.ModuleName], app.CyberbankKeeper, app.AccountKeeper, app.GetSubspace(energytypes.ModuleName))
+	app.EnergyKeeper = energykeeper.NewKeeper(
+		appCodec, keys[energytypes.ModuleName], app.CyberbankKeeper,
+		app.AccountKeeper, app.GetSubspace(energytypes.ModuleName),
+	)
 	app.CyberbankKeeper.Proxy.SetEnergyKeeper(&app.EnergyKeeper)
 	app.CyberbankKeeper.Proxy.SetAccountKeeper(app.AccountKeeper)
 
-	// -------
+	app.ResourcesKeeper = resourceskeeper.NewKeeper(
+		appCodec, app.AccountKeeper, app.CyberbankKeeper.Proxy,
+		app.BandwidthMeter, app.GetSubspace(resourcestypes.ModuleName),
+	)
 
+	// Create IBC Keeper
+	app.IBCKeeper = ibckeeper.NewKeeper(
+		appCodec, keys[ibchost.StoreKey], app.GetSubspace(ibchost.ModuleName), app.StakingKeeper, scopedIBCKeeper,
+	)
+
+	// Create Transfer Keepers
+	app.TransferKeeper = ibctransferkeeper.NewKeeper(
+		appCodec, keys[ibctransfertypes.StoreKey], app.GetSubspace(ibctransfertypes.ModuleName),
+		app.IBCKeeper.ChannelKeeper, &app.IBCKeeper.PortKeeper,
+		app.AccountKeeper, app.BankKeeper, scopedTransferKeeper,
+	)
+
+	app.CronKeeper = cronkeeper.NewKeeper(appCodec, keys[crontypes.StoreKey],
+		app.CyberbankKeeper, app.AccountKeeper, app.GetSubspace(crontypes.ModuleName),
+	)
+
+	// Initialize CosmWasm
+	wasmDir := filepath.Join(homePath, "wasm")
+	wasmConfig, err := wasm.ReadWasmConfig(appOpts)
+	if err != nil {
+		panic("error while reading wasm config: " + err.Error())
+	}
+
+	// Initialize Cyber's query integrations
 	querier := wasmplugins.NewQuerier()
 	queries := map[string]wasmplugins.WasmQuerierInterface{
-		wasmplugins.WasmQueryRouteRank:  rankwasm.NewWasmQuerier(app.RankKeeper),
-		wasmplugins.WasmQueryRouteGraph: graphwasm.NewWasmQuerier(app.GraphKeeper),
+		wasmplugins.WasmQueryRouteRank:      rankwasm.NewWasmQuerier(app.RankKeeper),
+		wasmplugins.WasmQueryRouteGraph:     graphwasm.NewWasmQuerier(app.GraphKeeper),
+		wasmplugins.WasmQueryRouteCron:      cronwasm.NewWasmQuerier(*app.CronKeeper),
+		wasmplugins.WasmQueryRouteEnergy:    energywasm.NewWasmQuerier(app.EnergyKeeper),
+		wasmplugins.WasmQueryRouteBandwidth: bandwidthwasm.NewWasmQuerier(app.BandwidthMeter),
 	}
 	querier.Queriers = queries
 	queryPlugins := &wasm.QueryPlugins{
 		Custom: querier.QueryCustom,
 	}
 
+	// Initialize Cyber's encoder integrations
 	parser := wasmplugins.NewMsgParser()
 	parsers := map[string]wasmplugins.WasmMsgParserInterface{
-		wasmplugins.WasmMsgParserRouteGraph: graphwasm.NewWasmMsgParser(),
+		wasmplugins.WasmMsgParserRouteGraph: 	 graphwasm.NewWasmMsgParser(),
+		wasmplugins.WasmMsgParserRouteCron:  	 cronwasm.NewWasmMsgParser(),
+		wasmplugins.WasmMsgParserRouteEnergy:    energywasm.NewWasmMsgParser(),
+		wasmplugins.WasmMsgParserRouteResources: resourceswasm.NewWasmMsgParser(),
 	}
 	parser.Parsers = parsers
 	customEncoders := &wasm.MessageEncoders{
 		Custom: parser.ParseCustom,
 	}
 
-	//var wasmRouter = bApp.Router()
-	wasmDir := filepath.Join(homePath, "wasm")
+	supportedFeatures := "staking,stargate,cyber"
+	wasmOpts = append(wasmOpts, wasmkeeper.WithQueryPlugins(queryPlugins))
+	wasmOpts = append(wasmOpts, wasmkeeper.WithMessageEncoders(customEncoders))
 
-	wasmConfig, err := wasm.ReadWasmConfig(appOpts)
-	if err != nil {
-		panic("error while reading wasm config: " + err.Error())
-	}
 	// The last arguments can contain custom message handlers, and custom query handlers,
 	// if we want to allow any custom callbacks
-	supportedFeatures := "staking,stargate,cyber"
-
 	app.WasmKeeper = wasm.NewKeeper(
 		appCodec,
 		keys[wasm.StoreKey],
@@ -481,43 +507,54 @@ func New(
 		app.IBCKeeper.ChannelKeeper,
 		&app.IBCKeeper.PortKeeper,
 		scopedWasmKeeper,
+		app.TransferKeeper,
 		app.Router(),
 		app.GRPCQueryRouter(),
 		wasmDir,
 		wasmConfig,
 		supportedFeatures,
-		customEncoders,
-		queryPlugins,
 		wasmOpts...,
 	)
 
-	// -------
+	app.CronKeeper.SetWasmKeeper(app.WasmKeeper)
 
-	// The gov proposal types can be individually enabled
+	// register the proposal types
+	govRouter := govtypes.NewRouter()
+	govRouter.AddRoute(govtypes.RouterKey, govtypes.ProposalHandler).
+		AddRoute(paramproposal.RouterKey, params.NewParamChangeProposalHandler(app.ParamsKeeper)).
+		AddRoute(distrtypes.RouterKey, distr.NewCommunityPoolSpendProposalHandler(app.DistrKeeper)).
+		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.UpgradeKeeper)).
+		AddRoute(ibchost.RouterKey, ibcclient.NewClientUpdateProposalHandler(app.IBCKeeper.ClientKeeper))
+
 	if len(enabledProposals) != 0 {
 		govRouter.AddRoute(wasm.RouterKey, wasm.NewWasmProposalHandler(app.WasmKeeper, enabledProposals))
 	}
-	ibcRouter.AddRoute(wasm.ModuleName, wasm.NewIBCHandler(app.WasmKeeper))
+
+	app.GovKeeper = govkeeper.NewKeeper(
+		appCodec, keys[govtypes.StoreKey], app.GetSubspace(govtypes.ModuleName),
+		app.AccountKeeper, app.BankKeeper, &stakingKeeper, govRouter,
+	)
+
+	transferModule := transfer.NewAppModule(app.TransferKeeper)
+
+	// Create static IBC router, add transfer route, then set and seal it
+	ibcRouter := porttypes.NewRouter()
+	ibcRouter.AddRoute(ibctransfertypes.ModuleName, transferModule)
+	ibcRouter.AddRoute(wasm.ModuleName, wasm.NewIBCHandler(app.WasmKeeper, app.IBCKeeper.ChannelKeeper))
 	app.IBCKeeper.SetRouter(ibcRouter)
 
-	app.GovKeeper = govkeeper.NewKeeper(appCodec, keys[govtypes.StoreKey], app.GetSubspace(govtypes.ModuleName),
-		app.AccountKeeper, app.BankKeeper, &stakingKeeper,
-		govRouter,
+	// Create evidence Keeper for to register the IBC light client misbehaviour evidence route
+	evidenceKeeper := evidencekeeper.NewKeeper(
+		appCodec, keys[evidencetypes.StoreKey], &app.StakingKeeper, app.SlashingKeeper,
 	)
+	// If evidence needs to be handled for the app, set routes in router here and seal
+	app.EvidenceKeeper = *evidenceKeeper
 
-	app.CronKeeper = cronkeeper.NewKeeper(appCodec, keys[crontypes.StoreKey], app.WasmKeeper, app.CyberbankKeeper, app.AccountKeeper, app.GetSubspace(crontypes.ModuleName), app.Router())
+	/****  Module Options ****/
 
-	app.InvestmentsKeeper = resourceskeeper.NewKeeper(
-		appCodec, keys[resourcestypes.StoreKey], app.AccountKeeper, app.CyberbankKeeper.Proxy,
-	)
-
-	// -------
-
-	var skipGenesisInvariants = false
-	opt := appOpts.Get(crisis.FlagSkipGenesisInvariants)
-	if opt, ok := opt.(bool); ok {
-		skipGenesisInvariants = opt
-	}
+	// NOTE: we may consider parsing `appOpts` inside module constructors. For the moment
+	// we prefer to be more strict in what arguments the modules expect.
+	var skipGenesisInvariants = cast.ToBool(appOpts.Get(crisis.FlagSkipGenesisInvariants))
 
 	// NOTE: Any module instantiated in the module manager that is later modified
 	// must be passed by reference here.
@@ -535,7 +572,6 @@ func New(
 		mint.NewAppModule(appCodec, app.MintKeeper, app.AccountKeeper),
 		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper),
 		distr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper),
-		//staking.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper),
 		stakingwrap.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper),
 		upgrade.NewAppModule(app.UpgradeKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),
@@ -543,15 +579,17 @@ func New(
 		params.NewAppModule(app.ParamsKeeper),
 		transferModule,
 
-		// TODO pass appCodec?
 		wasm.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper),
-		cyberbank.NewAppModule(app.CyberbankKeeper),
-		bandwidth.NewAppModule(app.AccountKeeper, app.BandwidthMeter),
-		graph.NewAppModule(appCodec, app.GraphKeeper, app.IndexKeeper, app.AccountKeeper, app.CyberbankKeeper),
-		rank.NewAppModule(app.RankKeeper),
-		energy.NewAppModule(app.EnergyKeeper),
-		cron.NewAppModule(app.CronKeeper),
-		resources.NewAppModule(app.InvestmentsKeeper),
+		cyberbank.NewAppModule(appCodec, app.CyberbankKeeper),
+		bandwidth.NewAppModule(appCodec, app.AccountKeeper, app.BandwidthMeter),
+		graph.NewAppModule(
+			appCodec, app.GraphKeeper, app.IndexKeeper,
+			app.AccountKeeper, app.CyberbankKeeper, app.BandwidthMeter,
+		),
+		rank.NewAppModule(appCodec, app.RankKeeper),
+		energy.NewAppModule(appCodec, app.EnergyKeeper),
+		cron.NewAppModule(appCodec, *app.CronKeeper),
+		resources.NewAppModule(appCodec, app.ResourcesKeeper),
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -566,6 +604,7 @@ func New(
 		evidencetypes.ModuleName,
 		stakingtypes.ModuleName,
 		ibchost.ModuleName,
+		crontypes.ModuleName,
 	)
 
 	app.mm.SetOrderEndBlockers(
@@ -575,7 +614,6 @@ func New(
 		cyberbanktypes.ModuleName,
 		bandwidthtypes.ModuleName,
 		ranktypes.ModuleName,
-		crontypes.ModuleName,
 	)
 
 	// NOTE: The genutils module must occur after staking so that pools are
@@ -598,10 +636,12 @@ func New(
 		evidencetypes.ModuleName,
 		ibctransfertypes.ModuleName,
 
+		// graph and cyberbank will be initialized directly in InitChainer
 		wasm.ModuleName,
 		bandwidthtypes.ModuleName,
 		ranktypes.ModuleName,
 		energytypes.ModuleName,
+		resourcestypes.ModuleName,
 		crontypes.ModuleName,
 	)
 
@@ -633,9 +673,9 @@ func New(
 			tmos.Exit(err.Error())
 		}
 
-
+		// TODO refactor load flow, fix state sync as sdk v43.X will be released
 		freshCtx := app.BaseApp.NewContext(true, tmproto.Header{})
-		freshCtx = freshCtx.WithBlockHeight(int64(app.RankKeeper.GetLatestBlockNumber(freshCtx))) // TODO clean shit
+		freshCtx = freshCtx.WithBlockHeight(int64(app.RankKeeper.GetLatestBlockNumber(freshCtx)))
 
 		bandwidthParams := bandwidthtypes.DefaultParams()
 		rankParams := ranktypes.DefaultParams()
@@ -657,15 +697,16 @@ func New(
 			tmos.Exit(err.Error())
 		}
 
-		// ------------------------------
-
 		start := time.Now()
-		app.BaseApp.Logger().Info("Loading the in-memory state")
+		app.BaseApp.Logger().Info("Loading the brain state")
 		app.CyberbankKeeper.LoadState(rankCtx, freshCtx)
 		app.IndexKeeper.LoadState(rankCtx, freshCtx)
 		app.BandwidthMeter.LoadState(freshCtx)
 		app.RankKeeper.LoadState(freshCtx)
-		app.BaseApp.Logger().Info("Cyber is loaded, Takeoff!", "time", time.Since(start))
+		app.BaseApp.Logger().Info(
+			"Cyber Consensus Supercomputer is started, next - the singularity!",
+			"time", time.Since(start),
+		)
 
 		// Initialize and seal the capability keeper so all persistent capabilities
 		// are loaded in-memory and prevent any further modules from creating scoped
@@ -703,8 +744,28 @@ func (app *App) InitChainer(ctx sdk.Context, req abci.RequestInitChain) abci.Res
 	app.legacyAmino.MustUnmarshalJSON(req.AppStateBytes, &genesisState)
 	resp := app.mm.InitGenesis(ctx, app.appCodec, genesisState)
 
-	app.mm.Modules[graphtypes.ModuleName].InitGenesis(ctx, app.appCodec, nil) // cause link skipped through module manager
-	app.mm.Modules[cyberbanktypes.ModuleName].InitGenesis(ctx, app.appCodec, nil) // cause cyberrank skipped through module manager
+	// because manager skips init genesis for modules with empty data (e.g null)
+	app.mm.Modules[graphtypes.ModuleName].InitGenesis(ctx, app.appCodec, nil)
+	app.mm.Modules[cyberbanktypes.ModuleName].InitGenesis(ctx, app.appCodec, nil)
+
+	// if this is genesis event we need to mint equal amount of liquid staking tokens to genesis validators
+	var bankGenesisState banktypes.GenesisState
+	app.appCodec.MustUnmarshalJSON(genesisState["bank"], &bankGenesisState)
+	if bankGenesisState.Supply.AmountOf(ctypes.SCYB).IsZero() {
+		for _, delegation := range app.StakingKeeper.GetAllDelegations(ctx) {
+			toMint := sdk.NewCoin(ctypes.SCYB, delegation.GetShares().RoundInt())
+			err := app.BankKeeper.MintCoins(
+				ctx, resourcestypes.ResourcesName, sdk.NewCoins(toMint),
+			); if err != nil {
+				panic("error during genesis sboot's minting")
+			}
+			err = app.BankKeeper.SendCoinsFromModuleToAccount(
+				ctx, resourcestypes.ResourcesName, delegation.GetDelegatorAddr(), sdk.NewCoins(toMint),
+			); if err != nil {
+				panic("error during genesis sboot's sending")
+			}
+		}
+	}
 
 	return resp
 }
@@ -743,7 +804,7 @@ func (app *App) LegacyAmino() *codec.LegacyAmino {
 	return app.legacyAmino
 }
 
-// AppCodec returns Gaia's app codec.
+// AppCodec returns Cyber's app codec.
 //
 // NOTE: This is solely to be used for testing purposes as it may be desirable
 // for modules to register their own custom testing types.
@@ -751,7 +812,7 @@ func (app *App) AppCodec() codec.Marshaler {
 	return app.appCodec
 }
 
-// InterfaceRegistry returns Gaia's InterfaceRegistry
+// InterfaceRegistry returns Cyber's InterfaceRegistry
 func (app *App) InterfaceRegistry() types.InterfaceRegistry {
 	return app.interfaceRegistry
 }
@@ -855,13 +916,14 @@ func initParamsKeeper(appCodec codec.BinaryMarshaler, legacyAmino *codec.LegacyA
 	paramsKeeper.Subspace(ranktypes.ModuleName)
 	paramsKeeper.Subspace(energytypes.ModuleName)
 	paramsKeeper.Subspace(crontypes.ModuleName)
+	paramsKeeper.Subspace(resourcestypes.ModuleName)
 
 	return paramsKeeper
 }
 
 // MakeCodecs constructs the *std.Codec and *codec.LegacyAmino instances used by
-// DesmosApp. It is useful for tests and clients who do not want to construct the
-// full DesmosApp
+// Cyber's app. It is useful for tests and clients who do not want to construct the
+// full Cyber app
 func MakeCodecs() (codec.Marshaler, *codec.LegacyAmino) {
 	cfg := MakeEncodingConfig()
 	return cfg.Marshaler, cfg.Amino

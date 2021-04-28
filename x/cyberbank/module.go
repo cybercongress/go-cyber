@@ -29,15 +29,11 @@ type AppModuleBasic struct{
 	cdc codec.Marshaler
 }
 
-func (AppModuleBasic) Name() string {
-	return types.ModuleName
-}
+func (AppModuleBasic) Name() string { return types.ModuleName }
 
 func (AppModuleBasic) RegisterLegacyAminoCodec(_ *codec.LegacyAmino) {}
 
-func (AppModuleBasic) DefaultGenesis(_ codec.JSONMarshaler) json.RawMessage {
-	return nil
-}
+func (AppModuleBasic) DefaultGenesis(_ codec.JSONMarshaler) json.RawMessage { return nil }
 
 func (AppModuleBasic) ValidateGenesis(_ codec.JSONMarshaler, _ client.TxEncodingConfig, _ json.RawMessage) error {
 	return nil
@@ -47,28 +43,25 @@ func (AppModuleBasic) RegisterRESTRoutes(_ client.Context, _ *mux.Router) {}
 
 func (AppModuleBasic) RegisterGRPCGatewayRoutes(_ client.Context, _ *runtime.ServeMux) {}
 
-func (AppModuleBasic) GetTxCmd() *cobra.Command {
-	return nil
-}
+func (AppModuleBasic) GetTxCmd() *cobra.Command { return nil }
 
-func (AppModuleBasic) GetQueryCmd() *cobra.Command {
-	return nil
-}
+func (AppModuleBasic) GetQueryCmd() *cobra.Command { return nil }
 
 func (AppModuleBasic) RegisterInterfaces(_ codectypes.InterfaceRegistry) {}
 
-//____________________________________________________________________________
-
 type AppModule struct {
 	AppModuleBasic
+
 	keeper        *keeper.IndexedKeeper
 }
 
 func (am AppModule) RegisterServices(_ module.Configurator) {}
 
-func NewAppModule(ik *keeper.IndexedKeeper) AppModule {
+func NewAppModule(
+	cdc codec.Marshaler, ik *keeper.IndexedKeeper,
+) AppModule {
 	return AppModule{
-		AppModuleBasic: AppModuleBasic{},
+		AppModuleBasic: AppModuleBasic{cdc: cdc},
 		keeper:         ik,
 	}
 }
@@ -79,33 +72,22 @@ func (AppModule) Name() string {
 
 func (am AppModule) RegisterInvariants(_ sdk.InvariantRegistry) {}
 
-func (AppModule) Route() sdk.Route {
-	return sdk.Route{}
-}
+func (AppModule) Route() sdk.Route { return sdk.Route{} }
 
-func (am AppModule) NewHandler() sdk.Handler {
-	return nil
-}
+func (am AppModule) NewHandler() sdk.Handler { return nil }
 
-func (AppModule) QuerierRoute() string {
-	return ""
-}
+func (AppModule) QuerierRoute() string { return "" }
 
-func (am AppModule) LegacyQuerierHandler(_ *codec.LegacyAmino) sdk.Querier {
-	return nil
-}
+func (am AppModule) LegacyQuerierHandler(_ *codec.LegacyAmino) sdk.Querier { return nil }
 
 func (am AppModule) InitGenesis(ctx sdk.Context, _ codec.JSONMarshaler, _ json.RawMessage) []abci.ValidatorUpdate {
-	keeper.InitGenesis(ctx, am.keeper)
+	am.keeper.InitGenesis(ctx)
 	return []abci.ValidatorUpdate{}
 }
 
-func (am AppModule) ExportGenesis(_ sdk.Context, _ codec.JSONMarshaler) json.RawMessage {
-	return nil
-}
+func (am AppModule) ExportGenesis(_ sdk.Context, _ codec.JSONMarshaler) json.RawMessage { return nil }
 
-func (am AppModule) BeginBlock(_ sdk.Context, _ abci.RequestBeginBlock) {
-}
+func (am AppModule) BeginBlock(_ sdk.Context, _ abci.RequestBeginBlock) {}
 
 func (am AppModule) EndBlock(ctx sdk.Context, _ abci.RequestEndBlock) []abci.ValidatorUpdate {
 	EndBlocker(ctx, am.keeper)

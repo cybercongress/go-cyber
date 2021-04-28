@@ -2,7 +2,7 @@
 # > docker build -t cyber .
 # > docker run -it -p 46657:46657 -p 46656:46656 -v ~/.cyber:/root/.cyber -v ~/.cybercli:/root/.cybercli cyber cyber init
 # > docker run -it -p 46657:46657 -p 46656:46656 -v ~/.cyber:/root/.cyber -v ~/.cybercli:/root/.cybercli cyber cyber start
-FROM golang:alpine AS build-env
+FROM golang:1.16-alpine3.13 AS build-env
 
 # Set up dependencies
 ENV PACKAGES curl make git libc-dev bash gcc linux-headers eudev-dev python3

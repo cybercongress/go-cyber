@@ -20,19 +20,26 @@ func NewMsgServerImpl(
 	}
 }
 
-func (k msgServer) CreateEnergyRoute(goCtx context.Context, msg *types.MsgCreateEnergyRoute) (*types.MsgCreateEnergyRouteResponse, error) {
+func (k msgServer) CreateRoute(goCtx context.Context, msg *types.MsgCreateRoute) (*types.MsgCreateRouteResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	src, _ := sdk.AccAddressFromBech32(msg.Source)
-	dst, _ := sdk.AccAddressFromBech32(msg.Destination)
-	err := k.Keeper.CreateEnergyRoute(ctx, src, dst, msg.Alias)
+	src, err := sdk.AccAddressFromBech32(msg.Source)
+	if err != nil {
+		return nil, err
+	}
+	dst, err := sdk.AccAddressFromBech32(msg.Destination)
+	if err != nil {
+		return nil, err
+	}
+
+	err = k.Keeper.CreateEnergyRoute(ctx, src, dst, msg.Alias)
 	if err != nil {
 		return nil, err
 	}
 
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
-			types.EventTypeCreateEnergyRoute,
+			types.EventTypeCreateRoute,
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
 			sdk.NewAttribute(types.AttributeKeySource, msg.Source),
 			sdk.NewAttribute(types.AttributeKeyDestination, msg.Destination),
@@ -40,70 +47,88 @@ func (k msgServer) CreateEnergyRoute(goCtx context.Context, msg *types.MsgCreate
 		),
 	)
 
-	return &types.MsgCreateEnergyRouteResponse{}, nil
+	return &types.MsgCreateRouteResponse{}, nil
 }
 
-func (k msgServer) EditEnergyRoute(goCtx context.Context, msg *types.MsgEditEnergyRoute) (*types.MsgEditEnergyRouteResponse, error) {
+func (k msgServer) EditRoute(goCtx context.Context, msg *types.MsgEditRoute) (*types.MsgEditRouteResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	src, _ := sdk.AccAddressFromBech32(msg.Source)
-	dst, _ := sdk.AccAddressFromBech32(msg.Destination)
+	src, err := sdk.AccAddressFromBech32(msg.Source)
+	if err != nil {
+		return nil, err
+	}
+	dst, err := sdk.AccAddressFromBech32(msg.Destination)
+	if err != nil {
+		return nil, err
+	}
 
-	err := k.Keeper.EditEnergyRoute(ctx, src, dst, msg.Value)
+	err = k.Keeper.EditEnergyRoute(ctx, src, dst, msg.Value)
 	if err != nil {
 		return nil, err
 	}
 
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
-			types.EventTypeEditEnergyRoute,
+			types.EventTypeEditRoute,
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
 			sdk.NewAttribute(types.AttributeKeySource, msg.Source),
 			sdk.NewAttribute(types.AttributeKeyDestination, msg.Destination),
-			sdk.NewAttribute(types.AttributeKeyAmount, msg.Value.String()),
+			sdk.NewAttribute(types.AttributeKeyValue, msg.Value.String()),
 		),
 	)
 
-	return &types.MsgEditEnergyRouteResponse{}, nil
+	return &types.MsgEditRouteResponse{}, nil
 }
 
-func (k msgServer) DeleteEnergyRoute(goCtx context.Context, msg *types.MsgDeleteEnergyRoute) (*types.MsgDeleteEnergyRouteResponse, error) {
+func (k msgServer) DeleteRoute(goCtx context.Context, msg *types.MsgDeleteRoute) (*types.MsgDeleteRouteResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	src, _ := sdk.AccAddressFromBech32(msg.Source)
-	dst, _ := sdk.AccAddressFromBech32(msg.Destination)
+	src, err := sdk.AccAddressFromBech32(msg.Source)
+	if err != nil {
+		return nil, err
+	}
+	dst, err := sdk.AccAddressFromBech32(msg.Destination)
+	if err != nil {
+		return nil, err
+	}
 
-	err := k.Keeper.DeleteEnergyRoute(ctx, src, dst)
+	err = k.Keeper.DeleteEnergyRoute(ctx, src, dst)
 	if err != nil {
 		return nil, err
 	}
 
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
-			types.EventTypeDeleteEnergyRoute,
+			types.EventTypeDeleteRoute,
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
 			sdk.NewAttribute(types.AttributeKeySource, msg.Source),
 			sdk.NewAttribute(types.AttributeKeyDestination, msg.Destination),
 		),
 	)
 
-	return &types.MsgDeleteEnergyRouteResponse{}, nil
+	return &types.MsgDeleteRouteResponse{}, nil
 }
 
-func (k msgServer) EditEnergyRouteAlias(goCtx context.Context, msg *types.MsgEditEnergyRouteAlias) (*types.MsgEditEnergyRouteAliasResponse, error) {
+func (k msgServer) EditRouteAlias(goCtx context.Context, msg *types.MsgEditRouteAlias) (*types.MsgEditRouteAliasResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	src, _ := sdk.AccAddressFromBech32(msg.Source)
-	dst, _ := sdk.AccAddressFromBech32(msg.Destination)
+	src, err := sdk.AccAddressFromBech32(msg.Source)
+	if err != nil {
+		return nil, err
+	}
+	dst, err := sdk.AccAddressFromBech32(msg.Destination)
+	if err != nil {
+		return nil, err
+	}
 
-	err := k.Keeper.EditEnergyRouteAlias(ctx, src, dst, msg.Alias)
+	err = k.Keeper.EditEnergyRouteAlias(ctx, src, dst, msg.Alias)
 	if err != nil {
 		return nil, err
 	}
 
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
-			types.EventTypeEditEnergyRouteAlias,
+			types.EventTypeEditRouteAlias,
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
 			sdk.NewAttribute(types.AttributeKeySource, msg.Source),
 			sdk.NewAttribute(types.AttributeKeyDestination, msg.Destination),
@@ -111,5 +136,5 @@ func (k msgServer) EditEnergyRouteAlias(goCtx context.Context, msg *types.MsgEdi
 		),
 	)
 
-	return &types.MsgEditEnergyRouteAliasResponse{}, nil
+	return &types.MsgEditRouteAliasResponse{}, nil
 }

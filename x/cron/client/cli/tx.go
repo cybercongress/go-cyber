@@ -81,7 +81,7 @@ $ %s tx cron add-job cyber___ 10 0 "{"release":{}}" 1 "label" Qm___ --from mykey
 				return err
 			}
 
-			msg := types.NewMsgCronAddJob(
+			msg := types.NewMsgAddJob(
 				creator, contract,
 				types.NewTrigger(period, block),
 				types.NewLoad(args[3], gasprice),
@@ -128,7 +128,7 @@ $ %s tx cron remove-job cyber___ "label" --from mykey
 				return err
 			}
 
-			msg := types.NewMsgCronRemoveJob(
+			msg := types.NewMsgRemoveJob(
 				creator, contract, args[1],
 			)
 			if err := msg.ValidateBasic(); err != nil {
@@ -171,7 +171,7 @@ $ %s tx cron change-job-cid cyber___ "label" Qm___ --from mykey
 				return err
 			}
 
-			msg := types.NewMsgCronChangeJobCID(
+			msg := types.NewMsgChangeJobCID(
 				creator, contract, args[1], args[2],
 			)
 			if err := msg.ValidateBasic(); err != nil {
@@ -214,7 +214,7 @@ $ %s tx cron change-job-label cyber___ "label" "newLabel" --from mykey
 				return err
 			}
 
-			msg := types.NewMsgCronChangeJobLabel(
+			msg := types.NewMsgChangeJobLabel(
 				creator, contract, args[1], args[2],
 			)
 			if err := msg.ValidateBasic(); err != nil {
@@ -257,7 +257,7 @@ $ %s tx cron change-job-calldata cyber___ "label" "{"release":{}}" --from mykey
 				return err
 			}
 
-			msg := types.NewMsgCronChangeCallData(
+			msg := types.NewMsgChangeCallData(
 				creator, contract, args[1], args[2],
 			)
 			if err := msg.ValidateBasic(); err != nil {
@@ -305,7 +305,7 @@ $ %s tx cron change-job-gasprice cyber___ "label" 10 --from mykey
 				return err
 			}
 
-			msg := types.NewMsgCronChangeGasPrice(
+			msg := types.NewMsgChangeGasPrice(
 				creator, contract, args[1], gasprice,
 			)
 			if err := msg.ValidateBasic(); err != nil {
@@ -353,7 +353,7 @@ $ %s tx cron change-job-period cyber___ "label" 10 --from mykey
 				return fmt.Errorf("block period %s not a valid uint, please input a valid block period", args[2])
 			}
 
-			msg := types.NewMsgCronChangeJobPeriod(
+			msg := types.NewMsgChangeJobPeriod(
 				creator, contract, args[1], period,
 			)
 			if err := msg.ValidateBasic(); err != nil {
@@ -401,7 +401,7 @@ $ %s tx cron change-job-block cyber___ "label" 10 --from mykey
 				return fmt.Errorf("block %s not a valid uint, please input a valid block ", args[2])
 			}
 
-			msg := types.NewMsgCronChangeJobBlock(
+			msg := types.NewMsgChangeJobBlock(
 				creator, contract, args[1], block,
 			)
 			if err := msg.ValidateBasic(); err != nil {

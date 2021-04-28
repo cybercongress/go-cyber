@@ -41,7 +41,7 @@ func NewTxCmd() *cobra.Command {
 
 func GetCmdLink() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create [cid-from] [cid-to]",
+		Use:   "cyberlink [cid-from] [cid-to]",
 		Short: "Create cyberlink",
 		Args:  cobra.ExactArgs(2),
 		Long: strings.TrimSpace(

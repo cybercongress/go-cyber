@@ -15,8 +15,8 @@ import (
 
 type BandwidthMeter struct {
 	stakeProvider types.AccountStakeProvider
-	Cdc           codec.BinaryMarshaler
-	StoreKey      sdk.StoreKey
+	cdc           codec.BinaryMarshaler
+	storeKey      sdk.StoreKey
 	paramSpace    paramstypes.Subspace
 
 	currentBlockSpentBandwidth uint64
@@ -37,8 +37,8 @@ func NewBandwidthMeter(
 	}
 
 	return &BandwidthMeter{
-		Cdc:                   cdc,
-		StoreKey:              key,
+		cdc:                   cdc,
+		storeKey:              key,
 		stakeProvider:         asp,
 		paramSpace:            paramSpace,
 		bandwidthSpentByBlock: make(map[uint64]uint64),
@@ -58,8 +58,6 @@ func (bm BandwidthMeter) SetParams(ctx sdk.Context, params types.Params) {
 	bm.paramSpace.SetParamSet(ctx, &params)
 }
 
-//______________________________________________________________________
-
 func (m *BandwidthMeter) LoadState(ctx sdk.Context) {
 	params := m.GetParams(ctx)
 	m.totalSpentForSlidingWindow = 0
@@ -67,29 +65,45 @@ func (m *BandwidthMeter) LoadState(ctx sdk.Context) {
 	for _, spentBandwidth := range m.bandwidthSpentByBlock {
 		m.totalSpentForSlidingWindow += spentBandwidth
 	}
-	m.currentCreditPrice = m.GetBandwidthPrice(ctx, params.BaseCreditPrice)
+	m.currentCreditPrice = m.GetBandwidthPrice(ctx, params.BasePrice)
 	m.currentBlockSpentBandwidth = 0
 }
 
-//____________________________________________________________________________
-
 func (bm BandwidthMeter) GetBandwidthPrice(ctx sdk.Context, basePrice sdk.Dec) sdk.Dec {
-	store := ctx.KVStore(bm.StoreKey)
+	store := ctx.KVStore(bm.storeKey)
 	priceAsBytes := store.Get(types.LastBandwidthPrice)
 	if priceAsBytes == nil {
 		return basePrice
 	}
 	var price types.Price
-	bm.Cdc.MustUnmarshalBinaryBare(priceAsBytes, &price)
+	bm.cdc.MustUnmarshalBinaryBare(priceAsBytes, &price)
 	return price.Price
 }
 
 func (bm BandwidthMeter) StoreBandwidthPrice(ctx sdk.Context, price sdk.Dec) {
-	store := ctx.KVStore(bm.StoreKey)
-	store.Set(types.LastBandwidthPrice, bm.Cdc.MustMarshalBinaryBare(&types.Price{Price: price}))
+	store := ctx.KVStore(bm.storeKey)
+	store.Set(types.LastBandwidthPrice, bm.cdc.MustMarshalBinaryBare(&types.Price{Price: price}))
 }
 
-//____________________________________________________________________________
+func (bm BandwidthMeter) GetDesirableBandwidth(ctx sdk.Context) uint64 {
+	store := ctx.KVStore(bm.storeKey)
+	bandwidthAsBytes := store.Get(types.DesirableBandwidth)
+	if bandwidthAsBytes == nil {
+		return 0
+	}
+	return sdk.BigEndianToUint64(bandwidthAsBytes)
+}
+
+func (bm BandwidthMeter) StoreDesirableBandwidth(ctx sdk.Context, bandwidth uint64) {
+	store := ctx.KVStore(bm.storeKey)
+	store.Set(types.DesirableBandwidth, sdk.Uint64ToBigEndian(bandwidth))
+}
+
+func (bm BandwidthMeter) AddToDesirableBandwidth(ctx sdk.Context, toAdd uint64) {
+	current := bm.GetDesirableBandwidth(ctx)
+	store := ctx.KVStore(bm.storeKey)
+	store.Set(types.DesirableBandwidth, sdk.Uint64ToBigEndian(current+toAdd*100))
+}
 
 func (m *BandwidthMeter) AddToBlockBandwidth(value uint64) {
 	m.currentBlockSpentBandwidth += value
@@ -100,7 +114,6 @@ func (m *BandwidthMeter) AddToBlockBandwidth(value uint64) {
 func (m *BandwidthMeter) CommitBlockBandwidth(ctx sdk.Context) {
 	params := m.GetParams(ctx)
 	defer func() {
-		telemetry.SetGauge((float32(m.totalSpentForSlidingWindow)/float32(params.DesirableBandwidth)), types.ModuleName, "load")
 		telemetry.SetGauge(float32(m.currentBlockSpentBandwidth), types.ModuleName, "block_bandwidth")
 		telemetry.SetGauge(float32(m.totalSpentForSlidingWindow), types.ModuleName, "window_bandwidth")
 		m.currentBlockSpentBandwidth = 0
@@ -129,9 +142,7 @@ func (m *BandwidthMeter) GetCurrentBlockSpentBandwidth(ctx sdk.Context) uint64 {
 }
 
 func (m *BandwidthMeter) GetCurrentNetworkLoad(ctx sdk.Context) sdk.Dec {
-	params := m.GetParams(ctx)
-
-	return sdk.NewDec(int64(m.totalSpentForSlidingWindow)).QuoInt64(int64(params.DesirableBandwidth))
+	return sdk.NewDec(int64(m.totalSpentForSlidingWindow)).QuoInt64(int64(m.GetDesirableBandwidth(ctx)))
 }
 
 func (m *BandwidthMeter) GetMaxBlockBandwidth(ctx sdk.Context) uint64 {
@@ -140,8 +151,6 @@ func (m *BandwidthMeter) GetMaxBlockBandwidth(ctx sdk.Context) uint64 {
 	return maxBlockBandwidth
 }
 
-//____________________________________________________________________________
-
 func (m *BandwidthMeter) GetCurrentCreditPrice() sdk.Dec {
 	return m.currentCreditPrice
 }
@@ -149,32 +158,31 @@ func (m *BandwidthMeter) GetCurrentCreditPrice() sdk.Dec {
 func (m *BandwidthMeter) AdjustPrice(ctx sdk.Context) {
 	params := m.GetParams(ctx)
 
-	newPrice := sdk.NewDec(int64(m.totalSpentForSlidingWindow)).QuoInt64(int64(params.DesirableBandwidth))
-	if newPrice.LT(params.BaseCreditPrice) {
-		newPrice = params.BaseCreditPrice
-	}
+	desirableBandwidth := m.GetDesirableBandwidth(ctx)
+	if desirableBandwidth != 0 {
+		telemetry.SetGauge(float32(m.totalSpentForSlidingWindow)/float32(desirableBandwidth), types.ModuleName, "load")
+		newPrice := sdk.NewDec(int64(m.totalSpentForSlidingWindow)).QuoInt64(int64(desirableBandwidth))
+		if newPrice.LT(params.BasePrice) {
+			newPrice = params.BasePrice
+		}
 
-	m.currentCreditPrice = newPrice
-	m.StoreBandwidthPrice(ctx, newPrice)
+		m.currentCreditPrice = newPrice
+		m.StoreBandwidthPrice(ctx, newPrice)
+	}
 }
 
-//____________________________________________________________________________
-
-func (m *BandwidthMeter) GetTxCost(ctx sdk.Context, tx sdk.Tx) uint64 {
-	params := m.GetParams(ctx)
-	bandwidthForTx := params.TxCost
+func (m *BandwidthMeter) GetTotalCyberlinksCost(ctx sdk.Context, tx sdk.Tx) (uint64) {
+	bandwidthForTx := uint64(0)
 	for _, msg := range tx.GetMsgs() {
 		linkMsg := msg.(*gtypes.MsgCyberlink)
-		bandwidthForTx = bandwidthForTx + uint64(len(linkMsg.Links)) * params.LinkCost
+		bandwidthForTx = bandwidthForTx + uint64(len(linkMsg.Links)) * 100
 	}
 	return bandwidthForTx
 }
 
-func (m *BandwidthMeter) GetPricedTxCost(ctx sdk.Context, tx sdk.Tx) uint64 {
-	return uint64(m.currentCreditPrice.Mul(sdk.NewDec(int64(m.GetTxCost(ctx, tx)))).RoundInt64())
+func (m *BandwidthMeter) GetPricedTotalCyberlinksCost(ctx sdk.Context, tx sdk.Tx) uint64 {
+	return uint64(m.currentCreditPrice.Mul(sdk.NewDec(int64(m.GetTotalCyberlinksCost(ctx, tx)))).RoundInt64())
 }
-
-//____________________________________________________________________________
 
 // Performs bw consumption for given acc
 // To get right number, should be called after tx delivery with bw state obtained prior delivery
@@ -182,12 +190,16 @@ func (m *BandwidthMeter) GetPricedTxCost(ctx sdk.Context, tx sdk.Tx) uint64 {
 // bw := getCurrentBw(addr)
 // bwCost := deliverTx(tx)
 // consumeBw(bw, bwCost)
-func (m *BandwidthMeter) ConsumeAccountBandwidth(ctx sdk.Context, bw types.AccountBandwidth, amt uint64) {
-	bw.Consume(amt)
+func (m *BandwidthMeter) ConsumeAccountBandwidth(ctx sdk.Context, bw types.AccountBandwidth, amt uint64) error {
+	err := bw.Consume(amt); if err != nil {
+		return err
+	}
 	m.SetAccountBandwidth(ctx, bw)
-	addr, _ := sdk.AccAddressFromBech32(bw.Address)
-	bw = m.GetCurrentAccountBandwidth(ctx, addr)
-	m.SetAccountBandwidth(ctx, bw)
+	// TODO test and remove next lines
+	//addr, _ := sdk.AccAddressFromBech32(bw.Address)
+	//bw = m.GetCurrentAccountBandwidth(ctx, addr)
+	//m.SetAccountBandwidth(ctx, bw)
+	return nil
 }
 
 func (m *BandwidthMeter) GetCurrentAccountBandwidth(ctx sdk.Context, address sdk.AccAddress) types.AccountBandwidth {
@@ -200,13 +212,10 @@ func (m *BandwidthMeter) GetCurrentAccountBandwidth(ctx sdk.Context, address sdk
 
 func (m *BandwidthMeter) GetAccountMaxBandwidth(ctx sdk.Context, addr sdk.AccAddress) uint64 {
 	accStakePercentage := m.stakeProvider.GetAccountStakePercentageVolt(ctx, addr)
-	params := m.GetParams(ctx)
-	return uint64(accStakePercentage * float64(params.DesirableBandwidth))
+	return uint64(accStakePercentage * float64(m.GetDesirableBandwidth(ctx)))
 }
 
 func (m *BandwidthMeter) UpdateAccountMaxBandwidth(ctx sdk.Context, address sdk.AccAddress) {
 	bw := m.GetCurrentAccountBandwidth(ctx, address)
 	m.SetAccountBandwidth(ctx, bw)
 }
-
-//____________________________________________________________________________

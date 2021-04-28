@@ -1,14 +1,12 @@
 package keeper
 
 import (
-	"fmt"
-
 	"github.com/cosmos/cosmos-sdk/telemetry"
-
 	"github.com/cybercongress/go-cyber/x/rank/types"
 
 	"github.com/tendermint/tendermint/libs/log"
 
+	"fmt"
 	"time"
 )
 
@@ -26,8 +24,9 @@ func CalculateRank(ctx *types.CalculationContext, unit types.ComputeUnit, logger
 	diff := time.Since(start)
 
 	logger.Info(
-		"cyber~Rank calculated", "duration", diff.String(), "cyberlinks", ctx.LinksCount, "cids", ctx.CidsCount,
-		"hash", fmt.Sprintf("%X", rank.MerkleTree.ExportSubtreesRoots()),
+		"cyber~Rank calculated", "duration", diff.String(),
+		"cyberlinks", ctx.LinksCount, "cids", ctx.CidsCount,
+		"hash", fmt.Sprintf("%X", rank.MerkleTree.ExportSubtreesRoots()), // TODO remove this line before release
 	)
 
 	return

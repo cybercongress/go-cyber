@@ -48,6 +48,8 @@ var appStores = []string{
 	"bandwidth",
 	"energy",
 	"rank",
+	"cron",
+	"resources",
 }
 
 func Execute() error {

@@ -1,11 +1,11 @@
 package keeper
 
 import (
-	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cybercongress/go-cyber/x/cron/types"
+	abci "github.com/tendermint/tendermint/abci/types"
 )
 
 func NewQuerier(k Keeper, legacyQuerierCdc *codec.LegacyAmino) sdk.Querier {
@@ -39,16 +39,16 @@ func queryParams(ctx sdk.Context, k Keeper, legacyQuerierCdc *codec.LegacyAmino)
 }
 
 func queryJob(ctx sdk.Context, req abci.RequestQuery, k Keeper, legacyQuerierCdc *codec.LegacyAmino) ([]byte, error) {
-	var params types.QueryJobParamsRequest
+	var params types.QueryJobParams
 
-	err := types.ModuleCdc.UnmarshalJSON(req.Data, &params)
-	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
+	err := legacyQuerierCdc.UnmarshalJSON(req.Data, &params); if err != nil {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
 
-	ct, _ := sdk.AccAddressFromBech32(params.Contract)
-	cr, _ := sdk.AccAddressFromBech32(params.Creator)
-	job, _ := k.GetJob(ctx, ct, cr, params.Label)
+	job, found := k.GetJob(ctx, params.Contract, params.Creator, params.Label)
+	if !found {
+		return nil, types.ErrJobNotExist
+	}
 
 	res, err := codec.MarshalJSONIndent(legacyQuerierCdc, job)
 	if err != nil {
@@ -59,16 +59,16 @@ func queryJob(ctx sdk.Context, req abci.RequestQuery, k Keeper, legacyQuerierCdc
 }
 
 func queryJobStats(ctx sdk.Context, req abci.RequestQuery, k Keeper, legacyQuerierCdc *codec.LegacyAmino) ([]byte, error) {
-	var params types.QueryJobParamsRequest
+	var params types.QueryJobParams
 
-	err := types.ModuleCdc.UnmarshalJSON(req.Data, &params)
-	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
+	err := legacyQuerierCdc.UnmarshalJSON(req.Data, &params); if err != nil {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
 
-	ct, _ := sdk.AccAddressFromBech32(params.Contract)
-	cr, _ := sdk.AccAddressFromBech32(params.Creator)
-	jobStats, _ := k.GetJobStats(ctx, ct, cr, params.Label)
+	jobStats, found := k.GetJobStats(ctx, params.Contract, params.Creator, params.Label)
+	if !found {
+		return nil, types.ErrJobNotExist
+	}
 
 	res, err := codec.MarshalJSONIndent(legacyQuerierCdc, jobStats)
 	if err != nil {

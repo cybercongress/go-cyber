@@ -3,7 +3,6 @@ package types
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	bankexported "github.com/cosmos/cosmos-sdk/x/bank/exported"
 )
 
 
@@ -15,12 +14,4 @@ type AccountKeeper interface {
 
 type EnergyKeeper interface {
 	GetRoutedToEnergy(ctx sdk.Context, delegate sdk.AccAddress) sdk.Coins
-}
-
-//type StakingKeeper interface {
-//	GetAllDelegatorDelegations(ctx sdk.Context, delegator sdk.AccAddress) []stakingtypes.Delegation
-//}
-
-type BankKeeper interface {
-	GetSupply(ctx sdk.Context) bankexported.SupplyI
 }

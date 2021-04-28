@@ -3,14 +3,18 @@ package keeper
 import (
 	"context"
 
+	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/query"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 
 	"github.com/cybercongress/go-cyber/x/energy/types"
 )
 
 var _ types.QueryServer = Keeper{}
 
-func (k Keeper) Params(goCtx context.Context, request *types.QueryParamsRequest) (*types.QueryParamsResponse, error) {
+func (k Keeper) Params(goCtx context.Context, _ *types.QueryParamsRequest) (*types.QueryParamsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	params := k.GetParams(ctx)
 
@@ -18,27 +22,62 @@ func (k Keeper) Params(goCtx context.Context, request *types.QueryParamsRequest)
 }
 
 func (k Keeper) SourceRoutes(goCtx context.Context, request *types.QuerySourceRequest) (*types.QueryRoutesResponse, error) {
+	if request == nil {
+		return nil, status.Errorf(codes.InvalidArgument, "empty request")
+	}
+
+	if request.Source == "" {
+		return nil, status.Errorf(codes.InvalidArgument, "source address cannot be empty")
+	}
+
+	addr, err := sdk.AccAddressFromBech32(request.Source)
+	if err != nil {
+		return nil, err
+	}
+
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	addr, _ := sdk.AccAddressFromBech32(request.Source)
-	routes := k.GetSourceRoutes(ctx, addr, 10)
+	routes := k.GetSourceRoutes(ctx, addr, 16)
 
 	return &types.QueryRoutesResponse{Routes: routes}, nil
 }
 
 func (k Keeper) DestinationRoutes(goCtx context.Context, request *types.QueryDestinationRequest) (*types.QueryRoutesResponse, error) {
+	if request == nil {
+		return nil, status.Errorf(codes.InvalidArgument, "empty request")
+	}
+
+	if request.Destination == "" {
+		return nil, status.Errorf(codes.InvalidArgument, "destination address cannot be empty")
+	}
+
+	addr, err := sdk.AccAddressFromBech32(request.Destination)
+	if err != nil {
+		return nil, err
+	}
+
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	addr, _ := sdk.AccAddressFromBech32(request.Destination)
 	routes := k.GetDestinationRoutes(ctx, addr)
 
 	return &types.QueryRoutesResponse{Routes: routes}, nil
 }
 
 func (k Keeper) DestinationRoutedEnergy(goCtx context.Context, request *types.QueryDestinationRequest) (*types.QueryRoutedEnergyResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
+	if request == nil {
+		return nil, status.Errorf(codes.InvalidArgument, "empty request")
+	}
 
-	addr, _ := sdk.AccAddressFromBech32(request.Destination)
+	if request.Destination == "" {
+		return nil, status.Errorf(codes.InvalidArgument, "destination address cannot be empty")
+	}
+
+	addr, err := sdk.AccAddressFromBech32(request.Destination)
+	if err != nil {
+		return nil, err
+	}
+
+	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	routedEnergy := k.GetRoutedToEnergy(ctx, addr)
 
@@ -46,9 +85,20 @@ func (k Keeper) DestinationRoutedEnergy(goCtx context.Context, request *types.Qu
 }
 
 func (k Keeper) SourceRoutedEnergy(goCtx context.Context, request *types.QuerySourceRequest) (*types.QueryRoutedEnergyResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
+	if request == nil {
+		return nil, status.Errorf(codes.InvalidArgument, "empty request")
+	}
 
-	addr, _ := sdk.AccAddressFromBech32(request.Source)
+	if request.Source == "" {
+		return nil, status.Errorf(codes.InvalidArgument, "source address cannot be empty")
+	}
+
+	addr, err := sdk.AccAddressFromBech32(request.Source)
+	if err != nil {
+		return nil, err
+	}
+
+	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	routedEnergy := k.GetRoutedFromEnergy(ctx, addr)
 
@@ -56,20 +106,60 @@ func (k Keeper) SourceRoutedEnergy(goCtx context.Context, request *types.QuerySo
 }
 
 func (k Keeper) Route(goCtx context.Context, request *types.QueryRouteRequest) (*types.QueryRouteResponse, error) {
+	if request == nil {
+		return nil, status.Errorf(codes.InvalidArgument, "empty request")
+	}
+
+	if request.Source == "" {
+		return nil, status.Errorf(codes.InvalidArgument, "source address cannot be empty")
+	}
+	if request.Destination == "" {
+		return nil, status.Errorf(codes.InvalidArgument, "destination address cannot be empty")
+	}
+
+	src, err := sdk.AccAddressFromBech32(request.Source)
+	if err != nil {
+		return nil, err
+	}
+	dst, err := sdk.AccAddressFromBech32(request.Destination)
+	if err != nil {
+		return nil, err
+	}
+
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	src, _ := sdk.AccAddressFromBech32(request.Source)
-	dst, _ := sdk.AccAddressFromBech32(request.Destination)
+	route, found := k.GetRoute(ctx, src, dst)
+	if !found {
+		return nil, status.Errorf(
+			codes.NotFound,
+			"route with source %s and destination %s not found",
+			request.Source, request.Destination)
+	}
 
-	route, _ := k.GetRoute(ctx, src, dst)
-
-	return &types.QueryRouteResponse{Route: &route}, nil
+	return &types.QueryRouteResponse{Route: route}, nil
 }
 
 func (k Keeper) Routes(goCtx context.Context, request *types.QueryRoutesRequest) (*types.QueryRoutesResponse, error) {
+	if request == nil {
+		return nil, status.Errorf(codes.InvalidArgument, "empty request")
+	}
+
 	ctx := sdk.UnwrapSDKContext(goCtx)
+	var routes types.Routes
 
-	routes := k.GetAllRoutes(ctx)
+	store := ctx.KVStore(k.storeKey)
+	routesStore := prefix.NewStore(store, types.RouteKey)
+	pageRes, err := query.Paginate(routesStore, request.Pagination, func(key []byte, value []byte) error {
+		route, err := types.UnmarshalRoute(k.cdc, value)
+		if err != nil {
+			return err
+		}
+		routes = append(routes, route)
+		return nil
+	})
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
 
-	return &types.QueryRoutesResponse{Routes: routes}, nil
+	return &types.QueryRoutesResponse{Routes: routes, Pagination: pageRes}, nil
 }
