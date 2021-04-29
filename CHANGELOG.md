@@ -2,7 +2,20 @@
 
 ## [Unreleased](https://github.com/cybercongress/go-cyber/tree/HEAD)
 
-[Full Changelog](https://github.com/cybercongress/go-cyber/compare/v0.1.6...HEAD)
+[Full Changelog](https://github.com/cybercongress/go-cyber/compare/v0.2.0-alpha1...HEAD)
+
+**Closed issues:**
+
+- API calls to list tokens on aggregator sites [\#580](https://github.com/cybercongress/go-cyber/issues/580)
+
+**Merged pull requests:**
+
+- fixed readmi chain stats [\#598](https://github.com/cybercongress/go-cyber/pull/598) ([mrlp4](https://github.com/mrlp4))
+- upd\_dockerfile [\#592](https://github.com/cybercongress/go-cyber/pull/592) ([mrlp4](https://github.com/mrlp4))
+- some typo fixes, node rquirements fixes [\#591](https://github.com/cybercongress/go-cyber/pull/591) ([mrlp4](https://github.com/mrlp4))
+
+## [v0.2.0-alpha1](https://github.com/cybercongress/go-cyber/tree/v0.2.0-alpha1) (2021-03-13)
+[Full Changelog](https://github.com/cybercongress/go-cyber/compare/v0.1.6...v0.2.0-alpha1)
 
 **Closed issues:**
 
@@ -22,6 +35,7 @@
 
 **Merged pull requests:**
 
+- fixed\_readme\_blockhain\_stats [\#589](https://github.com/cybercongress/go-cyber/pull/589) ([mrlp4](https://github.com/mrlp4))
 - Indexing rewards of withdraw proxy account [\#579](https://github.com/cybercongress/go-cyber/pull/579) ([litvintech](https://github.com/litvintech))
 - Skip indexing of not existed account [\#578](https://github.com/cybercongress/go-cyber/pull/578) ([litvintech](https://github.com/litvintech))
 - Fixed call of rank rpc endpoint [\#572](https://github.com/cybercongress/go-cyber/pull/572) ([litvintech](https://github.com/litvintech))
