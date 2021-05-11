@@ -272,10 +272,15 @@ make build
 
 If you are getting an error about the `libgo_cosmwasm.so` library missing, please download and build cosmwasm version 0.7.2 (smart-contracts module for Cosmos SDK) then copy the missing libraries, and re-build `cyberd`:
 
+Install Rust:
+```bash
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+
 ```bash
 wget https://github.com/CosmWasm/go-cosmwasm/archive/v0.7.2.tar.gz
 tar -xzf v0.7.2.tar.gz
-cd go-cosmwasm-0.7.2/
+cd wasmvm-0.7.2/
 make build
 cp ./api/libgo_cosmwasm.so /usr/lib/
 cp ./api/libgo_cosmwasm.dylib /usr/lib/
