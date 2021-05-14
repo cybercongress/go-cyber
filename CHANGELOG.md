@@ -14,6 +14,7 @@
 - fixed readmi chain stats [\#598](https://github.com/cybercongress/go-cyber/pull/598) ([mrlp4](https://github.com/mrlp4))
 - upd\_dockerfile [\#592](https://github.com/cybercongress/go-cyber/pull/592) ([mrlp4](https://github.com/mrlp4))
 - some typo fixes, node rquirements fixes [\#591](https://github.com/cybercongress/go-cyber/pull/591) ([mrlp4](https://github.com/mrlp4))
+- new supported and tested GPUs [\#538](https://github.com/cybercongress/go-cyber/pull/538) ([Kwaskoff](https://github.com/Kwaskoff))
 
 ## [v0.2.0-alpha1](https://github.com/cybercongress/go-cyber/tree/v0.2.0-alpha1) (2021-03-13)
 [Full Changelog](https://github.com/cybercongress/go-cyber/compare/v0.1.6...v0.2.0-alpha1)
