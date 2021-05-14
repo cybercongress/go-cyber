@@ -10,6 +10,7 @@
 
 **Merged pull requests:**
 
+- Update run\_validator.md [\#599](https://github.com/cybercongress/go-cyber/pull/599) ([cybernekit](https://github.com/cybernekit))
 - fixed readmi chain stats [\#598](https://github.com/cybercongress/go-cyber/pull/598) ([mrlp4](https://github.com/mrlp4))
 - upd\_dockerfile [\#592](https://github.com/cybercongress/go-cyber/pull/592) ([mrlp4](https://github.com/mrlp4))
 - some typo fixes, node rquirements fixes [\#591](https://github.com/cybercongress/go-cyber/pull/591) ([mrlp4](https://github.com/mrlp4))
