@@ -2,7 +2,7 @@
 
 PACKAGES_NOSIMULATION=$(shell go list ./...)
 BINDIR ?= $(GOPATH)/bin
-CUDA_ENABLED ?= false
+CUDA_ENABLED ?= true
 export GO111MODULE = on
 
 all: tools lint test
@@ -65,6 +65,16 @@ ifeq ($(LEDGER_ENABLED),true)
   endif
 endif
 
+ifeq ($(CUDA_ENABLED),true)
+    NVCC_RESULT := $(shell which nvcc 2> NULL)
+    NVCC_TEST := $(notdir $(NVCC_RESULT))
+    ifeq ($(NVCC_TEST),nvcc)
+        build_tags += cuda
+    else
+        $(error CUDA not installed for GPU support, please install or set CUDA_ENABLED=false)
+    endif
+endif
+
 ifeq ($(WITH_CLEVELDB),yes)
   build_tags += gcc
 endif
@@ -100,11 +110,8 @@ all: tools install lint
 # The below include contains the tools.
 
 build: go.sum
-ifeq ($(OS),Windows_NT)
-	go build $(BUILD_FLAGS) -o build/cyber.exe ./cmd/cyber
-else
 	go build $(BUILD_FLAGS) -o build/cyber ./cmd/cyber
-endif
+
 
 build-linux: go.sum
 	#LEDGER_ENABLED=false GOOS=linux GOARCH=amd64 $(MAKE) build
