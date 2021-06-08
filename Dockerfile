@@ -102,7 +102,9 @@ WORKDIR /
 ###########################################################################################
 COPY --from=build_stage_cuda /cyber /cyber
 
-COPY --from=build_stage_cuda /cyber/cosmovisor/genesis/bin/cyber /usr/local/bin
+COPY --from=build_stage_cuda /cyber/cosmovisor/genesis/bin/cyber /cyber
+
+COPY --from=build_stage_cuda /cyber/cosmovisor/genesis/bin/cyber /usr/bin
 
 COPY --from=build_stage_cuda /usr/bin/cosmovisor /usr/bin/cosmovisor
 
