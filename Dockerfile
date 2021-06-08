@@ -41,7 +41,7 @@ RUN apt-get -y install --no-install-recommends \
 
 # Compile cosmovisor
 ###########################################################################################
- RUN git clone https://github.com/cosmos/cosmos-sdk.git $BUILD_DIR/ \
+ RUN git clone --depth 1 https://github.com/cosmos/cosmos-sdk.git $BUILD_DIR/ \
  && cd $BUILD_DIR/cosmovisor/ \
  && make cosmovisor \
  && cp cosmovisor /usr/bin/cosmovisor \
