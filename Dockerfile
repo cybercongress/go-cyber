@@ -81,7 +81,7 @@ RUN git checkout bostrom-dev \
 ###########################################################################################
 # Create runtime cyber image
 ###########################################################################################
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 
 ENV DAEMON_HOME /root/.cyber
 ENV DAEMON_RESTART_AFTER_UPGRADE=on
