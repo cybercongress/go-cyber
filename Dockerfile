@@ -1,7 +1,7 @@
 ###########################################################################################
 # Build cyber
 ###########################################################################################
-FROM ubuntu:18.04  as build_stage_cuda
+FROM ubuntu:20.04  as build_stage_cuda
 
 ENV GO_VERSION '1.16.5'
 ENV GO_ARCH 'linux-amd64'
@@ -72,8 +72,7 @@ RUN curl https://sh.rustup.rs -sSf | sh -s -- -y \
 
 WORKDIR /sources
 # TODO: Update brach to master before merge\relaese
-RUN git checkout bostrom-dev \
- && make build \
+RUN make build \
  && chmod +x ./build/cyber \
  && cp ./build/cyber /cyber/cosmovisor/genesis/bin/
 
@@ -94,9 +93,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends wget curl ca-ce
 
 # Download genesis file and links file from IPFS
 ###########################################################################################
-# To slow using ipget, currently we use gateway
 # PUT needed CID_OF_GENESIS here
-RUN wget -O /genesis.json https://ipfs.io/ipfs/QmSB76Ggfswc9AxwHmSAP7QCigW7fqaX9RfXs51uUreVwH 
+RUN wget -O /genesis.json https://io.cybernode.ai/ipfs/QmSB76Ggfswc9AxwHmSAP7QCigW7fqaX9RfXs51uUreVwH 
 
 WORKDIR /
 
