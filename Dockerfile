@@ -94,7 +94,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends wget curl ca-ce
 # Download genesis file and links file from IPFS
 ###########################################################################################
 # PUT needed CID_OF_GENESIS here
-RUN wget -O /genesis.json https://io.cybernode.ai/ipfs/QmSB76Ggfswc9AxwHmSAP7QCigW7fqaX9RfXs51uUreVwH 
+RUN wget -O /genesis.json https://io.cybernode.ai/ipfs/QmPejzBHLdCGjAjjqrN8avZGugTnhLysyGNCACs9wVx48a 
 
 WORKDIR /
 
