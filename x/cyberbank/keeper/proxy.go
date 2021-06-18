@@ -88,12 +88,12 @@ func (p *Proxy) InputOutputCoins(ctx sdk.Context, inputs []banktypes.Input, outp
 	err := p.bk.InputOutputCoins(ctx, inputs, outputs)
 	if err == nil {
 		for _, i := range inputs {
-			if i.Coins.AmountOf(ctypes.VOLT).IsZero() || i.Coins.AmountOf(ctypes.AMPER).IsZero() {
+			if i.Coins.AmountOf(ctypes.VOLT).IsPositive() || i.Coins.AmountOf(ctypes.AMPER).IsPositive() {
 				p.OnCoinsTransfer(ctx, sdk.AccAddress(i.Address), nil)
 			}
 		}
 		for _, j := range outputs {
-			if j.Coins.AmountOf(ctypes.VOLT).IsZero() || j.Coins.AmountOf(ctypes.AMPER).IsZero() {
+			if j.Coins.AmountOf(ctypes.VOLT).IsPositive() || j.Coins.AmountOf(ctypes.AMPER).IsPositive() {
 				p.OnCoinsTransfer(ctx, nil, sdk.AccAddress(j.Address))
 			}
 		}
@@ -103,7 +103,7 @@ func (p *Proxy) InputOutputCoins(ctx sdk.Context, inputs []banktypes.Input, outp
 
 func (p *Proxy) SubtractCoins(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coins) error {
 	err := p.bk.SubtractCoins(ctx, addr, amt)
-	if err == nil && (amt.AmountOf(ctypes.VOLT).IsZero() || amt.AmountOf(ctypes.AMPER).IsZero()) {
+	if err == nil && (amt.AmountOf(ctypes.VOLT).IsPositive() || amt.AmountOf(ctypes.AMPER).IsPositive()) {
 		p.OnCoinsTransfer(ctx, addr, nil)
 	}
 	return err
@@ -111,7 +111,7 @@ func (p *Proxy) SubtractCoins(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coin
 
 func (p Proxy) AddCoins(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coins) error {
 	err := p.bk.AddCoins(ctx, addr, amt)
-	if err == nil && (amt.AmountOf(ctypes.VOLT).IsZero() || amt.AmountOf(ctypes.AMPER).IsZero())  {
+	if err == nil && (amt.AmountOf(ctypes.VOLT).IsPositive() || amt.AmountOf(ctypes.AMPER).IsPositive())  {
 		p.OnCoinsTransfer(ctx, nil, addr)
 	}
 	return err
@@ -119,7 +119,7 @@ func (p Proxy) AddCoins(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coins) err
 
 func (p *Proxy) SendCoins(ctx sdk.Context, fromAddr sdk.AccAddress, toAddr sdk.AccAddress, amt sdk.Coins) error {
 	err := p.bk.SendCoins(ctx, fromAddr, toAddr, amt)
-	if err == nil && (amt.AmountOf(ctypes.VOLT).IsZero() || amt.AmountOf(ctypes.AMPER).IsZero())  {
+	if err == nil && (amt.AmountOf(ctypes.VOLT).IsPositive() || amt.AmountOf(ctypes.AMPER).IsPositive())  {
 		p.OnCoinsTransfer(ctx, fromAddr, toAddr)
 	}
 	return err
@@ -136,7 +136,7 @@ func (p *Proxy) DenomsMetadata(ctx context.Context, request *banktypes.QueryDeno
 func (p *Proxy) SendCoinsFromModuleToAccount(ctx sdk.Context, senderModule string, recipientAddr sdk.AccAddress, amt sdk.Coins) error {
 	err := p.bk.SendCoinsFromModuleToAccount(ctx, senderModule, recipientAddr, amt)
 
-	if err == nil && (amt.AmountOf(ctypes.VOLT).IsZero() || amt.AmountOf(ctypes.AMPER).IsZero())  {
+	if err == nil && (amt.AmountOf(ctypes.VOLT).IsPositive() || amt.AmountOf(ctypes.AMPER).IsPositive())  {
 		p.OnCoinsTransfer(ctx, p.ak.GetModuleAddress(senderModule), recipientAddr)
 	}
 	return err
@@ -145,7 +145,7 @@ func (p *Proxy) SendCoinsFromModuleToAccount(ctx sdk.Context, senderModule strin
 func (p *Proxy) SendCoinsFromModuleToModule(ctx sdk.Context, senderModule, recipientModule string, amt sdk.Coins) error {
 	err := p.bk.SendCoinsFromModuleToModule(ctx, senderModule, recipientModule, amt)
 
-	if err == nil && (amt.AmountOf(ctypes.VOLT).IsZero() || amt.AmountOf(ctypes.AMPER).IsZero())  {
+	if err == nil && (amt.AmountOf(ctypes.VOLT).IsPositive() || amt.AmountOf(ctypes.AMPER).IsPositive())  {
 		p.OnCoinsTransfer(ctx, p.ak.GetModuleAddress(senderModule), p.ak.GetModuleAddress(recipientModule))
 	}
 	return err
@@ -154,7 +154,7 @@ func (p *Proxy) SendCoinsFromModuleToModule(ctx sdk.Context, senderModule, recip
 func (p *Proxy) SendCoinsFromAccountToModule(ctx sdk.Context, senderAddr sdk.AccAddress, recipientModule string, amt sdk.Coins) error {
 	err := p.bk.SendCoinsFromAccountToModule(ctx, senderAddr, recipientModule, amt)
 
-	if err == nil && (amt.AmountOf(ctypes.VOLT).IsZero() || amt.AmountOf(ctypes.AMPER).IsZero())  {
+	if err == nil && (amt.AmountOf(ctypes.VOLT).IsPositive() || amt.AmountOf(ctypes.AMPER).IsPositive())  {
 		p.OnCoinsTransfer(ctx, senderAddr, p.ak.GetModuleAddress(recipientModule))
 	}
 	return err

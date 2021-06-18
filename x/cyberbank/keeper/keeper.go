@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"fmt"
-	"strconv"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
@@ -83,7 +82,6 @@ func (k *IndexedKeeper) DetectUsersStakeAmpereChange(ctx sdk.Context) bool {
 func (k *IndexedKeeper) UpdateAccountsStakeAmpere(ctx sdk.Context) {
 	for _, addr := range k.accountToUpdate {
 		stake := k.GetAccountTotalStakeAmper(ctx, addr)
-		fmt.Printf("[%s] %s \n", addr.String(), strconv.FormatUint(uint64(stake), 10))
 		if k.accountKeeper.GetAccount(ctx, addr) == nil { continue }
 		accountNumber := k.accountKeeper.GetAccount(ctx, addr).GetAccountNumber()
 		k.userNewTotalStakeAmpere[accountNumber] = uint64(stake)
