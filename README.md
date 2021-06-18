@@ -25,7 +25,7 @@ PS: Try [cyber.page](https://cyber.page/brain) on Euler-6 network
 
 Chain-ID: bostromdev-2
 
-Genesis: [QmPejzBHLdCGjAjjqrN8avZGugTnhLysyGNCACs9wVx48a](http://cloudflare-ipfs.com/ipfs/QmPejzBHLdCGjAjjqrN8avZGugTnhLysyGNCACs9wVx48a)
+Genesis: [QmbXLnkEV4VStCKsr2t8JyFRvHivVHXvWxq8fmkebxu6Th](http://cloudflare-ipfs.com/ipfs/QmbXLnkEV4VStCKsr2t8JyFRvHivVHXvWxq8fmkebxu6Th)
 
 Build: ```make install```
 
@@ -33,7 +33,7 @@ Run: ```cyber start ```
 
 * default mode set to CPU for current testnet
 
-Bostrom (cyber) - v0.2.0-alpha1
+Bostrom (cyber) - v0.2.0-alpha2
 - RPC: [167.172.103.118:26657](167.172.103.118:26657)
 - REST: [167.172.103.118:1317](http://167.172.103.118:1317/rank/search?cid=QmUX9mt8ftaHcn9Nc6SR4j9MsKkYfkcZqkfPTmMmBgeTe3)
 - gRPC: 167.172.103.118:9090
