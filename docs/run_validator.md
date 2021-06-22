@@ -1,13 +1,11 @@
 
-# Join Cyberd testnet as a Validator
-
-**Note** The current active testnet is `euler-6` (substitute <testnet_chain_id> with that value, do not forget to remove the `<` and the `>` symbols).
+# Join Cyber testnet as a Validator
 
 ## Prepare your server
 
 First of all, you should set up a server.
 Your node should be running (online) constantly. This means that you will need a reliable server to keep it running.
-You may also consider using any cloud service with a dedicated GPU, like Hetzner (or use a local machine). Whatever you'll choose, for better stability and consistency we recommend to use a dedicated server for each separate validator node.
+You may also consider using any cloud service with a dedicated GPU, like Hetzner (or use a local machine). Whatever you'll choose, for better stability and consistency we recommend to use a dedicated server for each validator node.
 
 Cyberd is based on Cosmos-SDK and is written in Go.
 It should work on any platform which can compile and run programs in Go.
@@ -21,79 +19,91 @@ Recommended requirements:
 ```js
 CPU: 6 cores
 RAM: 32 GB
-SSD: 256 GB
-Connection: 100Mb, Fiber, Stable and low-latency connection
-GPU: Nvidia GeForce(or Tesla/Titan/Quadro) with CUDA-cores; at least 6gb of memory*
-Software: Ubuntu 18.04 LTS
+SSD: 1 TB
+Connection: 50+Mbps, Stable and low-latency connection
+GPU: Nvidia GeForce (or Tesla/Titan/Quadro) with CUDA-cores; 4+ Gb of video memory*
+Software: Ubuntu 18.04 LTS / 20.04 LTS
 ```
 
-*Cyberd runs well on consumer-grade cards like Geforce GTX 1070, but we expect load growth and advise to use Error Correction compatible cards from Tesla or Quadro families. Also, make sure your card is compatible with >=v.410 of NVIDIA drivers.*
+*Cyber runs well on consumer-grade cards like Geforce GTX 1070, but we expect load growth and advise to use Error Correction compatible cards from Tesla or Quadro families. Also, make sure your card is compatible with >=v.410 of NVIDIA drivers.*
 
-What about RAM? The minimal ammount, which will fit a node (with ~100K links in the chain): 10 GB. It migth be possiple to start a node with a lower ammount of RAM, but we migth not be able to support these cases.
+Of course, the hardware is your own choice and technically it might be possible to run the node on "even - 1 CUDA core GPU", but you should be aware of stability drop and rank calculation speed decline .
 
-Of course, the hardware is your own choice and technically it might be possible to run the node on "even - 1 CUDA core GPU", but you should be aware of stability and in a decline in the calculation speed of the rank.
+## Node setup
 
-## Validator setup
-
-*To avoid possible misconfiguration issues and to simplify the setup of `$ENV`, we recommend to perform all the commands as `root` (here root - is literally root, not just a user with root priveliges)*
+*To avoid possible misconfiguration issues and simplify the setup of `$ENV`, we recommend to perform all the commands as `root` (here root - is literally root, not just a user with root priveliges)*
 
 ### Third-party software
 
-To access the GPU, cyberd uses Nvidia drivers version **410+** and the [Nvidia CUDA toolkit](https://developer.nvidia.com/cuda-downloads) should be installed on the hosting system. 
-
 You may skip any sections of the guide if you already have any of the necessary software configured. 
 
-As long as the current implementation of `cyber` is written in [Go](https://golang.org/), you will need to install Go.
+The main distribution unit for Cyber is a [docker](https://www.docker.com/) container. All images are located in the default [Dockerhub registry](https://hub.docker.com/r/cyberd/cyber). In order to access the GPU from the container, Nvidia drivers version **410+** and [Nvidia docker runtime](https://github.com/NVIDIA/nvidia-docker) should be installed on the host system.
 
-### Installing Go
+### Docker installation
 
-For `euler-6` Cyberd requires at least Go version 1.13+. Install it according to the official [guide](https://golang.org/doc/install):
+Simply, copy the commands below into your CLI.
 
-1. Download the archive:
+1. Update the apt package index:
 
-    ```bash
-    wget https://dl.google.com/go/go1.13.11.linux-amd64.tar.gz
-    ```
+```bash
+sudo apt-get update
+```
 
-2. Extract it into `/usr/local`, creating a Go tree in `/usr/local/go`:
+2. Install packages to allow apt to use a repository over HTTPS:
 
-    ```bash
-    tar -C /usr/local -xzf go1.13.11.linux-amd64.tar.gz
-    ```
+```bash
+sudo apt-get install \
+     apt-transport-https \
+     ca-certificates \
+     curl \
+     gnupg-agent \
+     software-properties-common
+```
 
-3. Add `/usr/local/go/bin` to the PATH environment variable. You can do this by adding this line to your `/etc/profile` (for installation on the whole system) or `$HOME/.bashrc`:
+3. Add Docker’s official GPG key:
 
-    ```bash
-    export PATH=$PATH:/usr/local/go/bin
-    ```
+```bash
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+```
 
-4. Do `source` for the file with your `$PATH` variable or just log-out/log-in:
+```bash
+sudo add-apt-repository \
+   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+   $(lsb_release -cs) \
+   stable"
+```
 
-    ```bash
-    source /etc/profile
-    ```
+4. Update the apt package index:
 
-    or
+```bash
+sudo apt-get update
+```
 
-    ```bash
-    source $HOME/.bashrc
-    ```
+5. Install the latest version of Docker CE and containerd or skip to the next step to install a specific version (as of Nov 2019 version 19.03 is required):
 
-5. To check your installation run
+```bash
+sudo apt-get install docker-ce docker-ce-cli containerd.io
+```
 
-    ```bash
-    go version
-    ```
+If you don’t want to preface docker commands with sudo create a Unix group called docker and add users to that group. When the Docker daemon starts it creates a Unix socket accessible by members of the docker group.
 
-    This will let you know if everything was installed correctly. As an output, you should see the following (version number may vary, of course):
+6. Create the docker group:
 
-    ```bash
-    go version go1.13.11 linux/amd64
-    ```
+```bash
+sudo groupadd docker
+```
 
-#### Installing Nvidia drivers
+7. Add your user to the docker group:
 
-To proceed, first, add the `ppa:graphics-drivers/ppa` repository into your system (you might see some warnings - press `enter`):
+```bash
+sudo usermod -aG docker $YOUR-USER-NAME
+```
+
+8. Reboot the system for the changes to take effect.
+
+### Installing Nvidia drivers
+
+1. To proceed, first, add the `ppa:graphics-drivers/ppa` repository into your system (you might see some warnings - press `enter`):
 
 ```bash
 sudo add-apt-repository ppa:graphics-drivers/ppa
@@ -103,13 +113,13 @@ sudo add-apt-repository ppa:graphics-drivers/ppa
 sudo apt update
 ```
 
-Install Ubuntu-drivers:
+2. Install Ubuntu-drivers:
 
 ```bash
 sudo apt install -y ubuntu-drivers-common
 ```
 
-Next, identify your graphic card model and the recommended drivers:
+3. Next, identify your graphic card model and the recommended drivers:
 
 ```bash
 ubuntu-drivers devices
@@ -129,7 +139,7 @@ driver   : nvidia-driver-440 - third-party free recommended
 driver   : xserver-xorg-video-nouveau - distro free builtin
 ```
 
-We need the **410+** drivers release. As you can see that v440 is recommended. The command below will install the recommended version of the drivers:
+4. We need the **410+** drivers release. As you can see that v440 is recommended. The command below will install the recommended version of the drivers:
 
 ```bash
 sudo ubuntu-drivers autoinstall
@@ -158,9 +168,9 @@ Processing triggers for initramfs-tools (0.130ubuntu3.1) ...
 update-initramfs: Generating /boot/initrd.img-4.15.0-45-generic
 ```
 
-Reboot the system for the changes to take effect.
+**Reboot** the system for the changes to take effect.
 
-Check the installed drivers:
+5. Check the installed drivers:
 
 ```bash
 nvidia-smi
@@ -188,254 +198,246 @@ You should see this:
 +-----------------------------------------------------------------------------+
 ```
 
-### Install CUDA toolkit
+#### Install Nvidia container runtime for docker
 
-Simply run:
-
-```bash
-apt install nvidia-cuda-toolkit
-```
-
-Any version above 9.1 is OK. To check the version run:
+1. Add package repositories:
 
 ```bash
-nvcc --version
+distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
 ```
-
-The possible output will look like this:
 
 ```bash
-nvcc: NVIDIA (R) Cuda compiler driver
-Copyright (c) 2005-2017 NVIDIA Corporation
-Built on Fri_Nov__3_21:07:56_CDT_2017
-Cuda compilation tools, release 9.1, V9.1.85
+curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add -
 ```
+
+```bash
+curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | sudo tee /etc/apt/sources.list.d/nvidia-docker.list
+```
+
+You should see this:
+
+```bash
+deb https://nvidia.github.io/libnvidia-container/ubuntu18.04/$(ARCH) /
+deb https://nvidia.github.io/nvidia-container-runtime/ubuntu18.04/$(ARCH) /
+deb https://nvidia.github.io/nvidia-docker/ubuntu18.04/$(ARCH) /
+```
+
+2. Install nvidia-container toolkit and reload the Docker daemon configuration
+
+```bash
+sudo apt-get update && sudo apt-get install -y nvidia-container-toolkit
+```
+
+```bash
+sudo systemctl restart docker
+
+```
+
+3. Test nvidia-smi with the latest official CUDA image
+
+```bash
+docker run --gpus all nvidia/cuda:11.0-base nvidia-smi
+```
+
+Output logs should coincide as earlier:
+
+```bash
+Unable to find image 'nvidia/cuda:11.0-base' locally
+11.0-base: Pulling from nvidia/cuda
+54ee1f796a1e: Pull complete 
+f7bfea53ad12: Pull complete 
+46d371e02073: Pull complete 
+b66c17bbf772: Pull complete 
+3642f1a6dfb3: Pull complete 
+e5ce55b8b4b9: Pull complete 
+155bc0332b0a: Pull complete 
+Digest: sha256:774ca3d612de15213102c2dbbba55df44dc5cf9870ca2be6c6e9c627fa63d67a
+Status: Downloaded newer image for nvidia/cuda:11.0-base
+Mon Jun 21 14:07:52 2021 
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 460.84       Driver Version: 460.84       CUDA Version: 11.2     |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|                               |                      |               MIG M. |
+|===============================+======================+======================|
+|   0  GeForce GTX 165...  Off  | 00000000:01:00.0 Off |                  N/A |
+| N/A   47C    P0    16W /  N/A |      0MiB /  3914MiB |      0%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+                                                                               
++-----------------------------------------------------------------------------+
+| Processes:                                                                  |
+|  GPU   GI   CI        PID   Type   Process name                  GPU Memory |
+|        ID   ID                                                   Usage      |
+|=============================================================================|
+|  No running processes found                                                 |
++-----------------------------------------------------------------------------+
+```
+
+Your machine is ready to launch the fullnode.
+
 
 ### Launching Cyberd fullnode
 
-Add environment variables:
+Make a directory tree for storing your daemon:
 
 ```bash
-export DAEMON_HOME=$HOME/.cyberd
-export DAEMON_NAME=cyberd
+mkdir $HOME/.cyber
 ```
 
-To make those variables persistent add them to the end of the **`$HOME/.bashrc`** and log-out/log-in, or do:
+
+2. Run the fullnode:
+(This will pull and extract the image from cyberd/cyberd)
 
 ```bash
-source ~/.bashrc
+docker run -d --gpus all --name=cyber-bostromdev --restart always -p 26656:26656 -p 26657:26657 -p 1317:1317 -e ALLOW_SEARCH=true -v $HOME/.cyber:/root/.cyber  cyberd/cyber:bostromdev-2
 ```
+**TODO update image name for bostrom-dev**
 
-Make a directories tree for storing your daemon:
+3. After container successfully pulled and launched, check the status of your node:
 
 ```bash
-mkdir $HOME/.cyberd
-mkdir -p $DAEMON_HOME/upgrade_manager
-mkdir -p $DAEMON_HOME/upgrade_manager/genesis
-mkdir -p $DAEMON_HOME/upgrade_manager/genesis/bin
-mkdir -p $DAEMON_HOME/upgrade_manager/upgrades
-mkdir -p $DAEMON_HOME/upgrade_manager/upgrades/darwin
-mkdir -p $DAEMON_HOME/upgrade_manager/upgrades/darwin/bin
+docker exec bostrom-dev cyber status
 ```
 
-Download cosmosd (upgrade manager for Cosmos SDK) and build it (commit no older than 984175f required):
+A possible output may look like this:
 
 ```bash
-git clone https://github.com/regen-network/cosmosd.git
-cd cosmosd/
-go build
-mv cosmosd $DAEMON_HOME/
-chmod +x $DAEMON_HOME/cosmosd
+{"NodeInfo":{"protocol_version":{"p2p":"8","block":"11","app":"0"},"id":"808a3773d8adabc78bca6ef8d6b2ee20456bfbcb","listen_addr":"tcp://86.57.207.105:26656","network":"bostromdev-2","version":"","channels":"40202122233038606100","moniker":"node1234","other":
+{"tx_index":"on","rpc_address":"tcp://0.0.0.0:26657"}},"SyncInfo":{"latest_block_hash":"241BA3E744A9024A2D04BDF4CE7CF4985D7922054B38AF258712027D0854E930","latest_app_hash":"5BF4B64508A95984F017BD6C29012FE5E66ADCB367D06345EE1EB2ED18314437","latest_block_height":"52829",
+"latest_block_time":"2021-06-21T14:21:41.817756021Z","earliest_block_hash":"98DD3065543108F5EBEBC45FAAAEA868B3C84426572BE9FDA2E3F1C49A2C0CE8","earliest_app_hash":"E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855","earliest_block_height":"1",
+"earliest_block_time":"2021-06-10T00:00:00Z","catching_up":false},"ValidatorInfo":{"Address":"611C9F3568E7341155DBF0546795BF673FD84EB1","PubKey":{"type":"tendermint/PubKeyEd25519","value":"0iGriT3gyRJXQXR/98c+2MTAhChIo5F5v7FfPmOAH5o="},"VotingPower":"0"}}
+
 ```
 
-Clone the go-cyber repo, checkout to the necessary version (`master` by default):
-
-```bash
-cd ~
-git clone https://github.com/cybercongress/go-cyber
-```
-
-Build cyber~Rank CUDA kernel:
-
-```bash
-cd ~/go-cyber/x/rank/cuda/
-make
-```
-
-Build cyber daemon (as a result you should see `cyberd` and `cyberdcli` files inside of the `go-cyber/build/` folder):
-
-```bash
-cd ~/go-cyber
-git checkout v0.1.6.2
-make build
-```
-
-If you are getting an error about the `libgo_cosmwasm.so` library missing, please download and build cosmwasm version 0.7.2 (smart-contracts module for Cosmos SDK) then copy the missing libraries, and re-build `cyberd`:
-
-```bash
-wget https://github.com/CosmWasm/go-cosmwasm/archive/v0.7.2.tar.gz
-tar -xzf v0.7.2.tar.gz
-cd go-cosmwasm-0.7.2/
-make build
-cp ./api/libgo_cosmwasm.so /usr/lib/
-cp ./api/libgo_cosmwasm.dylib /usr/lib/
-```
-
-Copy cyberd the binaries to an apropriate locations and add execute permitions to them:
-
-```bash
-cp build/cyberd $DAEMON_HOME/upgrade_manager/genesis/bin
-cp build/cyberdcli /usr/local/bin/
-cp build/cyberd /usr/local/bin/
-chmod +x $DAEMON_HOME/upgrade_manager/genesis/bin/cyberd
-```
-
-Do the same for Darwin upgrade binaries
-
-```bash
-cd ~/go-cyber
-git checkout v0.1.6.3
-make build
-```
-
-And copy newest binaries to apropiate location:
-
-```bash
-cp build/cyberd $DAEMON_HOME/upgrade_manager/upgrades/darwin/bin
-cp build/cyberdcli /usr/local/bin/
-cp build/cyberd /usr/local/bin/
-chmod +x $DAEMON_HOME/upgrade_manager/upgrades/darwin/bin/cyberd
-```
-
-**Important** 
-
-Currently Euler-6 network is running on Darwin upgrade, so if you planning to sync from scratch just proceed to node launch, otherwise, if you would like to deploy backup create symlink to current binary:
-
-```bash
-ln -s /$DAEMON_HOME/upgrade_manager/upgrades/darwin/ /$DAEMON_HOME/upgrade_manager/current
-```
-
-Initialize cyber daemon (don't forget to change the node moniker):
-
-```bash
-cd $DAEMON_HOME/upgrade_manager/genesis/bin
-./cyberd init <your_node_moniker> --home $DAEMON_HOME
-```
-
-Your folder with cyberd must look like this after initialization:
-
-```bash
-root@node:~/.cyberd# tree
-.
-├── config
-│   ├── app.toml
-│   ├── config.toml
-│   ├── node_key.json
-│   └── priv_validator_key.json
-├── cosmosd
-├── data
-│   └── priv_validator_state.json
-└── upgrade_manager
-    ├── genesis
-    │   └── bin
-    │       └── cyberd
-    └──upgrades
-        └── darwin
-            └── bin
-                └── cyberd
-```
-
-As a result of this operation, the `data` and `config` folders should appear inside of your *$DAEMON_HOME/* folder.
-
-Download `genesis.json` and place into your `.cyberd/config`:
-
-```bash
-cd $DAEMON_HOME/config
-wget -O genesis.json https://ipfs.io/ipfs/QmZHpLc3H5RMXp3Z4LURNpKgNfXd3NZ8pZLYbjNFPL6T5n
-```
-
-Setup private peers in `config.toml`.
+4 Setup some peers to $HOME/.cyber/config/config.toml:
 
 ```bash
 # Comma separated list of nodes to keep persistent connections to
 persistent_peers = "d0518ce9881a4b0c5872e5e9b7c4ea8d760dad3f@85.10.207.173:26656,0f7d8d5bb8e831a67d29d5950cff0f0ecafbab54@195.201.105.229:36656,30d949f592baf210dd2fc500c83f087f7ce95a84@86.57.254.202:36656"
 ```
+**TODO update image name for bostrom-dev**
 
-You can more of them on our [forum](https://ai.cybercongress.ai/t/euler-6-testnet-faq/65), the more the better for now.
-
-### Setup cyberd as a service (Ubuntu)
-
-#### Service setup for cyber node
-
-Make cyberd a system service. This will help you easily start/stop cyberd and run it in the background:
+You can follow the syncing process in the terminal:
 
 ```bash
-sudo nano /etc/systemd/system/cyberd.service
+docker logs bostrom-dev --f --tail 10
 ```
 
-Paste the following (replace `ubuntu` with your username, or if you running as `root` replce the whole */home/ubuntu/* to `/root/`):
+## Validator start
+
+After your node has successfully synced, you can run a validator.
+
+### Prepare the staking address
+
+1. To proceed further you need to add your address to node, or generete one and fund it. 
+Please checkout if you're eligible for cyber Gift: **TODO add link to gift**
+Or use our [port](https://cyber.page/brain) to enter cyber.
+
+To create a new one use:
 
 ```bash
-[Unit]
-Description=Cyber Node
-After=network-online.target
-
-[Service]
-User=ubuntu
-WorkingDirectory=/home/ubuntu/.cyberd/
-ExecStart=/home/ubuntu/.cyberd/cosmosd start --compute-rank-on-gpu=true --home /home/ubuntu/.cyberd
-Environment=DAEMON_HOME=/home/ubuntu/.cyberd
-Environment=DAEMON_NAME=cyberd
-Environment=GAIA_HOME=/home/ubuntu/.cyberd
-Environment=DAEMON_RESTART_AFTER_UPGRADE=on
-Restart=always
-RestartSec=3m
-LimitNOFILE=4096
-
-[Install]
-WantedBy=multi-user.target
+docker exec -ti bostrom-dev cyber keys add <your_key_name>
 ```
 
-If you need to enable search of the node add the flag `--allow-search=true` right after `--compute-rank-on-gpu=true`.
-
-#### Run rest service with cyberdcli
-
-If you need to run a rest-server alongside `cyberd` here is a service file for it (do `sudo nano /etc/systemd/system/cyberdcli-rest.service` and paste the following), just make sure you'll replace `ubuntu` to your user name and group:
+To import existing address use: 
 
 ```bash
-[Unit]
-Description=Cyberdcli REST Server
-
-[Service]
-User=ubuntu
-Group=ubuntu
-ExecStart=/usr/local/bin/cyberdcli rest-server --laddr tcp://0.0.0.0:1317 --chain-id euler-6
-Restart=always
-TimeoutSec=120
-RestartSec=30
-
-[Install]
-WantedBy=multi-user.target
+docker exec -ti bostrom-dev cyber keys add <your_key_name> --recover
 ```
 
-**Run swagger-ui on top of cyberdcli rest server**
-
-There's a possibility to build and run swagger-ui for your node to get a better experience with the rest-server. To get it up you'll have to `cd` to the go-cyber repo, install `static` library for Go and set static file for swagger-ui:
+It also possible to import address from Ethereum private key:
 
 ```bash
-cd <path_to_go-cyber>/go-cyber/
-apt install golang-statik
-statik -src=cmd/cyberdcli/swagger-ui -dest=cmd/cyberdcli/lcd -f
+docker exec -ti bostrom-dev cyber keys add import_private <your_key_name>
 ```
 
-Rebuild cyberdcli and replace the one in `/usr/local/bin` (no worries, you won't lose your keys, if you already have keys imported):
+You could use your ledger device with the Cosmos app installed on it to sign and store cyber addresses:
 
 ```bash
-make build
-cp build/cyberdcli /usr/local/bin/
+docker exec -ti bostrom-dev cyber keys add <your_key_name> --ledger
 ```
 
-When all of the above steps are completed and cyberdcli-rest service has been started, you should have Swagger-ui available at `http://localhost:1317/swagger-ui/` .
+**<your_key_name>** is any name you pick to represent this key pair.
+You have to refer to this parameter <your_key_name> later, when you use the keys to sign transactions.
+
+The command returns the address, a public key and a seed phrase, which you can use to
+recover your account if you forget your password later.
+
+**Keep you seed phrase safe. Your keys is only your responsibility!**
+
+
+#### Send the create validator transaction
+
+Validators are actors on the network committing to new blocks by submitting their votes.
+This refers to the node itself, not a single person or a single account.
+Therefore, the public key here is referring to the nodes public key,
+not the public key of the address you have just created.
+
+To get the nodes public key, run the following command:
+
+```bash
+docker exec bostrom-dev cyberd tendermint show-validator
+```
+
+It will return a bech32 public key. Let’s call it **<your_node_pubkey>**.
+The next step is to to declare a validator candidate.
+The validator candidate is the account which stakes the coins.
+So the validator candidate is an account this time.
+To declare a validator candidate, run the following command adjusting the stake amount and the other fields:
+
+```bash
+docker exec -ti bostrom-dev cyber tx staking create-validator \
+  --amount=10000000eul \
+  --min-self-delegation "1000000" \
+  --pubkey=<your_node_pubkey> \
+  --moniker=<your_node_nickname> \
+  --trust-node \
+  --from=<your_key_name> \
+  --commission-rate="0.10" \
+  --commission-max-rate="0.20" \
+  --commission-max-change-rate="0.01" \
+  --chain-id=bostrom-dev
+```
+
+#### Verify that you are validating
+
+```bash
+docker exec -ti bostrom-dev cyber query staking validators --trust-node=true
+```
+
+If you see your `<your_node_nickname>` with status `Bonded` and Jailed `false` everything is good.
+You are validating the network.
+
+## Maintenance of the validator
+
+### Jailing
+
+If your validator got under slashing conditions, it will be jailed.
+After such event, an operator must unjail the validator manually:
+
+```bash
+docker exec -ti bostrom-dev cyber tx slashing unjail --from=<your_key_name> --chain-id bostrom-dev
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #### Launch cyberd
 
@@ -475,9 +477,9 @@ If you need to stop the node:
 sudo systemctl stop cyberd
 ```
 
-All commands in this section are also applicable to `cyberdcli-rest.service`.
+All commands in this section are also applicable to `cyber-rest.service`.
 
-At this point your cyberd should be running in the backgroud and you should be able to call `cyberdcli` to operate with the client. Try calling `cyberdcli status`. A possible output looks like this:
+At this point your cyberd should be running in the backgroud and you should be able to call `cyber` to operate with the client. Try calling `cyber status`. A possible output looks like this:
 
 ```bash
 {"node_info":{"protocol_version":{"p2p":"6","block":"9","app":"0"},"id":"93b776d3eb3f3ce9d9bda7164bc8af3acacff7b6","listen_addr":"tcp://0.0.0.0:26656","network":"euler-6","version":"0.32.7","channels":"4020212223303800","moniker":"anon","other":{"tx_index":"on","rpc_address":"tcp://0.0.0.0:26657"}},"sync_info":{"latest_block_hash":"686B4E65415D4E56D3B406153C965C0897D0CE27004E9CABF65064B6A0ED4240","latest_app_hash":"0A1F6D260945FD6E926785F07D41049B8060C60A132F5BA49DD54F7B1C5B2522","latest_block_height":"4553","latest_block_time":"2019-11-24T09:49:19.771375108Z","catching_up":false},"validator_info":{"address":"66098853CF3B61C4313DD487BA21EDF8DECACDF0","pub_key":{"type":"tendermint/PubKeyEd25519","value":"uZrCCdZTJoHE1/v+EvhtZufJgA3zAm1bN4uZA3RyvoY="},"voting_power":"0"}}
@@ -514,8 +516,8 @@ We included ~1 million Ethereum addresses, over 10000 Cosmos addresses and all o
 If you already have a cyberd address with EUL and know the seed phrase or your private key, just restore it into your local Keystore:
 
 ```bash
-cyberdcli keys add <your_key_name> --recover
-cyberdcli keys show <your_key_name>
+cyber keys add <your_key_name> --recover
+cyber keys show <your_key_name>
 ```
 
 If you have an Ethereum address that had ~0.2Eth or more at block 8080808 (on the ETH network), you probably received a gift and may import your Ethereum private key. To check your gift balance, paste your Ethereum address on [cyber.page](https://cyber.page).
@@ -523,23 +525,23 @@ If you have an Ethereum address that had ~0.2Eth or more at block 8080808 (on th
 > Please do not import high-value Ethereum accounts. This is not safe! cyberd software is new and has not been audited yet.
 
 ```bash
-cyberdcli keys add private <your_key_name>
-cyberdcli keys show <your_key_name>
+cyber keys add private <your_key_name>
+cyber keys show <your_key_name>
 ```
 
 If you want to create a new account, use the command below:
 (You should send coins to that address to bound them later during the launch of the validator)
 
 ```bash
-cyberdcli keys add <your_key_name>
-cyberdcli keys show <your_key_name>
+cyber keys add <your_key_name>
+cyber keys show <your_key_name>
 ```
 
 You could use your Ledger device, with the Cosmos app installed on it to sign and store cyber addresses: [guide here](https://github.com/cybercongress/cyberd/blob/0.1.5/docs/cyberd_Ledger_guide.md).
 In most cases use the --ledger flag, with your commands:
 
 ```bash
-cyberdcli keys add <your_key_name> --ledger
+cyber keys add <your_key_name> --ledger
 ```
 
 **<your_key_name>** is any name you pick to represent this key pair.
@@ -554,7 +556,7 @@ Keep the seed phrase at a safe place (not in hot storage) in case you have to us
 The address shown here is your account address. Let’s call this **<your_account_address>**.
 It stores your assets.
 
-**Important note**: Starting with v.38 cosmos-SDK uses os-native keyring to store all your keys. We've noticed that in certain cases it does not work well by default (for example if you don't have any GUI installed on your machine). If during the execution of the `cyberdcli keys add` command, you are getting this type of error:
+**Important note**: Starting with v.38 cosmos-SDK uses os-native keyring to store all your keys. We've noticed that in certain cases it does not work well by default (for example if you don't have any GUI installed on your machine). If during the execution of the `cyber keys add` command, you are getting this type of error:
 
 ```bash
 panic: No such  interface 'org.freedesktop.DBus.Properties' on object at path /
@@ -580,7 +582,7 @@ Setting keyring backend to a **local file**:
 Execute:
 
 ```bash
-cyberdcli config keyring-backend file
+cyber config keyring-backend file
 ```
 
 As a result you migth see following: `configuration saved to /root/.cybercli/config/config.toml`
@@ -588,36 +590,36 @@ As a result you migth see following: `configuration saved to /root/.cybercli/con
 Execute:
 
 ```bash
-cyberdcli config --get keyring-backend
+cyber config --get keyring-backend
 ```
 
 The result should be the following:
 
 ```bash
-user@node:~# cyberdcli config --get keyring-backend
+user@node:~# cyber config --get keyring-backend
 file
 ```
 
-This means that you've set your keyring-backend to a local file. *Note*, in this case, all the keys in your keyring will be encrypted using the same password. If you would like to set up a unique password for each key, you should set a unique `--home` folder for each key. To do that, just use `--home=/<unique_path_to_key_folder>/` with setup keyring backend and at all interactions with keys when using cyberdcli:
+This means that you've set your keyring-backend to a local file. *Note*, in this case, all the keys in your keyring will be encrypted using the same password. If you would like to set up a unique password for each key, you should set a unique `--home` folder for each key. To do that, just use `--home=/<unique_path_to_key_folder>/` with setup keyring backend and at all interactions with keys when using cyber:
 
 ```bash
-cyberdcli config keyring-backend file --home=/<unique_path_to_key_folder>/
-cyberdcli keys add <your_second_key_name> --home=/<unique_path_to_key_folder>/
-cyberdcli keys list --home=/<unique_path_to_key_folder>/
+cyber config keyring-backend file --home=/<unique_path_to_key_folder>/
+cyber keys add <your_second_key_name> --home=/<unique_path_to_key_folder>/
+cyber keys list --home=/<unique_path_to_key_folder>/
 ```
 
 Set keyring backend to [**pass manager**](https://github.com/cosmos/cosmos-sdk/blob/9cce836c08d14dc6836d07164dd964b2b7226f36/crypto/keyring/doc.go#L30):
 
-Pass utility uses a GPG key to encrypt your keys (but again, it uses the same GPG for all the keys). To install and generate your GPG key you should follow [this guide](https://www.passwordstore.org/) or this very [detailed guide](http://tuxlabs.com/?p=450). When you'll get your `pass` set, configure `cyberdcli` to use it as a keyring backend:
+Pass utility uses a GPG key to encrypt your keys (but again, it uses the same GPG for all the keys). To install and generate your GPG key you should follow [this guide](https://www.passwordstore.org/) or this very [detailed guide](http://tuxlabs.com/?p=450). When you'll get your `pass` set, configure `cyber` to use it as a keyring backend:
 
 ```bash
-cyberdcli config keyring-backend pass
+cyber config keyring-backend pass
 ```
 
 And verify that all has been set as planned:
 
 ```bash
-cyberdcli config --get keyring-backend
+cyber config --get keyring-backend
 pass
 ```
 
@@ -641,7 +643,7 @@ So the validator candidate is the account this time.
 To declare a validator candidate, run the following command adjusting the staked amount and the other fields:
 
 ```bash
-cyberdcli tx staking create-validator \
+cyber tx staking create-validator \
   --amount=10000000eul \
   --min-self-delegation "1000000" \
   --pubkey=<your_node_pubkey> \
@@ -657,7 +659,7 @@ cyberdcli tx staking create-validator \
 #### Verify that you are validating
 
 ```bash
-cyberdcli query staking validators --trust-node=true
+cyber query staking validators --trust-node=true
 ```
 
 If you see your `<your_node_nickname>` with status `Bonded` and Jailed `false`, everything is good.
@@ -671,5 +673,5 @@ If your validator got slashed, it will get jailed.
 If it happens the operator must unjail the validator manually:
 
 ```bash
-cyberdcli tx slashing unjail --from=<your_key_name> --chain-id euler-6
+cyber tx slashing unjail --from=<your_key_name> --chain-id euler-6
 ```
