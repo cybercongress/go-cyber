@@ -313,7 +313,7 @@ A possible output may look like this:
 
 4. Setup some peers to `persistent_peers` or `seeds` of $HOME/.cyber/config/config.toml:
 
-For peers addresses please refer to [README]({{< relref "/README.md" >}})
+For peers addresses please refer to [README](/README.md)
 
 When done, please restart container using:
 
@@ -324,7 +324,7 @@ docker restart bostrom-dev
 To ckeck logs of the syncing process in the terminal use:
 
 ```bash
-docker logs bostrom-dev --f --tail 10
+docker logs bostrom-dev -f --tail 10
 ```
 
 ## Validator start
