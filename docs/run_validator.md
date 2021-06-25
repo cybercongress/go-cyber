@@ -291,7 +291,7 @@ mkdir $HOME/.cyber
 (This will pull and extract the image from cyberd/cyberd)
 
 ```bash
-docker run -d --gpus all --name=cyber-bostromdev --restart always -p 26656:26656 -p 26657:26657 -p 1317:1317 -e ALLOW_SEARCH=true -v $HOME/.cyber:/root/.cyber  cyberd/cyber:bostromdev-2
+docker run -d --gpus all --name=bostrom-dev --restart always -p 26656:26656 -p 26657:26657 -p 1317:1317 -e ALLOW_SEARCH=true -v $HOME/.cyber:/root/.cyber  cyberd/cyber:bostromdev-2
 ```
 **TODO update image name for bostrom-dev**
 
@@ -311,15 +311,17 @@ A possible output may look like this:
 
 ```
 
-4 Setup some peers to $HOME/.cyber/config/config.toml:
+4. Setup some peers to `persistent_peers` or `seeds` of $HOME/.cyber/config/config.toml:
+
+For peers addresses please refer to [README]({{< relref "/README.md" >}})
+
+When done, please restart container using:
 
 ```bash
-# Comma separated list of nodes to keep persistent connections to
-persistent_peers = "d0518ce9881a4b0c5872e5e9b7c4ea8d760dad3f@85.10.207.173:26656,0f7d8d5bb8e831a67d29d5950cff0f0ecafbab54@195.201.105.229:36656,30d949f592baf210dd2fc500c83f087f7ce95a84@86.57.254.202:36656"
+docker restart bostrom-dev
 ```
-**TODO update image name for bostrom-dev**
 
-You can follow the syncing process in the terminal:
+To ckeck logs of the syncing process in the terminal use:
 
 ```bash
 docker logs bostrom-dev --f --tail 10
@@ -378,22 +380,19 @@ not the public key of the address you have just created.
 To get the nodes public key, run the following command:
 
 ```bash
-docker exec bostrom-dev cyberd tendermint show-validator
+docker exec bostrom-dev cyber tendermint show-validator
 ```
 
 It will return a bech32 public key. Let’s call it **<your_node_pubkey>**.
 The next step is to to declare a validator candidate.
-The validator candidate is the account which stakes the coins.
-So the validator candidate is an account this time.
 To declare a validator candidate, run the following command adjusting the stake amount and the other fields:
 
 ```bash
 docker exec -ti bostrom-dev cyber tx staking create-validator \
-  --amount=10000000eul \
+  --amount=10000000boot \
   --min-self-delegation "1000000" \
   --pubkey=<your_node_pubkey> \
   --moniker=<your_node_nickname> \
-  --trust-node \
   --from=<your_key_name> \
   --commission-rate="0.10" \
   --commission-max-rate="0.20" \
@@ -404,7 +403,7 @@ docker exec -ti bostrom-dev cyber tx staking create-validator \
 #### Verify that you are validating
 
 ```bash
-docker exec -ti bostrom-dev cyber query staking validators --trust-node=true
+docker exec -ti bostrom-dev cyber query staking validators
 ```
 
 If you see your `<your_node_nickname>` with status `Bonded` and Jailed `false` everything is good.
@@ -421,257 +420,13 @@ After such event, an operator must unjail the validator manually:
 docker exec -ti bostrom-dev cyber tx slashing unjail --from=<your_key_name> --chain-id bostrom-dev
 ```
 
+### Back-up validator keys (!)
 
+Your identity as validator consists of two things: 
 
+- your account (to sign transactions)
+- your validator private key (to sign stuff on chain consensus layer)
 
+Please back up `$HOME/.cyber/config/priv_validator_key.json` along with your seed phrase. In case of occasional node loss you would be able to restore you validator operation with this file and another full node.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#### Launch cyberd
-
-Reload `systemd` after the creation of the new service:
-
-```bash
-systemctl daemon-reload
-```
-
-Start the node:
-
-```bash
-sudo systemctl start cyberd
-```
-
-Check node status:
-
-```bash
-sudo systemctl status cyberd
-```
-
-Enable the service to start with the system:
-
-```bash
-sudo systemctl enable cyberd
-```
-
-Check logs:
-
-```bash
-journalctl -u cyberd -f --lines 20
-```
-
-If you need to stop the node:
-
-```bash
-sudo systemctl stop cyberd
-```
-
-All commands in this section are also applicable to `cyber-rest.service`.
-
-At this point your cyberd should be running in the backgroud and you should be able to call `cyber` to operate with the client. Try calling `cyber status`. A possible output looks like this:
-
-```bash
-{"node_info":{"protocol_version":{"p2p":"6","block":"9","app":"0"},"id":"93b776d3eb3f3ce9d9bda7164bc8af3acacff7b6","listen_addr":"tcp://0.0.0.0:26656","network":"euler-6","version":"0.32.7","channels":"4020212223303800","moniker":"anon","other":{"tx_index":"on","rpc_address":"tcp://0.0.0.0:26657"}},"sync_info":{"latest_block_hash":"686B4E65415D4E56D3B406153C965C0897D0CE27004E9CABF65064B6A0ED4240","latest_app_hash":"0A1F6D260945FD6E926785F07D41049B8060C60A132F5BA49DD54F7B1C5B2522","latest_block_height":"4553","latest_block_time":"2019-11-24T09:49:19.771375108Z","catching_up":false},"validator_info":{"address":"66098853CF3B61C4313DD487BA21EDF8DECACDF0","pub_key":{"type":"tendermint/PubKeyEd25519","value":"uZrCCdZTJoHE1/v+EvhtZufJgA3zAm1bN4uZA3RyvoY="},"voting_power":"0"}}
-```
-
-Your node has started to sync. If that didn't happen, check your config.toml file located at `$DAEMON_HOME/config/config.toml` and add at least a couple of addresses to <persistent_peers = ""> and <seeds = "">, some of those you can find on our [forum](https://ai.cybercongress.ai/).
-
-Additional information about the chain is available via an API endpoint at: `localhost:26657` (access via your browser)
-
-E.G. the number of active validators is available at: `localhost:26657/validators`
-
-If your node did not launch correctly from the genesis, you need to set the current link to cosmosd for cyber daemon:
-
-```bash
-ln -s $DAEMON_HOME/upgrade_manager/genesis current
-```
-
-If you joined the testnet **after** a chain upgrade happened, you must point your current link to a new location (with an approptiatly upgraded binary file):
-
-```bash
-mkdir $DAEMON_HOME/upgrade_manager/upgrades
-cp <path_to_upgraded_cyberd> $DAEMON_HOME/upgrade_manager/upgrades
-ln -s $DAEMON_HOME/upgrade_manager/upgrades current
-```
-
-## Validator start
-
-After your node has successfully sycned, you can run your validator.
-
-### Prepare a staking address
-
-We included ~1 million Ethereum addresses, over 10000 Cosmos addresses and all of `euler-4` validators addresses into the genesis file. This means that there's a huge chance that you already have some EUL tokens. Here are 3 ways to check this:
-
-If you already have a cyberd address with EUL and know the seed phrase or your private key, just restore it into your local Keystore:
-
-```bash
-cyber keys add <your_key_name> --recover
-cyber keys show <your_key_name>
-```
-
-If you have an Ethereum address that had ~0.2Eth or more at block 8080808 (on the ETH network), you probably received a gift and may import your Ethereum private key. To check your gift balance, paste your Ethereum address on [cyber.page](https://cyber.page).
-
-> Please do not import high-value Ethereum accounts. This is not safe! cyberd software is new and has not been audited yet.
-
-```bash
-cyber keys add private <your_key_name>
-cyber keys show <your_key_name>
-```
-
-If you want to create a new account, use the command below:
-(You should send coins to that address to bound them later during the launch of the validator)
-
-```bash
-cyber keys add <your_key_name>
-cyber keys show <your_key_name>
-```
-
-You could use your Ledger device, with the Cosmos app installed on it to sign and store cyber addresses: [guide here](https://github.com/cybercongress/cyberd/blob/0.1.5/docs/cyberd_Ledger_guide.md).
-In most cases use the --ledger flag, with your commands:
-
-```bash
-cyber keys add <your_key_name> --ledger
-```
-
-**<your_key_name>** is any name you pick to represent this key pair.
-You have to refer to this parameter <your_key_name> later when you use the keys to sign transactions.
-It will ask you to enter your password twice to encrypt the key.
-You will also need to enter your password when you use your key to sign any transaction.
-
-The command returns the address, a public key and a seed phrase, which you can use to
-recover your account if you forget your password later.
-Keep the seed phrase at a safe place (not in hot storage) in case you have to use it.
-
-The address shown here is your account address. Let’s call this **<your_account_address>**.
-It stores your assets.
-
-**Important note**: Starting with v.38 cosmos-SDK uses os-native keyring to store all your keys. We've noticed that in certain cases it does not work well by default (for example if you don't have any GUI installed on your machine). If during the execution of the `cyber keys add` command, you are getting this type of error:
-
-```bash
-panic: No such  interface 'org.freedesktop.DBus.Properties' on object at path /
-
-goroutine 1 [running]:
-github.com/cosmos/cosmos-sdk/crypto/keys.keyringKeybase.writeInfo(0x1307a18, 0x1307a10, 0xc000b37160, 0x1, 0x1, 0xc000b37170, 0x1, 0x1, 0x147a6c0, 0xc000f1c780, ...)
-    /root/go/pkg/mod/github.com/cosmos/cosmos-sdk@v0.38.1/crypto/keys/keyring.go:479 +0x38c
-github.com/cosmos/cosmos-sdk/crypto/keys.keyringKeybase.writeLocalKey(0x1307a18, 0x1307a10, 0xc000b37160, 0x1, 0x1, 0xc000b37170, 0x1, 0x1, 0x147a6c0, 0xc000f1c780, ...)
-    /root/go/pkg/mod/github.com/cosmos/cosmos-sdk@v0.38.1/crypto/keys/keyring.go:465 +0x189
-github.com/cosmos/cosmos-sdk/crypto/keys.baseKeybase.CreateAccount(0x1307a18, 0x1307a10, 0xc000b37160, 0x1, 0x1, 0xc000b37170, 0x1, 0x1, 0x146aa00, 0xc000b15630, ...)
-    /root/go/pkg/mod/github.com/cosmos/cosmos-sdk@v0.38.1/crypto/keys/keybase_base.go:171 +0x192
-github.com/cosmos/cosmos-sdk/crypto/keys.keyringKeybase.CreateAccount(...)
-    /root/go/pkg/mod/github.com/cosmos/cosmos-sdk@v0.38.1/crypto/keys/keyring.go:107
-github.com/cosmos/cosmos-sdk/client/keys.RunAddCmd(0xc000f0b400, 0xc000f125f0, 0x1, 0x1, 0x148dcc0, 0xc000aca550, 0xc000ea75c0, 0xc000ae1c08, 0x5e93b7)
-    /root/go/pkg/mod/github.com/cosmos/cosmos-sdk@v0.38.1/client/keys/add.go:273 +0xa8b
-... etc
-```
-
-You will have to use another keyring backend to keep your keys. Here are 2 options: store the files within the cli folder or a `pass` manager.
-
-Setting keyring backend to a **local file**:
-
-Execute:
-
-```bash
-cyber config keyring-backend file
-```
-
-As a result you migth see following: `configuration saved to /root/.cybercli/config/config.toml`
-
-Execute:
-
-```bash
-cyber config --get keyring-backend
-```
-
-The result should be the following:
-
-```bash
-user@node:~# cyber config --get keyring-backend
-file
-```
-
-This means that you've set your keyring-backend to a local file. *Note*, in this case, all the keys in your keyring will be encrypted using the same password. If you would like to set up a unique password for each key, you should set a unique `--home` folder for each key. To do that, just use `--home=/<unique_path_to_key_folder>/` with setup keyring backend and at all interactions with keys when using cyber:
-
-```bash
-cyber config keyring-backend file --home=/<unique_path_to_key_folder>/
-cyber keys add <your_second_key_name> --home=/<unique_path_to_key_folder>/
-cyber keys list --home=/<unique_path_to_key_folder>/
-```
-
-Set keyring backend to [**pass manager**](https://github.com/cosmos/cosmos-sdk/blob/9cce836c08d14dc6836d07164dd964b2b7226f36/crypto/keyring/doc.go#L30):
-
-Pass utility uses a GPG key to encrypt your keys (but again, it uses the same GPG for all the keys). To install and generate your GPG key you should follow [this guide](https://www.passwordstore.org/) or this very [detailed guide](http://tuxlabs.com/?p=450). When you'll get your `pass` set, configure `cyber` to use it as a keyring backend:
-
-```bash
-cyber config keyring-backend pass
-```
-
-And verify that all has been set as planned:
-
-```bash
-cyber config --get keyring-backend
-pass
-```
-
-#### Send the create validator transaction
-
-Validators are actors on the network committing to new blocks by submitting their votes.
-This refers to the node itself, not a single person or a single account.
-Therefore, the public key here is referring to the nodes public key,
-not the public key of the address you have just created.
-
-To get the nodes public key run the following command:
-
-```bash
-cyberd tendermint show-validator
-```
-
-It will return a bech32 public key. Let’s call it **<your_node_pubkey>**.
-The next step is to declare a validator candidate.
-The validator candidate is the account which stakes the coins.
-So the validator candidate is the account this time.
-To declare a validator candidate, run the following command adjusting the staked amount and the other fields:
-
-```bash
-cyber tx staking create-validator \
-  --amount=10000000eul \
-  --min-self-delegation "1000000" \
-  --pubkey=<your_node_pubkey> \
-  --moniker=<your_node_nickname> \
-  --trust-node \
-  --from=<your_key_name> \
-  --commission-rate="0.10" \
-  --commission-max-rate="0.20" \
-  --commission-max-change-rate="0.01" \
-  --chain-id=euler-6
-```
-
-#### Verify that you are validating
-
-```bash
-cyber query staking validators --trust-node=true
-```
-
-If you see your `<your_node_nickname>` with status `Bonded` and Jailed `false`, everything is good.
-You are validating the network.
-
-## Maintenance of the validator
-
-### Jailing
-
-If your validator got slashed, it will get jailed.
-If it happens the operator must unjail the validator manually:
-
-```bash
-cyber tx slashing unjail --from=<your_key_name> --chain-id euler-6
-```
+Also, in case if want to keep your cyber node ID consistent during networks please backup `$HOME/.cyber/config/node_key.json`.
