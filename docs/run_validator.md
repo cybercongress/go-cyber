@@ -214,7 +214,7 @@ curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add -
 curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | sudo tee /etc/apt/sources.list.d/nvidia-docker.list
 ```
 
-You should see this:
+You should see something like this:
 
 ```bash
 deb https://nvidia.github.io/libnvidia-container/ubuntu18.04/$(ARCH) /
@@ -254,25 +254,25 @@ e5ce55b8b4b9: Pull complete
 Digest: sha256:774ca3d612de15213102c2dbbba55df44dc5cf9870ca2be6c6e9c627fa63d67a
 Status: Downloaded newer image for nvidia/cuda:11.0-base
 Mon Jun 21 14:07:52 2021 
-+-----------------------------------------------------------------------------+
-| NVIDIA-SMI 460.84       Driver Version: 460.84       CUDA Version: 11.2     |
-|-------------------------------+----------------------+----------------------+
-| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
-| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
-|                               |                      |               MIG M. |
-|===============================+======================+======================|
-|   0  GeForce GTX 165...  Off  | 00000000:01:00.0 Off |                  N/A |
-| N/A   47C    P0    16W /  N/A |      0MiB /  3914MiB |      0%      Default |
-|                               |                      |                  N/A |
-+-------------------------------+----------------------+----------------------+
-                                                                               
-+-----------------------------------------------------------------------------+
-| Processes:                                                                  |
-|  GPU   GI   CI        PID   Type   Process name                  GPU Memory |
-|        ID   ID                                                   Usage      |
-|=============================================================================|
-|  No running processes found                                                 |
-+-----------------------------------------------------------------------------+
++------------------------------------------------------------------------+
+|NVIDIA-SMI 460.84      Driver Version:460.84      CUDA Version: 11.2    |
+|-----------------------------+--------------------+---------------------+
+|GPU  Name       Persistence-M| Bus-Id       Disp.A| Volatile Uncorr. ECC|
+|Fan  Temp  Perf Pwr:Usage/Cap|        Memory-Usage| GPU-Util  Compute M.|
+|                             |                    |               MIG M.|
+|=============================+====================+=====================|
+|  0  GeForce GTX165...  Off  |00000000:01:00.0 Off|                  N/A|
+|N/A   47C    P0   16W /  N/A |      0MB /  3914MiB|      0%      Default|
+|                             |                    |                  N/A|
++-----------------------------+--------------------+---------------------+
+                                                                       
++------------------------------------------------------------------------+
+|Processes:                                                              |
+| GPU   GI   CI       PID   Type   Process name                GPU Memory|
+|       ID   ID                                                Usage     |
+|========================================================================|
+| No running processes found                                             |
++------------------------------------------------------------------------+
 ```
 
 Your machine is ready to launch the fullnode.
@@ -288,17 +288,16 @@ mkdir $HOME/.cyber
 
 
 2. Run the fullnode:
-(This will pull and extract the image from cyberd/cyberd)
+(This will pull and extract the image from cyberd/cyber)
 
 ```bash
-docker run -d --gpus all --name=bostrom-dev --restart always -p 26656:26656 -p 26657:26657 -p 1317:1317 -e ALLOW_SEARCH=true -v $HOME/.cyber:/root/.cyber  cyberd/cyber:bostromdev-2
+docker run -d --gpus all --name=bostrom-testnet-1 --restart always -p 26656:26656 -p 26657:26657 -p 1317:1317 -e ALLOW_SEARCH=true -v $HOME/.cyber:/root/.cyber  cyberd/cyber:bostrom-testnet-1
 ```
-**TODO update image name for bostrom-dev**
 
 3. After container successfully pulled and launched, check the status of your node:
 
 ```bash
-docker exec bostrom-dev cyber status
+docker exec bostrom-testnet-1 cyber status
 ```
 
 A possible output may look like this:
@@ -318,13 +317,13 @@ For peers addresses please refer to [README](/README.md)
 When done, please restart container using:
 
 ```bash
-docker restart bostrom-dev
+docker restart bostrom-testnet-1
 ```
 
 To ckeck logs of the syncing process in the terminal use:
 
 ```bash
-docker logs bostrom-dev -f --tail 10
+docker logs bostrom-testnet-1 -f --tail 10
 ```
 
 ## Validator start
@@ -340,25 +339,25 @@ Or use our [port](https://cyber.page/brain) to enter cyber.
 To create a new one use:
 
 ```bash
-docker exec -ti bostrom-dev cyber keys add <your_key_name>
+docker exec -ti bostrom-testnet-1 cyber keys add <your_key_name>
 ```
 
 To import existing address use: 
 
 ```bash
-docker exec -ti bostrom-dev cyber keys add <your_key_name> --recover
+docker exec -ti bostrom-testnet-1 cyber keys add <your_key_name> --recover
 ```
 
 It also possible to import address from Ethereum private key:
 
 ```bash
-docker exec -ti bostrom-dev cyber keys add import_private <your_key_name>
+docker exec -ti bostrom-testnet-1 cyber keys add import_private <your_key_name>
 ```
 
 You could use your ledger device with the Cosmos app installed on it to sign and store cyber addresses:
 
 ```bash
-docker exec -ti bostrom-dev cyber keys add <your_key_name> --ledger
+docker exec -ti bostrom-testnet-1 cyber keys add <your_key_name> --ledger
 ```
 
 **<your_key_name>** is any name you pick to represent this key pair.
@@ -380,7 +379,7 @@ not the public key of the address you have just created.
 To get the nodes public key, run the following command:
 
 ```bash
-docker exec bostrom-dev cyber tendermint show-validator
+docker exec bostrom-testnet-1 cyber tendermint show-validator
 ```
 
 It will return a bech32 public key. Let’s call it **<your_node_pubkey>**.
@@ -388,7 +387,7 @@ The next step is to to declare a validator candidate.
 To declare a validator candidate, run the following command adjusting the stake amount and the other fields:
 
 ```bash
-docker exec -ti bostrom-dev cyber tx staking create-validator \
+docker exec -ti bostrom-testnet-1 cyber tx staking create-validator \
   --amount=10000000boot \
   --min-self-delegation "1000000" \
   --pubkey=<your_node_pubkey> \
@@ -397,13 +396,13 @@ docker exec -ti bostrom-dev cyber tx staking create-validator \
   --commission-rate="0.10" \
   --commission-max-rate="0.20" \
   --commission-max-change-rate="0.01" \
-  --chain-id=bostrom-dev
+  --chain-id=bostrom-testnet-1
 ```
 
 #### Verify that you are validating
 
 ```bash
-docker exec -ti bostrom-dev cyber query staking validators
+docker exec -ti bostrom-testnet-1 cyber query staking validators
 ```
 
 If you see your `<your_node_nickname>` with status `Bonded` and Jailed `false` everything is good.
@@ -417,7 +416,7 @@ If your validator got under slashing conditions, it will be jailed.
 After such event, an operator must unjail the validator manually:
 
 ```bash
-docker exec -ti bostrom-dev cyber tx slashing unjail --from=<your_key_name> --chain-id bostrom-dev
+docker exec -ti bostrom-testnet-1 cyber tx slashing unjail --from=<your_key_name> --chain-id bostrom-testnet-1
 ```
 
 ### Back-up validator keys (!)

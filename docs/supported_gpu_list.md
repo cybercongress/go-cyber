@@ -1,4 +1,4 @@
-# Supported GPU list for cyberd validators
+# Supported GPU list for cyber validators
 
 In our `cyber protocol` implementation on `GO` proof of relevance root hash is computed on Cuda GPUs every round as the best way to calculate merkle tree faster. We need to load the whole graph in memory for calculating that's why memory volume is important. GPU with 6Gb memory can calculate graph with ~200 M links.
 

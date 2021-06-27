@@ -1,4 +1,6 @@
-# Ultimate cyberd CLI guide. Chain: euler-6
+# Ultimate cyberd CLI guide. Chain: bostrom-testnet-1
+
+** TODO upgrade for bostrom network**
 
 ## Install cyberd client
 

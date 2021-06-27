@@ -1,5 +1,7 @@
 # How to upgrade cyber node with cosmosd
 
+** TODO upgrade for bostrom network**
+
 Upgrade to newer version of binaries will be covered in this guide. Go-cyber using [cosmosd](https://github.com/regen-network/cosmosd) upgrade manager and [upgrade module](https://docs.cosmos.network/master/modules/upgrade/) for on-chain upgrades.
 
 If you set up your node using this [Run validator guide](https://github.com/cybercongress/go-cyber/blob/master/docs/run_validator.md) it should be pretty eady to prepare for upgrade.

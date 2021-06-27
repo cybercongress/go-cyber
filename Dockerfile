@@ -48,14 +48,6 @@ RUN apt-get -y install --no-install-recommends \
  && chmod +x /usr/bin/cosmovisor \
  && rm -fR $BUILD_DIR/* && rm -fR $BUILD_DIR/.*[a-z]
 
-
-# Compile cuda kernel
-###########################################################################################
-COPY . /sources
-WORKDIR /sources/x/rank/cuda
-RUN make build
-RUN cp ./build/libcbdrank.so /usr/lib/ && cp cbdrank.h /usr/lib/
-
 ###########################################################################################
 # Build wasmvm
 ###########################################################################################
@@ -67,15 +59,21 @@ RUN curl https://sh.rustup.rs -sSf | sh -s -- -y \
  && cp $BUILD_DIR/wasmvm-${COSMWASM_VER}/api/libwasmvm.so /usr/lib/ \
  && cp $BUILD_DIR/wasmvm-${COSMWASM_VER}/api/libwasmvm.dylib /usr/lib/
 
+# Compile cuda kernel
+###########################################################################################
+COPY . /sources
+WORKDIR /sources/x/rank/cuda
+RUN make build
+RUN cp ./build/libcbdrank.so /usr/lib/ && cp cbdrank.h /usr/lib/
+
 # Compile cyberd for genesis version
 ###########################################################################################
 
 WORKDIR /sources
 # TODO: Update brach to master before merge\relaese
-RUN make build \
+RUN make build CUDA_ENABLED=true \
  && chmod +x ./build/cyber \
  && cp ./build/cyber /cyber/cosmovisor/genesis/bin/
-
 
 ###########################################################################################
 # Create runtime cyber image
@@ -94,7 +92,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends wget curl ca-ce
 # Download genesis file and links file from IPFS
 ###########################################################################################
 # PUT needed CID_OF_GENESIS here
-RUN wget -O /genesis.json https://io.cybernode.ai/ipfs/QmbXLnkEV4VStCKsr2t8JyFRvHivVHXvWxq8fmkebxu6Th
+RUN wget -O /genesis.json https://io.cybernode.ai/ipfs/QmbpAJpaFXqHtp9vo9vWzDEUbQk4QnTzDz7YhcZD5EfESK
 
 WORKDIR /
 
