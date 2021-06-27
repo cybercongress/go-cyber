@@ -328,5 +328,5 @@ func (k Keeper) CalculateInvestmint(ctx sdk.Context, amt sdk.Coin, resource stri
 
 func PeriodCheck(ctx sdk.Context, length uint64) bool {
 	// TODO mocked configuration
-	return length <= 2*24*60*60
+	return length <= 7*24*60*60
 }
