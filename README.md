@@ -38,7 +38,8 @@ Bostrom (cyber) - v0.2.0-alpha2
 - REST: [167.172.103.118:1317](http://167.172.103.118:1317/rank/search?cid=QmUX9mt8ftaHcn9Nc6SR4j9MsKkYfkcZqkfPTmMmBgeTe3)
 - gRPC: 167.172.103.118:9090
 - Faucet: ```rly testnets request bostromdev-2 <name> --url http://167.172.103.118:8000```
-- Seeds: 444b1df99e031bafcdf6d421017c187c5491d704@167.172.103.118:26656,5f6a49a68abc391a07b76eedf253b64a2d87f2fa@167.172.99.185:26656
+- Seed: d0518ce9881a4b0c5872e5e9b7c4ea8d760dad3f@85.10.207.173:26656
+- Peers: 444b1df99e031bafcdf6d421017c187c5491d704@167.172.103.118:26656,5f6a49a68abc391a07b76eedf253b64a2d87f2fa@167.172.99.185:26656
 
 --------
 
