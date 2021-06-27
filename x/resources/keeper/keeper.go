@@ -311,8 +311,8 @@ func (k Keeper) Mint(ctx sdk.Context, recipientAddr sdk.AccAddress, amt sdk.Coin
 
 func (k Keeper) CalculateInvestmint(ctx sdk.Context, amt sdk.Coin, resource string, length uint64) sdk.Coin {
 	// TODO mocked configuration
-	//cycles := sdk.NewDec(int64(length)).QuoInt64(int64(k.BaseVestingTime(ctx)))
-	cycles := sdk.NewDec(int64(length)).QuoInt64(int64(10))
+	cycles := sdk.NewDec(int64(length)).QuoInt64(int64(k.BaseVestingTime(ctx)))
+	//cycles := sdk.NewDec(int64(length)).QuoInt64(int64(10))
 	base := sdk.NewDec(amt.Amount.Int64()).QuoInt64(k.BaseVestingResource(ctx).Amount.Int64())
 
 	var toMint sdk.Coin
