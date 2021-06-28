@@ -1,5 +1,7 @@
 # Validator launch with Tendermint KMS + Leger Nano
 
+** TODO upgrade for bostrom network**
+
 In this guide, you'll find the full information on how to set up your validator at cyberd by using Tenderming KMS and Ledger nano S as a keystore.
 
 ## Preparing your Ledger

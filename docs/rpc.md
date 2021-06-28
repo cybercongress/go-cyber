@@ -1,5 +1,7 @@
 # API reference
 
+** TODO upgrade for bostrom network **
+
 Cyberd provides a [JSON-RPC](http://json-rpc.org/wiki/specification) type API. The HTTP endpoint is served under
  `localhost:20657`. WebSockets are the preferred transport for cyberd RPC and are used by applications, such as cyb.
  The default WebSocket connection endpoint for cyberd is `ws://localhost:26657/websocket`. There are test endpoints

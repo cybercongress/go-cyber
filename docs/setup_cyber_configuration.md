@@ -4,15 +4,15 @@ Correct configuration is one of the main keys to consistent and proper functioni
 
 Throughout this document, we will check all the key points of the `config.toml` file and explain how to configure them for all use-cases.
 
-We will operate a basic configuration file (according to the number of the line in the actual file), generated after the initialization of cyber daemon and typically located inside `$HOME/.cyberd/config directory`.
+We will operate a basic configuration file (according to the number of the line in the actual file), generated after the initialization of cyber daemon and typically located inside `$HOME/.cyber/config directory`.
 
-> All changes made to the `config.toml` file, require to restart cyberd to take effect!
+> All changes made to the `config.toml` file, require to restart cyber to take effect!
 
 ## Port / Address configuration
 
 ### RPC port
 
-First of all, let's look through the ports cyberd uses to communicate with the outside world. On *line 84* the specified port is used for an RPC server (TCP and UNIX websocket connections):
+First of all, let's look through the ports cyber uses to communicate with the outside world. On *line 84* the specified port is used for an RPC server (TCP and UNIX websocket connections):
 
 ```bash
 # TCP or UNIX socket address for the RPC server to listen on
@@ -101,7 +101,7 @@ external_address = ""
 
 This line implies specifying your external IP address, which means the presence of a static external address at your network connection. If you don't have one, just skip it.
 
-- For Validator nodes, you may skip it, until you have **enough private peers** to get synced with. Otherwise, you have to specify your external static IP to improve peer discovery for your node. Also, don't forget to change the port according to *line [163](#cyberd-communication-port)*:
+- For Validator nodes, you may skip it, until you have **enough private peers** to get synced with. Otherwise, you have to specify your external static IP to improve peer discovery for your node. Also, don't forget to change the port according to *line [163](#cyber-communication-port)*:
 
 ```bash
 external_address = "tcp://<your_external_static_ip>:26656"
