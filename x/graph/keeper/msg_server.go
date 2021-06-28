@@ -105,5 +105,12 @@ func (k msgServer) Cyberlink(goCtx context.Context, msg *types.MsgCyberlink) (*t
 		)
 	}
 
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			types.EventTypeCyberlinkMeta,
+			sdk.NewAttribute(types.AttributeKeySubject, msg.Address),
+		),
+	)
+
 	return &types.MsgCyberlinkResponse{}, nil
 }
