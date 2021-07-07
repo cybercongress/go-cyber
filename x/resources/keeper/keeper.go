@@ -90,6 +90,10 @@ func (k Keeper) ConvertResource(
 		return types.ErrNotAvailableLength
 	}
 
+	if k.bankKeeper.SpendableCoins(ctx, agent).AmountOf(ctypes.SCYB).LT(amount.Amount) {
+		return sdkerrors.ErrInsufficientFunds
+	}
+
 	err := k.AddTimeLockedCoinsToAccount(ctx, agent, sdk.NewCoins(amount), int64(length))
 	if err != nil {
 		return sdkerrors.Wrapf(types.ErrTimeLockCoins, err.Error())
