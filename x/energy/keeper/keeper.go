@@ -92,6 +92,8 @@ func (k Keeper) CreateEnergyRoute(ctx sdk.Context, src, dst sdk.AccAddress, alia
 
 	k.SetRoute(ctx, src, dst, types.NewRoute(src, dst, alias, sdk.Coins{}))
 
+	k.proxyKeeper.OnCoinsTransfer(ctx, nil, dst)
+
 	return nil
 }
 

@@ -48,6 +48,7 @@ func calculateRankGPU(ctx *types.CalculationContext, logger log.Logger) types.EM
 	inLinksUsers := make([]uint64, 0)
 	outLinksUsers := make([]uint64, 0)
 
+	// will fail if amount of indexed accounts will not equal all accounts
 	stakes := make([]uint64, stakesCount)
 	for acc, stake := range ctx.GetStakes() {
 		stakes[uint64(acc)] = stake
