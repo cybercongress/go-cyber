@@ -51,10 +51,6 @@ service Query {
     rpc Karma(QueryKarmaRequest) returns (QueryKarmaResponse) {
         option (google.api.http).get = "/cyber/rank/v1beta1/karma/{address}";
     }
-
-    rpc Karmas(QueryKarmasRequest) returns (QueryKarmasResponse) {
-        option (google.api.http).get = "/cyber/rank/v1beta1/karmas";
-    }
 }
 
 message QueryParamsRequest {}
@@ -121,11 +117,4 @@ message QueryKarmaRequest {
 
 message QueryKarmaResponse {
     uint64 karma = 1;
-}
-
-message QueryKarmasRequest {}
-
-// TODO experimental and debug
-message QueryKarmasResponse {
-    map<string, uint64> karmas = 1;
 }

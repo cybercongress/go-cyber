@@ -35,8 +35,6 @@ func NewQuerier(sk *StateKeeper, legacyQuerierCdc *codec.LegacyAmino) sdk.Querie
 			return queryEntropy(ctx, req, sk, legacyQuerierCdc)
 		case types.QueryLuminosity:
 			return queryLuminosity(ctx, req, sk, legacyQuerierCdc)
-		case types.QueryKarmas:
-			return queryKarmas(ctx, req, sk, legacyQuerierCdc)
 		default:
 			return nil, sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "unknown query path: %s", path[0])
 		}
@@ -280,18 +278,6 @@ func queryKarma(ctx sdk.Context, req abci.RequestQuery, sk *StateKeeper, legacyQ
 	karma := sk.GetKarma(accountNum)
 
 	res, err := codec.MarshalJSONIndent(legacyQuerierCdc, &types.QueryKarmaResponse{Karma: karma})
-	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
-	}
-
-	return res, nil
-}
-
-// TODO remove before release this dev endpoint
-func queryKarmas(ctx sdk.Context, _ abci.RequestQuery, sk *StateKeeper, legacyQuerierCdc *codec.LegacyAmino,) ([]byte, error) {
-	karmas := sk.GetKarmas(ctx)
-
-	res, err := codec.MarshalJSONIndent(legacyQuerierCdc, &types.QueryKarmasResponse{Karmas: karmas})
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
 	}

@@ -221,12 +221,3 @@ func (s *StateKeeper) Karma(goCtx context.Context, request *types.QueryKarmaRequ
 
 	return &types.QueryKarmaResponse{Karma: karma}, nil
 }
-
-// TODO remove before release this dev endpoint
-func (s *StateKeeper) Karmas(goCtx context.Context, _ *types.QueryKarmasRequest) (*types.QueryKarmasResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	karmas := s.GetKarmas(ctx)
-
-	return &types.QueryKarmasResponse{Karmas: karmas}, nil
-}

@@ -13,7 +13,6 @@ const (
 	QueryKarma 	 		= "karma"
 	QueryEntropy 	 	= "entropy"
 	QueryLuminosity 	= "luminosity"
-	QueryKarmas 	 	= "karmas"
 )
 
 

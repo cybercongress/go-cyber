@@ -260,15 +260,6 @@ func (s *StateKeeper) GetLuminosity(cidNum graphtypes.CidNumber) uint64 {
 	return s.networkCidRank.LuminosityValues[cidNum]
 }
 
-// TODO remove before release (with API endoint)
-func (s *StateKeeper) GetKarmas(ctx sdk.Context) (karmas map[string]uint64) {
-	karmas = make(map[string]uint64)
-	for _, acc := range s.accountKeeper.GetAllAccounts(ctx) {
-		karmas[acc.GetAddress().String()] = s.networkCidRank.KarmaValues[acc.GetAccountNumber()]
-	}
-	return karmas
-}
-
 func (s *StateKeeper) GetIndexError() error {
 	return s.getIndexError()
 }
