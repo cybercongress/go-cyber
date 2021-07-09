@@ -110,5 +110,5 @@ func ValidateCreateValidator(ctx sdk.Context,
 	}
 
 
-	return false, nil
+	return true, nil
 }

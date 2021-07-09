@@ -13,7 +13,6 @@ import (
 	"github.com/rakyll/statik/fs"
 
 	wasmplugins "github.com/cybercongress/go-cyber/plugins"
-	ctypes "github.com/cybercongress/go-cyber/types"
 	"github.com/cybercongress/go-cyber/x/cron"
 	"github.com/cybercongress/go-cyber/x/energy"
 	"github.com/cybercongress/go-cyber/x/resources"
@@ -747,25 +746,6 @@ func (app *App) InitChainer(ctx sdk.Context, req abci.RequestInitChain) abci.Res
 	// because manager skips init genesis for modules with empty data (e.g null)
 	app.mm.Modules[graphtypes.ModuleName].InitGenesis(ctx, app.appCodec, nil)
 	app.mm.Modules[cyberbanktypes.ModuleName].InitGenesis(ctx, app.appCodec, nil)
-
-	// if this is genesis event we need to mint equal amount of liquid staking tokens to genesis validators
-	var bankGenesisState banktypes.GenesisState
-	app.appCodec.MustUnmarshalJSON(genesisState["bank"], &bankGenesisState)
-	if bankGenesisState.Supply.AmountOf(ctypes.SCYB).IsZero() {
-		for _, delegation := range app.StakingKeeper.GetAllDelegations(ctx) {
-			toMint := sdk.NewCoin(ctypes.SCYB, delegation.GetShares().RoundInt())
-			err := app.BankKeeper.MintCoins(
-				ctx, resourcestypes.ResourcesName, sdk.NewCoins(toMint),
-			); if err != nil {
-				panic("error during genesis sboot's minting")
-			}
-			err = app.BankKeeper.SendCoinsFromModuleToAccount(
-				ctx, resourcestypes.ResourcesName, delegation.GetDelegatorAddr(), sdk.NewCoins(toMint),
-			); if err != nil {
-				panic("error during genesis sboot's sending")
-			}
-		}
-	}
 
 	return resp
 }
