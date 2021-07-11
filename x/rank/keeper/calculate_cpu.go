@@ -86,8 +86,11 @@ func step(ctx *types.CalculationContext, defaultRankWithCorrection float64, damp
 			for _, j := range sortedCids {
 				linkStake := getOverallLinkStake(ctx, j, cid)
 				jCidOutStake := getOverallOutLinksStake(ctx, j)
+				if linkStake == 0 || jCidOutStake == 0 {
+					continue
+				}
 				weight := float64(linkStake) / float64(jCidOutStake)
-				if math.IsNaN(weight) { weight = float64(0) }
+				//if math.IsNaN(weight) { weight = float64(0) }
 				ksum = prevrank[j]*weight + ksum //force no-fma here by explicit conversion
 			}
 			rank[cid] = ksum*dampingFactor + defaultRankWithCorrection //force no-fma here by explicit conversion
@@ -178,8 +181,10 @@ func karmaCalc(ctx *types.CalculationContext, rank []float64, entropy []float64,
 	for from := range ctx.GetOutLinks() {
 		stake := getOverallOutLinksStake(ctx, from)
 		for to := range ctx.GetOutLinks()[from] {
+			if (stake == 0) { continue }
 			users := ctx.GetOutLinks()[from][to]
 			for user := range users {
+				if (ctx.GetStakes()[uint64(user)] == 0) { continue }
 				w := float64(ctx.GetStakes()[uint64(user)]) / float64(stake)
 				if math.IsNaN(w) { w = float64(0) }
 				luminosity := rank[from] * entropy[from]
