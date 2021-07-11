@@ -33,8 +33,8 @@ func NewQuerier(sk *StateKeeper, legacyQuerierCdc *codec.LegacyAmino) sdk.Querie
 			return queryKarma(ctx, req, sk, legacyQuerierCdc)
 		case types.QueryEntropy:
 			return queryEntropy(ctx, req, sk, legacyQuerierCdc)
-		case types.QueryLuminosity:
-			return queryLuminosity(ctx, req, sk, legacyQuerierCdc)
+		case types.QueryNegentropy:
+			return queryNegentropy(ctx, req, sk, legacyQuerierCdc)
 		default:
 			return nil, sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "unknown query path: %s", path[0])
 		}
@@ -239,20 +239,10 @@ func queryEntropy(ctx sdk.Context, req abci.RequestQuery, sk *StateKeeper, legac
 	return res, nil
 }
 
-func queryLuminosity(ctx sdk.Context, req abci.RequestQuery, sk *StateKeeper, legacyQuerierCdc *codec.LegacyAmino,) ([]byte, error) {
-	var params types.QueryLuminosityParams
+func queryNegentropy(ctx sdk.Context, _ abci.RequestQuery, sk *StateKeeper, legacyQuerierCdc *codec.LegacyAmino,) ([]byte, error) {
+	negentropy := sk.GetNegEntropy()
 
-	err := legacyQuerierCdc.UnmarshalJSON(req.Data, &params); if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
-	}
-
-	cidNum, exist := sk.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(params.Cid)); if exist != true {
-		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, params.Cid)
-	}
-
-	luminosity := sk.GetLuminosity(cidNum)
-
-	res, err := codec.MarshalJSONIndent(legacyQuerierCdc, &types.QueryLuminosityResponse{Luminosity: luminosity})
+	res, err := codec.MarshalJSONIndent(legacyQuerierCdc, &types.QueryNegentropyResponse{Negentropy: negentropy})
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
 	}

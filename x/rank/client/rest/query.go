@@ -42,8 +42,8 @@ func registerQueryRoutes(cliCtx client.Context, r *mux.Router) {
 		"/rank/entropy",
 		queryEntropyHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc(
-		"/rank/luminosity",
-		queryLuminosityHandlerFn(cliCtx)).Methods("GET")
+		"/rank/negentropy",
+		queryNegentropyHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc(
 		"/rank/karma",
 		queryKarmaHandlerFn(cliCtx)).Methods("GET")
@@ -399,27 +399,10 @@ func queryEntropyHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	}
 }
 
-func queryLuminosityHandlerFn(cliCtx client.Context) http.HandlerFunc {
+func queryNegentropyHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var particle string
-
-		if v := r.URL.Query().Get("cid"); len(v) != 0 {
-			particle = v
-		}
-		if _, err := cid.Decode(particle); err != nil {
-			rest.WriteErrorResponse(w, http.StatusNotFound, err.Error())
-			return
-		}
-
-		params := types.NewQueryLuminosityParams(particle)
-
-		bz, err := cliCtx.LegacyAmino.MarshalJSON(params)
-		if rest.CheckBadRequestError(w, err) {
-			return
-		}
-
-		route := fmt.Sprintf("custom/%s/%s", types.QuerierRoute, types.QueryLuminosity)
-		res, height, err := cliCtx.QueryWithData(route, bz)
+		route := fmt.Sprintf("custom/%s/%s", types.QuerierRoute, types.QueryNegentropy)
+		res, height, err := cliCtx.QueryWithData(route, nil)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusNotFound, err.Error())
 			return

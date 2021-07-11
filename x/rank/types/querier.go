@@ -12,7 +12,7 @@ const (
 	QueryIsAnyLinkExist = "is_any_link_exist"
 	QueryKarma 	 		= "karma"
 	QueryEntropy 	 	= "entropy"
-	QueryLuminosity 	= "luminosity"
+	QueryNegentropy 	= "negentropy"
 )
 
 
@@ -65,14 +65,6 @@ type QueryEntropyParams struct {
 
 func NewQueryEntropyParams(cid string) QueryEntropyParams {
 	return QueryEntropyParams{cid}
-}
-
-type QueryLuminosityParams struct {
-	Cid string
-}
-
-func NewQueryLuminosityParams(cid string) QueryLuminosityParams {
-	return QueryLuminosityParams{cid}
 }
 
 type QueryKarmaParams struct {

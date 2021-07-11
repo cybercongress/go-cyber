@@ -183,19 +183,9 @@ func (s *StateKeeper) Entropy(goCtx context.Context, request *types.QueryEntropy
 	return &types.QueryEntropyResponse{Entropy: entropyValue}, nil
 }
 
-func (s *StateKeeper) Luminosity(goCtx context.Context, request *types.QueryLuminosityRequest) (*types.QueryLuminosityResponse, error) {
-	if request == nil {
-		return nil, status.Errorf(codes.InvalidArgument, "empty request")
-	}
-
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	cidNum, exist := s.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(request.Cid)); if exist != true {
-		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, request.Cid)
-	}
-
-	luminosityValue := s.GetLuminosity(cidNum)
-	return &types.QueryLuminosityResponse{Luminosity: luminosityValue}, nil
+func (s *StateKeeper) Negentropy(_ context.Context, _ *types.QueryNegentropyRequest) (*types.QueryNegentropyResponse, error) {
+	negentropy := s.GetNegEntropy()
+	return &types.QueryNegentropyResponse{Negentropy: negentropy}, nil
 }
 
 func (s *StateKeeper) Karma(goCtx context.Context, request *types.QueryKarmaRequest) (*types.QueryKarmaResponse, error) {

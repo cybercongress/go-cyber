@@ -5,10 +5,10 @@ import (
 	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/flags"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
 	"github.com/ipfs/go-cid"
-	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cobra"
 
 	"github.com/cybercongress/go-cyber/types/query"
@@ -33,7 +33,7 @@ func GetQueryCmd() *cobra.Command {
 		GetCmdQueryIsLinkExist(),
 		GetCmdQueryIsAnyLinkExist(),
 		GetCmdQueryEntropy(),
-		GetCmdQueryLuminosity(),
+		GetCmdQueryNegentropy(),
 		GetCmdQueryKarma(),
 	)
 
@@ -361,11 +361,11 @@ func GetCmdQueryEntropy() *cobra.Command{
 	return cmd
 }
 
-func GetCmdQueryLuminosity() *cobra.Command{
+func GetCmdQueryNegentropy() *cobra.Command{
 	cmd := &cobra.Command{
-		Use:   "luminosity [cid]",
-		Short: "Query the current entropy of given CID",
-		Args:  cobra.ExactArgs(1),
+		Use:   "negentropy",
+		Short: "Query the current negentropy of whole graph",
+		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -373,13 +373,9 @@ func GetCmdQueryLuminosity() *cobra.Command{
 			}
 			queryClient := types.NewQueryClient(clientCtx)
 
-			if _, err := cid.Decode(args[0]); err != nil {
-				return graphtypes.ErrInvalidCid
-			}
-
-			res, err := queryClient.Luminosity(
+			res, err := queryClient.Negentropy(
 				context.Background(),
-				&types.QueryLuminosityRequest{Cid: args[0]},
+				&types.QueryNegentropyRequest{},
 			)
 			if err != nil {
 				return err

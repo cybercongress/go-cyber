@@ -44,8 +44,8 @@ service Query {
         option (google.api.http).get = "/cyber/rank/v1beta1/entropy/{cid}";
     }
 
-    rpc Luminosity(QueryLuminosityRequest) returns (QueryLuminosityResponse) {
-        option (google.api.http).get = "/cyber/rank/v1beta1/luminosity/{cid}";
+    rpc Negentropy(QueryNegentropyRequest) returns (QueryNegentropyResponse) {
+        option (google.api.http).get = "/cyber/rank/v1beta1/negentropy";
     }
 
     rpc Karma(QueryKarmaRequest) returns (QueryKarmaResponse) {
@@ -103,12 +103,10 @@ message QueryEntropyResponse {
     uint64 entropy = 1;
 }
 
-message QueryLuminosityRequest {
-    string cid = 1;
-}
+message QueryNegentropyRequest {}
 
-message QueryLuminosityResponse {
-    uint64 luminosity = 1;
+message QueryNegentropyResponse {
+    uint64 negentropy = 1;
 }
 
 message QueryKarmaRequest {

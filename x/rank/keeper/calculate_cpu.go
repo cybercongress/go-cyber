@@ -30,13 +30,11 @@ func calculateRankCPU(ctx *types.CalculationContext) types.EMState {
 			[]float64{},
 			[]float64{},
 			[]float64{},
-			[]float64{},
 		}
 	}
 
 	rank := make([]float64, size)
 	entropy := make([]float64, size)
-	luminosity := make([]float64, size)
 	karma := make([]float64, len(ctx.GetStakes()))
 	defaultRank := (1.0 - dampingFactor) / float64(size)
 	danglingNodesSize := uint64(0)
@@ -63,15 +61,13 @@ func calculateRankCPU(ctx *types.CalculationContext) types.EMState {
 		steps++
 	}
 
-	// TODO return sum to API after implementation in GPU
-	_ = entropyCalc(ctx, entropy)
-	_ = luminosityCalc(rank, entropy, luminosity)
-	_ = karmaCalc(ctx, luminosity, karma)
+	// experimental features, out of consensus, available with API
+	entropyCalc(ctx, entropy, size, dampingFactor)
+	karmaCalc(ctx, rank, entropy, karma)
 
 	return types.EMState{
 		rank,
 		entropy,
-		luminosity,
 		karma,
 	}
 }
@@ -147,55 +143,48 @@ func calculateChange(prevrank, rank []float64) float64 {
 	return maxDiff
 }
 
-func entropyCalc(ctx *types.CalculationContext, entropy []float64) (float64) {
-	e := float64(0)
+func entropyCalc(ctx *types.CalculationContext, entropy []float64, cidsCount int64, dampingFactor float64) {
+	swd := make([]float64, cidsCount)
+	sumswd := make([]float64, cidsCount)
+	for i, _ := range swd {
+		swd[i] = dampingFactor*float64(
+			getOverallInLinksStake(ctx, graphtypes.CidNumber(i))) + (1-dampingFactor)*float64(
+			getOverallOutLinksStake(ctx, graphtypes.CidNumber(i)))
+	}
 
-	for from := range ctx.GetOutLinks() {
-		outStake := getOverallOutLinksStake(ctx, from)
-		inStake := getOverallInLinksStake(ctx, from)
-		ois := outStake + inStake
-		for to := range ctx.GetOutLinks()[from] {
-			users := ctx.GetOutLinks()[from][to]
-			for user := range users {
-				w := float64(ctx.GetStakes()[uint64(user)]) / float64(ois)
-				if math.IsNaN(w) { w = float64(0) }
-				e -= w*math.Log2(w)
-				entropy[from] -= w*math.Log2(w)
-			}
+	for i, _ := range sumswd {
+		for to := range ctx.GetInLinks()[graphtypes.CidNumber(i)] {
+			sumswd[i] += dampingFactor * swd[to]
+		}
+		for to := range ctx.GetOutLinks()[graphtypes.CidNumber(i)] {
+			sumswd[i] += (1 - dampingFactor) * swd[to]
 		}
 	}
 
-	return e
-}
-
-func luminosityCalc(rank, entropy, luminosity []float64) (float64) {
-	l := float64(0)
-
-	for i, _ := range rank {
-		luminosity[i] = rank[i] * entropy[i]
-		l += luminosity[i]
+	for i, _ := range entropy {
+		if swd[i] == 0 { continue }
+		for to := range ctx.GetInLinks()[graphtypes.CidNumber(i)] {
+			if sumswd[to] == 0 { continue }
+			entropy[i] += math.Abs(-swd[i] / sumswd[to] * math.Log2(swd[i]/sumswd[to]))
+		}
+		for to := range ctx.GetOutLinks()[graphtypes.CidNumber(i)] {
+			if sumswd[to] == 0 { continue }
+			entropy[i] += math.Abs(-swd[i] / sumswd[to] * math.Log2(swd[i]/sumswd[to]))
+		}
 	}
-
-	return l
 }
 
-func karmaCalc(ctx *types.CalculationContext, light []float64, karma []float64) (float64) {
-	k := float64(0)
-
+func karmaCalc(ctx *types.CalculationContext, rank []float64, entropy []float64, karma []float64) {
 	for from := range ctx.GetOutLinks() {
-		outStake := getOverallOutLinksStake(ctx, from)
-		inStake := getOverallInLinksStake(ctx, from)
-		ois := outStake + inStake
+		stake := getOverallOutLinksStake(ctx, from)
 		for to := range ctx.GetOutLinks()[from] {
 			users := ctx.GetOutLinks()[from][to]
 			for user := range users {
-				w := float64(ctx.GetStakes()[uint64(user)]) / float64(ois)
+				w := float64(ctx.GetStakes()[uint64(user)]) / float64(stake)
 				if math.IsNaN(w) { w = float64(0) }
-				karma[user] += w*float64(light[from])
-				k += w*float64(light[from])
+				luminosity := rank[from] * entropy[from]
+				karma[user] += w*float64(luminosity)
 			}
 		}
 	}
-
-	return k
 }

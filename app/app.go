@@ -703,8 +703,8 @@ func New(
 		app.BandwidthMeter.LoadState(freshCtx)
 		app.RankKeeper.LoadState(freshCtx)
 		app.BaseApp.Logger().Info(
-			"Cyber Consensus Supercomputer is started, next - the singularity!",
-			"time", time.Since(start),
+			"Cyber Consensus Supercomputer is started!",
+			"duration", time.Since(start).String(),
 		)
 
 		// Initialize and seal the capability keeper so all persistent capabilities

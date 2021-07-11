@@ -24,7 +24,6 @@ func calculateRankGPU(ctx *types.CalculationContext, logger log.Logger) types.EM
 		return types.EMState{
 			RankValues:       make([]float64, 0),
 			EntropyValues:    make([]float64, 0),
-			LuminosityValues: make([]float64, 0),
 			KarmaValues:      make([]float64, 0),
 		}
 	}
@@ -93,7 +92,7 @@ func calculateRankGPU(ctx *types.CalculationContext, logger log.Logger) types.EM
 	cDampingFactor := C.double(dampingFactor)
 	cTolerance := C.double(tolerance)
 
-	logger.Info("Rank: data transform", "time", time.Since(start))
+	logger.Info("Data transform", "duration", time.Since(start).String())
 
 	start = time.Now()
 	cRank := (*C.double)(&rank[0])
@@ -106,13 +105,12 @@ func calculateRankGPU(ctx *types.CalculationContext, logger log.Logger) types.EM
 		cInLinksOuts, cInLinksUsers, cOutLinksUsers,
 		cRank, cDampingFactor, cTolerance, cEntropy, cLuminosity, cKarma,
 	)
-	logger.Info("Rank: data calculation", "time", time.Since(start))
+	logger.Info("Rank computation", "duration", time.Since(start).String())
 
 	//return rank
 	return types.EMState{
 		RankValues:       rank,
 		EntropyValues:    entropy,
-		LuminosityValues: luminosity,
 		KarmaValues:      karma,
 	}
 }

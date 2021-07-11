@@ -256,8 +256,8 @@ func (s *StateKeeper) GetEntropy(cidNum graphtypes.CidNumber) uint64 {
 	return s.networkCidRank.EntropyValues[cidNum]
 }
 
-func (s *StateKeeper) GetLuminosity(cidNum graphtypes.CidNumber) uint64 {
-	return s.networkCidRank.LuminosityValues[cidNum]
+func (s *StateKeeper) GetNegEntropy() uint64 {
+	return s.networkCidRank.NegEntropy
 }
 
 func (s *StateKeeper) GetIndexError() error {

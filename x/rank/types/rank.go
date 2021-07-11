@@ -16,51 +16,48 @@ import (
 type EMState struct {
 	RankValues       []float64
 	EntropyValues  	 []float64
-	LuminosityValues []float64
 	KarmaValues		 []float64
 }
 
 type Rank struct {
 	RankValues 		 []uint64
 	EntropyValues 	 []uint64
-	LuminosityValues []uint64
 	KarmaValues 	 []uint64
 	MerkleTree 		 *merkle.Tree // ranks merkle
 	CidCount   		 uint64
 	TopCIDs	   		 []RankedCidNumber
+	NegEntropy       uint64
 }
 
 func NewRank(state EMState, logger log.Logger, fullTree bool) Rank {
 
-	// TODO separate mul impl for cpu and gpu
+	// Entropy and karma are experimental features
 	start := time.Now()
 	cidsCount := uint64(len(state.RankValues))
 
 	rankValues := make([]uint64, cidsCount)
 	for i, f64 := range state.RankValues {
-		rankValues[i] = uint64(f64*1e20)
+		rankValues[i] = uint64(f64*1e15)
 	}
-	state.RankValues = make([]float64, 0)
+	state.RankValues = nil
 
 	entropyValues := make([]uint64, cidsCount)
 	for i, f64 := range state.EntropyValues {
-		entropyValues[i] = uint64(f64*1e20)
+		entropyValues[i] = uint64(f64*1e15)
 	}
-	state.EntropyValues = make([]float64, 0)
-
-	luminosityValues := make([]uint64, cidsCount)
-	for i, f64 := range state.LuminosityValues {
-		luminosityValues[i] = uint64(f64*1e20)
+	negEntropy := float64(0)
+	for _, f64 := range state.EntropyValues {
+		negEntropy += f64
 	}
-	state.LuminosityValues = make([]float64, 0)
+	state.EntropyValues = nil
 
 	karmaValues := make([]uint64, len(state.KarmaValues))
 	for i, f64 := range state.KarmaValues {
-		karmaValues[i] = uint64(f64*1e20)
+		karmaValues[i] = uint64(f64*1e15)
 	}
-	state.KarmaValues = make([]float64, 0)
+	state.KarmaValues = nil
 
-	logger.Info("EMState constructing to uint", "time", time.Since(start))
+	logger.Info("State processing to integers", "duration", time.Since(start).String())
 
 	start = time.Now()
 	merkleTree := merkle.NewTree(sha256.New(), fullTree)
@@ -69,22 +66,26 @@ func NewRank(state EMState, logger log.Logger, fullTree bool) Rank {
 		binary.LittleEndian.PutUint64(rankBytes, u64)
 		merkleTree.Push(rankBytes)
 	}
-	logger.Info("Rank constructing tree", "time", time.Since(start))
+	logger.Info("Rank constructing tree", "duration", time.Since(start).String())
 
 	// NOTE fulltree true if search index enabled
+	start = time.Now()
 	var newSortedCIDs []RankedCidNumber
 	if (fullTree == true) {
 		newSortedCIDs = BuildTop(rankValues, 1000)
+		logger.Info("Build top", "duration", time.Since(start).String())
 	}
+
+	logger.Info("-Entropy", "bits", uint64(negEntropy))
 
 	return Rank{
 		RankValues: 	rankValues,
 		EntropyValues:  entropyValues,
-		LuminosityValues: luminosityValues,
 		KarmaValues: 	karmaValues,
 		MerkleTree: 	merkleTree,
 		CidCount: 		cidsCount,
 		TopCIDs: 		newSortedCIDs,
+		NegEntropy:     uint64(negEntropy),
 	}
 }
 
@@ -92,11 +93,11 @@ func NewFromMerkle(cidCount uint64, treeBytes []byte) Rank {
 	rank := Rank{
 		RankValues:       nil,
 		EntropyValues:    nil,
-		LuminosityValues: nil,
 		KarmaValues:      nil,
 		MerkleTree: 	  merkle.NewTree(sha256.New(), false),
 		CidCount:   	  cidCount,
 		TopCIDs:    	  nil,
+		NegEntropy:       0,
 	}
 
 	rank.MerkleTree.ImportSubtreesRoots(treeBytes)
@@ -110,11 +111,11 @@ func (r Rank) IsEmpty() bool {
 func (r *Rank) Clear() {
 	r.RankValues = nil
 	r.EntropyValues = nil
-	r.LuminosityValues = nil
 	r.KarmaValues = nil
 	r.MerkleTree = nil
 	r.CidCount = 0
 	r.TopCIDs = nil
+	r.NegEntropy = 0
 }
 
 func (r *Rank) CopyWithoutTree() Rank {
@@ -123,11 +124,11 @@ func (r *Rank) CopyWithoutTree() Rank {
 		return Rank{
 			RankValues: nil,
 			EntropyValues: nil,
-			LuminosityValues: nil,
 			KarmaValues: nil,
 			MerkleTree: nil,
 			CidCount: 0,
 			TopCIDs: nil,
+			NegEntropy: 0,
 		}
 	}
 
@@ -140,33 +141,30 @@ func (r *Rank) CopyWithoutTree() Rank {
 
 	copiedEntropyValues := make([]uint64, r.CidCount)
 	n = copy(copiedEntropyValues, r.EntropyValues)
-	// SHOULD NOT HAPPEN
-	if n != len(r.EntropyValues) {
-		panic("Not all entropy values have been copied")
-	}
-
-	copiedLuminosityValues := make([]uint64, r.CidCount)
-	n = copy(copiedLuminosityValues, r.LuminosityValues)
-	// SHOULD NOT HAPPEN
-	if n != len(r.LuminosityValues) {
-		panic("Not all luminosity values have been copied")
-	}
+	//if n != len(r.EntropyValues) {
+	//	panic("Not all entropy values have been copied")
+	//}
 
 	copiedKarmaValues := make([]uint64, len(r.KarmaValues))
 	n = copy(copiedKarmaValues, r.KarmaValues)
-	// SHOULD NOT HAPPEN
-	if n != len(r.KarmaValues) {
-		panic("Not all karma values have been copied")
-	}
+	//if n != len(r.KarmaValues) {
+	//	panic("Not all karma values have been copied")
+	//}
+
+	copiedTopCIDs := make([]RankedCidNumber, len(r.TopCIDs))
+	n = copy(copiedTopCIDs, r.TopCIDs)
+	//if n != len(r.TopCIDs) {
+	//	panic("Not all top particles values have been copied")
+	//}
 
 	return Rank{
 		RankValues: copiedRankValues,
 		EntropyValues: copiedEntropyValues,
-		LuminosityValues: copiedLuminosityValues,
 		KarmaValues: copiedKarmaValues,
 		MerkleTree: nil,
 		CidCount: r.CidCount,
-		TopCIDs: r.TopCIDs,
+		TopCIDs: copiedTopCIDs,
+		NegEntropy: r.NegEntropy,
 	}
 }
 
@@ -181,10 +179,6 @@ func (r *Rank) AddNewCids(currentCidCount uint64) {
 
 	if r.EntropyValues != nil {
 		r.EntropyValues = append(r.EntropyValues, make([]uint64, newCidsCount)...)
-	}
-
-	if r.LuminosityValues != nil {
-		r.LuminosityValues = append(r.LuminosityValues, make([]uint64, newCidsCount)...)
 	}
 
 	// extend merkle tree
