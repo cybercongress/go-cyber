@@ -62,7 +62,7 @@ If you have your bostrom-testnet-1 node running on our docker container do:
 docker stop bostrom-testnet-1
 docker rm bostrom-testnet-1
 docker rmi cyberd/cyber:bostrom-testnet-1
-docker run -d --gpus all --name=bostrom-testnet-1 --restart always -p 26656:26656 -p 26657:26657 -p 1317:1317 -e ALLOW_SEARCH=true -v $HOME/.cyber:/root/.cyber  cyberd/cyber:bostrom-testnet-2
+docker run -d --gpus all --name=bostrom-testnet-2 --restart always -p 26656:26656 -p 26657:26657 -p 1317:1317 -e ALLOW_SEARCH=true -v $HOME/.cyber:/root/.cyber  cyberd/cyber:bostrom-testnet-2
 ```
 This will pull new image and replace genesis and cyber binary to correct versions.
 

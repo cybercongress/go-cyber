@@ -3,6 +3,7 @@
 PACKAGES_NOSIMULATION=$(shell go list ./...)
 BINDIR ?= $(GOPATH)/bin
 CUDA_ENABLED ?= true
+VERSION=v0.2.0-beta2
 export GO111MODULE = on
 
 all: tools lint test
