@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/cosmos/cosmos-sdk/client/grpc/tmservice"
+	ctypes "github.com/cybercongress/go-cyber/types"
 	"github.com/gorilla/mux"
 	"github.com/rakyll/statik/fs"
 
@@ -741,6 +742,12 @@ func (app *App) EndBlocker(ctx sdk.Context, req abci.RequestEndBlock) abci.Respo
 func (app *App) InitChainer(ctx sdk.Context, req abci.RequestInitChain) abci.ResponseInitChain {
 	var genesisState GenesisState
 	app.legacyAmino.MustUnmarshalJSON(req.AppStateBytes, &genesisState)
+
+
+	var bankGenesisState banktypes.GenesisState
+	app.appCodec.MustUnmarshalJSON(genesisState["bank"], &bankGenesisState)
+	app.BandwidthMeter.AddToDesirableBandwidth(ctx, bankGenesisState.Supply.AmountOf(ctypes.VOLT).Uint64())
+
 	resp := app.mm.InitGenesis(ctx, app.appCodec, genesisState)
 
 	// because manager skips init genesis for modules with empty data (e.g null)
