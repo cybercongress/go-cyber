@@ -16,6 +16,18 @@ then
   cp -r /cyber/cosmovisor/  /root/.cyber
 fi
 
+if [ -f "/root/.cyber/config/genesis.json" ]
+then
+  new_genesis=$(sha1sum /genesis.json)
+  old_genesis=$(sha1sum /root/.cyber/config/genesis.json)
+  if [ "$new_genesis" != "$old_genesis" ]
+  then
+    cp /genesis.json /root/.cyber/config/
+    cp -r /cyber/cyber /root/.cyber/cosmovisor/genesis/bin
+    cyber unsafe-reset-all --home /root/.cyber
+  fi
+fi
+
 if [ ! -f "/root/.cyber/config/genesis.json" ]
 then
   cp /genesis.json /root/.cyber/config/

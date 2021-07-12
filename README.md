@@ -40,8 +40,39 @@ Bostrom (cyber) - v0.2.0-beta2
 - Faucet: ```
   curl --header "Content-Type: application/json" --request POST --data '{"denom":"boot","address":"bostrom1sm9sq4wnn62tk5yz0x3fvvx2ea9efguqwvdu64"}' http://titan.cybernode.ai:8000/credit```
 - Seed: d0518ce9881a4b0c5872e5e9b7c4ea8d760dad3f@85.10.207.173:26656
-- Peers: 444b1df99e031bafcdf6d421017c187c5491d704@167.172.103.118:26656,5f6a49a68abc391a07b76eedf253b64a2d87f2fa@167.172.99.185:26656
+- Peers: 5d542c0eb40ae48dc2cac0c140aedb605ded77dc@195.201.105.229:26656,444b1df99e031bafcdf6d421017c187c5491d704@167.172.103.118:26656,5f6a49a68abc391a07b76eedf253b64a2d87f2fa@167.172.99.185:26656
 
+For better network stability please update your `.cyber/config/config.toml` lines as following: 
+
+```
+addr_book_strict = false
+
+persistent_peers_max_dial_period = "200s"
+
+allow_duplicate_ip = true
+```
+
+--------
+
+### How to migrate from bostrom-testnet-1 to bostrom-testnet-2
+
+If you have your bostrom-testnet-1 node running on our docker container do:
+
+```bash
+docker stop bostrom-testnet-1
+docker rm bostrom-testnet-1
+docker rmi cyberd/cyber:bostrom-testnet-1
+docker run -d --gpus all --name=bostrom-testnet-1 --restart always -p 26656:26656 -p 26657:26657 -p 1317:1317 -e ALLOW_SEARCH=true -v $HOME/.cyber:/root/.cyber  cyberd/cyber:bostrom-testnet-2
+```
+This will pull new image and replace genesis and cyber binary to correct versions.
+
+If you have your node on somehow custom setup, you need to:
+
+1. Replace your `genesis.json` to [new one](http://cloudflare-ipfs.com/ipfs/QmXtzQmq8PciNdMuu24PuHr2KThVhmvorSYJHvGYsJX8CH)
+
+2. Buid new cyber binary from release v0.2.0-beta2 and replace old one with it
+
+3. Start the node
 
 --------
 
