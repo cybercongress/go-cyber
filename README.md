@@ -25,7 +25,7 @@ PS: Try [cyber.page](https://rebyc.cyber.page)
 
 Chain-ID: bostrom-testnet-2
 
-Genesis: [QmXtzQmq8PciNdMuu24PuHr2KThVhmvorSYJHvGYsJX8CH](http://cloudflare-ipfs.com/ipfs/QmXtzQmq8PciNdMuu24PuHr2KThVhmvorSYJHvGYsJX8CH)
+Genesis: [QmfCp3M7cAu6PfANSpffM8mo45begGvRxrkgkkEBvtgyq9](http://cloudflare-ipfs.com/ipfs/QmfCp3M7cAu6PfANSpffM8mo45begGvRxrkgkkEBvtgyq9)
 
 Build: ```make install```
 
@@ -54,21 +54,21 @@ allow_duplicate_ip = true
 
 --------
 
-### How to migrate from bostrom-testnet-1 to bostrom-testnet-2
+### How to migrate from bostrom-testnet-2 to bostrom-testnet-3
 
-If you have your bostrom-testnet-1 node running on our docker container do:
+If you have your bostrom-testnet-2 node running on our docker container do:
 
 ```bash
-docker stop bostrom-testnet-1
-docker rm bostrom-testnet-1
-docker rmi cyberd/cyber:bostrom-testnet-1
-docker run -d --gpus all --name=bostrom-testnet-2 --restart always -p 26656:26656 -p 26657:26657 -p 1317:1317 -e ALLOW_SEARCH=true -v $HOME/.cyber:/root/.cyber  cyberd/cyber:bostrom-testnet-2
+docker stop bostrom-testnet-2
+docker rm bostrom-testnet-2
+docker rmi cyberd/cyber:bostrom-testnet-3
+docker run -d --gpus all --name=bostrom-testnet-3 --restart always -p 26656:26656 -p 26657:26657 -p 1317:1317 -e ALLOW_SEARCH=true -v $HOME/.cyber:/root/.cyber  cyberd/cyber:bostrom-testnet-3
 ```
 This will pull new image and replace genesis and cyber binary to correct versions.
 
 If you have your node on somehow custom setup, you need to:
 
-1. Replace your `genesis.json` to [new one](http://cloudflare-ipfs.com/ipfs/QmXtzQmq8PciNdMuu24PuHr2KThVhmvorSYJHvGYsJX8CH)
+1. Replace your `genesis.json` to [new one](http://cloudflare-ipfs.com/ipfs/QmfCp3M7cAu6PfANSpffM8mo45begGvRxrkgkkEBvtgyq9)
 
 2. Buid new cyber binary from release v0.2.0-beta2 and replace old one with it
 
