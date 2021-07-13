@@ -123,7 +123,7 @@ func getOverallInLinksStake(ctx *types.CalculationContext, from graphtypes.CidNu
 
 	stake := uint64(0)
 	for to := range ctx.GetInLinks()[from] {
-		stake += getOverallLinkStake(ctx, from, to)
+		stake += getOverallLinkStake(ctx, to, from) // reverse order here
 	}
 	return stake
 }

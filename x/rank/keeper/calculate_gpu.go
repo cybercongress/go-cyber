@@ -31,8 +31,6 @@ func calculateRankGPU(ctx *types.CalculationContext, logger log.Logger) types.EM
 	tolerance := ctx.GetTolerance()
 	dampingFactor := ctx.GetDampingFactor()
 
-	outLinks := ctx.GetOutLinks()
-
 	cidsCount := ctx.GetCidsCount()
 	stakesCount := len(ctx.GetStakes())
 
@@ -40,9 +38,10 @@ func calculateRankGPU(ctx *types.CalculationContext, logger log.Logger) types.EM
 	entropy := make([]float64, cidsCount)
 	luminosity := make([]float64, cidsCount)
 	karma := make([]float64, stakesCount)
+
 	inLinksCount := make([]uint32, cidsCount)
 	outLinksCount := make([]uint32, cidsCount)
-
+	outLinksIns := make([]uint64, 0)
 	inLinksOuts := make([]uint64, 0)
 	inLinksUsers := make([]uint64, 0)
 	outLinksUsers := make([]uint64, 0)
@@ -65,10 +64,11 @@ func calculateRankGPU(ctx *types.CalculationContext, logger log.Logger) types.EM
 			}
 		}
 
-		if outLinks, ok := outLinks[graphtypes.CidNumber(i)]; ok {
-			for _, accs := range outLinks {
-				outLinksCount[i]  += uint32(len(accs))
-				for acc := range accs {
+		if outLinks, sortedCids, ok := ctx.GetSortedOutLinks(graphtypes.CidNumber(i)); ok {
+			for _, cid := range sortedCids {
+				outLinksCount[i] += uint32(len(outLinks[cid]))
+				for acc := range outLinks[cid] {
+					outLinksIns = append(outLinksIns, uint64(cid))
 					outLinksUsers = append(outLinksUsers, uint64(acc))
 				}
 			}
@@ -85,7 +85,9 @@ func calculateRankGPU(ctx *types.CalculationContext, logger log.Logger) types.EM
 	cInLinksCount := (*C.uint)(&inLinksCount[0])
 	cOutLinksCount := (*C.uint)(&outLinksCount[0])
 
+	cOutLinksIns := (*C.ulong)(&outLinksIns[0])
 	cInLinksOuts := (*C.ulong)(&inLinksOuts[0])
+
 	cInLinksUsers := (*C.ulong)(&inLinksUsers[0])
 	cOutLinksUsers := (*C.ulong)(&outLinksUsers[0])
 
@@ -102,8 +104,10 @@ func calculateRankGPU(ctx *types.CalculationContext, logger log.Logger) types.EM
 	C.calculate_rank(
 		cStakes, cStakesSize, cCidsSize, cLinksSize,
 		cInLinksCount, cOutLinksCount,
-		cInLinksOuts, cInLinksUsers, cOutLinksUsers,
-		cRank, cDampingFactor, cTolerance, cEntropy, cLuminosity, cKarma,
+		cInLinksOuts,  cOutLinksIns,
+		cInLinksUsers, cOutLinksUsers,
+		cDampingFactor, cTolerance,
+		cRank, cEntropy, cLuminosity, cKarma,
 	)
 	logger.Info("Rank computation", "duration", time.Since(start).String())
 

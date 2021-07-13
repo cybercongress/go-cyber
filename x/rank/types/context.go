@@ -86,3 +86,20 @@ func (с *CalculationContext) GetSortedInLinks(cid graphtypes.CidNumber) (grapht
 
 	return links, numbers, true
 }
+
+func (с *CalculationContext) GetSortedOutLinks(cid graphtypes.CidNumber) (graphtypes.CidLinks, []graphtypes.CidNumber, bool) {
+	links := с.outLinks[cid]
+
+	if len(links) == 0 {
+		return nil, nil, false
+	}
+
+	numbers := make([]graphtypes.CidNumber, 0, len(links))
+	for num := range links {
+		numbers = append(numbers, num)
+	}
+
+	sort.Slice(numbers, func(i, j int) bool { return numbers[i] < numbers[j] })
+
+	return links, numbers, true
+}
