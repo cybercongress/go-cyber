@@ -3,7 +3,8 @@
 PACKAGES_NOSIMULATION=$(shell go list ./...)
 BINDIR ?= $(GOPATH)/bin
 CUDA_ENABLED ?= true
-VERSION=v0.2.0-beta2
+VERSION := $(shell echo $(shell git describe --tags) | sed 's/^v//')
+COMMIT := $(shell git log -1 --format='%H')
 export GO111MODULE = on
 
 all: tools lint test
