@@ -30,6 +30,13 @@ then
   fi
 fi
 
+# option to replace old binary with new binary. only for tesntet usage
+
+if [ ! -f "/root/.cyber/cosmovisor/genesis/bin/cyber" ]
+then
+  cp -r /cyber/cosmovisor/genesis/bin/cyber  /root/.cyber/cosmovisor/genesis/bin/cyber
+fi
+
 if [ ! -f "/root/.cyber/config/genesis.json" ]
 then
   cp /genesis.json /root/.cyber/config/
