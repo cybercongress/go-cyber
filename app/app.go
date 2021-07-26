@@ -11,6 +11,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/grpc/tmservice"
 	ctypes "github.com/cybercongress/go-cyber/types"
 	"github.com/gorilla/mux"
+	"github.com/gravity-devs/liquidity/x/liquidity"
+	liquiditykeeper "github.com/gravity-devs/liquidity/x/liquidity/keeper"
+	liquiditytypes "github.com/gravity-devs/liquidity/x/liquidity/types"
 	"github.com/rakyll/statik/fs"
 
 	wasmplugins "github.com/cybercongress/go-cyber/plugins"
@@ -126,6 +129,7 @@ import (
 	cronkeeper "github.com/cybercongress/go-cyber/x/cron/keeper"
 	crontypes "github.com/cybercongress/go-cyber/x/cron/types"
 
+	store "github.com/cosmos/cosmos-sdk/store/types"
 	resourceskeeper "github.com/cybercongress/go-cyber/x/resources/keeper"
 	resourcestypes "github.com/cybercongress/go-cyber/x/resources/types"
 	stakingwrap "github.com/cybercongress/go-cyber/x/staking"
@@ -227,6 +231,7 @@ var (
 		cron.AppModuleBasic{},
 		resources.AppModuleBasic{},
 		wasm.AppModuleBasic{},
+		liquidity.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -241,6 +246,7 @@ var (
 		energytypes.EnergyPoolName: 		nil,
 		resourcestypes.ResourcesName: 	    {authtypes.Minter, authtypes.Burner},
 		wasm.ModuleName:                	{authtypes.Burner},
+		liquiditytypes.ModuleName:     		{authtypes.Minter, authtypes.Burner},
 	}
 
     // module accounts that are allowed to receive tokens
@@ -298,6 +304,7 @@ type App struct {
 	CronKeeper      *cronkeeper.Keeper
 	ResourcesKeeper resourceskeeper.Keeper
 	WasmKeeper      wasm.Keeper
+	LiquidityKeeper liquiditykeeper.Keeper
 
 	// make scoped keepers public for test purposes
 	ScopedIBCKeeper      capabilitykeeper.ScopedKeeper
@@ -334,6 +341,7 @@ func New(
 		energytypes.StoreKey,
 		crontypes.StoreKey,
 		wasm.StoreKey,
+		liquiditytypes.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey)
@@ -550,6 +558,11 @@ func New(
 	// If evidence needs to be handled for the app, set routes in router here and seal
 	app.EvidenceKeeper = *evidenceKeeper
 
+	app.LiquidityKeeper = liquiditykeeper.NewKeeper(
+		appCodec, keys[liquiditytypes.StoreKey], app.GetSubspace(liquiditytypes.ModuleName),
+		app.BankKeeper, app.AccountKeeper, app.DistrKeeper,
+	)
+
 	/****  Module Options ****/
 
 	// NOTE: we may consider parsing `appOpts` inside module constructors. For the moment
@@ -579,6 +592,7 @@ func New(
 		params.NewAppModule(app.ParamsKeeper),
 		transferModule,
 
+		liquidity.NewAppModule(appCodec, app.LiquidityKeeper, app.AccountKeeper, app.BankKeeper, app.DistrKeeper),
 		wasm.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper),
 		cyberbank.NewAppModule(appCodec, app.CyberbankKeeper),
 		bandwidth.NewAppModule(appCodec, app.AccountKeeper, app.BandwidthMeter),
@@ -603,6 +617,7 @@ func New(
 		slashingtypes.ModuleName,
 		evidencetypes.ModuleName,
 		stakingtypes.ModuleName,
+		liquiditytypes.ModuleName,
 		ibchost.ModuleName,
 		crontypes.ModuleName,
 	)
@@ -611,6 +626,7 @@ func New(
 		crisistypes.ModuleName,
 		govtypes.ModuleName,
 		stakingtypes.ModuleName,
+		liquiditytypes.ModuleName,
 		cyberbanktypes.ModuleName,
 		bandwidthtypes.ModuleName,
 		ranktypes.ModuleName,
@@ -634,6 +650,7 @@ func New(
 		ibchost.ModuleName,
 		genutiltypes.ModuleName,
 		evidencetypes.ModuleName,
+		liquiditytypes.ModuleName,
 		ibctransfertypes.ModuleName,
 
 		// graph and cyberbank will be initialized directly in InitChainer
@@ -667,6 +684,29 @@ func New(
 		),
 	)
 	app.SetEndBlocker(app.EndBlocker)
+
+	app.UpgradeKeeper.SetUpgradeHandler("AI-DEX",
+		func(ctx sdk.Context, plan upgradetypes.Plan) {
+			var genState liquiditytypes.GenesisState
+			genState.Params = liquiditytypes.DefaultParams()
+			genState.Params.PoolCreationFee = sdk.NewCoins(sdk.NewCoin("boot", sdk.NewInt(1000000)))
+			genState.Params.MinInitDepositAmount = sdk.NewInt(10000)
+			app.LiquidityKeeper.InitGenesis(ctx, genState)
+		})
+
+	upgradeInfo, err := app.UpgradeKeeper.ReadUpgradeInfoFromDisk()
+	if err != nil {
+		panic(err)
+	}
+
+	if upgradeInfo.Name == "AI-DEX" && !app.UpgradeKeeper.IsSkipHeight(upgradeInfo.Height) {
+		storeUpgrades := store.StoreUpgrades{
+			Added: []string{liquiditytypes.ModuleName},
+		}
+
+		// configure store loader that checks if version == upgradeHeight and applies store upgrades
+		app.SetStoreLoader(upgradetypes.UpgradeStoreLoader(upgradeInfo.Height, &storeUpgrades))
+	}
 
 	if loadLatest {
 		if err := app.LoadLatestVersion(); err != nil {
@@ -898,6 +938,7 @@ func initParamsKeeper(appCodec codec.BinaryMarshaler, legacyAmino *codec.LegacyA
 	paramsKeeper.Subspace(ibctransfertypes.ModuleName)
 	paramsKeeper.Subspace(ibchost.ModuleName)
 
+	paramsKeeper.Subspace(liquiditytypes.ModuleName)
 	paramsKeeper.Subspace(wasm.ModuleName)
 	paramsKeeper.Subspace(bandwidthtypes.ModuleName)
 	paramsKeeper.Subspace(ranktypes.ModuleName)
