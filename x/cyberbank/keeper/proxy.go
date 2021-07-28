@@ -99,14 +99,13 @@ func (p *Proxy) InputOutputCoins(ctx sdk.Context, inputs []banktypes.Input, outp
 
 func (p *Proxy) SubtractCoins(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coins) error {
 	err := p.bk.SubtractCoins(ctx, addr, amt)
-	// && (amt.AmountOf(ctypes.VOLT).IsPositive() || amt.AmountOf(ctypes.AMPER).IsPositive()) {
 	if err == nil {
 		p.OnCoinsTransfer(ctx, addr, nil)
 	}
 	return err
 }
 
-func (p Proxy) AddCoins(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coins) error {
+func (p *Proxy) AddCoins(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coins) error {
 	err := p.bk.AddCoins(ctx, addr, amt)
 	if err == nil {
 		p.OnCoinsTransfer(ctx, nil, addr)
@@ -142,9 +141,9 @@ func (p *Proxy) SendCoinsFromModuleToAccount(ctx sdk.Context, senderModule strin
 func (p *Proxy) SendCoinsFromModuleToModule(ctx sdk.Context, senderModule, recipientModule string, amt sdk.Coins) error {
 	err := p.bk.SendCoinsFromModuleToModule(ctx, senderModule, recipientModule, amt)
 
-	if err == nil {
-		p.OnCoinsTransfer(ctx, p.ak.GetModuleAddress(senderModule), p.ak.GetModuleAddress(recipientModule))
-	}
+	//if err == nil {
+	//	p.OnCoinsTransfer(ctx, p.ak.GetModuleAddress(senderModule), p.ak.GetModuleAddress(recipientModule))
+	//}
 	return err
 }
 

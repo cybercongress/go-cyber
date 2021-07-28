@@ -382,9 +382,13 @@ func New(
 		appCodec, keys[banktypes.StoreKey],
 		app.AccountKeeper, app.GetSubspace(banktypes.ModuleName), app.ModuleAccountAddrs(),
 	)
+	app.CyberbankKeeper = cyberbankkeeper.NewIndexedKeeper(
+		appCodec, keys[authtypes.StoreKey],
+		cyberbankkeeper.Wrap(&app.BankKeeper), app.AccountKeeper,
+	)
 	stakingKeeper := stakingkeeper.NewKeeper(
 		appCodec, keys[stakingtypes.StoreKey],
-		app.AccountKeeper, app.BankKeeper, app.GetSubspace(stakingtypes.ModuleName),
+		app.AccountKeeper, app.CyberbankKeeper.Proxy, app.GetSubspace(stakingtypes.ModuleName),
 	)
 	app.MintKeeper = mintkeeper.NewKeeper(
 		appCodec, keys[minttypes.StoreKey],
@@ -393,7 +397,7 @@ func New(
 	)
 	app.DistrKeeper = distrkeeper.NewKeeper(
 		appCodec, keys[distrtypes.StoreKey],
-		app.GetSubspace(distrtypes.ModuleName), app.AccountKeeper, app.BankKeeper,
+		app.GetSubspace(distrtypes.ModuleName), app.AccountKeeper, app.CyberbankKeeper.Proxy,
 		&stakingKeeper, authtypes.FeeCollectorName, app.ModuleAccountAddrs(),
 	)
 	app.SlashingKeeper = slashingkeeper.NewKeeper(
@@ -402,7 +406,7 @@ func New(
 	)
 	app.CrisisKeeper = crisiskeeper.NewKeeper(
 		app.GetSubspace(crisistypes.ModuleName),
-		invCheckPeriod, app.BankKeeper, authtypes.FeeCollectorName,
+		invCheckPeriod, app.CyberbankKeeper.Proxy, authtypes.FeeCollectorName,
 	)
 	app.UpgradeKeeper = upgradekeeper.NewKeeper(
 		skipUpgradeHeights, keys[upgradetypes.StoreKey], appCodec, homePath,
@@ -414,14 +418,10 @@ func New(
 		stakingtypes.NewMultiStakingHooks(app.DistrKeeper.Hooks(), app.SlashingKeeper.Hooks()),
 	)
 
-	app.CyberbankKeeper = cyberbankkeeper.NewIndexedKeeper(
-		cyberbankkeeper.Wrap(&app.BankKeeper), app.AccountKeeper,
-	)
-
 	app.CyberbankKeeper.Proxy.AddHook(bandwidth.CollectAddressesWithStakeChange())
 
 	app.BandwidthMeter = bandwidthkeeper.NewBandwidthMeter(app.appCodec,
-		keys[bandwidthtypes.StoreKey], app.CyberbankKeeper, app.GetSubspace(bandwidthtypes.ModuleName),
+		keys[bandwidthtypes.StoreKey], app.CyberbankKeeper.Proxy, app.GetSubspace(bandwidthtypes.ModuleName),
 	)
 
 	app.GraphKeeper = graphkeeper.NewKeeper(appCodec, keys[graphtypes.ModuleName])
@@ -437,7 +437,7 @@ func New(
 	)
 
 	app.EnergyKeeper = energykeeper.NewKeeper(
-		appCodec, keys[energytypes.ModuleName], app.CyberbankKeeper,
+		appCodec, keys[energytypes.ModuleName], app.CyberbankKeeper.Proxy,
 		app.AccountKeeper, app.GetSubspace(energytypes.ModuleName),
 	)
 	app.CyberbankKeeper.Proxy.SetEnergyKeeper(&app.EnergyKeeper)
@@ -457,11 +457,11 @@ func New(
 	app.TransferKeeper = ibctransferkeeper.NewKeeper(
 		appCodec, keys[ibctransfertypes.StoreKey], app.GetSubspace(ibctransfertypes.ModuleName),
 		app.IBCKeeper.ChannelKeeper, &app.IBCKeeper.PortKeeper,
-		app.AccountKeeper, app.BankKeeper, scopedTransferKeeper,
+		app.AccountKeeper, app.CyberbankKeeper.Proxy, scopedTransferKeeper,
 	)
 
 	app.CronKeeper = cronkeeper.NewKeeper(appCodec, keys[crontypes.StoreKey],
-		app.CyberbankKeeper, app.AccountKeeper, app.GetSubspace(crontypes.ModuleName),
+		app.CyberbankKeeper.Proxy, app.AccountKeeper, app.GetSubspace(crontypes.ModuleName),
 	)
 
 	// Initialize CosmWasm
@@ -509,7 +509,7 @@ func New(
 		keys[wasm.StoreKey],
 		app.GetSubspace(wasm.ModuleName),
 		app.AccountKeeper,
-		app.BankKeeper,
+		app.CyberbankKeeper.Proxy,
 		app.StakingKeeper,
 		app.DistrKeeper,
 		app.IBCKeeper.ChannelKeeper,
@@ -540,7 +540,7 @@ func New(
 
 	app.GovKeeper = govkeeper.NewKeeper(
 		appCodec, keys[govtypes.StoreKey], app.GetSubspace(govtypes.ModuleName),
-		app.AccountKeeper, app.BankKeeper, &stakingKeeper, govRouter,
+		app.AccountKeeper, app.CyberbankKeeper.Proxy, &stakingKeeper, govRouter,
 	)
 
 	transferModule := transfer.NewAppModule(app.TransferKeeper)
@@ -560,7 +560,7 @@ func New(
 
 	app.LiquidityKeeper = liquiditykeeper.NewKeeper(
 		appCodec, keys[liquiditytypes.StoreKey], app.GetSubspace(liquiditytypes.ModuleName),
-		app.BankKeeper, app.AccountKeeper, app.DistrKeeper,
+		app.CyberbankKeeper.Proxy, app.AccountKeeper, app.DistrKeeper,
 	)
 
 	/****  Module Options ****/
@@ -577,22 +577,22 @@ func New(
 			encodingConfig.TxConfig,
 		),
 		auth.NewAppModule(appCodec, app.AccountKeeper, nil),
-		vesting.NewAppModule(app.AccountKeeper, app.BankKeeper),
+		vesting.NewAppModule(app.AccountKeeper, app.CyberbankKeeper.Proxy),
 		bank.NewAppModule(appCodec, app.CyberbankKeeper.Proxy, app.AccountKeeper),
 		capability.NewAppModule(appCodec, *app.CapabilityKeeper),
 		crisis.NewAppModule(&app.CrisisKeeper, skipGenesisInvariants),
-		gov.NewAppModule(appCodec, app.GovKeeper, app.AccountKeeper, app.BankKeeper),
+		gov.NewAppModule(appCodec, app.GovKeeper, app.AccountKeeper, app.CyberbankKeeper.Proxy),
 		mint.NewAppModule(appCodec, app.MintKeeper, app.AccountKeeper),
-		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper),
-		distr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper),
-		stakingwrap.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper),
+		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.CyberbankKeeper.Proxy, app.StakingKeeper),
+		distr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.CyberbankKeeper.Proxy, app.StakingKeeper),
+		stakingwrap.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.CyberbankKeeper.Proxy),
 		upgrade.NewAppModule(app.UpgradeKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),
 		ibc.NewAppModule(app.IBCKeeper),
 		params.NewAppModule(app.ParamsKeeper),
 		transferModule,
 
-		liquidity.NewAppModule(appCodec, app.LiquidityKeeper, app.AccountKeeper, app.BankKeeper, app.DistrKeeper),
+		liquidity.NewAppModule(appCodec, app.LiquidityKeeper, app.AccountKeeper, app.CyberbankKeeper.Proxy, app.DistrKeeper),
 		wasm.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper),
 		cyberbank.NewAppModule(appCodec, app.CyberbankKeeper),
 		bandwidth.NewAppModule(appCodec, app.AccountKeeper, app.BandwidthMeter),

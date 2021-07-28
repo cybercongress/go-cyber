@@ -3,7 +3,9 @@ package keeper
 import (
 	"fmt"
 
+	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	gogotypes "github.com/gogo/protobuf/types"
 
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/tendermint/tendermint/libs/log"
@@ -15,15 +17,24 @@ import (
 type IndexedKeeper struct {
 	*Proxy
 	accountKeeper     		types.AccountKeeper
+	cdc           			codec.BinaryMarshaler
+	authKey  				sdk.StoreKey
 
 	userTotalStakeAmpere    map[uint64]uint64
 	userNewTotalStakeAmpere map[uint64]uint64
 	accountToUpdate         []sdk.AccAddress
 }
 
-func NewIndexedKeeper(pbk *Proxy, ak types.AccountKeeper) *IndexedKeeper {
+func NewIndexedKeeper(
+	cdc codec.BinaryMarshaler,
+	authKey sdk.StoreKey,
+	pbk *Proxy,
+	ak types.AccountKeeper,
+) *IndexedKeeper {
 	indexedKeeper := &IndexedKeeper{
 		Proxy: pbk,
+		cdc: cdc,
+		authKey: authKey,
 		accountKeeper: ak,
 		accountToUpdate: make([]sdk.AccAddress, 0),
 	}
@@ -80,16 +91,50 @@ func (k *IndexedKeeper) DetectUsersStakeAmpereChange(ctx sdk.Context) bool {
 			k.userTotalStakeAmpere[o] = n
 		}
 	}
+
 	return stakeChanged
 }
 
 func (k *IndexedKeeper) UpdateAccountsStakeAmpere(ctx sdk.Context) {
 	for _, addr := range k.accountToUpdate {
 		stake := k.GetAccountTotalStakeAmper(ctx, addr)
-		if k.accountKeeper.GetAccount(ctx, addr) == nil { continue }
+		if k.accountKeeper.GetAccount(ctx, addr) == nil {
+			continue
+		}
 		accountNumber := k.accountKeeper.GetAccount(ctx, addr).GetAccountNumber()
 		k.userNewTotalStakeAmpere[accountNumber] = uint64(stake)
 	}
 
+	lastAccountNumber := k.GetJustLastAccountNumber(ctx) - 1
+	if uint64(len(k.userNewTotalStakeAmpere)) != lastAccountNumber {
+		for i := lastAccountNumber; i > 0; i-- {
+			if _, ok := k.userNewTotalStakeAmpere[i]; !ok {
+				k.userNewTotalStakeAmpere[i] = 0
+			}
+		}
+	}
+
 	k.accountToUpdate = make([]sdk.AccAddress, 0)
+}
+
+// need this hack cause some modules call SetAccount without triggering any tokens transfers
+func (k IndexedKeeper) GetJustLastAccountNumber(ctx sdk.Context) uint64 {
+	var accNumber uint64
+	store := ctx.KVStore(k.authKey)
+	bz := store.Get([]byte("globalAccountNumber"))
+
+	if bz == nil {
+		accNumber = 0
+	} else {
+		val := gogotypes.UInt64Value{}
+
+		err := k.cdc.UnmarshalBinaryBare(bz, &val)
+		if err != nil {
+			panic(err)
+		}
+
+		accNumber = val.GetValue()
+	}
+
+	return accNumber
 }
