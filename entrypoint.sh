@@ -16,6 +16,12 @@ then
   cp -r /cyber/cosmovisor/  /root/.cyber
 fi
 
+# AI-DEX upgrade check
+if [ ! -d "/root/.cyber/cosmovisor/upgrades/" ]
+then
+cp -r /cyber/cosmovisor/upgrades /root/.cyber/cosmovisor
+fi
+
 # only for testnet usage 
 
 if [ -f "/root/.cyber/config/genesis.json" ]
@@ -32,9 +38,9 @@ fi
 
 # option to replace old binary with new binary. only for tesntet usage
 
-if [ ! -f "/root/.cyber/cosmovisor/genesis/bin/cyber" ]
+if [  -f "/root/.cyber/cosmovisor/genesis/bin/cyber" ]
 then
-  cp -r /cyber/cosmovisor/genesis/bin/cyber  /root/.cyber/cosmovisor/genesis/bin/cyber
+  cp /cyber/cosmovisor/genesis/bin/cyber  /root/.cyber/cosmovisor/genesis/bin/cyber
 fi
 
 if [ ! -f "/root/.cyber/config/genesis.json" ]

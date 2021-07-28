@@ -37,7 +37,8 @@ RUN apt-get -y install --no-install-recommends \
 
 # Create appropriate folders layout
 ###########################################################################################
- RUN mkdir -p /cyber/cosmovisor/genesis/bin 
+ RUN mkdir -p /cyber/cosmovisor/genesis/bin \
+ && mkdir -p /cyber/cosmovisor/upgrades/AI-DEX/bin 
 
 # Compile cosmovisor
 ###########################################################################################
@@ -71,9 +72,23 @@ RUN cp ./build/libcbdrank.so /usr/lib/ && cp cbdrank.h /usr/lib/
 
 WORKDIR /sources
 # TODO: Update brach to master before merge\relaese
-RUN make build CUDA_ENABLED=true \
+RUN git checkout  v0.2.0-beta4 \
+ && make build CUDA_ENABLED=true \
  && chmod +x ./build/cyber \
- && cp ./build/cyber /cyber/cosmovisor/genesis/bin/
+ && cp ./build/cyber /cyber/cosmovisor/genesis/bin/ \
+ && rm -rf ./build \
+ && git reset --hard
+
+
+ # Compile cyberd for AI-DEX upgrade version
+###########################################################################################
+
+WORKDIR /sources
+# TODO: Update brach to master before merge\relaese
+RUN git checkout  v0.2.0-beta5 \
+ && make build CUDA_ENABLED=true \
+ && chmod +x ./build/cyber \
+ && cp ./build/cyber /cyber/cosmovisor/upgrades/AI-DEX/bin 
 
 ###########################################################################################
 # Create runtime cyber image
@@ -100,9 +115,9 @@ WORKDIR /
 ###########################################################################################
 COPY --from=build_stage_cuda /cyber /cyber
 
-COPY --from=build_stage_cuda /cyber/cosmovisor/genesis/bin/cyber /cyber
+COPY --from=build_stage_cuda /cyber/cosmovisor/upgrades/AI-DEX/bin/cyber /cyber
 
-COPY --from=build_stage_cuda /cyber/cosmovisor/genesis/bin/cyber /usr/bin
+COPY --from=build_stage_cuda /cyber/cosmovisor/upgrades/AI-DEX/bin/cyber /usr/bin
 
 COPY --from=build_stage_cuda /usr/bin/cosmovisor /usr/bin/cosmovisor
 
