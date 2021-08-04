@@ -68,29 +68,44 @@ func NewDeductFeeBandRouterDecorator(ak keeper.AccountKeeper, bk bankkeeper.Keep
 
 func (drd DeductFeeBandRouterDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
 
-	nativeFlag := false
-	wasmExecuteFlag := false
+	feeFlag := false
+	feeSplitFlag := false
+	bandwidthFlag := false
 	ai2pay := sdk.AccAddress{}
 
+	// temporary boundary to resolve node stuck on tx request via API
+	if len(tx.GetMsgs()) > 50 {
+		return ctx, sdkerrors.Wrap(sdkerrors.ErrNotSupported, "Support only less than 50 msgs per tx")
+	}
+
+	// TODO optimize flat set
 	for _, msg := range tx.GetMsgs() {
 		if (msg.Route() != graphtypes.RouterKey && msg.Route() != wasm.RouterKey) {
-			nativeFlag = true
-			break
+			feeFlag = true
+			//break
 		}
 		if (msg.Route() == wasm.RouterKey && msg.Type() != "execute") {
-			nativeFlag = true
-			break
+			feeFlag = true
+			//break
 		}
 		if (msg.Route() == wasm.RouterKey && msg.Type() == "execute") {
 			executeTx, ok := msg.(*wasm.MsgExecuteContract)
 			if !ok {
 				return ctx, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "Msg must be a MsgExecuteContract")
-				//nativeFlag = true
+				//feeFlag = true
 				//break
 			}
-			wasmExecuteFlag = true
+			feeSplitFlag = true
 			ai2pay, _ = sdk.AccAddressFromBech32(executeTx.Contract)
 		}
+		if (msg.Route() == graphtypes.RouterKey) {
+			bandwidthFlag = true
+		}
+	}
+
+	// not allow to merge bandwidth/fee billing in one transaction
+	if bandwidthFlag && (feeFlag || feeSplitFlag) {
+		return ctx, sdkerrors.Wrap(sdkerrors.ErrNotSupported, "Support only batch of cyberlinks")
 	}
 
 	feeTx, ok := tx.(sdk.FeeTx)
@@ -105,9 +120,10 @@ func (drd DeductFeeBandRouterDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, s
 		return ctx, sdkerrors.Wrapf(sdkerrors.ErrUnknownAddress, "fee payer address: %s does not exist", feePayer)
 	}
 
-	if nativeFlag {
+	// if feeFlag also true than fee of the whole tx will go to contract
+	if feeSplitFlag {
 		if !feeTx.GetFee().IsZero() {
-			err = DeductFees(drd.bk, ctx, feePayerAcc, feeTx.GetFee(), nil)
+			err = DeductFees(drd.bk, ctx, feePayerAcc, feeTx.GetFee(), ai2pay)
 			if err != nil {
 				return ctx, err
 			}
@@ -115,9 +131,10 @@ func (drd DeductFeeBandRouterDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, s
 
 		return next(ctx, tx, simulate)
 	}
-	if wasmExecuteFlag {
+	// default sdk case
+	if feeFlag {
 		if !feeTx.GetFee().IsZero() {
-			err = DeductFees(drd.bk, ctx, feePayerAcc, feeTx.GetFee(), ai2pay)
+			err = DeductFees(drd.bk, ctx, feePayerAcc, feeTx.GetFee(), nil)
 			if err != nil {
 				return ctx, err
 			}
@@ -136,16 +153,12 @@ func (drd DeductFeeBandRouterDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, s
 		return ctx, bandwidthtypes.ErrNotEnoughBandwidth
 	} else if (txCost + currentBlockSpentBandwidth) > maxBlockBandwidth  {
 		return ctx, bandwidthtypes.ErrExceededMaxBlockBandwidth
+	} else {
+		if !ctx.IsCheckTx() && !ctx.IsReCheckTx() {
+			_ = drd.bm.ConsumeAccountBandwidth(ctx, accountBandwidth, txCost)
+			drd.bm.AddToBlockBandwidth(txCost)
+		}
 	}
-	// NOTE Moved to cyberlinks module, because need to consume bandwidth based on msgs, delete after tests
-	// case of autonomous cron programs
-	// } else {
-	//	drd.bm.ConsumeAccountBandwidth(ctx, accountBandwidth, txCost)
-	//
-	//	if !ctx.IsCheckTx() {
-	//		drd.bm.AddToBlockBandwidth(txCost)
-	//	}
-	//}
 
 	return next(ctx, tx, simulate)
 }

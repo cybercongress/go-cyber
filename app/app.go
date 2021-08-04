@@ -129,7 +129,7 @@ import (
 	cronkeeper "github.com/cybercongress/go-cyber/x/cron/keeper"
 	crontypes "github.com/cybercongress/go-cyber/x/cron/types"
 
-	store "github.com/cosmos/cosmos-sdk/store/types"
+	//store "github.com/cosmos/cosmos-sdk/store/types"
 	resourceskeeper "github.com/cybercongress/go-cyber/x/resources/keeper"
 	resourcestypes "github.com/cybercongress/go-cyber/x/resources/types"
 	stakingwrap "github.com/cybercongress/go-cyber/x/staking"
@@ -343,7 +343,10 @@ func New(
 		wasm.StoreKey,
 		liquiditytypes.StoreKey,
 	)
-	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
+	tkeys := sdk.NewTransientStoreKeys(
+		paramstypes.TStoreKey,
+		graphtypes.TStoreKey,
+	)
 	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey)
 
 	app := &App{
@@ -425,7 +428,7 @@ func New(
 	)
 
 	app.GraphKeeper = graphkeeper.NewKeeper(appCodec, keys[graphtypes.ModuleName])
-	app.IndexKeeper = graphkeeper.NewIndexKeeper(app.GraphKeeper)
+	app.IndexKeeper = graphkeeper.NewIndexKeeper(app.GraphKeeper, tkeys[paramstypes.TStoreKey])
 
 	computeUnit := ranktypes.ComputeUnit(cast.ToInt(appOpts.Get(rank.FlagComputeGPU)))
 	searchAPI := cast.ToBool(appOpts.Get(rank.FlagSearchAPI))
@@ -685,28 +688,28 @@ func New(
 	)
 	app.SetEndBlocker(app.EndBlocker)
 
-	app.UpgradeKeeper.SetUpgradeHandler("AI-DEX",
-		func(ctx sdk.Context, plan upgradetypes.Plan) {
-			var genState liquiditytypes.GenesisState
-			genState.Params = liquiditytypes.DefaultParams()
-			genState.Params.PoolCreationFee = sdk.NewCoins(sdk.NewCoin("boot", sdk.NewInt(1000000)))
-			genState.Params.MinInitDepositAmount = sdk.NewInt(10000)
-			app.LiquidityKeeper.InitGenesis(ctx, genState)
-		})
+	//app.UpgradeKeeper.SetUpgradeHandler("AI-DEX",
+	//	func(ctx sdk.Context, plan upgradetypes.Plan) {
+	//		var genState liquiditytypes.GenesisState
+	//		genState.Params = liquiditytypes.DefaultParams()
+	//		genState.Params.PoolCreationFee = sdk.NewCoins(sdk.NewCoin("boot", sdk.NewInt(1000000)))
+	//		genState.Params.MinInitDepositAmount = sdk.NewInt(10000)
+	//		app.LiquidityKeeper.InitGenesis(ctx, genState)
+	//	})
+	//
+	//upgradeInfo, err := app.UpgradeKeeper.ReadUpgradeInfoFromDisk()
+	//if err != nil {
+	//	panic(err)
+	//}
 
-	upgradeInfo, err := app.UpgradeKeeper.ReadUpgradeInfoFromDisk()
-	if err != nil {
-		panic(err)
-	}
-
-	if upgradeInfo.Name == "AI-DEX" && !app.UpgradeKeeper.IsSkipHeight(upgradeInfo.Height) {
-		storeUpgrades := store.StoreUpgrades{
-			Added: []string{liquiditytypes.ModuleName},
-		}
-
-		// configure store loader that checks if version == upgradeHeight and applies store upgrades
-		app.SetStoreLoader(upgradetypes.UpgradeStoreLoader(upgradeInfo.Height, &storeUpgrades))
-	}
+	//if upgradeInfo.Name == "AI-DEX" && !app.UpgradeKeeper.IsSkipHeight(upgradeInfo.Height) {
+	//	storeUpgrades := store.StoreUpgrades{
+	//		Added: []string{liquiditytypes.ModuleName},
+	//	}
+	//
+	//	// configure store loader that checks if version == upgradeHeight and applies store upgrades
+	//	app.SetStoreLoader(upgradetypes.UpgradeStoreLoader(upgradeInfo.Height, &storeUpgrades))
+	//}
 
 	if loadLatest {
 		if err := app.LoadLatestVersion(); err != nil {

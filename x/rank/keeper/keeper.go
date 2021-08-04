@@ -115,10 +115,10 @@ func (s *StateKeeper) EndBlocker(ctx sdk.Context) {
 	s.StoreLatestBlockNumber(ctx, uint64(ctx.BlockHeight()))
 	currentCidsCount := s.graphKeeper.GetCidsCount(ctx)
 
-	s.index.PutNewLinks(s.graphIndexedKeeper.GetCurrentBlockNewLinks())
+	s.index.PutNewLinks(s.graphIndexedKeeper.GetCurrentBlockNewLinks(ctx))
 
 	// TODO refactoring
-	blockHasNewLinks := s.graphIndexedKeeper.EndBlocker()
+	blockHasNewLinks := s.graphIndexedKeeper.EndBlocker(ctx)
 	s.hasNewLinksForPeriod = s.hasNewLinksForPeriod || blockHasNewLinks
 
 	params := s.GetParams(ctx)

@@ -4,11 +4,11 @@ import (
 	"encoding/binary"
 	//"fmt"
 
+	"io"
+
 	. "github.com/cybercongress/go-cyber/types"
 	"github.com/cybercongress/go-cyber/util"
 	"github.com/cybercongress/go-cyber/x/graph/types"
-
-	"io"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	tmos "github.com/tendermint/tendermint/libs/os"
@@ -25,12 +25,16 @@ type IndexKeeper struct {
 	nextRankInLinks  types.Links
 	nextRankOutLinks types.Links
 
+	// Inter-block cache for cyberlinks, reset on every block during Commit
+	tkey        sdk.StoreKey
+
 	currentBlockLinks []types.CompactLink
 }
 
-func NewIndexKeeper(gk GraphKeeper) *IndexKeeper {
+func NewIndexKeeper(gk GraphKeeper, tkey sdk.StoreKey) *IndexKeeper {
 	return &IndexKeeper{
 		GraphKeeper: gk,
+		tkey:        tkey,
 	}
 }
 
@@ -52,7 +56,6 @@ func (i *IndexKeeper) LoadState(rankCtx sdk.Context, freshCtx sdk.Context) {
 	}
 
 	i.nextRankInLinks = newInLinks
-
 	i.nextRankOutLinks = newOutLinks
 }
 
@@ -65,27 +68,26 @@ func (i *IndexKeeper) FixLinks() {
 }
 
 // return true if this block has new links
-// [!] triggered by EndBlocker in rank module
-func (i *IndexKeeper) EndBlocker() bool {
-	hasNewLinks := len(i.currentBlockLinks) > 0
+// TODO refactoror logic because triggered by EndBlocker in rank module
+func (i *IndexKeeper) EndBlocker(ctx sdk.Context) bool {
+	lenLinks := uint64(0)
+	iterator := sdk.KVStorePrefixIterator(ctx.TransientStore(i.tkey), types.CyberlinkTStoreKeyPrefix)
 
-	for _, link := range i.currentBlockLinks {
+	defer iterator.Close()
+	for ; iterator.Valid(); iterator.Next() {
+		link := types.UnmarshalBinaryLink(iterator.Key()[1:])
 		i.nextRankOutLinks.Put(types.CidNumber(link.From), types.CidNumber(link.To), AccNumber(link.Account))
 		i.nextRankInLinks.Put(types.CidNumber(link.To), types.CidNumber(link.From), AccNumber(link.Account))
+		lenLinks++
 	}
 
-	i.currentBlockLinks = make([]types.CompactLink, 0, 1000)
-	return hasNewLinks
+	return lenLinks > 0
 }
 
-func (i *IndexKeeper) PutIntoIndex(link types.CompactLink) {
-	i.currentBlockLinks = append(i.currentBlockLinks, link)
-}
-
+// Use transient store because need to commit cyberlinks to cache only when transaction is successful
 func (i *IndexKeeper) PutLink(ctx sdk.Context, link types.CompactLink) {
-	if !ctx.IsCheckTx() {
-		i.currentBlockLinks = append(i.currentBlockLinks, link)
-	}
+	store := ctx.TransientStore(i.tkey)
+	store.Set(types.CyberlinksTStoreKey(link.MarshalBinaryLink()), []byte{1})
 }
 
 func (i *IndexKeeper) GetOutLinks() types.Links {
@@ -100,17 +102,19 @@ func (i *IndexKeeper) GetNextOutLinks() types.Links {
 	return i.nextRankOutLinks
 }
 
-func (i *IndexKeeper) GetCurrentBlockLinks() []types.CompactLink {
-	return i.currentBlockLinks
-}
+func (i *IndexKeeper) GetCurrentBlockNewLinks(ctx sdk.Context) []types.CompactLink {
+	result := make([]types.CompactLink, 0, 1000)
 
-func (i *IndexKeeper) GetCurrentBlockNewLinks() []types.CompactLink {
-	result := make([]types.CompactLink, 0, len(i.currentBlockLinks))
-	for _, link := range i.currentBlockLinks {
+	iterator := sdk.KVStorePrefixIterator(ctx.TransientStore(i.tkey), types.CyberlinkTStoreKeyPrefix)
+
+	defer iterator.Close()
+	for ; iterator.Valid(); iterator.Next() {
+		link := types.UnmarshalBinaryLink(iterator.Key()[1:])
 		if !i.IsAnyLinkExist(types.CidNumber(link.From), types.CidNumber(link.To)) {
 			result = append(result, link)
 		}
 	}
+
 	return result
 }
 
@@ -121,6 +125,11 @@ func (i *IndexKeeper) IsAnyLinkExist(from types.CidNumber, to types.CidNumber) b
 func (i *IndexKeeper) IsLinkExist(link types.CompactLink) bool {
 	return i.currentRankOutLinks.IsLinkExist(types.CidNumber(link.From), types.CidNumber(link.To), AccNumber(link.Account)) ||
 		i.nextRankOutLinks.IsLinkExist(types.CidNumber(link.From), types.CidNumber(link.To), AccNumber(link.Account))
+}
+
+func (i *IndexKeeper) IsLinkExistInCache(ctx sdk.Context, link types.CompactLink) bool {
+	store := ctx.TransientStore(i.tkey)
+	return store.Has(link.MarshalBinaryLink())
 }
 
 func (i *IndexKeeper) LoadFromReader(ctx sdk.Context, reader io.Reader) (err error) {

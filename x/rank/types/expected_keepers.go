@@ -13,13 +13,13 @@ type StakeKeeper interface {
 
 type GraphIndexedKeeper interface {
 	FixLinks()
-	EndBlocker() bool
+	EndBlocker(sdk.Context) bool
 
 	GetOutLinks() graphtypes.Links
 	GetInLinks() graphtypes.Links
 
 	GetLinksCount(sdk.Context) uint64
-	GetCurrentBlockNewLinks() []graphtypes.CompactLink
+	GetCurrentBlockNewLinks(ctx sdk.Context) []graphtypes.CompactLink
 	GetCidsCount(sdk.Context) uint64
 }
 

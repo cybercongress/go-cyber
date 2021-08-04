@@ -9,6 +9,8 @@ const (
 	RouterKey 	  		= ModuleName
 	StoreKey      	    = ModuleName
 	QuerierRoute  		= ModuleName
+
+	TStoreKey           = "transient_index"
 )
 
 var (
@@ -16,6 +18,7 @@ var (
 	CidStoreKeyPrefix	  	 = []byte{0x01}
 	CidReverseStoreKeyPrefix = []byte{0x02}
 	CyberlinkStoreKeyPrefix  = []byte{0x03}
+	CyberlinkTStoreKeyPrefix  = []byte{0x04} // inter-block cache for cyberlinks
 
 	LastCidNumber    		 = append(GlobalStoreKeyPrefix, []byte("lastCidNumber")...)
 	LinksCount 				 = append(GlobalStoreKeyPrefix, []byte("linksCount")...)
@@ -31,4 +34,8 @@ func CidReverseStoreKey(num CidNumber) []byte {
 
 func CyberlinksStoreKey(id uint64) []byte {
 	return append(CyberlinkStoreKeyPrefix, sdk.Uint64ToBigEndian(id)...)
+}
+
+func CyberlinksTStoreKey(link []byte) []byte {
+	return append(CyberlinkTStoreKeyPrefix, link...)
 }

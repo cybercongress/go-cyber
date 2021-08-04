@@ -5,10 +5,9 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
+	ctypes "github.com/cybercongress/go-cyber/types"
 	bandwidthkeeper "github.com/cybercongress/go-cyber/x/bandwidth/keeper"
 	bandwidthtypes "github.com/cybercongress/go-cyber/x/bandwidth/types"
-
-	ctypes "github.com/cybercongress/go-cyber/types"
 	cyberbankkeeper "github.com/cybercongress/go-cyber/x/cyberbank/keeper"
 
 	//sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -57,6 +56,7 @@ func (k msgServer) Cyberlink(goCtx context.Context, msg *types.MsgCyberlink) (*t
 		return nil, types.ErrInvalidAccount
 	}
 
+	// TODO move to ante
 	if ampers, ok := k.GetTotalStakesAmpere()[uint64(accNumber)]; ok {
 		if ampers == 0 {
 			return nil, types.ErrZeroPower
@@ -65,15 +65,16 @@ func (k msgServer) Cyberlink(goCtx context.Context, msg *types.MsgCyberlink) (*t
 		return nil, types.ErrZeroPower
 	}
 
-	// NOTE moved from ante handler, because need to consume bandwidth by msgs
-	cost := uint64(k.GetCurrentCreditPrice().MulInt64(int64(len(msg.Links) * 100)).TruncateInt64())
-	accountBandwidth := k.GetCurrentAccountBandwidth(ctx, addr)
-	err = k.ConsumeAccountBandwidth(ctx, accountBandwidth, cost)
-	if err != nil {
-		return nil, bandwidthtypes.ErrNotEnoughBandwidth
-	}
+	// case when autonomous program cyberlink
+	if k.GetAccount(ctx, addr).GetPubKey() == nil {
 
-	if !ctx.IsCheckTx() {
+		cost := uint64(k.GetCurrentCreditPrice().MulInt64(int64(len(msg.Links) * 100)).TruncateInt64())
+		accountBandwidth := k.GetCurrentAccountBandwidth(ctx, addr)
+		err = k.ConsumeAccountBandwidth(ctx, accountBandwidth, cost)
+		if err != nil {
+			return nil, bandwidthtypes.ErrNotEnoughBandwidth
+		}
+
 		k.AddToBlockBandwidth(cost)
 	}
 
@@ -85,6 +86,10 @@ func (k msgServer) Cyberlink(goCtx context.Context, msg *types.MsgCyberlink) (*t
 		compactLink := types.NewLink(fromCidNumber, toCidNumber, accNumber)
 
 		if k.IndexKeeper.IsLinkExist(compactLink) {
+			return nil, types.ErrCyberlinkExist
+		}
+
+		if k.IndexKeeper.IsLinkExistInCache(ctx, compactLink) {
 			return nil, types.ErrCyberlinkExist
 		}
 	}
@@ -99,8 +104,8 @@ func (k msgServer) Cyberlink(goCtx context.Context, msg *types.MsgCyberlink) (*t
 		ctx.EventManager().EmitEvent(
 			sdk.NewEvent(
 				types.EventTypeCyberlink,
-				sdk.NewAttribute(types.AttributeKeyObjectFrom, string(link.From)),
-				sdk.NewAttribute(types.AttributeKeyObjectTo, string(link.To)),
+				sdk.NewAttribute(types.AttributeKeyObjectFrom, link.From),
+				sdk.NewAttribute(types.AttributeKeyObjectTo, link.To),
 			),
 		)
 	}

@@ -114,6 +114,11 @@ func (m *BandwidthMeter) AddToBlockBandwidth(value uint64) {
 func (m *BandwidthMeter) CommitBlockBandwidth(ctx sdk.Context) {
 	params := m.GetParams(ctx)
 	defer func() {
+		if m.currentBlockSpentBandwidth > 0 {
+			m.Logger(ctx).Info("Block", "bandwidth", m.currentBlockSpentBandwidth)
+			m.Logger(ctx).Info("Window", "bandwidth", m.totalSpentForSlidingWindow)
+		}
+
 		telemetry.SetGauge(float32(m.currentBlockSpentBandwidth), types.ModuleName, "block_bandwidth")
 		telemetry.SetGauge(float32(m.totalSpentForSlidingWindow), types.ModuleName, "window_bandwidth")
 		m.currentBlockSpentBandwidth = 0
@@ -122,17 +127,24 @@ func (m *BandwidthMeter) CommitBlockBandwidth(ctx sdk.Context) {
 	m.totalSpentForSlidingWindow += m.currentBlockSpentBandwidth
 
 	newWindowEnd := ctx.BlockHeight()
-	//params := m.GetParams(ctx)
 	windowStart := newWindowEnd - int64(params.RecoveryPeriod)
 	if windowStart < 0 {
 		windowStart = 0
 	}
 
+	// clean window slot in in-memory
 	windowStartValue, exists := m.bandwidthSpentByBlock[uint64(windowStart)]
 	if exists {
 		m.totalSpentForSlidingWindow -= windowStartValue
 		delete(m.bandwidthSpentByBlock, uint64(windowStart))
 	}
+
+	// clean window slot in storage
+	store := ctx.KVStore(m.storeKey)
+	if store.Has(types.BlockStoreKey(uint64(windowStart))) {
+		store.Delete(types.BlockStoreKey(uint64(windowStart)))
+	}
+
 	m.SetBlockBandwidth(ctx, uint64(ctx.BlockHeight()), m.currentBlockSpentBandwidth)
 	m.bandwidthSpentByBlock[uint64(newWindowEnd)] = m.currentBlockSpentBandwidth
 }
@@ -161,10 +173,13 @@ func (m *BandwidthMeter) AdjustPrice(ctx sdk.Context) {
 	desirableBandwidth := m.GetDesirableBandwidth(ctx)
 	if desirableBandwidth != 0 {
 		telemetry.SetGauge(float32(m.totalSpentForSlidingWindow)/float32(desirableBandwidth), types.ModuleName, "load")
+
 		newPrice := sdk.NewDec(int64(m.totalSpentForSlidingWindow)).QuoInt64(int64(desirableBandwidth))
+		m.Logger(ctx).Info("Load", "value", newPrice.String())
 		if newPrice.LT(params.BasePrice) {
 			newPrice = params.BasePrice
 		}
+		m.Logger(ctx).Info("Price", "value", newPrice.String())
 
 		m.currentCreditPrice = newPrice
 		m.StoreBandwidthPrice(ctx, newPrice)

@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"runtime/debug"
+
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	"github.com/cybercongress/go-cyber/x/rank/types"
 
@@ -37,6 +39,7 @@ func CalculateRankInParallel(
 ) {
 	defer func() {
 		if r := recover(); r != nil {
+			fmt.Println("trace from panic: \n" + string(debug.Stack()))
 			err <- r.(error)
 		}
 	}()

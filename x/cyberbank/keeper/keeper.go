@@ -73,6 +73,7 @@ func (k *IndexedKeeper) getCollectFunc(ctx sdk.Context, userStake map[uint64]uin
 
 func  (k *IndexedKeeper) InitializeStakeAmpere(account uint64, stake uint64) {
 	k.userTotalStakeAmpere[account] = stake
+	k.userNewTotalStakeAmpere[account] = stake
 }
 
 func (k *IndexedKeeper) GetTotalStakesAmpere() map[uint64]uint64 {
@@ -105,6 +106,8 @@ func (k *IndexedKeeper) UpdateAccountsStakeAmpere(ctx sdk.Context) {
 		k.userNewTotalStakeAmpere[accountNumber] = uint64(stake)
 	}
 
+	// need this hack cause some modules call SetAccount without triggering any tokens transfers
+	// TODO migrate logic to storage listener in sdk 43+
 	lastAccountNumber := k.GetJustLastAccountNumber(ctx) - 1
 	if uint64(len(k.userNewTotalStakeAmpere)) != lastAccountNumber {
 		for i := lastAccountNumber; i > 0; i-- {
@@ -117,7 +120,6 @@ func (k *IndexedKeeper) UpdateAccountsStakeAmpere(ctx sdk.Context) {
 	k.accountToUpdate = make([]sdk.AccAddress, 0)
 }
 
-// need this hack cause some modules call SetAccount without triggering any tokens transfers
 func (k IndexedKeeper) GetJustLastAccountNumber(ctx sdk.Context) uint64 {
 	var accNumber uint64
 	store := ctx.KVStore(k.authKey)
