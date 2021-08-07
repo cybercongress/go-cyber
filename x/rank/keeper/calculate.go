@@ -28,7 +28,6 @@ func CalculateRank(ctx *types.CalculationContext, unit types.ComputeUnit, logger
 	logger.Info(
 		"cyber~Rank calculated", "duration", diff.String(),
 		"cyberlinks", ctx.LinksCount, "cids", ctx.CidsCount,
-		"hash", fmt.Sprintf("%X", rank.MerkleTree.ExportSubtreesRoots()), // TODO remove this line before release
 	)
 
 	return

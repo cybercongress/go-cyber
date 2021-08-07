@@ -192,10 +192,6 @@ func (k Keeper) SetRoutes(ctx sdk.Context, routes types.Routes) error {
 			return err
 		}
 
-		if err := k.proxyKeeper.SendCoinsFromAccountToModule(ctx, src, types.EnergyPoolName, route.Value); err != nil {
-			return err
-		}
-
 		energy := k.GetRoutedToEnergy(ctx, dst)
 		if !energy.IsValid() {
 			k.SetRoutedEnergy(ctx, dst, route.Value)

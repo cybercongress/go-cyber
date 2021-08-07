@@ -463,37 +463,38 @@ func (k Keeper) ExecuteJobsQueue(ctx sdk.Context) {
 	maxJobs := k.MaxJobs(ctx)
 	maxGasPerJob := maxGas / maxJobs
 
-	k.Logger(ctx).Debug("Jobs in queue", "size", jobs.Len())
+	if jobs.Len() > 0 {
+		k.Logger(ctx).Info("Jobs in queue", "size", jobs.Len())
+	}
 
+	var jobsTriggered uint32
 	for i, job := range jobs {
 		if (job.Trigger.Period != 0 && ctx.BlockHeight()%int64(job.Trigger.Period) == 0) ||
 			(job.Trigger.Period == 0 && ctx.BlockHeight() == int64(job.Trigger.Block)) {
 			price := job.Load.GasPrice
 
-			k.Logger(ctx).Debug("Started job", "number", i, "gas price", price)
+			k.Logger(ctx).Info("Started job", "number", i, "gas price", price)
+			jobsTriggered = jobsTriggered+1
 
 			cacheContext, writeFn := ctx.CacheContext()
 			cacheContext = cacheContext.WithGasMeter(sdk.NewGasMeter(sdk.Gas(maxGasPerJob)))
 
-			k.Logger(ctx).Debug("Context gas stats before job execution",
-				"limit", ctx.GasMeter().Limit(),
-				"consumed to limit", ctx.GasMeter().GasConsumedToLimit(),
+			k.Logger(ctx).Info("Context gas stats before job execution",
 				"consumed", ctx.GasMeter().GasConsumed(),
 			)
 
 			remained := ctx.GasMeter().Limit() - ctx.GasMeter().GasConsumedToLimit()
 			if remained < uint64(maxGasPerJob) {
-				k.Logger(ctx).Debug("Job break, not enough gas", "job #", i)
+				k.Logger(ctx).Info("Job break, not enough gas", "job #", i)
 				break
 			}
 
 			// TODO leave only contract - delete creator, cause it will be same after base logic debug
 			contract, _ := sdk.AccAddressFromBech32(job.Contract)
 			creator, _ := sdk.AccAddressFromBech32(job.Creator)
-			result, errExecute := k.executeJobWithSudo(
+			_, errExecute := k.executeJobWithSudo(
 				cacheContext, contract, job.Load.CallData,
 			)
-			k.Logger(ctx).Debug("Job executed", "result", result)
 
 			gasUsedByJob := cacheContext.GasMeter().GasConsumed()
 			ctx.GasMeter().ConsumeGas(gasUsedByJob, "job execution")
@@ -509,7 +510,7 @@ func (k Keeper) ExecuteJobsQueue(ctx sdk.Context) {
 			amtTTLFee := (ctx.BlockHeight() - int64(js.LastBlock))*int64(feeTTL)
 			amtTotalFee := amtGasFee + amtTTLFee
 
-			k.Logger(ctx).Debug("Gas job execution stats",
+			k.Logger(ctx).Info("Gas job execution stats",
 				"used", gasUsedByJob,
 				"gas fee", amtGasFee,
 				"ttl fee", amtTTLFee,
@@ -524,16 +525,16 @@ func (k Keeper) ExecuteJobsQueue(ctx sdk.Context) {
 				k.DeleteJob(ctx, contract, creator, job.Label)
 				k.DeleteJobStats(ctx, contract, creator, job.Label)
 
-				k.Logger(ctx).Debug("Not enough contract balance, state not applied, job killed", "Job #", i)
+				k.Logger(ctx).Info("Not enough contract balance, state not applied, job killed", "Job #", i)
 				continue
 			}
 
 			if errExecute != nil {
-				k.Logger(ctx).Debug("Job failed, state not applied", "Job #", i)
-				k.Logger(ctx).Debug("Failed with error: ", errExecute.Error())
+				k.Logger(ctx).Info("Job failed, state not applied", "Job #", i)
+				k.Logger(ctx).Info("Failed with error: ", errExecute.Error())
 			} else {
 				writeFn() // apply cached context
-				k.Logger(ctx).Debug("Job finished, state applied", "Job #", i)
+				k.Logger(ctx).Info("Job finished, state applied", "Job #", i)
 			}
 
 			k.SetJobStats(ctx, contract, creator, job.Label,
@@ -547,16 +548,18 @@ func (k Keeper) ExecuteJobsQueue(ctx sdk.Context) {
 				k.DeleteJob(ctx, contract, creator, job.Label)
 				k.DeleteJobStats(ctx, contract, creator, job.Label)
 
-				k.Logger(ctx).Debug("Job executed at given block, deleted from queue", "Job #", i)
+				k.Logger(ctx).Info("Job executed at given block, deleted from queue", "Job #", i)
 			}
 		}
 	}
 
 	gasAfterCron := ctx.GasMeter().GasConsumed()
-	k.Logger(ctx).Debug("Total cron gas used", "Gas used", gasAfterCron-gasBeforeCron)
+	if jobsTriggered > 0 {
+		k.Logger(ctx).Info("Total cron gas used", "Gas used", gasAfterCron-gasBeforeCron)
+	}
 }
 
-func (k Keeper) executeJobWithSudo(ctx sdk.Context, contract sdk.AccAddress, msg string) (*sdk.Result, error) {
+func (k Keeper) executeJobWithSudo(ctx sdk.Context, contract sdk.AccAddress, msg string) ([]byte, error) {
 	defer func() {
 		if r := recover(); r != nil {
 			switch rType := r.(type) {
