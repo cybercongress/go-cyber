@@ -73,8 +73,13 @@ func (k Keeper) BaseVestingResource(ctx sdk.Context) (res sdk.Coin) {
 	return
 }
 
-func (k Keeper) BaseVestingTime(ctx sdk.Context) (res uint64) {
+func (k Keeper) BaseVestingTime(ctx sdk.Context) (res uint32) {
 	k.paramSpace.Get(ctx, types.KeyBaseVestingTime, &res)
+	return
+}
+
+func (k Keeper) MaxVestingTime(ctx sdk.Context) (res uint32) {
+	k.paramSpace.Get(ctx, types.KeyMaxVestingTime, &res)
 	return
 }
 
@@ -85,7 +90,7 @@ func (k Keeper) ConvertResource(
 	resource string,
 	length uint64,
 ) error {
-	lengthCheck := PeriodCheck(ctx, length)
+	lengthCheck := k.PeriodCheck(ctx, length)
 	if lengthCheck == false {
 		return types.ErrNotAvailableLength
 	}
@@ -288,7 +293,7 @@ func (k Keeper) Mint(ctx sdk.Context, recipientAddr sdk.AccAddress, amt sdk.Coin
 
 	toMint := k.CalculateInvestmint(ctx, amt, resource, length)
 
-	if toMint.IsZero() {
+	if toMint.Amount.LT(sdk.NewInt(1000)) {
 		return sdkerrors.Wrapf(types.ErrLessThanOne, recipientAddr.String())
 	}
 
@@ -314,23 +319,21 @@ func (k Keeper) Mint(ctx sdk.Context, recipientAddr sdk.AccAddress, amt sdk.Coin
 }
 
 func (k Keeper) CalculateInvestmint(ctx sdk.Context, amt sdk.Coin, resource string, length uint64) sdk.Coin {
-	// TODO mocked configuration
 	cycles := sdk.NewDec(int64(length)).QuoInt64(int64(k.BaseVestingTime(ctx)))
-	//cycles := sdk.NewDec(int64(length)).QuoInt64(int64(10))
+	//cycles := sdk.NewDec(int64(length)).QuoInt64(int64(10)) // for local dev
 	base := sdk.NewDec(amt.Amount.Int64()).QuoInt64(k.BaseVestingResource(ctx).Amount.Int64())
 
 	var toMint sdk.Coin
 	// TODO implement algorithms from resources economy simulation for each resource
 	switch resource {
 	case ctypes.VOLT:
-		toMint = ctypes.NewVoltCoin(base.Mul(cycles).TruncateInt64())
+		toMint = ctypes.NewVoltCoin(base.Mul(cycles).Mul(sdk.NewDec(1000)).TruncateInt64())
 	case ctypes.AMPER:
-		toMint = ctypes.NewAmperCoin(base.Mul(cycles).TruncateInt64())
+		toMint = ctypes.NewAmperCoin(base.Mul(cycles).Mul(sdk.NewDec(1000)).TruncateInt64())
 	}
 	return toMint
 }
 
-func PeriodCheck(ctx sdk.Context, length uint64) bool {
-	// TODO mocked configuration
-	return length <= 7*24*60*60
+func (k Keeper) PeriodCheck(ctx sdk.Context, length uint64) bool {
+	return length <= uint64(k.MaxVestingTime(ctx))
 }

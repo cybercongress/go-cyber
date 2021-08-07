@@ -396,7 +396,7 @@ func New(
 	app.MintKeeper = mintkeeper.NewKeeper(
 		appCodec, keys[minttypes.StoreKey],
 		app.GetSubspace(minttypes.ModuleName), &stakingKeeper,
-		app.AccountKeeper, app.BankKeeper, authtypes.FeeCollectorName,
+		app.AccountKeeper, app.CyberbankKeeper.Proxy, authtypes.FeeCollectorName,
 	)
 	app.DistrKeeper = distrkeeper.NewKeeper(
 		appCodec, keys[distrtypes.StoreKey],
@@ -682,34 +682,11 @@ func New(
 	app.SetBeginBlocker(app.BeginBlocker)
 	app.SetAnteHandler(
 		NewAnteHandler(
-			app.AccountKeeper, app.BankKeeper, app.BandwidthMeter, ante.DefaultSigVerificationGasConsumer,
+			app.AccountKeeper, app.CyberbankKeeper.Proxy, app.BandwidthMeter, ante.DefaultSigVerificationGasConsumer,
 			encodingConfig.TxConfig.SignModeHandler(),
 		),
 	)
 	app.SetEndBlocker(app.EndBlocker)
-
-	//app.UpgradeKeeper.SetUpgradeHandler("AI-DEX",
-	//	func(ctx sdk.Context, plan upgradetypes.Plan) {
-	//		var genState liquiditytypes.GenesisState
-	//		genState.Params = liquiditytypes.DefaultParams()
-	//		genState.Params.PoolCreationFee = sdk.NewCoins(sdk.NewCoin("boot", sdk.NewInt(1000000)))
-	//		genState.Params.MinInitDepositAmount = sdk.NewInt(10000)
-	//		app.LiquidityKeeper.InitGenesis(ctx, genState)
-	//	})
-	//
-	//upgradeInfo, err := app.UpgradeKeeper.ReadUpgradeInfoFromDisk()
-	//if err != nil {
-	//	panic(err)
-	//}
-
-	//if upgradeInfo.Name == "AI-DEX" && !app.UpgradeKeeper.IsSkipHeight(upgradeInfo.Height) {
-	//	storeUpgrades := store.StoreUpgrades{
-	//		Added: []string{liquiditytypes.ModuleName},
-	//	}
-	//
-	//	// configure store loader that checks if version == upgradeHeight and applies store upgrades
-	//	app.SetStoreLoader(upgradetypes.UpgradeStoreLoader(upgradeInfo.Height, &storeUpgrades))
-	//}
 
 	if loadLatest {
 		if err := app.LoadLatestVersion(); err != nil {

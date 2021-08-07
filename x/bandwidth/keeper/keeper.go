@@ -102,7 +102,7 @@ func (bm BandwidthMeter) StoreDesirableBandwidth(ctx sdk.Context, bandwidth uint
 func (bm BandwidthMeter) AddToDesirableBandwidth(ctx sdk.Context, toAdd uint64) {
 	current := bm.GetDesirableBandwidth(ctx)
 	store := ctx.KVStore(bm.storeKey)
-	store.Set(types.DesirableBandwidth, sdk.Uint64ToBigEndian(current+toAdd*100))
+	store.Set(types.DesirableBandwidth, sdk.Uint64ToBigEndian(current+toAdd))
 }
 
 func (m *BandwidthMeter) AddToBlockBandwidth(value uint64) {
@@ -190,7 +190,7 @@ func (m *BandwidthMeter) GetTotalCyberlinksCost(ctx sdk.Context, tx sdk.Tx) (uin
 	bandwidthForTx := uint64(0)
 	for _, msg := range tx.GetMsgs() {
 		linkMsg := msg.(*gtypes.MsgCyberlink)
-		bandwidthForTx = bandwidthForTx + uint64(len(linkMsg.Links)) * 100
+		bandwidthForTx = bandwidthForTx + uint64(len(linkMsg.Links)) * 1000
 	}
 	return bandwidthForTx
 }

@@ -10,8 +10,9 @@ message Params {
     option (gogoproto.equal)            = true;
 
     uint32 max_slots         = 1 [(gogoproto.moretags) = "yaml:\"max_slots\""];
-    uint64 base_vesting_time = 2 [(gogoproto.moretags) = "yaml:\"base_vesting_time\""];
-    cosmos.base.v1beta1.Coin base_vesting_resource = 3 [
+    uint32 base_vesting_time = 2 [(gogoproto.moretags) = "yaml:\"base_vesting_time\""];
+    uint32 max_vesting_time  = 3 [(gogoproto.moretags) = "yaml:\"max_vesting_time\""];
+    cosmos.base.v1beta1.Coin base_vesting_resource = 4 [
         (gogoproto.moretags) = "yaml:\"base_vesting_resource\"",
         (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.Coin",
         (gogoproto.nullable) = false

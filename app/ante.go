@@ -73,9 +73,9 @@ func (drd DeductFeeBandRouterDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, s
 	bandwidthFlag := false
 	ai2pay := sdk.AccAddress{}
 
-	// temporary boundary to resolve node stuck on tx request via API
-	if len(tx.GetMsgs()) > 50 {
-		return ctx, sdkerrors.Wrap(sdkerrors.ErrNotSupported, "Support only less than 50 msgs per tx")
+	// temporary boundary to resolve node stuck on cosmovisor scan buffer limit
+	if len(tx.GetMsgs()) > 25 {
+		return ctx, sdkerrors.Wrap(sdkerrors.ErrNotSupported, "Support only less than 25 msgs per tx")
 	}
 
 	// TODO optimize flat set
