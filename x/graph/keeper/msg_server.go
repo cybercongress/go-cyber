@@ -56,7 +56,7 @@ func (k msgServer) Cyberlink(goCtx context.Context, msg *types.MsgCyberlink) (*t
 		return nil, types.ErrInvalidAccount
 	}
 
-	// TODO move to ante
+	// TODO move to ante and contract case below
 	if ampers, ok := k.GetTotalStakesAmpere()[uint64(accNumber)]; ok {
 		if ampers == 0 {
 			return nil, types.ErrZeroPower
@@ -65,17 +65,24 @@ func (k msgServer) Cyberlink(goCtx context.Context, msg *types.MsgCyberlink) (*t
 		return nil, types.ErrZeroPower
 	}
 
-	// case when autonomous program cyberlink
+	// case when programs and autonomous programs cyberlink
 	if k.GetAccount(ctx, addr).GetPubKey() == nil {
-
-		cost := uint64(k.GetCurrentCreditPrice().MulInt64(int64(len(msg.Links) * 100)).TruncateInt64())
+		cost := uint64(k.GetCurrentCreditPrice().MulInt64(int64(len(msg.Links) * 1000)).TruncateInt64())
 		accountBandwidth := k.GetCurrentAccountBandwidth(ctx, addr)
-		err = k.ConsumeAccountBandwidth(ctx, accountBandwidth, cost)
-		if err != nil {
-			return nil, bandwidthtypes.ErrNotEnoughBandwidth
-		}
 
-		k.AddToBlockBandwidth(cost)
+		currentBlockSpentBandwidth := k.GetCurrentBlockSpentBandwidth(ctx)
+		maxBlockBandwidth := k.GetMaxBlockBandwidth(ctx)
+
+		if !accountBandwidth.HasEnoughRemained(cost) {
+			return nil, bandwidthtypes.ErrNotEnoughBandwidth
+		} else if (cost + currentBlockSpentBandwidth) > maxBlockBandwidth {
+			return nil, bandwidthtypes.ErrExceededMaxBlockBandwidth
+		} else {
+			err = k.ConsumeAccountBandwidth(ctx, accountBandwidth, cost); if err != nil {
+				return nil, bandwidthtypes.ErrNotEnoughBandwidth
+			}
+			k.AddToBlockBandwidth(cost)
+		}
 	}
 
 	for _, link := range msg.Links {
