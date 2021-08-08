@@ -23,17 +23,15 @@ PS: Try [cyber.page](https://rebyc.cyber.page)
 
 ### Setup
 
-Chain-ID: bostrom-testnet-2
+Chain-ID: bostrom-testnet-4
 
-Genesis: [QmfCp3M7cAu6PfANSpffM8mo45begGvRxrkgkkEBvtgyq9](http://cloudflare-ipfs.com/ipfs/QmfCp3M7cAu6PfANSpffM8mo45begGvRxrkgkkEBvtgyq9)
+Genesis: [QmTywXJjKQew1wcfLc6X4i94Gp76Gjg8qbvtaEQcvQVcxV](http://cloudflare-ipfs.com/ipfs/QmTywXJjKQew1wcfLc6X4i94Gp76Gjg8qbvtaEQcvQVcxV)
 
 Build: ```make install```
 
 Run: ```cyber start ```
 
-* default mode set to CPU for current testnet
-
-Bostrom (cyber) - v0.2.0-beta2
+- Version - v0.2.0-beta6
 - RPC: [167.172.103.118:26657](167.172.103.118:26657)
 - REST: [167.172.103.118:1317](http://167.172.103.118:1317/rank/search?cid=QmdVWtX17m7UvF8FcvNLTJxcpxv2fSJd7Z3VBoYxxW9Qpu)
 - gRPC: 167.172.103.118:9090
@@ -47,7 +45,7 @@ For better network stability please update your `.cyber/config/config.toml` line
 ```
 addr_book_strict = false
 
-persistent_peers_max_dial_period = "200s"
+persistent_peers_max_dial_period = "300s"
 
 allow_duplicate_ip = true
 ```
@@ -78,24 +76,24 @@ If you have your node on somehow custom setup, you need to:
 
 ### Config for [Relayer](https://github.com/cosmos/relayer/)
 ```
-{"key":"agent","chain-id":"bostrom-testnet-2","rpc-addr":"http://167.172.103.118:26657","account-prefix":"bostrom","gas-adjustment":1.5,"gas-prices":"0.01boot","trusting-period":"24h"}
+{"key":"agent","chain-id":"bostrom-testnet-4","rpc-addr":"http://167.172.103.118:26657","account-prefix":"bostrom","gas-adjustment":1.5,"gas-prices":"0.01boot","trusting-period":"24h"}
 ```
 
 ### Delegate:
 ```
-cyber tx staking delegate bostromvaloper1hmkqhy8ygl6tnl5g8tc503rwrmmrkjcqf92r73 100000000boot --from <name> --chain-id bostrom-testnet-2 --gas 150000 --gas-prices 0.01boot --yes --node "tcp://167.172.103.118:26657"   
+cyber tx staking delegate bostromvaloper1hmkqhy8ygl6tnl5g8tc503rwrmmrkjcqf92r73 100000000boot --from <name> --chain-id bostrom-testnet-4 --gas 150000 --gas-prices 0.01boot --yes --node "tcp://167.172.103.118:26657"   
 ```
 
 ### Investmint:
 ```
-cyber tx resources investmint 75000000sboot volt 86400 --from <name> --chain-id bostrom-testnet-2 --gas 160000 --gas-prices 0.01boot --yes --node "tcp://167.172.103.118:26657"
+cyber tx resources investmint 75000000hydrogen mvolt 86400 --from <name> --chain-id bostrom-testnet-4 --gas 160000 --gas-prices 0.01boot --yes --node "tcp://167.172.103.118:26657"
 
-cyber tx resources investmint 25000000sboot amper 86400 --from <name> --chain-id bostrom-testnet-2 --gas 160000 --gas-prices 0.01boot --yes --node "tcp://167.172.103.118:26657"
+cyber tx resources investmint 25000000hydrogen mamper 86400 --from <name> --chain-id bostrom-testnet-4 --gas 160000 --gas-prices 0.01boot --yes --node "tcp://167.172.103.118:26657"
 ```
 
 ### Cyberlink and Explore:
 ```
-cyber tx graph cyberlink QmdVWtX17m7UvF8FcvNLTJxcpxv2fSJd7Z3VBoYxxW9Qpu Qmb9xPYYwHt1F3bQysKCZzXRzAT8QLvAyMe5DyPy4rene8 --from <name> --chain-id bostrom-testnet-2 --yes --node "tcp://167.172.103.118:26657
+cyber tx graph cyberlink QmdVWtX17m7UvF8FcvNLTJxcpxv2fSJd7Z3VBoYxxW9Qpu Qmb9xPYYwHt1F3bQysKCZzXRzAT8QLvAyMe5DyPy4rene8 --from <name> --chain-id bostrom-testnet-4 --yes --node "tcp://167.172.103.118:26657
 
 curl http://167.172.103.118:1317/rank/search?cid=QmdVWtX17m7UvF8FcvNLTJxcpxv2fSJd7Z3VBoYxxW9Qpu
 ```
