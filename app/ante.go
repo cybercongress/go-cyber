@@ -155,7 +155,9 @@ func (drd DeductFeeBandRouterDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, s
 		return ctx, bandwidthtypes.ErrExceededMaxBlockBandwidth
 	} else {
 		if !ctx.IsCheckTx() && !ctx.IsReCheckTx() {
-			_ = drd.bm.ConsumeAccountBandwidth(ctx, accountBandwidth, txCost)
+			err = drd.bm.ConsumeAccountBandwidth(ctx, accountBandwidth, txCost); if err != nil {
+				return ctx, err
+			}
 			drd.bm.AddToBlockBandwidth(txCost)
 		}
 	}
