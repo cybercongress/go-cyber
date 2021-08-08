@@ -25,7 +25,7 @@ PS: Try [cyber.page](https://rebyc.cyber.page)
 
 Chain-ID: bostrom-testnet-4
 
-Genesis: [QmTywXJjKQew1wcfLc6X4i94Gp76Gjg8qbvtaEQcvQVcxV](http://cloudflare-ipfs.com/ipfs/QmTywXJjKQew1wcfLc6X4i94Gp76Gjg8qbvtaEQcvQVcxV)
+Genesis: [QmXNjAP5SeNWSJRKLhr7ZgEcUuMuoECAazVDwr7PhZyNd2](http://cloudflare-ipfs.com/ipfs/QmXNjAP5SeNWSJRKLhr7ZgEcUuMuoECAazVDwr7PhZyNd2)
 
 Build: ```make install```
 
