@@ -72,10 +72,11 @@ RUN cp ./build/libcbdrank.so /usr/lib/ && cp cbdrank.h /usr/lib/
 
 WORKDIR /sources
 # TODO: Update brach to master before merge\relaese
-RUN git checkout  v0.2.0-beta4 \
- && make build CUDA_ENABLED=true \
+#RUN git checkout  v0.2.0-beta4 \
+RUN make build CUDA_ENABLED=true \
  && chmod +x ./build/cyber \
  && cp ./build/cyber /cyber/cosmovisor/genesis/bin/ \
+ && cp ./build/cyber /cyber/ \ 
  && rm -rf ./build \
  && git reset --hard
 
@@ -83,12 +84,12 @@ RUN git checkout  v0.2.0-beta4 \
  # Compile cyberd for AI-DEX upgrade version
 ###########################################################################################
 
-WORKDIR /sources
+#WORKDIR /sources
 # TODO: Update brach to master before merge\relaese
-RUN git checkout  v0.2.0-beta5 \
- && make build CUDA_ENABLED=true \
- && chmod +x ./build/cyber \
- && cp ./build/cyber /cyber/cosmovisor/upgrades/AI-DEX/bin 
+#RUN git checkout  v0.2.0-beta5 \
+# && make build CUDA_ENABLED=true \
+# && chmod +x ./build/cyber \
+# && cp ./build/cyber /cyber/cosmovisor/upgrades/AI-DEX/bin 
 
 ###########################################################################################
 # Create runtime cyber image
@@ -107,7 +108,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends wget curl ca-ce
 # Download genesis file and links file from IPFS
 ###########################################################################################
 # PUT needed CID_OF_GENESIS here
-RUN wget -O /genesis.json https://io.cybernode.ai/ipfs/QmfCp3M7cAu6PfANSpffM8mo45begGvRxrkgkkEBvtgyq9
+#RUN wget -O /genesis.json https://gateway.ipfs.cybernode.ai/ipfs/QmTywXJjKQew1wcfLc6X4i94Gp76Gjg8qbvtaEQcvQVcxV
+RUN wget -O /genesis.json https://cloudflare-ipfs.com/ipfs/QmXNjAP5SeNWSJRKLhr7ZgEcUuMuoECAazVDwr7PhZyNd2
 
 WORKDIR /
 
@@ -115,9 +117,7 @@ WORKDIR /
 ###########################################################################################
 COPY --from=build_stage_cuda /cyber /cyber
 
-COPY --from=build_stage_cuda /cyber/cosmovisor/upgrades/AI-DEX/bin/cyber /cyber
-
-COPY --from=build_stage_cuda /cyber/cosmovisor/upgrades/AI-DEX/bin/cyber /usr/bin
+COPY --from=build_stage_cuda /cyber/cyber /usr/bin
 
 COPY --from=build_stage_cuda /usr/bin/cosmovisor /usr/bin/cosmovisor
 
