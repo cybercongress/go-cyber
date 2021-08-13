@@ -1,7 +1,7 @@
 # Cyber - SuperIntelligence for The Great Web
 
 <div align="center">
- <img src="./brain.png" width="500" />
+ <img src="./brain.png" width="800" />
 </div>
 
 <div align="center">
@@ -29,7 +29,7 @@
 </div>
 
 <div align="center">
- <h3><b>go-cyber is golang implementation of cyber protocol</b></h3>
+ <h3><b>go-cyber is golang implementation of cyber <a href="https://github.com/cybercongress/cyber">protocol</a></b></h3>
 </div>
 
 _____________
@@ -93,6 +93,8 @@ _________________________________________________________
 
 **Try [cyb.ai](https://cyb.ai) on bostrom-testnet-4 network**
 
+--------
+![ELI-5](https://github.com/litvintech/rank-sandbox/blob/eli5/eli5.gif)
 --------
 
 ### Setup
