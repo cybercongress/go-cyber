@@ -184,4 +184,8 @@ curl http://167.172.103.118:1317/rank/search?cid=QmdVWtX17m7UvF8FcvNLTJxcpxv2fSJ
 - [Cyber English Community](https://t.me/fuckgoogle)
 - [Cyber Russian Community](https://t.me/cyber_russian_community)
 
+--------
+
+![cyber-vs-corp](https://ipfs.io/ipfs/QmeFFz4W5VBpbsRBoVGnHzXU87doq4eNo7eK9cnhhCtBVn)
+![cyber-vs-gov](https://ipfs.io/ipfs/QmP4FY6VGnvPvPx4EfuXzjBfikdhu9en9DEmk6ws3B5evq)
 
