@@ -17,7 +17,7 @@
 </div>
 
 <div align="center">
- <h3>Onboarding <a href="https://github.com/cybercongress/congress/blob/master/ecosystem/validators/onboarding.md">point</a> for cyber validators</a></h3>
+ <h3>Onboarding <a href="https://github.com/cybercongress/congress/blob/master/ecosystem/validators/onboarding.md">point</a> for cyber validators</a> and <a href="https://github.com/cybercongress/go-cyber/blob/bostrom-dev/docs/run_validator.md">Setup validator guide</a></h3>
 </div>
 
 <div align="center">
@@ -34,7 +34,7 @@
 
 _____________
 
-### Code
+## Code
 
 [![version](https://img.shields.io/github/release/cybercongress/cyberd.svg?style=flat-square)](https://github.com/cybercongress/cyberd/releases/latest)
 [![CircleCI](https://img.shields.io/circleci/build/github/cybercongress/go-cyber/master?style=flat-square)](https://circleci.com/gh/cybercongress/workflows/go-cyber/tree/master)
@@ -45,7 +45,7 @@ _____________
 [![contributors](https://img.shields.io/github/contributors/cybercongress/cyberd.svg?style=flat-square)](https://github.com/cybercongress/cyberd/graphs/contributors)
 [![Coverage Status](https://img.shields.io/coveralls/github/cybercongress/cyberd/master?style=flat-square)](https://coveralls.io/github/cybercongress/cyberd?branch=master)
 
-### Blockchain
+## Blockchain
 
 [![chain](https://img.shields.io/badge/Chain-bostrom--testnet--4-success.svg?style=flat-square)](https://github.com/cybercongress/cyberd/blob/master/docs/run_validator.md)
 [![block](https://img.shields.io/badge/dynamic/json?color=blue&label=Block%20Height&query=%24.result.sync_info.latest_block_height&url=https://rpc.bostromdev.cybernode.ai/status&style=flat-square)]()
@@ -53,16 +53,16 @@ _____________
 [![cids](https://img.shields.io/badge/dynamic/json?color=blue&label=Particles&query=%24.result.cids&url=https://lcd.bostromdev.cybernode.ai/graph/graph_stats&style=flat-square)]()
 [![negentropy](https://img.shields.io/badge/dynamic/json?color=blue&label=-Entropy&query=%24.result.negentropy&url=https://lcd.bostromdev.cybernode.ai/rank/negentropy&style=flat-square)]()
 [![validators](https://img.shields.io/badge/dynamic/json?label=Validators&query=%24.result.validators.length&url=https://rpc.bostromdev.cybernode.ai/validators%3F&style=flat-square)]()
-
 _________________________________________________________
 
+## Networks
 |Network|Cosmos|Order|Launch|Security Token| Resources Token|Bandwidth Token| Power Token | Supported Tokens |
 |---|---|---|---|---|---|---|---|---|
 |Bostrom|🟢|Canary|2021|BOOT |HYDROGEN|VOLT|AMPER|[ICS20, CW20, CW721, CW1155]|
 |Cyber|🔵|Mainnet|2022|CYB|HYDROGEN|VOLT|AMPER|[ICS20, CW20, CW721, CW1155]|
+_________________________________________________________
 
-
-# Computer Specification 🛠
+## Computer Specification 🛠
 
 1. Universe - [Cosmos]()
 2. Consensus - [Tendermint]() | BOOT
@@ -92,12 +92,14 @@ _________________________________________________________
 26. Future Cyber VM support - [GraphBLAS R&D]()
 
 **Try [cyb.ai](https://cyb.ai) on bostrom-testnet-4 network**
+_________________________________________________________
 
---------
+## ELI-5
+
 ![ELI-5](https://github.com/litvintech/rank-sandbox/blob/eli5/eli5.gif)
---------
+_________________________________________________________
 
-### Setup
+## Setup
 
 Chain-ID: bostrom-testnet-4
 
@@ -129,10 +131,9 @@ persistent_peers_max_dial_period = "300s"
 
 allow_duplicate_ip = true
 ```
+_________________________________________________________
 
---------
-
-### How to migrate from bostrom-testnet-3 to bostrom-testnet-4
+## How to migrate from bostrom-testnet-3 to bostrom-testnet-4
 
 If you have your bostrom-testnet-3 node running on our docker container do:
 
@@ -151,20 +152,24 @@ If you have your node on somehow custom setup, you need to:
 2. Buid new cyber binary from release `v0.2.0-beta6` and replace old one with it
 
 3. Do `cyber unsafe-reset-all` and start the node
+_________________________________________________________
 
---------
+## IBC
 
 ### Config for [Relayer](https://github.com/cosmos/relayer/)
 ```
 {"key":"agent","chain-id":"bostrom-testnet-4","rpc-addr":"http://167.172.103.118:26657","account-prefix":"bostrom","gas-adjustment":1.5,"gas-prices":"0.01boot","trusting-period":"24h"}
 ```
+_________________________________________________________
 
-### Delegate:
+### Basic operations
+
+### Follow hero and get HYDROGEN:
 ```
 cyber tx staking delegate bostromvaloper1hmkqhy8ygl6tnl5g8tc503rwrmmrkjcqf92r73 100000000boot --from <name> --chain-id bostrom-testnet-4 --gas 150000 --gas-prices 0.01boot --yes --node "tcp://167.172.103.118:26657"   
 ```
 
-### Investmint:
+### Investmint HYDROGEN to get resources:
 ```
 cyber tx resources investmint 75000000hydrogen mvolt 86400 --from <name> --chain-id bostrom-testnet-4 --gas 160000 --gas-prices 0.01boot --yes --node "tcp://167.172.103.118:26657"
 
@@ -177,15 +182,71 @@ cyber tx graph cyberlink QmdVWtX17m7UvF8FcvNLTJxcpxv2fSJd7Z3VBoYxxW9Qpu Qmb9xPYY
 
 curl http://167.172.103.118:1317/rank/search?cid=QmdVWtX17m7UvF8FcvNLTJxcpxv2fSJd7Z3VBoYxxW9Qpu
 ```
+_________________________________________________________
 
---------
-
-### Connect:
+## Connect:
 - [Cyber English Community](https://t.me/fuckgoogle)
 - [Cyber Russian Community](https://t.me/cyber_russian_community)
 
---------
+_________________________________________________________
 
-![cyber-vs-corp](https://ipfs.io/ipfs/QmeFFz4W5VBpbsRBoVGnHzXU87doq4eNo7eK9cnhhCtBVn)
-![cyber-vs-gov](https://ipfs.io/ipfs/QmP4FY6VGnvPvPx4EfuXzjBfikdhu9en9DEmk6ws3B5evq)
+## Cyber vs Corps
 
+| What                               | Google                      | Cyber                     |
+|------------------------------------|-----------------------------|---------------------------|
+| Is                                 | Company                     | Protocol                  |
+| Protocol Stack                     | Web2                        | Web3                      |
+| Code                               | Closed                      | Open                      |
+| Consensus                          | USA law                     | Tendermint, Hybrid (2023) |
+| Knowledge                          | Private                     | Public                    |
+| Links                              | Hyperlinks                  | Cyberlinks                |
+| Backlinks                          | No                          | Yes                       |
+| Decentralized Marketing (DeMa)     | No                          | Yes                       |
+| Beneficiaries                      | Limited set of stakeholders | Any web3 agent            |
+| Addressing                         | URLs                        | CIDs                      |
+| Ranking                            | Blackbox                    | Sybil resistant           |
+| Knowledge Graph Proofs             | No                          | Cyberlinks and Ranks      |
+| Offline and Interplanetary         | No                          | Yes                       |
+| Internet Knowledge Protocol        | No                          | Over IBC (2022)           |
+| Smart Contracts                    | Impossible                  | WASM                      |
+| Smart Contracts on Knowledge Graph | No                          | Yes                       |
+| GPU Smart Contracts                | No                          | GraphBLAS (2023)          |
+| Software 2.0                       | No                          | Yes                       |
+| Security                           | No evidence                 | Cryptographic proofs      |
+| Privacy                            | Impossible                  | Possible (2025)           |
+| Censorship                         | Yes                         | No                        |
+| Captcha                            | Yes                         | No                        |
+| Ads beneficiary                    | Google                      | Creator                   |
+| Apps                               | Limited                     | Unlimited                 |
+| Robots/IoT                         | Limited                     | Unlimited                 |
+| Data Distribution                  | Private servers             | IPFS                      |
+| Storage guaranty                   | Impossible                  | PoRep (2024)              |
+| SuperIntelligence                  | Non-Provalbe                | Provable                  |
+| Browser                            | Chrome                      | Cyb                       |
+_________________________________________________________
+
+## Cyber vs Govs
+
+| What              | Your Gov        | Cyber        |
+|-------------------|-----------------|--------------|
+| Borders           | Yes             | No           |
+| Customs           | Yes             | No           |
+| Army              | Yes             | No           |
+| Police            | Yes             | No           |
+| Laws              | Paper           | Code         |
+| Contracts         | Paper           | Code         |
+| Censorship        | Yes             | No           |
+| Children          | Their           | Yours        |
+| Taxes             | Compulsory      | Voluntary    |
+| Tax reporting     | Manual          | Automated    |
+| Transaction tax   | 50%             | ~0.1%        |
+| Printing tax      | 100%            | ~1%          |
+| Provable voting   | No              | Yes          |
+| Consensus         | Democracy       | Tendermint   |
+| Currency          | Enforced        | Any          |
+| Security          | Police & Army   | Cryptography |
+| Decision makers   | They            | Us           |
+| Privacy           | No              | Respect      |
+| Brainwashing      | Yes             | No           |
+| Antropocentrism   | Yes             | No           |
+_________________________________________________________
