@@ -11,7 +11,7 @@ ENV DAEMON_RESTART_AFTER_UPGRADE=on
 ENV GAIA_HOME ${DAEMON_HOME}
 ENV DAEMON_NAME cyber
 ENV BUILD_DIR /build
-ENV COSMWASM_VER "0.14.0"
+ENV COSMWASM_VER "0.16.0-rc2"
 ENV PATH /usr/local/go/bin:/root/.cargo/bin:/root/cargo/env:/root/.cyber/scripts:$PATH
 
 

@@ -114,9 +114,8 @@ To use as CLI with remote node just set CUDA_ENABLED=false in Makefile and build
 ```
 
 - Version - v0.2.0-beta6
-- RPC: [167.172.103.118:26657](167.172.103.118:26657)
-- REST: [167.172.103.118:1317](http://167.172.103.118:1317/rank/search?cid=QmdVWtX17m7UvF8FcvNLTJxcpxv2fSJd7Z3VBoYxxW9Qpu)
-- gRPC: 167.172.103.118:9090
+- [RPC](https://rpc.bostromdev.cybernode.ai/)
+- [REST](https://lcd.bostromdev.cybernode.ai/rank/search?cid=QmdVWtX17m7UvF8FcvNLTJxcpxv2fSJd7Z3VBoYxxW9Qpu)
 - Faucet: ```
   curl --header "Content-Type: application/json" --request POST --data '{"denom":"boot","address":"bostrom1sm9sq4wnn62tk5yz0x3fvvx2ea9efguqwvdu64"}' http://titan.cybernode.ai:8000/credit```
 - Seed: d0518ce9881a4b0c5872e5e9b7c4ea8d760dad3f@85.10.207.173:26656
@@ -133,25 +132,17 @@ allow_duplicate_ip = true
 ```
 _________________________________________________________
 
-## How to migrate from bostrom-testnet-3 to bostrom-testnet-4
+## How to migrate from bostrom-testnet-4 to bostrom-testnet-4.1
 
-If you have your bostrom-testnet-3 node running on our docker container do:
+If you have your bostrom-testnet-4 node running on our docker container do:
 
 ```bash
-docker stop bostrom-testnet-3
-docker rm bostrom-testnet-3
-docker rmi cyberd/cyber:bostrom-testnet-3-AI-DEX
-docker run -d --gpus all --name=bostrom-testnet-4 --restart always -p 26656:26656 -p 26657:26657 -p 1317:1317 -e ALLOW_SEARCH=true -v $HOME/.cyber:/root/.cyber  cyberd/cyber:bostrom-testnet-4
+docker stop bostrom-testnet-4
+docker rm bostrom-testnet-4
+docker rmi cyberd/cyber:bostrom-testnet-4
+docker run -d --gpus all --name=bostrom-testnet-4 --restart always -p 26656:26656 -p 26657:26657 -p 1317:1317 -e ALLOW_SEARCH=true -v $HOME/.cyber:/root/.cyber  cyberd/cyber:bostrom-testnet-4.1
 ```
 This will pull new image and replace genesis and cyber binary to correct versions.
-
-If you have your node on somehow custom setup, you need to:
-
-1. Replace your `genesis.json` to [new one](http://cloudflare-ipfs.com/ipfs/QmXNjAP5SeNWSJRKLhr7ZgEcUuMuoECAazVDwr7PhZyNd2)
-
-2. Buid new cyber binary from release `v0.2.0-beta6` and replace old one with it
-
-3. Do `cyber unsafe-reset-all` and start the node
 _________________________________________________________
 
 ## IBC
@@ -166,19 +157,19 @@ _________________________________________________________
 
 ### Follow hero and get HYDROGEN:
 ```
-cyber tx staking delegate bostromvaloper1hmkqhy8ygl6tnl5g8tc503rwrmmrkjcqf92r73 100000000boot --from <name> --chain-id bostrom-testnet-4 --gas 150000 --gas-prices 0.01boot --yes --node "tcp://167.172.103.118:26657"   
+cyber tx staking delegate bostromvaloper1hmkqhy8ygl6tnl5g8tc503rwrmmrkjcqf92r73 100000000boot --from <name> --chain-id bostrom-testnet-4 --gas 150000 --gas-prices 0.01boot --yes --node https://rpc.bostromdev.cybernode.ai:443   
 ```
 
 ### Investmint HYDROGEN to get resources:
 ```
-cyber tx resources investmint 75000000hydrogen mvolt 86400 --from <name> --chain-id bostrom-testnet-4 --gas 160000 --gas-prices 0.01boot --yes --node "tcp://167.172.103.118:26657"
+cyber tx resources investmint 75000000hydrogen mvolt 86400 --from <name> --chain-id bostrom-testnet-4 --gas 160000 --gas-prices 0.01boot --yes --node https://rpc.bostromdev.cybernode.ai:443
 
-cyber tx resources investmint 25000000hydrogen mamper 86400 --from <name> --chain-id bostrom-testnet-4 --gas 160000 --gas-prices 0.01boot --yes --node "tcp://167.172.103.118:26657"
+cyber tx resources investmint 25000000hydrogen mamper 86400 --from <name> --chain-id bostrom-testnet-4 --gas 160000 --gas-prices 0.01boot --yes --node https://rpc.bostromdev.cybernode.ai:443
 ```
 
 ### Cyberlink and Explore:
 ```
-cyber tx graph cyberlink QmdVWtX17m7UvF8FcvNLTJxcpxv2fSJd7Z3VBoYxxW9Qpu Qmb9xPYYwHt1F3bQysKCZzXRzAT8QLvAyMe5DyPy4rene8 --from <name> --chain-id bostrom-testnet-4 --yes --node "tcp://167.172.103.118:26657
+cyber tx graph cyberlink QmdVWtX17m7UvF8FcvNLTJxcpxv2fSJd7Z3VBoYxxW9Qpu Qmb9xPYYwHt1F3bQysKCZzXRzAT8QLvAyMe5DyPy4rene8 --from <name> --chain-id bostrom-testnet-4 --yes --node https://rpc.bostromdev.cybernode.ai:443
 
 curl http://167.172.103.118:1317/rank/search?cid=QmdVWtX17m7UvF8FcvNLTJxcpxv2fSJd7Z3VBoYxxW9Qpu
 ```

@@ -34,6 +34,7 @@ then
     cp /genesis.json /root/.cyber/config/
     cp -r /cyber/cyber /root/.cyber/cosmovisor/genesis/bin
     cyber unsafe-reset-all --home /root/.cyber
+    rm /root/.cyber/cosmovisor/current
   fi
 fi
 
