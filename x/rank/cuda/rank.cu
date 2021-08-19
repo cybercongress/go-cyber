@@ -686,5 +686,8 @@ extern "C" {
         free(cyberlinksLocalWeights);
 
         // printSize(usageOffset);
+        free(inLinksStartIndex);
+        free(outLinksStartIndex);
+        free(compressedInLinksCount);
     }
 };
