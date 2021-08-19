@@ -113,13 +113,13 @@ Run: ```cyber start ```
 To use as CLI with remote node just set CUDA_ENABLED=false in Makefile and build
 ```
 
-- Version - v0.2.0-beta6
+- Version - v0.2.0-beta7
 - [RPC](https://rpc.bostromdev.cybernode.ai/)
 - [REST](https://lcd.bostromdev.cybernode.ai/rank/search?cid=QmdVWtX17m7UvF8FcvNLTJxcpxv2fSJd7Z3VBoYxxW9Qpu)
 - Faucet: ```
   curl --header "Content-Type: application/json" --request POST --data '{"denom":"boot","address":"bostrom1sm9sq4wnn62tk5yz0x3fvvx2ea9efguqwvdu64"}' http://titan.cybernode.ai:8000/credit```
-- Seed: d0518ce9881a4b0c5872e5e9b7c4ea8d760dad3f@85.10.207.173:26656
-- Peers: 5d542c0eb40ae48dc2cac0c140aedb605ded77dc@195.201.105.229:26656,444b1df99e031bafcdf6d421017c187c5491d704@167.172.103.118:26656,5f6a49a68abc391a07b76eedf253b64a2d87f2fa@167.172.99.185:26656
+- Seed: `d0518ce9881a4b0c5872e5e9b7c4ea8d760dad3f@85.10.207.173:26656`
+- Peers: `5d542c0eb40ae48dc2cac0c140aedb605ded77dc@195.201.105.229:26656,a7226dce9f543a4ecd8db1da2ffd7be05d40d3ad@185.186.208.36:26656,c72de1e20beed51b779d89b1cf08d8146016eec4@185.186.208.37:26656,4c130ed1c58f6d6be981c59a748511e581969c51@86.57.254.202:36656`
 
 For better network stability please update your `.cyber/config/config.toml` lines as following: 
 
@@ -132,7 +132,7 @@ allow_duplicate_ip = true
 ```
 _________________________________________________________
 
-## How to migrate from bostrom-testnet-4 to bostrom-testnet-4.1
+## How to update from bostrom-testnet-4 to bostrom-testnet-4.2
 
 If you have your bostrom-testnet-4 node running on our docker container do:
 
@@ -140,7 +140,7 @@ If you have your bostrom-testnet-4 node running on our docker container do:
 docker stop bostrom-testnet-4
 docker rm bostrom-testnet-4
 docker rmi cyberd/cyber:bostrom-testnet-4
-docker run -d --gpus all --name=bostrom-testnet-4 --restart always -p 26656:26656 -p 26657:26657 -p 1317:1317 -e ALLOW_SEARCH=true -v $HOME/.cyber:/root/.cyber  cyberd/cyber:bostrom-testnet-4.1
+docker run -d --gpus all --name=bostrom-testnet-4 --restart always -p 26656:26656 -p 26657:26657 -p 1317:1317 -e ALLOW_SEARCH=true -v $HOME/.cyber:/root/.cyber  cyberd/cyber:bostrom-testnet-4.2
 ```
 This will pull new image and replace genesis and cyber binary to correct versions.
 _________________________________________________________
