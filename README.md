@@ -25,7 +25,11 @@
 </div>
 
 <div align="center">
- <h3><a href="">Gitcoin</a> and <a href="https://cybercongress.ai/post/">Blog</a></h1>
+ <h3><a href="">Gitcoin</a> and <a href="https://cybercongress.ai/post/">Blog</a></h3>
+</div>
+
+<div align="center">
+ <h3>Network <a href="https://monitor.cybernode.ai/">monitor</a></h3>
 </div>
 
 <div align="center">
