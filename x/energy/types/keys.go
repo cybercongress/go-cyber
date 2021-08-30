@@ -8,7 +8,7 @@ const (
   	RouterKey 					= ModuleName
 	QuerierRoute 				= ModuleName
 
-	EnergyPoolName  			= "energy_pool"
+	EnergyPoolName  			= "energy_grid"
 )
 
 var (

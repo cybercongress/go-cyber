@@ -37,15 +37,18 @@ func (k msgServer) CreateRoute(goCtx context.Context, msg *types.MsgCreateRoute)
 		return nil, err
 	}
 
-	ctx.EventManager().EmitEvent(
+	ctx.EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+		),
 		sdk.NewEvent(
 			types.EventTypeCreateRoute,
-			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
 			sdk.NewAttribute(types.AttributeKeySource, msg.Source),
 			sdk.NewAttribute(types.AttributeKeyDestination, msg.Destination),
 			sdk.NewAttribute(types.AttributeKeyAlias, msg.Alias),
 		),
-	)
+	})
 
 	return &types.MsgCreateRouteResponse{}, nil
 }
@@ -67,15 +70,18 @@ func (k msgServer) EditRoute(goCtx context.Context, msg *types.MsgEditRoute) (*t
 		return nil, err
 	}
 
-	ctx.EventManager().EmitEvent(
+	ctx.EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+		),
 		sdk.NewEvent(
 			types.EventTypeEditRoute,
-			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
 			sdk.NewAttribute(types.AttributeKeySource, msg.Source),
 			sdk.NewAttribute(types.AttributeKeyDestination, msg.Destination),
 			sdk.NewAttribute(types.AttributeKeyValue, msg.Value.String()),
 		),
-	)
+	})
 
 	return &types.MsgEditRouteResponse{}, nil
 }
@@ -97,14 +103,17 @@ func (k msgServer) DeleteRoute(goCtx context.Context, msg *types.MsgDeleteRoute)
 		return nil, err
 	}
 
-	ctx.EventManager().EmitEvent(
+	ctx.EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+		),
 		sdk.NewEvent(
 			types.EventTypeDeleteRoute,
-			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
 			sdk.NewAttribute(types.AttributeKeySource, msg.Source),
 			sdk.NewAttribute(types.AttributeKeyDestination, msg.Destination),
 		),
-	)
+	})
 
 	return &types.MsgDeleteRouteResponse{}, nil
 }
@@ -126,15 +135,18 @@ func (k msgServer) EditRouteAlias(goCtx context.Context, msg *types.MsgEditRoute
 		return nil, err
 	}
 
-	ctx.EventManager().EmitEvent(
+	ctx.EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+		),
 		sdk.NewEvent(
 			types.EventTypeEditRouteAlias,
-			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
 			sdk.NewAttribute(types.AttributeKeySource, msg.Source),
 			sdk.NewAttribute(types.AttributeKeyDestination, msg.Destination),
 			sdk.NewAttribute(types.AttributeKeyAlias, msg.Alias),
 		),
-	)
+	})
 
 	return &types.MsgEditRouteAliasResponse{}, nil
 }

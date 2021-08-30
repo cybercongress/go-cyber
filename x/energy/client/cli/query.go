@@ -70,7 +70,7 @@ func GetCmdQueryParams() *cobra.Command {
 func GetCmdQuerySourceRoutes() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "routes-from [source-addr]",
-		Short: "Query all energy routes made from source account",
+		Short: "Query all energy routes that made from source account",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -105,7 +105,7 @@ func GetCmdQuerySourceRoutes() *cobra.Command {
 func GetCmdQueryDestinationRoutes() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "routes-to [destination-addr]",
-		Short: "Query all energy routes made to destination account",
+		Short: "Query all energy routes that routed to destination account",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -139,8 +139,8 @@ func GetCmdQueryDestinationRoutes() *cobra.Command {
 
 func GetCmdQuerySourceRoutedEnergy() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "routed-from [src-addr]",
-		Short: "Query energy routed from source account",
+		Use:   "routed-from [source-addr]",
+		Short: "Query energy value that routed from source account",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -175,7 +175,7 @@ func GetCmdQuerySourceRoutedEnergy() *cobra.Command {
 func GetCmdQueryDestinationRoutedEnergy() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "routed-to [destination-addr]",
-		Short: "Query energy routed to destination account",
+		Short: "Query energy value that routed to destination account",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -210,7 +210,7 @@ func GetCmdQueryDestinationRoutedEnergy() *cobra.Command {
 func GetCmdQueryRoute() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "route  [source-addr] [destination-addr]",
-		Short: "Query energy route for given source and destination accounts",
+		Short: "Query energy route that routes for given source and destination accounts",
 		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)

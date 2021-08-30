@@ -42,6 +42,7 @@ func (k Keeper) SourceRoutes(goCtx context.Context, request *types.QuerySourceRe
 	return &types.QueryRoutesResponse{Routes: routes}, nil
 }
 
+// DestinationRoutes TODO add pagination
 func (k Keeper) DestinationRoutes(goCtx context.Context, request *types.QueryDestinationRequest) (*types.QueryRoutesResponse, error) {
 	if request == nil {
 		return nil, status.Errorf(codes.InvalidArgument, "empty request")
@@ -142,6 +143,10 @@ func (k Keeper) Route(goCtx context.Context, request *types.QueryRouteRequest) (
 func (k Keeper) Routes(goCtx context.Context, request *types.QueryRoutesRequest) (*types.QueryRoutesResponse, error) {
 	if request == nil {
 		return nil, status.Errorf(codes.InvalidArgument, "empty request")
+	}
+
+	if request.Pagination == nil {
+		return nil, status.Errorf(codes.InvalidArgument, "pagination cannot be empty")
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)

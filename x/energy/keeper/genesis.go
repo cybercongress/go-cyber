@@ -6,6 +6,7 @@ import (
 )
 
 func InitGenesis(ctx sdk.Context, k Keeper, data types.GenesisState) {
+	// TODO check EnergyGrid balance aggregated value on genesis
 	k.SetParams(ctx, data.Params)
 	err := k.SetRoutes(ctx, data.Routes); if err != nil {
 		panic(err)

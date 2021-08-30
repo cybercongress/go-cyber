@@ -61,6 +61,7 @@ func querySourceRoutes(ctx sdk.Context, req abci.RequestQuery, k Keeper, legacyQ
 	return res, nil
 }
 
+// queryDestinationRoutes TODO add pagination
 func queryDestinationRoutes(ctx sdk.Context, req abci.RequestQuery, k Keeper, legacyQuerierCdc *codec.LegacyAmino) ([]byte, error) {
 	var params types.QueryDestinationParams
 
@@ -142,7 +143,7 @@ func queryRoutes(ctx sdk.Context, req abci.RequestQuery, k Keeper, legacyQuerier
 
 	routes := k.GetAllRoutes(ctx)
 
-	start, end := client.Paginate(len(routes),params.Page, params.Limit, len(routes))
+	start, end := client.Paginate(len(routes), params.Page, params.Limit, 100)
 	if start < 0 || end < 0 {
 		routes = []types.Route{}
 	} else {

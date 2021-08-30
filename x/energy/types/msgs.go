@@ -42,7 +42,7 @@ func (msg MsgCreateRoute) ValidateBasic() error {
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid destination address (%s)", err)
 	}
-	if len(msg.Alias) == 0 && len(msg.Alias) < 64 {
+	if len(msg.Alias) == 0 && len(msg.Alias) < 32 { // TODO fix validation
 		return ErrWrongAlias
 	}
 
@@ -85,7 +85,7 @@ func (msg MsgEditRoute) ValidateBasic() error {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid destination address (%s)", err)
 	}
 	if msg.Value.Denom != ctypes.AMPER && msg.Value.Denom != ctypes.VOLT {
-		return ErrWrongDenom
+		return ErrWrongValueDenom
 	}
 
 	return nil
@@ -163,7 +163,7 @@ func (msg MsgEditRouteAlias) ValidateBasic() error {
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid destination address (%s)", err)
 	}
-	if len(msg.Alias) == 0 && len(msg.Alias) < 64 {
+	if len(msg.Alias) == 0 && len(msg.Alias) < 32 {
 		return ErrWrongAlias
 	}
 

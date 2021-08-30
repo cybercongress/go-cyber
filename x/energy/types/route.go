@@ -36,7 +36,6 @@ func MustUnmarshalRoute(cdc codec.BinaryMarshaler, value []byte) Route {
 	return route
 }
 
-// return the route
 func UnmarshalRoute(cdc codec.BinaryMarshaler, value []byte) (route Route, err error) {
 	err = cdc.UnmarshalBinaryBare(value, &route)
 	return route, err

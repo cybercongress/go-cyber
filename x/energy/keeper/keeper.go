@@ -21,14 +21,14 @@ type Keeper struct {
 	storeKey      sdk.StoreKey
 	cdc           codec.BinaryMarshaler
 	accountKeeper types.AccountKeeper
-	proxyKeeper   types.BankKeeper
+	proxyKeeper   types.CyberbankKeeper
 	paramSpace    paramstypes.Subspace
 }
 
 func NewKeeper(
 	cdc codec.BinaryMarshaler,
 	key sdk.StoreKey,
-	bk types.BankKeeper,
+	bk types.CyberbankKeeper,
 	ak types.AccountKeeper,
 	paramSpace paramstypes.Subspace,
 ) Keeper {
@@ -73,12 +73,6 @@ func (k Keeper) CreateEnergyRoute(ctx sdk.Context, src, dst sdk.AccAddress, alia
 		return types.ErrRouteExist
 	}
 
-	// TODO test reverse routes
-	//_, found = k.GetRoute(ctx, dst, src)
-	//if found {
-	//	return types.ErrReverseRoute
-	//}
-
 	routes := k.GetSourceRoutes(ctx, src, k.MaxSourceRoutes(ctx))
 	if uint32(len(routes)) == k.MaxSourceRoutes(ctx) {
 		return  types.ErrMaxRoutes
@@ -98,7 +92,7 @@ func (k Keeper) CreateEnergyRoute(ctx sdk.Context, src, dst sdk.AccAddress, alia
 }
 
 func (k Keeper) EditEnergyRoute(ctx sdk.Context, src, dst sdk.AccAddress, value sdk.Coin) error {
-	defer telemetry.IncrCounter(1.0, types.ModuleName, "routed")
+	defer telemetry.IncrCounter(1.0, types.ModuleName, "energy routed")
 
 	route, found := k.GetRoute(ctx, src, dst)
 	if !found {
@@ -114,12 +108,12 @@ func (k Keeper) EditEnergyRoute(ctx sdk.Context, src, dst sdk.AccAddress, value 
 		}
 		k.SetRoutedEnergy(ctx, dst, sdk.NewCoins(value))
 	} else {
-		if value.Amount.GT(route.Value.AmountOf(value.Denom)) { //TODO test here
+		if value.Amount.GT(route.Value.AmountOf(value.Denom)) {
 			diff := sdk.NewCoin(value.Denom, value.Amount.Sub(route.Value.AmountOf(value.Denom)))
 			coins := sdk.NewCoins(diff)
 
 			if err := k.proxyKeeper.SendCoinsFromAccountToModule(ctx, src, types.EnergyPoolName, coins); err != nil {
-				return err
+				return err // should never happen
 			}
 			k.SetRoutedEnergy(ctx, dst, energy.Sort().Add(diff))
 		} else {
@@ -127,7 +121,7 @@ func (k Keeper) EditEnergyRoute(ctx sdk.Context, src, dst sdk.AccAddress, value 
 			coins := sdk.NewCoins(diff)
 
 			if err := k.proxyKeeper.SendCoinsFromModuleToAccount(ctx, types.EnergyPoolName, src, coins); err != nil {
-				return err
+				return err // should never happen
 			}
 
 			k.SetRoutedEnergy(ctx, dst, energy.Sub(coins))
@@ -157,7 +151,7 @@ func (k Keeper) DeleteEnergyRoute(ctx sdk.Context, src, dst sdk.AccAddress) erro
 	}
 
 	if err := k.proxyKeeper.SendCoinsFromModuleToAccount(ctx, types.EnergyPoolName, src, route.Value); err != nil {
-		return err
+		return err // should never happen
 	}
 
 	energy := k.GetRoutedToEnergy(ctx, dst)
@@ -182,6 +176,7 @@ func (k Keeper) EditEnergyRouteAlias(ctx sdk.Context, src, dst sdk.AccAddress, a
 }
 
 func (k Keeper) SetRoutes(ctx sdk.Context, routes types.Routes) error {
+	// TODO add check that source and destinations addresses already exist
 	for _, route := range routes {
 		src, err := sdk.AccAddressFromBech32(route.Source)
 		if err != nil {
@@ -283,8 +278,7 @@ func (k Keeper) GetDestinationRoutes(ctx sdk.Context, dst sdk.AccAddress) (route
 	return routes
 }
 
-func (k Keeper) GetSourceRoutes(ctx sdk.Context, src sdk.AccAddress,
-	maxRetrieve uint32) (routes []types.Route) {
+func (k Keeper) GetSourceRoutes(ctx sdk.Context, src sdk.AccAddress, maxRetrieve uint32) (routes []types.Route) {
 	routes = make([]types.Route, maxRetrieve)
 	store := ctx.KVStore(k.storeKey)
 	sourcePrefixKey := types.GetRoutesKey(src)

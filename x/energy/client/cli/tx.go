@@ -70,7 +70,7 @@ func GetCmdEditRoute() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "edit-route [destination-addr] [value]",
 		Args:  cobra.ExactArgs(2),
-		Short: "Route energy value to destination address, value will be set",
+		Short: "Set value of energy route to destination address",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -108,7 +108,7 @@ func GetCmdDeleteRoute() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "delete-route [destination-addr]",
 		Args:  cobra.ExactArgs(1),
-		Short: "Delete yours energy route to given destination address",
+		Short: "Delete your energy route to given destination address",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -140,7 +140,7 @@ func GetCmdEditRouteAlias() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "edit-route-alias [destination-addr] [alias]",
 		Args:  cobra.ExactArgs(2),
-		Short: "Delete yours energy route to given destination address",
+		Short: "Edit alias of energy route to given destination address",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
