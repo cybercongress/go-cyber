@@ -12,34 +12,34 @@ import (
 
 var _ types.QueryServer = &BandwidthMeter{}
 
-func (bk BandwidthMeter) Params(goCtx context.Context, request *types.QueryParamsRequest) (*types.QueryParamsResponse, error) {
+func (bm BandwidthMeter) Params(goCtx context.Context, request *types.QueryParamsRequest) (*types.QueryParamsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	params := bk.GetParams(ctx)
+	params := bm.GetParams(ctx)
 
 	return &types.QueryParamsResponse{Params: params}, nil
 }
 
-func (bk *BandwidthMeter) Load(goCtx context.Context, request *types.QueryLoadRequest) (*types.QueryLoadResponse, error) {
+func (bm *BandwidthMeter) Load(goCtx context.Context, request *types.QueryLoadRequest) (*types.QueryLoadResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	load := bk.GetCurrentNetworkLoad(ctx)
+	load := bm.GetCurrentNetworkLoad(ctx)
 
 	return &types.QueryLoadResponse{Load: sdk.DecProto{Dec: load}}, nil
 }
 
-func (bk *BandwidthMeter) Price(_ context.Context, _ *types.QueryPriceRequest) (*types.QueryPriceResponse, error) {
-	price := bk.GetCurrentCreditPrice()
+func (bm *BandwidthMeter) Price(_ context.Context, _ *types.QueryPriceRequest) (*types.QueryPriceResponse, error) {
+	price := bm.GetCurrentCreditPrice()
 
 	return &types.QueryPriceResponse{Price: sdk.DecProto{Dec: price}}, nil
 }
 
-func (bk *BandwidthMeter) DesirableBandwidth(goCtx context.Context, _ *types.QueryDesirableBandwidthRequest) (*types.QueryDesirableBandwidthResponse, error) {
+func (bm *BandwidthMeter) DesirableBandwidth(goCtx context.Context, _ *types.QueryDesirableBandwidthRequest) (*types.QueryDesirableBandwidthResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	desirableBandwidth := bk.GetDesirableBandwidth(ctx)
+	desirableBandwidth := bm.GetDesirableBandwidth(ctx)
 
 	return &types.QueryDesirableBandwidthResponse{DesirableBandwidth: desirableBandwidth}, nil
 }
 
-func (bk *BandwidthMeter) Account(goCtx context.Context, request *types.QueryAccountRequest) (*types.QueryAccountResponse, error) {
+func (bm *BandwidthMeter) Account(goCtx context.Context, request *types.QueryAccountRequest) (*types.QueryAccountResponse, error) {
 	if request == nil {
 		return nil, status.Errorf(codes.InvalidArgument, "empty request")
 	}
@@ -55,7 +55,7 @@ func (bk *BandwidthMeter) Account(goCtx context.Context, request *types.QueryAcc
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	accountBandwidth := bk.GetCurrentAccountBandwidth(ctx, addr)
+	accountBandwidth := bm.GetCurrentAccountBandwidth(ctx, addr)
 
 	return &types.QueryAccountResponse{AccountBandwidth: accountBandwidth}, nil
 }

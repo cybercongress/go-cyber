@@ -13,38 +13,38 @@ func NewGenesisAccountBandwidth(address sdk.AccAddress, bandwidth uint64) Accoun
 	}
 }
 
-func (bs *AccountBandwidth) UpdateMax(newValue uint64, currentBlock uint64, recoveryPeriod uint64) {
-	bs.Recover(currentBlock, recoveryPeriod)
-	bs.MaxValue = newValue
-	bs.LastUpdatedBlock = currentBlock
+func (ab *AccountBandwidth) UpdateMax(newValue uint64, currentBlock uint64, recoveryPeriod uint64) {
+	ab.Recover(currentBlock, recoveryPeriod)
+	ab.MaxValue = newValue
+	ab.LastUpdatedBlock = currentBlock
 
-	if bs.RemainedValue > bs.MaxValue {
-		bs.RemainedValue = bs.MaxValue
+	if ab.RemainedValue > ab.MaxValue {
+		ab.RemainedValue = ab.MaxValue
 	}
 }
 
-func (bs *AccountBandwidth) Recover(currentBlock uint64, recoveryPeriod uint64) {
-	recoverPerBlock := float64(bs.MaxValue) / float64(recoveryPeriod)
-	fullRecoveryAmount := float64(bs.MaxValue - bs.RemainedValue)
+func (ab *AccountBandwidth) Recover(currentBlock uint64, recoveryPeriod uint64) {
+	recoverPerBlock := float64(ab.MaxValue) / float64(recoveryPeriod)
+	fullRecoveryAmount := float64(ab.MaxValue - ab.RemainedValue)
 
-	recoverAmount := float64(currentBlock-bs.LastUpdatedBlock) * recoverPerBlock
+	recoverAmount := float64(currentBlock-ab.LastUpdatedBlock) * recoverPerBlock
 	if recoverAmount > fullRecoveryAmount {
 		recoverAmount = fullRecoveryAmount
 	}
 
-	bs.RemainedValue = bs.RemainedValue + uint64(recoverAmount)
-	bs.LastUpdatedBlock = currentBlock
+	ab.RemainedValue = ab.RemainedValue + uint64(recoverAmount)
+	ab.LastUpdatedBlock = currentBlock
 }
 
-func (bs *AccountBandwidth) Consume(bandwidthToConsume uint64) error {
-	bs.RemainedValue = bs.RemainedValue - bandwidthToConsume
-	if bs.RemainedValue < 0 {
+func (ab *AccountBandwidth) Consume(bandwidthToConsume uint64) error {
+	ab.RemainedValue = ab.RemainedValue - bandwidthToConsume
+	if ab.RemainedValue < 0 {
 		return ErrNotEnoughBandwidth
 	}
 	return nil
 }
 
-func (bs AccountBandwidth) HasEnoughRemained(bandwidthToConsume uint64) bool {
-	return bs.RemainedValue >= bandwidthToConsume
+func (ab AccountBandwidth) HasEnoughRemained(bandwidthToConsume uint64) bool {
+	return ab.RemainedValue >= bandwidthToConsume
 }
 

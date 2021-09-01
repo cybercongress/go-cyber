@@ -6,12 +6,12 @@ import (
 	"github.com/cybercongress/go-cyber/x/bandwidth/types"
 )
 
-func (bk BandwidthMeter) SetAccountBandwidth(ctx sdk.Context, ab types.AccountBandwidth) {
-	ctx.KVStore(bk.storeKey).Set(types.AccountStoreKey(ab.Address), bk.cdc.MustMarshalBinaryBare(&ab))
+func (bm BandwidthMeter) SetAccountBandwidth(ctx sdk.Context, ab types.AccountBandwidth) {
+	ctx.KVStore(bm.storeKey).Set(types.AccountStoreKey(ab.Address), bm.cdc.MustMarshalBinaryBare(&ab))
 }
 
-func (bk BandwidthMeter) GetAccountBandwidth(ctx sdk.Context, address sdk.AccAddress) (ab types.AccountBandwidth) {
-	bwBytes := ctx.KVStore(bk.storeKey).Get(types.AccountStoreKey(address.String()))
+func (bm BandwidthMeter) GetAccountBandwidth(ctx sdk.Context, address sdk.AccAddress) (ab types.AccountBandwidth) {
+	bwBytes := ctx.KVStore(bm.storeKey).Get(types.AccountStoreKey(address.String()))
 	if bwBytes == nil {
 		return types.AccountBandwidth{
 			Address:          address.String(),
@@ -20,6 +20,6 @@ func (bk BandwidthMeter) GetAccountBandwidth(ctx sdk.Context, address sdk.AccAdd
 			MaxValue:         0,
 		}
 	}
-	bk.cdc.MustUnmarshalBinaryBare(bwBytes, &ab)
+	bm.cdc.MustUnmarshalBinaryBare(bwBytes, &ab)
 	return
 }

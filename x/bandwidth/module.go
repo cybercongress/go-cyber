@@ -24,7 +24,6 @@ import (
 	abci "github.com/tendermint/tendermint/abci/types"
 )
 
-// type check to ensure the interface is properly implemented
 var (
 	_ module.AppModule      = AppModule{}
 	_ module.AppModuleBasic = AppModuleBasic{}
@@ -63,10 +62,8 @@ func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *r
 	}
 }
 
-// GetQueryCmd returns the root tx command for the posts module.
 func (AppModuleBasic) GetTxCmd() *cobra.Command { return nil }
 
-// GetTxCmd returns the root query command for the posts module.
 func (AppModuleBasic) GetQueryCmd() *cobra.Command {
 	return cli.GetQueryCmd()
 }

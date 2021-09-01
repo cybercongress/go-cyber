@@ -65,7 +65,7 @@ func validateRecoveryPeriod(i interface{}) error {
 	}
 
 	if v <= uint64(50) {
-		return fmt.Errorf("recovery period too low: %d", v)
+		return fmt.Errorf("recovery period is too low: %d", v)
 	}
 
 	return nil
@@ -79,7 +79,7 @@ func validateAdjustPricePeriod(i interface{}) error {
 	}
 
 	if v < uint64(5) {
-		return fmt.Errorf("adjust price period too low: %d", v)
+		return fmt.Errorf("adjust price period is too low: %d", v)
 	}
 
 	return nil
@@ -111,7 +111,7 @@ func validateMaxBlockBandwidth(i interface{}) error {
 	}
 
 	if v <= uint64(1000) {
-		return fmt.Errorf("max block bandwidth too low: %d", v)
+		return fmt.Errorf("max block bandwidth is too low: %d", v)
 	}
 
 	return nil

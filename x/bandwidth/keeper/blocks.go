@@ -6,13 +6,13 @@ import (
 	"github.com/cybercongress/go-cyber/x/bandwidth/types"
 )
 
-func (bk BandwidthMeter) SetBlockBandwidth(ctx sdk.Context, blockNumber uint64, value uint64) {
-	store := ctx.KVStore(bk.storeKey)
+func (bm BandwidthMeter) SetBlockBandwidth(ctx sdk.Context, blockNumber uint64, value uint64) {
+	store := ctx.KVStore(bm.storeKey)
 	store.Set(types.BlockStoreKey(blockNumber), sdk.Uint64ToBigEndian(value))
 }
 
-func (bk BandwidthMeter) GetValuesForPeriod(ctx sdk.Context, period uint64) map[uint64]uint64 {
-	store := ctx.KVStore(bk.storeKey)
+func (bm BandwidthMeter) GetValuesForPeriod(ctx sdk.Context, period uint64) map[uint64]uint64 {
+	store := ctx.KVStore(bm.storeKey)
 
 	windowStart := ctx.BlockHeight() - int64(period) + 1
 	if windowStart <= 0 {

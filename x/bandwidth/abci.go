@@ -12,7 +12,7 @@ import (
 
 var accountsToUpdate = make([]sdk.AccAddress, 0)
 
-// user to recover and update bandwidth for accounts with changed stake
+// recover and update bandwidth for accounts with changed stake
 func updateAccountsMaxBandwidth(ctx sdk.Context, meter *keeper.BandwidthMeter) {
 	for _, addr := range accountsToUpdate {
 		meter.UpdateAccountMaxBandwidth(ctx, addr)
@@ -40,9 +40,10 @@ func EndBlocker(ctx sdk.Context, bm *keeper.BandwidthMeter) {
 
 	params := bm.GetParams(ctx)
 	if ctx.BlockHeight() != 0 && uint64(ctx.BlockHeight())%params.AdjustPricePeriod == 0 {
-		bm.AdjustPrice(ctx)
+		bm.AdjustPrice(ctx) // TODO Add block event for price and load
 	}
 
-	bm.CommitBlockBandwidth(ctx)
+	bm.CommitBlockBandwidth(ctx) // TODO add block event for committed bandwidth
+
 	updateAccountsMaxBandwidth(ctx, bm)
 }
