@@ -3,9 +3,9 @@ module github.com/cybercongress/go-cyber
 go 1.16
 
 require (
-	github.com/CosmWasm/wasmd v0.18.0-rc2
-	github.com/CosmWasm/wasmvm v0.16.0-rc2
-	github.com/cosmos/cosmos-sdk v0.42.8
+	github.com/CosmWasm/wasmd v0.18.0
+	github.com/CosmWasm/wasmvm v0.16.0
+	github.com/cosmos/cosmos-sdk v0.42.9
 	github.com/cosmos/iavl v0.16.0
 	github.com/dvsekhvalnov/jose2go v1.5.0 // indirect
 	github.com/gogo/protobuf v1.3.3
