@@ -2,12 +2,12 @@ package keeper
 
 import (
 	"fmt"
-
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
+	"math"
 
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/tendermint/tendermint/libs/log"
@@ -63,66 +63,50 @@ func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
 	k.paramSpace.SetParamSet(ctx, &params)
 }
 
-func (k Keeper) MaxSlots(ctx sdk.Context) (res uint32) {
-	k.paramSpace.Get(ctx, types.KeyMaxSlots, &res)
-	return
-}
-
-func (k Keeper) BaseVestingResource(ctx sdk.Context) (res sdk.Coin) {
-	k.paramSpace.Get(ctx, types.KeyBaseVestingResource, &res)
-	return
-}
-
-func (k Keeper) BaseVestingTime(ctx sdk.Context) (res uint32) {
-	k.paramSpace.Get(ctx, types.KeyBaseVestingTime, &res)
-	return
-}
-
-func (k Keeper) MaxVestingTime(ctx sdk.Context) (res uint32) {
-	k.paramSpace.Get(ctx, types.KeyMaxVestingTime, &res)
-	return
-}
-
 func (k Keeper) ConvertResource(
 	ctx sdk.Context,
 	agent sdk.AccAddress,
 	amount sdk.Coin,
 	resource string,
 	length uint64,
-) error {
-	lengthCheck := k.PeriodCheck(ctx, length)
-	if lengthCheck == false {
-		return types.ErrNotAvailableLength
+) (error, sdk.Coin) {
+	periodAvailableFlag := k.CheckAvailablePeriod(ctx, length)
+	if periodAvailableFlag == false {
+		return types.ErrNotAvailablePeriod, sdk.Coin{}
 	}
 
 	if k.bankKeeper.SpendableCoins(ctx, agent).AmountOf(ctypes.SCYB).LT(amount.Amount) {
-		return sdkerrors.ErrInsufficientFunds
+		return sdkerrors.ErrInsufficientFunds, sdk.Coin{}
 	}
 
-	err := k.AddTimeLockedCoinsToAccount(ctx, agent, sdk.NewCoins(amount), int64(length))
-	if err != nil {
-		return sdkerrors.Wrapf(types.ErrTimeLockCoins, err.Error())
+	if uint32(length) < k.MinInvestmintPeriodSec(ctx) {
+		return types.ErrNotAvailablePeriod, sdk.Coin{}
 	}
-	err = k.Mint(ctx, agent, amount, resource, length)
+
+	err, newAccFlag := k.AddTimeLockedCoinsToAccount(ctx, agent, sdk.NewCoins(amount), int64(length))
 	if err != nil {
-		return sdkerrors.Wrapf(types.ErrIssueCoins, err.Error())
+		return sdkerrors.Wrapf(types.ErrTimeLockCoins, err.Error()), sdk.Coin{}
 	}
-	return err
+	err, minted := k.Mint(ctx, agent, amount, resource, length, newAccFlag)
+	if err != nil {
+		return sdkerrors.Wrapf(types.ErrIssueCoins, err.Error()), sdk.Coin{}
+	}
+	return err, minted
 }
 
-func (k Keeper) AddTimeLockedCoinsToAccount(ctx sdk.Context, recipientAddr sdk.AccAddress, amt sdk.Coins, length int64) error {
+func (k Keeper) AddTimeLockedCoinsToAccount(ctx sdk.Context, recipientAddr sdk.AccAddress, amt sdk.Coins, length int64) (error, bool) {
 	acc := k.accountKeeper.GetAccount(ctx, recipientAddr)
 	if acc == nil {
-		return sdkerrors.Wrapf(types.ErrAccountNotFound, recipientAddr.String())
+		return sdkerrors.Wrapf(types.ErrAccountNotFound, recipientAddr.String()), false
 	}
 
 	switch acc.(type) {
 	case *vestingtypes.PeriodicVestingAccount:
-		return k.AddTimeLockedCoinsToPeriodicVestingAccount(ctx, recipientAddr, amt, length, false)
+		return k.AddTimeLockedCoinsToPeriodicVestingAccount(ctx, recipientAddr, amt, length, false), false
 	case *authtypes.BaseAccount:
-		return k.AddTimeLockedCoinsToBaseAccount(ctx, recipientAddr, amt, length)
+		return k.AddTimeLockedCoinsToBaseAccount(ctx, recipientAddr, amt, length), true
 	default:
-		return sdkerrors.Wrapf(types.ErrInvalidAccountType, "%T", acc)
+		return sdkerrors.Wrapf(types.ErrInvalidAccountType, "%T", acc), false
 	}
 }
 
@@ -285,55 +269,129 @@ func (k Keeper) addCoinsToVestingSchedule(ctx sdk.Context, addr sdk.AccAddress, 
 	return nil
 }
 
-func (k Keeper) Mint(ctx sdk.Context, recipientAddr sdk.AccAddress, amt sdk.Coin, resource string, length uint64) error {
+func (k Keeper) Mint(ctx sdk.Context, recipientAddr sdk.AccAddress, amt sdk.Coin, resource string, length uint64, newAccountFlag bool) (error, sdk.Coin) {
 	acc := k.accountKeeper.GetAccount(ctx, recipientAddr)
 	if acc == nil {
-		return sdkerrors.Wrapf(types.ErrAccountNotFound, recipientAddr.String())
+		return sdkerrors.Wrapf(types.ErrAccountNotFound, recipientAddr.String()), sdk.Coin{}
 	}
 
 	toMint := k.CalculateInvestmint(ctx, amt, resource, length)
 
 	if toMint.Amount.LT(sdk.NewInt(1000)) {
-		return sdkerrors.Wrapf(types.ErrLessThanOne, recipientAddr.String())
+		return sdkerrors.Wrapf(types.ErrSmallReturn, recipientAddr.String()), sdk.Coin{}
 	}
 
 	err := k.bankKeeper.MintCoins(ctx, types.ResourcesName, sdk.NewCoins(toMint))
 	if err != nil {
-		return sdkerrors.Wrapf(types.ErrMintCoins, recipientAddr.String())
+		return sdkerrors.Wrapf(types.ErrMintCoins, recipientAddr.String()), sdk.Coin{}
 	}
 	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ResourcesName, recipientAddr, sdk.NewCoins(toMint))
 	if err != nil {
-		return sdkerrors.Wrapf(types.ErrSendMintedCoins, recipientAddr.String())
+		return sdkerrors.Wrapf(types.ErrSendMintedCoins, recipientAddr.String()), sdk.Coin{}
 	}
 	// adding converted resources to vesting schedule
 	err = k.AddTimeLockedCoinsToPeriodicVestingAccount(ctx, recipientAddr, sdk.NewCoins(toMint), int64(length), true)
 	if err != nil {
-		return sdkerrors.Wrapf(types.ErrTimeLockCoins, err.Error())
+		return sdkerrors.Wrapf(types.ErrTimeLockCoins, err.Error()), sdk.Coin{}
 	}
 
 	if resource == ctypes.VOLT {
 		k.bandwidthMeter.AddToDesirableBandwidth(ctx, toMint.Amount.Uint64())
 	}
+	// Set personal bandwidth of newcomers to 1000
+	if newAccountFlag {
+		band := k.bandwidthMeter.GetAccountBandwidth(ctx, recipientAddr)
+		if band.MaxValue == 0 {
+			k.bandwidthMeter.InitChargeAccountBandwidth(ctx, band, 1000)
+		}
+	}
 
-	return nil
+	return nil, toMint
 }
 
 func (k Keeper) CalculateInvestmint(ctx sdk.Context, amt sdk.Coin, resource string, length uint64) sdk.Coin {
-	cycles := sdk.NewDec(int64(length)).QuoInt64(int64(k.BaseVestingTime(ctx)))
-	//cycles := sdk.NewDec(int64(length)).QuoInt64(int64(10)) // for local dev
-	base := sdk.NewDec(amt.Amount.Int64()).QuoInt64(k.BaseVestingResource(ctx).Amount.Int64())
-
 	var toMint sdk.Coin
-	// TODO implement algorithms from resources economy simulation for each resource
 	switch resource {
 	case ctypes.VOLT:
-		toMint = ctypes.NewVoltCoin(base.Mul(cycles).Mul(sdk.NewDec(1000)).TruncateInt64())
+		//cycles := sdk.NewDec(int64(length)).QuoInt64(int64(10)) // for local dev
+		cycles := sdk.NewDec(int64(length)).QuoInt64(int64(k.BaseInvestmintPeriodVolt(ctx)))
+		base := sdk.NewDec(amt.Amount.Int64()).QuoInt64(k.BaseInvestmintAmountVolt(ctx).Amount.Int64())
+		halving := sdk.NewDecWithPrec(int64(math.Pow(0.5, float64(ctx.BlockHeight() / int64(k.BaseHalvingPeriodVolt(ctx))))*10000),4)
+
+		toMint = ctypes.NewVoltCoin(base.Mul(cycles).Mul(halving).Mul(sdk.NewDec(1000)).TruncateInt64())
+
+		k.Logger(ctx).Info("Investmint", "cycles", cycles.String(), "base", base.String(), "halving", halving.String(), "mint", toMint.String())
 	case ctypes.AMPER:
-		toMint = ctypes.NewAmperCoin(base.Mul(cycles).Mul(sdk.NewDec(1000)).TruncateInt64())
+		//cycles := sdk.NewDec(int64(length)).QuoInt64(int64(10)) // for local dev
+		cycles := sdk.NewDec(int64(length)).QuoInt64(int64(k.BaseInvestmintPeriodAmpere(ctx)))
+		base := sdk.NewDec(amt.Amount.Int64()).QuoInt64(k.BaseInvestmintAmountAmpere(ctx).Amount.Int64())
+		halving := sdk.NewDecWithPrec(int64(math.Pow(0.5, float64(ctx.BlockHeight() / int64(k.BaseHalvingPeriodAmpere(ctx))))*10000),4)
+
+		toMint = ctypes.NewAmperCoin(base.Mul(cycles).Mul(halving).Mul(sdk.NewDec(1000)).TruncateInt64())
+
+		k.Logger(ctx).Info("Investmint", "cycles", cycles.String(), "base", base.String(), "halving", halving.String(), "mint", toMint.String())
 	}
 	return toMint
 }
 
-func (k Keeper) PeriodCheck(ctx sdk.Context, length uint64) bool {
-	return length <= uint64(k.MaxVestingTime(ctx))
+func (k Keeper) CheckAvailablePeriod(ctx sdk.Context, length uint64) bool {
+	var availableLength int64
+	passed := ctx.BlockHeight()
+
+	// TODO more advanced logic will be applied after launch
+	switch {
+	case passed > 600:
+		// 12 months max freeze after 3072000 blocks passed after launch
+		//availableLength = 31104000
+		availableLength = 3600
+	case passed > 300:
+		// 6 months max freeze after 1536000 blocks passed after launch
+		//availableLength = 15552000
+		availableLength = 2400
+	default:
+		// 3 months max freeze before 1536000 blocks passed after launch
+		//availableLength = 7776000
+		availableLength = 1200
+	}
+	return length < uint64(availableLength)
+}
+
+func (k Keeper) MaxSlots(ctx sdk.Context) (res uint32) {
+	k.paramSpace.Get(ctx, types.KeyMaxSlots, &res)
+	return
+}
+
+func (k Keeper) BaseHalvingPeriodVolt(ctx sdk.Context) (res uint32) {
+	k.paramSpace.Get(ctx, types.KeyBaseHalvingPeriodVolt, &res)
+	return
+}
+
+func (k Keeper) BaseHalvingPeriodAmpere(ctx sdk.Context) (res uint32) {
+	k.paramSpace.Get(ctx, types.KeyBaseHalvingPeriodAmpere, &res)
+	return
+}
+
+func (k Keeper) BaseInvestmintPeriodVolt(ctx sdk.Context) (res uint32) {
+	k.paramSpace.Get(ctx, types.KeyBaseInvestmintPeriodVolt, &res)
+	return
+}
+
+func (k Keeper) BaseInvestmintPeriodAmpere(ctx sdk.Context) (res uint32) {
+	k.paramSpace.Get(ctx, types.KeyBaseInvestmintPeriodAmpere, &res)
+	return
+}
+
+func (k Keeper) BaseInvestmintAmountVolt(ctx sdk.Context) (res sdk.Coin) {
+	k.paramSpace.Get(ctx, types.KeyBaseInvestmintAmountVolt, &res)
+	return
+}
+
+func (k Keeper) BaseInvestmintAmountAmpere(ctx sdk.Context) (res sdk.Coin) {
+	k.paramSpace.Get(ctx, types.KeyBaseInvestmintAmountAmpere, &res)
+	return
+}
+
+func (k Keeper) MinInvestmintPeriodSec(ctx sdk.Context) (res uint32) {
+	k.paramSpace.Get(ctx, types.KeyMinInvestmintPeriodSec, &res)
+	return
 }

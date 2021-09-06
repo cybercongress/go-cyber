@@ -42,7 +42,7 @@ func queryInvestmintAmount(ctx sdk.Context, req abci.RequestQuery, k Keeper, leg
 	}
 
 	if params.Amount.Denom != ctypes.SCYB {
-		return nil, sdkerrors.Wrap(types.ErrAmountNotValid, params.Amount.String())
+		return nil, sdkerrors.Wrap(types.ErrInvalidBaseResource, params.Amount.String())
 	}
 
 	if params.Resource != ctypes.VOLT && params.Resource != ctypes.AMPER {

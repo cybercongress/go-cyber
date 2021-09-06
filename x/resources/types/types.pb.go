@@ -26,10 +26,14 @@ var _ = math.Inf
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type Params struct {
-	MaxSlots            uint32                                  `protobuf:"varint,1,opt,name=max_slots,json=maxSlots,proto3" json:"max_slots,omitempty" yaml:"max_slots"`
-	BaseVestingTime     uint32                                  `protobuf:"varint,2,opt,name=base_vesting_time,json=baseVestingTime,proto3" json:"base_vesting_time,omitempty" yaml:"base_vesting_time"`
-	MaxVestingTime      uint32                                  `protobuf:"varint,3,opt,name=max_vesting_time,json=maxVestingTime,proto3" json:"max_vesting_time,omitempty" yaml:"max_vesting_time"`
-	BaseVestingResource github_com_cosmos_cosmos_sdk_types.Coin `protobuf:"bytes,4,opt,name=base_vesting_resource,json=baseVestingResource,proto3,casttype=github.com/cosmos/cosmos-sdk/types.Coin" json:"base_vesting_resource" yaml:"base_vesting_resource"`
+	MaxSlots                   uint32                                  `protobuf:"varint,1,opt,name=max_slots,json=maxSlots,proto3" json:"max_slots,omitempty"`
+	BaseHalvingPeriodVolt      uint32                                  `protobuf:"varint,2,opt,name=base_halving_period_volt,json=baseHalvingPeriodVolt,proto3" json:"base_halving_period_volt,omitempty"`
+	BaseHalvingPeriodAmpere    uint32                                  `protobuf:"varint,3,opt,name=base_halving_period_ampere,json=baseHalvingPeriodAmpere,proto3" json:"base_halving_period_ampere,omitempty"`
+	BaseInvestmintPeriodVolt   uint32                                  `protobuf:"varint,4,opt,name=base_investmint_period_volt,json=baseInvestmintPeriodVolt,proto3" json:"base_investmint_period_volt,omitempty"`
+	BaseInvestmintPeriodAmpere uint32                                  `protobuf:"varint,5,opt,name=base_investmint_period_ampere,json=baseInvestmintPeriodAmpere,proto3" json:"base_investmint_period_ampere,omitempty"`
+	MinInvestmintPeriodSec     uint32                                  `protobuf:"varint,6,opt,name=min_investmint_period_sec,json=minInvestmintPeriodSec,proto3" json:"min_investmint_period_sec,omitempty"`
+	BaseInvestmintAmountVolt   github_com_cosmos_cosmos_sdk_types.Coin `protobuf:"bytes,7,opt,name=base_investmint_amount_volt,json=baseInvestmintAmountVolt,proto3,casttype=github.com/cosmos/cosmos-sdk/types.Coin" json:"base_investmint_amount_volt"`
+	BaseInvestmintAmountAmpere github_com_cosmos_cosmos_sdk_types.Coin `protobuf:"bytes,8,opt,name=base_investmint_amount_ampere,json=baseInvestmintAmountAmpere,proto3,casttype=github.com/cosmos/cosmos-sdk/types.Coin" json:"base_investmint_amount_ampere"`
 }
 
 func (m *Params) Reset()         { *m = Params{} }
@@ -72,23 +76,51 @@ func (m *Params) GetMaxSlots() uint32 {
 	return 0
 }
 
-func (m *Params) GetBaseVestingTime() uint32 {
+func (m *Params) GetBaseHalvingPeriodVolt() uint32 {
 	if m != nil {
-		return m.BaseVestingTime
+		return m.BaseHalvingPeriodVolt
 	}
 	return 0
 }
 
-func (m *Params) GetMaxVestingTime() uint32 {
+func (m *Params) GetBaseHalvingPeriodAmpere() uint32 {
 	if m != nil {
-		return m.MaxVestingTime
+		return m.BaseHalvingPeriodAmpere
 	}
 	return 0
 }
 
-func (m *Params) GetBaseVestingResource() github_com_cosmos_cosmos_sdk_types.Coin {
+func (m *Params) GetBaseInvestmintPeriodVolt() uint32 {
 	if m != nil {
-		return m.BaseVestingResource
+		return m.BaseInvestmintPeriodVolt
+	}
+	return 0
+}
+
+func (m *Params) GetBaseInvestmintPeriodAmpere() uint32 {
+	if m != nil {
+		return m.BaseInvestmintPeriodAmpere
+	}
+	return 0
+}
+
+func (m *Params) GetMinInvestmintPeriodSec() uint32 {
+	if m != nil {
+		return m.MinInvestmintPeriodSec
+	}
+	return 0
+}
+
+func (m *Params) GetBaseInvestmintAmountVolt() github_com_cosmos_cosmos_sdk_types.Coin {
+	if m != nil {
+		return m.BaseInvestmintAmountVolt
+	}
+	return github_com_cosmos_cosmos_sdk_types.Coin{}
+}
+
+func (m *Params) GetBaseInvestmintAmountAmpere() github_com_cosmos_cosmos_sdk_types.Coin {
+	if m != nil {
+		return m.BaseInvestmintAmountAmpere
 	}
 	return github_com_cosmos_cosmos_sdk_types.Coin{}
 }
@@ -102,31 +134,34 @@ func init() {
 }
 
 var fileDescriptor_3be852646b47c447 = []byte{
-	// 374 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x6c, 0x92, 0x41, 0x4f, 0xea, 0x40,
-	0x10, 0xc7, 0xbb, 0x3c, 0x42, 0xde, 0xeb, 0x8b, 0x8a, 0x15, 0x43, 0x45, 0xd2, 0x92, 0x7a, 0x90,
-	0x0b, 0x6d, 0x90, 0x1b, 0x47, 0x8c, 0x89, 0x17, 0xa3, 0xa9, 0xc6, 0x83, 0x97, 0x66, 0x5b, 0x37,
-	0xb5, 0x91, 0xed, 0x92, 0xee, 0x42, 0xca, 0xb7, 0xf0, 0x13, 0x18, 0x3f, 0x0e, 0x47, 0x8e, 0x9e,
-	0x1a, 0x03, 0x17, 0xcf, 0xf5, 0xe6, 0xc9, 0x6c, 0xb7, 0x60, 0x89, 0x9e, 0x76, 0x32, 0xf3, 0x9f,
-	0xdf, 0xcc, 0xce, 0x8c, 0x7c, 0xe4, 0x4d, 0x5d, 0x14, 0x59, 0x11, 0xa2, 0x64, 0x1c, 0x79, 0x88,
-	0x5a, 0x93, 0xae, 0x8b, 0x18, 0xec, 0x5a, 0x6c, 0x3a, 0x42, 0xd4, 0x1c, 0x45, 0x84, 0x11, 0xa5,
-	0x9e, 0x89, 0xcc, 0xb5, 0xc8, 0xcc, 0x45, 0x8d, 0x9a, 0x4f, 0x7c, 0x92, 0x69, 0x2c, 0x6e, 0x09,
-	0x79, 0xa3, 0xee, 0x11, 0x8a, 0x09, 0x75, 0x44, 0xc0, 0x23, 0x41, 0x28, 0x02, 0xc6, 0x47, 0x49,
-	0xae, 0x5c, 0xc1, 0x08, 0x62, 0xaa, 0x74, 0xe5, 0x7f, 0x18, 0xc6, 0x0e, 0x1d, 0x12, 0x46, 0x55,
-	0xd0, 0x02, 0xed, 0xad, 0x41, 0x2d, 0x4d, 0xf4, 0xea, 0x14, 0xe2, 0x61, 0xdf, 0x58, 0x87, 0x0c,
-	0xfb, 0x2f, 0x86, 0xf1, 0x35, 0x37, 0x95, 0x73, 0x79, 0xd7, 0x85, 0x14, 0x39, 0x13, 0x44, 0x59,
-	0x10, 0xfa, 0x0e, 0x0b, 0x30, 0x52, 0x4b, 0x59, 0x6a, 0x33, 0x4d, 0x74, 0x55, 0xa4, 0xfe, 0x90,
-	0x18, 0xf6, 0x0e, 0xf7, 0xdd, 0x0a, 0xd7, 0x4d, 0x80, 0x91, 0x72, 0x26, 0x57, 0x79, 0x85, 0x0d,
-	0xd0, 0x9f, 0x0c, 0x74, 0x98, 0x26, 0x7a, 0xfd, 0xbb, 0x87, 0x4d, 0xce, 0x36, 0x86, 0x71, 0x11,
-	0xf3, 0x0c, 0xe4, 0xfd, 0x8d, 0x72, 0xab, 0x01, 0xa9, 0xe5, 0x16, 0x68, 0xff, 0x3f, 0x39, 0x30,
-	0xc5, 0x20, 0x4c, 0x2e, 0x5a, 0xcd, 0xcc, 0x3c, 0x25, 0x41, 0x38, 0xb8, 0x9c, 0x25, 0xba, 0x94,
-	0x26, 0x7a, 0xf3, 0x97, 0xa6, 0x57, 0x14, 0xe3, 0x33, 0xd1, 0x8f, 0xfd, 0x80, 0x3d, 0x8c, 0x5d,
-	0xd3, 0x23, 0xd8, 0x12, 0xb0, 0xfc, 0xe9, 0xd0, 0xfb, 0xc7, 0x7c, 0x47, 0x1c, 0x68, 0xef, 0x15,
-	0xfe, 0x68, 0xe7, 0x80, 0x7e, 0xf9, 0xfd, 0x45, 0x07, 0x83, 0x8b, 0xd9, 0x42, 0x03, 0xf3, 0x85,
-	0x06, 0xde, 0x16, 0x1a, 0x78, 0x5a, 0x6a, 0xd2, 0x7c, 0xa9, 0x49, 0xaf, 0x4b, 0x4d, 0xba, 0xeb,
-	0x15, 0xe9, 0x7c, 0xc5, 0x1e, 0x09, 0xfd, 0x08, 0x51, 0x6a, 0xf9, 0xa4, 0x23, 0x0e, 0x23, 0x2e,
-	0x9c, 0x46, 0x56, 0xce, 0xad, 0x64, 0xbb, 0xec, 0x7d, 0x05, 0x00, 0x00, 0xff, 0xff, 0x22, 0xe9,
-	0x1e, 0xac, 0x3a, 0x02, 0x00, 0x00,
+	// 426 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x53, 0x31, 0x8f, 0xd3, 0x30,
+	0x18, 0x8d, 0xa1, 0x94, 0xc3, 0x88, 0x25, 0x02, 0x9a, 0xcb, 0x89, 0xf4, 0x04, 0x03, 0xb7, 0x5c,
+	0xa2, 0xe3, 0x06, 0x04, 0x88, 0xa1, 0xc7, 0x02, 0x03, 0xd2, 0x89, 0x4a, 0x0c, 0x2c, 0x91, 0xe3,
+	0x5a, 0xa9, 0x45, 0xec, 0x2f, 0xb2, 0xdd, 0xa8, 0xfd, 0x09, 0x0c, 0x48, 0xfc, 0x04, 0x7e, 0x4e,
+	0xc7, 0x8e, 0x4c, 0x15, 0x6a, 0x17, 0x7e, 0x43, 0x27, 0x14, 0x3b, 0x54, 0xa5, 0x0d, 0x1b, 0x53,
+	0x62, 0xbd, 0xf7, 0xbe, 0xf7, 0xf4, 0xfc, 0x19, 0x3f, 0xa1, 0xb3, 0x8c, 0xa9, 0x44, 0x31, 0x0d,
+	0x13, 0x45, 0x99, 0x4e, 0xaa, 0x8b, 0x8c, 0x19, 0x72, 0x91, 0x98, 0x59, 0xc9, 0x74, 0x5c, 0x2a,
+	0x30, 0xe0, 0xf7, 0x2c, 0x29, 0xde, 0x92, 0xe2, 0x86, 0x14, 0xde, 0xcf, 0x21, 0x07, 0xcb, 0x49,
+	0xea, 0x3f, 0x47, 0x0f, 0x7b, 0x14, 0xb4, 0x00, 0x9d, 0x3a, 0x80, 0x02, 0x97, 0x0e, 0x78, 0xbc,
+	0xe9, 0xe0, 0xee, 0x35, 0x51, 0x44, 0x68, 0xff, 0x04, 0xdf, 0x11, 0x64, 0x9a, 0xea, 0x02, 0x8c,
+	0x0e, 0xd0, 0x29, 0x3a, 0xbb, 0xf7, 0xe1, 0x48, 0x90, 0xe9, 0xb0, 0x3e, 0xfb, 0xcf, 0x71, 0x90,
+	0x11, 0xcd, 0xd2, 0x31, 0x29, 0x2a, 0x2e, 0xf3, 0xb4, 0x64, 0x8a, 0xc3, 0x28, 0xad, 0xa0, 0x30,
+	0xc1, 0x0d, 0xcb, 0x7d, 0x50, 0xe3, 0x6f, 0x1d, 0x7c, 0x6d, 0xd1, 0x8f, 0x50, 0x18, 0xff, 0x15,
+	0x0e, 0xdb, 0x84, 0x44, 0x94, 0x4c, 0xb1, 0xe0, 0xa6, 0x95, 0xf6, 0x0e, 0xa4, 0x03, 0x0b, 0xfb,
+	0xaf, 0xf1, 0x89, 0x15, 0x73, 0x59, 0x31, 0x6d, 0x04, 0x97, 0xe6, 0x2f, 0xe3, 0x8e, 0x55, 0xdb,
+	0x60, 0xef, 0xb6, 0x8c, 0x1d, 0xef, 0x01, 0x7e, 0xf4, 0x0f, 0x79, 0x63, 0x7f, 0xcb, 0x0e, 0x08,
+	0xdb, 0x06, 0x34, 0x09, 0x5e, 0xe0, 0x63, 0xc1, 0x65, 0xcb, 0x04, 0xcd, 0x68, 0xd0, 0xb5, 0xf2,
+	0x87, 0x82, 0xcb, 0x7d, 0xf5, 0x90, 0x51, 0xff, 0x0b, 0x3a, 0x4c, 0x4f, 0x04, 0x4c, 0xa4, 0x71,
+	0xe9, 0x6f, 0x9f, 0xa2, 0xb3, 0xbb, 0xcf, 0x8e, 0x63, 0x77, 0x35, 0x71, 0x4d, 0xfd, 0x73, 0x8b,
+	0xf1, 0x1b, 0xe0, 0xf2, 0x2a, 0x99, 0x2f, 0xfb, 0xde, 0x66, 0xd9, 0x7f, 0x9a, 0x73, 0x33, 0x9e,
+	0x64, 0x31, 0x05, 0x91, 0x38, 0x72, 0xf3, 0x39, 0xd7, 0xa3, 0xcf, 0xcd, 0x56, 0xd4, 0x82, 0xfd,
+	0x26, 0x06, 0xd6, 0xcc, 0x36, 0xf1, 0x15, 0x1d, 0x56, 0xd1, 0x64, 0x69, 0xaa, 0x38, 0xfa, 0xef,
+	0x69, 0xc2, 0xb6, 0x34, 0xae, 0xd6, 0x97, 0x9d, 0x5f, 0xdf, 0xfb, 0xe8, 0xea, 0xfd, 0x7c, 0x15,
+	0xa1, 0xc5, 0x2a, 0x42, 0x3f, 0x57, 0x11, 0xfa, 0xb6, 0x8e, 0xbc, 0xc5, 0x3a, 0xf2, 0x7e, 0xac,
+	0x23, 0xef, 0xd3, 0xe5, 0xae, 0x49, 0xbd, 0xe9, 0x14, 0x64, 0xae, 0x98, 0xd6, 0x49, 0x0e, 0xe7,
+	0xee, 0x7d, 0x4c, 0x77, 0x5e, 0x88, 0x75, 0xcd, 0xba, 0x76, 0xa5, 0x2f, 0x7f, 0x07, 0x00, 0x00,
+	0xff, 0xff, 0x87, 0x2a, 0x8c, 0xb4, 0x41, 0x03, 0x00, 0x00,
 }
 
 func (this *Params) Equal(that interface{}) bool {
@@ -151,13 +186,25 @@ func (this *Params) Equal(that interface{}) bool {
 	if this.MaxSlots != that1.MaxSlots {
 		return false
 	}
-	if this.BaseVestingTime != that1.BaseVestingTime {
+	if this.BaseHalvingPeriodVolt != that1.BaseHalvingPeriodVolt {
 		return false
 	}
-	if this.MaxVestingTime != that1.MaxVestingTime {
+	if this.BaseHalvingPeriodAmpere != that1.BaseHalvingPeriodAmpere {
 		return false
 	}
-	if !this.BaseVestingResource.Equal(&that1.BaseVestingResource) {
+	if this.BaseInvestmintPeriodVolt != that1.BaseInvestmintPeriodVolt {
+		return false
+	}
+	if this.BaseInvestmintPeriodAmpere != that1.BaseInvestmintPeriodAmpere {
+		return false
+	}
+	if this.MinInvestmintPeriodSec != that1.MinInvestmintPeriodSec {
+		return false
+	}
+	if !this.BaseInvestmintAmountVolt.Equal(&that1.BaseInvestmintAmountVolt) {
+		return false
+	}
+	if !this.BaseInvestmintAmountAmpere.Equal(&that1.BaseInvestmintAmountAmpere) {
 		return false
 	}
 	return true
@@ -183,7 +230,7 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	var l int
 	_ = l
 	{
-		size, err := m.BaseVestingResource.MarshalToSizedBuffer(dAtA[:i])
+		size, err := m.BaseInvestmintAmountAmpere.MarshalToSizedBuffer(dAtA[:i])
 		if err != nil {
 			return 0, err
 		}
@@ -191,14 +238,39 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintTypes(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x22
-	if m.MaxVestingTime != 0 {
-		i = encodeVarintTypes(dAtA, i, uint64(m.MaxVestingTime))
+	dAtA[i] = 0x42
+	{
+		size, err := m.BaseInvestmintAmountVolt.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarintTypes(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x3a
+	if m.MinInvestmintPeriodSec != 0 {
+		i = encodeVarintTypes(dAtA, i, uint64(m.MinInvestmintPeriodSec))
+		i--
+		dAtA[i] = 0x30
+	}
+	if m.BaseInvestmintPeriodAmpere != 0 {
+		i = encodeVarintTypes(dAtA, i, uint64(m.BaseInvestmintPeriodAmpere))
+		i--
+		dAtA[i] = 0x28
+	}
+	if m.BaseInvestmintPeriodVolt != 0 {
+		i = encodeVarintTypes(dAtA, i, uint64(m.BaseInvestmintPeriodVolt))
+		i--
+		dAtA[i] = 0x20
+	}
+	if m.BaseHalvingPeriodAmpere != 0 {
+		i = encodeVarintTypes(dAtA, i, uint64(m.BaseHalvingPeriodAmpere))
 		i--
 		dAtA[i] = 0x18
 	}
-	if m.BaseVestingTime != 0 {
-		i = encodeVarintTypes(dAtA, i, uint64(m.BaseVestingTime))
+	if m.BaseHalvingPeriodVolt != 0 {
+		i = encodeVarintTypes(dAtA, i, uint64(m.BaseHalvingPeriodVolt))
 		i--
 		dAtA[i] = 0x10
 	}
@@ -230,13 +302,24 @@ func (m *Params) Size() (n int) {
 	if m.MaxSlots != 0 {
 		n += 1 + sovTypes(uint64(m.MaxSlots))
 	}
-	if m.BaseVestingTime != 0 {
-		n += 1 + sovTypes(uint64(m.BaseVestingTime))
+	if m.BaseHalvingPeriodVolt != 0 {
+		n += 1 + sovTypes(uint64(m.BaseHalvingPeriodVolt))
 	}
-	if m.MaxVestingTime != 0 {
-		n += 1 + sovTypes(uint64(m.MaxVestingTime))
+	if m.BaseHalvingPeriodAmpere != 0 {
+		n += 1 + sovTypes(uint64(m.BaseHalvingPeriodAmpere))
 	}
-	l = m.BaseVestingResource.Size()
+	if m.BaseInvestmintPeriodVolt != 0 {
+		n += 1 + sovTypes(uint64(m.BaseInvestmintPeriodVolt))
+	}
+	if m.BaseInvestmintPeriodAmpere != 0 {
+		n += 1 + sovTypes(uint64(m.BaseInvestmintPeriodAmpere))
+	}
+	if m.MinInvestmintPeriodSec != 0 {
+		n += 1 + sovTypes(uint64(m.MinInvestmintPeriodSec))
+	}
+	l = m.BaseInvestmintAmountVolt.Size()
+	n += 1 + l + sovTypes(uint64(l))
+	l = m.BaseInvestmintAmountAmpere.Size()
 	n += 1 + l + sovTypes(uint64(l))
 	return n
 }
@@ -297,9 +380,9 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 			}
 		case 2:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field BaseVestingTime", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field BaseHalvingPeriodVolt", wireType)
 			}
-			m.BaseVestingTime = 0
+			m.BaseHalvingPeriodVolt = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowTypes
@@ -309,16 +392,16 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.BaseVestingTime |= uint32(b&0x7F) << shift
+				m.BaseHalvingPeriodVolt |= uint32(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
 		case 3:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MaxVestingTime", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field BaseHalvingPeriodAmpere", wireType)
 			}
-			m.MaxVestingTime = 0
+			m.BaseHalvingPeriodAmpere = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowTypes
@@ -328,14 +411,71 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.MaxVestingTime |= uint32(b&0x7F) << shift
+				m.BaseHalvingPeriodAmpere |= uint32(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
 		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BaseInvestmintPeriodVolt", wireType)
+			}
+			m.BaseInvestmintPeriodVolt = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.BaseInvestmintPeriodVolt |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 5:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BaseInvestmintPeriodAmpere", wireType)
+			}
+			m.BaseInvestmintPeriodAmpere = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.BaseInvestmintPeriodAmpere |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 6:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MinInvestmintPeriodSec", wireType)
+			}
+			m.MinInvestmintPeriodSec = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.MinInvestmintPeriodSec |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 7:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field BaseVestingResource", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field BaseInvestmintAmountVolt", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -362,7 +502,40 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.BaseVestingResource.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.BaseInvestmintAmountVolt.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 8:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BaseInvestmintAmountAmpere", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTypes
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.BaseInvestmintAmountAmpere.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

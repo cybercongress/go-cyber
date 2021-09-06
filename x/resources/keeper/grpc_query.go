@@ -27,7 +27,7 @@ func (k Keeper) InvestmintAmount(goCtx context.Context, request *types.QueryInve
 	}
 
 	if request.Amount.Denom != ctypes.SCYB {
-		return nil, sdkerrors.Wrap(types.ErrAmountNotValid, request.Amount.String())
+		return nil, sdkerrors.Wrap(types.ErrInvalidBaseResource, request.Amount.String())
 	}
 
 	if request.Resource != ctypes.VOLT && request.Resource != ctypes.AMPER {

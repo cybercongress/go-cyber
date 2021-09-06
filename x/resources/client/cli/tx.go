@@ -36,14 +36,14 @@ func NewTxCmd() *cobra.Command {
 
 func GetCmdInvestmint() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "investmint [amount] [resource] [end-time]",
+		Use:   "investmint [amount] [resource] [length]",
 		Args:  cobra.ExactArgs(3),
-		Short: "Short",
+		Short: "Investmint basic resource with the return of advanced system resource",
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`Long.
 
 Example:
-$ %s tx resources convert 10000cyb 100000 --from mykey
+$ %s tx resources investmint 1000000000hydrogen millivolt 2500000 --from <key>
 `,
 				version.Version,
 			),

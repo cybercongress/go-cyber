@@ -1,13 +1,13 @@
 package types
 
 const (
-	EventTypeConvert			    = "investmint"
+	EventTypeInvestmint             = "investmint"
 
 	AttributeKeyAgent    			= "agent"
 	AttributeKeyAmount   			= "amount"
-	AttributeKeyResource 			= "resource"
-	AttributeKeyReceiver 			= "receiver"
-	AttributeKeyEndTime  			= "length"
+	AttributeKeyResource            = "resource"
+	AttributeKeyLength              = "length"
+	AttributeKeyMinted              = "minted"
 
 	AttributeValueCategory   		= ModuleName
 )
