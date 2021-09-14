@@ -186,9 +186,9 @@ func (s *StateKeeper) checkRankCalcFinished(ctx sdk.Context, block bool) {
 					return
 				}
 			}
-			s.Logger(ctx).Error("Waiting for cyber~Rank calculation to finish")
+			s.Logger(ctx).Info("Waiting for cyber~Rank calculation to finish")
 
-			time.Sleep(100 * time.Millisecond)
+			time.Sleep(2000 * time.Millisecond)
 		}
 	}
 }
