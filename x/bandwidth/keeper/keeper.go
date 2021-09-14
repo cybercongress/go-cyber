@@ -202,9 +202,8 @@ func (bm *BandwidthMeter) ConsumeAccountBandwidth(ctx sdk.Context, bw types.Acco
 	return nil
 }
 
-// Used to initially add charge for new account that investmint in Volts first time
-func (bm *BandwidthMeter) InitChargeAccountBandwidth(ctx sdk.Context, bw types.AccountBandwidth, amt uint64) {
-	bw.InitCharge(amt)
+func (bm *BandwidthMeter) ChargeAccountBandwidth(ctx sdk.Context, bw types.AccountBandwidth, amt uint64) {
+	bw.ApplyCharge(amt)
 	bm.SetAccountBandwidth(ctx, bw)
 }
 

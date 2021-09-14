@@ -83,30 +83,30 @@ func (k Keeper) ConvertResource(
 		return types.ErrNotAvailablePeriod, sdk.Coin{}
 	}
 
-	err, newAccFlag := k.AddTimeLockedCoinsToAccount(ctx, agent, sdk.NewCoins(amount), int64(length))
+	err := k.AddTimeLockedCoinsToAccount(ctx, agent, sdk.NewCoins(amount), int64(length))
 	if err != nil {
 		return sdkerrors.Wrapf(types.ErrTimeLockCoins, err.Error()), sdk.Coin{}
 	}
-	err, minted := k.Mint(ctx, agent, amount, resource, length, newAccFlag)
+	err, minted := k.Mint(ctx, agent, amount, resource, length)
 	if err != nil {
 		return sdkerrors.Wrapf(types.ErrIssueCoins, err.Error()), sdk.Coin{}
 	}
 	return err, minted
 }
 
-func (k Keeper) AddTimeLockedCoinsToAccount(ctx sdk.Context, recipientAddr sdk.AccAddress, amt sdk.Coins, length int64) (error, bool) {
+func (k Keeper) AddTimeLockedCoinsToAccount(ctx sdk.Context, recipientAddr sdk.AccAddress, amt sdk.Coins, length int64) error {
 	acc := k.accountKeeper.GetAccount(ctx, recipientAddr)
 	if acc == nil {
-		return sdkerrors.Wrapf(types.ErrAccountNotFound, recipientAddr.String()), false
+		return sdkerrors.Wrapf(types.ErrAccountNotFound, recipientAddr.String())
 	}
 
 	switch acc.(type) {
 	case *vestingtypes.PeriodicVestingAccount:
-		return k.AddTimeLockedCoinsToPeriodicVestingAccount(ctx, recipientAddr, amt, length, false), false
+		return k.AddTimeLockedCoinsToPeriodicVestingAccount(ctx, recipientAddr, amt, length, false)
 	case *authtypes.BaseAccount:
-		return k.AddTimeLockedCoinsToBaseAccount(ctx, recipientAddr, amt, length), true
+		return k.AddTimeLockedCoinsToBaseAccount(ctx, recipientAddr, amt, length)
 	default:
-		return sdkerrors.Wrapf(types.ErrInvalidAccountType, "%T", acc), false
+		return sdkerrors.Wrapf(types.ErrInvalidAccountType, "%T", acc)
 	}
 }
 
@@ -269,7 +269,7 @@ func (k Keeper) addCoinsToVestingSchedule(ctx sdk.Context, addr sdk.AccAddress, 
 	return nil
 }
 
-func (k Keeper) Mint(ctx sdk.Context, recipientAddr sdk.AccAddress, amt sdk.Coin, resource string, length uint64, newAccountFlag bool) (error, sdk.Coin) {
+func (k Keeper) Mint(ctx sdk.Context, recipientAddr sdk.AccAddress, amt sdk.Coin, resource string, length uint64) (error, sdk.Coin) {
 	acc := k.accountKeeper.GetAccount(ctx, recipientAddr)
 	if acc == nil {
 		return sdkerrors.Wrapf(types.ErrAccountNotFound, recipientAddr.String()), sdk.Coin{}
@@ -297,13 +297,8 @@ func (k Keeper) Mint(ctx sdk.Context, recipientAddr sdk.AccAddress, amt sdk.Coin
 
 	if resource == ctypes.VOLT {
 		k.bandwidthMeter.AddToDesirableBandwidth(ctx, toMint.Amount.Uint64())
-	}
-	// Set personal bandwidth of newcomers to 1000
-	if newAccountFlag {
 		band := k.bandwidthMeter.GetAccountBandwidth(ctx, recipientAddr)
-		if band.MaxValue == 0 {
-			k.bandwidthMeter.InitChargeAccountBandwidth(ctx, band, 1000)
-		}
+		k.bandwidthMeter.ChargeAccountBandwidth(ctx, band, 1000)
 	}
 
 	return nil, toMint

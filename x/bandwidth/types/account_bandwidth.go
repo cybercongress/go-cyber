@@ -44,9 +44,8 @@ func (ab *AccountBandwidth) Consume(bandwidthToConsume uint64) error {
 	return nil
 }
 
-// Used to initially add charge for new account that investmint in Volts first time
-func (ab *AccountBandwidth) InitCharge(bandwidthToAdd uint64) {
-	ab.RemainedValue = bandwidthToAdd
+func (ab *AccountBandwidth) ApplyCharge(bandwidthToAdd uint64) {
+	ab.RemainedValue += bandwidthToAdd
 }
 
 func (ab AccountBandwidth) HasEnoughRemained(bandwidthToConsume uint64) bool {
