@@ -20,11 +20,11 @@ func registerQueryRoutes(cliCtx client.Context, r *mux.Router) {
 		queryParamsHandlerFn(cliCtx)).Methods("GET")
 
 	r.HandleFunc(
-		fmt.Sprintf("/cron/{%s}/{%s}/{%s}/job", Contract, Creator, Label),
+		fmt.Sprintf("/cron/{%s}/{%s}/job", Program, Label),
 		queryJobHandlerFn(cliCtx)).Methods("GET")
 
 	r.HandleFunc(
-		fmt.Sprintf("/cron/{%s}/{%s}/{%s}/job_stats", Contract, Creator, Label),
+		fmt.Sprintf("/cron/{%s}/{%s}/job_stats", Program, Label),
 		queryJobStatsHandlerFn(cliCtx)).Methods("GET")
 
 	r.HandleFunc(
@@ -57,20 +57,19 @@ func queryJobHandlerFn(cliCtx client.Context) http.HandlerFunc {
 		vars := mux.Vars(r)
 		label  := vars[Label]
 
-		creator, err := sdk.AccAddressFromBech32(vars[Creator])
-		if err != nil {
-			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
+		if len(label) == 0 {
+			rest.WriteErrorResponse(w, http.StatusBadRequest, "label cannot be empty")
 			return
 		}
 
-		contract, err := sdk.AccAddressFromBech32(vars[Contract])
+		program, err := sdk.AccAddressFromBech32(vars[Program])
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
 			return
 		}
 
 		params := types.NewQueryJobParams(
-			creator, contract, label,
+			program, label,
 		)
 
 		bz, err := codec.MarshalJSONIndent(cliCtx.LegacyAmino, params)
@@ -102,20 +101,19 @@ func queryJobStatsHandlerFn(cliCtx client.Context) http.HandlerFunc {
 		vars := mux.Vars(r)
 		label  := vars[Label]
 
-		creator, err := sdk.AccAddressFromBech32(vars[Creator])
-		if err != nil {
-			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
+		if len(label) == 0 {
+			rest.WriteErrorResponse(w, http.StatusBadRequest, "label cannot be empty")
 			return
 		}
 
-		contract, err := sdk.AccAddressFromBech32(vars[Contract])
+		program, err := sdk.AccAddressFromBech32(vars[Program])
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
 			return
 		}
 
 		params := types.NewQueryJobParams(
-			creator, contract, label,
+			program, label,
 		)
 
 		bz, err := cliCtx.LegacyAmino.MarshalJSON(params)

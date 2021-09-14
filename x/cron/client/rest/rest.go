@@ -6,8 +6,7 @@ import (
 )
 
 const (
-	Contract        = "contract"
-	Creator         = "creator"
+	Program         = "program"
 	Label           = "label"
 )
 

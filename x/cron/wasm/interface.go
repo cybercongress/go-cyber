@@ -97,14 +97,12 @@ type Load struct {
 }
 
 type QueryJobParams struct {
-	Creator  string `json:"creator"`
-	Contract string `json:"contract"`
+	Program  string `json:"program"`
 	Label    string `json:"label"`
 }
 
 type JobQueryResponse struct {
-	Creator  string `json:"creator"`
-	Contract string `json:"contract"`
+	Program  string `json:"program"`
 	Trigger  Trigger `json:"trigger"`
 	Load 	 Load 	`json:"load"`
 	Label    string `json:"label"`
@@ -112,8 +110,7 @@ type JobQueryResponse struct {
 }
 
 type JobStatsQueryResponse struct {
-	Creator   string `json:"creator"`
-	Contract  string `json:"contract"`
+	Program   string `json:"program"`
 	Label     string `json:"label"`
 	Calls     uint64 `json:"calls"`
 	Fees      uint64 `json:"fees"`
@@ -137,40 +134,28 @@ func (querier WasmQuerier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([
 
 	if query.Job != nil {
 
-		creator, _ := sdk.AccAddressFromBech32(query.Job.Creator)
-		contract, _ := sdk.AccAddressFromBech32(query.Job.Contract)
-		job, found := querier.Keeper.GetJob(ctx,
-			creator,
-			contract,
-			query.Job.Label,
-		); if found != true {
+		program, _ := sdk.AccAddressFromBech32(query.Job.Program)
+		job, found := querier.Keeper.GetJob(ctx, program, query.Job.Label); if found != true {
 			return nil, sdkerrors.ErrInvalidRequest
 		}
 
 		bz, err = json.Marshal(
 			JobQueryResponse{
-				Creator:  job.Creator,
-				Contract: job.Contract,
+				Program:  job.Program,
 				Trigger:  Trigger(job.Trigger),
 				Load:     convertLoadToWasmLoad(job.Load),
 				Label:    job.Label,
 				CID:      job.Cid,
 		})
 	} else if query.JobStats != nil {
-		creator, _ := sdk.AccAddressFromBech32(query.JobStats.Creator)
-		contract, _ := sdk.AccAddressFromBech32(query.JobStats.Contract)
-		jobStats, found := querier.Keeper.GetJobStats(ctx,
-			creator,
-			contract,
-			query.JobStats.Label,
-		); if found != true {
+		program, _ := sdk.AccAddressFromBech32(query.JobStats.Program)
+		jobStats, found := querier.Keeper.GetJobStats(ctx, program, query.JobStats.Label); if found != true {
 			return nil, sdkerrors.ErrInvalidRequest
 		}
 
 		bz, err = json.Marshal(
 			JobStatsQueryResponse{
-				Creator:   jobStats.Creator,
-				Contract:  jobStats.Contract,
+				Program:   jobStats.Program,
 				Label:     jobStats.Label,
 				Calls:     jobStats.Calls,
 				Fees:      jobStats.Fees,

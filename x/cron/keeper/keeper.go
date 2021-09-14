@@ -70,7 +70,7 @@ func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
 }
 
 func (k Keeper) SaveJob(
-	ctx sdk.Context, creator, contract sdk.AccAddress,
+	ctx sdk.Context, program sdk.AccAddress,
 	trigger types.Trigger, load types.Load,
 	label string, cid graphtypes.Cid,
 ) error {
@@ -85,24 +85,23 @@ func (k Keeper) SaveJob(
 	jobs.Sort()
 	if uint32(len(jobs)) == k.MaxJobs(ctx) {
 		if jobs[len(jobs)-1].Load.GasPrice.IsLT(load.GasPrice) {
-			cd, _ := sdk.AccAddressFromBech32(jobs[len(jobs)-1].Contract)
-			crd, _ := sdk.AccAddressFromBech32(jobs[len(jobs)-1].Creator)
-			k.DeleteJob(ctx, cd, crd, jobs[len(jobs)-1].Label)
-			k.DeleteJobStats(ctx, contract, creator, label)
+			pr, _ := sdk.AccAddressFromBech32(jobs[len(jobs)-1].Program)
+			k.DeleteJob(ctx, pr, jobs[len(jobs)-1].Label)
+			k.DeleteJobStats(ctx, pr, label)
 		} else {
 			return types.ErrExceededMaxJobs
 		}
 	}
 
 	k.SetJob(ctx, types.NewJob(
-		creator.String(), contract.String(),
+		program.String(),
 		trigger, load,
 		label, string(cid),
 	))
 	// set last_block to current height to start count future ttl fee
-	k.SetJobStats(ctx, contract, creator, label,
+	k.SetJobStats(ctx, program, label,
 		types.NewStats(
-			contract.String(), creator.String(), label,
+			program.String(), label,
 			0,0, 0, uint64(ctx.BlockHeight()),
 		),
 	)
@@ -111,38 +110,38 @@ func (k Keeper) SaveJob(
 }
 
 func (k Keeper) RemoveJobFull(
-	ctx sdk.Context, creator, contract sdk.AccAddress, label string,
+	ctx sdk.Context, program sdk.AccAddress, label string,
 ) error {
-	job, found := k.GetJob(ctx, contract, creator, label)
+	job, found := k.GetJob(ctx, program, label)
 	if !found {
 		return types.ErrJobNotExist
 	}
 
-	if job.Creator != creator.String() {
+	if job.Program != program.String() {
 		return types.ErrNotAuthorized
 	}
 
-	k.DeleteJob(ctx, contract, creator, label)
-	k.DeleteJobStats(ctx, contract, creator, label)
+	k.DeleteJob(ctx, program, label)
+	k.DeleteJobStats(ctx, program, label)
 
 	return nil
 }
 
 func (k Keeper) UpdateJobCID(
-	ctx sdk.Context, creator, contract sdk.AccAddress, label string,
+	ctx sdk.Context, program sdk.AccAddress, label string,
 	cid graphtypes.Cid,
 ) error {
-	job, found := k.GetJob(ctx, contract, creator, label)
+	job, found := k.GetJob(ctx, program, label)
 	if !found {
 		return types.ErrJobNotExist
 	}
 
-	if job.Creator != creator.String() {
+	if job.Program != program.String() {
 		return types.ErrNotAuthorized
 	}
 
 	k.SetJob(ctx, types.NewJob(
-		job.Creator, job.Contract,
+		job.Program,
 		job.Trigger, job.Load,
 		job.Label, string(cid),
 	))
@@ -151,16 +150,16 @@ func (k Keeper) UpdateJobCID(
 }
 
 func (k Keeper) UpdateJobLabel(
-	ctx sdk.Context, creator, contract sdk.AccAddress, label string,
+	ctx sdk.Context, program sdk.AccAddress, label string,
 	labelNew string,
 ) error {
-	job, found := k.GetJob(ctx, contract, creator, label)
+	job, found := k.GetJob(ctx, program, label)
 	if !found {
 		return types.ErrJobNotExist
 	}
-	jobStats, _ := k.GetJobStats(ctx, contract, creator, label)
+	jobStats, _ := k.GetJobStats(ctx, program, label)
 
-	if job.Creator != creator.String() {
+	if job.Program != program.String() {
 		return types.ErrNotAuthorized
 	}
 
@@ -168,20 +167,18 @@ func (k Keeper) UpdateJobLabel(
 		return types.ErrBadLabel
 	}
 
-	k.DeleteJob(ctx, contract, creator, label)
-	k.DeleteJobStats(ctx, contract, creator, label)
+	k.DeleteJob(ctx, program, label)
+	k.DeleteJobStats(ctx, program, label)
 
 	k.SetJob(ctx, types.NewJob(
-		job.Creator, job.Contract,
+		job.Program,
 		job.Trigger, job.Load,
 		labelNew, job.Cid,
 	))
 
-	ct, _ := sdk.AccAddressFromBech32(job.Contract)
-	cr, _ := sdk.AccAddressFromBech32(job.Creator)
-	k.SetJobStats(ctx, ct, cr, labelNew,
+	k.SetJobStats(ctx, program, labelNew,
 		types.NewStats(
-			ct.String(), cr.String(), labelNew,
+			program.String(), labelNew,
 			jobStats.Calls, jobStats.Fees, jobStats.Fees, jobStats.LastBlock,
 	))
 
@@ -189,20 +186,20 @@ func (k Keeper) UpdateJobLabel(
 }
 
 func (k Keeper) UpdateJobCallData(
-	ctx sdk.Context, creator, contract sdk.AccAddress, label string,
+	ctx sdk.Context, program sdk.AccAddress, label string,
 	calldata string,
 ) error {
-	job, found := k.GetJob(ctx, contract, creator, label)
+	job, found := k.GetJob(ctx, program, label)
 	if !found {
 		return types.ErrJobNotExist
 	}
 
-	if job.Creator != creator.String() {
+	if job.Program != program.String() {
 		return types.ErrNotAuthorized
 	}
 
 	k.SetJob(ctx, types.NewJob(
-		job.Creator, job.Contract,
+		job.Program,
 		job.Trigger, types.NewLoad(calldata, job.Load.GasPrice),
 		job.Label, job.Cid,
 	))
@@ -211,22 +208,20 @@ func (k Keeper) UpdateJobCallData(
 }
 
 func (k Keeper) UpdateJobGasPrice(
-	ctx sdk.Context, creator, contract sdk.AccAddress, label string,
+	ctx sdk.Context, program sdk.AccAddress, label string,
 	gasprice sdk.Coin,
 ) error {
-	job, found := k.GetJob(ctx, contract, creator, label)
+	job, found := k.GetJob(ctx, program, label)
 	if !found {
 		return types.ErrJobNotExist
 	}
 
-	if job.Creator != creator.String() {
+	if job.Program != program.String() {
 		return types.ErrNotAuthorized
 	}
 
-
-
 	k.SetJob(ctx, types.NewJob(
-		job.Creator, job.Contract,
+		job.Program,
 		job.Trigger, types.NewLoad(job.Load.CallData, gasprice),
 		job.Label, job.Cid,
 	))
@@ -235,15 +230,15 @@ func (k Keeper) UpdateJobGasPrice(
 }
 
 func (k Keeper) UpdateJobPeriod(
-	ctx sdk.Context, creator, contract sdk.AccAddress, label string,
+	ctx sdk.Context, program sdk.AccAddress, label string,
 	period uint64,
 ) error {
-	job, found := k.GetJob(ctx, contract, creator, label)
+	job, found := k.GetJob(ctx, program, label)
 	if !found {
 		return types.ErrJobNotExist
 	}
 
-	if job.Creator != creator.String() {
+	if job.Program != program.String() {
 		return types.ErrNotAuthorized
 	}
 
@@ -252,7 +247,7 @@ func (k Keeper) UpdateJobPeriod(
 	}
 
 	k.SetJob(ctx, types.NewJob(
-		job.Creator, job.Contract,
+		job.Program,
 		types.NewTrigger(period, job.Trigger.Block), job.Load,
 		job.Label, job.Cid,
 	))
@@ -261,10 +256,10 @@ func (k Keeper) UpdateJobPeriod(
 }
 
 func (k Keeper) UpdateJobBlock(
-	ctx sdk.Context, creator, contract sdk.AccAddress, label string,
+	ctx sdk.Context, program sdk.AccAddress, label string,
 	block uint64,
 ) error {
-	job, found := k.GetJob(ctx, contract, creator, label)
+	job, found := k.GetJob(ctx, program, label)
 	if !found {
 		return types.ErrJobNotExist
 	}
@@ -273,7 +268,7 @@ func (k Keeper) UpdateJobBlock(
 		return types.ErrBadTrigger
 	}
 
-	if job.Creator != creator.String() {
+	if job.Program != program.String() {
 		return types.ErrNotAuthorized
 	}
 
@@ -282,7 +277,7 @@ func (k Keeper) UpdateJobBlock(
 	}
 
 	k.SetJob(ctx, types.NewJob(
-		job.Creator, job.Contract,
+		job.Program,
 		types.NewTrigger(job.Trigger.Period, block), job.Load,
 		job.Label, job.Cid,
 	))
@@ -315,20 +310,19 @@ func (k Keeper) SetJob(ctx sdk.Context, job types.Job) {
 	store := ctx.KVStore(k.storeKey)
 	b := k.cdc.MustMarshalBinaryBare(&job)
 
-	ct, _ := sdk.AccAddressFromBech32(job.Contract)
-	cr, _ := sdk.AccAddressFromBech32(job.Creator)
-	store.Set(types.GetJobKey(ct, cr, job.Label), b)
+	program, _ := sdk.AccAddressFromBech32(job.Program)
+	store.Set(types.GetJobKey(program, job.Label), b)
 }
 
-func (k Keeper) DeleteJob(ctx sdk.Context, contract, creator sdk.AccAddress, label string) {
+func (k Keeper) DeleteJob(ctx sdk.Context, program sdk.AccAddress, label string) {
 	store := ctx.KVStore(k.storeKey)
-	store.Delete(types.GetJobKey(contract, creator, label))
+	store.Delete(types.GetJobKey(program, label))
 }
 
 func (k Keeper) SetJobs(ctx sdk.Context, jobs types.Jobs) error {
 	for _, job := range jobs {
 		k.SetJob(ctx, types.NewJob(
-			job.Creator, job.Contract,
+			job.Program,
 			job.Trigger, job.Load,
 			job.Label, job.Cid,
 		))
@@ -336,22 +330,22 @@ func (k Keeper) SetJobs(ctx sdk.Context, jobs types.Jobs) error {
 	return nil
 }
 
-func (k Keeper) SetJobStats(ctx sdk.Context, contract, creator sdk.AccAddress, label string, stats types.JobStats) {
+func (k Keeper) SetJobStats(ctx sdk.Context, program sdk.AccAddress, label string, stats types.JobStats) {
 	store := ctx.KVStore(k.storeKey)
 	b := k.cdc.MustMarshalBinaryBare(&stats)
-	store.Set(types.GetJobStatsKey(contract, creator, label), b)
+	store.Set(types.GetJobStatsKey(program, label), b)
 }
 
-func (k Keeper) DeleteJobStats(ctx sdk.Context, contract, creator sdk.AccAddress, label string) {
+func (k Keeper) DeleteJobStats(ctx sdk.Context, program sdk.AccAddress, label string) {
 	store := ctx.KVStore(k.storeKey)
-	store.Delete(types.GetJobStatsKey(contract, creator, label))
+	store.Delete(types.GetJobStatsKey(program, label))
 }
 
 //______________________________________________________________________
 
-func (k Keeper) GetJob(ctx sdk.Context, contract, creator sdk.AccAddress, label string) (job types.Job, found bool) {
+func (k Keeper) GetJob(ctx sdk.Context, program sdk.AccAddress, label string) (job types.Job, found bool) {
 	store := ctx.KVStore(k.storeKey)
-	key := types.GetJobKey(contract, creator, label)
+	key := types.GetJobKey(program, label)
 
 	value := store.Get(key)
 	if value == nil {
@@ -411,9 +405,9 @@ func (k Keeper) IterateAllJobs(ctx sdk.Context, cb func(job types.Job) (stop boo
 	}
 }
 
-func (k Keeper) GetJobStats(ctx sdk.Context, contract, creator sdk.AccAddress, label string) (stats types.JobStats, found bool) {
+func (k Keeper) GetJobStats(ctx sdk.Context, program sdk.AccAddress, label string) (stats types.JobStats, found bool) {
 	store := ctx.KVStore(k.storeKey)
-	key := types.GetJobStatsKey(contract, creator, label)
+	key := types.GetJobStatsKey(program, label)
 
 	value := store.Get(key)
 	if value == nil {
@@ -489,11 +483,9 @@ func (k Keeper) ExecuteJobsQueue(ctx sdk.Context) {
 				break
 			}
 
-			// TODO leave only contract - delete creator, cause it will be same after base logic debug
-			contract, _ := sdk.AccAddressFromBech32(job.Contract)
-			creator, _ := sdk.AccAddressFromBech32(job.Creator)
+			program, _ := sdk.AccAddressFromBech32(job.Program)
 			_, errExecute := k.executeJobWithSudo(
-				cacheContext, contract, job.Load.CallData,
+				cacheContext, program, job.Load.CallData,
 			)
 
 			gasUsedByJob := cacheContext.GasMeter().GasConsumed()
@@ -504,7 +496,7 @@ func (k Keeper) ExecuteJobsQueue(ctx sdk.Context) {
 				gasUsedTotal += gasUsedByJob
 			}
 
-			js, _ := k.GetJobStats(ctx, contract, creator, job.Label)
+			js, _ := k.GetJobStats(ctx, program, job.Label)
 			// TODO move to more advanced fee system, 10X fee reducer applied (min 0.1 per gas)
 			amtGasFee := price.Amount.Int64() * int64(gasUsedByJob) / 10
 			amtTTLFee := (ctx.BlockHeight() - int64(js.LastBlock))*int64(feeTTL)
@@ -520,10 +512,10 @@ func (k Keeper) ExecuteJobsQueue(ctx sdk.Context) {
 			fee := sdk.NewCoin(ctypes.CYB, sdk.NewInt(amtTotalFee))
 
 			errSend := k.proxyKeeper.SendCoins(
-				ctx, contract, k.accountKeeper.GetModuleAddress(authtypes.FeeCollectorName), sdk.NewCoins(fee))
+				ctx, program, k.accountKeeper.GetModuleAddress(authtypes.FeeCollectorName), sdk.NewCoins(fee))
 			if errSend != nil {
-				k.DeleteJob(ctx, contract, creator, job.Label)
-				k.DeleteJobStats(ctx, contract, creator, job.Label)
+				k.DeleteJob(ctx, program, job.Label)
+				k.DeleteJobStats(ctx, program, job.Label)
 
 				k.Logger(ctx).Info("Not enough contract balance, state not applied, job killed", "Job #", i)
 				continue
@@ -537,16 +529,16 @@ func (k Keeper) ExecuteJobsQueue(ctx sdk.Context) {
 				k.Logger(ctx).Info("Job finished, state applied", "Job #", i)
 			}
 
-			k.SetJobStats(ctx, contract, creator, job.Label,
+			k.SetJobStats(ctx, program, job.Label,
 				types.NewStats(
-					contract.String(), creator.String(), job.Label,
+					program.String(), job.Label,
 					js.Calls+1, js.Fees+uint64(amtTotalFee),
 					js.Gas+gasUsedByJob, uint64(ctx.BlockHeight())),
 			)
 
 			if ctx.BlockHeight() == int64(job.Trigger.Block) {
-				k.DeleteJob(ctx, contract, creator, job.Label)
-				k.DeleteJobStats(ctx, contract, creator, job.Label)
+				k.DeleteJob(ctx, program, job.Label)
+				k.DeleteJobStats(ctx, program, job.Label)
 
 				k.Logger(ctx).Info("Job executed at given block, deleted from queue", "Job #", i)
 			}
@@ -559,7 +551,7 @@ func (k Keeper) ExecuteJobsQueue(ctx sdk.Context) {
 	}
 }
 
-func (k Keeper) executeJobWithSudo(ctx sdk.Context, contract sdk.AccAddress, msg string) ([]byte, error) {
+func (k Keeper) executeJobWithSudo(ctx sdk.Context, program sdk.AccAddress, msg string) ([]byte, error) {
 	defer func() {
 		if r := recover(); r != nil {
 			switch rType := r.(type) {
@@ -578,5 +570,5 @@ func (k Keeper) executeJobWithSudo(ctx sdk.Context, contract sdk.AccAddress, msg
 	}()
 
 	callData, _ := hex.DecodeString(msg)
-	return k.wasmKeeper.Sudo(ctx, contract, callData)
+	return k.wasmKeeper.Sudo(ctx, program, callData)
 }

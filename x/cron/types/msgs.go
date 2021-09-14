@@ -23,15 +23,14 @@ const (
 )
 
 func NewMsgAddJob(
-	address, contract sdk.AccAddress,
+	program sdk.AccAddress,
 	trigger Trigger,
 	load Load,
 	label string,
 	cid string,
 ) *MsgAddJob {
 	return &MsgAddJob{
-		Creator:  address.String(),
-		Contract: contract.String(),
+		Program:  program.String(),
 		Trigger:  trigger,
 		Load:     load,
 		Label:    label,
@@ -44,13 +43,9 @@ func (msg MsgAddJob) Route() string { return RouterKey }
 func (msg MsgAddJob) Type() string  { return ActionCronAddJob }
 
 func (msg MsgAddJob) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	_, err := sdk.AccAddressFromBech32(msg.Program)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid creator address (%s)", err)
-	}
-	_, err = sdk.AccAddressFromBech32(msg.Contract)
-	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid contract address (%s)", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid program address (%s)", err)
 	}
 	if msg.Load.CallData == "" || len(msg.Load.CallData) > 512 {
 		return ErrBadCallData
@@ -83,7 +78,7 @@ func (msg MsgAddJob) GetSignBytes() []byte {
 }
 
 func (msg MsgAddJob) GetSigners() []sdk.AccAddress {
-	addr, err := sdk.AccAddressFromBech32(msg.Creator)
+	addr, err := sdk.AccAddressFromBech32(msg.Program)
 	if err != nil {
 		panic(err)
 	}
@@ -92,10 +87,9 @@ func (msg MsgAddJob) GetSigners() []sdk.AccAddress {
 
 //______________________________________________________________________
 
-func NewMsgRemoveJob(address, contract sdk.AccAddress, label string) *MsgRemoveJob {
+func NewMsgRemoveJob(program sdk.AccAddress, label string) *MsgRemoveJob {
 	return &MsgRemoveJob{
-		Creator:  address.String(),
-		Contract: contract.String(),
+		Program:  program.String(),
 		Label: label,
 	}
 }
@@ -105,13 +99,9 @@ func (msg MsgRemoveJob) Route() string { return RouterKey }
 func (msg MsgRemoveJob) Type() string  { return ActionCronRemoveJob }
 
 func (msg MsgRemoveJob) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	_, err := sdk.AccAddressFromBech32(msg.Program)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid creator address (%s)", err)
-	}
-	_, err = sdk.AccAddressFromBech32(msg.Contract)
-	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid contract address (%s)", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid program address (%s)", err)
 	}
 	if msg.Label == "" || len(msg.Label) > 32 {
 		return ErrBadLabel
@@ -126,7 +116,7 @@ func (msg MsgRemoveJob) GetSignBytes() []byte {
 }
 
 func (msg MsgRemoveJob) GetSigners() []sdk.AccAddress {
-	addr, err := sdk.AccAddressFromBech32(msg.Creator)
+	addr, err := sdk.AccAddressFromBech32(msg.Program)
 	if err != nil {
 		panic(err)
 	}
@@ -134,12 +124,11 @@ func (msg MsgRemoveJob) GetSigners() []sdk.AccAddress {
 }
 
 func NewMsgChangeJobLabel(
-	address, contract sdk.AccAddress,
+	program sdk.AccAddress,
 	label, newLabel string,
 ) *MsgChangeJobLabel {
 	return &MsgChangeJobLabel{
-		Creator:  address.String(),
-		Contract: contract.String(),
+		Program:  program.String(),
 		Label:    label,
 		NewLabel: newLabel,
 	}
@@ -150,13 +139,9 @@ func (msg MsgChangeJobLabel) Route() string { return RouterKey }
 func (msg MsgChangeJobLabel) Type() string { return ActionCronChangeJobLabel }
 
 func (msg MsgChangeJobLabel) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	_, err := sdk.AccAddressFromBech32(msg.Program)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid creator address (%s)", err)
-	}
-	_, err = sdk.AccAddressFromBech32(msg.Contract)
-	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid contract address (%s)", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid program address (%s)", err)
 	}
 	if msg.Label == "" || len(msg.Label) > 32 {
 		return ErrBadLabel
@@ -174,7 +159,7 @@ func (msg MsgChangeJobLabel) GetSignBytes() []byte {
 }
 
 func (msg MsgChangeJobLabel) GetSigners() []sdk.AccAddress {
-	addr, err := sdk.AccAddressFromBech32(msg.Creator)
+	addr, err := sdk.AccAddressFromBech32(msg.Program)
 	if err != nil {
 		panic(err)
 	}
@@ -182,13 +167,12 @@ func (msg MsgChangeJobLabel) GetSigners() []sdk.AccAddress {
 }
 
 func NewMsgChangeJobCID(
-	address, contract sdk.AccAddress,
+	program sdk.AccAddress,
 	label string,
 	cid string,
 ) *MsgChangeJobCID {
 	return &MsgChangeJobCID{
-		Creator:  address.String(),
-		Contract: contract.String(),
+		Program: program.String(),
 		Label: label,
 		Cid: cid,
 	}
@@ -199,13 +183,9 @@ func (msg MsgChangeJobCID) Route() string { return RouterKey }
 func (msg MsgChangeJobCID) Type() string { return ActionCronChangeJobCID }
 
 func (msg MsgChangeJobCID) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	_, err := sdk.AccAddressFromBech32(msg.Program)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid creator address (%s)", err)
-	}
-	_, err = sdk.AccAddressFromBech32(msg.Contract)
-	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid contract address (%s)", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid program address (%s)", err)
 	}
 	if _, err := cid.Decode(msg.Cid); err != nil {
 		return graph.ErrInvalidCid
@@ -223,7 +203,7 @@ func (msg MsgChangeJobCID) GetSignBytes() []byte {
 }
 
 func (msg MsgChangeJobCID) GetSigners() []sdk.AccAddress {
-	addr, err := sdk.AccAddressFromBech32(msg.Creator)
+	addr, err := sdk.AccAddressFromBech32(msg.Program)
 	if err != nil {
 		panic(err)
 	}
@@ -231,13 +211,12 @@ func (msg MsgChangeJobCID) GetSigners() []sdk.AccAddress {
 }
 
 func NewMsgChangeCallData(
-	address, contract sdk.AccAddress,
+	program sdk.AccAddress,
 	label string,
 	calldata string,
 ) *MsgChangeJobCallData {
 	return &MsgChangeJobCallData{
-		Creator:  address.String(),
-		Contract: contract.String(),
+		Program:  program.String(),
 		Label:    label,
 		CallData: calldata,
 	}
@@ -248,13 +227,9 @@ func (msg MsgChangeJobCallData) Route() string { return RouterKey }
 func (msg MsgChangeJobCallData) Type() string { return ActionCronChangeJobCallData }
 
 func (msg MsgChangeJobCallData) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	_, err := sdk.AccAddressFromBech32(msg.Program)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid creator address (%s)", err)
-	}
-	_, err = sdk.AccAddressFromBech32(msg.Contract)
-	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid contract address (%s)", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid program address (%s)", err)
 	}
 	if msg.Label == "" || len(msg.Label) > 32 {
 		return ErrBadLabel
@@ -272,7 +247,7 @@ func (msg MsgChangeJobCallData) GetSignBytes() []byte {
 }
 
 func (msg MsgChangeJobCallData) GetSigners() []sdk.AccAddress {
-	addr, err := sdk.AccAddressFromBech32(msg.Creator)
+	addr, err := sdk.AccAddressFromBech32(msg.Program)
 	if err != nil {
 		panic(err)
 	}
@@ -280,13 +255,12 @@ func (msg MsgChangeJobCallData) GetSigners() []sdk.AccAddress {
 }
 
 func NewMsgChangeGasPrice(
-	address, contract sdk.AccAddress,
+	program sdk.AccAddress,
 	label string,
 	gasprice sdk.Coin,
 ) *MsgChangeJobGasPrice {
 	return &MsgChangeJobGasPrice{
-		Creator:  address.String(),
-		Contract: contract.String(),
+		Program:  program.String(),
 		Label:    label,
 		GasPrice: gasprice,
 	}
@@ -297,13 +271,9 @@ func (msg MsgChangeJobGasPrice) Route() string { return RouterKey }
 func (msg MsgChangeJobGasPrice) Type() string { return ActionCronChangeJobGasPrice }
 
 func (msg MsgChangeJobGasPrice) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	_, err := sdk.AccAddressFromBech32(msg.Program)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid creator address (%s)", err)
-	}
-	_, err = sdk.AccAddressFromBech32(msg.Contract)
-	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid contract address (%s)", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid program address (%s)", err)
 	}
 	if msg.Label == "" || len(msg.Label) > 32 {
 		return ErrBadLabel
@@ -324,7 +294,7 @@ func (msg MsgChangeJobGasPrice) GetSignBytes() []byte {
 }
 
 func (msg MsgChangeJobGasPrice) GetSigners() []sdk.AccAddress {
-	addr, err := sdk.AccAddressFromBech32(msg.Creator)
+	addr, err := sdk.AccAddressFromBech32(msg.Program)
 	if err != nil {
 		panic(err)
 	}
@@ -332,13 +302,12 @@ func (msg MsgChangeJobGasPrice) GetSigners() []sdk.AccAddress {
 }
 
 func NewMsgChangeJobPeriod(
-	address, contract sdk.AccAddress,
+	program sdk.AccAddress,
 	label string,
 	period uint64,
 ) *MsgChangeJobPeriod {
 	return &MsgChangeJobPeriod{
-		Creator:  address.String(),
-		Contract: contract.String(),
+		Program:  program.String(),
 		Label:	  label,
 		Period:   period,
 	}
@@ -349,13 +318,9 @@ func (msg MsgChangeJobPeriod) Route() string { return RouterKey }
 func (msg MsgChangeJobPeriod) Type() string { return ActionCronChangeJobPeriod }
 
 func (msg MsgChangeJobPeriod) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	_, err := sdk.AccAddressFromBech32(msg.Program)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid creator address (%s)", err)
-	}
-	_, err = sdk.AccAddressFromBech32(msg.Contract)
-	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid contract address (%s)", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid program address (%s)", err)
 	}
 	if msg.Label == "" || len(msg.Label) > 32 {
 		return ErrBadLabel
@@ -373,7 +338,7 @@ func (msg MsgChangeJobPeriod) GetSignBytes() []byte {
 }
 
 func (msg MsgChangeJobPeriod) GetSigners() []sdk.AccAddress {
-	addr, err := sdk.AccAddressFromBech32(msg.Creator)
+	addr, err := sdk.AccAddressFromBech32(msg.Program)
 	if err != nil {
 		panic(err)
 	}
@@ -381,13 +346,12 @@ func (msg MsgChangeJobPeriod) GetSigners() []sdk.AccAddress {
 }
 
 func NewMsgChangeJobBlock(
-	address, contract sdk.AccAddress,
+	program sdk.AccAddress,
 	label string,
 	block uint64,
 ) *MsgChangeJobBlock {
 	return &MsgChangeJobBlock{
-		Creator:  address.String(),
-		Contract: contract.String(),
+		Program:  program.String(),
 		Label:    label,
 		Block:    block,
 	}
@@ -398,13 +362,9 @@ func (msg MsgChangeJobBlock) Route() string { return RouterKey }
 func (msg MsgChangeJobBlock) Type() string { return ActionCronChangeJobBlock }
 
 func (msg MsgChangeJobBlock) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	_, err := sdk.AccAddressFromBech32(msg.Program)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid creator address (%s)", err)
-	}
-	_, err = sdk.AccAddressFromBech32(msg.Contract)
-	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid contract address (%s)", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid program address (%s)", err)
 	}
 	if msg.Label == "" || len(msg.Label) > 32 {
 		return ErrBadLabel
@@ -417,7 +377,7 @@ func (msg MsgChangeJobBlock) ValidateBasic() error {
 }
 
 func (msg MsgChangeJobBlock) GetSigners() []sdk.AccAddress {
-	addr, err := sdk.AccAddressFromBech32(msg.Creator)
+	addr, err := sdk.AccAddressFromBech32(msg.Program)
 	if err != nil {
 		panic(err)
 	}

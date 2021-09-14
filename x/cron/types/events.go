@@ -10,7 +10,7 @@ const (
 	EventTypeChangeJobPeriod   = "change_job_period"
 	EventTypeChangeJobBlock    = "change_job_block"
 
-	AttributeKeyJobContract    = "contract"
+	AttributeKeyJobProgram     = "program"
 	AttributeKeyJobTrigger     = "trigger"
 	AttributeKeyJobLoad        = "load"
 	AttributeKeyJobLabel       = "label"

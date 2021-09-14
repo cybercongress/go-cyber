@@ -11,11 +11,10 @@ const (
 )
 
 type QueryJobParams struct {
-	Creator  sdk.AccAddress
-	Contract sdk.AccAddress
+	Program sdk.AccAddress
 	Label    string
 }
 
-func NewQueryJobParams(creator, contract sdk.AccAddress, label string) QueryJobParams {
-	return QueryJobParams{creator, contract, label}
+func NewQueryJobParams(program sdk.AccAddress, label string) QueryJobParams {
+	return QueryJobParams{program, label}
 }

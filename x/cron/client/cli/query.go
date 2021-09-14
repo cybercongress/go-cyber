@@ -64,9 +64,9 @@ func GetCmdQueryParams() *cobra.Command {
 
 func GetCmdQueryJob() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "job [contract] [creator] [label]",
+		Use:   "job [program] [label]",
 		Short: "Query job",
-		Args: cobra.ExactArgs(3),
+		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -74,11 +74,7 @@ func GetCmdQueryJob() *cobra.Command {
 			}
 			queryClient := types.NewQueryClient(clientCtx)
 
-			contract, err := sdk.AccAddressFromBech32(args[0])
-			if err != nil {
-				return err
-			}
-			creator, err := sdk.AccAddressFromBech32(args[1])
+			program, err := sdk.AccAddressFromBech32(args[0])
 			if err != nil {
 				return err
 			}
@@ -86,7 +82,7 @@ func GetCmdQueryJob() *cobra.Command {
 			res, err := queryClient.Job(
 				context.Background(),
 				&types.QueryJobParamsRequest{
-					contract.String(), creator.String(), args[2],
+					program.String(), args[1],
 				},
 			)
 
@@ -105,9 +101,9 @@ func GetCmdQueryJob() *cobra.Command {
 
 func GetCmdQueryJobStats() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "job-stats [contract] [creator] [label]",
+		Use:   "job-stats [program] [label]",
 		Short: "Query job stats",
-		Args: cobra.ExactArgs(3),
+		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -115,11 +111,7 @@ func GetCmdQueryJobStats() *cobra.Command {
 			}
 			queryClient := types.NewQueryClient(clientCtx)
 
-			contract, err := sdk.AccAddressFromBech32(args[0])
-			if err != nil {
-				return err
-			}
-			creator, err := sdk.AccAddressFromBech32(args[1])
+			program, err := sdk.AccAddressFromBech32(args[0])
 			if err != nil {
 				return err
 			}
@@ -127,7 +119,7 @@ func GetCmdQueryJobStats() *cobra.Command {
 			res, err := queryClient.JobStats(
 				context.Background(),
 				&types.QueryJobParamsRequest{
-					contract.String(), creator.String(), args[2],
+					program.String(), args[1],
 				},
 			)
 

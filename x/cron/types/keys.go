@@ -14,13 +14,13 @@ var (
 	JobStatsKey		     = []byte{0x01}
 )
 
-func GetJobKey(contract, creator sdk.AccAddress, label string) []byte {
-	key := append(append(contract.Bytes(), creator.Bytes()...), []byte(label)...)
+func GetJobKey(program sdk.AccAddress, label string) []byte {
+	key := append(program.Bytes(), []byte(label)...)
 	return append(JobKey, key...)
 }
 
-func GetJobStatsKey(contract, creator sdk.AccAddress, label string) []byte {
-	key := append(append(contract.Bytes(), creator.Bytes()...), []byte(label)...)
+func GetJobStatsKey(program sdk.AccAddress, label string) []byte {
+	key := append(program.Bytes(), []byte(label)...)
 	return append(JobStatsKey, key...)
 }
 

@@ -38,9 +38,8 @@ message QueryParamsResponse{
 }
 
 message QueryJobParamsRequest {
-    string creator  = 1;
-    string contract = 2;
-    string label    = 3;
+    string program  = 1;
+    string label    = 2;
 }
 
 message QueryJobResponse {

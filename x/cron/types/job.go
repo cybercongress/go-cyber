@@ -7,15 +7,14 @@ import (
 )
 
 func NewJob(
-	creator, contract string,
+	program string,
 	trigger Trigger,
 	load Load,
 	label string,
 	cid string,
 ) Job {
 	return Job{
-		Creator:  creator,
-		Contract: contract,
+		Program:  program,
 		Trigger:  trigger,
 		Load:     load,
 		Label:    label,
@@ -51,12 +50,11 @@ func NewTrigger (period, block uint64) Trigger {
 }
 
 func NewStats (
-	creator, contract, label string,
+	program, label string,
 	calls, fees, gas, block uint64,
 ) JobStats {
 	return JobStats{
-		Creator:   creator,
-		Contract:  contract,
+		Program:   program,
 		Label:     label,
 		Calls:     calls,
 		Fees:      fees,

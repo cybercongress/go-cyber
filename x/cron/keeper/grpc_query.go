@@ -24,30 +24,24 @@ func (k Keeper) Job(goCtx context.Context, request *types.QueryJobParamsRequest)
 		return nil, status.Errorf(codes.InvalidArgument, "empty request")
 	}
 
-	if request.Creator == "" {
-		return nil, status.Errorf(codes.InvalidArgument, "creator address cannot be empty")
-	}
-	if request.Contract == "" {
-		return nil, status.Errorf(codes.InvalidArgument, "contract address cannot be empty")
+	if request.Program == "" {
+		return nil, status.Errorf(codes.InvalidArgument, "program address cannot be empty")
 	}
 
-	contract, err := sdk.AccAddressFromBech32(request.Contract)
-	if err != nil {
-		return nil, err
+	if request.Label == "" {
+		return nil, status.Errorf(codes.InvalidArgument, "job label cannot be empty")
 	}
-	creator, err := sdk.AccAddressFromBech32(request.Creator)
+
+	program, err := sdk.AccAddressFromBech32(request.Program)
 	if err != nil {
 		return nil, err
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	job, found := k.GetJob(ctx, contract, creator, request.Label)
+	job, found := k.GetJob(ctx, program, request.Label)
 	if !found {
-		return nil, status.Errorf(
-			codes.NotFound,
-			"job with contract %s and creator %s not found",
-			contract, creator)
+		return nil, status.Errorf(codes.NotFound, "job with program %s and label %s not found", request.Program, request.Label)
 	}
 
 	return &types.QueryJobResponse{Job: job}, nil
@@ -58,30 +52,24 @@ func (k Keeper) JobStats(goCtx context.Context, request *types.QueryJobParamsReq
 		return nil, status.Errorf(codes.InvalidArgument, "empty request")
 	}
 
-	if request.Creator == "" {
-		return nil, status.Errorf(codes.InvalidArgument, "creator address cannot be empty")
-	}
-	if request.Contract == "" {
-		return nil, status.Errorf(codes.InvalidArgument, "contract address cannot be empty")
+	if request.Program == "" {
+		return nil, status.Errorf(codes.InvalidArgument, "program address cannot be empty")
 	}
 
-	contract, err := sdk.AccAddressFromBech32(request.Contract)
-	if err != nil {
-		return nil, err
+	if request.Label == "" {
+		return nil, status.Errorf(codes.InvalidArgument, "job label cannot be empty")
 	}
-	creator, err := sdk.AccAddressFromBech32(request.Creator)
+
+	program, err := sdk.AccAddressFromBech32(request.Program)
 	if err != nil {
 		return nil, err
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	jobStats, found := k.GetJobStats(ctx, contract, creator, request.Label)
+	jobStats, found := k.GetJobStats(ctx, program, request.Label)
 	if !found {
-		return nil, status.Errorf(
-			codes.NotFound,
-			"job with contract %s and creator %s not found",
-			contract, creator)
+		return nil, status.Errorf(codes.NotFound, "job stats with program %s and label %s not found", request.Program, request.Label)
 	}
 
 	return &types.QueryJobStatsResponse{JobStats: jobStats}, nil

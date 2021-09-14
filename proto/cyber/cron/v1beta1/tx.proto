@@ -22,46 +22,40 @@ service Msg{
 }
 
 message MsgAddJob {
-    string creator  = 1 [(gogoproto.moretags) = "yaml:\"creator\""];
-    string contract = 2 [(gogoproto.moretags) = "yaml:\"contract\""];
-    Trigger trigger = 3 [(gogoproto.moretags) = "yaml:\"trigger\"", (gogoproto.nullable) = false];
-    Load load       = 4 [(gogoproto.moretags) = "yaml:\"load\"", (gogoproto.nullable) = false];
-    string label    = 5 [(gogoproto.moretags) = "yaml:\"label\""];
-    string cid      = 6 [(gogoproto.moretags) = "yaml:\"cid\""];
+    string program  = 1 [(gogoproto.moretags) = "yaml:\"program\""];
+    Trigger trigger = 2 [(gogoproto.moretags) = "yaml:\"trigger\"", (gogoproto.nullable) = false];
+    Load load       = 3 [(gogoproto.moretags) = "yaml:\"load\"", (gogoproto.nullable) = false];
+    string label    = 4 [(gogoproto.moretags) = "yaml:\"label\""];
+    string cid      = 5 [(gogoproto.moretags) = "yaml:\"cid\""];
 }
 
 message MsgRemoveJob {
-    string creator  = 1 [(gogoproto.moretags) = "yaml:\"creator\""];
-    string contract = 2 [(gogoproto.moretags) = "yaml:\"contract\""];
-    string label    = 3 [(gogoproto.moretags) = "yaml:\"label\""];
+    string program  = 1 [(gogoproto.moretags) = "yaml:\"program\""];
+    string label    = 2 [(gogoproto.moretags) = "yaml:\"label\""];
 }
 
 message MsgChangeJobCID {
-    string creator  = 1 [(gogoproto.moretags) = "yaml:\"creator\""];
-    string contract = 2 [(gogoproto.moretags) = "yaml:\"contract\""];
-    string label    = 3 [(gogoproto.moretags) = "yaml:\"label\""];
-    string cid      = 4 [(gogoproto.moretags) = "yaml:\"cid\""];
+    string program  = 1 [(gogoproto.moretags) = "yaml:\"program\""];
+    string label    = 2 [(gogoproto.moretags) = "yaml:\"label\""];
+    string cid      = 3 [(gogoproto.moretags) = "yaml:\"cid\""];
 }
 
 message MsgChangeJobLabel {
-    string creator   = 1 [(gogoproto.moretags) = "yaml:\"creator\""];
-    string contract  = 2 [(gogoproto.moretags) = "yaml:\"contract\""];
-    string label     = 3 [(gogoproto.moretags) = "yaml:\"label\""];
-    string new_label = 4 [(gogoproto.moretags) = "yaml:\"new_label\""];
+    string program   = 1 [(gogoproto.moretags) = "yaml:\"program\""];
+    string label     = 2 [(gogoproto.moretags) = "yaml:\"label\""];
+    string new_label = 3 [(gogoproto.moretags) = "yaml:\"new_label\""];
 }
 
 message MsgChangeJobCallData {
-    string creator   = 1 [(gogoproto.moretags) = "yaml:\"creator\""];
-    string contract  = 2 [(gogoproto.moretags) = "yaml:\"contract\""];
-    string label     = 3 [(gogoproto.moretags) = "yaml:\"label\""];
-    string call_data = 4 [(gogoproto.moretags) = "yaml:\"call_data\""];
+    string program   = 1 [(gogoproto.moretags) = "yaml:\"program\""];
+    string label     = 2 [(gogoproto.moretags) = "yaml:\"label\""];
+    string call_data = 3 [(gogoproto.moretags) = "yaml:\"call_data\""];
 }
 
 message MsgChangeJobGasPrice {
-    string creator   = 1 [(gogoproto.moretags) = "yaml:\"creator\""];
-    string contract  = 2 [(gogoproto.moretags) = "yaml:\"contract\""];
-    string label     = 3 [(gogoproto.moretags) = "yaml:\"label\""];
-    cosmos.base.v1beta1.Coin gas_price = 4 [
+    string program   = 1 [(gogoproto.moretags) = "yaml:\"program\""];
+    string label     = 2 [(gogoproto.moretags) = "yaml:\"label\""];
+    cosmos.base.v1beta1.Coin gas_price = 3 [
         (gogoproto.moretags) = "yaml:\"gas_price\"",
         (gogoproto.nullable) = false
 //        (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.Coin"
@@ -69,17 +63,15 @@ message MsgChangeJobGasPrice {
 }
 
 message MsgChangeJobPeriod {
-    string creator   = 1 [(gogoproto.moretags) = "yaml:\"creator\""];
-    string contract  = 2 [(gogoproto.moretags) = "yaml:\"contract\""];
-    string label     = 3 [(gogoproto.moretags) = "yaml:\"label\""];
-    uint64 period    = 4 [(gogoproto.moretags) = "yaml:\"period\""];
+    string program  =  1 [(gogoproto.moretags) = "yaml:\"program\""];
+    string label     = 2 [(gogoproto.moretags) = "yaml:\"label\""];
+    uint64 period    = 3 [(gogoproto.moretags) = "yaml:\"period\""];
 }
 
 message MsgChangeJobBlock {
-    string creator   = 1 [(gogoproto.moretags) = "yaml:\"creator\""];
-    string contract  = 2 [(gogoproto.moretags) = "yaml:\"contract\""];
-    string label     = 3 [(gogoproto.moretags) = "yaml:\"label\""];
-    uint64 block     = 4 [(gogoproto.moretags) = "yaml:\"block\""];
+    string program   = 1 [(gogoproto.moretags) = "yaml:\"program\""];
+    string label     = 2 [(gogoproto.moretags) = "yaml:\"label\""];
+    uint64 block     = 3 [(gogoproto.moretags) = "yaml:\"block\""];
 }
 
 message MsgAddJobResponse {}

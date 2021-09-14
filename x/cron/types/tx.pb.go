@@ -30,12 +30,11 @@ var _ = math.Inf
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type MsgAddJob struct {
-	Creator  string  `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty" yaml:"creator"`
-	Contract string  `protobuf:"bytes,2,opt,name=contract,proto3" json:"contract,omitempty" yaml:"contract"`
-	Trigger  Trigger `protobuf:"bytes,3,opt,name=trigger,proto3" json:"trigger" yaml:"trigger"`
-	Load     Load    `protobuf:"bytes,4,opt,name=load,proto3" json:"load" yaml:"load"`
-	Label    string  `protobuf:"bytes,5,opt,name=label,proto3" json:"label,omitempty" yaml:"label"`
-	Cid      string  `protobuf:"bytes,6,opt,name=cid,proto3" json:"cid,omitempty" yaml:"cid"`
+	Program string  `protobuf:"bytes,1,opt,name=program,proto3" json:"program,omitempty" yaml:"program"`
+	Trigger Trigger `protobuf:"bytes,2,opt,name=trigger,proto3" json:"trigger" yaml:"trigger"`
+	Load    Load    `protobuf:"bytes,3,opt,name=load,proto3" json:"load" yaml:"load"`
+	Label   string  `protobuf:"bytes,4,opt,name=label,proto3" json:"label,omitempty" yaml:"label"`
+	Cid     string  `protobuf:"bytes,5,opt,name=cid,proto3" json:"cid,omitempty" yaml:"cid"`
 }
 
 func (m *MsgAddJob) Reset()         { *m = MsgAddJob{} }
@@ -72,9 +71,8 @@ func (m *MsgAddJob) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgAddJob proto.InternalMessageInfo
 
 type MsgRemoveJob struct {
-	Creator  string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty" yaml:"creator"`
-	Contract string `protobuf:"bytes,2,opt,name=contract,proto3" json:"contract,omitempty" yaml:"contract"`
-	Label    string `protobuf:"bytes,3,opt,name=label,proto3" json:"label,omitempty" yaml:"label"`
+	Program string `protobuf:"bytes,1,opt,name=program,proto3" json:"program,omitempty" yaml:"program"`
+	Label   string `protobuf:"bytes,2,opt,name=label,proto3" json:"label,omitempty" yaml:"label"`
 }
 
 func (m *MsgRemoveJob) Reset()         { *m = MsgRemoveJob{} }
@@ -111,10 +109,9 @@ func (m *MsgRemoveJob) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgRemoveJob proto.InternalMessageInfo
 
 type MsgChangeJobCID struct {
-	Creator  string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty" yaml:"creator"`
-	Contract string `protobuf:"bytes,2,opt,name=contract,proto3" json:"contract,omitempty" yaml:"contract"`
-	Label    string `protobuf:"bytes,3,opt,name=label,proto3" json:"label,omitempty" yaml:"label"`
-	Cid      string `protobuf:"bytes,4,opt,name=cid,proto3" json:"cid,omitempty" yaml:"cid"`
+	Program string `protobuf:"bytes,1,opt,name=program,proto3" json:"program,omitempty" yaml:"program"`
+	Label   string `protobuf:"bytes,2,opt,name=label,proto3" json:"label,omitempty" yaml:"label"`
+	Cid     string `protobuf:"bytes,3,opt,name=cid,proto3" json:"cid,omitempty" yaml:"cid"`
 }
 
 func (m *MsgChangeJobCID) Reset()         { *m = MsgChangeJobCID{} }
@@ -151,10 +148,9 @@ func (m *MsgChangeJobCID) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgChangeJobCID proto.InternalMessageInfo
 
 type MsgChangeJobLabel struct {
-	Creator  string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty" yaml:"creator"`
-	Contract string `protobuf:"bytes,2,opt,name=contract,proto3" json:"contract,omitempty" yaml:"contract"`
-	Label    string `protobuf:"bytes,3,opt,name=label,proto3" json:"label,omitempty" yaml:"label"`
-	NewLabel string `protobuf:"bytes,4,opt,name=new_label,json=newLabel,proto3" json:"new_label,omitempty" yaml:"new_label"`
+	Program  string `protobuf:"bytes,1,opt,name=program,proto3" json:"program,omitempty" yaml:"program"`
+	Label    string `protobuf:"bytes,2,opt,name=label,proto3" json:"label,omitempty" yaml:"label"`
+	NewLabel string `protobuf:"bytes,3,opt,name=new_label,json=newLabel,proto3" json:"new_label,omitempty" yaml:"new_label"`
 }
 
 func (m *MsgChangeJobLabel) Reset()         { *m = MsgChangeJobLabel{} }
@@ -191,10 +187,9 @@ func (m *MsgChangeJobLabel) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgChangeJobLabel proto.InternalMessageInfo
 
 type MsgChangeJobCallData struct {
-	Creator  string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty" yaml:"creator"`
-	Contract string `protobuf:"bytes,2,opt,name=contract,proto3" json:"contract,omitempty" yaml:"contract"`
-	Label    string `protobuf:"bytes,3,opt,name=label,proto3" json:"label,omitempty" yaml:"label"`
-	CallData string `protobuf:"bytes,4,opt,name=call_data,json=callData,proto3" json:"call_data,omitempty" yaml:"call_data"`
+	Program  string `protobuf:"bytes,1,opt,name=program,proto3" json:"program,omitempty" yaml:"program"`
+	Label    string `protobuf:"bytes,2,opt,name=label,proto3" json:"label,omitempty" yaml:"label"`
+	CallData string `protobuf:"bytes,3,opt,name=call_data,json=callData,proto3" json:"call_data,omitempty" yaml:"call_data"`
 }
 
 func (m *MsgChangeJobCallData) Reset()         { *m = MsgChangeJobCallData{} }
@@ -231,10 +226,9 @@ func (m *MsgChangeJobCallData) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgChangeJobCallData proto.InternalMessageInfo
 
 type MsgChangeJobGasPrice struct {
-	Creator  string     `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty" yaml:"creator"`
-	Contract string     `protobuf:"bytes,2,opt,name=contract,proto3" json:"contract,omitempty" yaml:"contract"`
-	Label    string     `protobuf:"bytes,3,opt,name=label,proto3" json:"label,omitempty" yaml:"label"`
-	GasPrice types.Coin `protobuf:"bytes,4,opt,name=gas_price,json=gasPrice,proto3" json:"gas_price" yaml:"gas_price"`
+	Program  string     `protobuf:"bytes,1,opt,name=program,proto3" json:"program,omitempty" yaml:"program"`
+	Label    string     `protobuf:"bytes,2,opt,name=label,proto3" json:"label,omitempty" yaml:"label"`
+	GasPrice types.Coin `protobuf:"bytes,3,opt,name=gas_price,json=gasPrice,proto3" json:"gas_price" yaml:"gas_price"`
 }
 
 func (m *MsgChangeJobGasPrice) Reset()         { *m = MsgChangeJobGasPrice{} }
@@ -271,10 +265,9 @@ func (m *MsgChangeJobGasPrice) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgChangeJobGasPrice proto.InternalMessageInfo
 
 type MsgChangeJobPeriod struct {
-	Creator  string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty" yaml:"creator"`
-	Contract string `protobuf:"bytes,2,opt,name=contract,proto3" json:"contract,omitempty" yaml:"contract"`
-	Label    string `protobuf:"bytes,3,opt,name=label,proto3" json:"label,omitempty" yaml:"label"`
-	Period   uint64 `protobuf:"varint,4,opt,name=period,proto3" json:"period,omitempty" yaml:"period"`
+	Program string `protobuf:"bytes,1,opt,name=program,proto3" json:"program,omitempty" yaml:"program"`
+	Label   string `protobuf:"bytes,2,opt,name=label,proto3" json:"label,omitempty" yaml:"label"`
+	Period  uint64 `protobuf:"varint,3,opt,name=period,proto3" json:"period,omitempty" yaml:"period"`
 }
 
 func (m *MsgChangeJobPeriod) Reset()         { *m = MsgChangeJobPeriod{} }
@@ -311,10 +304,9 @@ func (m *MsgChangeJobPeriod) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgChangeJobPeriod proto.InternalMessageInfo
 
 type MsgChangeJobBlock struct {
-	Creator  string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty" yaml:"creator"`
-	Contract string `protobuf:"bytes,2,opt,name=contract,proto3" json:"contract,omitempty" yaml:"contract"`
-	Label    string `protobuf:"bytes,3,opt,name=label,proto3" json:"label,omitempty" yaml:"label"`
-	Block    uint64 `protobuf:"varint,4,opt,name=block,proto3" json:"block,omitempty" yaml:"block"`
+	Program string `protobuf:"bytes,1,opt,name=program,proto3" json:"program,omitempty" yaml:"program"`
+	Label   string `protobuf:"bytes,2,opt,name=label,proto3" json:"label,omitempty" yaml:"label"`
+	Block   uint64 `protobuf:"varint,3,opt,name=block,proto3" json:"block,omitempty" yaml:"block"`
 }
 
 func (m *MsgChangeJobBlock) Reset()         { *m = MsgChangeJobBlock{} }
@@ -660,57 +652,55 @@ func init() {
 func init() { proto.RegisterFile("cyber/cron/v1beta1/tx.proto", fileDescriptor_e3ac466c209dfdea) }
 
 var fileDescriptor_e3ac466c209dfdea = []byte{
-	// 795 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x96, 0xcd, 0x4e, 0xdb, 0x4a,
-	0x14, 0xc7, 0x63, 0x12, 0x02, 0x19, 0xb8, 0x7c, 0x18, 0x04, 0xc6, 0x70, 0x9d, 0x68, 0xae, 0x40,
-	0xb9, 0xba, 0x17, 0xa7, 0xd0, 0x5d, 0x77, 0x04, 0xa4, 0xaa, 0x15, 0xa9, 0x22, 0xab, 0x52, 0xa5,
-	0x6e, 0xe8, 0xd8, 0x9e, 0x0e, 0x56, 0x1d, 0x4f, 0x64, 0xbb, 0x7c, 0xbc, 0x45, 0x37, 0x7d, 0x87,
-	0x6e, 0xfa, 0x02, 0x5d, 0x76, 0x81, 0xd8, 0x54, 0x62, 0xd9, 0x55, 0xd4, 0x86, 0x07, 0xa8, 0x94,
-	0x27, 0xa8, 0x3c, 0x33, 0x19, 0x42, 0x3e, 0x70, 0x56, 0x55, 0x76, 0xd6, 0xfc, 0x7f, 0xe7, 0xcc,
-	0xf9, 0xcf, 0x78, 0xce, 0x0c, 0xd8, 0x74, 0x2e, 0x6d, 0x1c, 0x56, 0x9c, 0x90, 0x06, 0x95, 0xb3,
-	0x3d, 0x1b, 0xc7, 0x68, 0xaf, 0x12, 0x5f, 0x98, 0xcd, 0x90, 0xc6, 0x54, 0x55, 0x99, 0x68, 0x26,
-	0xa2, 0x29, 0x44, 0x7d, 0x95, 0x50, 0x42, 0x99, 0x5c, 0x49, 0xbe, 0x38, 0xa9, 0x1b, 0xc3, 0xd2,
-	0x5c, 0x36, 0x71, 0x24, 0xf4, 0x75, 0x87, 0x46, 0x0d, 0x1a, 0x9d, 0xf0, 0x40, 0x87, 0x7a, 0x01,
-	0x17, 0xe0, 0xd5, 0x14, 0x28, 0xd4, 0x22, 0x72, 0xe0, 0xba, 0xcf, 0xa9, 0xad, 0xfe, 0x0f, 0x66,
-	0x9c, 0x10, 0xa3, 0x98, 0x86, 0x9a, 0x52, 0x52, 0xca, 0x85, 0xaa, 0xda, 0x69, 0x15, 0x17, 0x2e,
-	0x51, 0xc3, 0x7f, 0x02, 0x85, 0x00, 0xad, 0x2e, 0xa2, 0x56, 0xc0, 0xac, 0x43, 0x83, 0x38, 0x44,
-	0x4e, 0xac, 0x4d, 0x31, 0x7c, 0xa5, 0xd3, 0x2a, 0x2e, 0x0a, 0x5c, 0x28, 0xd0, 0x92, 0x90, 0x5a,
-	0x03, 0x33, 0x71, 0xe8, 0x11, 0x82, 0x43, 0x2d, 0x5b, 0x52, 0xca, 0x73, 0xfb, 0x9b, 0xe6, 0xa0,
-	0x43, 0xf3, 0x25, 0x47, 0xaa, 0x6b, 0xd7, 0xad, 0x62, 0xe6, 0x6e, 0x7e, 0x11, 0x09, 0xad, 0x6e,
-	0x0e, 0xf5, 0x00, 0xe4, 0x7c, 0x8a, 0x5c, 0x2d, 0xc7, 0x72, 0x69, 0xc3, 0x72, 0x1d, 0x53, 0xe4,
-	0x56, 0x57, 0x44, 0xa2, 0x39, 0x9e, 0x28, 0x89, 0x81, 0x16, 0x0b, 0x55, 0x77, 0xc0, 0xb4, 0x8f,
-	0x6c, 0xec, 0x6b, 0xd3, 0xac, 0xfe, 0xa5, 0x4e, 0xab, 0x38, 0x2f, 0xa8, 0x64, 0x18, 0x5a, 0x5c,
-	0x56, 0x4b, 0x20, 0xeb, 0x78, 0xae, 0x96, 0x67, 0xd4, 0x42, 0xa7, 0x55, 0x04, 0xc2, 0xa5, 0xe7,
-	0x42, 0x2b, 0x91, 0xe0, 0x47, 0x05, 0xcc, 0xd7, 0x22, 0x62, 0xe1, 0x06, 0x3d, 0xc3, 0x7f, 0x60,
-	0x2d, 0x65, 0xe5, 0xd9, 0x07, 0x2b, 0x87, 0x5f, 0x14, 0xb0, 0x58, 0x8b, 0xc8, 0xe1, 0x29, 0x0a,
-	0x48, 0x52, 0xd7, 0xe1, 0xb3, 0xa3, 0x09, 0x29, 0xad, 0xbb, 0xa8, 0xb9, 0xd1, 0x8b, 0xfa, 0x4d,
-	0x01, 0xcb, 0xbd, 0xc5, 0x1f, 0xb3, 0xb8, 0x09, 0x29, 0x7f, 0x0f, 0x14, 0x02, 0x7c, 0x7e, 0xc2,
-	0x59, 0x6e, 0x62, 0xb5, 0xd3, 0x2a, 0x2e, 0x71, 0x56, 0x4a, 0xd0, 0x9a, 0x0d, 0xf0, 0x39, 0xab,
-	0x1c, 0xde, 0x28, 0x60, 0xf5, 0xde, 0x66, 0x20, 0xdf, 0x3f, 0x42, 0x31, 0x9a, 0x20, 0x4b, 0x0e,
-	0xf2, 0xfd, 0x13, 0x17, 0xc5, 0x68, 0xd0, 0x92, 0x94, 0x92, 0xd4, 0xa2, 0x72, 0xf8, 0xab, 0xcf,
-	0xd2, 0x53, 0x14, 0xd5, 0x43, 0xcf, 0xc1, 0x93, 0x62, 0xa9, 0x0e, 0x0a, 0x04, 0x25, 0x8d, 0xcf,
-	0x73, 0xb0, 0xe8, 0x14, 0x1b, 0x26, 0xef, 0x86, 0xa6, 0x8d, 0x22, 0x2c, 0x5b, 0xc5, 0x21, 0xf5,
-	0x82, 0xaa, 0x26, 0x5a, 0x85, 0x70, 0x2c, 0x23, 0xa1, 0x35, 0x4b, 0x84, 0x31, 0x78, 0xa5, 0x00,
-	0xb5, 0xd7, 0x71, 0x1d, 0x87, 0x1e, 0x75, 0x27, 0xc5, 0xef, 0xbf, 0x20, 0xdf, 0x64, 0x05, 0x31,
-	0xb3, 0xb9, 0xea, 0x72, 0xa7, 0x55, 0xfc, 0x8b, 0x83, 0x7c, 0x1c, 0x5a, 0x02, 0x80, 0x5f, 0xfb,
-	0x4e, 0x57, 0xd5, 0xa7, 0xce, 0xbb, 0x49, 0xf1, 0xb1, 0x03, 0xa6, 0xed, 0xa4, 0x1e, 0x61, 0xa3,
-	0x87, 0x63, 0xc3, 0xd0, 0xe2, 0x32, 0x5c, 0x61, 0x1e, 0xf8, 0xfd, 0x65, 0xe1, 0xa8, 0x49, 0x83,
-	0x08, 0xc3, 0x35, 0xf6, 0x4f, 0xca, 0x5e, 0x2c, 0xc7, 0x37, 0xc0, 0x7a, 0x5f, 0x2f, 0x94, 0xd2,
-	0x26, 0xd8, 0x18, 0xe8, 0x34, 0x52, 0x34, 0xc0, 0xd6, 0xb0, 0x63, 0x3b, 0x4a, 0xef, 0x9e, 0x01,
-	0xa9, 0x6f, 0x01, 0x7d, 0xf0, 0x8f, 0x19, 0x35, 0x35, 0xdb, 0x86, 0xae, 0xb8, 0xff, 0x39, 0x0f,
-	0xb2, 0xb5, 0x88, 0xa8, 0x2f, 0x40, 0x5e, 0x5c, 0xd2, 0x7f, 0x0f, 0xbb, 0xe8, 0xe4, 0x1a, 0xe8,
-	0xdb, 0x0f, 0xca, 0xdd, 0xbc, 0xea, 0x2b, 0x50, 0xb8, 0xbb, 0xab, 0x4a, 0x23, 0x62, 0x24, 0xa1,
-	0x97, 0xd3, 0x08, 0x99, 0xf8, 0x0d, 0x98, 0xbf, 0x77, 0xd9, 0xfc, 0x33, 0x22, 0xb2, 0x17, 0xd2,
-	0xff, 0x1b, 0x03, 0x92, 0x33, 0xbc, 0x05, 0x0b, 0x7d, 0x37, 0xc2, 0x76, 0x5a, 0x38, 0xc3, 0xf4,
-	0xdd, 0xb1, 0x30, 0x39, 0x0f, 0x05, 0xcb, 0x83, 0x9d, 0xba, 0x9c, 0x5a, 0xa9, 0x20, 0xf5, 0x47,
-	0xe3, 0x92, 0x43, 0x27, 0x94, 0x7d, 0x34, 0x75, 0xc2, 0x2e, 0x99, 0x3e, 0x61, 0xff, 0x7f, 0xa9,
-	0x7a, 0x60, 0xb1, 0xbf, 0x8d, 0xed, 0xa4, 0x25, 0xe1, 0x9c, 0x6e, 0x8e, 0xc7, 0x0d, 0xdd, 0x34,
-	0xde, 0x68, 0x52, 0x37, 0x8d, 0x61, 0xe9, 0x9b, 0x76, 0xef, 0xbc, 0x54, 0xeb, 0xd7, 0x3f, 0x8d,
-	0xcc, 0xa7, 0xb6, 0x91, 0xb9, 0x6e, 0x1b, 0xca, 0x4d, 0xdb, 0x50, 0x7e, 0xb4, 0x0d, 0xe5, 0xc3,
-	0xad, 0x91, 0xb9, 0xb9, 0x35, 0x32, 0xdf, 0x6f, 0x8d, 0xcc, 0x6b, 0x93, 0x78, 0xf1, 0xe9, 0x7b,
-	0xdb, 0x74, 0x68, 0xa3, 0xc2, 0x52, 0x3b, 0x34, 0x20, 0x21, 0x8e, 0xa2, 0x0a, 0xa1, 0xbb, 0xfc,
-	0x1d, 0x7d, 0xc1, 0x5f, 0xd2, 0xec, 0x05, 0x6d, 0xe7, 0xd9, 0x4b, 0xf9, 0xf1, 0xef, 0x00, 0x00,
-	0x00, 0xff, 0xff, 0x1e, 0xd9, 0x1b, 0x3d, 0xab, 0x0b, 0x00, 0x00,
+	// 766 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x56, 0xcd, 0x4e, 0xdb, 0x4c,
+	0x14, 0x8d, 0x09, 0x04, 0x32, 0xf0, 0xf1, 0x63, 0x10, 0x04, 0xc3, 0xe7, 0x44, 0x53, 0x81, 0x52,
+	0xb5, 0x38, 0x85, 0xee, 0xba, 0x23, 0x20, 0x55, 0xad, 0x48, 0x15, 0x59, 0x95, 0x2a, 0x75, 0x43,
+	0xc7, 0xf6, 0x74, 0xb0, 0xea, 0x78, 0x22, 0xdb, 0xe5, 0xe7, 0x11, 0xba, 0x6b, 0x17, 0xec, 0x2a,
+	0x75, 0xdb, 0x4d, 0x5f, 0xa1, 0x6b, 0x96, 0x2c, 0xbb, 0x8a, 0xda, 0xf0, 0x06, 0x79, 0x82, 0xca,
+	0x33, 0xe3, 0x21, 0xe4, 0x07, 0xa7, 0x8b, 0xec, 0xac, 0x39, 0xe7, 0x9e, 0x7b, 0x66, 0xe6, 0xde,
+	0xeb, 0x01, 0x1b, 0xf6, 0x85, 0x85, 0x83, 0x8a, 0x1d, 0x50, 0xbf, 0x72, 0xba, 0x6b, 0xe1, 0x08,
+	0xed, 0x56, 0xa2, 0x73, 0xa3, 0x19, 0xd0, 0x88, 0xaa, 0x2a, 0x03, 0x8d, 0x18, 0x34, 0x04, 0xa8,
+	0xad, 0x10, 0x4a, 0x28, 0x83, 0x2b, 0xf1, 0x17, 0x67, 0x6a, 0xfa, 0x20, 0x99, 0x8b, 0x26, 0x0e,
+	0x05, 0xbe, 0x66, 0xd3, 0xb0, 0x41, 0xc3, 0x63, 0x1e, 0x68, 0x53, 0xd7, 0xe7, 0x00, 0xbc, 0x9c,
+	0x00, 0xf9, 0x5a, 0x48, 0xf6, 0x1d, 0xe7, 0x25, 0xb5, 0xd4, 0xc7, 0x60, 0xba, 0x19, 0x50, 0x12,
+	0xa0, 0x46, 0x41, 0x29, 0x29, 0xe5, 0x7c, 0x55, 0xed, 0xb4, 0x8a, 0xf3, 0x17, 0xa8, 0xe1, 0x3d,
+	0x83, 0x02, 0x80, 0x66, 0x42, 0x51, 0x6b, 0x60, 0x3a, 0x0a, 0x5c, 0x42, 0x70, 0x50, 0x98, 0x28,
+	0x29, 0xe5, 0xd9, 0xbd, 0x0d, 0xa3, 0xdf, 0xb0, 0xf1, 0x9a, 0x53, 0xaa, 0xab, 0x57, 0xad, 0x62,
+	0xe6, 0x56, 0x4e, 0x44, 0x42, 0x33, 0xd1, 0x50, 0xf7, 0xc1, 0xa4, 0x47, 0x91, 0x53, 0xc8, 0x32,
+	0xad, 0xc2, 0x20, 0xad, 0x23, 0x8a, 0x9c, 0xea, 0xb2, 0x10, 0x9a, 0xe5, 0x42, 0x71, 0x0c, 0x34,
+	0x59, 0xa8, 0xba, 0x0d, 0xa6, 0x3c, 0x64, 0x61, 0xaf, 0x30, 0xc9, 0xdc, 0x2f, 0x76, 0x5a, 0xc5,
+	0x39, 0xc1, 0x8a, 0x97, 0xa1, 0xc9, 0x61, 0xb5, 0x04, 0xb2, 0xb6, 0xeb, 0x14, 0xa6, 0x18, 0x6b,
+	0xbe, 0xd3, 0x2a, 0x02, 0xce, 0xb2, 0x5d, 0x07, 0x9a, 0x31, 0x04, 0x1d, 0x30, 0x57, 0x0b, 0x89,
+	0x89, 0x1b, 0xf4, 0x14, 0xff, 0xfb, 0xc9, 0x48, 0x1f, 0x13, 0xf7, 0xfa, 0x80, 0x9f, 0x14, 0xb0,
+	0x50, 0x0b, 0xc9, 0xc1, 0x09, 0xf2, 0x49, 0x9c, 0xe6, 0xe0, 0xc5, 0xe1, 0x78, 0x32, 0x25, 0x3b,
+	0xce, 0x0e, 0xdf, 0xf1, 0x57, 0x05, 0x2c, 0x75, 0x7b, 0x39, 0x62, 0x71, 0xe3, 0x71, 0xb3, 0x0b,
+	0xf2, 0x3e, 0x3e, 0x3b, 0xe6, 0x5c, 0xee, 0x69, 0xa5, 0xd3, 0x2a, 0x2e, 0x72, 0xae, 0x84, 0xa0,
+	0x39, 0xe3, 0xe3, 0x33, 0x66, 0x04, 0x7e, 0x53, 0xc0, 0xca, 0x9d, 0xa3, 0x42, 0x9e, 0x77, 0x88,
+	0x22, 0x34, 0x3e, 0x87, 0x36, 0xf2, 0xbc, 0x63, 0x07, 0x45, 0xa8, 0xdf, 0xa1, 0x84, 0xa0, 0x39,
+	0x63, 0x0b, 0x23, 0xf0, 0x67, 0x8f, 0xc3, 0xe7, 0x28, 0xac, 0x07, 0xae, 0x8d, 0xc7, 0xe4, 0xb0,
+	0x0e, 0xf2, 0x04, 0xc5, 0x1d, 0xed, 0xda, 0x58, 0xf4, 0xcc, 0xba, 0xc1, 0xdb, 0xdc, 0xb0, 0x50,
+	0x88, 0x65, 0xd3, 0x1c, 0x50, 0xd7, 0xaf, 0x16, 0x44, 0xd3, 0x88, 0x0d, 0xc8, 0x48, 0x68, 0xce,
+	0x10, 0xe1, 0x13, 0x5e, 0x2a, 0x40, 0xed, 0xde, 0x40, 0x1d, 0x07, 0x2e, 0x75, 0xc6, 0x64, 0xff,
+	0x21, 0xc8, 0x35, 0x99, 0x3e, 0xf3, 0x3e, 0x59, 0x5d, 0xea, 0xb4, 0x8a, 0xff, 0x09, 0x51, 0xb6,
+	0x0e, 0x4d, 0x41, 0x80, 0x5f, 0x7a, 0x2a, 0xb3, 0xea, 0x51, 0xfb, 0xc3, 0x98, 0x6c, 0x6d, 0x83,
+	0x29, 0x2b, 0x96, 0x17, 0xae, 0xba, 0x78, 0x6c, 0x19, 0x9a, 0x1c, 0x86, 0xcb, 0xcc, 0x12, 0x1f,
+	0x9b, 0x26, 0x0e, 0x9b, 0xd4, 0x0f, 0x31, 0x5c, 0x65, 0x05, 0x20, 0x87, 0x86, 0x5c, 0x5f, 0x07,
+	0x6b, 0x3d, 0x5d, 0x2e, 0xa1, 0x0d, 0xb0, 0xde, 0xd7, 0x74, 0x12, 0xd4, 0xc1, 0xe6, 0xa0, 0x92,
+	0x1f, 0x86, 0x27, 0x05, 0x27, 0xf1, 0x4d, 0xa0, 0xf5, 0xdf, 0xe7, 0xb0, 0xd4, 0xec, 0x54, 0x13,
+	0x70, 0xef, 0x47, 0x0e, 0x64, 0x6b, 0x21, 0x51, 0x5f, 0x81, 0x9c, 0xf8, 0x37, 0xfc, 0x3f, 0x68,
+	0x20, 0xcb, 0x33, 0xd0, 0xb6, 0xee, 0x85, 0x13, 0x5d, 0xf5, 0x0d, 0xc8, 0xdf, 0x0e, 0xd5, 0xd2,
+	0x90, 0x18, 0xc9, 0xd0, 0xca, 0x69, 0x0c, 0x29, 0xfc, 0x0e, 0xcc, 0xdd, 0x19, 0xa3, 0x0f, 0x86,
+	0x44, 0x76, 0x93, 0xb4, 0x47, 0x23, 0x90, 0x64, 0x86, 0xf7, 0x60, 0xbe, 0x67, 0x38, 0x6e, 0xa5,
+	0x85, 0x33, 0x9a, 0xb6, 0x33, 0x12, 0x4d, 0xe6, 0xa1, 0x60, 0xa9, 0x7f, 0xca, 0x95, 0x53, 0x9d,
+	0x0a, 0xa6, 0xf6, 0x64, 0x54, 0xe6, 0xc0, 0x84, 0x72, 0x68, 0xa5, 0x26, 0x4c, 0x98, 0xe9, 0x09,
+	0x7b, 0xeb, 0x52, 0x75, 0xc1, 0x42, 0xef, 0x90, 0xd9, 0x4e, 0x13, 0xe1, 0x3c, 0xcd, 0x18, 0x8d,
+	0x37, 0xf0, 0xd2, 0xf8, 0xdc, 0x48, 0xbd, 0x34, 0x46, 0x4b, 0xbf, 0xb4, 0x3b, 0xfd, 0x52, 0xad,
+	0x5f, 0xfd, 0xd1, 0x33, 0xdf, 0xdb, 0x7a, 0xe6, 0xaa, 0xad, 0x2b, 0xd7, 0x6d, 0x5d, 0xf9, 0xdd,
+	0xd6, 0x95, 0xcf, 0x37, 0x7a, 0xe6, 0xfa, 0x46, 0xcf, 0xfc, 0xba, 0xd1, 0x33, 0x6f, 0x0d, 0xe2,
+	0x46, 0x27, 0x1f, 0x2d, 0xc3, 0xa6, 0x8d, 0x0a, 0x93, 0xb6, 0xa9, 0x4f, 0x02, 0x1c, 0x86, 0x15,
+	0x42, 0x77, 0xf8, 0xf3, 0xed, 0x9c, 0x3f, 0xe0, 0xd8, 0xc3, 0xcd, 0xca, 0xb1, 0x07, 0xda, 0xd3,
+	0xbf, 0x01, 0x00, 0x00, 0xff, 0xff, 0xd7, 0x15, 0x22, 0x7a, 0x22, 0x0a, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -1070,14 +1060,14 @@ func (m *MsgAddJob) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		copy(dAtA[i:], m.Cid)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.Cid)))
 		i--
-		dAtA[i] = 0x32
+		dAtA[i] = 0x2a
 	}
 	if len(m.Label) > 0 {
 		i -= len(m.Label)
 		copy(dAtA[i:], m.Label)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.Label)))
 		i--
-		dAtA[i] = 0x2a
+		dAtA[i] = 0x22
 	}
 	{
 		size, err := m.Load.MarshalToSizedBuffer(dAtA[:i])
@@ -1088,7 +1078,7 @@ func (m *MsgAddJob) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintTx(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x22
+	dAtA[i] = 0x1a
 	{
 		size, err := m.Trigger.MarshalToSizedBuffer(dAtA[:i])
 		if err != nil {
@@ -1098,18 +1088,11 @@ func (m *MsgAddJob) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintTx(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x1a
-	if len(m.Contract) > 0 {
-		i -= len(m.Contract)
-		copy(dAtA[i:], m.Contract)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Contract)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if len(m.Creator) > 0 {
-		i -= len(m.Creator)
-		copy(dAtA[i:], m.Creator)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+	dAtA[i] = 0x12
+	if len(m.Program) > 0 {
+		i -= len(m.Program)
+		copy(dAtA[i:], m.Program)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Program)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -1141,19 +1124,12 @@ func (m *MsgRemoveJob) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		copy(dAtA[i:], m.Label)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.Label)))
 		i--
-		dAtA[i] = 0x1a
-	}
-	if len(m.Contract) > 0 {
-		i -= len(m.Contract)
-		copy(dAtA[i:], m.Contract)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Contract)))
-		i--
 		dAtA[i] = 0x12
 	}
-	if len(m.Creator) > 0 {
-		i -= len(m.Creator)
-		copy(dAtA[i:], m.Creator)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+	if len(m.Program) > 0 {
+		i -= len(m.Program)
+		copy(dAtA[i:], m.Program)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Program)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -1185,26 +1161,19 @@ func (m *MsgChangeJobCID) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		copy(dAtA[i:], m.Cid)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.Cid)))
 		i--
-		dAtA[i] = 0x22
+		dAtA[i] = 0x1a
 	}
 	if len(m.Label) > 0 {
 		i -= len(m.Label)
 		copy(dAtA[i:], m.Label)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.Label)))
 		i--
-		dAtA[i] = 0x1a
-	}
-	if len(m.Contract) > 0 {
-		i -= len(m.Contract)
-		copy(dAtA[i:], m.Contract)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Contract)))
-		i--
 		dAtA[i] = 0x12
 	}
-	if len(m.Creator) > 0 {
-		i -= len(m.Creator)
-		copy(dAtA[i:], m.Creator)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+	if len(m.Program) > 0 {
+		i -= len(m.Program)
+		copy(dAtA[i:], m.Program)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Program)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -1236,26 +1205,19 @@ func (m *MsgChangeJobLabel) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		copy(dAtA[i:], m.NewLabel)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.NewLabel)))
 		i--
-		dAtA[i] = 0x22
+		dAtA[i] = 0x1a
 	}
 	if len(m.Label) > 0 {
 		i -= len(m.Label)
 		copy(dAtA[i:], m.Label)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.Label)))
 		i--
-		dAtA[i] = 0x1a
-	}
-	if len(m.Contract) > 0 {
-		i -= len(m.Contract)
-		copy(dAtA[i:], m.Contract)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Contract)))
-		i--
 		dAtA[i] = 0x12
 	}
-	if len(m.Creator) > 0 {
-		i -= len(m.Creator)
-		copy(dAtA[i:], m.Creator)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+	if len(m.Program) > 0 {
+		i -= len(m.Program)
+		copy(dAtA[i:], m.Program)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Program)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -1287,26 +1249,19 @@ func (m *MsgChangeJobCallData) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		copy(dAtA[i:], m.CallData)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.CallData)))
 		i--
-		dAtA[i] = 0x22
+		dAtA[i] = 0x1a
 	}
 	if len(m.Label) > 0 {
 		i -= len(m.Label)
 		copy(dAtA[i:], m.Label)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.Label)))
 		i--
-		dAtA[i] = 0x1a
-	}
-	if len(m.Contract) > 0 {
-		i -= len(m.Contract)
-		copy(dAtA[i:], m.Contract)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Contract)))
-		i--
 		dAtA[i] = 0x12
 	}
-	if len(m.Creator) > 0 {
-		i -= len(m.Creator)
-		copy(dAtA[i:], m.Creator)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+	if len(m.Program) > 0 {
+		i -= len(m.Program)
+		copy(dAtA[i:], m.Program)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Program)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -1342,25 +1297,18 @@ func (m *MsgChangeJobGasPrice) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintTx(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x22
+	dAtA[i] = 0x1a
 	if len(m.Label) > 0 {
 		i -= len(m.Label)
 		copy(dAtA[i:], m.Label)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.Label)))
 		i--
-		dAtA[i] = 0x1a
-	}
-	if len(m.Contract) > 0 {
-		i -= len(m.Contract)
-		copy(dAtA[i:], m.Contract)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Contract)))
-		i--
 		dAtA[i] = 0x12
 	}
-	if len(m.Creator) > 0 {
-		i -= len(m.Creator)
-		copy(dAtA[i:], m.Creator)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+	if len(m.Program) > 0 {
+		i -= len(m.Program)
+		copy(dAtA[i:], m.Program)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Program)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -1390,26 +1338,19 @@ func (m *MsgChangeJobPeriod) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	if m.Period != 0 {
 		i = encodeVarintTx(dAtA, i, uint64(m.Period))
 		i--
-		dAtA[i] = 0x20
+		dAtA[i] = 0x18
 	}
 	if len(m.Label) > 0 {
 		i -= len(m.Label)
 		copy(dAtA[i:], m.Label)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.Label)))
 		i--
-		dAtA[i] = 0x1a
-	}
-	if len(m.Contract) > 0 {
-		i -= len(m.Contract)
-		copy(dAtA[i:], m.Contract)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Contract)))
-		i--
 		dAtA[i] = 0x12
 	}
-	if len(m.Creator) > 0 {
-		i -= len(m.Creator)
-		copy(dAtA[i:], m.Creator)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+	if len(m.Program) > 0 {
+		i -= len(m.Program)
+		copy(dAtA[i:], m.Program)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Program)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -1439,26 +1380,19 @@ func (m *MsgChangeJobBlock) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	if m.Block != 0 {
 		i = encodeVarintTx(dAtA, i, uint64(m.Block))
 		i--
-		dAtA[i] = 0x20
+		dAtA[i] = 0x18
 	}
 	if len(m.Label) > 0 {
 		i -= len(m.Label)
 		copy(dAtA[i:], m.Label)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.Label)))
 		i--
-		dAtA[i] = 0x1a
-	}
-	if len(m.Contract) > 0 {
-		i -= len(m.Contract)
-		copy(dAtA[i:], m.Contract)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Contract)))
-		i--
 		dAtA[i] = 0x12
 	}
-	if len(m.Creator) > 0 {
-		i -= len(m.Creator)
-		copy(dAtA[i:], m.Creator)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+	if len(m.Program) > 0 {
+		i -= len(m.Program)
+		copy(dAtA[i:], m.Program)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Program)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -1666,11 +1600,7 @@ func (m *MsgAddJob) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.Creator)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	l = len(m.Contract)
+	l = len(m.Program)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
@@ -1695,11 +1625,7 @@ func (m *MsgRemoveJob) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.Creator)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	l = len(m.Contract)
+	l = len(m.Program)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
@@ -1716,11 +1642,7 @@ func (m *MsgChangeJobCID) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.Creator)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	l = len(m.Contract)
+	l = len(m.Program)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
@@ -1741,11 +1663,7 @@ func (m *MsgChangeJobLabel) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.Creator)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	l = len(m.Contract)
+	l = len(m.Program)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
@@ -1766,11 +1684,7 @@ func (m *MsgChangeJobCallData) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.Creator)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	l = len(m.Contract)
+	l = len(m.Program)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
@@ -1791,11 +1705,7 @@ func (m *MsgChangeJobGasPrice) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.Creator)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	l = len(m.Contract)
+	l = len(m.Program)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
@@ -1814,11 +1724,7 @@ func (m *MsgChangeJobPeriod) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.Creator)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	l = len(m.Contract)
+	l = len(m.Program)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
@@ -1838,11 +1744,7 @@ func (m *MsgChangeJobBlock) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.Creator)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	l = len(m.Contract)
+	l = len(m.Program)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
@@ -1965,7 +1867,7 @@ func (m *MsgAddJob) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Program", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1993,41 +1895,9 @@ func (m *MsgAddJob) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Creator = string(dAtA[iNdEx:postIndex])
+			m.Program = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Contract", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Contract = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Trigger", wireType)
 			}
@@ -2060,7 +1930,7 @@ func (m *MsgAddJob) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 4:
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Load", wireType)
 			}
@@ -2093,7 +1963,7 @@ func (m *MsgAddJob) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 5:
+		case 4:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Label", wireType)
 			}
@@ -2125,7 +1995,7 @@ func (m *MsgAddJob) Unmarshal(dAtA []byte) error {
 			}
 			m.Label = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 6:
+		case 5:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Cid", wireType)
 			}
@@ -2212,7 +2082,7 @@ func (m *MsgRemoveJob) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Program", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -2240,41 +2110,9 @@ func (m *MsgRemoveJob) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Creator = string(dAtA[iNdEx:postIndex])
+			m.Program = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Contract", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Contract = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Label", wireType)
 			}
@@ -2361,7 +2199,7 @@ func (m *MsgChangeJobCID) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Program", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -2389,41 +2227,9 @@ func (m *MsgChangeJobCID) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Creator = string(dAtA[iNdEx:postIndex])
+			m.Program = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Contract", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Contract = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Label", wireType)
 			}
@@ -2455,7 +2261,7 @@ func (m *MsgChangeJobCID) Unmarshal(dAtA []byte) error {
 			}
 			m.Label = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 4:
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Cid", wireType)
 			}
@@ -2542,7 +2348,7 @@ func (m *MsgChangeJobLabel) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Program", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -2570,41 +2376,9 @@ func (m *MsgChangeJobLabel) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Creator = string(dAtA[iNdEx:postIndex])
+			m.Program = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Contract", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Contract = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Label", wireType)
 			}
@@ -2636,7 +2410,7 @@ func (m *MsgChangeJobLabel) Unmarshal(dAtA []byte) error {
 			}
 			m.Label = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 4:
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field NewLabel", wireType)
 			}
@@ -2723,7 +2497,7 @@ func (m *MsgChangeJobCallData) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Program", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -2751,41 +2525,9 @@ func (m *MsgChangeJobCallData) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Creator = string(dAtA[iNdEx:postIndex])
+			m.Program = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Contract", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Contract = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Label", wireType)
 			}
@@ -2817,7 +2559,7 @@ func (m *MsgChangeJobCallData) Unmarshal(dAtA []byte) error {
 			}
 			m.Label = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 4:
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field CallData", wireType)
 			}
@@ -2904,7 +2646,7 @@ func (m *MsgChangeJobGasPrice) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Program", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -2932,41 +2674,9 @@ func (m *MsgChangeJobGasPrice) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Creator = string(dAtA[iNdEx:postIndex])
+			m.Program = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Contract", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Contract = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Label", wireType)
 			}
@@ -2998,7 +2708,7 @@ func (m *MsgChangeJobGasPrice) Unmarshal(dAtA []byte) error {
 			}
 			m.Label = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 4:
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field GasPrice", wireType)
 			}
@@ -3086,7 +2796,7 @@ func (m *MsgChangeJobPeriod) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Program", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -3114,41 +2824,9 @@ func (m *MsgChangeJobPeriod) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Creator = string(dAtA[iNdEx:postIndex])
+			m.Program = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Contract", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Contract = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Label", wireType)
 			}
@@ -3180,7 +2858,7 @@ func (m *MsgChangeJobPeriod) Unmarshal(dAtA []byte) error {
 			}
 			m.Label = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 4:
+		case 3:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Period", wireType)
 			}
@@ -3254,7 +2932,7 @@ func (m *MsgChangeJobBlock) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Program", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -3282,41 +2960,9 @@ func (m *MsgChangeJobBlock) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Creator = string(dAtA[iNdEx:postIndex])
+			m.Program = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Contract", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Contract = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Label", wireType)
 			}
@@ -3348,7 +2994,7 @@ func (m *MsgChangeJobBlock) Unmarshal(dAtA []byte) error {
 			}
 			m.Label = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 4:
+		case 3:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Block", wireType)
 			}

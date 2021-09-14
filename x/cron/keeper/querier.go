@@ -45,7 +45,7 @@ func queryJob(ctx sdk.Context, req abci.RequestQuery, k Keeper, legacyQuerierCdc
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
 
-	job, found := k.GetJob(ctx, params.Contract, params.Creator, params.Label)
+	job, found := k.GetJob(ctx, params.Program, params.Label)
 	if !found {
 		return nil, types.ErrJobNotExist
 	}
@@ -65,7 +65,7 @@ func queryJobStats(ctx sdk.Context, req abci.RequestQuery, k Keeper, legacyQueri
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
 
-	jobStats, found := k.GetJobStats(ctx, params.Contract, params.Creator, params.Label)
+	jobStats, found := k.GetJobStats(ctx, params.Program, params.Label)
 	if !found {
 		return nil, types.ErrJobNotExist
 	}
