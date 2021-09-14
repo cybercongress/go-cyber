@@ -35,12 +35,12 @@ func (p *Proxy) AddHook(hook types.CoinsTransferHook) {
 	p.coinsTransferHooks = append(p.coinsTransferHooks, hook)
 }
 
-func (k *Proxy) SetEnergyKeeper(ek types.EnergyKeeper) {
-	k.ek = ek
+func (p *Proxy) SetEnergyKeeper(ek types.EnergyKeeper) {
+	p.ek = ek
 }
 
-func (k *Proxy) SetAccountKeeper(ak authkeeper.AccountKeeper) {
-	k.ak = ak
+func (p *Proxy) SetAccountKeeper(ak authkeeper.AccountKeeper) {
+	p.ak = ak
 }
 
 func (p *Proxy) OnCoinsTransfer(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress) {
@@ -49,19 +49,19 @@ func (p *Proxy) OnCoinsTransfer(ctx sdk.Context, from sdk.AccAddress, to sdk.Acc
 	}
 }
 
-func (k Proxy) GetTotalSupplyVolt(ctx sdk.Context) int64 {
-	return k.bk.GetSupply(ctx).GetTotal().AmountOf(ctypes.VOLT).Int64()
+func (p Proxy) GetTotalSupplyVolt(ctx sdk.Context) int64 {
+	return p.bk.GetSupply(ctx).GetTotal().AmountOf(ctypes.VOLT).Int64()
 }
 
-func (k Proxy) GetTotalSupplyAmper(ctx sdk.Context) int64 {
-	return k.bk.GetSupply(ctx).GetTotal().AmountOf(ctypes.AMPER).Int64()
+func (p Proxy) GetTotalSupplyAmper(ctx sdk.Context) int64 {
+	return p.bk.GetSupply(ctx).GetTotal().AmountOf(ctypes.AMPER).Int64()
 }
 
-func (k Proxy) GetAccountStakePercentageVolt(ctx sdk.Context, addr sdk.AccAddress) float64 {
-	a := k.GetAccountTotalStakeVolt(ctx, addr)
+func (p Proxy) GetAccountStakePercentageVolt(ctx sdk.Context, addr sdk.AccAddress) float64 {
+	a := p.GetAccountTotalStakeVolt(ctx, addr)
 	aFloat := float64(a)
 
-	b := k.GetTotalSupplyVolt(ctx)
+	b := p.GetTotalSupplyVolt(ctx)
 	bFloat := float64(b)
 
 	c := aFloat / bFloat
@@ -70,16 +70,16 @@ func (k Proxy) GetAccountStakePercentageVolt(ctx sdk.Context, addr sdk.AccAddres
 	return c
 }
 
-func (k Proxy) GetAccountTotalStakeVolt(ctx sdk.Context, addr sdk.AccAddress) int64 {
-	return k.bk.GetBalance(ctx, addr, ctypes.VOLT).Amount.Int64() + k.GetRoutedTo(ctx, addr).AmountOf(ctypes.VOLT).Int64()
+func (p Proxy) GetAccountTotalStakeVolt(ctx sdk.Context, addr sdk.AccAddress) int64 {
+	return p.bk.GetBalance(ctx, addr, ctypes.VOLT).Amount.Int64() + p.GetRoutedTo(ctx, addr).AmountOf(ctypes.VOLT).Int64()
 }
 
-func (k Proxy) GetAccountTotalStakeAmper(ctx sdk.Context, addr sdk.AccAddress) int64 {
-	return k.bk.GetBalance(ctx, addr, ctypes.AMPER).Amount.Int64() + k.GetRoutedTo(ctx, addr).AmountOf(ctypes.AMPER).Int64()
+func (p Proxy) GetAccountTotalStakeAmper(ctx sdk.Context, addr sdk.AccAddress) int64 {
+	return p.bk.GetBalance(ctx, addr, ctypes.AMPER).Amount.Int64() + p.GetRoutedTo(ctx, addr).AmountOf(ctypes.AMPER).Int64()
 }
 
-func (k Proxy) GetRoutedTo(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins {
-	return k.ek.GetRoutedToEnergy(ctx, addr)
+func (p Proxy) GetRoutedTo(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins {
+	return p.ek.GetRoutedToEnergy(ctx, addr)
 }
 
 // -----------------------------------------------------------------
