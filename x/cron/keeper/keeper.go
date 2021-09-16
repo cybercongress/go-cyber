@@ -112,13 +112,9 @@ func (k Keeper) SaveJob(
 func (k Keeper) RemoveJobFull(
 	ctx sdk.Context, program sdk.AccAddress, label string,
 ) error {
-	job, found := k.GetJob(ctx, program, label)
+	_, found := k.GetJob(ctx, program, label)
 	if !found {
 		return types.ErrJobNotExist
-	}
-
-	if job.Program != program.String() {
-		return types.ErrNotAuthorized
 	}
 
 	k.DeleteJob(ctx, program, label)
@@ -134,10 +130,6 @@ func (k Keeper) UpdateJobCID(
 	job, found := k.GetJob(ctx, program, label)
 	if !found {
 		return types.ErrJobNotExist
-	}
-
-	if job.Program != program.String() {
-		return types.ErrNotAuthorized
 	}
 
 	k.SetJob(ctx, types.NewJob(
@@ -158,10 +150,6 @@ func (k Keeper) UpdateJobLabel(
 		return types.ErrJobNotExist
 	}
 	jobStats, _ := k.GetJobStats(ctx, program, label)
-
-	if job.Program != program.String() {
-		return types.ErrNotAuthorized
-	}
 
 	if job.Label == labelNew {
 		return types.ErrBadLabel
@@ -194,10 +182,6 @@ func (k Keeper) UpdateJobCallData(
 		return types.ErrJobNotExist
 	}
 
-	if job.Program != program.String() {
-		return types.ErrNotAuthorized
-	}
-
 	k.SetJob(ctx, types.NewJob(
 		job.Program,
 		job.Trigger, types.NewLoad(calldata, job.Load.GasPrice),
@@ -216,10 +200,6 @@ func (k Keeper) UpdateJobGasPrice(
 		return types.ErrJobNotExist
 	}
 
-	if job.Program != program.String() {
-		return types.ErrNotAuthorized
-	}
-
 	k.SetJob(ctx, types.NewJob(
 		job.Program,
 		job.Trigger, types.NewLoad(job.Load.CallData, gasprice),
@@ -236,10 +216,6 @@ func (k Keeper) UpdateJobPeriod(
 	job, found := k.GetJob(ctx, program, label)
 	if !found {
 		return types.ErrJobNotExist
-	}
-
-	if job.Program != program.String() {
-		return types.ErrNotAuthorized
 	}
 
 	if job.Trigger.Block > 0 {
@@ -266,10 +242,6 @@ func (k Keeper) UpdateJobBlock(
 
 	if ctx.BlockHeight() >= int64(block) {
 		return types.ErrBadTrigger
-	}
-
-	if job.Program != program.String() {
-		return types.ErrNotAuthorized
 	}
 
 	if job.Trigger.Period > 0 {
