@@ -3,8 +3,8 @@ module github.com/cybercongress/go-cyber
 go 1.16
 
 require (
-	github.com/CosmWasm/wasmd v0.18.0
-	github.com/CosmWasm/wasmvm v0.16.0
+	github.com/CosmWasm/wasmd v0.19.0
+	github.com/CosmWasm/wasmvm v0.16.1
 	github.com/armon/go-metrics v0.3.8
 	github.com/cosmos/cosmos-sdk v0.42.9
 	github.com/cosmos/iavl v0.16.0
@@ -16,7 +16,7 @@ require (
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
 	github.com/ipfs/go-cid v0.0.7
 	github.com/rakyll/statik v0.1.7
-	github.com/spf13/cast v1.4.0
+	github.com/spf13/cast v1.4.1
 	github.com/spf13/cobra v1.1.3
 	github.com/spf13/viper v1.8.1
 	github.com/stretchr/testify v1.7.0
