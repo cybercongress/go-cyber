@@ -82,6 +82,18 @@ protoc:
 	unzip -o ${PROTOC_ZIP} -d /usr/local 'include/*'; \
 	rm -f ${PROTOC_ZIP})
 
+protoc-gen-go:
+	@echo "Installing protoc-gen-go..."
+	@go install github.com/golang/protobuf/protoc-gen-go@latest
+
+protoc-gen-grpc-gateway:
+	@echo "Installing protoc-gen-grpc-gateway..."
+	@go install github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway@latest
+
+protoc-gen-go-grpc:
+	@echo "Installing protoc-gen-go-grpc..."
+	@go install google.golang.org/grpc/cmd/protoc-gen-go-grpc
+
 protoc-gen-gocosmos:
 	@echo "Installing protoc-gen-gocosmos..."
 	@go install github.com/regen-network/cosmos-proto/protoc-gen-gocosmos
