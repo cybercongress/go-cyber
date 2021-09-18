@@ -284,6 +284,8 @@ Make a directory tree for storing your daemon:
 
 ```bash
 mkdir $HOME/.cyber
+mkdir $HOME/.cyber/data
+mkdir $HOME/.cyber/config
 ```
 
 
@@ -291,13 +293,13 @@ mkdir $HOME/.cyber
 (This will pull and extract the image from cyberd/cyber)
 
 ```bash
-docker run -d --gpus all --name=bostrom-testnet-4 --restart always -p 26656:26656 -p 26657:26657 -p 1317:1317 -e ALLOW_SEARCH=true -v $HOME/.cyber:/root/.cyber  cyberd/cyber:bostrom-testnet-4.1
+docker run -d --gpus all --name=bostrom-testnet-5 --restart always -p 26656:26656 -p 26657:26657 -p 1317:1317 -e ALLOW_SEARCH=true -v $HOME/.cyber:/root/.cyber  cyberd/cyber:bostrom-testnet-5
 ```
 
 3. After container successfully pulled and launched, check the status of your node:
 
 ```bash
-docker exec bostrom-testnet-4 cyber status
+docker exec bostrom-testnet-5 cyber status
 ```
 
 A possible output may look like this:
@@ -317,13 +319,13 @@ For peers addresses please refer to [README](/README.md)
 When done, please restart container using:
 
 ```bash
-docker restart bostrom-testnet-4
+docker restart bostrom-testnet-5
 ```
 
 To ckeck logs of the syncing process in the terminal use:
 
 ```bash
-docker logs bostrom-testnet-4 -f --tail 10
+docker logs bostrom-testnet-5 -f --tail 10
 ```
 
 ## Validator start
@@ -339,25 +341,25 @@ Or use our [port](https://cyber.page/brain) to enter cyber.
 To create a new one use:
 
 ```bash
-docker exec -ti bostrom-testnet-4 cyber keys add <your_key_name>
+docker exec -ti bostrom-testnet-5 cyber keys add <your_key_name>
 ```
 
 To import existing address use: 
 
 ```bash
-docker exec -ti bostrom-testnet-4 cyber keys add <your_key_name> --recover
+docker exec -ti bostrom-testnet-5 cyber keys add <your_key_name> --recover
 ```
 
 It also possible to import address from Ethereum private key:
 
 ```bash
-docker exec -ti bostrom-testnet-4 cyber keys add import_private <your_key_name>
+docker exec -ti bostrom-testnet-5 cyber keys add import_private <your_key_name>
 ```
 
 You could use your ledger device with the Cosmos app installed on it to sign and store cyber addresses:
 
 ```bash
-docker exec -ti bostrom-testnet-4 cyber keys add <your_key_name> --ledger
+docker exec -ti bostrom-testnet-5 cyber keys add <your_key_name> --ledger
 ```
 
 **<your_key_name>** is any name you pick to represent this key pair.
@@ -387,7 +389,7 @@ not the public key of the address you have just created.
 To get the nodes public key, run the following command:
 
 ```bash
-docker exec bostrom-testnet-4 cyber tendermint show-validator
+docker exec bostrom-testnet-5 cyber tendermint show-validator
 ```
 
 It will return a bech32 public key. Let’s call it **<your_node_pubkey>**.
@@ -395,7 +397,7 @@ The next step is to to declare a validator candidate.
 To declare a validator candidate, run the following command adjusting the stake amount and the other fields:
 
 ```bash
-docker exec -ti bostrom-testnet-4 cyber tx staking create-validator \
+docker exec -ti bostrom-testnet-5 cyber tx staking create-validator \
   --amount=10000000boot \
   --min-self-delegation "1000000" \
   --pubkey=<your_node_pubkey> \
@@ -404,7 +406,7 @@ docker exec -ti bostrom-testnet-4 cyber tx staking create-validator \
   --commission-rate="0.10" \
   --commission-max-rate="0.20" \
   --commission-max-change-rate="0.01" \
-  --chain-id=bostrom-testnet-4 \
+  --chain-id=bostrom-testnet-5 \
   --gas-prices 0.01boot \
   --gas 400000
 ```
@@ -412,7 +414,7 @@ docker exec -ti bostrom-testnet-4 cyber tx staking create-validator \
 ### Verify that you are validating
 
 ```bash
-docker exec -ti bostrom-testnet-4 cyber query staking validators
+docker exec -ti bostrom-testnet-5 cyber query staking validators
 ```
 
 If you see your `<your_node_nickname>` with status `Bonded` and Jailed `false` everything is good.
@@ -426,7 +428,7 @@ If your validator got under slashing conditions, it will be jailed.
 After such event, an operator must unjail the validator manually:
 
 ```bash
-docker exec -ti bostrom-testnet-4 cyber tx slashing unjail --from=<your_key_name> --chain-id bostrom-testnet-4 --gas-prices 0.01boot --gas 300000
+docker exec -ti bostrom-testnet-5 cyber tx slashing unjail --from=<your_key_name> --chain-id bostrom-testnet-5 --gas-prices 0.01boot --gas 300000
 ```
 
 ### Back-up validator keys (!)

@@ -123,7 +123,7 @@ To use as CLI with remote node just set CUDA_ENABLED=false in Makefile and build
 - Faucet: ```
   curl --header "Content-Type: application/json" --request POST --data '{"denom":"boot","address":"bostrom1sm9sq4wnn62tk5yz0x3fvvx2ea9efguqwvdu64"}' http://titan.cybernode.ai:8000/credit```
 - Seed: `d0518ce9881a4b0c5872e5e9b7c4ea8d760dad3f@85.10.207.173:26656`
-- Peers: `5d542c0eb40ae48dc2cac0c140aedb605ded77dc@195.201.105.229:26656,a7226dce9f543a4ecd8db1da2ffd7be05d40d3ad@185.186.208.36:26656,c72de1e20beed51b779d89b1cf08d8146016eec4@185.186.208.37:26656,4c130ed1c58f6d6be981c59a748511e581969c51@86.57.254.202:36656`
+- Peers: `5d542c0eb40ae48dc2cac0c140aedb605ded77dc@195.201.105.229:26656,a7226dce9f543a4ecd8db1da2ffd7be05d40d3ad@185.186.208.36:26656,c72de1e20beed51b779d89b1cf08d8146016eec4@185.186.208.37:26656,4c130ed1c58f6d6be981c59a748511e581969c51@93.180.175.201:36656`
 
 For better network stability please update your `.cyber/config/config.toml` lines as following: 
 
@@ -136,15 +136,15 @@ allow_duplicate_ip = true
 ```
 _________________________________________________________
 
-## How to update from bostrom-testnet-4 to bostrom-testnet-4.2
+## How to update from bostrom-testnet-4 to bostrom-testnet-5
 
 If you have your bostrom-testnet-4 node running on our docker container do:
 
 ```bash
 docker stop bostrom-testnet-4
 docker rm bostrom-testnet-4
-docker rmi cyberd/cyber:bostrom-testnet-4
-docker run -d --gpus all --name=bostrom-testnet-4 --restart always -p 26656:26656 -p 26657:26657 -p 1317:1317 -e ALLOW_SEARCH=false -v $HOME/.cyber:/root/.cyber  cyberd/cyber:bostrom-testnet-4.2
+docker rmi cyberd/cyber:bostrom-testnet-4.2
+docker run -d --gpus all --name=bostrom-testnet-5 --restart always -p 26656:26656 -p 26657:26657 -p 1317:1317 -e ALLOW_SEARCH=false -v $HOME/.cyber:/root/.cyber  cyberd/cyber:bostrom-testnet-5
 ```
 This will pull new image and replace genesis and cyber binary to correct versions.
 _________________________________________________________

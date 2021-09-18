@@ -97,7 +97,7 @@ RUN make build CUDA_ENABLED=true \
 FROM ubuntu:20.04
 
 ENV DAEMON_HOME /root/.cyber
-ENV DAEMON_RESTART_AFTER_UPGRADE=on
+ENV DAEMON_RESTART_AFTER_UPGRADE=true
 ENV GAIA_HOME ${DAEMON_HOME}
 ENV DAEMON_NAME cyber
 
@@ -107,9 +107,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends wget curl ca-ce
 
 # Download genesis file and links file from IPFS
 ###########################################################################################
-# PUT needed CID_OF_GENESIS here
-#RUN wget -O /genesis.json https://gateway.ipfs.cybernode.ai/ipfs/QmTywXJjKQew1wcfLc6X4i94Gp76Gjg8qbvtaEQcvQVcxV
-RUN wget -O /genesis.json https://cloudflare-ipfs.com/ipfs/QmXNjAP5SeNWSJRKLhr7ZgEcUuMuoECAazVDwr7PhZyNd2
+# PUT correct CID_OF_GENESIS here
+RUN wget -O /genesis.json https://gateway.ipfs.cybernode.ai/ipfs/QmPtHR1ee3s4PsSqHqpfQv68raHgk2W4XV9uvnUgnLkMSP
 
 WORKDIR /
 
