@@ -43,15 +43,16 @@ _____________
 [![version](https://img.shields.io/github/release/cybercongress/cyberd.svg?style=flat-square)](https://github.com/cybercongress/cyberd/releases/latest)
 [![CircleCI](https://img.shields.io/circleci/build/github/cybercongress/go-cyber/master?style=flat-square)](https://circleci.com/gh/cybercongress/workflows/go-cyber/tree/master)
 [![license](https://img.shields.io/badge/License-Cyber-brightgreen.svg?style=flat-square)](https://github.com/cybercongress/cyberd/blob/master/LICENSE)
-![Cosmos-SDK](https://img.shields.io/static/v1.svg?label=cosmos-sdk&message=0.42.8&color=blue&style=flat-square)
-![Tendermint](https://img.shields.io/static/v1.svg?label=tendermint&message=0.34.10&color=blue&style=flat-square)
+![Cosmos-SDK](https://img.shields.io/static/v1.svg?label=cosmos-sdk&message=0.42.9&color=blue&style=flat-square)
+![Tendermint](https://img.shields.io/static/v1.svg?label=tendermint&message=0.34.13&color=blue&style=flat-square)
+![Tendermint](https://img.shields.io/static/v1.svg?label=cosmwasm&message=0.16.1&color=blue&style=flat-square)
 [![LoC](https://tokei.rs/b1/github/cybercongress/cyberd?style=flat)](https://github.com/cybercongress/cyberd)
 [![contributors](https://img.shields.io/github/contributors/cybercongress/cyberd.svg?style=flat-square)](https://github.com/cybercongress/cyberd/graphs/contributors)
 [![Coverage Status](https://img.shields.io/coveralls/github/cybercongress/cyberd/master?style=flat-square)](https://coveralls.io/github/cybercongress/cyberd?branch=master)
 
 ## Blockchain
 
-[![chain](https://img.shields.io/badge/Chain-bostrom--testnet--4-success.svg?style=flat-square)](https://github.com/cybercongress/cyberd/blob/master/docs/run_validator.md)
+[![chain](https://img.shields.io/badge/Chain-bostrom--testnet--5-success.svg?style=flat-square)](https://github.com/cybercongress/cyberd/blob/master/docs/run_validator.md)
 [![block](https://img.shields.io/badge/dynamic/json?color=blue&label=Block%20Height&query=%24.result.sync_info.latest_block_height&url=https://rpc.bostromdev.cybernode.ai/status&style=flat-square)]()
 [![cyberlinks](https://img.shields.io/badge/dynamic/json?color=blue&label=Cyberlinks&query=%24.result.links&url=https://lcd.bostromdev.cybernode.ai/graph/graph_stats&style=flat-square)]()
 [![cids](https://img.shields.io/badge/dynamic/json?color=blue&label=Particles&query=%24.result.cids&url=https://lcd.bostromdev.cybernode.ai/graph/graph_stats&style=flat-square)]()
@@ -60,10 +61,10 @@ _____________
 _________________________________________________________
 
 ## Networks
-|Network|Cosmos|Order|Launch|Security Token| Resources Token|Bandwidth Token| Power Token | Supported Tokens |
+|Network|Cosmos|Hub|Launch|Security Token| Resources Token|Bandwidth Token| Power Token | Supported Tokens |
 |---|---|---|---|---|---|---|---|---|
-|Bostrom|🟢|Canary|2021|BOOT |HYDROGEN|VOLT|AMPER|[ICS20, CW20, CW721, CW1155]|
-|Cyber|🔵|Mainnet|2022|CYB|HYDROGEN|VOLT|AMPER|[ICS20, CW20, CW721, CW1155]|
+|Bostrom|🟢|Bootloader Hub|2021|BOOT |HYDROGEN|VOLT|AMPER|[ICS20, CW20, CW721, CW1155]|
+|Cyber|🔵|Cyber Hub|2022|CYB|HYDROGEN|VOLT|AMPER|[ICS20, CW20, CW721, CW1155]|
 _________________________________________________________
 
 ## Computer Specification 🛠
@@ -95,7 +96,7 @@ _________________________________________________________
 25. License - [Cyber License]()
 26. Future Cyber VM support - [GraphBLAS R&D]()
 
-**Try [cyb.ai](https://cyb.ai) on bostrom-testnet-4 network**
+**Try [cyb.ai](https://cyb.ai) on bostrom-testnet-5 network**
 _________________________________________________________
 
 ## ELI-5
@@ -117,9 +118,10 @@ Run: ```cyber start ```
 To use as CLI with remote node just set CUDA_ENABLED=false in Makefile and build
 ```
 
-- Version - v0.2.0-beta7
-- [RPC](https://rpc.bostromdev.cybernode.ai/)
-- [REST](https://lcd.bostromdev.cybernode.ai/rank/search?cid=QmdVWtX17m7UvF8FcvNLTJxcpxv2fSJd7Z3VBoYxxW9Qpu)
+- Version - v0.2.0-RC1
+- RPC: `https://rpc.bostromdev.cybernode.ai/`
+- REST: `https://lcd.bostromdev.cybernode.ai/rank/parameters`
+- CLI: `... --node=https://rpc.bostromdev.cybernode.ai:443`
 - Faucet: ```
   curl --header "Content-Type: application/json" --request POST --data '{"denom":"boot","address":"bostrom1sm9sq4wnn62tk5yz0x3fvvx2ea9efguqwvdu64"}' http://titan.cybernode.ai:8000/credit```
 - Seed: `d0518ce9881a4b0c5872e5e9b7c4ea8d760dad3f@85.10.207.173:26656`
