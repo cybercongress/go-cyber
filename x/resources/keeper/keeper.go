@@ -333,20 +333,26 @@ func (k Keeper) CheckAvailablePeriod(ctx sdk.Context, length uint64) bool {
 	var availableLength int64
 	passed := ctx.BlockHeight()
 
-	// TODO more advanced logic will be applied after launch
+	// TODO this is mocked available periods for testnet-5
 	switch {
-	case passed > 600:
-		// 12 months max freeze after 3072000 blocks passed after launch
-		//availableLength = 31104000
-		availableLength = 3600
-	case passed > 300:
-		// 6 months max freeze after 1536000 blocks passed after launch
-		//availableLength = 15552000
-		availableLength = 2400
+	case passed > 90000:
+		// after 90000 blocks available 7 days
+		availableLength = 604800
+	case passed > 75000:
+		// after 75000 blocks available 6 days
+		availableLength = 518400
+	case passed > 60000:
+		// after 60000 blocks available 5 days
+		availableLength = 432000
+	case passed > 45000:
+		// after 45000 blocks available 4 days
+		availableLength = 345600
+	case passed > 30000:
+		// after 30000 blocks available 3 days
+		availableLength = 259200
 	default:
-		// 3 months max freeze before 1536000 blocks passed after launch
-		//availableLength = 7776000
-		availableLength = 1200
+		// before 30000 blocks available 2 days
+		availableLength = 172800
 	}
 	return length < uint64(availableLength)
 }
