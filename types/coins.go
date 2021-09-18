@@ -4,8 +4,8 @@ import sdk "github.com/cosmos/cosmos-sdk/types"
 
 const (
 	CYB   = "boot"
-	VOLT  = "mvolt"
-	AMPER = "mamper"
+	VOLT  = "millivolt"
+	AMPER = "milliampere"
 	SCYB  = "hydrogen"
 )
 
