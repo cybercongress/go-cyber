@@ -105,9 +105,9 @@ _________________________________________________________
 
 ## Setup
 
-Chain-ID: bostrom-testnet-4
+Chain-ID: bostrom-testnet-5
 
-Genesis: [QmXNjAP5SeNWSJRKLhr7ZgEcUuMuoECAazVDwr7PhZyNd2](http://cloudflare-ipfs.com/ipfs/QmXNjAP5SeNWSJRKLhr7ZgEcUuMuoECAazVDwr7PhZyNd2)
+Genesis: [QmPtHR1ee3s4PsSqHqpfQv68raHgk2W4XV9uvnUgnLkMSP](http://cloudflare-ipfs.com/ipfs/QmPtHR1ee3s4PsSqHqpfQv68raHgk2W4XV9uvnUgnLkMSP)
 
 Build: ```make install```
 
@@ -147,6 +147,8 @@ docker rmi cyberd/cyber:bostrom-testnet-4.2
 docker run -d --gpus all --name=bostrom-testnet-5 --restart always -p 26656:26656 -p 26657:26657 -p 1317:1317 -e ALLOW_SEARCH=false -v $HOME/.cyber:/root/.cyber  cyberd/cyber:bostrom-testnet-5
 ```
 This will pull new image and replace genesis and cyber binary to correct versions.
+
+Than you'll have to send create-validator [transaction](https://github.com/cybercongress/go-cyber/blob/bostrom-dev/docs/run_validator.md#send-the-create-validator-transaction)
 _________________________________________________________
 
 ## IBC
