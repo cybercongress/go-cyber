@@ -316,6 +316,16 @@ A possible output may look like this:
 
 For peers addresses please refer to [README](/README.md)
 
+You can do it in one click:
+
+```bash
+sed -i.bak -e "s/^persistent_peers *=.*/persistent_peers = \"\
+5d542c0eb40ae48dc2cac0c140aedb605ded77dc@195.201.105.229:26656,\
+a7226dce9f543a4ecd8db1da2ffd7be05d40d3ad@185.186.208.36:26656,\
+c72de1e20beed51b779d89b1cf08d8146016eec4@185.186.208.37:26656,\
+4c130ed1c58f6d6be981c59a748511e581969c51@93.180.175.201:36656,\
+\"/" $HOME/.cyber/config/config.toml
+```
 When done, please restart container using:
 
 ```bash
@@ -400,7 +410,7 @@ To declare a validator candidate, run the following command adjusting the stake 
 docker exec -ti bostrom-testnet-5 cyber tx staking create-validator \
   --amount=10000000boot \
   --min-self-delegation "1000000" \
-  --pubkey=<your_node_pubkey> \
+  --pubkey=$(docker exec bostrom-testnet-5 cyber tendermint show-validator) \
   --moniker=<your_node_nickname> \
   --from=<your_key_name> \
   --commission-rate="0.10" \
