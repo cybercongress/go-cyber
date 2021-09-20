@@ -157,7 +157,7 @@ _________________________________________________________
 
 ### Config for [Relayer](https://github.com/cosmos/relayer/)
 ```
-{"key":"agent","chain-id":"bostrom-testnet-5","rpc-addr":"http://167.172.103.118:26657","account-prefix":"bostrom","gas-adjustment":1.5,"gas-prices":"0.01boot","trusting-period":"72h"}
+{"key":"agent","chain-id":"bostrom-testnet-5","rpc-addr":"https://rpc.bostromdev.cybernode.ai/","account-prefix":"bostrom","gas-adjustment":1.5,"gas-prices":"0.01boot","trusting-period":"72h"}
 ```
 _________________________________________________________
 
