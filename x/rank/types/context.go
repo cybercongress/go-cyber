@@ -3,8 +3,6 @@ package types
 import (
 	"sort"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
 )
 
@@ -16,6 +14,7 @@ type CalculationContext struct {
 	outLinks map[graphtypes.CidNumber]graphtypes.CidLinks
 
 	stakes map[uint64]uint64
+	neudegs map[uint64]uint64
 
 	FullTree bool
 
@@ -24,7 +23,7 @@ type CalculationContext struct {
 }
 
 func NewCalcContext(
-	ctx sdk.Context, linkIndex GraphIndexedKeeper, numberKeeper GraphKeeper,
+	linkIndex GraphIndexedKeeper, graphKeeper GraphKeeper,
 	stakeKeeper StakeKeeper, fullTree bool, dampingFactor float64, tolerance float64,
 	cidsCount, linksCount uint64,
 ) *CalculationContext {
@@ -38,6 +37,7 @@ func NewCalcContext(
 		outLinks: linkIndex.GetOutLinks(),
 
 		stakes: stakeKeeper.GetTotalStakesAmpere(),
+		neudegs: graphKeeper.GetNeudegs(),
 
 		FullTree: fullTree,
 
@@ -60,6 +60,10 @@ func (c *CalculationContext) GetCidsCount() int64 {
 
 func (c *CalculationContext) GetStakes() map[uint64]uint64 {
 	return c.stakes
+}
+
+func (c *CalculationContext) GetNeudegs() map[uint64]uint64 {
+	return c.neudegs
 }
 
 func (c *CalculationContext) GetTolerance() float64 {

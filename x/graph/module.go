@@ -75,7 +75,7 @@ func (AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegistry) 
 
 type AppModule struct {
 	AppModuleBasic
-	gk keeper.GraphKeeper
+	gk *keeper.GraphKeeper
 	ik *keeper.IndexKeeper
 	ak authkeeper.AccountKeeper
 	bk *cyberbankkeeper.IndexedKeeper
@@ -84,7 +84,7 @@ type AppModule struct {
 
 func NewAppModule(
 	cdc 			codec.Marshaler,
-	graphKeeper     keeper.GraphKeeper,
+	graphKeeper     *keeper.GraphKeeper,
 	indexKeeper 	*keeper.IndexKeeper,
 	accountKeeper 	authkeeper.AccountKeeper,
 	bankKeeper      *cyberbankkeeper.IndexedKeeper,
@@ -120,11 +120,11 @@ func (am AppModule) RegisterServices(cfg module.Configurator) {
 }
 
 func (am AppModule) LegacyQuerierHandler(legacyQuerierCdc *codec.LegacyAmino) sdk.Querier {
-	return keeper.NewQuerier(am.gk, legacyQuerierCdc)
+	return keeper.NewQuerier(*am.gk, legacyQuerierCdc)
 }
 
 func (am AppModule) InitGenesis(ctx sdk.Context, _ codec.JSONMarshaler, _ json.RawMessage) []abci.ValidatorUpdate {
-	err := keeper.InitGenesis(ctx, am.gk, am.ik)
+	err := keeper.InitGenesis(ctx, *am.gk, am.ik)
 	if err != nil {
 		panic(err)
 	}
@@ -132,7 +132,7 @@ func (am AppModule) InitGenesis(ctx sdk.Context, _ codec.JSONMarshaler, _ json.R
 }
 
 func (am AppModule) ExportGenesis(ctx sdk.Context, _ codec.JSONMarshaler) json.RawMessage {
-	err := keeper.WriteGenesis(ctx, am.gk, am.ik)
+	err := keeper.WriteGenesis(ctx, *am.gk, am.ik)
 	if err != nil {
 		panic(err)
 	}
@@ -141,7 +141,8 @@ func (am AppModule) ExportGenesis(ctx sdk.Context, _ codec.JSONMarshaler) json.R
 
 func (am AppModule) BeginBlock(_ sdk.Context, _ abci.RequestBeginBlock) {}
 
-func (am AppModule) EndBlock(_ sdk.Context, _ abci.RequestEndBlock) []abci.ValidatorUpdate {
+func (am AppModule) EndBlock(ctx sdk.Context, _ abci.RequestEndBlock) []abci.ValidatorUpdate {
+	EndBlocker(ctx, am.gk, am.ik)
 	return []abci.ValidatorUpdate{}
 }
 

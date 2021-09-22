@@ -297,7 +297,7 @@ type App struct {
 
 	BandwidthMeter  *bandwidthkeeper.BandwidthMeter
 	CyberbankKeeper *cyberbankkeeper.IndexedKeeper
-	GraphKeeper     graphkeeper.GraphKeeper
+	GraphKeeper     *graphkeeper.GraphKeeper
 	IndexKeeper     *graphkeeper.IndexKeeper
 	RankKeeper      *rankkeeper.StateKeeper
 	EnergyKeeper    energykeeper.Keeper
@@ -427,8 +427,8 @@ func New(
 		keys[bandwidthtypes.StoreKey], app.CyberbankKeeper.Proxy, app.GetSubspace(bandwidthtypes.ModuleName),
 	)
 
-	app.GraphKeeper = graphkeeper.NewKeeper(appCodec, keys[graphtypes.ModuleName])
-	app.IndexKeeper = graphkeeper.NewIndexKeeper(app.GraphKeeper, tkeys[paramstypes.TStoreKey])
+	app.GraphKeeper = graphkeeper.NewKeeper(appCodec, keys[graphtypes.ModuleName], tkeys[paramstypes.TStoreKey])
+	app.IndexKeeper = graphkeeper.NewIndexKeeper(*app.GraphKeeper, tkeys[paramstypes.TStoreKey])
 
 	computeUnit := ranktypes.ComputeUnit(cast.ToInt(appOpts.Get(rank.FlagComputeGPU)))
 	searchAPI := cast.ToBool(appOpts.Get(rank.FlagSearchAPI))
@@ -478,7 +478,7 @@ func New(
 	querier := wasmplugins.NewQuerier()
 	queries := map[string]wasmplugins.WasmQuerierInterface{
 		wasmplugins.WasmQueryRouteRank:      rankwasm.NewWasmQuerier(app.RankKeeper),
-		wasmplugins.WasmQueryRouteGraph:     graphwasm.NewWasmQuerier(app.GraphKeeper),
+		wasmplugins.WasmQueryRouteGraph:     graphwasm.NewWasmQuerier(*app.GraphKeeper),
 		wasmplugins.WasmQueryRouteCron:      cronwasm.NewWasmQuerier(*app.CronKeeper),
 		wasmplugins.WasmQueryRouteEnergy:    energywasm.NewWasmQuerier(app.EnergyKeeper),
 		wasmplugins.WasmQueryRouteBandwidth: bandwidthwasm.NewWasmQuerier(app.BandwidthMeter),
@@ -633,6 +633,7 @@ func New(
 		liquiditytypes.ModuleName,
 		cyberbanktypes.ModuleName,
 		bandwidthtypes.ModuleName,
+		graphtypes.ModuleName,
 		ranktypes.ModuleName,
 	)
 
@@ -723,6 +724,7 @@ func New(
 		app.CyberbankKeeper.LoadState(rankCtx, freshCtx)
 		app.IndexKeeper.LoadState(rankCtx, freshCtx)
 		app.BandwidthMeter.LoadState(freshCtx)
+		app.GraphKeeper.LoadNeudeg(rankCtx, freshCtx)
 		app.RankKeeper.LoadState(freshCtx)
 		app.BaseApp.Logger().Info(
 			"Cyber Consensus Supercomputer is started!",

@@ -15,7 +15,7 @@ import (
 )
 
 type msgServer struct {
-	GraphKeeper
+	*GraphKeeper
 	*IndexKeeper
 	authkeeper.AccountKeeper
 	*cyberbankkeeper.IndexedKeeper
@@ -25,7 +25,7 @@ type msgServer struct {
 // NewMsgServerImpl returns an implementation of the stored MsgServer interface
 // for the provided Keeper.
 func NewMsgServerImpl(
-	gk GraphKeeper,
+	gk *GraphKeeper,
 	ik *IndexKeeper,
 	ak authkeeper.AccountKeeper,
 	bk *cyberbankkeeper.IndexedKeeper,
@@ -106,6 +106,7 @@ func (k msgServer) Cyberlink(goCtx context.Context, msg *types.MsgCyberlink) (*t
 		toCidNumber := k.GetOrPutCidNumber(ctx, types.Cid(link.To))
 
 		k.GraphKeeper.SaveLink(ctx, types.NewLink(fromCidNumber, toCidNumber, accNumber))
+		k.GraphKeeper.IncrementNeudeg(ctx, uint64(accNumber))
 		k.IndexKeeper.PutLink(ctx, types.NewLink(fromCidNumber, toCidNumber, accNumber))
 
 		ctx.EventManager().EmitEvent(

@@ -67,9 +67,7 @@ func (i *IndexKeeper) FixLinks() {
 	i.nextRankOutLinks = make(types.Links)
 }
 
-// return true if this block has new links
-// TODO refactoror logic because triggered by EndBlocker in rank module
-func (i *IndexKeeper) EndBlocker(ctx sdk.Context) bool {
+func (i *IndexKeeper) MergeContextLinks(ctx sdk.Context) {
 	lenLinks := uint64(0)
 	iterator := sdk.KVStorePrefixIterator(ctx.TransientStore(i.tkey), types.CyberlinkTStoreKeyPrefix)
 
@@ -81,7 +79,17 @@ func (i *IndexKeeper) EndBlocker(ctx sdk.Context) bool {
 		lenLinks++
 	}
 
-	return lenLinks > 0
+	if lenLinks > 0 {
+		store := ctx.TransientStore(i.tkey)
+		store.Set(types.HasNewLinks, sdk.Uint64ToBigEndian(lenLinks))
+	}
+}
+
+func (i *IndexKeeper) HasNewLinks(ctx sdk.Context) bool {
+	store := ctx.TransientStore(i.tkey)
+	hasLinks := store.Get(types.HasNewLinks)
+	if hasLinks == nil { return false }
+	return sdk.BigEndianToUint64(hasLinks) > 0
 }
 
 // Use transient store because need to commit cyberlinks to cache only when transaction is successful

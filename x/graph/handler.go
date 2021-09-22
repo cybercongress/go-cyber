@@ -13,7 +13,7 @@ import (
 )
 
 func NewHandler(
-	gk keeper.GraphKeeper,
+	gk *keeper.GraphKeeper,
 	ik *keeper.IndexKeeper,
 	ak authkeeper.AccountKeeper,
 	bk *cyberbankkeeper.IndexedKeeper,
