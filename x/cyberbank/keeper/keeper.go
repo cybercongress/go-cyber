@@ -98,20 +98,25 @@ func (k *IndexedKeeper) DetectUsersStakeAmpereChange(ctx sdk.Context) bool {
 
 func (k *IndexedKeeper) UpdateAccountsStakeAmpere(ctx sdk.Context) {
 	for _, addr := range k.accountToUpdate {
+		k.Logger(ctx).Info("account to update:", "address", addr.String())
 		stake := k.GetAccountTotalStakeAmper(ctx, addr)
 		if k.accountKeeper.GetAccount(ctx, addr) == nil {
+			k.Logger(ctx).Info("skipped account:", "address", addr.String())
 			continue
 		}
 		accountNumber := k.accountKeeper.GetAccount(ctx, addr).GetAccountNumber()
 		k.userNewTotalStakeAmpere[accountNumber] = uint64(stake)
 	}
 
-	// need this hack cause some modules call SetAccount without triggering any tokens transfers
-	// TODO migrate logic to storage listener in sdk 43+
-	lastAccountNumber := k.GetJustLastAccountNumber(ctx) - 1
+	// trigger full account map rebuild in case of account' missing
+	// TODO migrate logic to storage listener in sdk 45+
+	lastAccountNumber := k.GetJustLastAccountNumber(ctx)
 	if uint64(len(k.userNewTotalStakeAmpere)) != lastAccountNumber {
 		for i := lastAccountNumber; i > 0; i-- {
 			if _, ok := k.userNewTotalStakeAmpere[i]; !ok {
+				k.Logger(ctx).Info("added to index account:", "index", i)
+				// TODO update in next release
+				//stake := k.GetAccountTotalStakeAmper(ctx, addr)
 				k.userNewTotalStakeAmpere[i] = 0
 			}
 		}
