@@ -293,7 +293,7 @@ mkdir $HOME/.cyber/config
 (This will pull and extract the image from cyberd/cyber)
 
 ```bash
-docker run -d --gpus all --name=bostrom-testnet-5 --restart always -p 26656:26656 -p 26657:26657 -p 1317:1317 -e ALLOW_SEARCH=true -v $HOME/.cyber:/root/.cyber  cyberd/cyber:bostrom-testnet-5
+docker run -d --gpus all --name=bostrom-testnet-5 --restart always -p 26656:26656 -p 26657:26657 -p 1317:1317 -e ALLOW_SEARCH=true -v $HOME/.cyber:/root/.cyber  cyberd/cyber:bostrom-testnet-5.1
 ```
 
 3. After container successfully pulled and launched, check the status of your node:
@@ -408,7 +408,7 @@ docker exec -ti bostrom-testnet-5 cyber tx staking create-validator \
   --commission-max-change-rate="0.01" \
   --chain-id=bostrom-testnet-5 \
   --gas-prices 0.01boot \
-  --gas 400000
+  --gas 600000
 ```
 
 ### Verify that you are validating

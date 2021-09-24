@@ -146,18 +146,18 @@ If you have your bostrom-testnet-4 node running on our docker container do:
 docker stop bostrom-testnet-4
 docker rm bostrom-testnet-4
 docker rmi cyberd/cyber:bostrom-testnet-4.2
-docker run -d --gpus all --name=bostrom-testnet-5 --restart always -p 26656:26656 -p 26657:26657 -p 1317:1317 -e ALLOW_SEARCH=false -v $HOME/.cyber:/root/.cyber  cyberd/cyber:bostrom-testnet-5
+docker run -d --gpus all --name=bostrom-testnet-5 --restart always -p 26656:26656 -p 26657:26657 -p 1317:1317 -e ALLOW_SEARCH=false -v $HOME/.cyber:/root/.cyber  cyberd/cyber:bostrom-testnet-5.1
 ```
 This will pull new image and replace genesis and cyber binary to correct versions.
 
-Than you'll have to send create-validator [transaction](https://github.com/cybercongress/go-cyber/blob/bostrom-dev/docs/run_validator.md#send-the-create-validator-transaction)
+Than you'll have to send create-validator [transaction](https://github.com/cybercongress/go-cyber/blob/bostrom-dev/docs/run_validator.md#send-the-create-validator-transaction).
 _________________________________________________________
 
 ## IBC
 
 ### Config for [Relayer](https://github.com/cosmos/relayer/)
 ```
-{"key":"agent","chain-id":"bostrom-testnet-5","rpc-addr":"http://167.172.103.118:26657","account-prefix":"bostrom","gas-adjustment":1.5,"gas-prices":"0.01boot","trusting-period":"72h"}
+{"key":"agent","chain-id":"bostrom-testnet-5","rpc-addr":"https://rpc.bostromdev.cybernode.ai:443","account-prefix":"bostrom","gas-adjustment":1.5,"gas-prices":"0.01boot","trusting-period":"72h"}
 ```
 _________________________________________________________
 
@@ -179,7 +179,7 @@ cyber tx resources investmint 25000000hydrogen milliampere 86400 --from <name> -
 ```
 cyber tx graph cyberlink QmdVWtX17m7UvF8FcvNLTJxcpxv2fSJd7Z3VBoYxxW9Qpu Qmb9xPYYwHt1F3bQysKCZzXRzAT8QLvAyMe5DyPy4rene8 --from <name> --chain-id bostrom-testnet-5 --yes --node https://rpc.bostromdev.cybernode.ai:443
 
-curl http://167.172.103.118:1317/rank/search?cid=QmdVWtX17m7UvF8FcvNLTJxcpxv2fSJd7Z3VBoYxxW9Qpu
+curl https://lcd.bostromdev.cybernode.ai/rank/search?cid=QmdVWtX17m7UvF8FcvNLTJxcpxv2fSJd7Z3VBoYxxW9Qpu
 ```
 _________________________________________________________
 
