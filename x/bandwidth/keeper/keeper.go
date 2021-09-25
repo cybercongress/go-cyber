@@ -135,6 +135,7 @@ func (bm *BandwidthMeter) CommitBlockBandwidth(ctx sdk.Context) {
 	}
 
 	// clean window slot in storage
+	// TODO will be removed, need to index blocks bandwidth
 	store := ctx.KVStore(bm.storeKey)
 	if store.Has(types.BlockStoreKey(uint64(windowStart))) {
 		store.Delete(types.BlockStoreKey(uint64(windowStart)))
@@ -166,13 +167,17 @@ func (bm *BandwidthMeter) AdjustPrice(ctx sdk.Context) {
 	params := bm.GetParams(ctx)
 
 	desirableBandwidth := bm.GetDesirableBandwidth(ctx)
-	if desirableBandwidth != 0 {
-		telemetry.SetGauge(float32(bm.totalSpentForSlidingWindow)/float32(desirableBandwidth), types.ModuleName, "load")
+	baseBandwidth := params.BaseLoad.MulInt64(int64(desirableBandwidth)).RoundInt64()
+	if baseBandwidth != 0 {
+		telemetry.SetGauge(float32(bm.totalSpentForSlidingWindow)/float32(baseBandwidth), types.ModuleName, "load")
 
-		newPrice := sdk.NewDec(int64(bm.totalSpentForSlidingWindow)).QuoInt64(int64(desirableBandwidth))
+		newPrice := sdk.NewDec(int64(bm.totalSpentForSlidingWindow)).QuoInt64(baseBandwidth)
 		bm.Logger(ctx).Info("Load", "value", newPrice.String())
 		if newPrice.LT(params.BasePrice) {
 			newPrice = params.BasePrice
+		}
+		if newPrice.GT(sdk.OneDec()) {
+			newPrice = sdk.OneDec()
 		}
 		bm.Logger(ctx).Info("Price", "value", newPrice.String())
 

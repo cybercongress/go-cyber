@@ -15,6 +15,7 @@ var (
 	KeyRecoveryPeriod     = []byte("RecoveryPeriod")
 	KeyAdjustPricePeriod  = []byte("AdjustPricePeriod")
 	KeyBasePrice          = []byte("BasePrice")
+	KeyBaseLoad           = []byte("BaseLoad")
 	KeyMaxBlockBandwidth  = []byte("MaxBlockBandwidth")
 )
 
@@ -26,7 +27,8 @@ func DefaultParams() Params {
 	return Params{
 		RecoveryPeriod:     uint64(100),
 		AdjustPricePeriod:  uint64(5),
-		BasePrice:          sdk.NewDecWithPrec(5,1),
+		BasePrice:          sdk.NewDecWithPrec(25,2),
+		BaseLoad:           sdk.NewDecWithPrec(10,2),
 		MaxBlockBandwidth:  uint64(10000),
 	}
 }
@@ -36,6 +38,7 @@ func (p *Params) ParamSetPairs() paramstypes.ParamSetPairs {
 		paramstypes.NewParamSetPair(KeyRecoveryPeriod, &p.RecoveryPeriod, validateRecoveryPeriod),
 		paramstypes.NewParamSetPair(KeyAdjustPricePeriod, &p.AdjustPricePeriod, validateAdjustPricePeriod),
 		paramstypes.NewParamSetPair(KeyBasePrice, &p.BasePrice, validateBasePrice),
+		paramstypes.NewParamSetPair(KeyBaseLoad, &p.BaseLoad, validateBaseLoad),
 		paramstypes.NewParamSetPair(KeyMaxBlockBandwidth, &p.MaxBlockBandwidth, validateMaxBlockBandwidth),
 	}
 }
@@ -48,6 +51,9 @@ func (p Params) Validate() error {
 		return err
 	}
 	if err := validateBasePrice(p.BasePrice); err != nil {
+		return err
+	}
+	if err := validateBaseLoad(p.BaseLoad); err != nil {
 		return err
 	}
 	if err := validateMaxBlockBandwidth(p.MaxBlockBandwidth); err != nil {
@@ -98,6 +104,28 @@ func validateBasePrice(i interface{}) error {
 
 	if v.GT(sdk.OneDec()) {
 		return fmt.Errorf("base price is more than one: %s", v)
+	}
+
+	return nil
+}
+
+func validateBaseLoad(i interface{}) error {
+	v, ok := i.(sdk.Dec)
+
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if !v.IsPositive() {
+		return fmt.Errorf("base load is not positive: %s", v)
+	}
+
+	if v.GT(sdk.OneDec()) {
+		return fmt.Errorf("base load is more than one: %s", v)
+	}
+
+	if v.LT(sdk.NewDecWithPrec(1,1)) {
+		return fmt.Errorf("base price is less than one tenth: %s", v)
 	}
 
 	return nil

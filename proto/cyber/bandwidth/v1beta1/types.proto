@@ -15,7 +15,12 @@ message Params {
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
         (gogoproto.nullable)   = false
     ];
-    uint64 max_block_bandwidth = 4 [(gogoproto.moretags) = "yaml:\"max_block_bandwidth\""];
+    string base_load   = 4 [
+        (gogoproto.moretags) = "yaml:\"base_load\"",
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+        (gogoproto.nullable)   = false
+    ];
+    uint64 max_block_bandwidth = 5 [(gogoproto.moretags) = "yaml:\"max_block_bandwidth\""];
 }
 
 message AccountBandwidth {
