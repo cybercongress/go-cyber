@@ -35,20 +35,18 @@ const (
 )
 
 type AppModuleBasic struct{
-	cdc codec.Marshaler
+	cdc codec.Codec
 }
 
-func (AppModuleBasic) Name() string {
-	return types.ModuleName
-}
+func (AppModuleBasic) Name() string { return types.ModuleName }
 
 func (AppModuleBasic) RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {}
 
-func (AppModuleBasic) DefaultGenesis(cdc codec.JSONMarshaler) json.RawMessage {
+func (AppModuleBasic) DefaultGenesis(cdc codec.JSONCodec) json.RawMessage {
 	return cdc.MustMarshalJSON(types.DefaultGenesisState())
 }
 
-func (AppModuleBasic) ValidateGenesis(cdc codec.JSONMarshaler, _ client.TxEncodingConfig, bz json.RawMessage) error {
+func (AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, _ client.TxEncodingConfig, bz json.RawMessage) error {
 	var data types.GenesisState
 	if err := cdc.UnmarshalJSON(bz, &data); err != nil {
 		return fmt.Errorf("failed to unmarshal %s genesis state: %w", types.ModuleName, err)
@@ -72,7 +70,7 @@ func (AppModuleBasic) GetQueryCmd() *cobra.Command {
 	return cli.GetQueryCmd()
 }
 
-func (AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegistry) {}
+func (AppModuleBasic) RegisterInterfaces(_ codectypes.InterfaceRegistry) {}
 
 type AppModule struct {
 	AppModuleBasic
@@ -80,12 +78,8 @@ type AppModule struct {
 	rk *keeper.StateKeeper
 }
 
-func (am AppModule) RegisterServices(cfg module.Configurator) {
-	types.RegisterQueryServer(cfg.QueryServer(), am.rk)
-}
-
 func NewAppModule(
-	cdc codec.Marshaler, rankKeeper *keeper.StateKeeper,
+	cdc codec.Codec, rankKeeper *keeper.StateKeeper,
 ) AppModule {
 	return AppModule{
 		AppModuleBasic: AppModuleBasic{cdc: cdc},
@@ -98,9 +92,7 @@ func AddModuleInitFlags(startCmd *cobra.Command) {
 	startCmd.Flags().Bool(FlagSearchAPI, true, "Run search API")
 }
 
-func (AppModule) Name() string {
-	return types.ModuleName
-}
+func (AppModule) Name() string { return types.ModuleName }
 
 func (am AppModule) RegisterInvariants(_ sdk.InvariantRegistry) {}
 
@@ -116,16 +108,24 @@ func (am AppModule) LegacyQuerierHandler(legacyQuerierCdc *codec.LegacyAmino) sd
 	return keeper.NewQuerier(am.rk, legacyQuerierCdc)
 }
 
-func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONMarshaler, data json.RawMessage) []abci.ValidatorUpdate {
+func (am AppModule) RegisterServices(cfg module.Configurator) {
+	types.RegisterQueryServer(cfg.QueryServer(), am.rk)
+}
+
+func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, data json.RawMessage) []abci.ValidatorUpdate {
 	var genesisState types.GenesisState
 	cdc.MustUnmarshalJSON(data, &genesisState)
 	keeper.InitGenesis(ctx, *am.rk, genesisState)
 	return []abci.ValidatorUpdate{}
 }
 
-func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONMarshaler) json.RawMessage {
+func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.RawMessage {
 	gs := keeper.ExportGenesis(ctx, *am.rk)
 	return cdc.MustMarshalJSON(gs)
+}
+
+func (am AppModule) ConsensusVersion() uint64 {
+	return 1
 }
 
 func (am AppModule) BeginBlock(_ sdk.Context, _ abci.RequestBeginBlock) {}

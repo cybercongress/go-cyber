@@ -45,7 +45,7 @@ func queryInvestmintAmount(ctx sdk.Context, req abci.RequestQuery, k Keeper, leg
 		return nil, sdkerrors.Wrap(types.ErrInvalidBaseResource, params.Amount.String())
 	}
 
-	if params.Resource != ctypes.VOLT && params.Resource != ctypes.AMPER {
+	if params.Resource != ctypes.VOLT && params.Resource != ctypes.AMPERE {
 		return nil, sdkerrors.Wrap(types.ErrResourceNotExist, params.Resource)
 	}
 

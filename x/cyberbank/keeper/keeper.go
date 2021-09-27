@@ -17,7 +17,7 @@ import (
 type IndexedKeeper struct {
 	*Proxy
 	accountKeeper     		types.AccountKeeper
-	cdc           			codec.BinaryMarshaler
+	cdc           			codec.BinaryCodec
 	authKey  				sdk.StoreKey
 
 	userTotalStakeAmpere    map[uint64]uint64
@@ -26,7 +26,7 @@ type IndexedKeeper struct {
 }
 
 func NewIndexedKeeper(
-	cdc codec.BinaryMarshaler,
+	cdc codec.BinaryCodec,
 	authKey sdk.StoreKey,
 	pbk *Proxy,
 	ak types.AccountKeeper,
@@ -130,7 +130,7 @@ func (k IndexedKeeper) GetJustLastAccountNumber(ctx sdk.Context) uint64 {
 	} else {
 		val := gogotypes.UInt64Value{}
 
-		err := k.cdc.UnmarshalBinaryBare(bz, &val)
+		err := k.cdc.Unmarshal(bz, &val)
 		if err != nil {
 			panic(err)
 		}

@@ -41,7 +41,7 @@ func (msg MsgInvestmint) ValidateBasic() error {
 		return sdkerrors.Wrap(ErrInvalidBaseResource, msg.Resource)
 	}
 
-	if msg.Resource != ctypes.VOLT && msg.Resource != ctypes.AMPER {
+	if msg.Resource != ctypes.VOLT && msg.Resource != ctypes.AMPERE {
 		return sdkerrors.Wrap(ErrResourceNotExist, msg.Resource)
 	}
 

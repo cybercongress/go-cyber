@@ -23,14 +23,14 @@ const (
 
 type GraphKeeper struct {
 	key    sdk.StoreKey
-	cdc    codec.BinaryMarshaler
+	cdc    codec.BinaryCodec
 	neudeg map[uint64]uint64
 	rankNeudeg map[uint64]uint64
 	tkey   sdk.StoreKey
 }
 
 func NewKeeper(
-	cdc codec.BinaryMarshaler,
+	cdc codec.BinaryCodec,
 	storeKey sdk.StoreKey,
 	tkey sdk.StoreKey,
 ) *GraphKeeper {
@@ -114,7 +114,7 @@ func (gk GraphKeeper) SaveLink(ctx sdk.Context, link types.CompactLink) {
 	defer telemetry.IncrCounter(1.0, types.ModuleName, "cyberlinks")
 
 	store := ctx.KVStore(gk.key)
-	store.Set(types.CyberlinksStoreKey(gk.GetLinksCount(ctx)), gk.cdc.MustMarshalBinaryBare(&link))
+	store.Set(types.CyberlinksStoreKey(gk.GetLinksCount(ctx)), gk.cdc.MustMarshal(&link))
 
 	gk.IncrementLinksCount(ctx)
 }
@@ -141,7 +141,7 @@ func (gk GraphKeeper) GetAllLinksFiltered(ctx sdk.Context, filter types.LinkFilt
 func (gk GraphKeeper) IterateLinks(ctx sdk.Context, process func(link types.CompactLink)) {
 	gk.IterateBinaryLinks(ctx, func(bytes []byte) {
 		var compactLink types.CompactLink
-		gk.cdc.MustUnmarshalBinaryBare(bytes, &compactLink)
+		gk.cdc.MustUnmarshal(bytes, &compactLink)
 		process(compactLink)
 	})
 }

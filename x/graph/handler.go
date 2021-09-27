@@ -30,7 +30,7 @@ func NewHandler(
 			return sdk.WrapServiceResult(ctx, res, err)
 		default:
 			return nil, sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest,
-				"unrecognized %s message type: %v", types.ModuleName, msg.Type())
+				"unrecognized %s message type: %v", types.ModuleName, sdk.MsgTypeURL(msg))
 		}
 	}
 }

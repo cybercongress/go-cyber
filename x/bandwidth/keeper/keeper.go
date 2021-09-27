@@ -14,7 +14,7 @@ import (
 
 type BandwidthMeter struct {
 	stakeProvider types.AccountStakeProvider
-	cdc           codec.BinaryMarshaler
+	cdc           codec.BinaryCodec
 	storeKey      sdk.StoreKey
 	paramSpace    paramstypes.Subspace
 
@@ -25,7 +25,7 @@ type BandwidthMeter struct {
 }
 
 func NewBandwidthMeter(
-	cdc codec.BinaryMarshaler,
+	cdc codec.BinaryCodec,
 	key sdk.StoreKey,
 	asp types.AccountStakeProvider,
 	paramSpace paramstypes.Subspace,
@@ -76,13 +76,13 @@ func (bm BandwidthMeter) GetBandwidthPrice(ctx sdk.Context, basePrice sdk.Dec) s
 		return basePrice
 	}
 	var price types.Price
-	bm.cdc.MustUnmarshalBinaryBare(priceAsBytes, &price)
+	bm.cdc.MustUnmarshal(priceAsBytes, &price)
 	return price.Price
 }
 
 func (bm BandwidthMeter) StoreBandwidthPrice(ctx sdk.Context, price sdk.Dec) {
 	store := ctx.KVStore(bm.storeKey)
-	store.Set(types.LastBandwidthPrice, bm.cdc.MustMarshalBinaryBare(&types.Price{Price: price}))
+	store.Set(types.LastBandwidthPrice, bm.cdc.MustMarshal(&types.Price{Price: price}))
 }
 
 func (bm BandwidthMeter) GetDesirableBandwidth(ctx sdk.Context) uint64 {

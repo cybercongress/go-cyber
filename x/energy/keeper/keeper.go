@@ -19,14 +19,14 @@ var _ = exported.EnergyKeeper(nil)
 
 type Keeper struct {
 	storeKey      sdk.StoreKey
-	cdc           codec.BinaryMarshaler
+	cdc           codec.BinaryCodec
 	accountKeeper types.AccountKeeper
 	proxyKeeper   types.CyberbankKeeper
 	paramSpace    paramstypes.Subspace
 }
 
 func NewKeeper(
-	cdc codec.BinaryMarshaler,
+	cdc codec.BinaryCodec,
 	key sdk.StoreKey,
 	bk types.CyberbankKeeper,
 	ak types.AccountKeeper,
@@ -128,11 +128,11 @@ func (k Keeper) EditEnergyRoute(ctx sdk.Context, src, dst sdk.AccAddress, value 
 		}
 	}
 
-	ampers := route.Value.AmountOf(ctypes.AMPER)
+	ampers := route.Value.AmountOf(ctypes.AMPERE)
 	volts  := route.Value.AmountOf(ctypes.VOLT)
 	newValues := sdk.Coins{}
 	if value.Denom == ctypes.VOLT {
-		newValues = sdk.NewCoins(value, sdk.NewCoin(ctypes.AMPER, ampers))
+		newValues = sdk.NewCoins(value, sdk.NewCoin(ctypes.AMPERE, ampers))
 	} else {
 		newValues = sdk.NewCoins(sdk.NewCoin(ctypes.VOLT, volts), value)
 	}
@@ -221,7 +221,7 @@ func (k Keeper) SetRoutedEnergy(ctx sdk.Context, dst sdk.AccAddress, amount sdk.
 	store := ctx.KVStore(k.storeKey)
 	value := types.NewValue(amount)
 
-	store.Set(types.GetRoutedEnergyByDestinationKey(dst), k.cdc.MustMarshalBinaryBare(&value))
+	store.Set(types.GetRoutedEnergyByDestinationKey(dst), k.cdc.MustMarshal(&value))
 }
 
 func (k Keeper) GetRoute(ctx sdk.Context, src, dst sdk.AccAddress) (route types.Route, found bool) {
@@ -303,7 +303,7 @@ func (k Keeper) GetRoutedToEnergy(ctx sdk.Context, dst sdk.AccAddress) sdk.Coins
 		return sdk.Coins{}
 	}
 	amount := types.Value{}
-	k.cdc.MustUnmarshalBinaryBare(bz, &amount)
+	k.cdc.MustUnmarshal(bz, &amount)
 
 	return amount.Value
 }
@@ -318,7 +318,7 @@ func (k Keeper) GetRoutedFromEnergy(ctx sdk.Context, src sdk.AccAddress) (amount
 	defer iterator.Close()
 	for ; iterator.Valid(); iterator.Next() {
 		var route types.Route
-		k.cdc.MustUnmarshalBinaryBare(iterator.Value(), &route)
+		k.cdc.MustUnmarshal(iterator.Value(), &route)
 		if amount.IsValid() {
 			amount = amount.Add(route.Value...)
 		} else {

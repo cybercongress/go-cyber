@@ -24,7 +24,7 @@ type AppModule struct {
 }
 
 func NewAppModule(
-	cdc codec.Marshaler,
+	cdc codec.Codec,
 	stakingKeeper stakingkeeper.Keeper,
 	accountKeeper authkeeper.AccountKeeper,
 	bankKeeper bankkeeper.Keeper,
@@ -46,4 +46,13 @@ func NewHandler(
 
 func (am AppModule) Route() sdk.Route {
 	return sdk.NewRoute(stakingtypes.RouterKey, NewHandler(am.sk, am.bk))
+}
+
+func (am AppModule) RegisterServices(cfg module.Configurator) {
+	stakingtypes.RegisterMsgServer(cfg.MsgServer(), NewMsgServerImpl(am.sk, am.bk))
+	querier := stakingkeeper.Querier{Keeper: am.sk}
+	stakingtypes.RegisterQueryServer(cfg.QueryServer(), querier)
+
+	m := stakingkeeper.NewMigrator(am.sk)
+	cfg.RegisterMigration(stakingtypes.ModuleName, 1, m.Migrate1to2)
 }

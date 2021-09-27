@@ -30,7 +30,7 @@ func (k Keeper) InvestmintAmount(goCtx context.Context, request *types.QueryInve
 		return nil, sdkerrors.Wrap(types.ErrInvalidBaseResource, request.Amount.String())
 	}
 
-	if request.Resource != ctypes.VOLT && request.Resource != ctypes.AMPER {
+	if request.Resource != ctypes.VOLT && request.Resource != ctypes.AMPERE {
 		return nil, sdkerrors.Wrap(types.ErrResourceNotExist, request.Resource)
 	}
 

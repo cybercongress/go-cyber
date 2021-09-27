@@ -7,7 +7,7 @@ import (
 )
 
 func (bm BandwidthMeter) SetAccountBandwidth(ctx sdk.Context, ab types.AccountBandwidth) {
-	ctx.KVStore(bm.storeKey).Set(types.AccountStoreKey(ab.Address), bm.cdc.MustMarshalBinaryBare(&ab))
+	ctx.KVStore(bm.storeKey).Set(types.AccountStoreKey(ab.Address), bm.cdc.MustMarshal(&ab))
 }
 
 func (bm BandwidthMeter) GetAccountBandwidth(ctx sdk.Context, address sdk.AccAddress) (ab types.AccountBandwidth) {
@@ -20,6 +20,6 @@ func (bm BandwidthMeter) GetAccountBandwidth(ctx sdk.Context, address sdk.AccAdd
 			MaxValue:         0,
 		}
 	}
-	bm.cdc.MustUnmarshalBinaryBare(bwBytes, &ab)
+	bm.cdc.MustUnmarshal(bwBytes, &ab)
 	return
 }

@@ -24,7 +24,7 @@ import (
 // Keeper of the power store
 type Keeper struct {
 	storeKey      sdk.StoreKey
-	cdc           codec.BinaryMarshaler
+	cdc           codec.BinaryCodec
 	wasmKeeper 	  wasm.Keeper
 	accountKeeper types.AccountKeeper
 	proxyKeeper   types.BankKeeper
@@ -32,7 +32,7 @@ type Keeper struct {
 }
 
 func NewKeeper(
-	cdc codec.BinaryMarshaler,
+	cdc codec.BinaryCodec,
 	key sdk.StoreKey,
 	bk  types.BankKeeper,
 	ak  types.AccountKeeper,
@@ -280,7 +280,7 @@ func (k Keeper) FeeTTL(ctx sdk.Context) (res uint32) {
 
 func (k Keeper) SetJob(ctx sdk.Context, job types.Job) {
 	store := ctx.KVStore(k.storeKey)
-	b := k.cdc.MustMarshalBinaryBare(&job)
+	b := k.cdc.MustMarshal(&job)
 
 	program, _ := sdk.AccAddressFromBech32(job.Program)
 	store.Set(types.GetJobKey(program, job.Label), b)
@@ -304,7 +304,7 @@ func (k Keeper) SetJobs(ctx sdk.Context, jobs types.Jobs) error {
 
 func (k Keeper) SetJobStats(ctx sdk.Context, program sdk.AccAddress, label string, stats types.JobStats) {
 	store := ctx.KVStore(k.storeKey)
-	b := k.cdc.MustMarshalBinaryBare(&stats)
+	b := k.cdc.MustMarshal(&stats)
 	store.Set(types.GetJobStatsKey(program, label), b)
 }
 
@@ -324,7 +324,7 @@ func (k Keeper) GetJob(ctx sdk.Context, program sdk.AccAddress, label string) (j
 		return job, false
 	}
 
-	k.cdc.MustUnmarshalBinaryBare(value, &job)
+	k.cdc.MustUnmarshal(value, &job)
 
 	return job, true
 }
@@ -355,7 +355,7 @@ func (k Keeper) IterateAllJobsStats(ctx sdk.Context, cb func(jobStats types.JobS
 
 	for ; iterator.Valid(); iterator.Next() {
 		var jobStats types.JobStats
-		k.cdc.MustUnmarshalBinaryBare(iterator.Value(), &jobStats)
+		k.cdc.MustUnmarshal(iterator.Value(), &jobStats)
 		if cb(jobStats) {
 			break
 		}
@@ -370,7 +370,7 @@ func (k Keeper) IterateAllJobs(ctx sdk.Context, cb func(job types.Job) (stop boo
 
 	for ; iterator.Valid(); iterator.Next() {
 		var job types.Job
-		k.cdc.MustUnmarshalBinaryBare(iterator.Value(), &job)
+		k.cdc.MustUnmarshal(iterator.Value(), &job)
 		if cb(job) {
 			break
 		}
@@ -386,7 +386,7 @@ func (k Keeper) GetJobStats(ctx sdk.Context, program sdk.AccAddress, label strin
 		return stats, false
 	}
 
-	k.cdc.MustUnmarshalBinaryBare(value, &stats)
+	k.cdc.MustUnmarshal(value, &stats)
 
 	return stats, true
 }

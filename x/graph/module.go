@@ -34,20 +34,18 @@ var (
 )
 
 type AppModuleBasic struct{
-	cdc codec.Marshaler
+	cdc codec.Codec
 }
 
-func (AppModuleBasic) Name() string {
-	return types.ModuleName
-}
+func (AppModuleBasic) Name() string { return types.ModuleName }
 
 func (AppModuleBasic) RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	types.RegisterLegacyAminoCodec(cdc)
 }
 
-func (AppModuleBasic) DefaultGenesis(_ codec.JSONMarshaler) json.RawMessage { return nil }
+func (AppModuleBasic) DefaultGenesis(_ codec.JSONCodec) json.RawMessage { return nil }
 
-func (AppModuleBasic) ValidateGenesis(_ codec.JSONMarshaler, _ client.TxEncodingConfig, _ json.RawMessage) error {
+func (AppModuleBasic) ValidateGenesis(_ codec.JSONCodec, _ client.TxEncodingConfig, _ json.RawMessage) error {
 	return nil
 }
 
@@ -75,6 +73,7 @@ func (AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegistry) 
 
 type AppModule struct {
 	AppModuleBasic
+
 	gk *keeper.GraphKeeper
 	ik *keeper.IndexKeeper
 	ak authkeeper.AccountKeeper
@@ -83,7 +82,7 @@ type AppModule struct {
 }
 
 func NewAppModule(
-	cdc 			codec.Marshaler,
+	cdc 			codec.Codec,
 	graphKeeper     *keeper.GraphKeeper,
 	indexKeeper 	*keeper.IndexKeeper,
 	accountKeeper 	authkeeper.AccountKeeper,
@@ -100,19 +99,17 @@ func NewAppModule(
 	}
 }
 
-func (AppModule) Name() string {
-	return types.ModuleName
-}
+func (AppModule) Name() string { return types.ModuleName }
+
+func (am AppModule) RegisterInvariants(_ sdk.InvariantRegistry) {}
 
 func (am AppModule) Route() sdk.Route {
-	return sdk.NewRoute(types.RouterKey, NewHandler(am.gk, am.ik, am.ak, am.bk, am.bm))
+	return sdk.Route{}
 }
 
 func (am AppModule) QuerierRoute() string {
 	return types.QuerierRoute
 }
-
-func (am AppModule) RegisterInvariants(_ sdk.InvariantRegistry) {}
 
 func (am AppModule) RegisterServices(cfg module.Configurator) {
 	types.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(am.gk, am.ik, am.ak, am.bk, am.bm))
@@ -123,7 +120,7 @@ func (am AppModule) LegacyQuerierHandler(legacyQuerierCdc *codec.LegacyAmino) sd
 	return keeper.NewQuerier(*am.gk, legacyQuerierCdc)
 }
 
-func (am AppModule) InitGenesis(ctx sdk.Context, _ codec.JSONMarshaler, _ json.RawMessage) []abci.ValidatorUpdate {
+func (am AppModule) InitGenesis(ctx sdk.Context, _ codec.JSONCodec, _ json.RawMessage) []abci.ValidatorUpdate {
 	err := keeper.InitGenesis(ctx, *am.gk, am.ik)
 	if err != nil {
 		panic(err)
@@ -131,13 +128,18 @@ func (am AppModule) InitGenesis(ctx sdk.Context, _ codec.JSONMarshaler, _ json.R
 	return []abci.ValidatorUpdate{}
 }
 
-func (am AppModule) ExportGenesis(ctx sdk.Context, _ codec.JSONMarshaler) json.RawMessage {
+func (am AppModule) ExportGenesis(ctx sdk.Context, _ codec.JSONCodec) json.RawMessage {
 	err := keeper.WriteGenesis(ctx, *am.gk, am.ik)
 	if err != nil {
 		panic(err)
 	}
 	return nil
 }
+
+func (am AppModule) ConsensusVersion() uint64 {
+	return 1
+}
+
 
 func (am AppModule) BeginBlock(_ sdk.Context, _ abci.RequestBeginBlock) {}
 

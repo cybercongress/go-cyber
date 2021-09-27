@@ -22,12 +22,12 @@ func NewValue(coins sdk.Coins) Value {
 }
 
 // MustMarshalRoute returns the route bytes. Panics if fails
-func MustMarshalRoute(cdc codec.BinaryMarshaler, route Route) []byte {
-	return cdc.MustMarshalBinaryBare(&route)
+func MustMarshalRoute(cdc codec.BinaryCodec, route Route) []byte {
+	return cdc.MustMarshal(&route)
 }
 
 // MustUnmarshalRoute return the unmarshaled route from bytes. Panics if fails.
-func MustUnmarshalRoute(cdc codec.BinaryMarshaler, value []byte) Route {
+func MustUnmarshalRoute(cdc codec.BinaryCodec, value []byte) Route {
 	route, err := UnmarshalRoute(cdc, value)
 	if err != nil {
 		panic(err)
@@ -36,7 +36,7 @@ func MustUnmarshalRoute(cdc codec.BinaryMarshaler, value []byte) Route {
 	return route
 }
 
-func UnmarshalRoute(cdc codec.BinaryMarshaler, value []byte) (route Route, err error) {
-	err = cdc.UnmarshalBinaryBare(value, &route)
+func UnmarshalRoute(cdc codec.BinaryCodec, value []byte) (route Route, err error) {
+	err = cdc.Unmarshal(value, &route)
 	return route, err
 }
