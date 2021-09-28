@@ -50,3 +50,15 @@ func NeudegStoreKey(accNumber uint64) []byte {
 func NeudegTStoreKey(accNumber uint64) []byte {
 	return append(NeudegTStoreKeyPrefix, sdk.Uint64ToBigEndian(accNumber)...)
 }
+
+func CyberlinksNewStoreKey(linkKey []byte) []byte {
+	return append(CyberlinkStoreKeyPrefix, linkKey...)
+}
+
+func CyberlinkRawKey(link CompactLink) []byte {
+	keyAsBytes := make([]byte, 24)
+	copy(keyAsBytes[0:8],sdk.Uint64ToBigEndian(link.From))
+	copy(keyAsBytes[8:16],sdk.Uint64ToBigEndian(link.Account))
+	copy(keyAsBytes[16:24],sdk.Uint64ToBigEndian(link.To))
+	return keyAsBytes
+}

@@ -114,7 +114,8 @@ func (gk GraphKeeper) SaveLink(ctx sdk.Context, link types.CompactLink) {
 	defer telemetry.IncrCounter(1.0, types.ModuleName, "cyberlinks")
 
 	store := ctx.KVStore(gk.key)
-	store.Set(types.CyberlinksStoreKey(gk.GetLinksCount(ctx)), gk.cdc.MustMarshal(&link))
+	//store.Set(types.CyberlinksStoreKey(gk.GetLinksCount(ctx)), gk.cdc.MustMarshal(&link))
+	store.Set(types.CyberlinksNewStoreKey(types.CyberlinkRawKey(link)), sdk.Uint64ToBigEndian(uint64(ctx.BlockHeight())))
 
 	gk.IncrementLinksCount(ctx)
 }
@@ -139,21 +140,24 @@ func (gk GraphKeeper) GetAllLinksFiltered(ctx sdk.Context, filter types.LinkFilt
 }
 
 func (gk GraphKeeper) IterateLinks(ctx sdk.Context, process func(link types.CompactLink)) {
-	gk.IterateBinaryLinks(ctx, func(bytes []byte) {
-		var compactLink types.CompactLink
-		gk.cdc.MustUnmarshal(bytes, &compactLink)
+	gk.IterateBinaryLinks(ctx, func(key, value []byte) {
+		compactLink := types.CompactLink{
+			From:    sdk.BigEndianToUint64(key[0:8]),
+			To:      sdk.BigEndianToUint64(key[16:24]),
+			Account: sdk.BigEndianToUint64(key[8:16]),
+	    }
 		process(compactLink)
 	})
 }
 
-func (gk GraphKeeper) IterateBinaryLinks(ctx sdk.Context, process func(bytes []byte)) {
+func (gk GraphKeeper) IterateBinaryLinks(ctx sdk.Context, process func(key, value []byte)) {
 	store := ctx.KVStore(gk.key)
 
 	iterator := sdk.KVStorePrefixIterator(store, types.CyberlinkStoreKeyPrefix)
 
 	defer iterator.Close()
 	for ; iterator.Valid(); iterator.Next() {
-		process(iterator.Value())
+		process(iterator.Key(), iterator.Value())
 	}
 }
 
