@@ -142,9 +142,10 @@ func (gk GraphKeeper) GetAllLinksFiltered(ctx sdk.Context, filter types.LinkFilt
 func (gk GraphKeeper) IterateLinks(ctx sdk.Context, process func(link types.CompactLink)) {
 	gk.IterateBinaryLinks(ctx, func(key, value []byte) {
 		compactLink := types.CompactLink{
-			From:    sdk.BigEndianToUint64(key[0:8]),
-			To:      sdk.BigEndianToUint64(key[16:24]),
-			Account: sdk.BigEndianToUint64(key[8:16]),
+			// because first byte is prefix
+			From:    sdk.BigEndianToUint64(key[1:9]),
+			To:      sdk.BigEndianToUint64(key[17:25]),
+			Account: sdk.BigEndianToUint64(key[9:17]),
 	    }
 		process(compactLink)
 	})
