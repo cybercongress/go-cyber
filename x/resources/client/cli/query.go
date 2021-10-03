@@ -80,7 +80,7 @@ func GetCmdQueryInvestmintAmount() *cobra.Command {
 				return fmt.Errorf("coin %s not a valid coin, please input a valid coin", args[0])
 			}
 
-			if args[1] != ctypes.VOLT && args[1] != ctypes.AMPER {
+			if args[1] != ctypes.VOLT && args[1] != ctypes.AMPERE {
 				return fmt.Errorf("resource %s not a valid resource, please input a valid resource", args[1])
 			}
 

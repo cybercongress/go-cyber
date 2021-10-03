@@ -117,8 +117,7 @@ func (s *StateKeeper) EndBlocker(ctx sdk.Context) {
 
 	s.index.PutNewLinks(s.graphIndexedKeeper.GetCurrentBlockNewLinks(ctx))
 
-	// TODO refactoring
-	blockHasNewLinks := s.graphIndexedKeeper.EndBlocker(ctx)
+	blockHasNewLinks := s.graphIndexedKeeper.HasNewLinks(ctx)
 	s.hasNewLinksForPeriod = s.hasNewLinksForPeriod || blockHasNewLinks
 
 	params := s.GetParams(ctx)
@@ -144,6 +143,7 @@ func (s *StateKeeper) EndBlocker(ctx sdk.Context) {
 		// start new calculation
 		if s.hasNewLinksForPeriod || stakeChanged {
 			s.graphIndexedKeeper.FixLinks()
+			s.graphKeeper.FixNeudegs()
 			s.rankCalculationFinished = false
 			s.hasNewLinksForPeriod = false
 			s.prepareContext(ctx)
@@ -161,7 +161,7 @@ func (s *StateKeeper) EndBlocker(ctx sdk.Context) {
 
 func (s *StateKeeper) startRankCalculation(ctx sdk.Context, dampingFactor float64, tolerance float64) {
 	calcCtx := types.NewCalcContext(
-		ctx, s.graphIndexedKeeper, s.graphKeeper, s.stakeKeeper,
+		s.graphIndexedKeeper, s.graphKeeper, s.stakeKeeper,
 		s.allowSearch, dampingFactor, tolerance,
 		s.GetContextCidCount(ctx),
 		s.GetContextLinkCount(ctx),

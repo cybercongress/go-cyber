@@ -56,7 +56,7 @@ func queryInvestmintAmountHandlerFn(cliCtx client.Context) http.HandlerFunc {
 			}
 		}
 		if v := r.URL.Query().Get("resource"); len(v) != 0 {
-			if v != ctypes.VOLT && v != ctypes.AMPER {
+			if v != ctypes.VOLT && v != ctypes.AMPERE {
 				err = fmt.Errorf("resource %s not a valid resource, please input a valid resource", v)
 				rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
 				return

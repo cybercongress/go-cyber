@@ -16,13 +16,14 @@ func calculateRankCPU(ctx *types.CalculationContext) types.EMState {
 	tolerance := ctx.GetTolerance()
 	dampingFactor := ctx.GetDampingFactor()
 
+	// TODO remove this
 	// for cross debugging with GPU, remove before release
 	// will panic if stakes don't have all accounts
-	stakesCount := len(ctx.GetStakes())
-	stakesTest := make([]uint64, stakesCount)
-	for acc, stake := range ctx.GetStakes() {
-		stakesTest[uint64(acc)] = stake
-	}
+	//stakesCount := len(ctx.GetStakes())
+	//stakesTest := make([]uint64, stakesCount)
+	//for acc, stake := range ctx.GetStakes() {
+	//	stakesTest[uint64(acc)] = stake
+	//}
 
 	size := ctx.GetCidsCount()
 	if size == 0  || len(ctx.GetStakes()) == 0 {
@@ -105,7 +106,8 @@ func getOverallLinkStake(ctx *types.CalculationContext, from graphtypes.CidNumbe
 	stake := uint64(0)
 	users := ctx.GetOutLinks()[from][to]
 	for user := range users {
-		stake += ctx.GetStakes()[uint64(user)]
+		//stake += ctx.GetStakes()[uint64(user)]
+		stake += getNormalizedStake(ctx, uint64(user))
 	}
 	return stake
 }
@@ -126,6 +128,10 @@ func getOverallInLinksStake(ctx *types.CalculationContext, from graphtypes.CidNu
 		stake += getOverallLinkStake(ctx, to, from) // reverse order here
 	}
 	return stake
+}
+
+func getNormalizedStake(ctx *types.CalculationContext, agent uint64) uint64 {
+	return ctx.GetStakes()[agent] / ctx.GetNeudegs()[agent]
 }
 
 func calculateChange(prevrank, rank []float64) float64 {
@@ -184,8 +190,10 @@ func karmaCalc(ctx *types.CalculationContext, rank []float64, entropy []float64,
 			if (stake == 0) { continue }
 			users := ctx.GetOutLinks()[from][to]
 			for user := range users {
-				if (ctx.GetStakes()[uint64(user)] == 0) { continue }
-				w := float64(ctx.GetStakes()[uint64(user)]) / float64(stake)
+				//if (ctx.GetStakes()[uint64(user)] == 0) { continue }
+				if getNormalizedStake(ctx, uint64(user)) == 0 { continue }
+				//w := float64(ctx.GetStakes()[uint64(user)]) / float64(stake)
+				w := float64(getNormalizedStake(ctx, uint64(user))) / float64(stake)
 				if math.IsNaN(w) { w = float64(0) }
 				luminosity := rank[from] * entropy[from]
 				karma[user] += w*float64(luminosity)

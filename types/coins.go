@@ -3,10 +3,10 @@ package types
 import sdk "github.com/cosmos/cosmos-sdk/types"
 
 const (
-	CYB   = "boot"
-	VOLT  = "millivolt"
-	AMPER = "milliampere"
-	SCYB  = "hydrogen"
+	CYB    = "boot"
+	VOLT   = "millivolt"
+	AMPERE = "milliampere"
+	SCYB   = "hydrogen"
 )
 
 const (
@@ -26,6 +26,6 @@ func NewVoltCoin(amount int64) sdk.Coin {
 	return sdk.NewInt64Coin(VOLT, amount)
 }
 
-func NewAmperCoin(amount int64) sdk.Coin {
-	return sdk.NewInt64Coin(AMPER, amount)
+func NewAmpereCoin(amount int64) sdk.Coin {
+	return sdk.NewInt64Coin(AMPERE, amount)
 }

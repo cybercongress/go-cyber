@@ -84,7 +84,7 @@ func (msg MsgEditRoute) ValidateBasic() error {
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid destination address (%s)", err)
 	}
-	if msg.Value.Denom != ctypes.AMPER && msg.Value.Denom != ctypes.VOLT {
+	if msg.Value.Denom != ctypes.AMPERE && msg.Value.Denom != ctypes.VOLT {
 		return ErrWrongValueDenom
 	}
 

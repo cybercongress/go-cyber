@@ -18,7 +18,7 @@ import (
 )
 
 type Keeper struct {
-	cdc 			codec.BinaryMarshaler
+	cdc 			codec.BinaryCodec
 	accountKeeper   types.AccountKeeper
 	bankKeeper      types.BankKeeper
 	bandwidthMeter  *bandwithkeeper.BandwidthMeter
@@ -26,7 +26,7 @@ type Keeper struct {
 }
 
 func NewKeeper(
-	cdc codec.BinaryMarshaler,
+	cdc codec.BinaryCodec,
 	ak 	types.AccountKeeper,
 	bk  types.BankKeeper,
 	bm  *bandwithkeeper.BandwidthMeter,
@@ -316,13 +316,13 @@ func (k Keeper) CalculateInvestmint(ctx sdk.Context, amt sdk.Coin, resource stri
 		toMint = ctypes.NewVoltCoin(base.Mul(cycles).Mul(halving).Mul(sdk.NewDec(1000)).TruncateInt64())
 
 		k.Logger(ctx).Info("Investmint", "cycles", cycles.String(), "base", base.String(), "halving", halving.String(), "mint", toMint.String())
-	case ctypes.AMPER:
+	case ctypes.AMPERE:
 		//cycles := sdk.NewDec(int64(length)).QuoInt64(int64(10)) // for local dev
 		cycles := sdk.NewDec(int64(length)).QuoInt64(int64(k.BaseInvestmintPeriodAmpere(ctx)))
 		base := sdk.NewDec(amt.Amount.Int64()).QuoInt64(k.BaseInvestmintAmountAmpere(ctx).Amount.Int64())
 		halving := sdk.NewDecWithPrec(int64(math.Pow(0.5, float64(ctx.BlockHeight() / int64(k.BaseHalvingPeriodAmpere(ctx))))*10000),4)
 
-		toMint = ctypes.NewAmperCoin(base.Mul(cycles).Mul(halving).Mul(sdk.NewDec(1000)).TruncateInt64())
+		toMint = ctypes.NewAmpereCoin(base.Mul(cycles).Mul(halving).Mul(sdk.NewDec(1000)).TruncateInt64())
 
 		k.Logger(ctx).Info("Investmint", "cycles", cycles.String(), "base", base.String(), "halving", halving.String(), "mint", toMint.String())
 	}

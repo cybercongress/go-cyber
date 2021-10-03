@@ -92,9 +92,6 @@ func ProcessUndelegate(ctx sdk.Context,
 func ValidateCreateValidator(ctx sdk.Context,
 	bk bankkeeper.Keeper, msg *stakingtypes.MsgCreateValidator,
 ) (bool, error) {
-	//if msg.MinSelfDelegation.GTE(sdk.NewInt(10*ctypes.Giga)) {
-	//	return true, nil
-	//}
 	delegator, err := sdk.AccAddressFromBech32(msg.DelegatorAddress); if err != nil {
 		return false, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "bad account")
 	}

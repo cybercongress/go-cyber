@@ -5,8 +5,8 @@ import (
 	"math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/query"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
-	bankexported "github.com/cosmos/cosmos-sdk/x/bank/exported"
 	bank "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
@@ -24,9 +24,9 @@ type Proxy struct {
 	coinsTransferHooks []types.CoinsTransferHook
 }
 
-func Wrap(bk *bank.Keeper) *Proxy {
+func Wrap(bk bank.Keeper) *Proxy {
 	return &Proxy{
-		bk: *bk,
+		bk: bk,
 		coinsTransferHooks: make([]types.CoinsTransferHook, 0),
 	}
 }
@@ -50,11 +50,11 @@ func (p *Proxy) OnCoinsTransfer(ctx sdk.Context, from sdk.AccAddress, to sdk.Acc
 }
 
 func (p Proxy) GetTotalSupplyVolt(ctx sdk.Context) int64 {
-	return p.bk.GetSupply(ctx).GetTotal().AmountOf(ctypes.VOLT).Int64()
+	return p.bk.GetSupply(ctx, ctypes.VOLT).Amount.Int64()
 }
 
 func (p Proxy) GetTotalSupplyAmper(ctx sdk.Context) int64 {
-	return p.bk.GetSupply(ctx).GetTotal().AmountOf(ctypes.AMPER).Int64()
+	return p.bk.GetSupply(ctx, ctypes.AMPERE).Amount.Int64()
 }
 
 func (p Proxy) GetAccountStakePercentageVolt(ctx sdk.Context, addr sdk.AccAddress) float64 {
@@ -75,7 +75,7 @@ func (p Proxy) GetAccountTotalStakeVolt(ctx sdk.Context, addr sdk.AccAddress) in
 }
 
 func (p Proxy) GetAccountTotalStakeAmper(ctx sdk.Context, addr sdk.AccAddress) int64 {
-	return p.bk.GetBalance(ctx, addr, ctypes.AMPER).Amount.Int64() + p.GetRoutedTo(ctx, addr).AmountOf(ctypes.AMPER).Int64()
+	return p.bk.GetBalance(ctx, addr, ctypes.AMPERE).Amount.Int64() + p.GetRoutedTo(ctx, addr).AmountOf(ctypes.AMPERE).Int64()
 }
 
 func (p Proxy) GetRoutedTo(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins {
@@ -108,22 +108,6 @@ func (p *Proxy) InputOutputCoins(ctx sdk.Context, inputs []banktypes.Input, outp
 		//	}
 		//	p.OnCoinsTransfer(ctx, nil, outAddress)
 		//}
-	}
-	return err
-}
-
-func (p *Proxy) SubtractCoins(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coins) error {
-	err := p.bk.SubtractCoins(ctx, addr, amt)
-	if err == nil {
-		p.OnCoinsTransfer(ctx, addr, nil)
-	}
-	return err
-}
-
-func (p *Proxy) AddCoins(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coins) error {
-	err := p.bk.AddCoins(ctx, addr, amt)
-	if err == nil {
-		p.OnCoinsTransfer(ctx, nil, addr)
 	}
 	return err
 }
@@ -207,28 +191,12 @@ func (p *Proxy) IterateAllBalances(ctx sdk.Context, cb func(address sdk.AccAddre
 	p.bk.IterateAllBalances(ctx, cb)
 }
 
-func (p *Proxy) SetBalance(ctx sdk.Context, addr sdk.AccAddress, balance sdk.Coin) error {
-	return p.bk.SetBalance(ctx, addr, balance)
-}
-
-func (p *Proxy) SetBalances(ctx sdk.Context, addr sdk.AccAddress, balances sdk.Coins) error {
-	return p.bk.SetBalances(ctx, addr, balances)
-}
-
 func (p *Proxy) GetParams(ctx sdk.Context) banktypes.Params {
 	return p.bk.GetParams(ctx)
 }
 
 func (p *Proxy) SetParams(ctx sdk.Context, params banktypes.Params) {
 	p.bk.SetParams(ctx, params)
-}
-
-func (p *Proxy) SendEnabledCoin(ctx sdk.Context, coin sdk.Coin) bool {
-	return p.bk.SendEnabledCoin(ctx, coin)
-}
-
-func (p *Proxy) SendEnabledCoins(ctx sdk.Context, coins ...sdk.Coin) error {
-	return p.bk.SendEnabledCoins(ctx, coins...)
 }
 
 func (p *Proxy) BlockedAddr(addr sdk.AccAddress) bool {
@@ -243,15 +211,27 @@ func (p *Proxy) ExportGenesis(context sdk.Context) *banktypes.GenesisState {
 	return p.bk.ExportGenesis(context)
 }
 
-func (p *Proxy) GetSupply(ctx sdk.Context) bankexported.SupplyI {
-	return p.bk.GetSupply(ctx)
+func (p *Proxy) GetSupply(ctx sdk.Context, denom string) sdk.Coin {
+	return p.bk.GetSupply(ctx, denom)
 }
 
-func (p *Proxy) SetSupply(ctx sdk.Context, supply bankexported.SupplyI) {
-	p.bk.SetSupply(ctx, supply)
+func (p *Proxy) IsSendEnabledCoin(ctx sdk.Context, coin sdk.Coin) bool {
+	return p.bk.IsSendEnabledCoin(ctx, coin)
 }
 
-func (p *Proxy) GetDenomMetaData(ctx sdk.Context, denom string) banktypes.Metadata {
+func (p *Proxy) IsSendEnabledCoins(ctx sdk.Context, coins ...sdk.Coin) error {
+	return p.bk.IsSendEnabledCoins(ctx, coins...)
+}
+
+func (p *Proxy) GetPaginatedTotalSupply(ctx sdk.Context, pagination *query.PageRequest) (sdk.Coins, *query.PageResponse, error) {
+	return p.bk.GetPaginatedTotalSupply(ctx, pagination)
+}
+
+func (p *Proxy) IterateTotalSupply(ctx sdk.Context, cb func(sdk.Coin) bool) {
+	p.bk.IterateTotalSupply(ctx, cb)
+}
+
+func (p *Proxy) GetDenomMetaData(ctx sdk.Context, denom string) (banktypes.Metadata, bool) {
 	return p.bk.GetDenomMetaData(ctx, denom)
 }
 
@@ -285,14 +265,6 @@ func (p *Proxy) DelegateCoins(ctx sdk.Context, delegatorAddr, moduleAccAddr sdk.
 
 func (p *Proxy) UndelegateCoins(ctx sdk.Context, moduleAccAddr, delegatorAddr sdk.AccAddress, amt sdk.Coins) error {
 	return p.bk.UndelegateCoins(ctx, moduleAccAddr, delegatorAddr, amt)
-}
-
-func (p *Proxy) MarshalSupply(supplyI bankexported.SupplyI) ([]byte, error) {
-	return p.bk.MarshalSupply(supplyI)
-}
-
-func (p *Proxy) UnmarshalSupply(bz []byte) (bankexported.SupplyI, error) {
-	return p.bk.UnmarshalSupply(bz)
 }
 
 func (p *Proxy) Balance(ctx context.Context, request *banktypes.QueryBalanceRequest) (*banktypes.QueryBalanceResponse, error) {

@@ -1,32 +1,61 @@
 package app
 
 import (
+	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/std"
-
-	"github.com/cybercongress/go-cyber/app/params"
-	simappparams "github.com/cosmos/cosmos-sdk/simapp/params"
+	"github.com/cosmos/cosmos-sdk/x/auth/tx"
 )
 
-func MakeEncodingConfig() params.EncodingConfig {
-	encodingConfig := params.MakeEncodingConfig()
-
-	std.RegisterLegacyAminoCodec(encodingConfig.Amino)
-	std.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-
-	ModuleBasics.RegisterLegacyAminoCodec(encodingConfig.Amino)
-	ModuleBasics.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-
-	return encodingConfig
+// EncodingConfig specifies the concrete encoding types to use for a given app.
+// This is provided for compatibility between protobuf and amino implementations.
+type EncodingConfig struct {
+	InterfaceRegistry types.InterfaceRegistry
+	Marshaler         codec.Codec
+	TxConfig          client.TxConfig
+	Amino             *codec.LegacyAmino
 }
 
-func MakeTestEncodingConfig() simappparams.EncodingConfig {
-	encodingConfig := params.MakeEncodingConfig()
+func MakeEncodingConfig() EncodingConfig {
+	amino := codec.NewLegacyAmino()
+	interfaceRegistry := types.NewInterfaceRegistry()
+	marshaler := codec.NewProtoCodec(interfaceRegistry)
+	txCfg := tx.NewTxConfig(marshaler, tx.DefaultSignModes)
 
-	std.RegisterLegacyAminoCodec(encodingConfig.Amino)
-	std.RegisterInterfaces(encodingConfig.InterfaceRegistry)
+	std.RegisterInterfaces(interfaceRegistry)
+	std.RegisterLegacyAminoCodec(amino)
 
-	ModuleBasics.RegisterLegacyAminoCodec(encodingConfig.Amino)
-	ModuleBasics.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-
-	return simappparams.EncodingConfig(encodingConfig)
+	ModuleBasics.RegisterLegacyAminoCodec(amino)
+	ModuleBasics.RegisterInterfaces(interfaceRegistry)
+	return EncodingConfig{
+		InterfaceRegistry: interfaceRegistry,
+		Marshaler:         marshaler,
+		TxConfig:          txCfg,
+		Amino:             amino,
+	}
 }
+
+//func MakeEncodingConfig() params.EncodingConfig {
+//	encodingConfig := params.MakeEncodingConfig()
+//
+//	std.RegisterLegacyAminoCodec(encodingConfig.Amino)
+//	std.RegisterInterfaces(encodingConfig.InterfaceRegistry)
+//
+//	ModuleBasics.RegisterLegacyAminoCodec(encodingConfig.Amino)
+//	ModuleBasics.RegisterInterfaces(encodingConfig.InterfaceRegistry)
+//
+//	return encodingConfig
+//}
+//
+//func MakeTestEncodingConfig() simappparams.EncodingConfig {
+//	encodingConfig := params.MakeEncodingConfig()
+//
+//	std.RegisterLegacyAminoCodec(encodingConfig.Amino)
+//	std.RegisterInterfaces(encodingConfig.InterfaceRegistry)
+//
+//	ModuleBasics.RegisterLegacyAminoCodec(encodingConfig.Amino)
+//	ModuleBasics.RegisterInterfaces(encodingConfig.InterfaceRegistry)
+//
+//	return simappparams.EncodingConfig(encodingConfig)
+//}
