@@ -88,26 +88,13 @@ func (p *Proxy) InputOutputCoins(ctx sdk.Context, inputs []banktypes.Input, outp
 	err := p.bk.InputOutputCoins(ctx, inputs, outputs)
 	if err == nil {
 		for _, i := range inputs {
-			p.OnCoinsTransfer(ctx, sdk.AccAddress(i.Address), nil)
+			inAddress, _ := sdk.AccAddressFromBech32(i.Address)
+			p.OnCoinsTransfer(ctx, inAddress, nil)
 		}
 		for _, j := range outputs {
-			p.OnCoinsTransfer(ctx, nil, sdk.AccAddress(j.Address))
+			outAddress, _ := sdk.AccAddressFromBech32(j.Address)
+			p.OnCoinsTransfer(ctx, nil, outAddress)
 		}
-		// TODO update in next release
-		//for _, i := range inputs {
-		//	inAddress, err := sdk.AccAddressFromBech32(i.Address)
-		//	if err != nil {
-		//		return err
-		//	}
-		//	p.OnCoinsTransfer(ctx, inAddress, nil)
-		//}
-		//for _, j := range outputs {
-		//	outAddress, err := sdk.AccAddressFromBech32(j.Address)
-		//	if err != nil {
-		//		return err
-		//	}
-		//	p.OnCoinsTransfer(ctx, nil, outAddress)
-		//}
 	}
 	return err
 }
