@@ -3,9 +3,9 @@
 ###########################################################################################
 FROM ubuntu:20.04  as build_stage_cuda
 
-ENV GO_VERSION '1.16.5'
+ENV GO_VERSION '1.17.1'
 ENV GO_ARCH 'linux-amd64'
-ENV GO_BIN_SHA 'b12c23023b68de22f74c0524f10b753e7b08b1504cb7e417eccebdd3fae49061'
+ENV GO_BIN_SHA 'dab7d9c34361dc21ec237d584590d72500652e7c909bf082758fb63064fca0ef'
 ENV DAEMON_HOME /root/.cyber
 ENV DAEMON_RESTART_AFTER_UPGRADE=on
 ENV GAIA_HOME ${DAEMON_HOME}
