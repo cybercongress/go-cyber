@@ -29,226 +29,6 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-type QueryLinksRequest struct {
-	Cid string `protobuf:"bytes,1,opt,name=cid,proto3" json:"cid,omitempty"`
-}
-
-func (m *QueryLinksRequest) Reset()         { *m = QueryLinksRequest{} }
-func (m *QueryLinksRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryLinksRequest) ProtoMessage()    {}
-func (*QueryLinksRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_1588f994db3ad35c, []int{0}
-}
-func (m *QueryLinksRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *QueryLinksRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_QueryLinksRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *QueryLinksRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryLinksRequest.Merge(m, src)
-}
-func (m *QueryLinksRequest) XXX_Size() int {
-	return m.Size()
-}
-func (m *QueryLinksRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryLinksRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_QueryLinksRequest proto.InternalMessageInfo
-
-type QueryLinksResponse struct {
-	Cids []string `protobuf:"bytes,1,rep,name=cids,proto3" json:"cids,omitempty"`
-}
-
-func (m *QueryLinksResponse) Reset()         { *m = QueryLinksResponse{} }
-func (m *QueryLinksResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryLinksResponse) ProtoMessage()    {}
-func (*QueryLinksResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_1588f994db3ad35c, []int{1}
-}
-func (m *QueryLinksResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *QueryLinksResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_QueryLinksResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *QueryLinksResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryLinksResponse.Merge(m, src)
-}
-func (m *QueryLinksResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *QueryLinksResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryLinksResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_QueryLinksResponse proto.InternalMessageInfo
-
-type QueryLinksAmountRequest struct {
-}
-
-func (m *QueryLinksAmountRequest) Reset()         { *m = QueryLinksAmountRequest{} }
-func (m *QueryLinksAmountRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryLinksAmountRequest) ProtoMessage()    {}
-func (*QueryLinksAmountRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_1588f994db3ad35c, []int{2}
-}
-func (m *QueryLinksAmountRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *QueryLinksAmountRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_QueryLinksAmountRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *QueryLinksAmountRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryLinksAmountRequest.Merge(m, src)
-}
-func (m *QueryLinksAmountRequest) XXX_Size() int {
-	return m.Size()
-}
-func (m *QueryLinksAmountRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryLinksAmountRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_QueryLinksAmountRequest proto.InternalMessageInfo
-
-type QueryLinksAmountResponse struct {
-	Amount uint64 `protobuf:"varint,1,opt,name=amount,proto3" json:"amount,omitempty"`
-}
-
-func (m *QueryLinksAmountResponse) Reset()         { *m = QueryLinksAmountResponse{} }
-func (m *QueryLinksAmountResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryLinksAmountResponse) ProtoMessage()    {}
-func (*QueryLinksAmountResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_1588f994db3ad35c, []int{3}
-}
-func (m *QueryLinksAmountResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *QueryLinksAmountResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_QueryLinksAmountResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *QueryLinksAmountResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryLinksAmountResponse.Merge(m, src)
-}
-func (m *QueryLinksAmountResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *QueryLinksAmountResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryLinksAmountResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_QueryLinksAmountResponse proto.InternalMessageInfo
-
-type QueryCidsAmountRequest struct {
-}
-
-func (m *QueryCidsAmountRequest) Reset()         { *m = QueryCidsAmountRequest{} }
-func (m *QueryCidsAmountRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryCidsAmountRequest) ProtoMessage()    {}
-func (*QueryCidsAmountRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_1588f994db3ad35c, []int{4}
-}
-func (m *QueryCidsAmountRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *QueryCidsAmountRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_QueryCidsAmountRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *QueryCidsAmountRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryCidsAmountRequest.Merge(m, src)
-}
-func (m *QueryCidsAmountRequest) XXX_Size() int {
-	return m.Size()
-}
-func (m *QueryCidsAmountRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryCidsAmountRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_QueryCidsAmountRequest proto.InternalMessageInfo
-
-type QueryCidsAmountResponse struct {
-	Amount uint64 `protobuf:"varint,1,opt,name=amount,proto3" json:"amount,omitempty"`
-}
-
-func (m *QueryCidsAmountResponse) Reset()         { *m = QueryCidsAmountResponse{} }
-func (m *QueryCidsAmountResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryCidsAmountResponse) ProtoMessage()    {}
-func (*QueryCidsAmountResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_1588f994db3ad35c, []int{5}
-}
-func (m *QueryCidsAmountResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *QueryCidsAmountResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_QueryCidsAmountResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *QueryCidsAmountResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryCidsAmountResponse.Merge(m, src)
-}
-func (m *QueryCidsAmountResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *QueryCidsAmountResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryCidsAmountResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_QueryCidsAmountResponse proto.InternalMessageInfo
-
 type QueryGraphStatsRequest struct {
 }
 
@@ -256,7 +36,7 @@ func (m *QueryGraphStatsRequest) Reset()         { *m = QueryGraphStatsRequest{}
 func (m *QueryGraphStatsRequest) String() string { return proto.CompactTextString(m) }
 func (*QueryGraphStatsRequest) ProtoMessage()    {}
 func (*QueryGraphStatsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_1588f994db3ad35c, []int{6}
+	return fileDescriptor_1588f994db3ad35c, []int{0}
 }
 func (m *QueryGraphStatsRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -286,15 +66,15 @@ func (m *QueryGraphStatsRequest) XXX_DiscardUnknown() {
 var xxx_messageInfo_QueryGraphStatsRequest proto.InternalMessageInfo
 
 type QueryGraphStatsResponse struct {
-	Links uint64 `protobuf:"varint,1,opt,name=links,proto3" json:"links,omitempty"`
-	Cids  uint64 `protobuf:"varint,2,opt,name=cids,proto3" json:"cids,omitempty"`
+	Cyberlinks uint64 `protobuf:"varint,1,opt,name=cyberlinks,proto3" json:"cyberlinks,omitempty"`
+	Particles  uint64 `protobuf:"varint,2,opt,name=particles,proto3" json:"particles,omitempty"`
 }
 
 func (m *QueryGraphStatsResponse) Reset()         { *m = QueryGraphStatsResponse{} }
 func (m *QueryGraphStatsResponse) String() string { return proto.CompactTextString(m) }
 func (*QueryGraphStatsResponse) ProtoMessage()    {}
 func (*QueryGraphStatsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_1588f994db3ad35c, []int{7}
+	return fileDescriptor_1588f994db3ad35c, []int{1}
 }
 func (m *QueryGraphStatsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -323,13 +103,21 @@ func (m *QueryGraphStatsResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_QueryGraphStatsResponse proto.InternalMessageInfo
 
+func (m *QueryGraphStatsResponse) GetCyberlinks() uint64 {
+	if m != nil {
+		return m.Cyberlinks
+	}
+	return 0
+}
+
+func (m *QueryGraphStatsResponse) GetParticles() uint64 {
+	if m != nil {
+		return m.Particles
+	}
+	return 0
+}
+
 func init() {
-	proto.RegisterType((*QueryLinksRequest)(nil), "cyber.graph.v1beta1.QueryLinksRequest")
-	proto.RegisterType((*QueryLinksResponse)(nil), "cyber.graph.v1beta1.QueryLinksResponse")
-	proto.RegisterType((*QueryLinksAmountRequest)(nil), "cyber.graph.v1beta1.QueryLinksAmountRequest")
-	proto.RegisterType((*QueryLinksAmountResponse)(nil), "cyber.graph.v1beta1.QueryLinksAmountResponse")
-	proto.RegisterType((*QueryCidsAmountRequest)(nil), "cyber.graph.v1beta1.QueryCidsAmountRequest")
-	proto.RegisterType((*QueryCidsAmountResponse)(nil), "cyber.graph.v1beta1.QueryCidsAmountResponse")
 	proto.RegisterType((*QueryGraphStatsRequest)(nil), "cyber.graph.v1beta1.QueryGraphStatsRequest")
 	proto.RegisterType((*QueryGraphStatsResponse)(nil), "cyber.graph.v1beta1.QueryGraphStatsResponse")
 }
@@ -337,38 +125,26 @@ func init() {
 func init() { proto.RegisterFile("cyber/graph/v1beta1/query.proto", fileDescriptor_1588f994db3ad35c) }
 
 var fileDescriptor_1588f994db3ad35c = []byte{
-	// 492 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x94, 0xc1, 0x6e, 0xd3, 0x40,
-	0x10, 0x86, 0xbd, 0x6d, 0x53, 0xe8, 0x70, 0x81, 0xa5, 0x2a, 0xc1, 0x82, 0x6d, 0x30, 0x6a, 0x09,
-	0xa2, 0xf5, 0x2a, 0xe5, 0x09, 0xa0, 0x07, 0x84, 0x84, 0x84, 0x1a, 0x6e, 0x5c, 0x2a, 0xc7, 0x59,
-	0xb9, 0x2b, 0xda, 0x5d, 0xd7, 0xbb, 0x46, 0x44, 0x88, 0x03, 0xf0, 0x02, 0x20, 0xc4, 0x3b, 0xf0,
-	0x28, 0x3d, 0x16, 0x71, 0xe1, 0x08, 0x09, 0x0f, 0x82, 0x3c, 0x5e, 0x88, 0xc1, 0xa6, 0xc9, 0x85,
-	0xdb, 0xac, 0xe7, 0xf7, 0x3f, 0xdf, 0x7a, 0x7e, 0x19, 0xd6, 0xe3, 0xd1, 0x40, 0x64, 0x3c, 0xc9,
-	0xa2, 0xf4, 0x80, 0x3f, 0xef, 0x0d, 0x84, 0x8d, 0x7a, 0xfc, 0x38, 0x17, 0xd9, 0x28, 0x4c, 0x33,
-	0x6d, 0x35, 0xbd, 0x8c, 0x82, 0x10, 0x05, 0xa1, 0x13, 0xf8, 0xab, 0x89, 0x4e, 0x34, 0xf6, 0x79,
-	0x51, 0x95, 0x52, 0xff, 0x5a, 0xa2, 0x75, 0x72, 0x28, 0x78, 0x94, 0x4a, 0x1e, 0x29, 0xa5, 0x6d,
-	0x64, 0xa5, 0x56, 0xa6, 0xec, 0x06, 0x1b, 0x70, 0x69, 0xaf, 0xf0, 0x7d, 0x24, 0xd5, 0x33, 0xd3,
-	0x17, 0xc7, 0xb9, 0x30, 0x96, 0x5e, 0x84, 0xc5, 0x58, 0x0e, 0xdb, 0xa4, 0x43, 0xba, 0x2b, 0xfd,
-	0xa2, 0x0c, 0xba, 0x40, 0xab, 0x32, 0x93, 0x6a, 0x65, 0x04, 0xa5, 0xb0, 0x14, 0xcb, 0xa1, 0x69,
-	0x93, 0xce, 0x62, 0x77, 0xa5, 0x8f, 0x75, 0x70, 0x15, 0xae, 0x4c, 0x95, 0xf7, 0x8e, 0x74, 0xae,
-	0xac, 0xb3, 0x0d, 0x76, 0xa0, 0x5d, 0x6f, 0x39, 0xab, 0x35, 0x58, 0x8e, 0xf0, 0x09, 0x4e, 0x5d,
-	0xea, 0xbb, 0x53, 0xd0, 0x86, 0x35, 0x7c, 0x67, 0x57, 0x0e, 0xff, 0x72, 0xeb, 0xb9, 0x41, 0xd5,
-	0xce, 0x9c, 0x66, 0x0f, 0x8a, 0xcf, 0xf6, 0xc4, 0x46, 0xf6, 0xd7, 0x8d, 0x83, 0x5d, 0x67, 0x56,
-	0xed, 0x38, 0xb3, 0x55, 0x68, 0x1d, 0x16, 0xc0, 0xce, 0xab, 0x3c, 0xfc, 0xbe, 0xfa, 0x02, 0x3e,
-	0xc4, 0x7a, 0xe7, 0x73, 0x0b, 0x5a, 0xe8, 0x42, 0x5f, 0x13, 0x38, 0xf7, 0x50, 0xe1, 0x3d, 0xe9,
-	0x66, 0xd8, 0xb0, 0xab, 0xb0, 0xf6, 0xd1, 0xfd, 0x5b, 0x33, 0x75, 0x25, 0x50, 0xb0, 0xf1, 0xe6,
-	0xcb, 0x8f, 0x0f, 0x0b, 0xeb, 0xf4, 0x3a, 0x6f, 0x4a, 0x89, 0x54, 0xfc, 0x65, 0x2c, 0x87, 0xaf,
-	0xe8, 0x5b, 0x02, 0xe7, 0x1f, 0xe7, 0xf6, 0x3f, 0x41, 0x6c, 0x22, 0x44, 0x87, 0xb2, 0x46, 0x08,
-	0x9d, 0x5b, 0x47, 0xf1, 0x91, 0xc0, 0x85, 0xca, 0xbe, 0xe9, 0xd6, 0x8c, 0x01, 0x7f, 0xec, 0xd8,
-	0xdf, 0x9e, 0x53, 0xed, 0xa0, 0x6e, 0x23, 0xd4, 0x4d, 0x7a, 0xa3, 0x11, 0x0a, 0x17, 0xb7, 0x5f,
-	0x46, 0x81, 0xbe, 0x27, 0x00, 0xd3, 0xe4, 0xd0, 0x3b, 0xff, 0x1e, 0x54, 0x4b, 0x9e, 0xbf, 0x35,
-	0x9f, 0xd8, 0x41, 0x75, 0x11, 0x2a, 0xa0, 0x9d, 0x46, 0xa8, 0x22, 0x38, 0x55, 0xa6, 0x69, 0x00,
-	0xcf, 0x62, 0xaa, 0x05, 0xf8, 0x2c, 0xa6, 0x7a, 0xa6, 0x67, 0x30, 0xe1, 0x69, 0xdf, 0x14, 0x6f,
-	0xdc, 0xdf, 0x3b, 0xf9, 0xce, 0xbc, 0x4f, 0x63, 0xe6, 0x9d, 0x8c, 0x19, 0x39, 0x1d, 0x33, 0xf2,
-	0x6d, 0xcc, 0xc8, 0xbb, 0x09, 0xf3, 0x4e, 0x27, 0xcc, 0xfb, 0x3a, 0x61, 0xde, 0x53, 0x9e, 0x48,
-	0x7b, 0x90, 0x0f, 0xc2, 0x58, 0x1f, 0x95, 0x6e, 0xb1, 0x56, 0x49, 0x26, 0x8c, 0xe1, 0x89, 0xde,
-	0x2e, 0xed, 0x5f, 0xb8, 0x01, 0x76, 0x94, 0x0a, 0x33, 0x58, 0xc6, 0x3f, 0xcf, 0xdd, 0x9f, 0x01,
-	0x00, 0x00, 0xff, 0xff, 0x03, 0x59, 0x7d, 0xc4, 0xe5, 0x04, 0x00, 0x00,
+	// 293 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x90, 0x31, 0x4b, 0xc4, 0x30,
+	0x14, 0xc7, 0x2f, 0x87, 0x0a, 0x66, 0x8c, 0xa2, 0xa5, 0x1c, 0xf1, 0xe8, 0x74, 0xa0, 0x26, 0x9c,
+	0x7e, 0x03, 0x17, 0x71, 0xf4, 0x1c, 0x04, 0x17, 0x49, 0x4b, 0xc8, 0x15, 0x6b, 0x5e, 0x2e, 0x49,
+	0xc5, 0xae, 0x7e, 0x02, 0xc5, 0xd1, 0x2f, 0xe4, 0x78, 0xe0, 0xe2, 0x28, 0xad, 0x1f, 0x44, 0x9a,
+	0x1e, 0x9c, 0x60, 0x07, 0xb7, 0xe4, 0xfd, 0x7f, 0xf9, 0xe5, 0xbd, 0x87, 0x0f, 0xb2, 0x2a, 0x95,
+	0x96, 0x2b, 0x2b, 0xcc, 0x9c, 0x3f, 0x4c, 0x53, 0xe9, 0xc5, 0x94, 0x2f, 0x4a, 0x69, 0x2b, 0x66,
+	0x2c, 0x78, 0x20, 0x3b, 0x01, 0x60, 0x01, 0x60, 0x2b, 0x20, 0xde, 0x55, 0xa0, 0x20, 0xe4, 0xbc,
+	0x3d, 0x75, 0x68, 0x3c, 0x52, 0x00, 0xaa, 0x90, 0x5c, 0x98, 0x9c, 0x0b, 0xad, 0xc1, 0x0b, 0x9f,
+	0x83, 0x76, 0x5d, 0x9a, 0x44, 0x78, 0xef, 0xb2, 0xf5, 0x9e, 0xb7, 0xa6, 0x2b, 0x2f, 0xbc, 0x9b,
+	0xc9, 0x45, 0x29, 0x9d, 0x4f, 0xae, 0xf1, 0xfe, 0x9f, 0xc4, 0x19, 0xd0, 0x4e, 0x12, 0x8a, 0x71,
+	0xf8, 0xbf, 0xc8, 0xf5, 0x9d, 0x8b, 0xd0, 0x18, 0x4d, 0x36, 0x66, 0xbf, 0x2a, 0x64, 0x84, 0xb7,
+	0x8d, 0xb0, 0x3e, 0xcf, 0x0a, 0xe9, 0xa2, 0x61, 0x88, 0xd7, 0x85, 0x93, 0x37, 0x84, 0x37, 0x83,
+	0x99, 0xbc, 0x20, 0x8c, 0xd7, 0x7a, 0x72, 0xc8, 0x7a, 0xa6, 0x62, 0xfd, 0xed, 0xc5, 0x47, 0xff,
+	0x83, 0xbb, 0x8e, 0x93, 0xc9, 0xd3, 0xc7, 0xf7, 0xeb, 0x30, 0x21, 0x63, 0xde, 0xb7, 0xd9, 0x70,
+	0xbb, 0x75, 0xed, 0x8b, 0xb3, 0x8b, 0xf7, 0x9a, 0xa2, 0x65, 0x4d, 0xd1, 0x57, 0x4d, 0xd1, 0x73,
+	0x43, 0x07, 0xcb, 0x86, 0x0e, 0x3e, 0x1b, 0x3a, 0xb8, 0xe1, 0x2a, 0xf7, 0xf3, 0x32, 0x65, 0x19,
+	0xdc, 0x77, 0x96, 0x0c, 0xb4, 0xb2, 0xd2, 0x39, 0xae, 0xe0, 0xb8, 0xd3, 0x3e, 0xae, 0xc4, 0xbe,
+	0x32, 0xd2, 0xa5, 0x5b, 0x61, 0xc5, 0xa7, 0x3f, 0x01, 0x00, 0x00, 0xff, 0xff, 0x5b, 0xd0, 0xea,
+	0xc8, 0xce, 0x01, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -383,12 +159,6 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type QueryClient interface {
-	// TODO add pagination on storage
-	InLinks(ctx context.Context, in *QueryLinksRequest, opts ...grpc.CallOption) (*QueryLinksResponse, error)
-	// TODO add pagination on storage
-	OutLinks(ctx context.Context, in *QueryLinksRequest, opts ...grpc.CallOption) (*QueryLinksResponse, error)
-	LinksAmount(ctx context.Context, in *QueryLinksAmountRequest, opts ...grpc.CallOption) (*QueryLinksAmountResponse, error)
-	CidsAmount(ctx context.Context, in *QueryCidsAmountRequest, opts ...grpc.CallOption) (*QueryCidsAmountResponse, error)
 	GraphStats(ctx context.Context, in *QueryGraphStatsRequest, opts ...grpc.CallOption) (*QueryGraphStatsResponse, error)
 }
 
@@ -398,42 +168,6 @@ type queryClient struct {
 
 func NewQueryClient(cc grpc1.ClientConn) QueryClient {
 	return &queryClient{cc}
-}
-
-func (c *queryClient) InLinks(ctx context.Context, in *QueryLinksRequest, opts ...grpc.CallOption) (*QueryLinksResponse, error) {
-	out := new(QueryLinksResponse)
-	err := c.cc.Invoke(ctx, "/cyber.graph.v1beta1.Query/InLinks", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *queryClient) OutLinks(ctx context.Context, in *QueryLinksRequest, opts ...grpc.CallOption) (*QueryLinksResponse, error) {
-	out := new(QueryLinksResponse)
-	err := c.cc.Invoke(ctx, "/cyber.graph.v1beta1.Query/OutLinks", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *queryClient) LinksAmount(ctx context.Context, in *QueryLinksAmountRequest, opts ...grpc.CallOption) (*QueryLinksAmountResponse, error) {
-	out := new(QueryLinksAmountResponse)
-	err := c.cc.Invoke(ctx, "/cyber.graph.v1beta1.Query/LinksAmount", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *queryClient) CidsAmount(ctx context.Context, in *QueryCidsAmountRequest, opts ...grpc.CallOption) (*QueryCidsAmountResponse, error) {
-	out := new(QueryCidsAmountResponse)
-	err := c.cc.Invoke(ctx, "/cyber.graph.v1beta1.Query/CidsAmount", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
 }
 
 func (c *queryClient) GraphStats(ctx context.Context, in *QueryGraphStatsRequest, opts ...grpc.CallOption) (*QueryGraphStatsResponse, error) {
@@ -447,12 +181,6 @@ func (c *queryClient) GraphStats(ctx context.Context, in *QueryGraphStatsRequest
 
 // QueryServer is the server API for Query service.
 type QueryServer interface {
-	// TODO add pagination on storage
-	InLinks(context.Context, *QueryLinksRequest) (*QueryLinksResponse, error)
-	// TODO add pagination on storage
-	OutLinks(context.Context, *QueryLinksRequest) (*QueryLinksResponse, error)
-	LinksAmount(context.Context, *QueryLinksAmountRequest) (*QueryLinksAmountResponse, error)
-	CidsAmount(context.Context, *QueryCidsAmountRequest) (*QueryCidsAmountResponse, error)
 	GraphStats(context.Context, *QueryGraphStatsRequest) (*QueryGraphStatsResponse, error)
 }
 
@@ -460,96 +188,12 @@ type QueryServer interface {
 type UnimplementedQueryServer struct {
 }
 
-func (*UnimplementedQueryServer) InLinks(ctx context.Context, req *QueryLinksRequest) (*QueryLinksResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method InLinks not implemented")
-}
-func (*UnimplementedQueryServer) OutLinks(ctx context.Context, req *QueryLinksRequest) (*QueryLinksResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method OutLinks not implemented")
-}
-func (*UnimplementedQueryServer) LinksAmount(ctx context.Context, req *QueryLinksAmountRequest) (*QueryLinksAmountResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method LinksAmount not implemented")
-}
-func (*UnimplementedQueryServer) CidsAmount(ctx context.Context, req *QueryCidsAmountRequest) (*QueryCidsAmountResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CidsAmount not implemented")
-}
 func (*UnimplementedQueryServer) GraphStats(ctx context.Context, req *QueryGraphStatsRequest) (*QueryGraphStatsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GraphStats not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
 	s.RegisterService(&_Query_serviceDesc, srv)
-}
-
-func _Query_InLinks_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryLinksRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).InLinks(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/cyber.graph.v1beta1.Query/InLinks",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).InLinks(ctx, req.(*QueryLinksRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Query_OutLinks_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryLinksRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).OutLinks(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/cyber.graph.v1beta1.Query/OutLinks",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).OutLinks(ctx, req.(*QueryLinksRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Query_LinksAmount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryLinksAmountRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).LinksAmount(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/cyber.graph.v1beta1.Query/LinksAmount",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).LinksAmount(ctx, req.(*QueryLinksAmountRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Query_CidsAmount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryCidsAmountRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).CidsAmount(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/cyber.graph.v1beta1.Query/CidsAmount",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).CidsAmount(ctx, req.(*QueryCidsAmountRequest))
-	}
-	return interceptor(ctx, in, info, handler)
 }
 
 func _Query_GraphStats_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -575,192 +219,12 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*QueryServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "InLinks",
-			Handler:    _Query_InLinks_Handler,
-		},
-		{
-			MethodName: "OutLinks",
-			Handler:    _Query_OutLinks_Handler,
-		},
-		{
-			MethodName: "LinksAmount",
-			Handler:    _Query_LinksAmount_Handler,
-		},
-		{
-			MethodName: "CidsAmount",
-			Handler:    _Query_CidsAmount_Handler,
-		},
-		{
 			MethodName: "GraphStats",
 			Handler:    _Query_GraphStats_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "cyber/graph/v1beta1/query.proto",
-}
-
-func (m *QueryLinksRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *QueryLinksRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *QueryLinksRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.Cid) > 0 {
-		i -= len(m.Cid)
-		copy(dAtA[i:], m.Cid)
-		i = encodeVarintQuery(dAtA, i, uint64(len(m.Cid)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *QueryLinksResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *QueryLinksResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *QueryLinksResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.Cids) > 0 {
-		for iNdEx := len(m.Cids) - 1; iNdEx >= 0; iNdEx-- {
-			i -= len(m.Cids[iNdEx])
-			copy(dAtA[i:], m.Cids[iNdEx])
-			i = encodeVarintQuery(dAtA, i, uint64(len(m.Cids[iNdEx])))
-			i--
-			dAtA[i] = 0xa
-		}
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *QueryLinksAmountRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *QueryLinksAmountRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *QueryLinksAmountRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *QueryLinksAmountResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *QueryLinksAmountResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *QueryLinksAmountResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.Amount != 0 {
-		i = encodeVarintQuery(dAtA, i, uint64(m.Amount))
-		i--
-		dAtA[i] = 0x8
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *QueryCidsAmountRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *QueryCidsAmountRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *QueryCidsAmountRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *QueryCidsAmountResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *QueryCidsAmountResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *QueryCidsAmountResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.Amount != 0 {
-		i = encodeVarintQuery(dAtA, i, uint64(m.Amount))
-		i--
-		dAtA[i] = 0x8
-	}
-	return len(dAtA) - i, nil
 }
 
 func (m *QueryGraphStatsRequest) Marshal() (dAtA []byte, err error) {
@@ -806,13 +270,13 @@ func (m *QueryGraphStatsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error)
 	_ = i
 	var l int
 	_ = l
-	if m.Cids != 0 {
-		i = encodeVarintQuery(dAtA, i, uint64(m.Cids))
+	if m.Particles != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.Particles))
 		i--
 		dAtA[i] = 0x10
 	}
-	if m.Links != 0 {
-		i = encodeVarintQuery(dAtA, i, uint64(m.Links))
+	if m.Cyberlinks != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.Cyberlinks))
 		i--
 		dAtA[i] = 0x8
 	}
@@ -830,76 +294,6 @@ func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *QueryLinksRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Cid)
-	if l > 0 {
-		n += 1 + l + sovQuery(uint64(l))
-	}
-	return n
-}
-
-func (m *QueryLinksResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if len(m.Cids) > 0 {
-		for _, s := range m.Cids {
-			l = len(s)
-			n += 1 + l + sovQuery(uint64(l))
-		}
-	}
-	return n
-}
-
-func (m *QueryLinksAmountRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *QueryLinksAmountResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.Amount != 0 {
-		n += 1 + sovQuery(uint64(m.Amount))
-	}
-	return n
-}
-
-func (m *QueryCidsAmountRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *QueryCidsAmountResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.Amount != 0 {
-		n += 1 + sovQuery(uint64(m.Amount))
-	}
-	return n
-}
-
 func (m *QueryGraphStatsRequest) Size() (n int) {
 	if m == nil {
 		return 0
@@ -915,11 +309,11 @@ func (m *QueryGraphStatsResponse) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if m.Links != 0 {
-		n += 1 + sovQuery(uint64(m.Links))
+	if m.Cyberlinks != 0 {
+		n += 1 + sovQuery(uint64(m.Cyberlinks))
 	}
-	if m.Cids != 0 {
-		n += 1 + sovQuery(uint64(m.Cids))
+	if m.Particles != 0 {
+		n += 1 + sovQuery(uint64(m.Particles))
 	}
 	return n
 }
@@ -929,426 +323,6 @@ func sovQuery(x uint64) (n int) {
 }
 func sozQuery(x uint64) (n int) {
 	return sovQuery(uint64((x << 1) ^ uint64((int64(x) >> 63))))
-}
-func (m *QueryLinksRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowQuery
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: QueryLinksRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryLinksRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Cid", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthQuery
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Cid = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipQuery(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *QueryLinksResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowQuery
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: QueryLinksResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryLinksResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Cids", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthQuery
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Cids = append(m.Cids, string(dAtA[iNdEx:postIndex]))
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipQuery(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *QueryLinksAmountRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowQuery
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: QueryLinksAmountRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryLinksAmountRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipQuery(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *QueryLinksAmountResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowQuery
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: QueryLinksAmountResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryLinksAmountResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
-			}
-			m.Amount = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Amount |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		default:
-			iNdEx = preIndex
-			skippy, err := skipQuery(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *QueryCidsAmountRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowQuery
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: QueryCidsAmountRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryCidsAmountRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipQuery(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *QueryCidsAmountResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowQuery
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: QueryCidsAmountResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryCidsAmountResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
-			}
-			m.Amount = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Amount |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		default:
-			iNdEx = preIndex
-			skippy, err := skipQuery(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
 }
 func (m *QueryGraphStatsRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
@@ -1385,10 +359,7 @@ func (m *QueryGraphStatsRequest) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthQuery
 			}
 			if (iNdEx + skippy) > l {
@@ -1434,9 +405,9 @@ func (m *QueryGraphStatsResponse) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Links", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Cyberlinks", wireType)
 			}
-			m.Links = 0
+			m.Cyberlinks = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowQuery
@@ -1446,16 +417,16 @@ func (m *QueryGraphStatsResponse) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Links |= uint64(b&0x7F) << shift
+				m.Cyberlinks |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
 		case 2:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Cids", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Particles", wireType)
 			}
-			m.Cids = 0
+			m.Particles = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowQuery
@@ -1465,7 +436,7 @@ func (m *QueryGraphStatsResponse) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Cids |= uint64(b&0x7F) << shift
+				m.Particles |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1476,10 +447,7 @@ func (m *QueryGraphStatsResponse) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthQuery
 			}
 			if (iNdEx + skippy) > l {

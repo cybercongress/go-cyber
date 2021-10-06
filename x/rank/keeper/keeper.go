@@ -3,6 +3,7 @@ package keeper
 import (
 	"bytes"
 	"encoding/binary"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/x/auth/keeper"
@@ -142,8 +143,8 @@ func (s *StateKeeper) EndBlocker(ctx sdk.Context) {
 
 		// start new calculation
 		if s.hasNewLinksForPeriod || stakeChanged {
-			s.graphIndexedKeeper.FixLinks()
-			s.graphKeeper.FixNeudegs()
+			s.graphIndexedKeeper.UpdateRankLinks()
+			s.graphKeeper.UpdateRankNeudegs()
 			s.rankCalculationFinished = false
 			s.hasNewLinksForPeriod = false
 			s.prepareContext(ctx)
@@ -217,11 +218,11 @@ func (s *StateKeeper) GetRankValueByNumber(number uint64) uint64 {
 	return s.networkCidRank.RankValues[number]
 }
 
-func (s *StateKeeper) GetRankValueByCid(ctx sdk.Context, cid string) uint64 {
-	number, exist := s.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(cid)); if exist != true {
-		return 0
+func (s *StateKeeper) GetRankValueByParticle(ctx sdk.Context, particle string) (uint64, error) {
+	number, exist := s.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(particle)); if exist != true {
+		return 0, sdkerrors.ErrInvalidRequest
 	}
-	return s.networkCidRank.RankValues[number]
+	return s.networkCidRank.RankValues[number], nil
 }
 
 func (s *StateKeeper) GetNextNetworkRankHash() []byte {

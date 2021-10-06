@@ -5,7 +5,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/telemetry"
 
-	"github.com/cybercongress/go-cyber/util"
+	"github.com/cybercongress/go-cyber/utils"
 	"github.com/cybercongress/go-cyber/x/graph/types"
 
 	"io"
@@ -131,23 +131,23 @@ func (gk GraphKeeper) WriteCids(ctx sdk.Context, writer io.Writer) (err error) {
 }
 
 func (gk GraphKeeper) LoadFromReader(ctx sdk.Context, reader io.Reader) (err error) {
-	cidCountBytes, err := util.ReadExactlyNBytes(reader, CidCountBytesSize)
+	cidCountBytes, err := utils.ReadExactlyNBytes(reader, CidCountBytesSize)
 	if err != nil {
 		return
 	}
 	cidCount := binary.LittleEndian.Uint64(cidCountBytes)
 
 	for i := uint64(0); i < cidCount; i++ {
-		cidLengthBytes, err := util.ReadExactlyNBytes(reader, CidLengthBytesSize)
+		cidLengthBytes, err := utils.ReadExactlyNBytes(reader, CidLengthBytesSize)
 		if err != nil {
 			return err
 		}
-		cidBytes, err := util.ReadExactlyNBytes(reader, uint64(cidLengthBytes[0]))
+		cidBytes, err := utils.ReadExactlyNBytes(reader, uint64(cidLengthBytes[0]))
 		if err != nil {
 			return err
 		}
 		cid := types.Cid(cidBytes)
-		cidNumberBytes, err := util.ReadExactlyNBytes(reader, CidNumberBytesSize)
+		cidNumberBytes, err := utils.ReadExactlyNBytes(reader, CidNumberBytesSize)
 		if err != nil {
 			return err
 		}

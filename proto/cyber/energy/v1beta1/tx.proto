@@ -3,11 +3,9 @@ package cyber.energy.v1beta1;
 
 import "gogoproto/gogo.proto";
 
-import "cosmos_proto/coin.proto";
+import "cosmos/base/v1beta1/coin.proto";
 
 option go_package = "github.com/cybercongress/go-cyber/x/energy/types";
-option (gogoproto.goproto_getters_all) = false;
-option (gogoproto.equal_all) = false;
 
 service Msg{
     rpc CreateRoute(MsgCreateRoute) returns (MsgCreateRouteResponse);
@@ -17,30 +15,41 @@ service Msg{
 }
 
 message MsgCreateRoute {
-    string source      = 1 [(gogoproto.moretags) = "yaml:\"source\""];
-    string destination = 2 [(gogoproto.moretags) = "yaml:\"destination\""];
-    string alias       = 3 [(gogoproto.moretags) = "yaml:\"alias\""];
+    option (gogoproto.equal)           = false;
+    option (gogoproto.goproto_getters) = false;
+
+    string source      = 1;
+    string destination = 2;
+    string alias       = 3;
 }
 
 message MsgEditRoute {
-    string source                  = 1 [(gogoproto.moretags) = "yaml:\"source\""];
-    string destination             = 2 [(gogoproto.moretags) = "yaml:\"destination\""];
+    option (gogoproto.equal)           = false;
+    option (gogoproto.goproto_getters) = false;
+
+    string source                  = 1;
+    string destination             = 2;
     cosmos.base.v1beta1.Coin value = 3 [
-           (gogoproto.moretags) = "yaml:\"value\"",
-           (gogoproto.nullable) = false
-//           (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.Coin"
+           (gogoproto.nullable) = false,
+           (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.Coin"
    ];
 }
 
 message MsgDeleteRoute {
-    string source      = 1 [(gogoproto.moretags) = "yaml:\"source\""];
-    string destination = 2 [(gogoproto.moretags) = "yaml:\"destination\""];
+    option (gogoproto.equal)           = false;
+    option (gogoproto.goproto_getters) = false;
+
+    string source      = 1;
+    string destination = 2;
 }
 
 message MsgEditRouteAlias {
-    string source      = 1 [(gogoproto.moretags) = "yaml:\"source\""];
-    string destination = 2 [(gogoproto.moretags) = "yaml:\"destination\""];
-    string alias       = 3 [(gogoproto.moretags) = "yaml:\"alias\""];
+    option (gogoproto.equal)           = false;
+    option (gogoproto.goproto_getters) = false;
+
+    string source      = 1;
+    string destination = 2;
+    string alias       = 3;
 }
 
 message MsgCreateRouteResponse {}

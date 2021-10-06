@@ -6,7 +6,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	wasmTypes "github.com/CosmWasm/wasmvm/types"
+	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 
 	"github.com/cybercongress/go-cyber/x/bandwidth/keeper"
 )
@@ -14,7 +14,7 @@ import (
 var _ WasmQuerierInterface = WasmQuerier{}
 
 type WasmQuerierInterface interface {
-	Query(ctx sdk.Context, request wasmTypes.QueryRequest) ([]byte, error)
+	Query(ctx sdk.Context, request wasmvmtypes.QueryRequest) ([]byte, error)
 	QueryCustom(ctx sdk.Context, data json.RawMessage) ([]byte, error)
 }
 
@@ -26,33 +26,33 @@ func NewWasmQuerier(keeper *keeper.BandwidthMeter) WasmQuerier {
 	return WasmQuerier{keeper}
 }
 
-func (WasmQuerier) Query(_ sdk.Context, _ wasmTypes.QueryRequest) ([]byte, error) { return nil, nil }
+func (WasmQuerier) Query(_ sdk.Context, _ wasmvmtypes.QueryRequest) ([]byte, error) { return nil, nil }
 
 type CosmosQuery struct {
-	Price     		   *struct{} `json:"get_price,omitempty"`
-	Load      		   *struct{} `json:"get_load,omitempty"`
-	DesirableBandwidth *struct{} `json:"get_desirable_bandwidth,omitempty"`
-	AccountBandwidth   *QueryAccountBandwidthParams `json:"get_account_bandwidth,omitempty"`
+	BandwidthPrice  *struct{} 			   		`json:"bandwidth_price,omitempty"`
+	BandwidthLoad   *struct{}              		`json:"bandwidth_load,omitempty"`
+	BandwidthTotal  *struct{}                   `json:"bandwidth_total,omitempty"`
+	NeuronBandwidth *QueryNeuronBandwidthParams `json:"neuron_bandwidth,omitempty"`
 }
 
-type QueryAccountBandwidthParams struct {
-	Address string `json:"address"`
+type QueryNeuronBandwidthParams struct {
+	Neuron string `json:"neuron"`
 }
 
-type PriceResponse struct {
+type BandwidthPriceResponse struct {
 	Price string `json:"price"`
 }
 
-type LoadResponse struct {
+type BandwidthLoadResponse struct {
 	Load string `json:"load"`
 }
 
-type DesirableBandwidthResponse struct {
-	DesirableBandwidth uint64 `json:"desirable_bandwidth"`
+type BandwidthTotalResponse struct {
+	Total uint64 `json:"total"`
 }
 
-type AccountBandwidthResponse struct {
-	Address 		 string `json:"address"`
+type NeuronBandwidthResponse struct {
+	Neuron   		 string `json:"neuron"`
 	RemainedValue 	 uint64 `json:"remained_value"`
 	LastUpdatedBlock uint64 `json:"last_updated_block"`
 	MaxValue 		 uint64 `json:"max_value"`
@@ -68,36 +68,36 @@ func (querier WasmQuerier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([
 
 	var bz []byte
 
-	if query.Price != nil {
+	if query.BandwidthPrice != nil {
 		price := querier.BandwidthMeter.GetCurrentCreditPrice()
 
-		bz, err = json.Marshal(PriceResponse{
+		bz, err = json.Marshal(BandwidthPriceResponse{
 			Price: price.String(),
 		})
-	} else if query.Load != nil {
+	} else if query.BandwidthLoad != nil {
 		load := querier.BandwidthMeter.GetCurrentNetworkLoad(ctx)
 
-		bz, err = json.Marshal(LoadResponse{
+		bz, err = json.Marshal(BandwidthLoadResponse{
 			Load: load.String(),
 		})
-	} else if query.DesirableBandwidth != nil {
+	} else if query.BandwidthTotal != nil {
 		desirableBandwidth := querier.BandwidthMeter.GetDesirableBandwidth(ctx)
 
-		bz, err = json.Marshal(DesirableBandwidthResponse{
-			DesirableBandwidth: desirableBandwidth,
+		bz, err = json.Marshal(BandwidthTotalResponse{
+			Total: desirableBandwidth,
 		})
-	} else if query.AccountBandwidth != nil {
-		address, _ := sdk.AccAddressFromBech32(query.AccountBandwidth.Address)
+	} else if query.NeuronBandwidth != nil {
+		address, _ := sdk.AccAddressFromBech32(query.NeuronBandwidth.Neuron)
 		accountBandwidth := querier.BandwidthMeter.GetCurrentAccountBandwidth(ctx, address)
 
-		bz, err = json.Marshal(AccountBandwidthResponse{
-			Address: accountBandwidth.Address,
+		bz, err = json.Marshal(NeuronBandwidthResponse{
+			Neuron: accountBandwidth.Neuron,
 			RemainedValue: accountBandwidth.RemainedValue,
 			LastUpdatedBlock: accountBandwidth.LastUpdatedBlock,
 			MaxValue: accountBandwidth.MaxValue,
 		})
 	} else {
-		return nil, sdkerrors.ErrInvalidRequest
+		return nil, wasmvmtypes.UnsupportedRequest{Kind: "unknown Bandwidth variant"}
 	}
 
 	if err != nil {

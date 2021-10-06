@@ -2,44 +2,44 @@ syntax = "proto3";
 package cyber.cron.v1beta1;
 
 import "gogoproto/gogo.proto";
-import "cosmos_proto/coin.proto";
+
+import "cosmos/base/v1beta1/coin.proto";
 
 option go_package = "github.com/cybercongress/go-cyber/x/cron/types";
 
 message Params {
     option (gogoproto.equal)            = true;
 
-    uint32 max_slots = 1 [(gogoproto.moretags) = "yaml:\"max_slots\""];
-    uint32 max_gas   = 2 [(gogoproto.moretags) = "yaml:\"max_gas\""];
-    uint32 fee_ttl   = 3 [(gogoproto.moretags) = "yaml:\"fee_ttl\""];
+    uint32 max_slots = 1;
+    uint32 max_gas   = 2;
+    uint32 fee_ttl   = 3;
 }
 
 message Job {
     option (gogoproto.equal)            = false;
     option (gogoproto.goproto_getters)  = false;
 
-    string program  = 1 [(gogoproto.moretags) =  "yaml:\"program\""];
-    Trigger trigger = 2 [(gogoproto.moretags) = "yaml:\"trigger\"", (gogoproto.nullable)   = false];
-    Load load       = 3 [(gogoproto.moretags) = "yaml:\"load\"", (gogoproto.nullable)   = false];
-    string label    = 4 [(gogoproto.moretags) = "yaml:\"label\""];
-    string cid      = 5 [(gogoproto.moretags) = "yaml:\"cid\""];
+    string  program  = 1;
+    Trigger trigger  = 2 [(gogoproto.nullable) = false];
+    Load    load     = 3 [(gogoproto.nullable) = false];
+    string  label    = 4;
+    string  particle = 5;
 }
 
 message Trigger {
     option (gogoproto.equal)            = false;
     option (gogoproto.goproto_getters)  = false;
 
-    uint64 period = 1 [(gogoproto.moretags) = "yaml:\"period\""];
-    uint64 block  = 2 [(gogoproto.moretags) = "yaml:\"block\""];
+    uint64 period = 1;
+    uint64 block  = 2;
 }
 
 message Load {
     option (gogoproto.equal)            = false;
     option (gogoproto.goproto_getters)  = false;
 
-    string call_data                   = 1 [(gogoproto.moretags) = "yaml:\"call_data\""];
+    string call_data                   = 1;
     cosmos.base.v1beta1.Coin gas_price = 2 [
-        (gogoproto.moretags) = "yaml:\"gas_price\"",
         (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.Coin",
         (gogoproto.nullable) = false
     ];
@@ -49,10 +49,10 @@ message JobStats {
     option (gogoproto.equal)            = false;
     option (gogoproto.goproto_getters)  = false;
 
-    string program     = 1 [(gogoproto.moretags) = "yaml:\"program\""];
-    string label       = 2 [(gogoproto.moretags) = "yaml:\"label\""];
-    uint64 calls       = 3 [(gogoproto.moretags) = "yaml:\"calls\""];
-    uint64 fees        = 4 [(gogoproto.moretags) = "yaml:\"fees\""];
-    uint64 gas         = 5 [(gogoproto.moretags) = "yaml:\"gas\""];
-    uint64 last_block  = 6 [(gogoproto.moretags) = "yaml:\"last_block\""];
+    string program     = 1;
+    string label       = 2;
+    uint64 calls       = 3;
+    uint64 fees        = 4;
+    uint64 gas         = 5;
+    uint64 last_block  = 6;
 }

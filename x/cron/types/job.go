@@ -11,14 +11,14 @@ func NewJob(
 	trigger Trigger,
 	load Load,
 	label string,
-	cid string,
+	particle string,
 ) Job {
 	return Job{
 		Program:  program,
 		Trigger:  trigger,
 		Load:     load,
 		Label:    label,
-		Cid:      cid,
+		Particle: particle,
 	}
 }
 

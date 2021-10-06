@@ -14,8 +14,8 @@ import (
 const (
 	ActionCronAddJob 			= "add_job"
 	ActionCronRemoveJob 		= "remove_job"
-	ActionCronChangeJobLabel 	= "change_label"
-	ActionCronChangeJobCID 		= "change_cid"
+	ActionCronChangeJobLabel    = "change_label"
+	ActionCronChangeJobParticle = "change_particle"
 	ActionCronChangeJobCallData = "change_call_data"
 	ActionCronChangeJobGasPrice = "change_gas_price"
 	ActionCronChangeJobPeriod   = "change_period"
@@ -27,14 +27,14 @@ func NewMsgAddJob(
 	trigger Trigger,
 	load Load,
 	label string,
-	cid string,
+	particle string,
 ) *MsgAddJob {
 	return &MsgAddJob{
 		Program:  program.String(),
 		Trigger:  trigger,
 		Load:     load,
 		Label:    label,
-		Cid:      cid,
+		Particle: particle,
 	}
 }
 
@@ -65,8 +65,8 @@ func (msg MsgAddJob) ValidateBasic() error {
 	if msg.Label == "" || len(msg.Label) > 32 {
 		return ErrBadLabel
 	}
-	if _, err := cid.Decode(string(msg.Cid)); err != nil {
-		return graph.ErrInvalidCid
+	if _, err := cid.Decode(string(msg.Particle)); err != nil {
+		return graph.ErrInvalidParticle
 	}
 
 	return nil
@@ -170,25 +170,25 @@ func NewMsgChangeJobCID(
 	program sdk.AccAddress,
 	label string,
 	cid string,
-) *MsgChangeJobCID {
-	return &MsgChangeJobCID{
+) *MsgChangeJobParticle {
+	return &MsgChangeJobParticle{
 		Program: program.String(),
 		Label: label,
-		Cid: cid,
+		Particle: cid,
 	}
 }
 
-func (msg MsgChangeJobCID) Route() string { return RouterKey }
+func (msg MsgChangeJobParticle) Route() string { return RouterKey }
 
-func (msg MsgChangeJobCID) Type() string { return ActionCronChangeJobCID }
+func (msg MsgChangeJobParticle) Type() string { return ActionCronChangeJobParticle }
 
-func (msg MsgChangeJobCID) ValidateBasic() error {
+func (msg MsgChangeJobParticle) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Program)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid program address (%s)", err)
 	}
-	if _, err := cid.Decode(msg.Cid); err != nil {
-		return graph.ErrInvalidCid
+	if _, err := cid.Decode(msg.Particle); err != nil {
+		return graph.ErrInvalidParticle
 	}
 	if msg.Label == "" || len(msg.Label) > 32 {
 		return ErrBadLabel
@@ -197,12 +197,12 @@ func (msg MsgChangeJobCID) ValidateBasic() error {
 	return nil
 }
 
-func (msg MsgChangeJobCID) GetSignBytes() []byte {
+func (msg MsgChangeJobParticle) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(&msg)
 	return sdk.MustSortJSON(bz)
 }
 
-func (msg MsgChangeJobCID) GetSigners() []sdk.AccAddress {
+func (msg MsgChangeJobParticle) GetSigners() []sdk.AccAddress {
 	addr, err := sdk.AccAddressFromBech32(msg.Program)
 	if err != nil {
 		panic(err)

@@ -2,17 +2,19 @@ package wasm
 
 import (
 	"encoding/json"
+	"github.com/ipfs/go-cid"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	wasmTypes "github.com/CosmWasm/wasmvm/types"
+	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
+	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
 
 	"github.com/cybercongress/go-cyber/x/rank/keeper"
 )
 
 type WasmQuerierInterface interface {
-	Query(ctx sdk.Context, request wasmTypes.QueryRequest) ([]byte, error)
+	Query(ctx sdk.Context, request wasmvmtypes.QueryRequest) ([]byte, error)
 	QueryCustom(ctx sdk.Context, data json.RawMessage) ([]byte, error)
 }
 
@@ -26,18 +28,18 @@ func NewWasmQuerier(keeper *keeper.StateKeeper) WasmQuerier {
 	return WasmQuerier{keeper}
 }
 
-func (WasmQuerier) Query(_ sdk.Context, _ wasmTypes.QueryRequest) ([]byte, error) { return nil, nil }
+func (WasmQuerier) Query(_ sdk.Context, _ wasmvmtypes.QueryRequest) ([]byte, error) { return nil, nil }
 
 type CosmosQuery struct {
-	RankValueByCid    *QueryRankValueByCidParams `json:"get_rank_value_by_cid,omitempty"`
+	ParticleRank      *QueryParticleRankParams `json:"particle_rank,omitempty"`
 }
 
-type QueryRankValueByCidParams struct {
-	Cid 	  string `json:"cid"`
+type QueryParticleRankParams struct {
+	Particle  string `json:"particle"`
 }
 
-type RankQueryResponse struct {
-	Rank 	  uint64 `json:"rank_value"`
+type ParticleRankResponse struct {
+	Rank 	  uint64 `json:"rank"`
 }
 
 func (querier WasmQuerier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([]byte, error) {
@@ -50,16 +52,28 @@ func (querier WasmQuerier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([
 
 	var bz []byte
 
-	if query.RankValueByCid != nil {
-		rank := querier.keeper.GetRankValueByCid(ctx, query.RankValueByCid.Cid)
-		bz, err = json.Marshal(RankQueryResponse{Rank: rank})
-	} else {
-		return nil, sdkerrors.ErrInvalidRequest
+	if query.ParticleRank != nil {
+		particle, err := cid.Decode(query.ParticleRank.Particle)
+		if err != nil {
+			return nil, graphtypes.ErrInvalidParticle
+		}
+
+		if particle.Version() != 0 {
+			return nil, graphtypes.ErrCidVersion
+		}
+
+		rank, err := querier.keeper.GetRankValueByParticle(ctx, query.ParticleRank.Particle)
+		if err != nil {
+			return nil, err
+		}
+
+		bz, err = json.Marshal(ParticleRankResponse{Rank: rank})
+		if err != nil {
+			return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
+		}
+
+		return bz, err
 	}
 
-	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
-	}
-
-	return bz, nil
+	return nil, wasmvmtypes.UnsupportedRequest{Kind: "unknown Rank variant"}
 }

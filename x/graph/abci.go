@@ -11,8 +11,12 @@ import (
 )
 
 func EndBlocker(ctx sdk.Context, gk *keeper.GraphKeeper, ik *keeper.IndexKeeper) {
+	amountParticles := gk.GetCidsCount(ctx)
+	amountLinks := gk.GetLinksCount(ctx)
 	defer telemetry.ModuleMeasureSince(types.ModuleName, time.Now(), telemetry.MetricKeyEndBlocker)
+	defer telemetry.ModuleSetGauge(types.ModuleName, float32(amountLinks), "total_cyberlinks")
+	defer telemetry.ModuleSetGauge(types.ModuleName, float32(amountParticles), "total_particles")
 
-	gk.UpdateNeudegs(ctx)
+	gk.UpdateMemNeudegs(ctx)
 	ik.MergeContextLinks(ctx)
 }

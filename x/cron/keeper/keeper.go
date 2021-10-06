@@ -161,7 +161,7 @@ func (k Keeper) UpdateJobLabel(
 	k.SetJob(ctx, types.NewJob(
 		job.Program,
 		job.Trigger, job.Load,
-		labelNew, job.Cid,
+		labelNew, job.Particle,
 	))
 
 	k.SetJobStats(ctx, program, labelNew,
@@ -185,7 +185,7 @@ func (k Keeper) UpdateJobCallData(
 	k.SetJob(ctx, types.NewJob(
 		job.Program,
 		job.Trigger, types.NewLoad(calldata, job.Load.GasPrice),
-		job.Label, job.Cid,
+		job.Label, job.Particle,
 	))
 
 	return nil
@@ -203,7 +203,7 @@ func (k Keeper) UpdateJobGasPrice(
 	k.SetJob(ctx, types.NewJob(
 		job.Program,
 		job.Trigger, types.NewLoad(job.Load.CallData, gasprice),
-		job.Label, job.Cid,
+		job.Label, job.Particle,
 	))
 
 	return nil
@@ -225,7 +225,7 @@ func (k Keeper) UpdateJobPeriod(
 	k.SetJob(ctx, types.NewJob(
 		job.Program,
 		types.NewTrigger(period, job.Trigger.Block), job.Load,
-		job.Label, job.Cid,
+		job.Label, job.Particle,
 	))
 
 	return nil
@@ -251,7 +251,7 @@ func (k Keeper) UpdateJobBlock(
 	k.SetJob(ctx, types.NewJob(
 		job.Program,
 		types.NewTrigger(job.Trigger.Period, block), job.Load,
-		job.Label, job.Cid,
+		job.Label, job.Particle,
 	))
 
 	return nil
@@ -296,7 +296,7 @@ func (k Keeper) SetJobs(ctx sdk.Context, jobs types.Jobs) error {
 		k.SetJob(ctx, types.NewJob(
 			job.Program,
 			job.Trigger, job.Load,
-			job.Label, job.Cid,
+			job.Label, job.Particle,
 		))
 	}
 	return nil

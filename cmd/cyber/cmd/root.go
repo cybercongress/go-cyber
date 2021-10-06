@@ -4,6 +4,7 @@ import (
 	"errors"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	"github.com/cosmos/cosmos-sdk/client/config"
+	"github.com/cybercongress/go-cyber/app"
 	"github.com/prometheus/client_golang/prometheus"
 	"io"
 	"os"
@@ -36,12 +37,12 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
 
-	"github.com/cybercongress/go-cyber/app"
+	"github.com/cybercongress/go-cyber/app/params"
 )
 
 // NewRootCmd creates a new root command for simd. It is called once in the
 // main function.
-func NewRootCmd() (*cobra.Command, app.EncodingConfig) {
+func NewRootCmd() (*cobra.Command, params.EncodingConfig) {
 	encodingConfig := app.MakeEncodingConfig()
 	app.SetConfig()
 	initClientCtx := client.Context{}.
@@ -51,12 +52,13 @@ func NewRootCmd() (*cobra.Command, app.EncodingConfig) {
 		WithLegacyAmino(encodingConfig.Amino).
 		WithInput(os.Stdin).
 		WithAccountRetriever(types.AccountRetriever{}).
+		WithBroadcastMode(flags.BroadcastBlock).
 		WithHomeDir(app.DefaultNodeHome).
 		WithViper("")
 
 	rootCmd := &cobra.Command{
 		Use:   "cyber",
-		Short: "Bootloader Hub",
+		Short: "Bostrom Bootloader Hub",
 		PersistentPreRunE: func(cmd *cobra.Command, _ []string) error {
 			initClientCtx = client.ReadHomeFlag(initClientCtx, cmd)
 			initClientCtx, err := config.ReadFromClientConfig(initClientCtx)
@@ -72,14 +74,12 @@ func NewRootCmd() (*cobra.Command, app.EncodingConfig) {
 			return nil
 		},
 	}
-
-
 	initRootCmd(rootCmd, encodingConfig)
 
 	return rootCmd, encodingConfig
 }
 
-func initRootCmd(rootCmd *cobra.Command, encodingConfig app.EncodingConfig) {
+func initRootCmd(rootCmd *cobra.Command, encodingConfig params.EncodingConfig) {
 	cfg := sdk.GetConfig()
 	cfg.Seal()
 
@@ -94,6 +94,7 @@ func initRootCmd(rootCmd *cobra.Command, encodingConfig app.EncodingConfig) {
 		tmcli.NewCompletionCmd(rootCmd, true),
 		testnetCmd(app.ModuleBasics, banktypes.GenesisBalancesIterator{}),
 		debug.Cmd(),
+		config.Cmd(),
 	)
 
 	ac := appCreator{
@@ -168,7 +169,7 @@ func txCommand() *cobra.Command {
 }
 
 type appCreator struct {
-	encCfg app.EncodingConfig
+	encCfg params.EncodingConfig
 }
 
 func (ac appCreator) newApp(

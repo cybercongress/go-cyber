@@ -3,26 +3,22 @@ package cyber.resources.v1beta1;
 
 import "gogoproto/gogo.proto";
 
-import "cosmos_proto/coin.proto";
+import "cosmos/base/v1beta1/coin.proto";
 
 option go_package = "github.com/cybercongress/go-cyber/x/resources/types";
-option (gogoproto.goproto_getters_all) = false;
-option (gogoproto.equal_all) = false;
 
 service Msg{
     rpc Investmint(MsgInvestmint) returns (MsgInvestmintResponse);
 }
 
 message MsgInvestmint {
-    string agent                    = 1 [(gogoproto.moretags) = "yaml:\"agent\""];
-    cosmos.base.v1beta1.Coin amount = 2 [(gogoproto.moretags) = "yaml:\"amount\"", (gogoproto.nullable) = false];
-    string resource                 = 3 [(gogoproto.moretags) = "yaml:\"resource\""];
-    uint64 length                   = 4 [(gogoproto.moretags) = "yaml:\"length\""];
+    option (gogoproto.equal)           = false;
+    option (gogoproto.goproto_getters) = false;
+
+    string neuron                   = 1;
+    cosmos.base.v1beta1.Coin amount = 2 [(gogoproto.nullable) = false];
+    string resource                 = 3;
+    uint64 length                   = 4;
 }
 
-message MsgInvestmintResponse {
-//    cosmos.base.v1beta1.Coin investmint_resource = 1 [
-//        (gogoproto.moretags) = "yaml:\"investmint_resource\"",
-//        (gogoproto.nullable) = false
-//    ];
-}
+message MsgInvestmintResponse {}

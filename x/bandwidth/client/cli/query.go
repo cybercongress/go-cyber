@@ -132,9 +132,9 @@ func GetCmdQueryDesirableBandwidth() *cobra.Command {
 			}
 			queryClient := types.NewQueryClient(clientCtx)
 
-			res, err := queryClient.DesirableBandwidth(
+			res, err := queryClient.TotalBandwidth(
 				context.Background(),
-				&types.QueryDesirableBandwidthRequest{},
+				&types.QueryTotalBandwidthRequest{},
 			)
 			if err != nil {
 				return err

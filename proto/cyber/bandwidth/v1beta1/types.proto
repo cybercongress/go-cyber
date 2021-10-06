@@ -8,26 +8,24 @@ option go_package = "github.com/cybercongress/go-cyber/x/bandwidth/types";
 message Params {
     option (gogoproto.equal)            = true;
 
-    uint64 recovery_period     = 1 [(gogoproto.moretags) = "yaml:\"recovery_period\""];
-    uint64 adjust_price_period = 2 [(gogoproto.moretags) = "yaml:\"adjust_price_period\""];
+    uint64 recovery_period     = 1;
+    uint64 adjust_price_period = 2;
     string base_price   = 3 [
-        (gogoproto.moretags) = "yaml:\"base_price\"",
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
         (gogoproto.nullable)   = false
     ];
     string base_load   = 4 [
-        (gogoproto.moretags) = "yaml:\"base_load\"",
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
         (gogoproto.nullable)   = false
     ];
-    uint64 max_block_bandwidth = 5 [(gogoproto.moretags) = "yaml:\"max_block_bandwidth\""];
+    uint64 max_block_bandwidth = 5;
 }
 
-message AccountBandwidth {
+message NeuronBandwidth {
     option (gogoproto.equal)            = false;
     option (gogoproto.goproto_getters)  = false;
 
-    string address            = 1;
+    string neuron            = 1;
     uint64 remained_value     = 2;
     uint64 last_updated_block = 3;
     uint64 max_value          = 4;
@@ -38,7 +36,6 @@ message Price {
     option (gogoproto.goproto_getters)  = false;
 
     string price = 1 [
-        (gogoproto.moretags)   = "yaml:\"price\"",
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
         (gogoproto.nullable)   = false
     ];

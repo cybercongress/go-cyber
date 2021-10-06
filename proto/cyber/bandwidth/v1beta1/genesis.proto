@@ -2,6 +2,7 @@ syntax = "proto3";
 package cyber.bandwidth.v1beta1;
 
 import "gogoproto/gogo.proto";
+
 import "cyber/bandwidth/v1beta1/types.proto";
 
 option go_package = "github.com/cybercongress/go-cyber/x/bandwidth/types";

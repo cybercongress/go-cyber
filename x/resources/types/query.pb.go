@@ -103,24 +103,24 @@ func (m *QueryParamsResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_QueryParamsResponse proto.InternalMessageInfo
 
-type QueryInvestmintAmountRequest struct {
-	Amount   types.Coin `protobuf:"bytes,1,opt,name=amount,proto3" json:"amount" yaml:"amount"`
-	Resource string     `protobuf:"bytes,2,opt,name=resource,proto3" json:"resource,omitempty" yaml:"resource"`
-	Length   uint64     `protobuf:"varint,3,opt,name=length,proto3" json:"length,omitempty" yaml:"length"`
+type QueryInvestmintRequest struct {
+	Amount   types.Coin `protobuf:"bytes,1,opt,name=amount,proto3" json:"amount"`
+	Resource string     `protobuf:"bytes,2,opt,name=resource,proto3" json:"resource,omitempty"`
+	Length   uint64     `protobuf:"varint,3,opt,name=length,proto3" json:"length,omitempty"`
 }
 
-func (m *QueryInvestmintAmountRequest) Reset()         { *m = QueryInvestmintAmountRequest{} }
-func (m *QueryInvestmintAmountRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryInvestmintAmountRequest) ProtoMessage()    {}
-func (*QueryInvestmintAmountRequest) Descriptor() ([]byte, []int) {
+func (m *QueryInvestmintRequest) Reset()         { *m = QueryInvestmintRequest{} }
+func (m *QueryInvestmintRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryInvestmintRequest) ProtoMessage()    {}
+func (*QueryInvestmintRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4135536742b8fe64, []int{2}
 }
-func (m *QueryInvestmintAmountRequest) XXX_Unmarshal(b []byte) error {
+func (m *QueryInvestmintRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryInvestmintAmountRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryInvestmintRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryInvestmintAmountRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryInvestmintRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -130,34 +130,34 @@ func (m *QueryInvestmintAmountRequest) XXX_Marshal(b []byte, deterministic bool)
 		return b[:n], nil
 	}
 }
-func (m *QueryInvestmintAmountRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryInvestmintAmountRequest.Merge(m, src)
+func (m *QueryInvestmintRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryInvestmintRequest.Merge(m, src)
 }
-func (m *QueryInvestmintAmountRequest) XXX_Size() int {
+func (m *QueryInvestmintRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryInvestmintAmountRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryInvestmintAmountRequest.DiscardUnknown(m)
+func (m *QueryInvestmintRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryInvestmintRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryInvestmintAmountRequest proto.InternalMessageInfo
+var xxx_messageInfo_QueryInvestmintRequest proto.InternalMessageInfo
 
-type QueryInvestmintAmountResponse struct {
-	Amount types.Coin `protobuf:"bytes,1,opt,name=amount,proto3" json:"amount" yaml:"amount"`
+type QueryInvestmintResponse struct {
+	Amount types.Coin `protobuf:"bytes,1,opt,name=amount,proto3" json:"amount"`
 }
 
-func (m *QueryInvestmintAmountResponse) Reset()         { *m = QueryInvestmintAmountResponse{} }
-func (m *QueryInvestmintAmountResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryInvestmintAmountResponse) ProtoMessage()    {}
-func (*QueryInvestmintAmountResponse) Descriptor() ([]byte, []int) {
+func (m *QueryInvestmintResponse) Reset()         { *m = QueryInvestmintResponse{} }
+func (m *QueryInvestmintResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryInvestmintResponse) ProtoMessage()    {}
+func (*QueryInvestmintResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4135536742b8fe64, []int{3}
 }
-func (m *QueryInvestmintAmountResponse) XXX_Unmarshal(b []byte) error {
+func (m *QueryInvestmintResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryInvestmintAmountResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryInvestmintResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryInvestmintAmountResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryInvestmintResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -167,23 +167,23 @@ func (m *QueryInvestmintAmountResponse) XXX_Marshal(b []byte, deterministic bool
 		return b[:n], nil
 	}
 }
-func (m *QueryInvestmintAmountResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryInvestmintAmountResponse.Merge(m, src)
+func (m *QueryInvestmintResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryInvestmintResponse.Merge(m, src)
 }
-func (m *QueryInvestmintAmountResponse) XXX_Size() int {
+func (m *QueryInvestmintResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryInvestmintAmountResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryInvestmintAmountResponse.DiscardUnknown(m)
+func (m *QueryInvestmintResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryInvestmintResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryInvestmintAmountResponse proto.InternalMessageInfo
+var xxx_messageInfo_QueryInvestmintResponse proto.InternalMessageInfo
 
 func init() {
 	proto.RegisterType((*QueryParamsRequest)(nil), "cyber.resources.v1beta1.QueryParamsRequest")
 	proto.RegisterType((*QueryParamsResponse)(nil), "cyber.resources.v1beta1.QueryParamsResponse")
-	proto.RegisterType((*QueryInvestmintAmountRequest)(nil), "cyber.resources.v1beta1.QueryInvestmintAmountRequest")
-	proto.RegisterType((*QueryInvestmintAmountResponse)(nil), "cyber.resources.v1beta1.QueryInvestmintAmountResponse")
+	proto.RegisterType((*QueryInvestmintRequest)(nil), "cyber.resources.v1beta1.QueryInvestmintRequest")
+	proto.RegisterType((*QueryInvestmintResponse)(nil), "cyber.resources.v1beta1.QueryInvestmintResponse")
 }
 
 func init() {
@@ -191,38 +191,35 @@ func init() {
 }
 
 var fileDescriptor_4135536742b8fe64 = []byte{
-	// 485 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x53, 0xcb, 0x8a, 0xd4, 0x40,
-	0x14, 0x4d, 0xb5, 0x63, 0xd0, 0x12, 0x51, 0x6b, 0x46, 0xa6, 0x6d, 0xc6, 0x74, 0x13, 0x41, 0x5a,
-	0xd4, 0x84, 0x9e, 0x46, 0x41, 0xc1, 0x85, 0x71, 0xa3, 0x3b, 0x0d, 0xba, 0x71, 0x33, 0x54, 0x42,
-	0x51, 0x13, 0xe8, 0xd4, 0xcd, 0xa4, 0x2a, 0x83, 0xd9, 0xfa, 0x05, 0xc2, 0xfc, 0x84, 0x1f, 0xe1,
-	0xd2, 0x45, 0x2f, 0x07, 0xdc, 0xb8, 0x90, 0x46, 0xbb, 0xfd, 0x82, 0xf9, 0x02, 0xe9, 0xaa, 0xea,
-	0xb4, 0x0f, 0xe2, 0x03, 0xdc, 0x15, 0xf7, 0x9e, 0x7b, 0xce, 0xb9, 0x8f, 0xc2, 0xd7, 0xd2, 0x3a,
-	0x61, 0x65, 0x58, 0x32, 0x09, 0x55, 0x99, 0x32, 0x19, 0x1e, 0x8e, 0x12, 0xa6, 0xe8, 0x28, 0x3c,
-	0xa8, 0x58, 0x59, 0x07, 0x45, 0x09, 0x0a, 0xc8, 0xb6, 0x06, 0x05, 0x0d, 0x28, 0xb0, 0xa0, 0xde,
-	0x16, 0x07, 0x0e, 0x1a, 0x13, 0x2e, 0x5f, 0x06, 0xde, 0xdb, 0xe1, 0x00, 0x7c, 0xc2, 0x42, 0x5a,
-	0x64, 0x21, 0x15, 0x02, 0x14, 0x55, 0x19, 0x08, 0x69, 0xb3, 0xad, 0x8a, 0xaa, 0x2e, 0xd8, 0x0a,
-	0xb4, 0x9d, 0x82, 0xcc, 0x41, 0xee, 0x19, 0xee, 0x14, 0x32, 0x61, 0x12, 0xfe, 0x16, 0x26, 0xcf,
-	0x96, 0xce, 0x9e, 0xd2, 0x92, 0xe6, 0x32, 0x66, 0x07, 0x15, 0x93, 0xca, 0x7f, 0x8e, 0x37, 0x7f,
-	0x88, 0xca, 0x02, 0x84, 0x64, 0xe4, 0x01, 0x76, 0x0b, 0x1d, 0xe9, 0xa2, 0x01, 0x1a, 0x9e, 0xdb,
-	0xed, 0x07, 0x2d, 0x8d, 0x04, 0xa6, 0x30, 0xda, 0x98, 0xce, 0xfa, 0x4e, 0x6c, 0x8b, 0xfc, 0xf7,
-	0x08, 0xef, 0x68, 0xda, 0x27, 0xe2, 0x90, 0x49, 0x95, 0x67, 0x42, 0x3d, 0xcc, 0xa1, 0x12, 0xca,
-	0xca, 0x92, 0xc7, 0xd8, 0xa5, 0x3a, 0x60, 0xf9, 0xaf, 0x04, 0xc6, 0x76, 0x90, 0x50, 0xc9, 0x1a,
-	0xee, 0x47, 0x90, 0x89, 0xe8, 0xf2, 0x92, 0xf9, 0x64, 0xd6, 0x3f, 0x5f, 0xd3, 0x7c, 0x72, 0xdf,
-	0x37, 0x65, 0x7e, 0x6c, 0xeb, 0x49, 0x88, 0xcf, 0xac, 0x4c, 0x75, 0x3b, 0x03, 0x34, 0x3c, 0x1b,
-	0x6d, 0x9e, 0xcc, 0xfa, 0x17, 0x0c, 0x78, 0x95, 0xf1, 0xe3, 0x06, 0x44, 0x6e, 0x60, 0x77, 0xc2,
-	0x04, 0x57, 0xfb, 0xdd, 0x53, 0x03, 0x34, 0xdc, 0x88, 0x2e, 0xad, 0xb9, 0x4d, 0xdc, 0x8f, 0x2d,
-	0xc0, 0xcf, 0xf0, 0xd5, 0x96, 0x2e, 0xec, 0x98, 0xfe, 0x5b, 0x1b, 0xbb, 0x9f, 0x3a, 0xf8, 0xb4,
-	0xd6, 0x22, 0x47, 0x08, 0xbb, 0x66, 0xa8, 0xe4, 0x66, 0xeb, 0xd4, 0x7f, 0xdd, 0x64, 0xef, 0xd6,
-	0xdf, 0x81, 0x8d, 0x73, 0x3f, 0x78, 0xfd, 0xe1, 0xeb, 0x51, 0x67, 0x48, 0xae, 0x87, 0xe6, 0xa8,
-	0x98, 0x60, 0x25, 0xaf, 0x9b, 0x8b, 0x5a, 0xdf, 0x98, 0xd9, 0x28, 0x79, 0x87, 0xf0, 0xc5, 0x9f,
-	0xc7, 0x40, 0xee, 0xfc, 0x5e, 0xb2, 0x65, 0xf9, 0xbd, 0xbb, 0xff, 0x5a, 0x66, 0x3d, 0xdf, 0xd3,
-	0x9e, 0xc7, 0x64, 0xf4, 0x27, 0xcf, 0x59, 0xc3, 0xb0, 0x67, 0xc6, 0x1b, 0xbd, 0x98, 0x7e, 0xf1,
-	0x9c, 0xb7, 0x73, 0xcf, 0x99, 0xce, 0x3d, 0x74, 0x3c, 0xf7, 0xd0, 0xe7, 0xb9, 0x87, 0xde, 0x2c,
-	0x3c, 0xe7, 0x78, 0xe1, 0x39, 0x1f, 0x17, 0x9e, 0xf3, 0x72, 0xcc, 0x33, 0xb5, 0x5f, 0x25, 0x41,
-	0x0a, 0xb9, 0xa1, 0x4f, 0x41, 0xf0, 0x92, 0x49, 0x19, 0x72, 0xb8, 0x6d, 0xf4, 0x5e, 0x7d, 0x27,
-	0xa1, 0xbf, 0x5c, 0xe2, 0xea, 0xaf, 0x35, 0xfe, 0x16, 0x00, 0x00, 0xff, 0xff, 0xed, 0xfb, 0x18,
-	0x4e, 0x0c, 0x04, 0x00, 0x00,
+	// 442 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x93, 0x31, 0x6f, 0xd4, 0x30,
+	0x14, 0xc7, 0xe3, 0xa3, 0x44, 0x60, 0x36, 0x53, 0xb5, 0x47, 0x84, 0xdc, 0x53, 0x90, 0xd0, 0x09,
+	0x8a, 0x4d, 0xaf, 0x03, 0x13, 0x4b, 0x99, 0xd8, 0x20, 0x82, 0x85, 0x2d, 0x89, 0x9e, 0xdc, 0x48,
+	0x8d, 0x5f, 0x1a, 0x3b, 0x15, 0xb7, 0x22, 0xb1, 0x23, 0xf5, 0x23, 0xb0, 0xf0, 0x3d, 0x58, 0x6e,
+	0xac, 0xc4, 0xc2, 0x84, 0xe0, 0x8e, 0x0f, 0x82, 0xce, 0xf6, 0xa5, 0xa0, 0xd3, 0x41, 0xc5, 0x16,
+	0xdb, 0xff, 0xf7, 0xff, 0xff, 0x9e, 0xfd, 0x42, 0xef, 0x95, 0xd3, 0x02, 0x5a, 0xd9, 0x82, 0xc1,
+	0xae, 0x2d, 0xc1, 0xc8, 0xb3, 0x83, 0x02, 0x6c, 0x7e, 0x20, 0x4f, 0x3b, 0x68, 0xa7, 0xa2, 0x69,
+	0xd1, 0x22, 0xdb, 0x75, 0x22, 0xd1, 0x8b, 0x44, 0x10, 0x25, 0xdb, 0x0a, 0x15, 0x3a, 0x8d, 0x5c,
+	0x7e, 0x79, 0x79, 0x72, 0x57, 0x21, 0xaa, 0x13, 0x90, 0x79, 0x53, 0xc9, 0x5c, 0x6b, 0xb4, 0xb9,
+	0xad, 0x50, 0x9b, 0x70, 0xba, 0x31, 0xd1, 0x4e, 0x1b, 0x58, 0x89, 0x78, 0x89, 0xa6, 0x46, 0x23,
+	0x8b, 0xdc, 0x40, 0x2f, 0x28, 0xb1, 0xd2, 0xfe, 0x3c, 0xdd, 0xa6, 0xec, 0xe5, 0x12, 0xf0, 0x45,
+	0xde, 0xe6, 0xb5, 0xc9, 0xe0, 0xb4, 0x03, 0x63, 0xd3, 0x57, 0xf4, 0xf6, 0x1f, 0xbb, 0xa6, 0x41,
+	0x6d, 0x80, 0x3d, 0xa5, 0x71, 0xe3, 0x76, 0x86, 0x64, 0x44, 0xc6, 0xb7, 0x26, 0x7b, 0x62, 0x43,
+	0x3f, 0xc2, 0x17, 0x1e, 0x6d, 0xcd, 0xbe, 0xed, 0x45, 0x59, 0x28, 0x4a, 0xdf, 0x13, 0xba, 0xe3,
+	0x6c, 0x9f, 0xeb, 0x33, 0x30, 0xb6, 0xae, 0xb4, 0x0d, 0x81, 0xec, 0x09, 0x8d, 0xf3, 0x1a, 0x3b,
+	0x6d, 0x83, 0xf3, 0x1d, 0xe1, 0xb9, 0xc5, 0x92, 0xbb, 0x77, 0x7d, 0x86, 0x95, 0x5e, 0x79, 0x7a,
+	0x39, 0x4b, 0xe8, 0x8d, 0x55, 0xfa, 0x70, 0x30, 0x22, 0xe3, 0x9b, 0x59, 0xbf, 0x66, 0x3b, 0x34,
+	0x3e, 0x01, 0xad, 0xec, 0xf1, 0xf0, 0xda, 0x88, 0x8c, 0xb7, 0xb2, 0xb0, 0x4a, 0x33, 0xba, 0xbb,
+	0x86, 0x11, 0x3a, 0xfc, 0x5f, 0x8e, 0xc9, 0xe7, 0x01, 0xbd, 0xee, 0x4c, 0xd9, 0x39, 0xa1, 0xb1,
+	0x6f, 0x9f, 0x3d, 0xdc, 0x78, 0x3f, 0xeb, 0x77, 0x9e, 0xec, 0x5f, 0x4d, 0xec, 0x41, 0x53, 0xf1,
+	0xee, 0xcb, 0xcf, 0xf3, 0xc1, 0x98, 0xdd, 0x97, 0x7e, 0x0a, 0x40, 0x43, 0xab, 0xa6, 0xfd, 0x0b,
+	0x5f, 0x0e, 0x85, 0xbf, 0x7b, 0xf6, 0x91, 0x50, 0x7a, 0xd9, 0x2f, 0x93, 0x7f, 0x0f, 0x5b, 0x7b,
+	0xa0, 0xe4, 0xf1, 0xd5, 0x0b, 0x02, 0xe1, 0xc4, 0x11, 0xee, 0xb3, 0x07, 0xff, 0x22, 0xac, 0xfa,
+	0xda, 0xa3, 0xd7, 0xb3, 0x1f, 0x3c, 0xfa, 0x34, 0xe7, 0xd1, 0x6c, 0xce, 0xc9, 0xc5, 0x9c, 0x93,
+	0xef, 0x73, 0x4e, 0x3e, 0x2c, 0x78, 0x74, 0xb1, 0xe0, 0xd1, 0xd7, 0x05, 0x8f, 0xde, 0x1c, 0xaa,
+	0xca, 0x1e, 0x77, 0x85, 0x28, 0xb1, 0xf6, 0xbe, 0x25, 0x6a, 0xd5, 0x82, 0x31, 0x52, 0xe1, 0x23,
+	0x1f, 0xf4, 0xf6, 0x37, 0x6f, 0xf7, 0x2b, 0x14, 0xb1, 0x9b, 0xf5, 0xc3, 0x5f, 0x01, 0x00, 0x00,
+	0xff, 0xff, 0xf5, 0x00, 0xe0, 0x10, 0xa4, 0x03, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -238,7 +235,7 @@ const _ = grpc.SupportPackageIsVersion4
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type QueryClient interface {
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
-	InvestmintAmount(ctx context.Context, in *QueryInvestmintAmountRequest, opts ...grpc.CallOption) (*QueryInvestmintAmountResponse, error)
+	Investmint(ctx context.Context, in *QueryInvestmintRequest, opts ...grpc.CallOption) (*QueryInvestmintResponse, error)
 }
 
 type queryClient struct {
@@ -258,9 +255,9 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 	return out, nil
 }
 
-func (c *queryClient) InvestmintAmount(ctx context.Context, in *QueryInvestmintAmountRequest, opts ...grpc.CallOption) (*QueryInvestmintAmountResponse, error) {
-	out := new(QueryInvestmintAmountResponse)
-	err := c.cc.Invoke(ctx, "/cyber.resources.v1beta1.Query/InvestmintAmount", in, out, opts...)
+func (c *queryClient) Investmint(ctx context.Context, in *QueryInvestmintRequest, opts ...grpc.CallOption) (*QueryInvestmintResponse, error) {
+	out := new(QueryInvestmintResponse)
+	err := c.cc.Invoke(ctx, "/cyber.resources.v1beta1.Query/Investmint", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -270,7 +267,7 @@ func (c *queryClient) InvestmintAmount(ctx context.Context, in *QueryInvestmintA
 // QueryServer is the server API for Query service.
 type QueryServer interface {
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
-	InvestmintAmount(context.Context, *QueryInvestmintAmountRequest) (*QueryInvestmintAmountResponse, error)
+	Investmint(context.Context, *QueryInvestmintRequest) (*QueryInvestmintResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -280,8 +277,8 @@ type UnimplementedQueryServer struct {
 func (*UnimplementedQueryServer) Params(ctx context.Context, req *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
 }
-func (*UnimplementedQueryServer) InvestmintAmount(ctx context.Context, req *QueryInvestmintAmountRequest) (*QueryInvestmintAmountResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method InvestmintAmount not implemented")
+func (*UnimplementedQueryServer) Investmint(ctx context.Context, req *QueryInvestmintRequest) (*QueryInvestmintResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Investmint not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
@@ -306,20 +303,20 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_InvestmintAmount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryInvestmintAmountRequest)
+func _Query_Investmint_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryInvestmintRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).InvestmintAmount(ctx, in)
+		return srv.(QueryServer).Investmint(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/cyber.resources.v1beta1.Query/InvestmintAmount",
+		FullMethod: "/cyber.resources.v1beta1.Query/Investmint",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).InvestmintAmount(ctx, req.(*QueryInvestmintAmountRequest))
+		return srv.(QueryServer).Investmint(ctx, req.(*QueryInvestmintRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -333,8 +330,8 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Query_Params_Handler,
 		},
 		{
-			MethodName: "InvestmintAmount",
-			Handler:    _Query_InvestmintAmount_Handler,
+			MethodName: "Investmint",
+			Handler:    _Query_Investmint_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -397,7 +394,7 @@ func (m *QueryParamsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryInvestmintAmountRequest) Marshal() (dAtA []byte, err error) {
+func (m *QueryInvestmintRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -407,12 +404,12 @@ func (m *QueryInvestmintAmountRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryInvestmintAmountRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryInvestmintRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryInvestmintAmountRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryInvestmintRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -442,7 +439,7 @@ func (m *QueryInvestmintAmountRequest) MarshalToSizedBuffer(dAtA []byte) (int, e
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryInvestmintAmountResponse) Marshal() (dAtA []byte, err error) {
+func (m *QueryInvestmintResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -452,12 +449,12 @@ func (m *QueryInvestmintAmountResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryInvestmintAmountResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryInvestmintResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryInvestmintAmountResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryInvestmintResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -506,7 +503,7 @@ func (m *QueryParamsResponse) Size() (n int) {
 	return n
 }
 
-func (m *QueryInvestmintAmountRequest) Size() (n int) {
+func (m *QueryInvestmintRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -524,7 +521,7 @@ func (m *QueryInvestmintAmountRequest) Size() (n int) {
 	return n
 }
 
-func (m *QueryInvestmintAmountResponse) Size() (n int) {
+func (m *QueryInvestmintResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -576,10 +573,7 @@ func (m *QueryParamsRequest) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthQuery
 			}
 			if (iNdEx + skippy) > l {
@@ -662,10 +656,7 @@ func (m *QueryParamsResponse) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthQuery
 			}
 			if (iNdEx + skippy) > l {
@@ -680,7 +671,7 @@ func (m *QueryParamsResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryInvestmintAmountRequest) Unmarshal(dAtA []byte) error {
+func (m *QueryInvestmintRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -703,10 +694,10 @@ func (m *QueryInvestmintAmountRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryInvestmintAmountRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryInvestmintRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryInvestmintAmountRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryInvestmintRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -799,10 +790,7 @@ func (m *QueryInvestmintAmountRequest) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthQuery
 			}
 			if (iNdEx + skippy) > l {
@@ -817,7 +805,7 @@ func (m *QueryInvestmintAmountRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryInvestmintAmountResponse) Unmarshal(dAtA []byte) error {
+func (m *QueryInvestmintResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -840,10 +828,10 @@ func (m *QueryInvestmintAmountResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryInvestmintAmountResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryInvestmintResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryInvestmintAmountResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryInvestmintResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -885,10 +873,7 @@ func (m *QueryInvestmintAmountResponse) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthQuery
 			}
 			if (iNdEx + skippy) > l {

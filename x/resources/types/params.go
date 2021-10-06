@@ -20,13 +20,13 @@ const (
 
 var (
 	KeyMaxSlots   		          = []byte("MaxSlots")
-	KeyBaseHalvingPeriodVolt      = []byte("BaseHalvingPeriodVolt")
-	KeyBaseHalvingPeriodAmpere    = []byte("BaseHalvingPeriodAmpere")
+	KeyBaseHalvingPeriodVolt      = []byte("HalvingPeriodVoltPeriod")
+	KeyBaseHalvingPeriodAmpere    = []byte("HalvingPeriodAmperePeriod")
 	KeyBaseInvestmintPeriodVolt   = []byte("BaseInvestmintPeriodVolt")
 	KeyBaseInvestmintPeriodAmpere = []byte("BaseInvestmintPeriodAmpere")
 	KeyBaseInvestmintAmountVolt   = []byte("BaseInvestmintAmountVolt")
 	KeyBaseInvestmintAmountAmpere = []byte("BaseInvestmintAmountAmpere")
-	KeyMinInvestmintPeriodSec     = []byte("MinInvestmintPeriodSec")
+	KeyMinInvestmintPeriodSec     = []byte("MinInvestmintPeriod")
 )
 
 func ParamKeyTable() paramstypes.KeyTable {
@@ -36,26 +36,26 @@ func ParamKeyTable() paramstypes.KeyTable {
 func DefaultParams() Params {
 	return Params{
 		MaxSlots: 		 			DefaultMaxSlots,
-		BaseHalvingPeriodVolt:      DefaultHalvingPeriodVolt,
-		BaseHalvingPeriodAmpere:    DefaultHalvingPeriodAmpere,
+		HalvingPeriodVoltBlocks:    DefaultHalvingPeriodVolt,
+		HalvingPeriodAmpereBlocks:  DefaultHalvingPeriodAmpere,
 		BaseInvestmintPeriodVolt:   DefaultInvestmintPeriodVolt,
 		BaseInvestmintPeriodAmpere: DefaultInvestmintPeriodAmpere,
 		BaseInvestmintAmountVolt:   ctypes.NewCybCoin(ctypes.Mega*10),
 		BaseInvestmintAmountAmpere: ctypes.NewCybCoin(ctypes.Mega*10),
-		MinInvestmintPeriodSec:     DefaultMinInvestmintPeriodSec,
+		MinInvestmintPeriod:        DefaultMinInvestmintPeriodSec,
 	}
 }
 
 func (p *Params) ParamSetPairs() paramstypes.ParamSetPairs {
 	return paramstypes.ParamSetPairs{
 		paramstypes.NewParamSetPair(KeyMaxSlots, &p.MaxSlots, validateMaxSlots),
-		paramstypes.NewParamSetPair(KeyBaseHalvingPeriodVolt, p.BaseHalvingPeriodVolt, validateBaseHalvingPeriodVolt),
-		paramstypes.NewParamSetPair(KeyBaseHalvingPeriodAmpere, p.BaseHalvingPeriodAmpere, validateBaseHalvingPeriodAmpere),
-		paramstypes.NewParamSetPair(KeyBaseInvestmintPeriodVolt, p.BaseInvestmintPeriodVolt, validateBaseInvestmintPeriodVolt),
-		paramstypes.NewParamSetPair(KeyBaseInvestmintPeriodAmpere, p.BaseInvestmintPeriodAmpere, validateBaseInvestmintPeriodAmpere),
-		paramstypes.NewParamSetPair(KeyBaseInvestmintAmountVolt, p.BaseInvestmintAmountVolt, validateBaseInvestmintAmountVolt),
-		paramstypes.NewParamSetPair(KeyBaseInvestmintAmountAmpere, p.BaseInvestmintAmountAmpere, validateBaseInvestmintAmountAmpere),
-		paramstypes.NewParamSetPair(KeyMinInvestmintPeriodSec, p.MinInvestmintPeriodSec, validateMinInvestmintPeriodSec),
+		paramstypes.NewParamSetPair(KeyBaseHalvingPeriodVolt, &p.HalvingPeriodVoltBlocks, validateBaseHalvingPeriodVolt),
+		paramstypes.NewParamSetPair(KeyBaseHalvingPeriodAmpere, &p.HalvingPeriodAmpereBlocks, validateBaseHalvingPeriodAmpere),
+		paramstypes.NewParamSetPair(KeyBaseInvestmintPeriodVolt, &p.BaseInvestmintPeriodVolt, validateBaseInvestmintPeriodVolt),
+		paramstypes.NewParamSetPair(KeyBaseInvestmintPeriodAmpere, &p.BaseInvestmintPeriodAmpere, validateBaseInvestmintPeriodAmpere),
+		paramstypes.NewParamSetPair(KeyBaseInvestmintAmountVolt, &p.BaseInvestmintAmountVolt, validateBaseInvestmintAmountVolt),
+		paramstypes.NewParamSetPair(KeyBaseInvestmintAmountAmpere, &p.BaseInvestmintAmountAmpere, validateBaseInvestmintAmountAmpere),
+		paramstypes.NewParamSetPair(KeyMinInvestmintPeriodSec, &p.MinInvestmintPeriod, validateMinInvestmintPeriodSec),
 	}
 }
 
@@ -63,10 +63,10 @@ func (p Params) Validate() error {
 	if err := validateMaxSlots(p.MaxSlots); err != nil {
 		return err
 	}
-	if err := validateBaseHalvingPeriodVolt(p.BaseHalvingPeriodVolt); err != nil {
+	if err := validateBaseHalvingPeriodVolt(p.HalvingPeriodVoltBlocks); err != nil {
 		return err
 	}
-	if err := validateBaseHalvingPeriodAmpere(p.BaseHalvingPeriodAmpere); err != nil {
+	if err := validateBaseHalvingPeriodAmpere(p.HalvingPeriodAmpereBlocks); err != nil {
 		return err
 	}
 	if err := validateBaseInvestmintPeriodVolt(p.BaseInvestmintPeriodVolt); err != nil {
@@ -81,7 +81,7 @@ func (p Params) Validate() error {
 	if err := validateBaseInvestmintAmountAmpere(p.BaseInvestmintAmountAmpere); err != nil {
 		return err
 	}
-	if err := validateMinInvestmintPeriodSec(p.MinInvestmintPeriodSec); err != nil {
+	if err := validateMinInvestmintPeriodSec(p.MinInvestmintPeriod); err != nil {
 		return err
 	}
 

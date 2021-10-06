@@ -177,21 +177,21 @@ func (m *QueryPriceResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_QueryPriceResponse proto.InternalMessageInfo
 
-type QueryDesirableBandwidthRequest struct {
+type QueryTotalBandwidthRequest struct {
 }
 
-func (m *QueryDesirableBandwidthRequest) Reset()         { *m = QueryDesirableBandwidthRequest{} }
-func (m *QueryDesirableBandwidthRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryDesirableBandwidthRequest) ProtoMessage()    {}
-func (*QueryDesirableBandwidthRequest) Descriptor() ([]byte, []int) {
+func (m *QueryTotalBandwidthRequest) Reset()         { *m = QueryTotalBandwidthRequest{} }
+func (m *QueryTotalBandwidthRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryTotalBandwidthRequest) ProtoMessage()    {}
+func (*QueryTotalBandwidthRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_bccaa873af5af46c, []int{4}
 }
-func (m *QueryDesirableBandwidthRequest) XXX_Unmarshal(b []byte) error {
+func (m *QueryTotalBandwidthRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryDesirableBandwidthRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryTotalBandwidthRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryDesirableBandwidthRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryTotalBandwidthRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -201,34 +201,34 @@ func (m *QueryDesirableBandwidthRequest) XXX_Marshal(b []byte, deterministic boo
 		return b[:n], nil
 	}
 }
-func (m *QueryDesirableBandwidthRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryDesirableBandwidthRequest.Merge(m, src)
+func (m *QueryTotalBandwidthRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryTotalBandwidthRequest.Merge(m, src)
 }
-func (m *QueryDesirableBandwidthRequest) XXX_Size() int {
+func (m *QueryTotalBandwidthRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryDesirableBandwidthRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryDesirableBandwidthRequest.DiscardUnknown(m)
+func (m *QueryTotalBandwidthRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryTotalBandwidthRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryDesirableBandwidthRequest proto.InternalMessageInfo
+var xxx_messageInfo_QueryTotalBandwidthRequest proto.InternalMessageInfo
 
-type QueryDesirableBandwidthResponse struct {
-	DesirableBandwidth uint64 `protobuf:"varint,1,opt,name=desirable_bandwidth,json=desirableBandwidth,proto3" json:"desirable_bandwidth,omitempty"`
+type QueryTotalBandwidthResponse struct {
+	TotalBandwidth uint64 `protobuf:"varint,1,opt,name=total_bandwidth,json=totalBandwidth,proto3" json:"total_bandwidth,omitempty"`
 }
 
-func (m *QueryDesirableBandwidthResponse) Reset()         { *m = QueryDesirableBandwidthResponse{} }
-func (m *QueryDesirableBandwidthResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryDesirableBandwidthResponse) ProtoMessage()    {}
-func (*QueryDesirableBandwidthResponse) Descriptor() ([]byte, []int) {
+func (m *QueryTotalBandwidthResponse) Reset()         { *m = QueryTotalBandwidthResponse{} }
+func (m *QueryTotalBandwidthResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryTotalBandwidthResponse) ProtoMessage()    {}
+func (*QueryTotalBandwidthResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_bccaa873af5af46c, []int{5}
 }
-func (m *QueryDesirableBandwidthResponse) XXX_Unmarshal(b []byte) error {
+func (m *QueryTotalBandwidthResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryDesirableBandwidthResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryTotalBandwidthResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryDesirableBandwidthResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryTotalBandwidthResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -238,17 +238,17 @@ func (m *QueryDesirableBandwidthResponse) XXX_Marshal(b []byte, deterministic bo
 		return b[:n], nil
 	}
 }
-func (m *QueryDesirableBandwidthResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryDesirableBandwidthResponse.Merge(m, src)
+func (m *QueryTotalBandwidthResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryTotalBandwidthResponse.Merge(m, src)
 }
-func (m *QueryDesirableBandwidthResponse) XXX_Size() int {
+func (m *QueryTotalBandwidthResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryDesirableBandwidthResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryDesirableBandwidthResponse.DiscardUnknown(m)
+func (m *QueryTotalBandwidthResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryTotalBandwidthResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryDesirableBandwidthResponse proto.InternalMessageInfo
+var xxx_messageInfo_QueryTotalBandwidthResponse proto.InternalMessageInfo
 
 type QueryAccountRequest struct {
 	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
@@ -288,7 +288,7 @@ func (m *QueryAccountRequest) XXX_DiscardUnknown() {
 var xxx_messageInfo_QueryAccountRequest proto.InternalMessageInfo
 
 type QueryAccountResponse struct {
-	AccountBandwidth AccountBandwidth `protobuf:"bytes,1,opt,name=account_bandwidth,json=accountBandwidth,proto3" json:"account_bandwidth"`
+	AccountBandwidth NeuronBandwidth `protobuf:"bytes,1,opt,name=account_bandwidth,json=accountBandwidth,proto3" json:"account_bandwidth"`
 }
 
 func (m *QueryAccountResponse) Reset()         { *m = QueryAccountResponse{} }
@@ -402,8 +402,8 @@ func init() {
 	proto.RegisterType((*QueryLoadResponse)(nil), "cyber.bandwidth.v1beta1.QueryLoadResponse")
 	proto.RegisterType((*QueryPriceRequest)(nil), "cyber.bandwidth.v1beta1.QueryPriceRequest")
 	proto.RegisterType((*QueryPriceResponse)(nil), "cyber.bandwidth.v1beta1.QueryPriceResponse")
-	proto.RegisterType((*QueryDesirableBandwidthRequest)(nil), "cyber.bandwidth.v1beta1.QueryDesirableBandwidthRequest")
-	proto.RegisterType((*QueryDesirableBandwidthResponse)(nil), "cyber.bandwidth.v1beta1.QueryDesirableBandwidthResponse")
+	proto.RegisterType((*QueryTotalBandwidthRequest)(nil), "cyber.bandwidth.v1beta1.QueryTotalBandwidthRequest")
+	proto.RegisterType((*QueryTotalBandwidthResponse)(nil), "cyber.bandwidth.v1beta1.QueryTotalBandwidthResponse")
 	proto.RegisterType((*QueryAccountRequest)(nil), "cyber.bandwidth.v1beta1.QueryAccountRequest")
 	proto.RegisterType((*QueryAccountResponse)(nil), "cyber.bandwidth.v1beta1.QueryAccountResponse")
 	proto.RegisterType((*QueryParamsRequest)(nil), "cyber.bandwidth.v1beta1.QueryParamsRequest")
@@ -417,45 +417,45 @@ func init() {
 var fileDescriptor_bccaa873af5af46c = []byte{
 	// 633 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x95, 0x31, 0x6f, 0xd3, 0x40,
-	0x14, 0xc7, 0x6d, 0x94, 0xa6, 0xe2, 0xba, 0xb4, 0xd7, 0x4a, 0xad, 0x2c, 0x70, 0x2a, 0x33, 0xd0,
-	0x36, 0x89, 0x8f, 0x24, 0x15, 0x30, 0xc0, 0x40, 0xd4, 0x91, 0xa1, 0x58, 0xb0, 0x20, 0xa4, 0xea,
-	0x6c, 0x1f, 0x8e, 0x45, 0xe2, 0x73, 0x7d, 0x0e, 0x10, 0x55, 0x30, 0xf0, 0x01, 0x10, 0x02, 0x89,
-	0x4f, 0xc0, 0xc0, 0xc2, 0x47, 0x60, 0xcf, 0x58, 0x89, 0x05, 0x31, 0x54, 0x90, 0xf0, 0x41, 0x90,
-	0xcf, 0xcf, 0xc1, 0x4d, 0xe5, 0xd6, 0x0c, 0x4c, 0x49, 0x9e, 0xdf, 0xff, 0xfd, 0x7f, 0xf6, 0xfd,
-	0x9f, 0x83, 0xae, 0x39, 0x23, 0x9b, 0x45, 0xc4, 0xa6, 0x81, 0xfb, 0xc2, 0x77, 0xe3, 0x1e, 0x79,
-	0xde, 0xb2, 0x59, 0x4c, 0x5b, 0xe4, 0x70, 0xc8, 0xa2, 0x91, 0x19, 0x46, 0x3c, 0xe6, 0x78, 0x5d,
-	0x36, 0x99, 0xb3, 0x26, 0x13, 0x9a, 0xb4, 0x35, 0x8f, 0x7b, 0x5c, 0xf6, 0x90, 0xe4, 0x5b, 0xda,
-	0xae, 0x5d, 0xf1, 0x38, 0xf7, 0xfa, 0x8c, 0xd0, 0xd0, 0x27, 0x34, 0x08, 0x78, 0x4c, 0x63, 0x9f,
-	0x07, 0x02, 0xae, 0xae, 0x3b, 0x5c, 0x0c, 0xb8, 0x38, 0x48, 0x65, 0x0e, 0xf7, 0x03, 0xb8, 0x50,
-	0x88, 0x12, 0x8f, 0x42, 0x06, 0x6a, 0x03, 0xa3, 0xe5, 0x07, 0x09, 0xd9, 0x7d, 0x4e, 0x5d, 0x8b,
-	0x1d, 0x0e, 0x99, 0x88, 0x8d, 0x23, 0xb4, 0x92, 0xab, 0x89, 0x90, 0x07, 0x82, 0xe1, 0xa7, 0xa8,
-	0xd2, 0xe7, 0xd4, 0xdd, 0x50, 0x37, 0xd5, 0xad, 0xa5, 0xf6, 0x55, 0x33, 0x75, 0x35, 0x6d, 0x2a,
-	0x58, 0x86, 0x6f, 0xee, 0x31, 0x67, 0x3f, 0x99, 0xda, 0xed, 0x8c, 0x4f, 0x6a, 0xca, 0x8f, 0x93,
-	0x5a, 0xdd, 0xf3, 0xe3, 0xde, 0xd0, 0x36, 0x1d, 0x3e, 0x20, 0xa9, 0x00, 0x3e, 0x9a, 0xc2, 0x7d,
-	0x06, 0x1c, 0x99, 0xc8, 0x92, 0xf3, 0x8d, 0x55, 0x30, 0xdf, 0x8f, 0x7c, 0x87, 0x65, 0x44, 0xaf,
-	0x11, 0xce, 0x17, 0x01, 0xa9, 0x87, 0x16, 0xc2, 0xa4, 0xf0, 0x1f, 0x99, 0x52, 0x03, 0x63, 0x13,
-	0xe9, 0xd2, 0x7f, 0x8f, 0x09, 0x3f, 0xa2, 0x76, 0x9f, 0x75, 0xb3, 0x87, 0x9a, 0x11, 0x5a, 0xa8,
-	0x56, 0xd8, 0x01, 0xb8, 0x04, 0xad, 0xba, 0xd9, 0xd5, 0x83, 0xd9, 0xa9, 0x48, 0xf8, 0x8a, 0x85,
-	0xdd, 0x33, 0x42, 0x83, 0xa0, 0x55, 0x39, 0xf3, 0x9e, 0xe3, 0xf0, 0x61, 0x10, 0x83, 0x15, 0xde,
-	0x40, 0x8b, 0xd4, 0x75, 0x23, 0x26, 0x84, 0xd4, 0x5e, 0xb6, 0xb2, 0x9f, 0x46, 0x8c, 0xd6, 0x4e,
-	0x0b, 0xc0, 0xf9, 0x09, 0x5a, 0xa1, 0x69, 0x69, 0xce, 0x77, 0xa9, 0xbd, 0x6d, 0x16, 0x64, 0xd1,
-	0x84, 0x21, 0x33, 0x9c, 0x6e, 0x25, 0x79, 0x80, 0xd6, 0x32, 0x9d, 0xab, 0x1b, 0x6b, 0xd9, 0xe1,
-	0xd0, 0x88, 0x0e, 0x44, 0xf6, 0x40, 0x1e, 0x02, 0x7c, 0x56, 0x05, 0x94, 0xbb, 0xa8, 0x1a, 0xca,
-	0x0a, 0xf8, 0xd7, 0x0a, 0xfd, 0x53, 0x21, 0xb8, 0x82, 0xa8, 0xfd, 0xa5, 0x8a, 0x16, 0xe4, 0x58,
-	0xfc, 0x56, 0x45, 0x95, 0x24, 0xa0, 0xb8, 0xf8, 0x0e, 0xe6, 0x83, 0xad, 0xed, 0x94, 0x69, 0x4d,
-	0x41, 0x0d, 0xf2, 0xe6, 0xdb, 0xef, 0x0f, 0x97, 0xb6, 0xf1, 0x75, 0x52, 0xb4, 0x46, 0x7f, 0x2b,
-	0x49, 0x70, 0xf1, 0x7b, 0x15, 0x2d, 0xc8, 0x7c, 0xe2, 0x0b, 0x6c, 0xf2, 0xc9, 0xd6, 0xea, 0xa5,
-	0x7a, 0x81, 0xe9, 0x86, 0x64, 0xda, 0xc1, 0x5b, 0x25, 0x98, 0x64, 0x70, 0xf1, 0x57, 0x15, 0xe1,
-	0xb3, 0x91, 0xc4, 0xb7, 0xce, 0x77, 0x2d, 0x8c, 0xb9, 0x76, 0xfb, 0xdf, 0x85, 0xc0, 0xbe, 0x2b,
-	0xd9, 0x4d, 0xdc, 0x28, 0xc1, 0x3e, 0xdb, 0x05, 0xfc, 0x49, 0x45, 0x8b, 0x10, 0x44, 0xdc, 0x38,
-	0xdf, 0xfb, 0xf4, 0x96, 0x68, 0xcd, 0x92, 0xdd, 0x80, 0x77, 0x47, 0xe2, 0xdd, 0xc4, 0xbb, 0x25,
-	0xf0, 0x60, 0x03, 0xc8, 0x11, 0xec, 0xdd, 0x2b, 0xfc, 0x51, 0x45, 0xd5, 0x34, 0xaf, 0xf8, 0xa2,
-	0x03, 0xcd, 0x2f, 0x89, 0xd6, 0x28, 0xd7, 0x0c, 0x8c, 0x2d, 0xc9, 0x58, 0xc7, 0xdb, 0x65, 0x8e,
-	0x3f, 0xdd, 0x9e, 0x47, 0xe3, 0x5f, 0xba, 0xf2, 0x79, 0xa2, 0x2b, 0xe3, 0x89, 0xae, 0x1e, 0x4f,
-	0x74, 0xf5, 0xe7, 0x44, 0x57, 0xdf, 0x4d, 0x75, 0xe5, 0x78, 0xaa, 0x2b, 0xdf, 0xa7, 0xba, 0xf2,
-	0xb8, 0x93, 0x7f, 0x1d, 0x26, 0x63, 0x1d, 0x1e, 0x78, 0xc9, 0x5d, 0x11, 0x8f, 0x37, 0x53, 0x9f,
-	0x97, 0xb9, 0xb9, 0xf2, 0xfd, 0x68, 0x57, 0xe5, 0x9f, 0x47, 0xe7, 0x4f, 0x00, 0x00, 0x00, 0xff,
-	0xff, 0x38, 0x2c, 0x12, 0x1a, 0xee, 0x06, 0x00, 0x00,
+	0x14, 0xc7, 0x6d, 0x94, 0xa6, 0xe2, 0x2a, 0x95, 0xf6, 0x1a, 0x89, 0xca, 0x14, 0x07, 0x99, 0xa1,
+	0x49, 0xd3, 0xf8, 0x48, 0x02, 0x13, 0x62, 0x20, 0x42, 0x4c, 0x08, 0x95, 0xa8, 0x2c, 0x30, 0xa0,
+	0xb3, 0x7d, 0x38, 0x16, 0x89, 0xcf, 0xf5, 0x5d, 0x80, 0xa8, 0x82, 0x81, 0x0f, 0x80, 0x10, 0x48,
+	0x4c, 0x6c, 0x2c, 0x2c, 0x7c, 0x8f, 0x8c, 0x95, 0x58, 0x10, 0x43, 0x05, 0x09, 0x1f, 0x04, 0xdd,
+	0xf9, 0x9c, 0x3a, 0x55, 0xd3, 0x1a, 0x24, 0xa6, 0x24, 0xef, 0xde, 0x7b, 0xff, 0x9f, 0xef, 0xfd,
+	0x9f, 0x03, 0xae, 0xba, 0x43, 0x87, 0xc4, 0xc8, 0xc1, 0xa1, 0xf7, 0x22, 0xf0, 0x78, 0x17, 0x3d,
+	0x6f, 0x38, 0x84, 0xe3, 0x06, 0xda, 0x1b, 0x90, 0x78, 0x68, 0x47, 0x31, 0xe5, 0x14, 0x5e, 0x94,
+	0x49, 0xf6, 0x34, 0xc9, 0x56, 0x49, 0x46, 0xc9, 0xa7, 0x3e, 0x95, 0x39, 0x48, 0x7c, 0x4b, 0xd2,
+	0x8d, 0x0d, 0x9f, 0x52, 0xbf, 0x47, 0x10, 0x8e, 0x02, 0x84, 0xc3, 0x90, 0x72, 0xcc, 0x03, 0x1a,
+	0x32, 0x75, 0x6a, 0xba, 0x94, 0xf5, 0x29, 0x43, 0x0e, 0x66, 0x64, 0xaa, 0xe6, 0xd2, 0x20, 0x54,
+	0xe7, 0x73, 0x89, 0xf8, 0x30, 0x22, 0xaa, 0x89, 0x05, 0xc1, 0xca, 0x03, 0x01, 0x78, 0x8f, 0x62,
+	0xaf, 0x43, 0xf6, 0x06, 0x84, 0x71, 0x6b, 0x1f, 0xac, 0x66, 0x62, 0x2c, 0xa2, 0x21, 0x23, 0xf0,
+	0x29, 0x28, 0xf4, 0x28, 0xf6, 0xd6, 0xf5, 0x2b, 0x7a, 0x65, 0xa9, 0x79, 0xd9, 0x4e, 0xc4, 0x6d,
+	0x21, 0x9e, 0x3e, 0x85, 0x7d, 0x87, 0xb8, 0x3b, 0xa2, 0x6b, 0xbb, 0x35, 0x3a, 0x2c, 0x6b, 0x3f,
+	0x0e, 0xcb, 0x35, 0x3f, 0xe0, 0xdd, 0x81, 0x63, 0xbb, 0xb4, 0x8f, 0x14, 0x6d, 0xf2, 0x51, 0x67,
+	0xde, 0x33, 0xc5, 0x91, 0x16, 0x75, 0x64, 0x7f, 0x6b, 0x4d, 0x89, 0xef, 0xc4, 0x81, 0x4b, 0x52,
+	0xa2, 0xd7, 0x00, 0x66, 0x83, 0x0a, 0xa9, 0x0b, 0x16, 0x22, 0x11, 0xf8, 0x8f, 0x4c, 0x89, 0x80,
+	0xb5, 0x01, 0x0c, 0xa9, 0xbf, 0x4b, 0x39, 0xee, 0xb5, 0xd3, 0x0b, 0x4d, 0xe9, 0xee, 0x82, 0x4b,
+	0x27, 0x9e, 0x2a, 0xcc, 0x4d, 0x70, 0x81, 0x8b, 0x93, 0x27, 0xd3, 0x49, 0x48, 0xe0, 0x42, 0x67,
+	0x99, 0xcf, 0x14, 0x58, 0x08, 0xac, 0xc9, 0x3e, 0xb7, 0x5d, 0x97, 0x0e, 0x42, 0xae, 0xda, 0xc3,
+	0x75, 0xb0, 0x88, 0x3d, 0x2f, 0x26, 0x8c, 0xc9, 0xba, 0xf3, 0x9d, 0xf4, 0xa7, 0xc5, 0x40, 0x69,
+	0xb6, 0x40, 0x29, 0x3e, 0x06, 0xab, 0x38, 0x09, 0x1d, 0xd3, 0x5c, 0x6a, 0x56, 0xec, 0x39, 0x16,
+	0xb4, 0xef, 0x93, 0x41, 0x4c, 0xc3, 0x29, 0x4d, 0xbb, 0x20, 0xee, 0xab, 0xb3, 0xa2, 0x1a, 0x1d,
+	0x51, 0x96, 0xd2, 0x59, 0xe0, 0x18, 0xf7, 0x59, 0x7a, 0x07, 0xbb, 0x8a, 0x3d, 0x8d, 0x2a, 0x92,
+	0x5b, 0xa0, 0x18, 0xc9, 0x88, 0x92, 0x2f, 0xcf, 0x95, 0x4f, 0x0a, 0x95, 0xaa, 0x2a, 0x6a, 0x7e,
+	0x2a, 0x82, 0x05, 0xd9, 0x16, 0xbe, 0xd5, 0x41, 0x41, 0xf8, 0x11, 0x56, 0xe7, 0x76, 0x38, 0xee,
+	0x63, 0x63, 0x2b, 0x4f, 0x6a, 0x02, 0x6a, 0xa1, 0x37, 0xdf, 0x7e, 0x7f, 0x38, 0x57, 0x85, 0x9b,
+	0x68, 0xde, 0xd6, 0x1c, 0x45, 0x84, 0x4f, 0xe1, 0x7b, 0x1d, 0x2c, 0x48, 0x3b, 0xc2, 0x33, 0x64,
+	0xb2, 0x46, 0x36, 0x6a, 0xb9, 0x72, 0x15, 0xd3, 0x35, 0xc9, 0xb4, 0x05, 0x2b, 0x39, 0x98, 0xa4,
+	0x4f, 0xe1, 0x57, 0x1d, 0x2c, 0xcf, 0xba, 0x10, 0xb6, 0x4e, 0x57, 0x3c, 0xd1, 0xd1, 0xc6, 0xf5,
+	0xbf, 0x2b, 0xfa, 0x07, 0x5e, 0x69, 0x7d, 0xf8, 0x59, 0x07, 0x8b, 0xca, 0xbc, 0x70, 0xfb, 0x74,
+	0xcd, 0xd9, 0xa5, 0x30, 0xea, 0x39, 0xb3, 0x15, 0xda, 0x4d, 0x89, 0x76, 0x03, 0xb6, 0x72, 0xa0,
+	0x85, 0x72, 0x11, 0xd0, 0xbe, 0xda, 0xb2, 0x57, 0xf0, 0xa3, 0x0e, 0x8a, 0x89, 0x3d, 0xe1, 0x59,
+	0xf3, 0xcb, 0xee, 0x84, 0xb1, 0x9d, 0x2f, 0x59, 0x21, 0x36, 0x24, 0x62, 0x0d, 0x56, 0xf3, 0x4c,
+	0x3b, 0x59, 0x96, 0x87, 0xa3, 0x5f, 0xa6, 0xf6, 0x65, 0x6c, 0x6a, 0xa3, 0xb1, 0xa9, 0x1f, 0x8c,
+	0x4d, 0xfd, 0xe7, 0xd8, 0xd4, 0xdf, 0x4d, 0x4c, 0xed, 0x60, 0x62, 0x6a, 0xdf, 0x27, 0xa6, 0xf6,
+	0xa8, 0x95, 0x7d, 0xd9, 0x89, 0xb6, 0x2e, 0x0d, 0x7d, 0xf1, 0x54, 0xc8, 0xa7, 0xf5, 0x44, 0xe7,
+	0x65, 0x76, 0x2a, 0xe2, 0xed, 0xe7, 0x14, 0xe5, 0x5f, 0x43, 0xeb, 0x4f, 0x00, 0x00, 0x00, 0xff,
+	0xff, 0xae, 0xef, 0xc9, 0x26, 0xd3, 0x06, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -472,7 +472,7 @@ const _ = grpc.SupportPackageIsVersion4
 type QueryClient interface {
 	Load(ctx context.Context, in *QueryLoadRequest, opts ...grpc.CallOption) (*QueryLoadResponse, error)
 	Price(ctx context.Context, in *QueryPriceRequest, opts ...grpc.CallOption) (*QueryPriceResponse, error)
-	DesirableBandwidth(ctx context.Context, in *QueryDesirableBandwidthRequest, opts ...grpc.CallOption) (*QueryDesirableBandwidthResponse, error)
+	TotalBandwidth(ctx context.Context, in *QueryTotalBandwidthRequest, opts ...grpc.CallOption) (*QueryTotalBandwidthResponse, error)
 	Account(ctx context.Context, in *QueryAccountRequest, opts ...grpc.CallOption) (*QueryAccountResponse, error)
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
 }
@@ -503,9 +503,9 @@ func (c *queryClient) Price(ctx context.Context, in *QueryPriceRequest, opts ...
 	return out, nil
 }
 
-func (c *queryClient) DesirableBandwidth(ctx context.Context, in *QueryDesirableBandwidthRequest, opts ...grpc.CallOption) (*QueryDesirableBandwidthResponse, error) {
-	out := new(QueryDesirableBandwidthResponse)
-	err := c.cc.Invoke(ctx, "/cyber.bandwidth.v1beta1.Query/DesirableBandwidth", in, out, opts...)
+func (c *queryClient) TotalBandwidth(ctx context.Context, in *QueryTotalBandwidthRequest, opts ...grpc.CallOption) (*QueryTotalBandwidthResponse, error) {
+	out := new(QueryTotalBandwidthResponse)
+	err := c.cc.Invoke(ctx, "/cyber.bandwidth.v1beta1.Query/TotalBandwidth", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -534,7 +534,7 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 type QueryServer interface {
 	Load(context.Context, *QueryLoadRequest) (*QueryLoadResponse, error)
 	Price(context.Context, *QueryPriceRequest) (*QueryPriceResponse, error)
-	DesirableBandwidth(context.Context, *QueryDesirableBandwidthRequest) (*QueryDesirableBandwidthResponse, error)
+	TotalBandwidth(context.Context, *QueryTotalBandwidthRequest) (*QueryTotalBandwidthResponse, error)
 	Account(context.Context, *QueryAccountRequest) (*QueryAccountResponse, error)
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
 }
@@ -549,8 +549,8 @@ func (*UnimplementedQueryServer) Load(ctx context.Context, req *QueryLoadRequest
 func (*UnimplementedQueryServer) Price(ctx context.Context, req *QueryPriceRequest) (*QueryPriceResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Price not implemented")
 }
-func (*UnimplementedQueryServer) DesirableBandwidth(ctx context.Context, req *QueryDesirableBandwidthRequest) (*QueryDesirableBandwidthResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DesirableBandwidth not implemented")
+func (*UnimplementedQueryServer) TotalBandwidth(ctx context.Context, req *QueryTotalBandwidthRequest) (*QueryTotalBandwidthResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TotalBandwidth not implemented")
 }
 func (*UnimplementedQueryServer) Account(ctx context.Context, req *QueryAccountRequest) (*QueryAccountResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Account not implemented")
@@ -599,20 +599,20 @@ func _Query_Price_Handler(srv interface{}, ctx context.Context, dec func(interfa
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_DesirableBandwidth_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryDesirableBandwidthRequest)
+func _Query_TotalBandwidth_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryTotalBandwidthRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).DesirableBandwidth(ctx, in)
+		return srv.(QueryServer).TotalBandwidth(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/cyber.bandwidth.v1beta1.Query/DesirableBandwidth",
+		FullMethod: "/cyber.bandwidth.v1beta1.Query/TotalBandwidth",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).DesirableBandwidth(ctx, req.(*QueryDesirableBandwidthRequest))
+		return srv.(QueryServer).TotalBandwidth(ctx, req.(*QueryTotalBandwidthRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -666,8 +666,8 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Query_Price_Handler,
 		},
 		{
-			MethodName: "DesirableBandwidth",
-			Handler:    _Query_DesirableBandwidth_Handler,
+			MethodName: "TotalBandwidth",
+			Handler:    _Query_TotalBandwidth_Handler,
 		},
 		{
 			MethodName: "Account",
@@ -794,7 +794,7 @@ func (m *QueryPriceResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryDesirableBandwidthRequest) Marshal() (dAtA []byte, err error) {
+func (m *QueryTotalBandwidthRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -804,12 +804,12 @@ func (m *QueryDesirableBandwidthRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryDesirableBandwidthRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryTotalBandwidthRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryDesirableBandwidthRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryTotalBandwidthRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -817,7 +817,7 @@ func (m *QueryDesirableBandwidthRequest) MarshalToSizedBuffer(dAtA []byte) (int,
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryDesirableBandwidthResponse) Marshal() (dAtA []byte, err error) {
+func (m *QueryTotalBandwidthResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -827,18 +827,18 @@ func (m *QueryDesirableBandwidthResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryDesirableBandwidthResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryTotalBandwidthResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryDesirableBandwidthResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryTotalBandwidthResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.DesirableBandwidth != 0 {
-		i = encodeVarintQuery(dAtA, i, uint64(m.DesirableBandwidth))
+	if m.TotalBandwidth != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.TotalBandwidth))
 		i--
 		dAtA[i] = 0x8
 	}
@@ -1015,7 +1015,7 @@ func (m *QueryPriceResponse) Size() (n int) {
 	return n
 }
 
-func (m *QueryDesirableBandwidthRequest) Size() (n int) {
+func (m *QueryTotalBandwidthRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1024,14 +1024,14 @@ func (m *QueryDesirableBandwidthRequest) Size() (n int) {
 	return n
 }
 
-func (m *QueryDesirableBandwidthResponse) Size() (n int) {
+func (m *QueryTotalBandwidthResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	if m.DesirableBandwidth != 0 {
-		n += 1 + sovQuery(uint64(m.DesirableBandwidth))
+	if m.TotalBandwidth != 0 {
+		n += 1 + sovQuery(uint64(m.TotalBandwidth))
 	}
 	return n
 }
@@ -1121,10 +1121,7 @@ func (m *QueryLoadRequest) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthQuery
 			}
 			if (iNdEx + skippy) > l {
@@ -1207,10 +1204,7 @@ func (m *QueryLoadResponse) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthQuery
 			}
 			if (iNdEx + skippy) > l {
@@ -1260,10 +1254,7 @@ func (m *QueryPriceRequest) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthQuery
 			}
 			if (iNdEx + skippy) > l {
@@ -1346,10 +1337,7 @@ func (m *QueryPriceResponse) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthQuery
 			}
 			if (iNdEx + skippy) > l {
@@ -1364,7 +1352,7 @@ func (m *QueryPriceResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryDesirableBandwidthRequest) Unmarshal(dAtA []byte) error {
+func (m *QueryTotalBandwidthRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1387,10 +1375,10 @@ func (m *QueryDesirableBandwidthRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryDesirableBandwidthRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryTotalBandwidthRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryDesirableBandwidthRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryTotalBandwidthRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:
@@ -1399,10 +1387,7 @@ func (m *QueryDesirableBandwidthRequest) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthQuery
 			}
 			if (iNdEx + skippy) > l {
@@ -1417,7 +1402,7 @@ func (m *QueryDesirableBandwidthRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryDesirableBandwidthResponse) Unmarshal(dAtA []byte) error {
+func (m *QueryTotalBandwidthResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1440,17 +1425,17 @@ func (m *QueryDesirableBandwidthResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryDesirableBandwidthResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryTotalBandwidthResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryDesirableBandwidthResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryTotalBandwidthResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field DesirableBandwidth", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field TotalBandwidth", wireType)
 			}
-			m.DesirableBandwidth = 0
+			m.TotalBandwidth = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowQuery
@@ -1460,7 +1445,7 @@ func (m *QueryDesirableBandwidthResponse) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.DesirableBandwidth |= uint64(b&0x7F) << shift
+				m.TotalBandwidth |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1471,10 +1456,7 @@ func (m *QueryDesirableBandwidthResponse) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthQuery
 			}
 			if (iNdEx + skippy) > l {
@@ -1556,10 +1538,7 @@ func (m *QueryAccountRequest) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthQuery
 			}
 			if (iNdEx + skippy) > l {
@@ -1642,10 +1621,7 @@ func (m *QueryAccountResponse) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthQuery
 			}
 			if (iNdEx + skippy) > l {
@@ -1695,10 +1671,7 @@ func (m *QueryParamsRequest) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthQuery
 			}
 			if (iNdEx + skippy) > l {
@@ -1781,10 +1754,7 @@ func (m *QueryParamsResponse) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthQuery
 			}
 			if (iNdEx + skippy) > l {

@@ -3,6 +3,7 @@ package cyber.cron.v1beta1;
 
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
+
 import "cyber/cron/v1beta1/types.proto";
 
 option go_package = "github.com/cybercongress/go-cyber/x/cron/types";
@@ -53,11 +54,17 @@ message QueryJobStatsResponse {
 message QueryJobsRequest{}
 
 message QueryJobsResponse {
-    repeated Job jobs = 1 [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "Jobs"];
+    repeated Job jobs = 1 [
+        (gogoproto.nullable) = false,
+        (gogoproto.castrepeated) = "Jobs"
+    ];
 }
 
 message QueryJobsStatsRequest{}
 
 message QueryJobsStatsResponse{
-    repeated JobStats jobs_stats = 1 [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "JobsStats"];
+    repeated JobStats jobs_stats = 1 [
+        (gogoproto.nullable) = false,
+        (gogoproto.castrepeated) = "JobsStats"
+    ];
 }

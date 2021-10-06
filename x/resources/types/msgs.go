@@ -11,13 +11,13 @@ const (
 )
 
 func NewMsgInvestmint(
-	agent sdk.AccAddress,
+	neuron sdk.AccAddress,
 	amount sdk.Coin,
 	resource string,
 	length uint64,
 ) *MsgInvestmint {
 	return &MsgInvestmint{
-		Agent:    agent.String(),
+		Neuron:   neuron.String(),
 		Amount:   amount,
 		Resource: resource,
 		Length:   length,
@@ -29,7 +29,7 @@ func (msg MsgInvestmint) Route() string { return RouterKey }
 func (msg MsgInvestmint) Type() string { return ActionInvestmint }
 
 func (msg MsgInvestmint) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Agent); if err != nil {
+	_, err := sdk.AccAddressFromBech32(msg.Neuron); if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid agent address: %s", err)
 	}
 
@@ -58,7 +58,7 @@ func (msg MsgInvestmint) GetSignBytes() []byte {
 }
 
 func (msg MsgInvestmint) GetSigners() []sdk.AccAddress {
-	addr, err := sdk.AccAddressFromBech32(msg.Agent)
+	addr, err := sdk.AccAddressFromBech32(msg.Neuron)
 	if err != nil {
 		panic(err)
 	}

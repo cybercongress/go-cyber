@@ -199,7 +199,7 @@ func (bm *BandwidthMeter) GetPricedTotalCyberlinksCost(ctx sdk.Context, tx sdk.T
 	return uint64(bm.currentCreditPrice.Mul(sdk.NewDec(int64(bm.GetTotalCyberlinksCost(ctx, tx)))).RoundInt64())
 }
 
-func (bm *BandwidthMeter) ConsumeAccountBandwidth(ctx sdk.Context, bw types.AccountBandwidth, amt uint64) error {
+func (bm *BandwidthMeter) ConsumeAccountBandwidth(ctx sdk.Context, bw types.NeuronBandwidth, amt uint64) error {
 	err := bw.Consume(amt); if err != nil {
 		return err
 	}
@@ -207,12 +207,12 @@ func (bm *BandwidthMeter) ConsumeAccountBandwidth(ctx sdk.Context, bw types.Acco
 	return nil
 }
 
-func (bm *BandwidthMeter) ChargeAccountBandwidth(ctx sdk.Context, bw types.AccountBandwidth, amt uint64) {
+func (bm *BandwidthMeter) ChargeAccountBandwidth(ctx sdk.Context, bw types.NeuronBandwidth, amt uint64) {
 	bw.ApplyCharge(amt)
 	bm.SetAccountBandwidth(ctx, bw)
 }
 
-func (bm *BandwidthMeter) GetCurrentAccountBandwidth(ctx sdk.Context, address sdk.AccAddress) types.AccountBandwidth {
+func (bm *BandwidthMeter) GetCurrentAccountBandwidth(ctx sdk.Context, address sdk.AccAddress) types.NeuronBandwidth {
 	accBw := bm.GetAccountBandwidth(ctx, address)
 	accMaxBw := bm.GetAccountMaxBandwidth(ctx, address)
 	params := bm.GetParams(ctx)

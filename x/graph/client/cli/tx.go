@@ -62,11 +62,11 @@ $ %s tx link cyberlink QmWZYRj344JSLShtBnrMS4vw5DQ2zsGqrytYKMqcQgEneB QmfZwbahFL
 			cidTo   := types.Cid(args[1])
 
 			if _, err := cid.Decode(string(cidFrom)); err != nil {
-				return types.ErrInvalidCid
+				return types.ErrInvalidParticle
 			}
 
 			if _, err := cid.Decode(string(cidTo)); err != nil {
-				return types.ErrInvalidCid
+				return types.ErrInvalidParticle
 			}
 
 			msg := types.NewMsgCyberlink(

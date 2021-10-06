@@ -12,7 +12,7 @@ type StakeKeeper interface {
 }
 
 type GraphIndexedKeeper interface {
-	FixLinks()
+	UpdateRankLinks()
 	MergeContextLinks(sdk.Context)
 
 	GetOutLinks() graphtypes.Links
@@ -28,5 +28,5 @@ type GraphKeeper interface {
 	GetCidNumber(sdk.Context, graphtypes.Cid) (graphtypes.CidNumber, bool)
 	GetCid(ctx sdk.Context, num graphtypes.CidNumber) graphtypes.Cid
 	GetNeudegs() map[uint64]uint64
-	FixNeudegs()
+	UpdateRankNeudegs()
 }

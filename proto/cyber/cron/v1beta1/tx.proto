@@ -4,7 +4,7 @@ package cyber.cron.v1beta1;
 import "gogoproto/gogo.proto";
 
 import "cyber/cron/v1beta1/types.proto";
-import "cosmos_proto/coin.proto";
+import "cosmos/base/v1beta1/coin.proto";
 
 option go_package = "github.com/cybercongress/go-cyber/x/cron/types";
 option (gogoproto.goproto_getters_all) = false;
@@ -13,7 +13,7 @@ option (gogoproto.equal_all) = false;
 service Msg{
     rpc AddJob(MsgAddJob) returns (MsgAddJobResponse);
     rpc RemoveJob(MsgRemoveJob) returns (MsgRemoveJobResponse);
-    rpc ChangeJobCID(MsgChangeJobCID) returns (MsgChangeJobCIDResponse);
+    rpc ChangeJobParticle(MsgChangeJobParticle) returns (MsgChangeJobParticleResponse);
     rpc ChangeJobLabel(MsgChangeJobLabel) returns (MsgChangeJobLabelResponse);
     rpc ChangeJobCallData(MsgChangeJobCallData) returns (MsgChangeJobCallDataResponse);
     rpc ChangeJobGasPrice(MsgChangeJobGasPrice) returns (MsgChangeJobGasPriceResponse);
@@ -22,61 +22,60 @@ service Msg{
 }
 
 message MsgAddJob {
-    string program  = 1 [(gogoproto.moretags) = "yaml:\"program\""];
-    Trigger trigger = 2 [(gogoproto.moretags) = "yaml:\"trigger\"", (gogoproto.nullable) = false];
-    Load load       = 3 [(gogoproto.moretags) = "yaml:\"load\"", (gogoproto.nullable) = false];
-    string label    = 4 [(gogoproto.moretags) = "yaml:\"label\""];
-    string cid      = 5 [(gogoproto.moretags) = "yaml:\"cid\""];
+    string program  = 1;
+    Trigger trigger = 2 [(gogoproto.nullable) = false];
+    Load load       = 3 [(gogoproto.nullable) = false];
+    string label    = 4;
+    string particle = 5;
 }
 
 message MsgRemoveJob {
-    string program  = 1 [(gogoproto.moretags) = "yaml:\"program\""];
-    string label    = 2 [(gogoproto.moretags) = "yaml:\"label\""];
+    string program  = 1;
+    string label    = 2;
 }
 
-message MsgChangeJobCID {
-    string program  = 1 [(gogoproto.moretags) = "yaml:\"program\""];
-    string label    = 2 [(gogoproto.moretags) = "yaml:\"label\""];
-    string cid      = 3 [(gogoproto.moretags) = "yaml:\"cid\""];
+message MsgChangeJobParticle {
+    string program  = 1;
+    string label    = 2;
+    string particle = 3;
 }
 
 message MsgChangeJobLabel {
-    string program   = 1 [(gogoproto.moretags) = "yaml:\"program\""];
-    string label     = 2 [(gogoproto.moretags) = "yaml:\"label\""];
-    string new_label = 3 [(gogoproto.moretags) = "yaml:\"new_label\""];
+    string program   = 1;
+    string label     = 2;
+    string new_label = 3;
 }
 
 message MsgChangeJobCallData {
-    string program   = 1 [(gogoproto.moretags) = "yaml:\"program\""];
-    string label     = 2 [(gogoproto.moretags) = "yaml:\"label\""];
-    string call_data = 3 [(gogoproto.moretags) = "yaml:\"call_data\""];
+    string program   = 1;
+    string label     = 2;
+    string call_data = 3;
 }
 
 message MsgChangeJobGasPrice {
-    string program   = 1 [(gogoproto.moretags) = "yaml:\"program\""];
-    string label     = 2 [(gogoproto.moretags) = "yaml:\"label\""];
+    string program   = 1;
+    string label     = 2;
     cosmos.base.v1beta1.Coin gas_price = 3 [
-        (gogoproto.moretags) = "yaml:\"gas_price\"",
-        (gogoproto.nullable) = false
-//        (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.Coin"
+        (gogoproto.nullable) = false,
+        (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.Coin"
     ];
 }
 
 message MsgChangeJobPeriod {
-    string program  =  1 [(gogoproto.moretags) = "yaml:\"program\""];
-    string label     = 2 [(gogoproto.moretags) = "yaml:\"label\""];
-    uint64 period    = 3 [(gogoproto.moretags) = "yaml:\"period\""];
+    string program  =  1;
+    string label     = 2;
+    uint64 period    = 3;
 }
 
 message MsgChangeJobBlock {
-    string program   = 1 [(gogoproto.moretags) = "yaml:\"program\""];
-    string label     = 2 [(gogoproto.moretags) = "yaml:\"label\""];
-    uint64 block     = 3 [(gogoproto.moretags) = "yaml:\"block\""];
+    string program   = 1;
+    string label     = 2;
+    uint64 block     = 3;
 }
 
 message MsgAddJobResponse {}
 message MsgRemoveJobResponse {}
-message MsgChangeJobCIDResponse {}
+message MsgChangeJobParticleResponse {}
 message MsgChangeJobLabelResponse {}
 message MsgChangeJobCallDataResponse {}
 message MsgChangeJobGasPriceResponse {}

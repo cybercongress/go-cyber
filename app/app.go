@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 
-	//"github.com/CosmWasm/wasmd/app"
 	"io"
 	"net/http"
 	"path/filepath"
@@ -87,7 +86,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/mint"
 	mintkeeper "github.com/cosmos/cosmos-sdk/x/mint/keeper"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	"github.com/cosmos/cosmos-sdk/x/params"
+	sdkparams "github.com/cosmos/cosmos-sdk/x/params"
 	paramsclient "github.com/cosmos/cosmos-sdk/x/params/client"
 	paramskeeper "github.com/cosmos/cosmos-sdk/x/params/keeper"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
@@ -108,7 +107,7 @@ import (
 
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/cybercongress/go-cyber/util"
+	"github.com/cybercongress/go-cyber/utils"
 	"github.com/cybercongress/go-cyber/x/bandwidth"
 	"github.com/cybercongress/go-cyber/x/cyberbank"
 	cyberbankkeeper "github.com/cybercongress/go-cyber/x/cyberbank/keeper"
@@ -139,16 +138,16 @@ import (
 	cronkeeper "github.com/cybercongress/go-cyber/x/cron/keeper"
 	crontypes "github.com/cybercongress/go-cyber/x/cron/types"
 
-	//store "github.com/cosmos/cosmos-sdk/store/types"
 	resourceskeeper "github.com/cybercongress/go-cyber/x/resources/keeper"
 	resourcestypes "github.com/cybercongress/go-cyber/x/resources/types"
 	stakingwrap "github.com/cybercongress/go-cyber/x/staking"
+
+	"github.com/cybercongress/go-cyber/app/params"
 )
 
 const (
 	appName = "BostromHub"
 )
-const upgradeName = ""
 
 // We pull these out so we can set them with LDFLAGS in the Makefile
 var (
@@ -156,11 +155,9 @@ var (
 	Bech32Prefix = "bostrom"
 
 	// DefaultBondDenom is the denomination of coin to use for bond/staking
-	DefaultBondDenom = "boot" // nano-hash
+	DefaultBondDenom = "boot"
 	// DefaultFeeDenom is the denomination of coin to use for fees
-	DefaultFeeDenom = "boot" // nano-hash
-	// DefaultMinGasPrices is the minimum gas prices coin value.
-	DefaultMinGasPrices = "0.01" + DefaultFeeDenom
+	DefaultFeeDenom = "boot"
 	// DefaultReDnmString is the allowed denom regex expression
 	DefaultReDnmString = `[a-zA-Z][a-zA-Z0-9/\-\.]{2,127}`
 
@@ -198,19 +195,6 @@ func GetEnabledProposals() []wasm.ProposalType {
 var (
 	// DefaultNodeHome default home directories for wasmd
 	DefaultNodeHome = os.ExpandEnv("$HOME/") + NodeDir
-
-	//// Bech32PrefixAccAddr defines the Bech32 prefix of an account's address
-	//Bech32PrefixAccAddr = Bech32Prefix
-	//// Bech32PrefixAccPub defines the Bech32 prefix of an account's public key
-	//Bech32PrefixAccPub = Bech32Prefix + sdk.PrefixPublic
-	//// Bech32PrefixValAddr defines the Bech32 prefix of a validator's operator address
-	//Bech32PrefixValAddr = Bech32Prefix + sdk.PrefixValidator + sdk.PrefixOperator
-	//// Bech32PrefixValPub defines the Bech32 prefix of a validator's operator public key
-	//Bech32PrefixValPub = Bech32Prefix + sdk.PrefixValidator + sdk.PrefixOperator + sdk.PrefixPublic
-	//// Bech32PrefixConsAddr defines the Bech32 prefix of a consensus node address
-	//Bech32PrefixConsAddr = Bech32Prefix + sdk.PrefixValidator + sdk.PrefixConsensus
-	//// Bech32PrefixConsPub defines the Bech32 prefix of a consensus node public key
-	//Bech32PrefixConsPub = Bech32Prefix + sdk.PrefixValidator + sdk.PrefixConsensus + sdk.PrefixPublic
 )
 
 var (
@@ -235,7 +219,7 @@ var (
 			ibcclientclient.UpdateClientProposalHandler,
 			ibcclientclient.UpgradeProposalHandler,
 		),
-		params.AppModuleBasic{},
+		sdkparams.AppModuleBasic{},
 		crisis.AppModuleBasic{},
 		slashing.AppModuleBasic{},
 		feegrantmodule.AppModuleBasic{},
@@ -283,7 +267,13 @@ var (
 	_ servertypes.Application = (*App)(nil)
 )
 
-// Gaia extends an ABCI application, but with most of its parameters exported.
+// SdkCoinDenomRegex returns a new sdk base denom regex string
+func SdkCoinDenomRegex() string {
+	return DefaultReDnmString
+}
+
+
+// App extends an ABCI application, but with most of its parameters exported.
 // They are exported for convenience in creating helper functions, as object
 // capabilities aren't needed for testing.
 type App struct {
@@ -349,7 +339,7 @@ func NewApp(
 	skipUpgradeHeights map[int64]bool,
 	homePath string,
 	invCheckPeriod uint,
-	encodingConfig EncodingConfig,
+	encodingConfig params.EncodingConfig,
 	wasmOpts []wasm.Option,
 	enabledProposals []wasm.ProposalType,
 	appOpts servertypes.AppOptions, baseAppOptions ...func(*baseapp.BaseApp),
@@ -365,6 +355,7 @@ func NewApp(
 	bApp.SetCommitMultiStoreTracer(traceStore)
 	bApp.SetVersion(version.Version)
 	bApp.SetInterfaceRegistry(interfaceRegistry)
+	sdk.SetCoinDenomRegex(SdkCoinDenomRegex)
 
 	keys := sdk.NewKVStoreKeys(
 		authtypes.StoreKey, banktypes.StoreKey, stakingtypes.StoreKey,
@@ -650,7 +641,7 @@ func NewApp(
 	govRouter := govtypes.NewRouter()
 	govRouter.
 		AddRoute(govtypes.RouterKey, govtypes.ProposalHandler).
-		AddRoute(paramproposal.RouterKey, params.NewParamChangeProposalHandler(app.ParamsKeeper)).
+		AddRoute(paramproposal.RouterKey, sdkparams.NewParamChangeProposalHandler(app.ParamsKeeper)).
 		AddRoute(distrtypes.RouterKey, distr.NewCommunityPoolSpendProposalHandler(app.DistrKeeper)).
 		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.UpgradeKeeper)).
 		AddRoute(ibcclienttypes.RouterKey, ibcclient.NewClientProposalHandler(app.IBCKeeper.ClientKeeper))
@@ -732,7 +723,7 @@ func NewApp(
 		feegrantmodule.NewAppModule(appCodec, app.AccountKeeper, app.BankKeeper, app.FeeGrantKeeper, app.interfaceRegistry),
 		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
 		ibc.NewAppModule(app.IBCKeeper),
-		params.NewAppModule(app.ParamsKeeper),
+		sdkparams.NewAppModule(app.ParamsKeeper),
 		transferModule,
 
 		liquidity.NewAppModule(appCodec, app.LiquidityKeeper, app.AccountKeeper, app.CyberbankKeeper.Proxy, app.DistrKeeper),
@@ -851,7 +842,7 @@ func NewApp(
 			tmos.Exit(fmt.Sprintf("failed to load latest version: %s", err))
 		}
 
-		// TODO refactor load flow, fix state sync as sdk v43.X will be released
+		// TODO refactor load flow as updated state sync in sdk v45.X will be released
 		freshCtx := app.BaseApp.NewContext(true, tmproto.Header{})
 		freshCtx = freshCtx.WithBlockHeight(int64(app.RankKeeper.GetLatestBlockNumber(freshCtx)))
 
@@ -870,7 +861,7 @@ func NewApp(
 			rankRoundBlockNumber = 1
 		}
 
-		rankCtx, err := util.NewContextWithMSVersion(db, rankRoundBlockNumber, keys)
+		rankCtx, err := utils.NewContextWithMSVersion(db, rankRoundBlockNumber, keys)
 		if err != nil {
 			tmos.Exit(err.Error())
 		}
@@ -878,6 +869,7 @@ func NewApp(
 		start := time.Now()
 		app.BaseApp.Logger().Info("Loading the brain state")
 		app.CyberbankKeeper.LoadState(rankCtx, freshCtx)
+		// TODO update index state load to one context as we store cyberlink' block now
 		app.IndexKeeper.LoadState(rankCtx, freshCtx)
 		app.BandwidthMeter.LoadState(freshCtx)
 		app.GraphKeeper.LoadNeudeg(rankCtx, freshCtx)
@@ -924,7 +916,6 @@ func (app *App) InitChainer(ctx sdk.Context, req abci.RequestInitChain) abci.Res
 	resp := app.mm.InitGenesis(ctx, app.appCodec, genesisState)
 
 	// because manager skips init genesis for modules with empty data (e.g null)
-	app.mm.Modules[graphtypes.ModuleName].InitGenesis(ctx, app.appCodec, nil)
 	app.mm.Modules[cyberbanktypes.ModuleName].InitGenesis(ctx, app.appCodec, nil)
 
 	return resp

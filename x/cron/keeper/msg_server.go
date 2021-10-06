@@ -29,7 +29,7 @@ func (k msgServer) AddJob(goCtx context.Context, msg *types.MsgAddJob) (*types.M
 	err := k.SaveJob(
 		ctx, program,
 		msg.Trigger, msg.Load,
-		msg.Label, graph.Cid(msg.Cid),
+		msg.Label, graph.Cid(msg.Particle),
 	)
 	if err != nil {
 		return nil, err
@@ -46,7 +46,7 @@ func (k msgServer) AddJob(goCtx context.Context, msg *types.MsgAddJob) (*types.M
 			sdk.NewAttribute(types.AttributeKeyJobTrigger, msg.Trigger.String()),
 			sdk.NewAttribute(types.AttributeKeyJobLoad, msg.Load.String()),
 			sdk.NewAttribute(types.AttributeKeyJobLabel, msg.Label),
-			sdk.NewAttribute(types.AttributeKeyJobCID, msg.Cid),
+			sdk.NewAttribute(types.AttributeKeyJobParticle, msg.Particle),
 		),
 	})
 
@@ -77,12 +77,12 @@ func (k msgServer) RemoveJob(goCtx context.Context, msg *types.MsgRemoveJob) (*t
 	return &types.MsgRemoveJobResponse{}, nil
 }
 
-func (k msgServer) ChangeJobCID(goCtx context.Context, msg *types.MsgChangeJobCID) (*types.MsgChangeJobCIDResponse, error) {
+func (k msgServer) ChangeJobParticle(goCtx context.Context, msg *types.MsgChangeJobParticle) (*types.MsgChangeJobParticleResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	program, _ := sdk.AccAddressFromBech32(msg.Program)
 
-	err := k.UpdateJobCID(ctx, program, msg.Label, graph.Cid(msg.Cid))
+	err := k.UpdateJobCID(ctx, program, msg.Label, graph.Cid(msg.Particle))
 	if err != nil {
 		return nil, err
 	}
@@ -93,13 +93,13 @@ func (k msgServer) ChangeJobCID(goCtx context.Context, msg *types.MsgChangeJobCI
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
 		),
 		sdk.NewEvent(
-			types.EventTypeChangeJobCID,
+			types.EventTypeChangeJobParticle,
 			sdk.NewAttribute(types.AttributeKeyJobProgram, msg.Program),
-			sdk.NewAttribute(types.AttributeKeyJobCID, msg.Cid),
+			sdk.NewAttribute(types.AttributeKeyJobParticle, msg.Particle),
 		),
 	})
 
-	return &types.MsgChangeJobCIDResponse{}, nil
+	return &types.MsgChangeJobParticleResponse{}, nil
 }
 
 func (k msgServer) ChangeJobLabel(goCtx context.Context, msg *types.MsgChangeJobLabel) (*types.MsgChangeJobLabelResponse, error) {

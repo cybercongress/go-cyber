@@ -1,4 +1,4 @@
-package util
+package utils
 
 import (
 	"github.com/cosmos/cosmos-sdk/store"

@@ -106,7 +106,7 @@ type JobQueryResponse struct {
 	Trigger  Trigger `json:"trigger"`
 	Load 	 Load 	`json:"load"`
 	Label    string `json:"label"`
-	CID      string `json:"cid"`
+	Particle string `json:"particle"`
 }
 
 type JobStatsQueryResponse struct {
@@ -145,7 +145,7 @@ func (querier WasmQuerier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([
 				Trigger:  Trigger(job.Trigger),
 				Load:     convertLoadToWasmLoad(job.Load),
 				Label:    job.Label,
-				CID:      job.Cid,
+				Particle:      job.Particle,
 		})
 	} else if query.JobStats != nil {
 		program, _ := sdk.AccAddressFromBech32(query.JobStats.Program)

@@ -7,7 +7,7 @@ option go_package                       = "github.com/cosmos/cosmos-sdk/types";
 option (gogoproto.goproto_stringer_all) = false;
 option (gogoproto.stringer_all)         = false;
 
-// Coin defines a coin with a denomination and an amount.
+// Coin defines a token with a denomination and an amount.
 //
 // NOTE: The amount field is an Int which implements the custom method
 // signatures required by gogoproto.
@@ -18,7 +18,7 @@ message Coin {
   string amount = 2 [(gogoproto.customtype) = "Int", (gogoproto.nullable) = false];
 }
 
-// DecCoin defines a coin with a denomination and a decimal amount.
+// DecCoin defines a token with a denomination and a decimal amount.
 //
 // NOTE: The amount field is an Dec which implements the custom method
 // signatures required by gogoproto.

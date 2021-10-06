@@ -104,7 +104,7 @@ func (m *QueryParamsResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_QueryParamsResponse proto.InternalMessageInfo
 
 type QueryRankRequest struct {
-	Cid string `protobuf:"bytes,1,opt,name=cid,proto3" json:"cid,omitempty"`
+	Particle string `protobuf:"bytes,1,opt,name=particle,proto3" json:"particle,omitempty"`
 }
 
 func (m *QueryRankRequest) Reset()         { *m = QueryRankRequest{} }
@@ -178,7 +178,7 @@ func (m *QueryRankResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_QueryRankResponse proto.InternalMessageInfo
 
 type QuerySearchRequest struct {
-	Cid        string             `protobuf:"bytes,1,opt,name=cid,proto3" json:"cid,omitempty"`
+	Particle   string             `protobuf:"bytes,1,opt,name=particle,proto3" json:"particle,omitempty"`
 	Pagination *query.PageRequest `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }
 
@@ -216,7 +216,7 @@ func (m *QuerySearchRequest) XXX_DiscardUnknown() {
 var xxx_messageInfo_QuerySearchRequest proto.InternalMessageInfo
 
 type QuerySearchResponse struct {
-	Result     []RankedCid         `protobuf:"bytes,1,rep,name=result,proto3" json:"result"`
+	Result     []RankedParticle    `protobuf:"bytes,1,rep,name=result,proto3" json:"result"`
 	Pagination *query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }
 
@@ -366,7 +366,6 @@ func (m *QueryIsAnyLinkExistRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_QueryIsAnyLinkExistRequest proto.InternalMessageInfo
 
-// FIXME move to bool...
 type QueryLinkExistResponse struct {
 	Exist bool `protobuf:"varint,1,opt,name=exist,proto3" json:"exist,omitempty"`
 }
@@ -404,22 +403,22 @@ func (m *QueryLinkExistResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_QueryLinkExistResponse proto.InternalMessageInfo
 
-type QueryEntropyRequest struct {
-	Cid string `protobuf:"bytes,1,opt,name=cid,proto3" json:"cid,omitempty"`
+type QueryNegentropyPartilceRequest struct {
+	Particle string `protobuf:"bytes,1,opt,name=particle,proto3" json:"particle,omitempty"`
 }
 
-func (m *QueryEntropyRequest) Reset()         { *m = QueryEntropyRequest{} }
-func (m *QueryEntropyRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryEntropyRequest) ProtoMessage()    {}
-func (*QueryEntropyRequest) Descriptor() ([]byte, []int) {
+func (m *QueryNegentropyPartilceRequest) Reset()         { *m = QueryNegentropyPartilceRequest{} }
+func (m *QueryNegentropyPartilceRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryNegentropyPartilceRequest) ProtoMessage()    {}
+func (*QueryNegentropyPartilceRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_f72c23904714eae6, []int{10}
 }
-func (m *QueryEntropyRequest) XXX_Unmarshal(b []byte) error {
+func (m *QueryNegentropyPartilceRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryEntropyRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryNegentropyPartilceRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryEntropyRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryNegentropyPartilceRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -429,34 +428,34 @@ func (m *QueryEntropyRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte,
 		return b[:n], nil
 	}
 }
-func (m *QueryEntropyRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryEntropyRequest.Merge(m, src)
+func (m *QueryNegentropyPartilceRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryNegentropyPartilceRequest.Merge(m, src)
 }
-func (m *QueryEntropyRequest) XXX_Size() int {
+func (m *QueryNegentropyPartilceRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryEntropyRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryEntropyRequest.DiscardUnknown(m)
+func (m *QueryNegentropyPartilceRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryNegentropyPartilceRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryEntropyRequest proto.InternalMessageInfo
+var xxx_messageInfo_QueryNegentropyPartilceRequest proto.InternalMessageInfo
 
-type QueryEntropyResponse struct {
+type QueryNegentropyParticleResponse struct {
 	Entropy uint64 `protobuf:"varint,1,opt,name=entropy,proto3" json:"entropy,omitempty"`
 }
 
-func (m *QueryEntropyResponse) Reset()         { *m = QueryEntropyResponse{} }
-func (m *QueryEntropyResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryEntropyResponse) ProtoMessage()    {}
-func (*QueryEntropyResponse) Descriptor() ([]byte, []int) {
+func (m *QueryNegentropyParticleResponse) Reset()         { *m = QueryNegentropyParticleResponse{} }
+func (m *QueryNegentropyParticleResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryNegentropyParticleResponse) ProtoMessage()    {}
+func (*QueryNegentropyParticleResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_f72c23904714eae6, []int{11}
 }
-func (m *QueryEntropyResponse) XXX_Unmarshal(b []byte) error {
+func (m *QueryNegentropyParticleResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryEntropyResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryNegentropyParticleResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryEntropyResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryNegentropyParticleResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -466,17 +465,17 @@ func (m *QueryEntropyResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte
 		return b[:n], nil
 	}
 }
-func (m *QueryEntropyResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryEntropyResponse.Merge(m, src)
+func (m *QueryNegentropyParticleResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryNegentropyParticleResponse.Merge(m, src)
 }
-func (m *QueryEntropyResponse) XXX_Size() int {
+func (m *QueryNegentropyParticleResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryEntropyResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryEntropyResponse.DiscardUnknown(m)
+func (m *QueryNegentropyParticleResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryNegentropyParticleResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryEntropyResponse proto.InternalMessageInfo
+var xxx_messageInfo_QueryNegentropyParticleResponse proto.InternalMessageInfo
 
 type QueryNegentropyRequest struct {
 }
@@ -552,7 +551,7 @@ func (m *QueryNegentropyResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_QueryNegentropyResponse proto.InternalMessageInfo
 
 type QueryKarmaRequest struct {
-	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
+	Neuron string `protobuf:"bytes,1,opt,name=neuron,proto3" json:"neuron,omitempty"`
 }
 
 func (m *QueryKarmaRequest) Reset()         { *m = QueryKarmaRequest{} }
@@ -636,8 +635,8 @@ func init() {
 	proto.RegisterType((*QueryIsLinkExistRequest)(nil), "cyber.rank.v1beta1.QueryIsLinkExistRequest")
 	proto.RegisterType((*QueryIsAnyLinkExistRequest)(nil), "cyber.rank.v1beta1.QueryIsAnyLinkExistRequest")
 	proto.RegisterType((*QueryLinkExistResponse)(nil), "cyber.rank.v1beta1.QueryLinkExistResponse")
-	proto.RegisterType((*QueryEntropyRequest)(nil), "cyber.rank.v1beta1.QueryEntropyRequest")
-	proto.RegisterType((*QueryEntropyResponse)(nil), "cyber.rank.v1beta1.QueryEntropyResponse")
+	proto.RegisterType((*QueryNegentropyPartilceRequest)(nil), "cyber.rank.v1beta1.QueryNegentropyPartilceRequest")
+	proto.RegisterType((*QueryNegentropyParticleResponse)(nil), "cyber.rank.v1beta1.QueryNegentropyParticleResponse")
 	proto.RegisterType((*QueryNegentropyRequest)(nil), "cyber.rank.v1beta1.QueryNegentropyRequest")
 	proto.RegisterType((*QueryNegentropyResponse)(nil), "cyber.rank.v1beta1.QueryNegentropyResponse")
 	proto.RegisterType((*QueryKarmaRequest)(nil), "cyber.rank.v1beta1.QueryKarmaRequest")
@@ -647,62 +646,64 @@ func init() {
 func init() { proto.RegisterFile("cyber/rank/v1beta1/query.proto", fileDescriptor_f72c23904714eae6) }
 
 var fileDescriptor_f72c23904714eae6 = []byte{
-	// 872 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x56, 0xcf, 0x6f, 0xe3, 0x44,
-	0x14, 0xce, 0xb4, 0x69, 0x4a, 0x5f, 0xa5, 0x65, 0xf7, 0x51, 0x41, 0x64, 0x2d, 0xde, 0xae, 0xb7,
-	0xf9, 0xb1, 0xad, 0x6a, 0xef, 0x96, 0x0b, 0x88, 0x0b, 0x14, 0x15, 0x09, 0x81, 0x60, 0x31, 0x2b,
-	0x21, 0x71, 0xa9, 0x26, 0xc9, 0xe0, 0xb5, 0xd2, 0x78, 0xbc, 0xb6, 0x83, 0x36, 0xaa, 0x56, 0x42,
-	0xcb, 0x01, 0x2e, 0x20, 0x10, 0x37, 0xf8, 0x07, 0xf8, 0x53, 0x7a, 0x5c, 0x89, 0x0b, 0x27, 0x04,
-	0x29, 0x7f, 0x05, 0x27, 0xe4, 0x99, 0xe7, 0xc6, 0x56, 0xec, 0x24, 0x20, 0x2e, 0x91, 0xe7, 0xcd,
-	0x37, 0xdf, 0xfb, 0xfc, 0xf9, 0xcd, 0xa7, 0x80, 0xd9, 0x9f, 0xf4, 0x44, 0xe4, 0x44, 0x3c, 0x18,
-	0x3a, 0x5f, 0xdc, 0xef, 0x89, 0x84, 0xdf, 0x77, 0x1e, 0x8f, 0x45, 0x34, 0xb1, 0xc3, 0x48, 0x26,
-	0x12, 0x51, 0xed, 0xdb, 0xe9, 0xbe, 0x4d, 0xfb, 0xc6, 0x8e, 0x27, 0x3d, 0xa9, 0xb6, 0x9d, 0xf4,
-	0x49, 0x23, 0x8d, 0x9b, 0x9e, 0x94, 0xde, 0x99, 0x70, 0x78, 0xe8, 0x3b, 0x3c, 0x08, 0x64, 0xc2,
-	0x13, 0x5f, 0x06, 0x31, 0xed, 0x96, 0xf5, 0x49, 0x26, 0xa1, 0xc8, 0xf6, 0xef, 0xea, 0xfd, 0x1e,
-	0x8f, 0x85, 0xee, 0x7f, 0x85, 0x0a, 0xb9, 0xe7, 0x07, 0x8a, 0x4b, 0x43, 0xad, 0x1d, 0xc0, 0x8f,
-	0x53, 0xc4, 0x03, 0x1e, 0xf1, 0x51, 0xec, 0x8a, 0xc7, 0x63, 0x11, 0x27, 0xd6, 0x47, 0xf0, 0x52,
-	0xa1, 0x1a, 0x87, 0x32, 0x88, 0x05, 0xbe, 0x0e, 0x8d, 0x50, 0x55, 0x9a, 0x6c, 0x97, 0x75, 0xb7,
-	0x8f, 0x0c, 0x7b, 0xfe, 0x85, 0x6c, 0x7d, 0xe6, 0xb8, 0x7e, 0xf1, 0xfb, 0xad, 0x9a, 0x4b, 0x78,
-	0x6b, 0x0f, 0xae, 0x2b, 0x42, 0x97, 0x07, 0x43, 0x6a, 0x82, 0xd7, 0x61, 0xbd, 0xef, 0x0f, 0x14,
-	0xd5, 0x96, 0x9b, 0x3e, 0x5a, 0x1d, 0xb8, 0x91, 0x43, 0x51, 0x53, 0x84, 0x7a, 0xca, 0xaf, 0x70,
-	0x75, 0x57, 0x3d, 0x5b, 0x23, 0x52, 0xfd, 0x89, 0xe0, 0x51, 0xff, 0x51, 0x25, 0x21, 0x9e, 0x00,
-	0xcc, 0xde, 0xb8, 0xb9, 0xa6, 0x44, 0xb7, 0x48, 0x74, 0xea, 0x8e, 0xad, 0xbf, 0xce, 0x4c, 0xba,
-	0x27, 0x88, 0xcc, 0xcd, 0x1d, 0xb4, 0x7e, 0x62, 0xe4, 0x47, 0xd6, 0x8f, 0xa4, 0xbd, 0x09, 0x8d,
-	0x48, 0xc4, 0xe3, 0xb3, 0xa4, 0xc9, 0x76, 0xd7, 0xbb, 0xdb, 0x47, 0xaf, 0x96, 0xf9, 0x91, 0xbe,
-	0x8c, 0x18, 0xbc, 0xe3, 0x0f, 0x32, 0x4b, 0xf4, 0x11, 0x7c, 0xb7, 0x44, 0x5b, 0x7b, 0x99, 0x36,
-	0xdd, 0xb8, 0x20, 0xee, 0x06, 0xbc, 0xa8, 0xb4, 0x3d, 0x94, 0x61, 0xf6, 0xf9, 0x3e, 0x85, 0x57,
-	0x54, 0xe9, 0xbd, 0xf8, 0x03, 0x3f, 0x18, 0x9e, 0x3c, 0xf1, 0xe3, 0x24, 0xf3, 0x08, 0xa1, 0xfe,
-	0x79, 0x24, 0x47, 0x64, 0x92, 0x7a, 0xc6, 0x6b, 0xb0, 0x96, 0x48, 0xa5, 0x60, 0xcb, 0x5d, 0x4b,
-	0x24, 0x36, 0x61, 0x93, 0x0f, 0x06, 0x91, 0x88, 0xe3, 0xe6, 0xba, 0x2a, 0x66, 0x4b, 0xeb, 0x2d,
-	0x30, 0x88, 0xf8, 0xed, 0x60, 0xf2, 0x5f, 0xb8, 0x2d, 0x1b, 0x5e, 0x56, 0x0c, 0xb9, 0xc3, 0x64,
-	0xe6, 0x0e, 0x6c, 0x88, 0xb4, 0xa0, 0x8e, 0xbf, 0xe0, 0xea, 0x85, 0xd5, 0x21, 0xe7, 0x4f, 0x82,
-	0x24, 0x92, 0xe1, 0xa4, 0x7a, 0x76, 0xee, 0xc1, 0x4e, 0x11, 0x48, 0xb4, 0x4d, 0xd8, 0x14, 0xba,
-	0x44, 0x13, 0x94, 0x2d, 0xad, 0x26, 0x49, 0xf9, 0x50, 0x78, 0xa2, 0xc0, 0x6e, 0xbd, 0x41, 0xfe,
-	0xe5, 0x77, 0x88, 0xce, 0x04, 0x08, 0xae, 0xaa, 0xc4, 0x98, 0xab, 0x58, 0x87, 0x34, 0xc2, 0xef,
-	0xf3, 0x68, 0xc4, 0x33, 0xb5, 0x39, 0x43, 0x59, 0xd1, 0xd0, 0x7d, 0x1a, 0x64, 0x82, 0xcf, 0xac,
-	0x18, 0xa6, 0x05, 0xe2, 0xd7, 0x8b, 0xa3, 0xbf, 0x01, 0x36, 0x14, 0x18, 0x9f, 0x31, 0x68, 0xe8,
-	0x6b, 0x86, 0xed, 0xb2, 0x91, 0x9b, 0xbf, 0xd1, 0x46, 0x67, 0x29, 0x4e, 0xf7, 0xb6, 0x3a, 0xcf,
-	0x7e, 0xfd, 0xeb, 0xc7, 0xb5, 0xdb, 0x78, 0xcb, 0x29, 0x09, 0x19, 0xb5, 0xd0, 0x57, 0x1a, 0xbf,
-	0x64, 0x50, 0x4f, 0x67, 0x1b, 0xf7, 0x2a, 0xa9, 0x73, 0xb7, 0xdd, 0x68, 0x2d, 0x41, 0x51, 0xfb,
-	0x03, 0xd5, 0xbe, 0x85, 0x77, 0x2a, 0xdb, 0xab, 0x9f, 0xf3, 0xbe, 0x3f, 0x78, 0x8a, 0xdf, 0x30,
-	0x68, 0xe8, 0x2b, 0xb9, 0xc0, 0x87, 0x42, 0x46, 0x2c, 0xf0, 0xa1, 0x78, 0xb7, 0xad, 0x43, 0x25,
-	0xa4, 0x83, 0xad, 0x4a, 0x21, 0xb1, 0x3a, 0x40, 0x52, 0xbe, 0x63, 0xb0, 0x75, 0xcc, 0xfb, 0xc3,
-	0x33, 0x3f, 0x18, 0xc6, 0xff, 0xbf, 0x9a, 0x7b, 0x4a, 0xcd, 0x3e, 0x76, 0x2b, 0xd5, 0xf4, 0xb2,
-	0xe6, 0x24, 0xe8, 0x1c, 0xd6, 0x1f, 0xca, 0x10, 0x57, 0x4b, 0xbb, 0xd5, 0x85, 0xec, 0x29, 0x21,
-	0x26, 0xde, 0xac, 0x14, 0x92, 0xc8, 0x10, 0x7f, 0x60, 0xb0, 0x9d, 0x0b, 0x1f, 0x3c, 0xa8, 0xa4,
-	0x9f, 0x8f, 0x28, 0x63, 0xbf, 0x12, 0x3c, 0x17, 0x1a, 0xd6, 0x5d, 0x25, 0xe7, 0x0e, 0xde, 0x2e,
-	0x93, 0xe3, 0xc7, 0xa7, 0xa9, 0x23, 0xa7, 0x2a, 0x49, 0xf0, 0x67, 0x06, 0xd7, 0x8a, 0xb9, 0x85,
-	0xf6, 0x02, 0x59, 0x25, 0x01, 0xf7, 0xaf, 0x94, 0x2d, 0x9c, 0x1f, 0x3f, 0x3e, 0xe5, 0xc1, 0x24,
-	0xaf, 0xee, 0x6b, 0x06, 0x9b, 0x14, 0x5d, 0x58, 0xfd, 0x31, 0x8a, 0x29, 0x68, 0x74, 0x97, 0x03,
-	0x57, 0xf1, 0x89, 0xb2, 0x8b, 0x06, 0xe7, 0x5b, 0x06, 0x30, 0x0b, 0x3e, 0xac, 0x7e, 0xe7, 0xb9,
-	0xdc, 0x34, 0x0e, 0x56, 0xc2, 0x92, 0xa4, 0xb6, 0x92, 0xb4, 0x8b, 0x66, 0x99, 0xa4, 0x59, 0xa2,
-	0xe2, 0x57, 0x0c, 0x36, 0x54, 0x3c, 0x62, 0x75, 0x84, 0xe4, 0xd3, 0xd6, 0x68, 0x2f, 0x83, 0xad,
-	0x12, 0x35, 0x2a, 0x72, 0x9d, 0x73, 0xca, 0xe9, 0xa7, 0xc7, 0x0f, 0x2e, 0xfe, 0x34, 0x6b, 0xbf,
-	0x4c, 0xcd, 0xda, 0xc5, 0xd4, 0x64, 0xcf, 0xa7, 0x26, 0xfb, 0x63, 0x6a, 0xb2, 0xef, 0x2f, 0xcd,
-	0xda, 0xf3, 0x4b, 0xb3, 0xf6, 0xdb, 0xa5, 0x59, 0xfb, 0xcc, 0xf6, 0xfc, 0xe4, 0xd1, 0xb8, 0x67,
-	0xf7, 0xe5, 0x48, 0x13, 0xf6, 0x65, 0xe0, 0xa5, 0x87, 0x1d, 0x4f, 0x1e, 0xea, 0x0e, 0x4f, 0xe8,
-	0x86, 0xa4, 0x7f, 0xd5, 0x7a, 0x0d, 0xf5, 0x07, 0xec, 0xb5, 0x7f, 0x02, 0x00, 0x00, 0xff, 0xff,
-	0x69, 0x72, 0x08, 0x49, 0x35, 0x0a, 0x00, 0x00,
+	// 902 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x96, 0xcf, 0x6f, 0xdc, 0x44,
+	0x14, 0xc7, 0xd7, 0xc9, 0x66, 0x69, 0x5e, 0xa4, 0x42, 0x1f, 0x51, 0x59, 0x59, 0x95, 0x93, 0x0e,
+	0xf9, 0xb9, 0x21, 0x36, 0xd9, 0x0a, 0x09, 0x04, 0x87, 0x12, 0xa9, 0x48, 0x08, 0x04, 0xc1, 0x54,
+	0x42, 0xe2, 0x52, 0xcd, 0x3a, 0x83, 0x6b, 0xed, 0x66, 0xc6, 0xb5, 0xbd, 0xd0, 0x55, 0xd4, 0x4b,
+	0x25, 0x8e, 0x48, 0xa0, 0x1e, 0x39, 0x70, 0xe5, 0x08, 0xff, 0x45, 0x8e, 0x95, 0xb8, 0x70, 0x42,
+	0x90, 0xf0, 0x87, 0x20, 0xbf, 0x19, 0x67, 0xbd, 0xc4, 0xde, 0x5d, 0x50, 0x2f, 0x91, 0x67, 0xde,
+	0xaf, 0xcf, 0x7c, 0x77, 0xfc, 0x8d, 0xc1, 0x09, 0x46, 0x3d, 0x91, 0x78, 0x09, 0x97, 0x7d, 0xef,
+	0xeb, 0x83, 0x9e, 0xc8, 0xf8, 0x81, 0xf7, 0x68, 0x28, 0x92, 0x91, 0x1b, 0x27, 0x2a, 0x53, 0x88,
+	0x14, 0x77, 0xf3, 0xb8, 0x6b, 0xe2, 0xf6, 0x6a, 0xa8, 0x42, 0x45, 0x61, 0x2f, 0x7f, 0xd2, 0x99,
+	0xf6, 0xad, 0x50, 0xa9, 0x70, 0x20, 0x3c, 0x1e, 0x47, 0x1e, 0x97, 0x52, 0x65, 0x3c, 0x8b, 0x94,
+	0x4c, 0x4d, 0xb4, 0x6a, 0x4e, 0x36, 0x8a, 0x45, 0x11, 0xdf, 0xd5, 0xf1, 0x1e, 0x4f, 0x85, 0x9e,
+	0x7f, 0x99, 0x15, 0xf3, 0x30, 0x92, 0xd4, 0x4b, 0xa7, 0xb2, 0x55, 0xc0, 0xcf, 0xf2, 0x8c, 0x23,
+	0x9e, 0xf0, 0x93, 0xd4, 0x17, 0x8f, 0x86, 0x22, 0xcd, 0xd8, 0xa7, 0xf0, 0xea, 0xc4, 0x6e, 0x1a,
+	0x2b, 0x99, 0x0a, 0x7c, 0x1b, 0x5a, 0x31, 0xed, 0xb4, 0xad, 0x75, 0x6b, 0x67, 0xa5, 0x6b, 0xbb,
+	0x57, 0x0f, 0xe4, 0xea, 0x9a, 0xc3, 0xe6, 0xd9, 0x1f, 0x6b, 0x0d, 0xdf, 0xe4, 0x33, 0x17, 0x5e,
+	0xa1, 0x86, 0x3e, 0x97, 0x7d, 0x33, 0x04, 0x6d, 0xb8, 0x16, 0xf3, 0x24, 0x8b, 0x82, 0x81, 0xa0,
+	0x7e, 0xcb, 0xfe, 0xe5, 0x9a, 0x6d, 0xc3, 0x8d, 0x52, 0xbe, 0x19, 0x8f, 0xd0, 0xcc, 0x27, 0x51,
+	0x72, 0xd3, 0xa7, 0x67, 0xf6, 0x8d, 0xe1, 0xff, 0x5c, 0xf0, 0x24, 0x78, 0x38, 0x47, 0x6b, 0xbc,
+	0x07, 0x30, 0x56, 0xa1, 0xbd, 0x40, 0x07, 0xd9, 0x34, 0x07, 0xc9, 0x15, 0x73, 0xf5, 0x2f, 0x36,
+	0x3e, 0x4e, 0x28, 0x4c, 0x5b, 0xbf, 0x54, 0xc8, 0x7e, 0xb2, 0x8c, 0x46, 0xc5, 0x64, 0x03, 0x79,
+	0x17, 0x5a, 0x89, 0x48, 0x87, 0x83, 0xac, 0x6d, 0xad, 0x2f, 0xee, 0xac, 0x74, 0x59, 0x95, 0x46,
+	0xf9, 0xb1, 0xc4, 0xf1, 0x91, 0x41, 0x2a, 0xb4, 0xd2, 0x75, 0xf8, 0x41, 0x05, 0xe0, 0xd6, 0x2c,
+	0x40, 0x3d, 0x7d, 0x82, 0xf0, 0x06, 0xbc, 0x4c, 0x80, 0xf7, 0x55, 0x5c, 0xfc, 0xae, 0x5f, 0xc0,
+	0x6b, 0xb4, 0xf5, 0x61, 0xfa, 0x71, 0x24, 0xfb, 0xf7, 0x1e, 0x47, 0x69, 0x56, 0x48, 0x86, 0xd0,
+	0xfc, 0x2a, 0x51, 0x27, 0x46, 0x2e, 0x7a, 0xc6, 0xeb, 0xb0, 0x90, 0x29, 0x22, 0x58, 0xf6, 0x17,
+	0x32, 0x85, 0x6d, 0x78, 0x89, 0x1f, 0x1f, 0x27, 0x22, 0x4d, 0xdb, 0x8b, 0xb4, 0x59, 0x2c, 0xd9,
+	0x5d, 0xb0, 0x4d, 0xe3, 0xf7, 0xe5, 0xe8, 0xff, 0xf4, 0x66, 0x2e, 0xdc, 0xa4, 0x0e, 0xa5, 0x62,
+	0xa3, 0xe8, 0x2a, 0x2c, 0x89, 0x7c, 0x83, 0xca, 0xaf, 0xf9, 0x7a, 0xc1, 0xde, 0x03, 0x87, 0xf2,
+	0x3f, 0x11, 0xa1, 0x90, 0x59, 0xa2, 0xe2, 0x11, 0xc9, 0x39, 0x08, 0xc4, 0x3c, 0xf7, 0xeb, 0x5d,
+	0x58, 0xab, 0xaa, 0x0e, 0x06, 0x97, 0x52, 0xe6, 0x87, 0x35, 0x21, 0x73, 0xe1, 0x8a, 0x25, 0x6b,
+	0x1b, 0xd4, 0x71, 0x71, 0xa1, 0xef, 0x3b, 0x46, 0xdf, 0x72, 0xc4, 0xb4, 0x73, 0x00, 0xe4, 0xe5,
+	0xae, 0xe9, 0x58, 0xda, 0x61, 0x7b, 0xe6, 0xc6, 0x7f, 0xc4, 0x93, 0x13, 0x5e, 0x1c, 0xe1, 0x26,
+	0xb4, 0xa4, 0x18, 0x26, 0x4a, 0x9a, 0x03, 0x98, 0x15, 0xeb, 0x98, 0x5b, 0x6f, 0x92, 0xc7, 0x42,
+	0xf5, 0xf3, 0x0d, 0xd3, 0x5d, 0x2f, 0xba, 0xbf, 0xae, 0xc0, 0x12, 0x25, 0xe3, 0x53, 0x0b, 0x5a,
+	0xfa, 0xed, 0xc4, 0xad, 0xaa, 0x5b, 0x79, 0xd5, 0x08, 0xec, 0xed, 0x99, 0x79, 0x7a, 0x36, 0xdb,
+	0x7e, 0xfa, 0xdb, 0xdf, 0xcf, 0x16, 0x6e, 0xe3, 0x9a, 0x57, 0xe1, 0x4d, 0xb4, 0xd0, 0x4e, 0x80,
+	0xdf, 0x5a, 0xd0, 0xcc, 0xaf, 0x3f, 0x6e, 0xd4, 0xb6, 0x2e, 0x99, 0x84, 0xbd, 0x39, 0x23, 0xcb,
+	0x8c, 0x7f, 0x93, 0xc6, 0x77, 0x70, 0xa7, 0x76, 0x3c, 0xfd, 0x39, 0x2d, 0x2e, 0xc0, 0x13, 0xfc,
+	0xce, 0x82, 0x96, 0x7e, 0x75, 0xa7, 0x88, 0x31, 0xe1, 0x2a, 0x53, 0xc4, 0x98, 0xf4, 0x00, 0xd6,
+	0x25, 0x9a, 0x37, 0xb0, 0x53, 0x4b, 0x93, 0x52, 0x41, 0x99, 0xe7, 0x99, 0x05, 0xcb, 0x87, 0x3c,
+	0xe8, 0x0f, 0x22, 0xd9, 0x4f, 0x5f, 0x3c, 0xd2, 0x5b, 0x84, 0xe4, 0xe1, 0x7e, 0x2d, 0x52, 0xaf,
+	0x18, 0x5e, 0xa6, 0x3a, 0x85, 0xc5, 0xfb, 0x2a, 0xc6, 0xf9, 0xfc, 0x71, 0x7e, 0x9a, 0x0d, 0xa2,
+	0x71, 0xf0, 0x56, 0x2d, 0x4d, 0xa6, 0x62, 0xfc, 0xc1, 0x82, 0x95, 0x92, 0x53, 0xe1, 0x5e, 0x6d,
+	0xfb, 0xab, 0x7e, 0x66, 0x77, 0x6a, 0x93, 0xaf, 0x38, 0x0c, 0xdb, 0x25, 0x9c, 0xd7, 0xf1, 0x76,
+	0x15, 0x4e, 0x94, 0x3e, 0xc8, 0x65, 0x79, 0x40, 0xb6, 0x83, 0x3f, 0x5a, 0x70, 0x7d, 0xd2, 0xe4,
+	0xd0, 0x9d, 0x82, 0x55, 0xe1, 0x86, 0xff, 0x89, 0x6c, 0x9f, 0xc8, 0xb6, 0x71, 0xb3, 0x86, 0x8c,
+	0xcb, 0x51, 0x99, 0xee, 0x17, 0x0b, 0xb0, 0x30, 0xb2, 0xb1, 0x07, 0x61, 0xb7, 0x76, 0x62, 0xad,
+	0x7b, 0xda, 0x77, 0xe6, 0xad, 0x29, 0x79, 0x26, 0x3b, 0x20, 0xdc, 0x3d, 0xdc, 0xad, 0xc2, 0x1d,
+	0x9b, 0xdd, 0xbf, 0xde, 0x43, 0x28, 0xa1, 0x76, 0xe6, 0x18, 0x5b, 0x20, 0xee, 0xcd, 0x95, 0x6b,
+	0xd0, 0xb6, 0x08, 0x6d, 0x1d, 0x9d, 0xe9, 0x68, 0xb9, 0x49, 0x2e, 0x91, 0xad, 0x62, 0xbd, 0xf5,
+	0x94, 0x3d, 0xda, 0xde, 0x9a, 0x95, 0x66, 0x00, 0x3a, 0x04, 0xb0, 0x81, 0xac, 0x0a, 0x80, 0xac,
+	0xda, 0x3b, 0xd5, 0xf6, 0xfe, 0xe4, 0xf0, 0xe8, 0xec, 0x2f, 0xa7, 0xf1, 0xf3, 0xb9, 0xd3, 0x38,
+	0x3b, 0x77, 0xac, 0xe7, 0xe7, 0x8e, 0xf5, 0xe7, 0xb9, 0x63, 0x7d, 0x7f, 0xe1, 0x34, 0x9e, 0x5f,
+	0x38, 0x8d, 0xdf, 0x2f, 0x9c, 0xc6, 0x97, 0x6e, 0x18, 0x65, 0x0f, 0x87, 0x3d, 0x37, 0x50, 0x27,
+	0xba, 0x5f, 0xa0, 0x64, 0x98, 0xff, 0x2b, 0xf6, 0x42, 0xb5, 0xaf, 0x07, 0x3c, 0x36, 0x6f, 0x52,
+	0xfe, 0x61, 0xd8, 0x6b, 0xd1, 0xe7, 0xde, 0x9d, 0x7f, 0x02, 0x00, 0x00, 0xff, 0xff, 0x3e, 0xe0,
+	0xd3, 0x8a, 0xa3, 0x0a, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -724,7 +725,7 @@ type QueryClient interface {
 	Top(ctx context.Context, in *query.PageRequest, opts ...grpc.CallOption) (*QuerySearchResponse, error)
 	IsLinkExist(ctx context.Context, in *QueryIsLinkExistRequest, opts ...grpc.CallOption) (*QueryLinkExistResponse, error)
 	IsAnyLinkExist(ctx context.Context, in *QueryIsAnyLinkExistRequest, opts ...grpc.CallOption) (*QueryLinkExistResponse, error)
-	Entropy(ctx context.Context, in *QueryEntropyRequest, opts ...grpc.CallOption) (*QueryEntropyResponse, error)
+	ParticleNegentropy(ctx context.Context, in *QueryNegentropyPartilceRequest, opts ...grpc.CallOption) (*QueryNegentropyParticleResponse, error)
 	Negentropy(ctx context.Context, in *QueryNegentropyRequest, opts ...grpc.CallOption) (*QueryNegentropyResponse, error)
 	Karma(ctx context.Context, in *QueryKarmaRequest, opts ...grpc.CallOption) (*QueryKarmaResponse, error)
 }
@@ -800,9 +801,9 @@ func (c *queryClient) IsAnyLinkExist(ctx context.Context, in *QueryIsAnyLinkExis
 	return out, nil
 }
 
-func (c *queryClient) Entropy(ctx context.Context, in *QueryEntropyRequest, opts ...grpc.CallOption) (*QueryEntropyResponse, error) {
-	out := new(QueryEntropyResponse)
-	err := c.cc.Invoke(ctx, "/cyber.rank.v1beta1.Query/Entropy", in, out, opts...)
+func (c *queryClient) ParticleNegentropy(ctx context.Context, in *QueryNegentropyPartilceRequest, opts ...grpc.CallOption) (*QueryNegentropyParticleResponse, error) {
+	out := new(QueryNegentropyParticleResponse)
+	err := c.cc.Invoke(ctx, "/cyber.rank.v1beta1.Query/ParticleNegentropy", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -836,7 +837,7 @@ type QueryServer interface {
 	Top(context.Context, *query.PageRequest) (*QuerySearchResponse, error)
 	IsLinkExist(context.Context, *QueryIsLinkExistRequest) (*QueryLinkExistResponse, error)
 	IsAnyLinkExist(context.Context, *QueryIsAnyLinkExistRequest) (*QueryLinkExistResponse, error)
-	Entropy(context.Context, *QueryEntropyRequest) (*QueryEntropyResponse, error)
+	ParticleNegentropy(context.Context, *QueryNegentropyPartilceRequest) (*QueryNegentropyParticleResponse, error)
 	Negentropy(context.Context, *QueryNegentropyRequest) (*QueryNegentropyResponse, error)
 	Karma(context.Context, *QueryKarmaRequest) (*QueryKarmaResponse, error)
 }
@@ -866,8 +867,8 @@ func (*UnimplementedQueryServer) IsLinkExist(ctx context.Context, req *QueryIsLi
 func (*UnimplementedQueryServer) IsAnyLinkExist(ctx context.Context, req *QueryIsAnyLinkExistRequest) (*QueryLinkExistResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method IsAnyLinkExist not implemented")
 }
-func (*UnimplementedQueryServer) Entropy(ctx context.Context, req *QueryEntropyRequest) (*QueryEntropyResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Entropy not implemented")
+func (*UnimplementedQueryServer) ParticleNegentropy(ctx context.Context, req *QueryNegentropyPartilceRequest) (*QueryNegentropyParticleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ParticleNegentropy not implemented")
 }
 func (*UnimplementedQueryServer) Negentropy(ctx context.Context, req *QueryNegentropyRequest) (*QueryNegentropyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Negentropy not implemented")
@@ -1006,20 +1007,20 @@ func _Query_IsAnyLinkExist_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_Entropy_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryEntropyRequest)
+func _Query_ParticleNegentropy_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryNegentropyPartilceRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).Entropy(ctx, in)
+		return srv.(QueryServer).ParticleNegentropy(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/cyber.rank.v1beta1.Query/Entropy",
+		FullMethod: "/cyber.rank.v1beta1.Query/ParticleNegentropy",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Entropy(ctx, req.(*QueryEntropyRequest))
+		return srv.(QueryServer).ParticleNegentropy(ctx, req.(*QueryNegentropyPartilceRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1093,8 +1094,8 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Query_IsAnyLinkExist_Handler,
 		},
 		{
-			MethodName: "Entropy",
-			Handler:    _Query_Entropy_Handler,
+			MethodName: "ParticleNegentropy",
+			Handler:    _Query_ParticleNegentropy_Handler,
 		},
 		{
 			MethodName: "Negentropy",
@@ -1185,10 +1186,10 @@ func (m *QueryRankRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.Cid) > 0 {
-		i -= len(m.Cid)
-		copy(dAtA[i:], m.Cid)
-		i = encodeVarintQuery(dAtA, i, uint64(len(m.Cid)))
+	if len(m.Particle) > 0 {
+		i -= len(m.Particle)
+		copy(dAtA[i:], m.Particle)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Particle)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -1255,10 +1256,10 @@ func (m *QuerySearchRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x12
 	}
-	if len(m.Cid) > 0 {
-		i -= len(m.Cid)
-		copy(dAtA[i:], m.Cid)
-		i = encodeVarintQuery(dAtA, i, uint64(len(m.Cid)))
+	if len(m.Particle) > 0 {
+		i -= len(m.Particle)
+		copy(dAtA[i:], m.Particle)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Particle)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -1451,7 +1452,7 @@ func (m *QueryLinkExistResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) 
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryEntropyRequest) Marshal() (dAtA []byte, err error) {
+func (m *QueryNegentropyPartilceRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1461,27 +1462,27 @@ func (m *QueryEntropyRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryEntropyRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryNegentropyPartilceRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryEntropyRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryNegentropyPartilceRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.Cid) > 0 {
-		i -= len(m.Cid)
-		copy(dAtA[i:], m.Cid)
-		i = encodeVarintQuery(dAtA, i, uint64(len(m.Cid)))
+	if len(m.Particle) > 0 {
+		i -= len(m.Particle)
+		copy(dAtA[i:], m.Particle)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Particle)))
 		i--
 		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryEntropyResponse) Marshal() (dAtA []byte, err error) {
+func (m *QueryNegentropyParticleResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1491,12 +1492,12 @@ func (m *QueryEntropyResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryEntropyResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryNegentropyParticleResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryEntropyResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryNegentropyParticleResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1580,10 +1581,10 @@ func (m *QueryKarmaRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.Address) > 0 {
-		i -= len(m.Address)
-		copy(dAtA[i:], m.Address)
-		i = encodeVarintQuery(dAtA, i, uint64(len(m.Address)))
+	if len(m.Neuron) > 0 {
+		i -= len(m.Neuron)
+		copy(dAtA[i:], m.Neuron)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Neuron)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -1655,7 +1656,7 @@ func (m *QueryRankRequest) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.Cid)
+	l = len(m.Particle)
 	if l > 0 {
 		n += 1 + l + sovQuery(uint64(l))
 	}
@@ -1680,7 +1681,7 @@ func (m *QuerySearchRequest) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.Cid)
+	l = len(m.Particle)
 	if l > 0 {
 		n += 1 + l + sovQuery(uint64(l))
 	}
@@ -1769,20 +1770,20 @@ func (m *QueryLinkExistResponse) Size() (n int) {
 	return n
 }
 
-func (m *QueryEntropyRequest) Size() (n int) {
+func (m *QueryNegentropyPartilceRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	l = len(m.Cid)
+	l = len(m.Particle)
 	if l > 0 {
 		n += 1 + l + sovQuery(uint64(l))
 	}
 	return n
 }
 
-func (m *QueryEntropyResponse) Size() (n int) {
+func (m *QueryNegentropyParticleResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1821,7 +1822,7 @@ func (m *QueryKarmaRequest) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.Address)
+	l = len(m.Neuron)
 	if l > 0 {
 		n += 1 + l + sovQuery(uint64(l))
 	}
@@ -1881,10 +1882,7 @@ func (m *QueryParamsRequest) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthQuery
 			}
 			if (iNdEx + skippy) > l {
@@ -1967,10 +1965,7 @@ func (m *QueryParamsResponse) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthQuery
 			}
 			if (iNdEx + skippy) > l {
@@ -2016,7 +2011,7 @@ func (m *QueryRankRequest) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Cid", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Particle", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -2044,7 +2039,7 @@ func (m *QueryRankRequest) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Cid = string(dAtA[iNdEx:postIndex])
+			m.Particle = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -2052,10 +2047,7 @@ func (m *QueryRankRequest) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthQuery
 			}
 			if (iNdEx + skippy) > l {
@@ -2124,10 +2116,7 @@ func (m *QueryRankResponse) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthQuery
 			}
 			if (iNdEx + skippy) > l {
@@ -2173,7 +2162,7 @@ func (m *QuerySearchRequest) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Cid", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Particle", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -2201,7 +2190,7 @@ func (m *QuerySearchRequest) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Cid = string(dAtA[iNdEx:postIndex])
+			m.Particle = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
@@ -2245,10 +2234,7 @@ func (m *QuerySearchRequest) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthQuery
 			}
 			if (iNdEx + skippy) > l {
@@ -2321,7 +2307,7 @@ func (m *QuerySearchResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Result = append(m.Result, RankedCid{})
+			m.Result = append(m.Result, RankedParticle{})
 			if err := m.Result[len(m.Result)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
@@ -2368,10 +2354,7 @@ func (m *QuerySearchResponse) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthQuery
 			}
 			if (iNdEx + skippy) > l {
@@ -2421,10 +2404,7 @@ func (m *QueryTopRequest) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthQuery
 			}
 			if (iNdEx + skippy) > l {
@@ -2570,10 +2550,7 @@ func (m *QueryIsLinkExistRequest) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthQuery
 			}
 			if (iNdEx + skippy) > l {
@@ -2687,10 +2664,7 @@ func (m *QueryIsAnyLinkExistRequest) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthQuery
 			}
 			if (iNdEx + skippy) > l {
@@ -2760,10 +2734,7 @@ func (m *QueryLinkExistResponse) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthQuery
 			}
 			if (iNdEx + skippy) > l {
@@ -2778,7 +2749,7 @@ func (m *QueryLinkExistResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryEntropyRequest) Unmarshal(dAtA []byte) error {
+func (m *QueryNegentropyPartilceRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2801,15 +2772,15 @@ func (m *QueryEntropyRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryEntropyRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryNegentropyPartilceRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryEntropyRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryNegentropyPartilceRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Cid", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Particle", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -2837,7 +2808,7 @@ func (m *QueryEntropyRequest) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Cid = string(dAtA[iNdEx:postIndex])
+			m.Particle = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -2845,10 +2816,7 @@ func (m *QueryEntropyRequest) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthQuery
 			}
 			if (iNdEx + skippy) > l {
@@ -2863,7 +2831,7 @@ func (m *QueryEntropyRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryEntropyResponse) Unmarshal(dAtA []byte) error {
+func (m *QueryNegentropyParticleResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2886,10 +2854,10 @@ func (m *QueryEntropyResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryEntropyResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryNegentropyParticleResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryEntropyResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryNegentropyParticleResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -2917,10 +2885,7 @@ func (m *QueryEntropyResponse) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthQuery
 			}
 			if (iNdEx + skippy) > l {
@@ -2970,10 +2935,7 @@ func (m *QueryNegentropyRequest) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthQuery
 			}
 			if (iNdEx + skippy) > l {
@@ -3042,10 +3004,7 @@ func (m *QueryNegentropyResponse) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthQuery
 			}
 			if (iNdEx + skippy) > l {
@@ -3091,7 +3050,7 @@ func (m *QueryKarmaRequest) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Neuron", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -3119,7 +3078,7 @@ func (m *QueryKarmaRequest) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Address = string(dAtA[iNdEx:postIndex])
+			m.Neuron = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -3127,10 +3086,7 @@ func (m *QueryKarmaRequest) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthQuery
 			}
 			if (iNdEx + skippy) > l {
@@ -3199,10 +3155,7 @@ func (m *QueryKarmaResponse) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthQuery
 			}
 			if (iNdEx + skippy) > l {

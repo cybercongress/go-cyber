@@ -3,16 +3,16 @@ package types
 import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/codec/types"
+	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/types/msgservice"
 )
 
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgAddJob{}, "cyber/MsgAddJob", nil)
 	cdc.RegisterConcrete(&MsgRemoveJob{}, "cyber/MsgRemoveJob", nil)
-	cdc.RegisterConcrete(&MsgChangeJobCID{}, "cyber/MsgChangeJobCID", nil)
+	cdc.RegisterConcrete(&MsgChangeJobParticle{}, "cyber/MsgChangeJobParticle", nil)
 	cdc.RegisterConcrete(&MsgChangeJobLabel{}, "cyber/MsgChangeJobLabel", nil)
 	cdc.RegisterConcrete(&MsgChangeJobCallData{}, "cyber/MsgChangeJobCallData", nil)
 	cdc.RegisterConcrete(&MsgChangeJobGasPrice{}, "cyber/MsgChangeJobGasPrice", nil)
@@ -24,7 +24,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgAddJob{},
 		&MsgRemoveJob{},
-		&MsgChangeJobCID{},
+		&MsgChangeJobParticle{},
 		&MsgChangeJobLabel{},
 		&MsgChangeJobCallData{},
 		&MsgChangeJobGasPrice{},

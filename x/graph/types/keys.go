@@ -20,11 +20,11 @@ var (
 	CyberlinkStoreKeyPrefix  = []byte{0x03}
 	CyberlinkTStoreKeyPrefix = []byte{0x04} // inter-block cache for cyberlinks
 	NeudegStoreKeyPrefix     = []byte{0x05}
-	NeudegTStoreKeyPrefix     = []byte{0x06}
+	NeudegTStoreKeyPrefix    = []byte{0x06} // inter-block cache for neurons cyberlink' degree
 
-	LastCidNumber    		 = append(GlobalStoreKeyPrefix, []byte("lastCidNumber")...)
-	LinksCount 				 = append(GlobalStoreKeyPrefix, []byte("linksCount")...)
-	HasNewLinks 		     = append(GlobalStoreKeyPrefix, []byte("hasNewLinks")...)
+	LastCidNumber    		 = append(GlobalStoreKeyPrefix, []byte("lastParticleNumber")...)
+	LinksCount 				 = append(GlobalStoreKeyPrefix, []byte("cyberlinksAmount")...)
+	HasNewLinks 		     = append(GlobalStoreKeyPrefix, []byte("blockHasNewLinks")...)
 )
 
 func CidStoreKey(cid Cid) []byte {

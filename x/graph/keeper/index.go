@@ -7,7 +7,7 @@ import (
 	"io"
 
 	. "github.com/cybercongress/go-cyber/types"
-	"github.com/cybercongress/go-cyber/util"
+	"github.com/cybercongress/go-cyber/utils"
 	"github.com/cybercongress/go-cyber/x/graph/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -59,7 +59,7 @@ func (i *IndexKeeper) LoadState(rankCtx sdk.Context, freshCtx sdk.Context) {
 	i.nextRankOutLinks = newOutLinks
 }
 
-func (i *IndexKeeper) FixLinks() {
+func (i *IndexKeeper) UpdateRankLinks() {
 	i.currentRankInLinks.PutAll(i.nextRankInLinks)
 	i.currentRankOutLinks.PutAll(i.nextRankOutLinks)
 
@@ -141,14 +141,14 @@ func (i *IndexKeeper) IsLinkExistInCache(ctx sdk.Context, link types.CompactLink
 }
 
 func (i *IndexKeeper) LoadFromReader(ctx sdk.Context, reader io.Reader) (err error) {
-	linksCountBytes, err := util.ReadExactlyNBytes(reader, LinksCountBytesSize)
+	linksCountBytes, err := utils.ReadExactlyNBytes(reader, LinksCountBytesSize)
 	if err != nil {
 		return
 	}
 	linksCount := binary.LittleEndian.Uint64(linksCountBytes)
 
 	for j := uint64(0); j < linksCount; j++ {
-		linkBytes, err := util.ReadExactlyNBytes(reader, LinkBytesSize)
+		linkBytes, err := utils.ReadExactlyNBytes(reader, LinkBytesSize)
 		if err != nil {
 			return err
 		}

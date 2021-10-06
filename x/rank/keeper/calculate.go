@@ -27,7 +27,7 @@ func CalculateRank(ctx *types.CalculationContext, unit types.ComputeUnit, logger
 
 	logger.Info(
 		"cyber~Rank calculated", "duration", diff.String(),
-		"cyberlinks", ctx.LinksCount, "cids", ctx.CidsCount,
+		"cyberlinks", ctx.LinksCount, "particles", ctx.CidsCount,
 	)
 
 	return

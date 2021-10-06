@@ -25,8 +25,8 @@ func (bk StateKeeper) Params(goCtx context.Context, _ *types.QueryParamsRequest)
 func (bk StateKeeper) Rank(goCtx context.Context, req *types.QueryRankRequest) (*types.QueryRankResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	cidNum, exist := bk.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(req.Cid)); if exist != true {
-		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, req.Cid)
+	cidNum, exist := bk.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(req.Particle)); if exist != true {
+		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, req.Particle)
 	}
 
 	rankValue := bk.index.GetRankValue(cidNum)
@@ -40,7 +40,7 @@ func (bk *StateKeeper) Search(goCtx context.Context, req *types.QuerySearchReque
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	cidNum, exist := bk.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(req.Cid)); if exist != true {
+	cidNum, exist := bk.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(req.Particle)); if exist != true {
 		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, "")
 	}
 
@@ -53,9 +53,9 @@ func (bk *StateKeeper) Search(goCtx context.Context, req *types.QuerySearchReque
 		panic(err)
 	}
 
-	result := make([]types.RankedCid, 0, len(rankedCidNumbers))
+	result := make([]types.RankedParticle, 0, len(rankedCidNumbers))
 	for _, c := range rankedCidNumbers {
-		result = append(result, types.RankedCid{Cid: string(bk.graphKeeper.GetCid(ctx, c.GetNumber())), Rank: c.GetRank()})
+		result = append(result, types.RankedParticle{Particle: string(bk.graphKeeper.GetCid(ctx, c.GetNumber())), Rank: c.GetRank()})
 	}
 
 	return &types.QuerySearchResponse{Result: result, Pagination: &querytypes.PageResponse{Total: totalSize}}, nil
@@ -68,8 +68,8 @@ func (bk *StateKeeper) Backlinks(goCtx context.Context, req *types.QuerySearchRe
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	cidNum, exist := bk.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(req.Cid)); if exist != true {
-		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, req.Cid)
+	cidNum, exist := bk.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(req.Particle)); if exist != true {
+		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, req.Particle)
 	}
 
 	page, limit := uint32(0), uint32(10)
@@ -81,9 +81,9 @@ func (bk *StateKeeper) Backlinks(goCtx context.Context, req *types.QuerySearchRe
 		panic(err)
 	}
 
-	result := make([]types.RankedCid, 0, len(rankedCidNumbers))
+	result := make([]types.RankedParticle, 0, len(rankedCidNumbers))
 	for _, c := range rankedCidNumbers {
-		result = append(result, types.RankedCid{Cid: string(bk.graphKeeper.GetCid(ctx, c.GetNumber())), Rank: c.GetRank()})
+		result = append(result, types.RankedParticle{Particle: string(bk.graphKeeper.GetCid(ctx, c.GetNumber())), Rank: c.GetRank()})
 	}
 
 	return &types.QuerySearchResponse{Result: result, Pagination: &querytypes.PageResponse{Total: totalSize}}, nil
@@ -104,9 +104,9 @@ func (bk *StateKeeper) Top(goCtx context.Context, req *querytypes.PageRequest) (
 		panic(err)
 	}
 
-	result := make([]types.RankedCid, 0, len(topRankedCidNumbers))
+	result := make([]types.RankedParticle, 0, len(topRankedCidNumbers))
 	for _, c := range topRankedCidNumbers {
-		result = append(result, types.RankedCid{Cid: string(bk.graphKeeper.GetCid(ctx, c.GetNumber())), Rank: c.GetRank()})
+		result = append(result, types.RankedParticle{Particle: string(bk.graphKeeper.GetCid(ctx, c.GetNumber())), Rank: c.GetRank()})
 	}
 
 	return &types.QuerySearchResponse{Result: result, Pagination: &querytypes.PageResponse{Total: totalSize}}, nil
@@ -136,7 +136,7 @@ func (bk StateKeeper) IsLinkExist(goCtx context.Context, req *types.QueryIsLinkE
 	if account != nil {
 		accountNum = account.GetAccountNumber()
 	} else {
-		return nil, sdkerrors.Wrap(graphtypes.ErrInvalidAccount, addr.String())
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "Invalid neuron address")
 	}
 
 	exists := bk.graphIndexedKeeper.IsLinkExist(graphtypes.CompactLink{
@@ -168,19 +168,19 @@ func (bk StateKeeper) IsAnyLinkExist(goCtx context.Context, req *types.QueryIsAn
 	return &types.QueryLinkExistResponse{Exist: exists}, nil
 }
 
-func (s *StateKeeper) Entropy(goCtx context.Context, request *types.QueryEntropyRequest) (*types.QueryEntropyResponse, error) {
+func (s *StateKeeper) ParticleNegentropy(goCtx context.Context, request *types.QueryNegentropyPartilceRequest) (*types.QueryNegentropyParticleResponse, error) {
 	if request == nil {
 		return nil, status.Errorf(codes.InvalidArgument, "empty request")
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	cidNum, exist := s.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(request.Cid)); if exist != true {
-		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, request.Cid)
+	cidNum, exist := s.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(request.Particle)); if exist != true {
+		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, request.Particle)
 	}
 
 	entropyValue := s.GetEntropy(cidNum)
-	return &types.QueryEntropyResponse{Entropy: entropyValue}, nil
+	return &types.QueryNegentropyParticleResponse{Entropy: entropyValue}, nil
 }
 
 func (s *StateKeeper) Negentropy(_ context.Context, _ *types.QueryNegentropyRequest) (*types.QueryNegentropyResponse, error) {
@@ -193,7 +193,7 @@ func (s *StateKeeper) Karma(goCtx context.Context, request *types.QueryKarmaRequ
 		return nil, status.Errorf(codes.InvalidArgument, "empty request")
 	}
 
-	addr, err := sdk.AccAddressFromBech32(request.Address); if err != nil {
+	addr, err := sdk.AccAddressFromBech32(request.Neuron); if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, err.Error())
 	}
 
@@ -204,7 +204,7 @@ func (s *StateKeeper) Karma(goCtx context.Context, request *types.QueryKarmaRequ
 	if account != nil {
 		accountNum = account.GetAccountNumber()
 	} else {
-		return nil, sdkerrors.Wrap(graphtypes.ErrInvalidAccount, addr.String())
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "Invalid neuron address")
 	}
 
 	karma := s.GetKarma(accountNum)

@@ -1,9 +1,7 @@
 package types
 
 const (
-	EventTypeCyberlink     = "cyberlink"
-	EventTypeCyberlinkMeta = "cybermeta"
-	AttributeKeyObjectFrom = "objectFrom"
-	AttributeKeyObjectTo   = "objectTo"
-	AttributeKeySubject    = "subject"
+	EventTypeCyberlink       = "cyberlink"
+	AttributeKeyParticleFrom = "particleFrom"
+	AttributeKeyParticleTo   = "particleTo"
 )

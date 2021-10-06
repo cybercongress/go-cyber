@@ -19,9 +19,9 @@ func NewQuerier(bm *BandwidthMeter, legacyQuerierCdc *codec.LegacyAmino) sdk.Que
 		case types.QueryPrice:
 			return queryPrice(ctx, req, bm, legacyQuerierCdc)
 		case types.QueryDesirableBandwidth:
-			return queryDesirableBandwidth(ctx, req, bm, legacyQuerierCdc)
+			return queryTotalBandwidth(ctx, req, bm, legacyQuerierCdc)
 		case types.QueryAccount:
-			return queryAccountBandwidth(ctx, req, *bm, legacyQuerierCdc)
+			return queryNeuronBandwidth(ctx, req, *bm, legacyQuerierCdc)
 		default:
 			return nil, sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "unknown query path: %s", path[0])
 		}
@@ -59,9 +59,9 @@ func queryPrice(_ sdk.Context, _ abci.RequestQuery, bm *BandwidthMeter, legacyQu
 	return res, nil
 }
 
-func queryDesirableBandwidth(ctx sdk.Context, _ abci.RequestQuery, bm *BandwidthMeter, legacyQuerierCdc *codec.LegacyAmino,) ([]byte, error) {
-	desirableBandwidth := bm.GetDesirableBandwidth(ctx)
-	res, err := codec.MarshalJSONIndent(legacyQuerierCdc, types.QueryDesirableBandwidthResponse{DesirableBandwidth: desirableBandwidth})
+func queryTotalBandwidth(ctx sdk.Context, _ abci.RequestQuery, bm *BandwidthMeter, legacyQuerierCdc *codec.LegacyAmino,) ([]byte, error) {
+	totalBandwidth := bm.GetDesirableBandwidth(ctx)
+	res, err := codec.MarshalJSONIndent(legacyQuerierCdc, types.QueryTotalBandwidthResponse{TotalBandwidth: totalBandwidth})
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
 	}
@@ -69,7 +69,7 @@ func queryDesirableBandwidth(ctx sdk.Context, _ abci.RequestQuery, bm *Bandwidth
 	return res, nil
 }
 
-func queryAccountBandwidth(ctx sdk.Context, req abci.RequestQuery, bm BandwidthMeter, legacyQuerierCdc *codec.LegacyAmino,) ([]byte, error) {
+func queryNeuronBandwidth(ctx sdk.Context, req abci.RequestQuery, bm BandwidthMeter, legacyQuerierCdc *codec.LegacyAmino,) ([]byte, error) {
 	var params types.QueryAccountBandwidthParams
 
 	err := legacyQuerierCdc.UnmarshalJSON(req.Data, &params); if err != nil {

@@ -419,17 +419,14 @@ func WrapDelegate(
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	delegator, err := sdk.AccAddressFromBech32(msg.DelegatorAddress); if err != nil {
-		return false, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "bad account")
+		return false, err
 	}
-
 	toMint := sdk.NewCoin(ctypes.SCYB, msg.Amount.Amount)
-	err = bk.MintCoins(ctx, resourcestypes.ResourcesName, sdk.NewCoins(toMint))
-	if err != nil {
-		return false, sdkerrors.Wrapf(resourcestypes.ErrMintCoins, delegator.String())
+	err = bk.MintCoins(ctx, resourcestypes.ResourcesName, sdk.NewCoins(toMint)); if err != nil {
+		return false, err
 	}
-	err = bk.SendCoinsFromModuleToAccount(ctx, resourcestypes.ResourcesName, delegator, sdk.NewCoins(toMint))
-	if err != nil {
-		return false, sdkerrors.Wrapf(resourcestypes.ErrSendMintedCoins, delegator.String())
+	err = bk.SendCoinsFromModuleToAccount(ctx, resourcestypes.ResourcesName, delegator, sdk.NewCoins(toMint)); if err != nil {
+		return false, err
 	}
 
 	return true, nil
@@ -443,17 +440,14 @@ func WrapUndelegate(
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	delegator, err := sdk.AccAddressFromBech32(msg.DelegatorAddress); if err != nil {
-		return false, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "bad account")
+		return false, err
 	}
-
 	toBurn := sdk.NewCoin(ctypes.SCYB, msg.Amount.Amount)
-	err = bk.SendCoinsFromAccountToModule(ctx, delegator, resourcestypes.ResourcesName, sdk.NewCoins(toBurn))
-	if err != nil {
-		return false, sdkerrors.Wrapf(resourcestypes.ErrSendMintedCoins, delegator.String())
+	err = bk.SendCoinsFromAccountToModule(ctx, delegator, resourcestypes.ResourcesName, sdk.NewCoins(toBurn)); if err != nil {
+		return false, err
 	}
-	err = bk.BurnCoins(ctx, resourcestypes.ResourcesName, sdk.NewCoins(toBurn))
-	if err != nil {
-		return false, sdkerrors.Wrapf(resourcestypes.ErrBurnCoins, delegator.String())
+	err = bk.BurnCoins(ctx, resourcestypes.ResourcesName, sdk.NewCoins(toBurn)); if err != nil {
+		return false, err
 	}
 
 	return true, nil
@@ -467,19 +461,15 @@ func WrapCreateValidator(
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	delegator, err := sdk.AccAddressFromBech32(msg.DelegatorAddress); if err != nil {
-		return false, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "bad account")
+		return false, err
 	}
-
 	toMint := sdk.NewCoin(ctypes.SCYB, msg.Value.Amount)
-	err = bk.MintCoins(ctx, resourcestypes.ResourcesName, sdk.NewCoins(toMint))
-	if err != nil {
-		return false, sdkerrors.Wrapf(resourcestypes.ErrMintCoins, delegator.String())
+	err = bk.MintCoins(ctx, resourcestypes.ResourcesName, sdk.NewCoins(toMint)); if err != nil {
+		return false, err
 	}
-	err = bk.SendCoinsFromModuleToAccount(ctx, resourcestypes.ResourcesName, delegator, sdk.NewCoins(toMint))
-	if err != nil {
-		return false, sdkerrors.Wrapf(resourcestypes.ErrSendMintedCoins, delegator.String())
+	err = bk.SendCoinsFromModuleToAccount(ctx, resourcestypes.ResourcesName, delegator, sdk.NewCoins(toMint)); if err != nil {
+		return false, err
 	}
-
 
 	return true, nil
 }

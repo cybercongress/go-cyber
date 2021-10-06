@@ -9,7 +9,7 @@ import (
 type Links map[CidNumber]CidLinks
 type CidLinks map[CidNumber]map[AccNumber]struct{}
 
-type Cid string // TODO move to proto
+type Cid string
 type CidNumber uint64
 
 func (links Links) Put(from CidNumber, to CidNumber, acc AccNumber) {

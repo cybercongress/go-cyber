@@ -2,14 +2,15 @@ syntax = "proto3";
 package cyber.energy.v1beta1;
 
 import "gogoproto/gogo.proto";
-import "cosmos_proto/coin.proto";
+
+import "cosmos/base/v1beta1/coin.proto";
 
 option go_package = "github.com/cybercongress/go-cyber/x/energy/types";
 
 message Params {
     option (gogoproto.equal)            = true;
 
-    uint32 max_routes = 1 [(gogoproto.moretags) = "yaml:\"max_routes\""];
+    uint32 max_routes = 1;
 }
 
 message Route {
@@ -26,6 +27,9 @@ message Route {
 }
 
 message Value {
+    option (gogoproto.equal)            = false;
+    option (gogoproto.goproto_getters)  = false;
+
     repeated cosmos.base.v1beta1.Coin value = 1 [
         (gogoproto.nullable) = false,
         (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"

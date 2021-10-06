@@ -17,15 +17,15 @@ service Query {
     }
 
     rpc Rank(QueryRankRequest) returns (QueryRankResponse) {
-        option (google.api.http).get = "/cyber/rank/v1beta1/rank/rank/{cid}";
+        option (google.api.http).get = "/cyber/rank/v1beta1/rank/rank/{particle}";
     }
 
     rpc Search(QuerySearchRequest) returns (QuerySearchResponse) {
-        option (google.api.http).get = "/cyber/rank/v1beta1/rank/search/{cid}";
+        option (google.api.http).get = "/cyber/rank/v1beta1/rank/search/{particle}";
     }
 
     rpc Backlinks(QuerySearchRequest) returns (QuerySearchResponse) {
-        option (google.api.http).get = "/cyber/rank/v1beta1/rank/backlinks/{cid}";
+        option (google.api.http).get = "/cyber/rank/v1beta1/rank/backlinks/{particle}";
     }
 
     rpc Top(cyber.base.query.v1beta1.PageRequest) returns (QuerySearchResponse) {
@@ -40,8 +40,8 @@ service Query {
         option (google.api.http).get = "/cyber/rank/v1beta1/is_any_link_exist";
     }
 
-    rpc Entropy(QueryEntropyRequest) returns (QueryEntropyResponse) {
-        option (google.api.http).get = "/cyber/rank/v1beta1/entropy/{cid}";
+    rpc ParticleNegentropy(QueryNegentropyPartilceRequest) returns (QueryNegentropyParticleResponse) {
+        option (google.api.http).get = "/cyber/rank/v1beta1/negentropy/{particle}";
     }
 
     rpc Negentropy(QueryNegentropyRequest) returns (QueryNegentropyResponse) {
@@ -49,7 +49,7 @@ service Query {
     }
 
     rpc Karma(QueryKarmaRequest) returns (QueryKarmaResponse) {
-        option (google.api.http).get = "/cyber/rank/v1beta1/karma/{address}";
+        option (google.api.http).get = "/cyber/rank/v1beta1/karma/{neuron}";
     }
 }
 
@@ -60,7 +60,7 @@ message QueryParamsResponse{
 }
 
 message QueryRankRequest {
-    string cid = 1;
+    string particle = 1;
 }
 
 message QueryRankResponse{
@@ -68,12 +68,12 @@ message QueryRankResponse{
 }
 
 message QuerySearchRequest {
-    string cid = 1;
+    string particle                                 = 1;
     cyber.base.query.v1beta1.PageRequest pagination = 2;
 }
 
 message QuerySearchResponse {
-    repeated RankedCid result                        = 1 [(gogoproto.nullable) = false];
+    repeated RankedParticle result                   = 1 [(gogoproto.nullable) = false];
     cyber.base.query.v1beta1.PageResponse pagination = 2;
 }
 
@@ -90,16 +90,15 @@ message QueryIsAnyLinkExistRequest {
     string to   = 2;
 }
 
-// FIXME move to bool...
 message QueryLinkExistResponse {
     bool exist = 1;
 }
 
-message QueryEntropyRequest {
-    string cid = 1;
+message QueryNegentropyPartilceRequest {
+    string particle = 1;
 }
 
-message QueryEntropyResponse {
+message QueryNegentropyParticleResponse {
     uint64 entropy = 1;
 }
 
@@ -110,7 +109,7 @@ message QueryNegentropyResponse {
 }
 
 message QueryKarmaRequest {
-    string address = 1;
+    string neuron = 1;
 }
 
 message QueryKarmaResponse {

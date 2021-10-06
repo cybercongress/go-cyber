@@ -3,7 +3,6 @@ package staking
 
 import (
 	"github.com/cosmos/cosmos-sdk/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
@@ -35,17 +34,6 @@ func NewAppModule(
 		bk: bankKeeper,
 		ak: accountKeeper,
 	}
-}
-
-func NewHandler(
-	sk stakingkeeper.Keeper,
-	bk bankkeeper.Keeper,
-) sdk.Handler {
-	return WrapStakingHandler(sk, bk)
-}
-
-func (am AppModule) Route() sdk.Route {
-	return sdk.NewRoute(stakingtypes.RouterKey, NewHandler(am.sk, am.bk))
 }
 
 func (am AppModule) RegisterServices(cfg module.Configurator) {

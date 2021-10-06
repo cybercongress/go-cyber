@@ -6,6 +6,12 @@ import (
 	. "github.com/cybercongress/go-cyber/types"
 )
 
+type CompactLink struct {
+	From    uint64;
+	To      uint64;
+	Account uint64;
+}
+
 type LinkFilter func(CompactLink) bool
 
 func NewLink(from CidNumber, to CidNumber, acc AccNumber) CompactLink {
@@ -31,3 +37,5 @@ func (l CompactLink) MarshalBinaryLink() []byte {
 	binary.LittleEndian.PutUint64(b[16:24], l.Account)
 	return b
 }
+
+

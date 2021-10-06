@@ -89,9 +89,9 @@ func querySearch(ctx sdk.Context, req abci.RequestQuery, sk *StateKeeper, legacy
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
 	}
 
-	result := make([]types.RankedCid, 0, len(rankedCidNumbers))
+	result := make([]types.RankedParticle, 0, len(rankedCidNumbers))
 	for _, c := range rankedCidNumbers {
-		result = append(result, types.RankedCid{Cid: string(sk.graphKeeper.GetCid(ctx, c.GetNumber())), Rank: c.GetRank()})
+		result = append(result, types.RankedParticle{Particle: string(sk.graphKeeper.GetCid(ctx, c.GetNumber())), Rank: c.GetRank()})
 	}
 
 	res, err := codec.MarshalJSONIndent(legacyQuerierCdc, types.QuerySearchResponse{Result: result, Pagination: &querytypes.PageResponse{Total: totalSize}})
@@ -118,9 +118,9 @@ func queryBacklinks(ctx sdk.Context, req abci.RequestQuery, sk *StateKeeper, leg
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
 	}
 
-	result := make([]types.RankedCid, 0, len(rankedCidNumbers))
+	result := make([]types.RankedParticle, 0, len(rankedCidNumbers))
 	for _, c := range rankedCidNumbers {
-		result = append(result, types.RankedCid{Cid: string(sk.graphKeeper.GetCid(ctx, c.GetNumber())), Rank: c.GetRank()})
+		result = append(result, types.RankedParticle{Particle: string(sk.graphKeeper.GetCid(ctx, c.GetNumber())), Rank: c.GetRank()})
 	}
 
 	res, err := codec.MarshalJSONIndent(legacyQuerierCdc, types.QuerySearchResponse{Result: result, Pagination: &querytypes.PageResponse{Total: totalSize}})
@@ -143,9 +143,9 @@ func queryTop(ctx sdk.Context, req abci.RequestQuery, sk *StateKeeper, legacyQue
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
 	}
 
-	result := make([]types.RankedCid, 0, len(topRankedCidNumbers))
+	result := make([]types.RankedParticle, 0, len(topRankedCidNumbers))
 	for _, c := range topRankedCidNumbers {
-		result = append(result, types.RankedCid{Cid: string(sk.graphKeeper.GetCid(ctx, c.GetNumber())), Rank: c.GetRank()})
+		result = append(result, types.RankedParticle{Particle: string(sk.graphKeeper.GetCid(ctx, c.GetNumber())), Rank: c.GetRank()})
 	}
 
 	res, err := codec.MarshalJSONIndent(legacyQuerierCdc, types.QuerySearchResponse{Result: result, Pagination: &querytypes.PageResponse{Total: totalSize}})
@@ -176,7 +176,7 @@ func queryIsLinkExist(ctx sdk.Context, req abci.RequestQuery, sk *StateKeeper, l
 	if account != nil {
 		accountNum = account.GetAccountNumber()
 	} else {
-		return nil, sdkerrors.Wrap(graphtypes.ErrInvalidAccount, params.Address.String())
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "Invalid neuron address")
 	}
 
 	exists := sk.graphIndexedKeeper.IsLinkExist(graphtypes.CompactLink{
@@ -231,7 +231,7 @@ func queryEntropy(ctx sdk.Context, req abci.RequestQuery, sk *StateKeeper, legac
 
 	entropy := sk.GetEntropy(cidNum)
 
-	res, err := codec.MarshalJSONIndent(legacyQuerierCdc, &types.QueryEntropyResponse{Entropy: entropy})
+	res, err := codec.MarshalJSONIndent(legacyQuerierCdc, &types.QueryNegentropyParticleResponse{Entropy: entropy})
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
 	}
@@ -262,7 +262,7 @@ func queryKarma(ctx sdk.Context, req abci.RequestQuery, sk *StateKeeper, legacyQ
 	if account != nil {
 		accountNum = account.GetAccountNumber()
 	} else {
-		return nil, sdkerrors.Wrap(graphtypes.ErrInvalidAccount, params.Address.String())
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "Invalid neuron address")
 	}
 
 	karma := sk.GetKarma(accountNum)

@@ -3,7 +3,8 @@ package cyber.bandwidth.v1beta1;
 
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
-import "cosmos_proto/coin.proto";
+
+import "cosmos/base/v1beta1/coin.proto";
 import "cyber/bandwidth/v1beta1/types.proto";
 
 option go_package = "github.com/cybercongress/go-cyber/x/bandwidth/types";
@@ -19,12 +20,12 @@ service Query {
         option (google.api.http).get = "/cyber/bandwidth/v1beta1/bandwidth/price";
     }
 
-    rpc DesirableBandwidth(QueryDesirableBandwidthRequest) returns (QueryDesirableBandwidthResponse) {
-        option (google.api.http).get = "/cyber/bandwidth/v1beta1/bandwidth/desirable";
+    rpc TotalBandwidth(QueryTotalBandwidthRequest) returns (QueryTotalBandwidthResponse) {
+        option (google.api.http).get = "/cyber/bandwidth/v1beta1/bandwidth/total";
     }
 
     rpc Account(QueryAccountRequest) returns (QueryAccountResponse) {
-        option (google.api.http).get = "/cyber/bandwidth/v1beta1/bandwidth/account/{address}";
+        option (google.api.http).get = "/cyber/bandwidth/v1beta1/bandwidth/neuron/{address}";
     }
 
     rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
@@ -50,10 +51,10 @@ message QueryPriceResponse {
     ];
 }
 
-message QueryDesirableBandwidthRequest {}
+message QueryTotalBandwidthRequest {}
 
-message QueryDesirableBandwidthResponse {
-    uint64 desirable_bandwidth = 1;
+message QueryTotalBandwidthResponse {
+    uint64 total_bandwidth = 1;
 }
 
 message QueryAccountRequest {
@@ -61,7 +62,7 @@ message QueryAccountRequest {
 }
 
 message QueryAccountResponse {
-    AccountBandwidth account_bandwidth = 1 [(gogoproto.nullable) = false];
+    NeuronBandwidth account_bandwidth = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryParamsRequest {}

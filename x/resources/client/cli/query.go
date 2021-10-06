@@ -89,9 +89,9 @@ func GetCmdQueryInvestmintAmount() *cobra.Command {
 				return fmt.Errorf("block period %s not a valid uint, please input a valid block period", args[1])
 			}
 
-			res, err := queryClient.InvestmintAmount(
+			res, err := queryClient.Investmint(
 				context.Background(),
-				&types.QueryInvestmintAmountRequest{
+				&types.QueryInvestmintRequest{
 					Amount: amount,
 					Resource: args[1],
 					Length: length,

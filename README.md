@@ -55,7 +55,7 @@ _____________
 [![chain](https://img.shields.io/badge/Chain-bostrom--testnet--5-success.svg?style=flat-square)](https://github.com/cybercongress/cyberd/blob/master/docs/run_validator.md)
 [![block](https://img.shields.io/badge/dynamic/json?color=blue&label=Block%20Height&query=%24.result.sync_info.latest_block_height&url=https://rpc.bostromdev.cybernode.ai/status&style=flat-square)]()
 [![cyberlinks](https://img.shields.io/badge/dynamic/json?color=blue&label=Cyberlinks&query=%24.result.links&url=https://lcd.bostromdev.cybernode.ai/graph/graph_stats&style=flat-square)]()
-[![cids](https://img.shields.io/badge/dynamic/json?color=blue&label=Particles&query=%24.result.cids&url=https://lcd.bostromdev.cybernode.ai/graph/graph_stats&style=flat-square)]()
+[![particles](https://img.shields.io/badge/dynamic/json?color=blue&label=Particles&query=%24.result.cids&url=https://lcd.bostromdev.cybernode.ai/graph/graph_stats&style=flat-square)]()
 [![negentropy](https://img.shields.io/badge/dynamic/json?color=blue&label=-Entropy&query=%24.result.negentropy&url=https://lcd.bostromdev.cybernode.ai/rank/negentropy&style=flat-square)]()
 [![validators](https://img.shields.io/badge/dynamic/json?label=Validators&query=%24.result.validators.length&url=https://rpc.bostromdev.cybernode.ai/validators%3F&style=flat-square)]()
 _________________________________________________________
@@ -71,30 +71,32 @@ _________________________________________________________
 
 1. Universe - [Cosmos]()
 2. Consensus - [Tendermint]() | BOOT
-3. External Communication - [IBC]()
-4. Liquidity - [AMM]()
-5. Governance - [Ideas](), [Upgrades](), [Parameters](),  [Fund]() | BOOT
-6. Resources Mining - [Liquid Staking]() | BOOT -> HYDROGEN
-7. Resources Creation - [Investmint]() | HYDROGEN -> VOLT / AMPER
-8. Brain - [Knowledge Graph]()
-9. Particles addressing - IPFS [CID]()
-10. Particles connecting - [cyberlinks]()
-11. Cyberlinking - [Bandwidth model]() | VOLT
-12. Graph Program - [Token Weighted Page Rank]() | AMPER
-13. Graph Program - [Token Weighted -Entropy]() | AMPER
-14. Graph Processing - [GPU]()
-15. Energy Grid - [Energy Router]() | VOLT & AMPER
-16. Virtual Machine - [CosmWasm]() | BOOT
-17. Programs Bus - [Interconnect Line]()
-18. Autonomous Programs - [Cron]() | BOOT
-19. Programs Income - [execution fees]() | BOOT
-20. API - [Graph]() and [General]()
-21. Client Library - [cyber-js]() & [cyber-py]()
-22. Indexer - [cyberindex]()
-23. Launch documentation - [launch-kit]()
-24. Versioning - [Kelvin]()
-25. License - [Cyber License]()
-26. Future Cyber VM support - [GraphBLAS R&D]()
+3. Dyson Sphere - [Snub Dodecahedron]()
+4. External Communication - [IBC]()
+5. Liquidity - [AMM]()
+6. Governance - [Ideas](), [Upgrades](), [Parameters](),  [Fund]() | BOOT
+7. Resources Mining - [Liquid Staking]() | stake BOOT -> mint HYDROGEN
+8. Resources Creation - [Investmint]() | lock HYDROGEN -> mint VOLT / AMPER
+9. Brain - [Knowledge Graph]()
+10. Particles addressing - IPFS [CIDv0]()
+11. Particles connecting - [cyberlinks]()
+12. Cyberlinking - [Bandwidth model]() | VOLT
+13. Graph Program - [Token Weighted Page Rank]() | AMPER
+14. Graph Program - [Token Weighted Graph -Entropy]() | AMPER
+15. Graph Processing - [GPU]()
+16. Energy Grid - [Energy Router]() | VOLT & AMPER
+17. Virtual Machine - [CosmWasm]() | BOOT
+18. Programs Bus - [Interconnect Line]()
+19. Autonomous Programs - [Cron]() | BOOT
+20. Programs Income - [execution fees]() | BOOT
+21. API - [Graph]() and [General]()
+22. Client Library - [cyber-js]() & [cyber-py]()
+23. Indexer - [cyberindex]()
+24. Launch documentation - [launch-kit]()
+25. Versioning - [Kelvin]()
+26. License - [Cyber License]()
+27. Future Graph VM support - [GraphBLAS R&D]()
+28. Future IKP support - [Inter Knowledge Protocol]()
 
 **Try [cyb.ai](https://cyb.ai) on bostrom-testnet-5 network**
 _________________________________________________________

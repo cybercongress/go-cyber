@@ -11,7 +11,7 @@ func InitGenesis(ctx sdk.Context, bm *BandwidthMeter, ak authkeeper.AccountKeepe
 	bm.SetParams(ctx, data.Params)
 	for _, address := range ak.GetAllAccounts(ctx) {
 		accMaxBw := bm.GetAccountMaxBandwidth(ctx, address.GetAddress())
-		bm.SetAccountBandwidth(ctx, types.NewGenesisAccountBandwidth(address.GetAddress(), accMaxBw))
+		bm.SetAccountBandwidth(ctx, types.NewGenesisNeuronBandwidth(address.GetAddress(), accMaxBw))
 	}
 }
 

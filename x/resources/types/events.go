@@ -3,8 +3,8 @@ package types
 const (
 	EventTypeInvestmint             = "investmint"
 
-	AttributeKeyAgent    			= "agent"
-	AttributeKeyAmount   			= "amount"
+	AttributeKeyNeuron				= "neuron"
+	AttributeKeyAmount 				= "amount"
 	AttributeKeyResource            = "resource"
 	AttributeKeyLength              = "length"
 	AttributeKeyMinted              = "minted"

@@ -32,7 +32,7 @@ func GetQueryCmd() *cobra.Command {
 		GetCmdQueryTop(),
 		GetCmdQueryIsLinkExist(),
 		GetCmdQueryIsAnyLinkExist(),
-		GetCmdQueryEntropy(),
+		GetCmdQueryNegentropyParticle(),
 		GetCmdQueryNegentropy(),
 		GetCmdQueryKarma(),
 	)
@@ -72,8 +72,8 @@ func GetCmdQueryParams() *cobra.Command {
 
 func GetCmdQueryRank() *cobra.Command{
 	cmd := &cobra.Command{
-		Use:   "rank [cid]",
-		Short: "Query the current rank of given CID",
+		Use:   "rank [particle]",
+		Short: "Query the current rank of given particle",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -83,12 +83,12 @@ func GetCmdQueryRank() *cobra.Command{
 			queryClient := types.NewQueryClient(clientCtx)
 
 			if _, err := cid.Decode(args[0]); err != nil {
-				return graphtypes.ErrInvalidCid
+				return graphtypes.ErrInvalidParticle
 			}
 
 			res, err := queryClient.Rank(
 				context.Background(),
-				&types.QueryRankRequest{Cid: args[0]},
+				&types.QueryRankRequest{Particle: args[0]},
 			)
 			if err != nil {
 				return err
@@ -105,8 +105,8 @@ func GetCmdQueryRank() *cobra.Command{
 
 func GetCmdQuerySearch() *cobra.Command{
 	cmd := &cobra.Command{
-		Use:   "search [cid] [page] [limit]",
-		Short: "Query search of given CID",
+		Use:   "search [particle] [page] [limit]",
+		Short: "Query search of given particle",
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -116,7 +116,7 @@ func GetCmdQuerySearch() *cobra.Command{
 			queryClient := types.NewQueryClient(clientCtx)
 
 			if _, err := cid.Decode(args[0]); err != nil {
-				return graphtypes.ErrInvalidCid
+				return graphtypes.ErrInvalidParticle
 			}
 
 			var page, limit uint32
@@ -138,7 +138,7 @@ func GetCmdQuerySearch() *cobra.Command{
 
 			res, err := queryClient.Search(
 				context.Background(),
-				&types.QuerySearchRequest{Cid: args[0], Pagination: &query.PageRequest{Page: page, PerPage: limit}},
+				&types.QuerySearchRequest{Particle: args[0], Pagination: &query.PageRequest{Page: page, PerPage: limit}},
 			)
 			if err != nil {
 				return err
@@ -155,8 +155,8 @@ func GetCmdQuerySearch() *cobra.Command{
 
 func GetCmdQueryBacklinks() *cobra.Command{
 	cmd := &cobra.Command{
-		Use:   "backlinks [cid] [page] [limit]",
-		Short: "Query backlinks of given CID",
+		Use:   "backlinks [particle] [page] [limit]",
+		Short: "Query backlinks of given particle",
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -166,7 +166,7 @@ func GetCmdQueryBacklinks() *cobra.Command{
 			queryClient := types.NewQueryClient(clientCtx)
 
 			if _, err := cid.Decode(args[0]); err != nil {
-				return graphtypes.ErrInvalidCid
+				return graphtypes.ErrInvalidParticle
 			}
 
 			var page, limit uint32
@@ -188,7 +188,7 @@ func GetCmdQueryBacklinks() *cobra.Command{
 
 			res, err := queryClient.Backlinks(
 				context.Background(),
-				&types.QuerySearchRequest{Cid: args[0], Pagination: &query.PageRequest{Page: page, PerPage: limit}},
+				&types.QuerySearchRequest{Particle: args[0], Pagination: &query.PageRequest{Page: page, PerPage: limit}},
 			)
 			if err != nil {
 				return err
@@ -252,7 +252,7 @@ func GetCmdQueryTop() *cobra.Command{
 func GetCmdQueryIsLinkExist() *cobra.Command{
 	cmd := &cobra.Command{
 		Use:   "is-exist [from] [to] [account]",
-		Short: "Query is link exist between cids for given account",
+		Short: "Query is link exist between particles for given account",
 		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -262,11 +262,11 @@ func GetCmdQueryIsLinkExist() *cobra.Command{
 			queryClient := types.NewQueryClient(clientCtx)
 
 			if _, err := cid.Decode(args[0]); err != nil {
-				return graphtypes.ErrInvalidCid
+				return graphtypes.ErrInvalidParticle
 			}
 
 			if _, err := cid.Decode(args[1]); err != nil {
-				return graphtypes.ErrInvalidCid
+				return graphtypes.ErrInvalidParticle
 			}
 
 			address, err := sdk.AccAddressFromBech32(args[2])
@@ -294,7 +294,7 @@ func GetCmdQueryIsLinkExist() *cobra.Command{
 func GetCmdQueryIsAnyLinkExist() *cobra.Command{
 	cmd := &cobra.Command{
 		Use:   "is-exist-any [from] [to]",
-		Short: "Query is any link exist between cids",
+		Short: "Query is any link exist between particles",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -304,11 +304,11 @@ func GetCmdQueryIsAnyLinkExist() *cobra.Command{
 			queryClient := types.NewQueryClient(clientCtx)
 
 			if _, err := cid.Decode(args[0]); err != nil {
-				return graphtypes.ErrInvalidCid
+				return graphtypes.ErrInvalidParticle
 			}
 
 			if _, err := cid.Decode(args[1]); err != nil {
-				return graphtypes.ErrInvalidCid
+				return graphtypes.ErrInvalidParticle
 			}
 
 			res, err := queryClient.IsAnyLinkExist(
@@ -328,10 +328,10 @@ func GetCmdQueryIsAnyLinkExist() *cobra.Command{
 	return cmd
 }
 
-func GetCmdQueryEntropy() *cobra.Command{
+func GetCmdQueryNegentropyParticle() *cobra.Command{
 	cmd := &cobra.Command{
-		Use:   "entropy [cid]",
-		Short: "Query the current entropy of given CID",
+		Use:   "negentropy [particle]",
+		Short: "Query the current negentropy of given particle",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -341,12 +341,12 @@ func GetCmdQueryEntropy() *cobra.Command{
 			queryClient := types.NewQueryClient(clientCtx)
 
 			if _, err := cid.Decode(args[0]); err != nil {
-				return graphtypes.ErrInvalidCid
+				return graphtypes.ErrInvalidParticle
 			}
 
-			res, err := queryClient.Entropy(
+			res, err := queryClient.ParticleNegentropy(
 				context.Background(),
-				&types.QueryEntropyRequest{Cid: args[0]},
+				&types.QueryNegentropyPartilceRequest{Particle: args[0]},
 			)
 			if err != nil {
 				return err
@@ -392,8 +392,8 @@ func GetCmdQueryNegentropy() *cobra.Command{
 
 func GetCmdQueryKarma() *cobra.Command{
 	cmd := &cobra.Command{
-		Use:   "karma [address]",
-		Short: "Query the current entropy of given CID",
+		Use:   "karma [neuron]",
+		Short: "Query the current karma of given neuron",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -409,7 +409,7 @@ func GetCmdQueryKarma() *cobra.Command{
 
 			res, err := queryClient.Karma(
 				context.Background(),
-				&types.QueryKarmaRequest{Address: address.String()},
+				&types.QueryKarmaRequest{Neuron: address.String()},
 			)
 			if err != nil {
 				return err

@@ -42,5 +42,5 @@ func (WasmMsgParser) ParseCustom(contractAddr sdk.AccAddress, data json.RawMessa
 		return []sdk.Msg{sdkMsg.Investmint}, sdkMsg.Investmint.ValidateBasic()
 	}
 
-	return nil, sdkerrors.Wrap(wasm.ErrInvalidMsg, "Unknown variant of Resources")
+	return nil, sdkerrors.Wrap(wasm.ErrInvalidMsg, "Unknown Resources variant")
 }

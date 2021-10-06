@@ -5,57 +5,16 @@ import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 
 option go_package = "github.com/cybercongress/go-cyber/x/graph/types";
-option (gogoproto.goproto_getters_all) = false;
-option (gogoproto.equal_all) = false;
 
 service Query {
-
-    // TODO add pagination on storage
-    rpc InLinks(QueryLinksRequest) returns (QueryLinksResponse) {
-        option (google.api.http).get = "/cyber/graph/v1beta1/in/{cid}";
-    }
-
-    // TODO add pagination on storage
-    rpc OutLinks(QueryLinksRequest) returns (QueryLinksResponse) {
-        option (google.api.http).get = "/cyber/graph/v1beta1/out/{cid}";
-    }
-
-    rpc LinksAmount(QueryLinksAmountRequest) returns (QueryLinksAmountResponse) {
-        option (google.api.http).get = "/cyber/graph/v1beta1/links_amount";
-    }
-
-    rpc CidsAmount(QueryCidsAmountRequest) returns (QueryCidsAmountResponse) {
-        option (google.api.http).get = "/cyber/graph/v1beta1/cids_amount";
-    }
-
     rpc GraphStats(QueryGraphStatsRequest) returns (QueryGraphStatsResponse) {
         option (google.api.http).get = "/cyber/graph/v1beta1/graph_stats";
     }
 }
 
-message QueryLinksRequest {
-    string cid = 1;
-}
-
-message QueryLinksResponse {
-    repeated string cids = 1;
-}
-
-message QueryLinksAmountRequest {}
-
-message QueryLinksAmountResponse {
-    uint64 amount = 1;
-}
-
-message QueryCidsAmountRequest {}
-
-message QueryCidsAmountResponse {
-    uint64 amount = 1;
-}
-
 message QueryGraphStatsRequest {}
 
 message QueryGraphStatsResponse {
-    uint64 links = 1;
-    uint64 cids = 2;
+    uint64 cyberlinks = 1;
+    uint64 particles = 2;
 }

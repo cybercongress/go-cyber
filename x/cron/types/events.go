@@ -3,7 +3,7 @@ package types
 const (
 	EventTypeAddJob            = "add_job"
 	EventTypeRemoveJob         = "remove_job"
-	EventTypeChangeJobCID      = "change_job_cid"
+	EventTypeChangeJobParticle = "change_job_particle"
 	EventTypeChangeJobLabel    = "change_job_label"
 	EventTypeChangeJobCallData = "change_job_call_data"
 	EventTypeChangeJobGasPrice = "change_job_gas_price"
@@ -14,7 +14,7 @@ const (
 	AttributeKeyJobTrigger     = "trigger"
 	AttributeKeyJobLoad        = "load"
 	AttributeKeyJobLabel       = "label"
-	AttributeKeyJobCID         = "cid"
+	AttributeKeyJobParticle    = "particle"
 	AttributeKeyJobCallData    = "call_data"
 	AttributeKeyJobGasPrice    = "gas_price"
 	AttributeKeyJobPeriod      = "period"

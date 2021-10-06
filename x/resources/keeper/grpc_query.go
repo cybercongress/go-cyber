@@ -21,7 +21,7 @@ func (k Keeper) Params(goCtx context.Context, request *types.QueryParamsRequest)
 	return &types.QueryParamsResponse{Params: params}, nil
 }
 
-func (k Keeper) InvestmintAmount(goCtx context.Context, request *types.QueryInvestmintAmountRequest) (*types.QueryInvestmintAmountResponse, error) {
+func (k Keeper) Investmint(goCtx context.Context, request *types.QueryInvestmintRequest) (*types.QueryInvestmintResponse, error) {
 	if request == nil {
 		return nil, status.Errorf(codes.InvalidArgument, "empty request")
 	}
@@ -38,5 +38,5 @@ func (k Keeper) InvestmintAmount(goCtx context.Context, request *types.QueryInve
 
 	amount := k.CalculateInvestmint(ctx, request.Amount, request.Resource, request.Length)
 
-	return &types.QueryInvestmintAmountResponse{Amount: amount}, nil
+	return &types.QueryInvestmintResponse{Amount: amount}, nil
 }

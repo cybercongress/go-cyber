@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
@@ -46,14 +47,14 @@ func (k msgServer) Cyberlink(goCtx context.Context, msg *types.MsgCyberlink) (*t
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	var accNumber ctypes.AccNumber
-	addr, err := sdk.AccAddressFromBech32(msg.Address)
+	addr, err := sdk.AccAddressFromBech32(msg.Neuron)
 	if err != nil {
 		return nil, err
 	}
 	acc := k.GetAccount(ctx, addr); if (acc != nil) {
 		accNumber = ctypes.AccNumber(acc.GetAccountNumber())
 	} else {
-		return nil, types.ErrInvalidAccount
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "Invalid neuron address")
 	}
 
 	// TODO move to ante and contract case below
@@ -112,16 +113,17 @@ func (k msgServer) Cyberlink(goCtx context.Context, msg *types.MsgCyberlink) (*t
 		ctx.EventManager().EmitEvent(
 			sdk.NewEvent(
 				types.EventTypeCyberlink,
-				sdk.NewAttribute(types.AttributeKeyObjectFrom, link.From),
-				sdk.NewAttribute(types.AttributeKeyObjectTo, link.To),
+				sdk.NewAttribute(types.AttributeKeyParticleFrom, link.From),
+				sdk.NewAttribute(types.AttributeKeyParticleTo, link.To),
 			),
 		)
 	}
 
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
-			types.EventTypeCyberlinkMeta,
-			sdk.NewAttribute(types.AttributeKeySubject, msg.Address),
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
+			sdk.NewAttribute(sdk.AttributeKeySender, msg.Neuron),
 		),
 	)
 

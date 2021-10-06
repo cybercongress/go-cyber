@@ -7,25 +7,38 @@ import (
 )
 
 const (
-	ActionCyberlink     = "cyberlink"
+	TypeMsgCyberlink    = "cyberlink"
+)
+
+var (
+	_ sdk.Msg = &MsgCyberlink{}
 )
 
 func NewMsgCyberlink(address sdk.AccAddress, links []Link) *MsgCyberlink {
 	return &MsgCyberlink{
-		Address: address.String(),
+		Neuron: address.String(),
 		Links:   links,
 	}
 }
 
-func (MsgCyberlink) Route() string { return RouterKey }
+func (msg MsgCyberlink) Route() string { return RouterKey }
 
-func (MsgCyberlink) Type()  string { return ActionCyberlink }
+func (msg MsgCyberlink) Type()  string { return TypeMsgCyberlink }
+
+func (msg MsgCyberlink) GetSigners() []sdk.AccAddress {
+	addr, _ := sdk.AccAddressFromBech32(msg.Neuron)
+	return []sdk.AccAddress{addr}
+}
+
+func (msg MsgCyberlink) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&msg))
+}
 
 func (msg MsgCyberlink) ValidateBasic() error {
 
-	_, err := sdk.AccAddressFromBech32(msg.Address)
+	_, err := sdk.AccAddressFromBech32(msg.Neuron)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid sender address (%s)", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid neuron address: %s", err)
 	}
 
 	if len(msg.Links) == 0 {
@@ -38,12 +51,22 @@ func (msg MsgCyberlink) ValidateBasic() error {
 			return ErrSelfLink
 		}
 
-		if _, err := cid.Decode(link.From); err != nil {
-			return ErrInvalidCid
+		fromCid, err := cid.Decode(link.From)
+		if err != nil {
+			return ErrInvalidParticle
 		}
 
-		if _, err := cid.Decode(link.To); err != nil {
-			return ErrInvalidCid
+		if fromCid.Version() != 0 {
+			return ErrCidVersion
+		}
+
+		toCid, err := cid.Decode(link.To)
+		if err != nil {
+			return ErrInvalidParticle
+		}
+
+		if toCid.Version() != 0 {
+			return ErrCidVersion
 		}
 
 		if filter.Contains(Cid(link.From), Cid(link.To)) {
@@ -54,13 +77,4 @@ func (msg MsgCyberlink) ValidateBasic() error {
 	}
 
 	return nil
-}
-
-func (msg MsgCyberlink) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&msg))
-}
-
-func (msg MsgCyberlink) GetSigners() []sdk.AccAddress {
-	addr, _ := sdk.AccAddressFromBech32(msg.Address)
-	return []sdk.AccAddress{addr}
 }

@@ -32,11 +32,11 @@ func (bm *BandwidthMeter) Price(_ context.Context, _ *types.QueryPriceRequest) (
 	return &types.QueryPriceResponse{Price: sdk.DecProto{Dec: price}}, nil
 }
 
-func (bm *BandwidthMeter) DesirableBandwidth(goCtx context.Context, _ *types.QueryDesirableBandwidthRequest) (*types.QueryDesirableBandwidthResponse, error) {
+func (bm *BandwidthMeter) TotalBandwidth(goCtx context.Context, _ *types.QueryTotalBandwidthRequest) (*types.QueryTotalBandwidthResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	desirableBandwidth := bm.GetDesirableBandwidth(ctx)
+	totalBandwidth := bm.GetDesirableBandwidth(ctx)
 
-	return &types.QueryDesirableBandwidthResponse{DesirableBandwidth: desirableBandwidth}, nil
+	return &types.QueryTotalBandwidthResponse{TotalBandwidth: totalBandwidth}, nil
 }
 
 func (bm *BandwidthMeter) Account(goCtx context.Context, request *types.QueryAccountRequest) (*types.QueryAccountResponse, error) {
