@@ -1,0 +1,73 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Cyber",
+    "description": "Bostrom Bootloader Hub",
+    "version": "0.2.0"
+  },
+  "apis": [
+    {
+      "url": "./tmp-swagger-gen/cyber/graph/v1beta1/query.swagger.json"
+    },
+    {
+      "url": "./tmp-swagger-gen/cyber/graph/v1beta1/tx.swagger.json"
+    },
+    {
+      "url": "./tmp-swagger-gen/cyber/rank/v1beta1/query.swagger.json",
+      "operationIds": {
+        "rename": {
+          "Params": "RankParams"
+        }
+      }
+    },
+    {
+      "url": "./tmp-swagger-gen/cyber/bandwidth/v1beta1/query.swagger.json",
+      "operationIds": {
+        "rename": {
+          "Params": "BandwidthParams",
+          "Account": "Neuron"
+        }
+      }
+    },
+    {
+      "url": "./tmp-swagger-gen/cyber/energy/v1beta1/query.swagger.json",
+      "operationIds": {
+        "rename": {
+          "Params": "EnergyParams"
+        }
+      }
+    },
+    {
+      "url": "./tmp-swagger-gen/cyber/energy/v1beta1/tx.swagger.json"
+    },
+    {
+      "url": "./tmp-swagger-gen/cyber/resources/v1beta1/query.swagger.json",
+      "operationIds": {
+        "rename": {
+          "Params": "ResourcesParams"
+        }
+      }
+    },
+    {
+      "url": "./tmp-swagger-gen/cyber/resources/v1beta1/tx.swagger.json"
+    },
+    {
+      "url": "./tmp-swagger-gen/cyber/cron/v1beta1/query.swagger.json",
+      "operationIds": {
+        "rename": {
+          "Params": "CronParams"
+        }
+      }
+    },
+    {
+      "url": "./tmp-swagger-gen/cyber/cron/v1beta1/tx.swagger.json"
+    },
+    {
+      "url": "./client/docs/swagger_third_party.yaml",
+      "dereference": {
+        "circular": "ignore"
+      }
+    }
+  ]
+}
+

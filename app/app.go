@@ -4,12 +4,6 @@ import (
 	"fmt"
 	"os"
 
-	"io"
-	"net/http"
-	"path/filepath"
-	"strings"
-	"time"
-
 	"github.com/cosmos/cosmos-sdk/x/authz"
 	authzkeeper "github.com/cosmos/cosmos-sdk/x/authz/keeper"
 	authzmodule "github.com/cosmos/cosmos-sdk/x/authz/module"
@@ -26,6 +20,12 @@ import (
 	porttypes "github.com/cosmos/ibc-go/modules/core/05-port/types"
 	ibchost "github.com/cosmos/ibc-go/modules/core/24-host"
 	ibckeeper "github.com/cosmos/ibc-go/modules/core/keeper"
+	_ "github.com/cybercongress/go-cyber/client/docs/statik"
+	"io"
+	"net/http"
+	"path/filepath"
+	"strings"
+	"time"
 
 	"github.com/cosmos/cosmos-sdk/client/grpc/tmservice"
 	ctypes "github.com/cybercongress/go-cyber/types"
