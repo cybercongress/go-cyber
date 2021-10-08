@@ -15,10 +15,11 @@ BUILDDIR ?= $(CURDIR)/build
 include contrib/devtools/Makefile
 
 ###############################################################################
-###                                Build Flags                              ###
+###                              Build Flags/Tags                           ###
 ###############################################################################
 
 build_tags = netgo
+
 ifeq ($(LEDGER_ENABLED),true)
   ifeq ($(OS),Windows_NT)
     GCCEXE = $(shell where gcc.exe 2> NUL)
@@ -66,10 +67,6 @@ ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=cyber \
 		  -X "github.com/cosmos/cosmos-sdk/version.BuildTags=$(build_tags_comma_sep)" \
 		  -X github.com/tendermint/tendermint/version.TMCoreSemVer=$(TM_VERSION)
 
-ifeq ($(WITH_CLEVELDB),yes)
-  ldflags += -X github.com/cosmos/cosmos-sdk/types.DBBackend=cleveldb
-endif
-
 ldflags += $(LDFLAGS)
 ldflags := $(strip $(ldflags))
 BUILD_FLAGS := -tags "$(build_tags)" -ldflags '$(ldflags)'
@@ -83,22 +80,25 @@ all: build format lint test
 ###############################################################################
 
 build: go.sum
-	go build $(BUILD_FLAGS) -o build/cyber ./cmd/cyber
+	go build $(BUILD_FLAGS) -o $(BUILDDIR) ./cmd/cyber
 
 
 build-linux: go.sum
-	#LEDGER_ENABLED=false GOOS=linux GOARCH=amd64 $(MAKE) build
-	mkdir -p ./build
-	docker build --tag cybercongress/cyber ./
-	docker create --name temp cybercongress/cyber:latest
-	docker cp temp:/usr/bin/cyber ./build/
-	docker rm temp
+	LEDGER_ENABLED=false GOOS=linux GOARCH=amd64 $(MAKE) build
+#	mkdir -p ./build
+#	docker build --tag cybercongress/cyber ./
+#	docker create --name temp cybercongress/cyber:latest
+#	docker cp temp:/usr/bin/cyber ./build/
+#	docker rm temp
 
 install: go.sum
 	go install $(BUILD_FLAGS) ./cmd/cyber
 
+run:
+	$(BUILDDIR)/cyber --home $(BUILDDIR)/bostrom-dev start
+
 ###############################################################################
-###                            Tools / Dependencies                         ###
+###                           Tools / Dependencies                          ###
 ###############################################################################
 
 go-mod-cache: go.sum

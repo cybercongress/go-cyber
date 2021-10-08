@@ -1,7 +1,7 @@
 # Cyber - SuperIntelligence for The Great Web
 
 <div align="center">
- <img src="./brain.png" width="800" />
+ <img src="https://ipfs.io/ipfs/QmXcZz6tgnFSdF9agDpFYgGa7PRg5R2JiyGaYQvT5cSK91" width="800" />
 </div>
 
 <div align="center">
@@ -69,34 +69,34 @@ _________________________________________________________
 
 ## Computer Specification 🛠
 
-1. Universe - [Cosmos]()
-2. Consensus - [Tendermint]() | BOOT
-3. Dyson Sphere - [Snub Dodecahedron]()
-4. External Communication - [IBC]()
-5. Liquidity - [AMM]()
-6. Governance - [Ideas](), [Upgrades](), [Parameters](),  [Fund]() | BOOT
-7. Resources Mining - [Liquid Staking]() | stake BOOT -> mint HYDROGEN
-8. Resources Creation - [Investmint]() | lock HYDROGEN -> mint VOLT / AMPER
-9. Brain - [Knowledge Graph]()
-10. Particles addressing - IPFS [CIDv0]()
-11. Particles connecting - [cyberlinks]()
-12. Cyberlinking - [Bandwidth model]() | VOLT
-13. Graph Program - [Token Weighted Page Rank]() | AMPER
-14. Graph Program - [Token Weighted Graph -Entropy]() | AMPER
-15. Graph Processing - [GPU]()
-16. Energy Grid - [Energy Router]() | VOLT & AMPER
-17. Virtual Machine - [CosmWasm]() | BOOT
-18. Programs Bus - [Interconnect Line]()
-19. Autonomous Programs - [Cron]() | BOOT
-20. Programs Income - [execution fees]() | BOOT
-21. API - [Graph]() and [General]()
-22. Client Library - [cyber-js]() & [cyber-py]()
-23. Indexer - [cyberindex]()
-24. Launch documentation - [launch-kit]()
-25. Versioning - [Kelvin]()
-26. License - [Cyber License]()
-27. Future Graph VM support - [GraphBLAS R&D]()
-28. Future IKP support - [Inter Knowledge Protocol]()
+1. Universe - Cosmos
+2. Consensus - Tendermint | BOOT
+3. Dyson Sphere - Snub Dodecahedron
+4. External Communication - IBC
+5. Liquidity - InterChain AMM with MEV protection
+6. Governance - Ideas, Upgrades, Parameters, Fund | BOOT
+7. Resources Mining - Liquid Staking | stake BOOT -> mint HYDROGEN
+8. Resources Creation - Investmint | lock HYDROGEN -> mint VOLT / AMPER
+9. Brain - Knowledge Graph
+10. Particles addressing - IPFS CIDv0
+11. Particles connecting - cyberlinks
+12. Cyberlinking - Bandwidth model | VOLT
+13. Graph Program - Token Weighted Page Rank | AMPER
+14. Graph Program - Token Weighted Graph -Entropy | AMPER
+15. Graph Processing - GPU (CUDA)
+16. Energy Grid - Energy Router | VOLT & AMPER
+17. Virtual Machine - CosmWasm | BOOT
+18. Programs Bus - Interconnect Line
+19. Autonomous Programs - Cron | BOOT
+20. Programs Income - execution fees | BOOT
+21. API - Graph and Computer
+22. Client Library - cyber-js & cyber-py
+23. Indexer - cyberindex
+24. Launch documentation - launch-kit
+25. Versioning - Kelvin
+26. License - Cyber License
+27. Future Graph VM support - GraphBLAS R&D
+28. Future IK protocol support - InterKnowledge protocol R&D
 
 **Try [cyb.ai](https://cyb.ai) on bostrom-testnet-5 network**
 _________________________________________________________

@@ -41,10 +41,10 @@ func (k msgServer) CreateRoute(goCtx context.Context, msg *types.MsgCreateRoute)
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+			sdk.NewAttribute(sdk.AttributeKeySender, msg.Source),
 		),
 		sdk.NewEvent(
 			types.EventTypeCreateRoute,
-			sdk.NewAttribute(types.AttributeKeySource, msg.Source),
 			sdk.NewAttribute(types.AttributeKeyDestination, msg.Destination),
 			sdk.NewAttribute(types.AttributeKeyAlias, msg.Alias),
 		),
@@ -74,10 +74,10 @@ func (k msgServer) EditRoute(goCtx context.Context, msg *types.MsgEditRoute) (*t
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+			sdk.NewAttribute(sdk.AttributeKeySender, msg.Source),
 		),
 		sdk.NewEvent(
 			types.EventTypeEditRoute,
-			sdk.NewAttribute(types.AttributeKeySource, msg.Source),
 			sdk.NewAttribute(types.AttributeKeyDestination, msg.Destination),
 			sdk.NewAttribute(types.AttributeKeyValue, msg.Value.String()),
 		),
@@ -107,10 +107,10 @@ func (k msgServer) DeleteRoute(goCtx context.Context, msg *types.MsgDeleteRoute)
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+			sdk.NewAttribute(sdk.AttributeKeySender, msg.Source),
 		),
 		sdk.NewEvent(
 			types.EventTypeDeleteRoute,
-			sdk.NewAttribute(types.AttributeKeySource, msg.Source),
 			sdk.NewAttribute(types.AttributeKeyDestination, msg.Destination),
 		),
 	})
@@ -139,10 +139,10 @@ func (k msgServer) EditRouteAlias(goCtx context.Context, msg *types.MsgEditRoute
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+			sdk.NewAttribute(sdk.AttributeKeySender, msg.Source),
 		),
 		sdk.NewEvent(
 			types.EventTypeEditRouteAlias,
-			sdk.NewAttribute(types.AttributeKeySource, msg.Source),
 			sdk.NewAttribute(types.AttributeKeyDestination, msg.Destination),
 			sdk.NewAttribute(types.AttributeKeyAlias, msg.Alias),
 		),

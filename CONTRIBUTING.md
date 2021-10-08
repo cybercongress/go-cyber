@@ -1,5 +1,5 @@
-# Contributing to cyberd
-Thank you for considering a contribution to **cyberd**! This guide explains how to:
+# Contributing to go-cyber
+Thank you for considering a contribution to **go-cyber**! This guide explains how to:
 * Get started
 * Development workflow
 * Get help if you encounter trouble
@@ -41,5 +41,5 @@ If you run into any trouble, please reach out to us on the issue you are working
 
 
 ## Our Thanks
-We deeply appreciate your effort toward improving cyberd. For any contribution, large or small, you will be immortalized
+We deeply appreciate your effort toward improving go-cyber. For any contribution, large or small, you will be immortalized
  in the release notes for the version you've contributed to.

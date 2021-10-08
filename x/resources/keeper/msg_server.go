@@ -43,10 +43,10 @@ func (k msgServer) Investmint(goCtx context.Context, msg *types.MsgInvestmint) (
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+			sdk.NewAttribute(sdk.AttributeKeySender, msg.Neuron),
 		),
 		sdk.NewEvent(
 			types.EventTypeInvestmint,
-			sdk.NewAttribute(types.AttributeKeyNeuron, msg.Neuron),
 			sdk.NewAttribute(types.AttributeKeyAmount, msg.Amount.String()),
 			sdk.NewAttribute(types.AttributeKeyResource, msg.Resource),
 			sdk.NewAttribute(types.AttributeKeyLength, strconv.FormatUint(msg.Length, 10)),

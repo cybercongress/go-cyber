@@ -98,7 +98,7 @@ func (k *IndexedKeeper) DetectUsersStakeAmpereChange(ctx sdk.Context) bool {
 
 func (k *IndexedKeeper) UpdateAccountsStakeAmpere(ctx sdk.Context) {
 	for _, addr := range k.accountToUpdate {
-		k.Logger(ctx).Info("account to update:", "address", addr.String())
+		k.Logger(ctx).Debug("account to update:", "address", addr.String())
 		stake := k.GetAccountTotalStakeAmper(ctx, addr)
 		if k.accountKeeper.GetAccount(ctx, addr) == nil {
 			k.Logger(ctx).Info("skipped account:", "address", addr.String())
