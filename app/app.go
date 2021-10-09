@@ -131,9 +131,9 @@ import (
 	rankwasm "github.com/cybercongress/go-cyber/x/rank/wasm"
 	resourceswasm "github.com/cybercongress/go-cyber/x/resources/wasm"
 
+	grid "github.com/cybercongress/go-cyber/x/grid"
 	gridkeeper "github.com/cybercongress/go-cyber/x/grid/keeper"
 	gridtypes "github.com/cybercongress/go-cyber/x/grid/types"
-	grid "github.com/cybercongress/go-cyber/x/grid"
 
 	dmnkeeper "github.com/cybercongress/go-cyber/x/dmn/keeper"
 	dmntypes "github.com/cybercongress/go-cyber/x/dmn/types"
@@ -720,8 +720,8 @@ func NewApp(
 		stakingwrap.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.CyberbankKeeper.Proxy),
 		upgrade.NewAppModule(app.UpgradeKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),
-		feegrantmodule.NewAppModule(appCodec, app.AccountKeeper, app.BankKeeper, app.FeeGrantKeeper, app.interfaceRegistry),
-		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
+		feegrantmodule.NewAppModule(appCodec, app.AccountKeeper, app.CyberbankKeeper.Proxy, app.FeeGrantKeeper, app.interfaceRegistry),
+		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, app.CyberbankKeeper.Proxy, app.interfaceRegistry),
 		ibc.NewAppModule(app.IBCKeeper),
 		sdkparams.NewAppModule(app.ParamsKeeper),
 		transferModule,
@@ -805,7 +805,18 @@ func NewApp(
 	app.mm.RegisterInvariants(&app.CrisisKeeper)
 	app.mm.RegisterRoutes(app.Router(), app.QueryRouter(), encodingConfig.Amino)
 	app.configurator = module.NewConfigurator(app.appCodec, app.MsgServiceRouter(), app.GRPCQueryRouter())
+
+	// TODO This needs to be refactored
+	// Bank module fails on register services using passed Proxy
+	// register all other modules services and then manually register bank's things
+	delete(app.mm.Modules, "bank")
 	app.mm.RegisterServices(app.configurator)
+	app.mm.Modules["bank"] = bank.NewAppModule(appCodec, app.CyberbankKeeper.Proxy, app.AccountKeeper)
+
+	banktypes.RegisterMsgServer(app.configurator.MsgServer(), bankkeeper.NewMsgServerImpl(app.CyberbankKeeper.Proxy))
+	banktypes.RegisterQueryServer(app.configurator.QueryServer(), app.CyberbankKeeper.Proxy)
+	m := bankkeeper.NewMigrator(app.BankKeeper.(bankkeeper.BaseKeeper))
+	app.configurator.RegisterMigration(banktypes.ModuleName, 1, m.Migrate1to2)
 
 	// add test gRPC service for testing gRPC queries in isolation
 	testdata.RegisterQueryServer(app.GRPCQueryRouter(), testdata.QueryImpl{})

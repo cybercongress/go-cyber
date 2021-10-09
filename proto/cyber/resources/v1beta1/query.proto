@@ -13,10 +13,10 @@ option (gogoproto.equal_all) = false;
 
 service Query {
     rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-        option (google.api.http).get = "/cyber/energy/v1beta1/resources/params";
+        option (google.api.http).get = "/cyber/resources/v1beta1/resources/params";
     }
     rpc Investmint(QueryInvestmintRequest) returns (QueryInvestmintResponse) {
-        option (google.api.http).get = "/cyber/energy/v1beta1/resources/investmint";
+        option (google.api.http).get = "/cyber/resources/v1beta1/resources/investmint";
     }
 }
 
