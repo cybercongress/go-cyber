@@ -46,7 +46,7 @@ var appStores = []string{
 	"wasm",
 	"graph",
 	"bandwidth",
-	"energy",
+	"grid",
 	"rank",
 	"dmn",
 	"resources",

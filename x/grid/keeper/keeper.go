@@ -11,8 +11,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/cybercongress/go-cyber/x/energy/exported"
-	"github.com/cybercongress/go-cyber/x/energy/types"
+	"github.com/cybercongress/go-cyber/x/grid/exported"
+	"github.com/cybercongress/go-cyber/x/grid/types"
 )
 
 var _ = exported.EnergyKeeper(nil)
@@ -32,8 +32,8 @@ func NewKeeper(
 	ak types.AccountKeeper,
 	paramSpace paramstypes.Subspace,
 ) Keeper {
-	if addr := ak.GetModuleAddress(types.EnergyPoolName); addr == nil {
-		panic(fmt.Sprintf("%s module account has not been set", types.EnergyPoolName))
+	if addr := ak.GetModuleAddress(types.GridPoolName); addr == nil {
+		panic(fmt.Sprintf("%s module account has not been set", types.GridPoolName))
 	}
 
 	if !paramSpace.HasKeyTable() {
@@ -92,7 +92,7 @@ func (k Keeper) CreateEnergyRoute(ctx sdk.Context, src, dst sdk.AccAddress, alia
 }
 
 func (k Keeper) EditEnergyRoute(ctx sdk.Context, src, dst sdk.AccAddress, value sdk.Coin) error {
-	defer telemetry.IncrCounter(1.0, types.ModuleName, "energy routed")
+	defer telemetry.IncrCounter(1.0, types.ModuleName, "grid routed")
 
 	route, found := k.GetRoute(ctx, src, dst)
 	if !found {
@@ -103,7 +103,7 @@ func (k Keeper) EditEnergyRoute(ctx sdk.Context, src, dst sdk.AccAddress, value 
 
 	if !route.Value.IsValid() {
 		coins := sdk.NewCoins(value)
-		if err := k.proxyKeeper.SendCoinsFromAccountToModule(ctx, src, types.EnergyPoolName, coins); err != nil {
+		if err := k.proxyKeeper.SendCoinsFromAccountToModule(ctx, src, types.GridPoolName, coins); err != nil {
 			return err
 		}
 		k.SetRoutedEnergy(ctx, dst, sdk.NewCoins(value))
@@ -112,7 +112,7 @@ func (k Keeper) EditEnergyRoute(ctx sdk.Context, src, dst sdk.AccAddress, value 
 			diff := sdk.NewCoin(value.Denom, value.Amount.Sub(route.Value.AmountOf(value.Denom)))
 			coins := sdk.NewCoins(diff)
 
-			if err := k.proxyKeeper.SendCoinsFromAccountToModule(ctx, src, types.EnergyPoolName, coins); err != nil {
+			if err := k.proxyKeeper.SendCoinsFromAccountToModule(ctx, src, types.GridPoolName, coins); err != nil {
 				return err // should never happen
 			}
 			k.SetRoutedEnergy(ctx, dst, energy.Sort().Add(diff))
@@ -120,7 +120,7 @@ func (k Keeper) EditEnergyRoute(ctx sdk.Context, src, dst sdk.AccAddress, value 
 			diff := sdk.NewCoin(value.Denom, route.Value.AmountOf(value.Denom).Sub(value.Amount))
 			coins := sdk.NewCoins(diff)
 
-			if err := k.proxyKeeper.SendCoinsFromModuleToAccount(ctx, types.EnergyPoolName, src, coins); err != nil {
+			if err := k.proxyKeeper.SendCoinsFromModuleToAccount(ctx, types.GridPoolName, src, coins); err != nil {
 				return err // should never happen
 			}
 
@@ -150,7 +150,7 @@ func (k Keeper) DeleteEnergyRoute(ctx sdk.Context, src, dst sdk.AccAddress) erro
 		return types.ErrRouteNotExist
 	}
 
-	if err := k.proxyKeeper.SendCoinsFromModuleToAccount(ctx, types.EnergyPoolName, src, route.Value); err != nil {
+	if err := k.proxyKeeper.SendCoinsFromModuleToAccount(ctx, types.GridPoolName, src, route.Value); err != nil {
 		return err // should never happen
 	}
 

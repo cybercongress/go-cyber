@@ -10,8 +10,8 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	dmntypes "github.com/cybercongress/go-cyber/x/dmn/types"
-	energytypes "github.com/cybercongress/go-cyber/x/energy/types"
 	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
+	gridtypes "github.com/cybercongress/go-cyber/x/grid/types"
 	resourcestypes "github.com/cybercongress/go-cyber/x/resources/types"
 )
 
@@ -38,7 +38,7 @@ type WasmCustomMsg struct {
 const (
 	WasmMsgParserRouteGraph     = graphtypes.ModuleName
 	WasmMsgParserRouteDmn       = dmntypes.ModuleName
-	WasmMsgParserRouteEnergy    = energytypes.ModuleName
+	WasmMsgParserRouteGrid      = gridtypes.ModuleName
 	WasmMsgParserRouteResources = resourcestypes.ModuleName
 )
 

@@ -10,8 +10,8 @@ import (
 
 	bandwidthtypes "github.com/cybercongress/go-cyber/x/bandwidth/types"
 	dmntypes "github.com/cybercongress/go-cyber/x/dmn/types"
-	energytypes "github.com/cybercongress/go-cyber/x/energy/types"
 	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
+	gridtypes "github.com/cybercongress/go-cyber/x/grid/types"
 	ranktypes "github.com/cybercongress/go-cyber/x/rank/types"
 )
 
@@ -39,7 +39,7 @@ const (
 	WasmQueryRouteGraph     = graphtypes.ModuleName
 	WasmQueryRouteRank      = ranktypes.ModuleName
 	WasmQueryRouteDmn       = dmntypes.ModuleName
-	WasmQueryRouteEnergy    = energytypes.ModuleName
+	WasmQueryRouteGrid      = gridtypes.ModuleName
 	WasmQueryRouteBandwidth = bandwidthtypes.ModuleName
 )
 

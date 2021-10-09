@@ -17,10 +17,10 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 
-	"github.com/cybercongress/go-cyber/x/energy/client/cli"
-	"github.com/cybercongress/go-cyber/x/energy/client/rest"
-	"github.com/cybercongress/go-cyber/x/energy/keeper"
-	"github.com/cybercongress/go-cyber/x/energy/types"
+	"github.com/cybercongress/go-cyber/x/grid/client/cli"
+	"github.com/cybercongress/go-cyber/x/grid/client/rest"
+	"github.com/cybercongress/go-cyber/x/grid/keeper"
+	"github.com/cybercongress/go-cyber/x/grid/types"
 )
 
 var (

@@ -7,7 +7,7 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/cybercongress/go-cyber/x/energy/types"
+	"github.com/cybercongress/go-cyber/x/grid/types"
 )
 
 func NewQuerier(k Keeper, legacyQuerierCdc *codec.LegacyAmino) sdk.Querier {
@@ -28,7 +28,7 @@ func NewQuerier(k Keeper, legacyQuerierCdc *codec.LegacyAmino) sdk.Querier {
 		case types.QueryRoutes:
 			return queryRoutes(ctx, req, k, legacyQuerierCdc)
 		default:
-			return nil, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "unknown energy query endpoint")
+			return nil, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "unknown grid query endpoint")
 		}
 	}
 }

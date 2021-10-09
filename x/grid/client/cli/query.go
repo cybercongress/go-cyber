@@ -13,11 +13,11 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	//"github.com/cosmos/cosmos-sdk/codec"
 
-	"github.com/cybercongress/go-cyber/x/energy/types"
+	"github.com/cybercongress/go-cyber/x/grid/types"
 )
 
 func GetQueryCmd() *cobra.Command {
-	energyQueryCmd := &cobra.Command{
+	gridQueryCmd := &cobra.Command{
 		Use:                        types.ModuleName,
 		Short:                      fmt.Sprintf("Querying commands for the %s module", types.ModuleName),
 		DisableFlagParsing:         true,
@@ -25,7 +25,7 @@ func GetQueryCmd() *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
-	energyQueryCmd.AddCommand(
+	gridQueryCmd.AddCommand(
 		GetCmdQueryParams(),
 		GetCmdQuerySourceRoutes(),
 		GetCmdQueryDestinationRoutes(),
@@ -35,13 +35,13 @@ func GetQueryCmd() *cobra.Command {
 		GetCmdQueryRoutes(),
 	)
 
-	return energyQueryCmd
+	return gridQueryCmd
 }
 
 func GetCmdQueryParams() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "params",
-		Short: "Query the current energy module parameters information",
+		Short: "Query the current grid module parameters information",
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -69,8 +69,8 @@ func GetCmdQueryParams() *cobra.Command {
 
 func GetCmdQuerySourceRoutes() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "routes-from [source-addr]",
-		Short: "Query all energy routes that made from source account",
+		Use:   "routes-from [source]",
+		Short: "Query all grid routes that made from source account",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -104,8 +104,8 @@ func GetCmdQuerySourceRoutes() *cobra.Command {
 
 func GetCmdQueryDestinationRoutes() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "routes-to [destination-addr]",
-		Short: "Query all energy routes that routed to destination account",
+		Use:   "routes-to [destination]",
+		Short: "Query all grid routes that routed to destination account",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -139,8 +139,8 @@ func GetCmdQueryDestinationRoutes() *cobra.Command {
 
 func GetCmdQuerySourceRoutedEnergy() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "routed-from [source-addr]",
-		Short: "Query energy value that routed from source account",
+		Use:   "routed-from [source]",
+		Short: "Query grid value that routed from source account",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -174,8 +174,8 @@ func GetCmdQuerySourceRoutedEnergy() *cobra.Command {
 
 func GetCmdQueryDestinationRoutedEnergy() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "routed-to [destination-addr]",
-		Short: "Query energy value that routed to destination account",
+		Use:   "routed-to [destination]",
+		Short: "Query grid value that routed to destination account",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -209,8 +209,8 @@ func GetCmdQueryDestinationRoutedEnergy() *cobra.Command {
 
 func GetCmdQueryRoute() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "route  [source-addr] [destination-addr]",
-		Short: "Query energy route that routes for given source and destination accounts",
+		Use:   "route  [source] [destination]",
+		Short: "Query grid route that routes for given source and destination accounts",
 		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -252,7 +252,7 @@ func GetCmdQueryRoute() *cobra.Command {
 func GetCmdQueryRoutes() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "routes",
-		Short: "Query all energy routes",
+		Short: "Query all grid routes",
 		Args: cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)

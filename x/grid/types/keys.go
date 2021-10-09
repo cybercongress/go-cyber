@@ -3,12 +3,12 @@ package types
 import sdk "github.com/cosmos/cosmos-sdk/types"
 
 const (
-	ModuleName 					= "energy"
+	ModuleName 					= "grid"
 	StoreKey 					= ModuleName
   	RouterKey 					= ModuleName
 	QuerierRoute 				= ModuleName
 
-	EnergyPoolName  			= "energy_grid"
+	GridPoolName 				= "energy_grid"
 )
 
 var (

@@ -10,12 +10,12 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 
-	"github.com/cybercongress/go-cyber/x/energy/types"
+	"github.com/cybercongress/go-cyber/x/grid/types"
 )
 
 // GetTxCmd returns the transaction commands for this module
 func NewTxCmd() *cobra.Command {
-	energyTxCmd := &cobra.Command{
+	gridTxCmd := &cobra.Command{
 		Use:                        types.ModuleName,
 		Short:                      fmt.Sprintf("%s transactions subcommands", types.ModuleName),
 		DisableFlagParsing:         true,
@@ -23,21 +23,21 @@ func NewTxCmd() *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
-	energyTxCmd.AddCommand(
+	gridTxCmd.AddCommand(
 		GetCmdCreateRoute(),
 		GetCmdEditRoute(),
 		GetCmdDeleteRoute(),
 		GetCmdEditRouteAlias(),
 	)
 
-	return energyTxCmd
+	return gridTxCmd
 }
 
 func GetCmdCreateRoute() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-route [destination-addr] [alias]",
+		Use:   "create-route [destination] [alias]",
 		Args:  cobra.ExactArgs(2),
-		Short: "Create energy route from your address to destination address with provided alias",
+		Short: "Create grid route from your address to destination address with provided alias",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -68,9 +68,9 @@ func GetCmdCreateRoute() *cobra.Command {
 
 func GetCmdEditRoute() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "edit-route [destination-addr] [value]",
+		Use:   "edit-route [destination] [value]",
 		Args:  cobra.ExactArgs(2),
-		Short: "Set value of energy route to destination address",
+		Short: "Set value of grid route to destination address",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -106,9 +106,9 @@ func GetCmdEditRoute() *cobra.Command {
 
 func GetCmdDeleteRoute() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "delete-route [destination-addr]",
+		Use:   "delete-route [destination]",
 		Args:  cobra.ExactArgs(1),
-		Short: "Delete your energy route to given destination address",
+		Short: "Delete your grid route to given destination address",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -138,9 +138,9 @@ func GetCmdDeleteRoute() *cobra.Command {
 
 func GetCmdEditRouteAlias() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "edit-route-alias [destination-addr] [alias]",
+		Use:   "edit-route-alias [destination] [alias]",
 		Args:  cobra.ExactArgs(2),
-		Short: "Edit alias of energy route to given destination address",
+		Short: "Edit alias of grid route to given destination address",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {

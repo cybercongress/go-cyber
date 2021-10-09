@@ -9,8 +9,8 @@ import (
 
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 	wasmplugins "github.com/cybercongress/go-cyber/plugins"
-	"github.com/cybercongress/go-cyber/x/energy/keeper"
-	"github.com/cybercongress/go-cyber/x/energy/types"
+	"github.com/cybercongress/go-cyber/x/grid/keeper"
+	"github.com/cybercongress/go-cyber/x/grid/types"
 )
 
 var _ WasmMsgParserInterface = WasmMsgParser{}
@@ -79,10 +79,10 @@ func NewWasmQuerier(keeper keeper.Keeper) WasmQuerier {
 func (WasmQuerier) Query(_ sdk.Context, _ wasmvmtypes.QueryRequest) ([]byte, error) { return nil, nil }
 
 type CosmosQuery struct {
-	SourceRoutes      		*QuerySourceParams 		`json:"get_source_routes,omitempty"`
-	SourceRoutedEnergy      *QuerySourceParams 		`json:"get_source_routed_energy,omitempty"`
-	DestinationRoutedEnergy *QueryDestinationParams `json:"get_destination_routed_energy,omitempty"`
-	Route 					*QueryRouteParams 		`json:"get_route,omitempty"`
+	SourceRoutes      		*QuerySourceParams 		`json:"source_routes,omitempty"`
+	SourceRoutedEnergy      *QuerySourceParams 		`json:"source_routed_energy,omitempty"`
+	DestinationRoutedEnergy *QueryDestinationParams `json:"destination_routed_energy,omitempty"`
+	Route 					*QueryRouteParams 		`json:"route,omitempty"`
 }
 
 type Route struct {

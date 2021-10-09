@@ -37,7 +37,6 @@ import (
 
 	wasmplugins "github.com/cybercongress/go-cyber/plugins"
 	"github.com/cybercongress/go-cyber/x/dmn"
-	"github.com/cybercongress/go-cyber/x/energy"
 	"github.com/cybercongress/go-cyber/x/resources"
 
 	"github.com/cosmos/cosmos-sdk/client"
@@ -127,13 +126,14 @@ import (
 
 	bandwidthwasm "github.com/cybercongress/go-cyber/x/bandwidth/wasm"
 	dmnwasm "github.com/cybercongress/go-cyber/x/dmn/wasm"
-	energywasm "github.com/cybercongress/go-cyber/x/energy/wasm"
 	graphwasm "github.com/cybercongress/go-cyber/x/graph/wasm"
+	gridwasm "github.com/cybercongress/go-cyber/x/grid/wasm"
 	rankwasm "github.com/cybercongress/go-cyber/x/rank/wasm"
 	resourceswasm "github.com/cybercongress/go-cyber/x/resources/wasm"
 
-	energykeeper "github.com/cybercongress/go-cyber/x/energy/keeper"
-	energytypes "github.com/cybercongress/go-cyber/x/energy/types"
+	gridkeeper "github.com/cybercongress/go-cyber/x/grid/keeper"
+	gridtypes "github.com/cybercongress/go-cyber/x/grid/types"
+	grid "github.com/cybercongress/go-cyber/x/grid"
 
 	dmnkeeper "github.com/cybercongress/go-cyber/x/dmn/keeper"
 	dmntypes "github.com/cybercongress/go-cyber/x/dmn/types"
@@ -234,7 +234,7 @@ var (
 		cyberbank.AppModuleBasic{},
 		graph.AppModuleBasic{},
 		rank.AppModuleBasic{},
-		energy.AppModuleBasic{},
+		grid.AppModuleBasic{},
 		dmn.AppModuleBasic{},
 		resources.AppModuleBasic{},
 		wasm.AppModuleBasic{},
@@ -243,17 +243,17 @@ var (
 
 	// module account permissions
 	maccPerms = map[string][]string{
-		authtypes.FeeCollectorName:     	nil,
-		distrtypes.ModuleName:          	nil,
-		minttypes.ModuleName:           	{authtypes.Minter},
-		stakingtypes.BondedPoolName:    	{authtypes.Burner, authtypes.Staking},
-		stakingtypes.NotBondedPoolName: 	{authtypes.Burner, authtypes.Staking},
-		govtypes.ModuleName:            	{authtypes.Burner},
-		ibctransfertypes.ModuleName:    	{authtypes.Minter, authtypes.Burner},
-		energytypes.EnergyPoolName: 		nil,
-		resourcestypes.ResourcesName: 	    {authtypes.Minter, authtypes.Burner},
-		wasm.ModuleName:                	{authtypes.Burner},
-		liquiditytypes.ModuleName:     		{authtypes.Minter, authtypes.Burner},
+		authtypes.FeeCollectorName:     nil,
+		distrtypes.ModuleName:          nil,
+		minttypes.ModuleName:           {authtypes.Minter},
+		stakingtypes.BondedPoolName:    {authtypes.Burner, authtypes.Staking},
+		stakingtypes.NotBondedPoolName: {authtypes.Burner, authtypes.Staking},
+		govtypes.ModuleName:            {authtypes.Burner},
+		ibctransfertypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
+		gridtypes.GridPoolName:         nil,
+		resourcestypes.ResourcesName:   {authtypes.Minter, authtypes.Burner},
+		wasm.ModuleName:                {authtypes.Burner},
+		liquiditytypes.ModuleName:      {authtypes.Minter, authtypes.Burner},
 	}
 
     // module accounts that are allowed to receive tokens
@@ -314,9 +314,9 @@ type App struct {
 	CyberbankKeeper  *cyberbankkeeper.IndexedKeeper
 	GraphKeeper      *graphkeeper.GraphKeeper
 	IndexKeeper      *graphkeeper.IndexKeeper
-	RankKeeper       *rankkeeper.StateKeeper
-	EnergyKeeper     energykeeper.Keeper
-	DmnKeeper        *dmnkeeper.Keeper
+	RankKeeper 		 *rankkeeper.StateKeeper
+	GridKeeper 		 gridkeeper.Keeper
+	DmnKeeper  		 *dmnkeeper.Keeper
 	ResourcesKeeper  resourceskeeper.Keeper
 	WasmKeeper       wasm.Keeper
 	LiquidityKeeper  liquiditykeeper.Keeper
@@ -366,7 +366,7 @@ func NewApp(
 		bandwidthtypes.StoreKey,
 		graphtypes.StoreKey,
 		ranktypes.StoreKey,
-		energytypes.StoreKey,
+		gridtypes.StoreKey,
 		dmntypes.StoreKey,
 		wasm.StoreKey,
 	)
@@ -526,14 +526,14 @@ func NewApp(
 		computeUnit,
 	)
 
-	app.EnergyKeeper = energykeeper.NewKeeper(
+	app.GridKeeper = gridkeeper.NewKeeper(
 		appCodec,
-		keys[energytypes.ModuleName],
+		keys[gridtypes.ModuleName],
 		app.CyberbankKeeper.Proxy,
 		app.AccountKeeper,
-		app.GetSubspace(energytypes.ModuleName),
+		app.GetSubspace(gridtypes.ModuleName),
 	)
-	app.CyberbankKeeper.Proxy.SetEnergyKeeper(&app.EnergyKeeper)
+	app.CyberbankKeeper.Proxy.SetGridKeeper(&app.GridKeeper)
 	app.CyberbankKeeper.Proxy.SetAccountKeeper(app.AccountKeeper)
 
 	app.ResourcesKeeper = resourceskeeper.NewKeeper(
@@ -587,7 +587,7 @@ func NewApp(
 		wasmplugins.WasmQueryRouteRank:      rankwasm.NewWasmQuerier(app.RankKeeper),
 		wasmplugins.WasmQueryRouteGraph:     graphwasm.NewWasmQuerier(*app.GraphKeeper),
 		wasmplugins.WasmQueryRouteDmn:       dmnwasm.NewWasmQuerier(*app.DmnKeeper),
-		wasmplugins.WasmQueryRouteEnergy:    energywasm.NewWasmQuerier(app.EnergyKeeper),
+		wasmplugins.WasmQueryRouteGrid:      gridwasm.NewWasmQuerier(app.GridKeeper),
 		wasmplugins.WasmQueryRouteBandwidth: bandwidthwasm.NewWasmQuerier(app.BandwidthMeter),
 	}
 	querier.Queriers = queries
@@ -600,7 +600,7 @@ func NewApp(
 	parsers := map[string]wasmplugins.WasmMsgParserInterface{
 		wasmplugins.WasmMsgParserRouteGraph:     graphwasm.NewWasmMsgParser(),
 		wasmplugins.WasmMsgParserRouteDmn:       dmnwasm.NewWasmMsgParser(),
-		wasmplugins.WasmMsgParserRouteEnergy:    energywasm.NewWasmMsgParser(),
+		wasmplugins.WasmMsgParserRouteGrid:      gridwasm.NewWasmMsgParser(),
 		wasmplugins.WasmMsgParserRouteResources: resourceswasm.NewWasmMsgParser(),
 	}
 	parser.Parsers = parsers
@@ -735,7 +735,7 @@ func NewApp(
 			app.AccountKeeper, app.CyberbankKeeper, app.BandwidthMeter,
 		),
 		rank.NewAppModule(appCodec, app.RankKeeper),
-		energy.NewAppModule(appCodec, app.EnergyKeeper),
+		grid.NewAppModule(appCodec, app.GridKeeper),
 		dmn.NewAppModule(appCodec, *app.DmnKeeper),
 		resources.NewAppModule(appCodec, app.ResourcesKeeper),
 	)
@@ -797,7 +797,7 @@ func NewApp(
 		wasm.ModuleName,
 		bandwidthtypes.ModuleName,
 		ranktypes.ModuleName,
-		energytypes.ModuleName,
+		gridtypes.ModuleName,
 		resourcestypes.ModuleName,
 		dmntypes.ModuleName,
 	)
@@ -1066,7 +1066,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(wasm.ModuleName)
 	paramsKeeper.Subspace(bandwidthtypes.ModuleName)
 	paramsKeeper.Subspace(ranktypes.ModuleName)
-	paramsKeeper.Subspace(energytypes.ModuleName)
+	paramsKeeper.Subspace(gridtypes.ModuleName)
 	paramsKeeper.Subspace(dmntypes.ModuleName)
 	paramsKeeper.Subspace(resourcestypes.ModuleName)
 

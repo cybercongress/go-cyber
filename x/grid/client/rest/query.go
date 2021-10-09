@@ -10,37 +10,37 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/types/rest"
 
-	"github.com/cybercongress/go-cyber/x/energy/types"
+	"github.com/cybercongress/go-cyber/x/grid/types"
 )
 
 // RegisterRoutes defines routes that get registered by the main application.
 func registerQueryRoutes(cliCtx client.Context, r *mux.Router) {
 	r.HandleFunc(
-		"/energy/parameters",
+		"/grid/parameters",
 		queryParamsHandlerFn(cliCtx)).Methods("GET")
 
 	r.HandleFunc(
-		fmt.Sprintf("/energy/{%s}/source_routes", Source),
+		fmt.Sprintf("/grid/{%s}/source_routes", Source),
 		querySourceRoutesHandlerFn(cliCtx)).Methods("GET")
 
 	r.HandleFunc(
-		fmt.Sprintf("/energy/{%s}/destination_routes", Destination),
+		fmt.Sprintf("/grid/{%s}/destination_routes", Destination),
 		queryDestinationRoutesHandlerFn(cliCtx)).Methods("GET")
 
 	r.HandleFunc(
-		fmt.Sprintf("/energy/{%s}/source_routed_energy", Source),
+		fmt.Sprintf("/grid/{%s}/source_routed_energy", Source),
 		querySourceRoutedEnergyHandlerFn(cliCtx)).Methods("GET")
 
 	r.HandleFunc(
-		fmt.Sprintf("/energy/{%s}/destination_routed_energy", Destination),
+		fmt.Sprintf("/grid/{%s}/destination_routed_energy", Destination),
 		queryDestinationRoutedEnergyHandlerFn(cliCtx)).Methods("GET")
 
 	r.HandleFunc(
-		fmt.Sprintf("/energy/route/{%s}/{%s}", Source, Destination),
+		fmt.Sprintf("/grid/route/{%s}/{%s}", Source, Destination),
 		queryRouteHandlerFn(cliCtx)).Methods("GET")
 
 	r.HandleFunc(
-		"/energy/routes",
+		"/grid/routes",
 		queryRoutesHandlerFn(cliCtx)).Methods("GET")
 }
 

@@ -35,7 +35,7 @@ func (p *Proxy) AddHook(hook types.CoinsTransferHook) {
 	p.coinsTransferHooks = append(p.coinsTransferHooks, hook)
 }
 
-func (p *Proxy) SetEnergyKeeper(ek types.EnergyKeeper) {
+func (p *Proxy) SetGridKeeper(ek types.EnergyKeeper) {
 	p.ek = ek
 }
 
