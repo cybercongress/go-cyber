@@ -55,7 +55,7 @@ func (bm *BandwidthMeter) Account(goCtx context.Context, request *types.QueryAcc
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	accountBandwidth := bm.GetCurrentAccountBandwidth(ctx, addr)
+	neuronBandwidth := bm.GetCurrentAccountBandwidth(ctx, addr)
 
-	return &types.QueryAccountResponse{AccountBandwidth: accountBandwidth}, nil
+	return &types.QueryAccountResponse{NeuronBandwidth: neuronBandwidth}, nil
 }

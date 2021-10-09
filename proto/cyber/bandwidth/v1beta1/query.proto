@@ -62,7 +62,7 @@ message QueryAccountRequest {
 }
 
 message QueryAccountResponse {
-    NeuronBandwidth account_bandwidth = 1 [(gogoproto.nullable) = false];
+    NeuronBandwidth neuron_bandwidth = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryParamsRequest {}
