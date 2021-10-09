@@ -1,0 +1,12 @@
+syntax = "proto3";
+package cyber.dmn.v1beta1;
+
+import "gogoproto/gogo.proto";
+
+import "cyber/dmn/v1beta1/types.proto";
+
+option go_package = "github.com/cybercongress/go-cyber/x/dmn/types";
+
+message GenesisState {
+    Params params = 1 [(gogoproto.nullable) = false];
+}

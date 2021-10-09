@@ -71,23 +71,23 @@ _________________________________________________________
 
 1. Universe - Cosmos
 2. Consensus - Tendermint | BOOT
-3. Dyson Sphere - Snub Dodecahedron
+3. Dyson Sphere - Snub Dodecahedron configuration
 4. External Communication - IBC
 5. Liquidity - InterChain AMM with MEV protection
 6. Governance - Ideas, Upgrades, Parameters, Fund | BOOT
 7. Resources Mining - Liquid Staking | stake BOOT -> mint HYDROGEN
-8. Resources Creation - Investmint | lock HYDROGEN -> mint VOLT / AMPER
+8. Resources Creation - Investmint | lock HYDROGEN -> mint VOLT / AMPERE
 9. Brain - Knowledge Graph
 10. Particles addressing - IPFS CIDv0
 11. Particles connecting - cyberlinks
 12. Cyberlinking - Bandwidth model | VOLT
-13. Graph Program - Token Weighted Page Rank | AMPER
-14. Graph Program - Token Weighted Graph -Entropy | AMPER
+13. Graph Program - Token Weighted Page Rank | AMPERE
+14. Graph Program - Token Weighted Graph -Entropy | AMPERE
 15. Graph Processing - GPU (CUDA)
 16. Energy Grid - Energy Router | VOLT & AMPER
 17. Virtual Machine - CosmWasm | BOOT
 18. Programs Bus - Interconnect Line
-19. Autonomous Programs - Cron | BOOT
+19. Autonomous Programs - Default Mode Network & Thoughts | BOOT
 20. Programs Income - execution fees | BOOT
 21. API - Graph and Computer
 22. Client Library - cyber-js & cyber-py

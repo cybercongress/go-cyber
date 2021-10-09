@@ -575,7 +575,7 @@ paths:
           schema:
             type: object
             properties:
-              account_bandwidth:
+              neuron_bandwidth:
                 type: object
                 properties:
                   neuron:
@@ -1442,16 +1442,61 @@ paths:
                       format: byte
       tags:
         - Query
-  /cyber/cron/v1beta1/cron/job:
+  /cyber/dmn/v1beta1/dmn/params:
     get:
-      operationId: Job
+      operationId: DmnParams
       responses:
         '200':
           description: A successful response.
           schema:
             type: object
             properties:
-              job:
+              params:
+                type: object
+                properties:
+                  max_slots:
+                    type: integer
+                    format: int64
+                  max_gas:
+                    type: integer
+                    format: int64
+                  fee_ttl:
+                    type: integer
+                    format: int64
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      tags:
+        - Query
+  /cyber/dmn/v1beta1/dmn/thought:
+    get:
+      operationId: Thought
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              thought:
                 type: object
                 properties:
                   program:
@@ -1486,7 +1531,7 @@ paths:
                           custom method
 
                           signatures required by gogoproto.
-                  label:
+                  name:
                     type: string
                   particle:
                     type: string
@@ -1517,27 +1562,27 @@ paths:
           in: query
           required: false
           type: string
-        - name: label
+        - name: name
           in: query
           required: false
           type: string
       tags:
         - Query
-  /cyber/cron/v1beta1/cron/job_stats:
+  /cyber/dmn/v1beta1/dmn/thought_stats:
     get:
-      operationId: JobStats
+      operationId: ThoughtStats
       responses:
         '200':
           description: A successful response.
           schema:
             type: object
             properties:
-              job_stats:
+              thought_stats:
                 type: object
                 properties:
                   program:
                     type: string
-                  label:
+                  name:
                     type: string
                   calls:
                     type: string
@@ -1578,22 +1623,22 @@ paths:
           in: query
           required: false
           type: string
-        - name: label
+        - name: name
           in: query
           required: false
           type: string
       tags:
         - Query
-  /cyber/cron/v1beta1/cron/jobs:
+  /cyber/dmn/v1beta1/dmn/thoughts:
     get:
-      operationId: Jobs
+      operationId: Thoughts
       responses:
         '200':
           description: A successful response.
           schema:
             type: object
             properties:
-              jobs:
+              thoughts:
                 type: array
                 items:
                   type: object
@@ -1630,7 +1675,7 @@ paths:
                             the custom method
 
                             signatures required by gogoproto.
-                    label:
+                    name:
                       type: string
                     particle:
                       type: string
@@ -1658,23 +1703,23 @@ paths:
                       format: byte
       tags:
         - Query
-  /cyber/cron/v1beta1/cron/jobs_stats:
+  /cyber/dmn/v1beta1/dmn/thoughts_stats:
     get:
-      operationId: JobsStats
+      operationId: ThoughtsStats
       responses:
         '200':
           description: A successful response.
           schema:
             type: object
             properties:
-              jobs_stats:
+              thoughts_stats:
                 type: array
                 items:
                   type: object
                   properties:
                     program:
                       type: string
-                    label:
+                    name:
                       type: string
                     calls:
                       type: string
@@ -1688,51 +1733,6 @@ paths:
                     last_block:
                       type: string
                       format: uint64
-        default:
-          description: An unexpected error response
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                    value:
-                      type: string
-                      format: byte
-      tags:
-        - Query
-  /cyber/cron/v1beta1/cron/params:
-    get:
-      operationId: CronParams
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              params:
-                type: object
-                properties:
-                  max_slots:
-                    type: integer
-                    format: int64
-                  max_gas:
-                    type: integer
-                    format: int64
-                  fee_ttl:
-                    type: integer
-                    format: int64
         default:
           description: An unexpected error response
           schema:
@@ -29377,7 +29377,7 @@ definitions:
   cyber.bandwidth.v1beta1.QueryAccountResponse:
     type: object
     properties:
-      account_bandwidth:
+      neuron_bandwidth:
         type: object
         properties:
           neuron:
@@ -29785,64 +29785,7 @@ definitions:
               signatures required by gogoproto.
   cyber.resources.v1beta1.MsgInvestmintResponse:
     type: object
-  cyber.cron.v1beta1.Job:
-    type: object
-    properties:
-      program:
-        type: string
-      trigger:
-        type: object
-        properties:
-          period:
-            type: string
-            format: uint64
-          block:
-            type: string
-            format: uint64
-      load:
-        type: object
-        properties:
-          call_data:
-            type: string
-          gas_price:
-            type: object
-            properties:
-              denom:
-                type: string
-              amount:
-                type: string
-            description: >-
-              Coin defines a token with a denomination and an amount.
-
-
-              NOTE: The amount field is an Int which implements the custom
-              method
-
-              signatures required by gogoproto.
-      label:
-        type: string
-      particle:
-        type: string
-  cyber.cron.v1beta1.JobStats:
-    type: object
-    properties:
-      program:
-        type: string
-      label:
-        type: string
-      calls:
-        type: string
-        format: uint64
-      fees:
-        type: string
-        format: uint64
-      gas:
-        type: string
-        format: uint64
-      last_block:
-        type: string
-        format: uint64
-  cyber.cron.v1beta1.Load:
+  cyber.dmn.v1beta1.Load:
     type: object
     properties:
       call_data:
@@ -29859,7 +29802,7 @@ definitions:
 
           NOTE: The amount field is an Int which implements the custom method
           signatures required by gogoproto.
-  cyber.cron.v1beta1.Params:
+  cyber.dmn.v1beta1.Params:
     type: object
     properties:
       max_slots:
@@ -29871,10 +29814,25 @@ definitions:
       fee_ttl:
         type: integer
         format: int64
-  cyber.cron.v1beta1.QueryJobResponse:
+  cyber.dmn.v1beta1.QueryParamsResponse:
     type: object
     properties:
-      job:
+      params:
+        type: object
+        properties:
+          max_slots:
+            type: integer
+            format: int64
+          max_gas:
+            type: integer
+            format: int64
+          fee_ttl:
+            type: integer
+            format: int64
+  cyber.dmn.v1beta1.QueryThoughtResponse:
+    type: object
+    properties:
+      thought:
         type: object
         properties:
           program:
@@ -29908,19 +29866,19 @@ definitions:
                   method
 
                   signatures required by gogoproto.
-          label:
+          name:
             type: string
           particle:
             type: string
-  cyber.cron.v1beta1.QueryJobStatsResponse:
+  cyber.dmn.v1beta1.QueryThoughtStatsResponse:
     type: object
     properties:
-      job_stats:
+      thought_stats:
         type: object
         properties:
           program:
             type: string
-          label:
+          name:
             type: string
           calls:
             type: string
@@ -29934,10 +29892,10 @@ definitions:
           last_block:
             type: string
             format: uint64
-  cyber.cron.v1beta1.QueryJobsResponse:
+  cyber.dmn.v1beta1.QueryThoughtsResponse:
     type: object
     properties:
-      jobs:
+      thoughts:
         type: array
         items:
           type: object
@@ -29973,21 +29931,21 @@ definitions:
                     method
 
                     signatures required by gogoproto.
-            label:
+            name:
               type: string
             particle:
               type: string
-  cyber.cron.v1beta1.QueryJobsStatsResponse:
+  cyber.dmn.v1beta1.QueryThoughtsStatsResponse:
     type: object
     properties:
-      jobs_stats:
+      thoughts_stats:
         type: array
         items:
           type: object
           properties:
             program:
               type: string
-            label:
+            name:
               type: string
             calls:
               type: string
@@ -30001,22 +29959,64 @@ definitions:
             last_block:
               type: string
               format: uint64
-  cyber.cron.v1beta1.QueryParamsResponse:
+  cyber.dmn.v1beta1.Thought:
     type: object
     properties:
-      params:
+      program:
+        type: string
+      trigger:
         type: object
         properties:
-          max_slots:
-            type: integer
-            format: int64
-          max_gas:
-            type: integer
-            format: int64
-          fee_ttl:
-            type: integer
-            format: int64
-  cyber.cron.v1beta1.Trigger:
+          period:
+            type: string
+            format: uint64
+          block:
+            type: string
+            format: uint64
+      load:
+        type: object
+        properties:
+          call_data:
+            type: string
+          gas_price:
+            type: object
+            properties:
+              denom:
+                type: string
+              amount:
+                type: string
+            description: >-
+              Coin defines a token with a denomination and an amount.
+
+
+              NOTE: The amount field is an Int which implements the custom
+              method
+
+              signatures required by gogoproto.
+      name:
+        type: string
+      particle:
+        type: string
+  cyber.dmn.v1beta1.ThoughtStats:
+    type: object
+    properties:
+      program:
+        type: string
+      name:
+        type: string
+      calls:
+        type: string
+        format: uint64
+      fees:
+        type: string
+        format: uint64
+      gas:
+        type: string
+        format: uint64
+      last_block:
+        type: string
+        format: uint64
+  cyber.dmn.v1beta1.Trigger:
     type: object
     properties:
       period:
@@ -30025,21 +30025,21 @@ definitions:
       block:
         type: string
         format: uint64
-  cyber.cron.v1beta1.MsgAddJobResponse:
+  cyber.dmn.v1beta1.MsgChangeThoughtBlockResponse:
     type: object
-  cyber.cron.v1beta1.MsgChangeJobBlockResponse:
+  cyber.dmn.v1beta1.MsgChangeThoughtCallDataResponse:
     type: object
-  cyber.cron.v1beta1.MsgChangeJobCallDataResponse:
+  cyber.dmn.v1beta1.MsgChangeThoughtGasPriceResponse:
     type: object
-  cyber.cron.v1beta1.MsgChangeJobGasPriceResponse:
+  cyber.dmn.v1beta1.MsgChangeThoughtNameResponse:
     type: object
-  cyber.cron.v1beta1.MsgChangeJobLabelResponse:
+  cyber.dmn.v1beta1.MsgChangeThoughtParticleResponse:
     type: object
-  cyber.cron.v1beta1.MsgChangeJobParticleResponse:
+  cyber.dmn.v1beta1.MsgChangeThoughtPeriodResponse:
     type: object
-  cyber.cron.v1beta1.MsgChangeJobPeriodResponse:
+  cyber.dmn.v1beta1.MsgCreateThoughtResponse:
     type: object
-  cyber.cron.v1beta1.MsgRemoveJobResponse:
+  cyber.dmn.v1beta1.MsgForgetThoughtResponse:
     type: object
   CheckTxResult:
     type: object

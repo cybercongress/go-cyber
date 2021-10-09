@@ -36,7 +36,7 @@ import (
 	"github.com/rakyll/statik/fs"
 
 	wasmplugins "github.com/cybercongress/go-cyber/plugins"
-	"github.com/cybercongress/go-cyber/x/cron"
+	"github.com/cybercongress/go-cyber/x/dmn"
 	"github.com/cybercongress/go-cyber/x/energy"
 	"github.com/cybercongress/go-cyber/x/resources"
 
@@ -126,7 +126,7 @@ import (
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 
 	bandwidthwasm "github.com/cybercongress/go-cyber/x/bandwidth/wasm"
-	cronwasm "github.com/cybercongress/go-cyber/x/cron/wasm"
+	dmnwasm "github.com/cybercongress/go-cyber/x/dmn/wasm"
 	energywasm "github.com/cybercongress/go-cyber/x/energy/wasm"
 	graphwasm "github.com/cybercongress/go-cyber/x/graph/wasm"
 	rankwasm "github.com/cybercongress/go-cyber/x/rank/wasm"
@@ -135,8 +135,8 @@ import (
 	energykeeper "github.com/cybercongress/go-cyber/x/energy/keeper"
 	energytypes "github.com/cybercongress/go-cyber/x/energy/types"
 
-	cronkeeper "github.com/cybercongress/go-cyber/x/cron/keeper"
-	crontypes "github.com/cybercongress/go-cyber/x/cron/types"
+	dmnkeeper "github.com/cybercongress/go-cyber/x/dmn/keeper"
+	dmntypes "github.com/cybercongress/go-cyber/x/dmn/types"
 
 	resourceskeeper "github.com/cybercongress/go-cyber/x/resources/keeper"
 	resourcestypes "github.com/cybercongress/go-cyber/x/resources/types"
@@ -235,7 +235,7 @@ var (
 		graph.AppModuleBasic{},
 		rank.AppModuleBasic{},
 		energy.AppModuleBasic{},
-		cron.AppModuleBasic{},
+		dmn.AppModuleBasic{},
 		resources.AppModuleBasic{},
 		wasm.AppModuleBasic{},
 		liquidity.AppModuleBasic{},
@@ -316,7 +316,7 @@ type App struct {
 	IndexKeeper      *graphkeeper.IndexKeeper
 	RankKeeper       *rankkeeper.StateKeeper
 	EnergyKeeper     energykeeper.Keeper
-	CronKeeper       *cronkeeper.Keeper
+	DmnKeeper        *dmnkeeper.Keeper
 	ResourcesKeeper  resourceskeeper.Keeper
 	WasmKeeper       wasm.Keeper
 	LiquidityKeeper  liquiditykeeper.Keeper
@@ -367,7 +367,7 @@ func NewApp(
 		graphtypes.StoreKey,
 		ranktypes.StoreKey,
 		energytypes.StoreKey,
-		crontypes.StoreKey,
+		dmntypes.StoreKey,
 		wasm.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(
@@ -566,12 +566,12 @@ func NewApp(
 		scopedTransferKeeper,
 	)
 
-	app.CronKeeper = cronkeeper.NewKeeper(
+	app.DmnKeeper = dmnkeeper.NewKeeper(
 		appCodec,
-		keys[crontypes.StoreKey],
+		keys[dmntypes.StoreKey],
 		app.CyberbankKeeper.Proxy,
 		app.AccountKeeper,
-		app.GetSubspace(crontypes.ModuleName),
+		app.GetSubspace(dmntypes.ModuleName),
 	)
 
 	// Initialize CosmWasm
@@ -586,7 +586,7 @@ func NewApp(
 	queries := map[string]wasmplugins.WasmQuerierInterface{
 		wasmplugins.WasmQueryRouteRank:      rankwasm.NewWasmQuerier(app.RankKeeper),
 		wasmplugins.WasmQueryRouteGraph:     graphwasm.NewWasmQuerier(*app.GraphKeeper),
-		wasmplugins.WasmQueryRouteCron:      cronwasm.NewWasmQuerier(*app.CronKeeper),
+		wasmplugins.WasmQueryRouteDmn:       dmnwasm.NewWasmQuerier(*app.DmnKeeper),
 		wasmplugins.WasmQueryRouteEnergy:    energywasm.NewWasmQuerier(app.EnergyKeeper),
 		wasmplugins.WasmQueryRouteBandwidth: bandwidthwasm.NewWasmQuerier(app.BandwidthMeter),
 	}
@@ -598,8 +598,8 @@ func NewApp(
 	// Initialize Cyber's encoder integrations
 	parser := wasmplugins.NewMsgParser()
 	parsers := map[string]wasmplugins.WasmMsgParserInterface{
-		wasmplugins.WasmMsgParserRouteGraph: 	 graphwasm.NewWasmMsgParser(),
-		wasmplugins.WasmMsgParserRouteCron:  	 cronwasm.NewWasmMsgParser(),
+		wasmplugins.WasmMsgParserRouteGraph:     graphwasm.NewWasmMsgParser(),
+		wasmplugins.WasmMsgParserRouteDmn:       dmnwasm.NewWasmMsgParser(),
 		wasmplugins.WasmMsgParserRouteEnergy:    energywasm.NewWasmMsgParser(),
 		wasmplugins.WasmMsgParserRouteResources: resourceswasm.NewWasmMsgParser(),
 	}
@@ -635,7 +635,7 @@ func NewApp(
 		wasmOpts...,
 	)
 
-	app.CronKeeper.SetWasmKeeper(app.WasmKeeper)
+	app.DmnKeeper.SetWasmKeeper(app.WasmKeeper)
 
 	// register the proposal types
 	govRouter := govtypes.NewRouter()
@@ -736,7 +736,7 @@ func NewApp(
 		),
 		rank.NewAppModule(appCodec, app.RankKeeper),
 		energy.NewAppModule(appCodec, app.EnergyKeeper),
-		cron.NewAppModule(appCodec, *app.CronKeeper),
+		dmn.NewAppModule(appCodec, *app.DmnKeeper),
 		resources.NewAppModule(appCodec, app.ResourcesKeeper),
 	)
 
@@ -754,7 +754,7 @@ func NewApp(
 		stakingtypes.ModuleName,
 		liquiditytypes.ModuleName,
 		ibchost.ModuleName,
-		crontypes.ModuleName,
+		dmntypes.ModuleName,
 	)
 
 	app.mm.SetOrderEndBlockers(
@@ -799,7 +799,7 @@ func NewApp(
 		ranktypes.ModuleName,
 		energytypes.ModuleName,
 		resourcestypes.ModuleName,
-		crontypes.ModuleName,
+		dmntypes.ModuleName,
 	)
 
 	app.mm.RegisterInvariants(&app.CrisisKeeper)
@@ -1067,7 +1067,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(bandwidthtypes.ModuleName)
 	paramsKeeper.Subspace(ranktypes.ModuleName)
 	paramsKeeper.Subspace(energytypes.ModuleName)
-	paramsKeeper.Subspace(crontypes.ModuleName)
+	paramsKeeper.Subspace(dmntypes.ModuleName)
 	paramsKeeper.Subspace(resourcestypes.ModuleName)
 
 	return paramsKeeper

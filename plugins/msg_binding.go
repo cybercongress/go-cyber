@@ -9,7 +9,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	crontypes "github.com/cybercongress/go-cyber/x/cron/types"
+	dmntypes "github.com/cybercongress/go-cyber/x/dmn/types"
 	energytypes "github.com/cybercongress/go-cyber/x/energy/types"
 	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
 	resourcestypes "github.com/cybercongress/go-cyber/x/resources/types"
@@ -37,7 +37,7 @@ type WasmCustomMsg struct {
 
 const (
 	WasmMsgParserRouteGraph     = graphtypes.ModuleName
-	WasmMsgParserRouteCron      = crontypes.ModuleName
+	WasmMsgParserRouteDmn       = dmntypes.ModuleName
 	WasmMsgParserRouteEnergy    = energytypes.ModuleName
 	WasmMsgParserRouteResources = resourcestypes.ModuleName
 )

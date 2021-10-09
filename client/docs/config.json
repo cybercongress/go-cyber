@@ -52,15 +52,15 @@
       "url": "./tmp-swagger-gen/cyber/resources/v1beta1/tx.swagger.json"
     },
     {
-      "url": "./tmp-swagger-gen/cyber/cron/v1beta1/query.swagger.json",
+      "url": "./tmp-swagger-gen/cyber/dmn/v1beta1/query.swagger.json",
       "operationIds": {
         "rename": {
-          "Params": "CronParams"
+          "Params": "DmnParams"
         }
       }
     },
     {
-      "url": "./tmp-swagger-gen/cyber/cron/v1beta1/tx.swagger.json"
+      "url": "./tmp-swagger-gen/cyber/dmn/v1beta1/tx.swagger.json"
     },
     {
       "url": "./client/docs/swagger_third_party.yaml",

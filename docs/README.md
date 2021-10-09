@@ -21,5 +21,5 @@
     - **[cyberbank](../x/cyberbank/spec/README.md)**
     - **[energy](../x/energy/spec/README.md)**
     - **[resources](../x/resources/spec/README.md)**
-    - **[cron](../x/cron/spec/README.md)**
+    - **[dmn](../x/dmn/spec/README.md)**
     - **[staking](../x/staking/spec/README.md)**

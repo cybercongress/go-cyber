@@ -9,7 +9,7 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	bandwidthtypes "github.com/cybercongress/go-cyber/x/bandwidth/types"
-	crontypes "github.com/cybercongress/go-cyber/x/cron/types"
+	dmntypes "github.com/cybercongress/go-cyber/x/dmn/types"
 	energytypes "github.com/cybercongress/go-cyber/x/energy/types"
 	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
 	ranktypes "github.com/cybercongress/go-cyber/x/rank/types"
@@ -38,7 +38,7 @@ type WasmCustomQuery struct {
 const (
 	WasmQueryRouteGraph     = graphtypes.ModuleName
 	WasmQueryRouteRank      = ranktypes.ModuleName
-	WasmQueryRouteCron      = crontypes.ModuleName
+	WasmQueryRouteDmn       = dmntypes.ModuleName
 	WasmQueryRouteEnergy    = energytypes.ModuleName
 	WasmQueryRouteBandwidth = bandwidthtypes.ModuleName
 )

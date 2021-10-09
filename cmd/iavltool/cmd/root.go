@@ -48,7 +48,7 @@ var appStores = []string{
 	"bandwidth",
 	"energy",
 	"rank",
-	"cron",
+	"dmn",
 	"resources",
 }
 
