@@ -742,7 +742,7 @@ paths:
                       format: byte
       tags:
         - Query
-  /cyber/energy/v1beta1/energy/destination_routed_energy:
+  /cyber/grid/v1beta1/grid/destination_routed_energy:
     get:
       operationId: DestinationRoutedEnergy
       responses:
@@ -797,7 +797,7 @@ paths:
           type: string
       tags:
         - Query
-  /cyber/energy/v1beta1/energy/destination_routes:
+  /cyber/grid/v1beta1/grid/destination_routes:
     get:
       operationId: DestinationRoutes
       responses:
@@ -891,9 +891,9 @@ paths:
           type: string
       tags:
         - Query
-  /cyber/energy/v1beta1/energy/params:
+  /cyber/grid/v1beta1/grid/params:
     get:
-      operationId: EnergyParams
+      operationId: GridParams
       responses:
         '200':
           description: A successful response.
@@ -930,7 +930,7 @@ paths:
                       format: byte
       tags:
         - Query
-  /cyber/energy/v1beta1/energy/route:
+  /cyber/grid/v1beta1/grid/route:
     get:
       operationId: Route
       responses:
@@ -998,7 +998,7 @@ paths:
           type: string
       tags:
         - Query
-  /cyber/energy/v1beta1/energy/routes:
+  /cyber/grid/v1beta1/grid/routes:
     get:
       operationId: Routes
       responses:
@@ -1143,7 +1143,7 @@ paths:
           format: boolean
       tags:
         - Query
-  /cyber/energy/v1beta1/energy/source_routed_energy:
+  /cyber/grid/v1beta1/grid/source_routed_energy:
     get:
       operationId: SourceRoutedEnergy
       responses:
@@ -1198,7 +1198,7 @@ paths:
           type: string
       tags:
         - Query
-  /cyber/energy/v1beta1/energy/source_routes:
+  /cyber/grid/v1beta1/grid/source_routes:
     get:
       operationId: SourceRoutes
       responses:
@@ -1292,7 +1292,7 @@ paths:
           type: string
       tags:
         - Query
-  /cyber/energy/v1beta1/resources/investmint:
+  /cyber/resources/v1beta1/resources/investmint:
     get:
       operationId: Investmint
       responses:
@@ -1358,7 +1358,7 @@ paths:
           format: uint64
       tags:
         - Query
-  /cyber/energy/v1beta1/resources/params:
+  /cyber/resources/v1beta1/resources/params:
     get:
       operationId: ResourcesParams
       responses:
@@ -29521,13 +29521,13 @@ definitions:
 
       NOTE: The amount field is an Int which implements the custom method
       signatures required by gogoproto.
-  cyber.energy.v1beta1.Params:
+  cyber.grid.v1beta1.Params:
     type: object
     properties:
       max_routes:
         type: integer
         format: int64
-  cyber.energy.v1beta1.QueryParamsResponse:
+  cyber.grid.v1beta1.QueryParamsResponse:
     type: object
     properties:
       params:
@@ -29536,7 +29536,7 @@ definitions:
           max_routes:
             type: integer
             format: int64
-  cyber.energy.v1beta1.QueryRouteResponse:
+  cyber.grid.v1beta1.QueryRouteResponse:
     type: object
     properties:
       route:
@@ -29565,7 +29565,7 @@ definitions:
                 method
 
                 signatures required by gogoproto.
-  cyber.energy.v1beta1.QueryRoutedEnergyResponse:
+  cyber.grid.v1beta1.QueryRoutedEnergyResponse:
     type: object
     properties:
       value:
@@ -29582,7 +29582,7 @@ definitions:
 
             NOTE: The amount field is an Int which implements the custom method
             signatures required by gogoproto.
-  cyber.energy.v1beta1.QueryRoutesResponse:
+  cyber.grid.v1beta1.QueryRoutesResponse:
     type: object
     properties:
       routes:
@@ -29638,7 +29638,7 @@ definitions:
                    repeated Bar results = 1;
                    PageResponse page = 2;
            }
-  cyber.energy.v1beta1.Route:
+  cyber.grid.v1beta1.Route:
     type: object
     properties:
       source:
@@ -29661,13 +29661,13 @@ definitions:
 
             NOTE: The amount field is an Int which implements the custom method
             signatures required by gogoproto.
-  cyber.energy.v1beta1.MsgCreateRouteResponse:
+  cyber.grid.v1beta1.MsgCreateRouteResponse:
     type: object
-  cyber.energy.v1beta1.MsgDeleteRouteResponse:
+  cyber.grid.v1beta1.MsgDeleteRouteResponse:
     type: object
-  cyber.energy.v1beta1.MsgEditRouteAliasResponse:
+  cyber.grid.v1beta1.MsgEditRouteAliasResponse:
     type: object
-  cyber.energy.v1beta1.MsgEditRouteResponse:
+  cyber.grid.v1beta1.MsgEditRouteResponse:
     type: object
   cyber.resources.v1beta1.Params:
     type: object

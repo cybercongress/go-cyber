@@ -30,15 +30,15 @@
       }
     },
     {
-      "url": "./tmp-swagger-gen/cyber/energy/v1beta1/query.swagger.json",
+      "url": "./tmp-swagger-gen/cyber/grid/v1beta1/query.swagger.json",
       "operationIds": {
         "rename": {
-          "Params": "EnergyParams"
+          "Params": "GridParams"
         }
       }
     },
     {
-      "url": "./tmp-swagger-gen/cyber/energy/v1beta1/tx.swagger.json"
+      "url": "./tmp-swagger-gen/cyber/grid/v1beta1/tx.swagger.json"
     },
     {
       "url": "./tmp-swagger-gen/cyber/resources/v1beta1/query.swagger.json",
