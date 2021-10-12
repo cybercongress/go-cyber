@@ -836,7 +836,8 @@ func NewApp(
 				SignModeHandler: encodingConfig.TxConfig.SignModeHandler(),
 				SigGasConsumer:  ante.DefaultSigVerificationGasConsumer,
 			},
-			IBCChannelkeeper: app.IBCKeeper.ChannelKeeper,
+			IBCChannelkeeper:    app.IBCKeeper.ChannelKeeper,
+			txCounterStoreKey:   keys[wasm.StoreKey],
 		},
 	)
 	if err != nil {

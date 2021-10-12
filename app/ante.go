@@ -3,6 +3,7 @@ package app
 import (
 	"fmt"
 	"github.com/CosmWasm/wasmd/x/wasm"
+	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -38,6 +39,7 @@ type HandlerOptions struct {
 	HandlerBaseOptions
 
 	IBCChannelkeeper channelkeeper.Keeper
+	txCounterStoreKey sdk.StoreKey
 }
 
 func NewAnteHandler(options HandlerOptions) (sdk.AnteHandler, error) {
@@ -60,19 +62,18 @@ func NewAnteHandler(options HandlerOptions) (sdk.AnteHandler, error) {
 	}
 
 	anteDecorators := []sdk.AnteDecorator{
+		ante.NewSetUpContextDecorator(), // outermost AnteDecorator. SetUpContext must be called first
+		wasmkeeper.NewCountTXDecorator(options.txCounterStoreKey),
 		ante.NewRejectExtensionOptionsDecorator(),
 		//ante.NewMempoolFeeDecorator(),
-		// TODO check to udpate handler
 		NewMempoolFeeDecorator(),
 		ante.NewValidateBasicDecorator(),
 		ante.NewTxTimeoutHeightDecorator(),
 		ante.NewValidateMemoDecorator(options.AccountKeeper),
 		ante.NewConsumeGasForTxSizeDecorator(options.AccountKeeper),
 		//ante.NewDeductFeeDecorator(options.AccountKeeper, options.BankKeeper, options.FeegrantKeeper),
-		// TODO check to udpate handler
 		NewDeductFeeBandRouterDecorator(options.AccountKeeper, options.BankKeeper, options.BandwidthMeter, options.FeegrantKeeper),
-		// SetPubKeyDecorator must be called before all signature verification decorators
-		ante.NewSetPubKeyDecorator(options.AccountKeeper),
+		ante.NewSetPubKeyDecorator(options.AccountKeeper), // SetPubKeyDecorator must be called before all signature verification decorators
 		ante.NewValidateSigCountDecorator(options.AccountKeeper),
 		ante.NewSigGasConsumeDecorator(options.AccountKeeper, sigGasConsumer),
 		ante.NewSigVerificationDecorator(options.AccountKeeper, options.SignModeHandler),
