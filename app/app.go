@@ -608,7 +608,7 @@ func NewApp(
 		Custom: parser.ParseCustom,
 	}
 
-	supportedFeatures := "staking,stargate,cyber"
+	supportedFeatures := "iterator,staking,stargate,cyber"
 	wasmOpts = append(wasmOpts, wasmkeeper.WithQueryPlugins(queryPlugins))
 	wasmOpts = append(wasmOpts, wasmkeeper.WithMessageEncoders(customEncoders))
 
