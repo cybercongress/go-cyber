@@ -16,15 +16,6 @@ func calculateRankCPU(ctx *types.CalculationContext) types.EMState {
 	tolerance := ctx.GetTolerance()
 	dampingFactor := ctx.GetDampingFactor()
 
-	// TODO remove this
-	// for cross debugging with GPU, remove before release
-	// will panic if stakes don't have all accounts
-	//stakesCount := len(ctx.GetStakes())
-	//stakesTest := make([]uint64, stakesCount)
-	//for acc, stake := range ctx.GetStakes() {
-	//	stakesTest[uint64(acc)] = stake
-	//}
-
 	size := ctx.GetCidsCount()
 	if size == 0  || len(ctx.GetStakes()) == 0 {
 		return types.EMState{

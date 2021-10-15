@@ -47,9 +47,10 @@ func calculateRankGPU(ctx *types.CalculationContext, logger log.Logger) types.EM
 	outLinksUsers := make([]uint64, 0)
 
 	// will fail if amount of indexed accounts will not equal all accounts
+	// distribute current flow through all neuron's cyberlinks
 	stakes := make([]uint64, stakesCount)
-	for acc, stake := range ctx.GetStakes() {
-		stakes[uint64(acc)] = stake
+	for neuron, stake := range ctx.GetStakes() {
+		stakes[uint64(neuron)] = stake / ctx.GetNeudegs(neuron)
 	}
 
 	for i := int64(0); i < cidsCount; i++ {
