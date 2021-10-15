@@ -180,6 +180,7 @@ func (bm *BandwidthMeter) AdjustPrice(ctx sdk.Context) {
 			newPrice = sdk.OneDec()
 		}
 		bm.Logger(ctx).Info("Price", "value", newPrice.String())
+		telemetry.SetGauge(float32(newPrice.MulInt64(1000).RoundInt64()), types.ModuleName, "price")
 
 		bm.currentCreditPrice = newPrice
 		bm.StoreBandwidthPrice(ctx, newPrice)
