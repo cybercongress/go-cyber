@@ -78,7 +78,7 @@ func (i *BaseSearchIndex) PutNewRank(rank Rank) {
 
 func (i *BaseSearchIndex) Search(cidNumber graphtypes.CidNumber, page, perPage uint32) ([]RankedCidNumber, uint32, error) {
 
-	i.logger.Info("Search query", "cid", cidNumber, "page", page, "perPage", perPage)
+	i.logger.Info("Search query", "particle", cidNumber, "page", page, "perPage", perPage)
 
 	if i.locked {
 		return nil, 0, errors.New("search index currently unavailable after node restart")

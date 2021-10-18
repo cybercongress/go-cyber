@@ -117,6 +117,9 @@ func (s *StateKeeper) EndBlocker(ctx sdk.Context) {
 	currentCidsCount := s.graphKeeper.GetCidsCount(ctx)
 
 	s.index.PutNewLinks(s.graphIndexedKeeper.GetCurrentBlockNewLinks(ctx))
+	// TODO MergeContextLinks need to be in graph's end blocker
+	// but need to get new links here before nextRankLinks will be updated
+	s.graphIndexedKeeper.MergeContextLinks(ctx)
 
 	blockHasNewLinks := s.graphIndexedKeeper.HasNewLinks(ctx)
 	s.hasNewLinksForPeriod = s.hasNewLinksForPeriod || blockHasNewLinks
