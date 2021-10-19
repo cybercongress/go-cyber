@@ -65,7 +65,7 @@ func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
 
 func (k Keeper) ConvertResource(
 	ctx sdk.Context,
-	agent sdk.AccAddress,
+	neuron sdk.AccAddress,
 	amount sdk.Coin,
 	resource string,
 	length uint64,
@@ -75,7 +75,7 @@ func (k Keeper) ConvertResource(
 		return types.ErrNotAvailablePeriod, sdk.Coin{}
 	}
 
-	if k.bankKeeper.SpendableCoins(ctx, agent).AmountOf(ctypes.SCYB).LT(amount.Amount) {
+	if k.bankKeeper.SpendableCoins(ctx, neuron).AmountOf(ctypes.SCYB).LT(amount.Amount) {
 		return sdkerrors.ErrInsufficientFunds, sdk.Coin{}
 	}
 
@@ -83,11 +83,11 @@ func (k Keeper) ConvertResource(
 		return types.ErrNotAvailablePeriod, sdk.Coin{}
 	}
 
-	err := k.AddTimeLockedCoinsToAccount(ctx, agent, sdk.NewCoins(amount), int64(length))
+	err := k.AddTimeLockedCoinsToAccount(ctx, neuron, sdk.NewCoins(amount), int64(length))
 	if err != nil {
 		return sdkerrors.Wrapf(types.ErrTimeLockCoins, err.Error()), sdk.Coin{}
 	}
-	err, minted := k.Mint(ctx, agent, amount, resource, length)
+	err, minted := k.Mint(ctx, neuron, amount, resource, length)
 	if err != nil {
 		return sdkerrors.Wrapf(types.ErrIssueCoins, err.Error()), sdk.Coin{}
 	}

@@ -37,10 +37,6 @@ func (msg MsgInvestmint) ValidateBasic() error {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, msg.Amount.String())
 	}
 
-	if msg.Amount.Denom != ctypes.SCYB {
-		return sdkerrors.Wrap(ErrInvalidBaseResource, msg.Resource)
-	}
-
 	if msg.Resource != ctypes.VOLT && msg.Resource != ctypes.AMPERE {
 		return sdkerrors.Wrap(ErrResourceNotExist, msg.Resource)
 	}

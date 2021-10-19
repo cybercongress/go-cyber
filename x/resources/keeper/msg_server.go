@@ -4,6 +4,8 @@ import (
 	"context"
 	"github.com/armon/go-metrics"
 	"github.com/cosmos/cosmos-sdk/telemetry"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	ctypes "github.com/cybercongress/go-cyber/types"
 	"strconv"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -24,6 +26,17 @@ func (k msgServer) Investmint(goCtx context.Context, msg *types.MsgInvestmint) (
 	agent, err := sdk.AccAddressFromBech32(msg.Neuron)
 	if err != nil {
 		return nil, err
+	}
+
+	switch msg.Resource {
+	case ctypes.VOLT:
+		if msg.Amount.Denom != k.BaseInvestmintAmountVolt(ctx).Denom {
+			return nil, sdkerrors.Wrap(types.ErrInvalidBaseResource, msg.Amount.Denom)
+		}
+	case ctypes.AMPERE:
+		if msg.Amount.Denom != k.BaseInvestmintAmountAmpere(ctx).Denom {
+			return nil, sdkerrors.Wrap(types.ErrInvalidBaseResource, msg.Amount.Denom)
+		}
 	}
 
 	err, minted := k.ConvertResource(ctx, agent, msg.Amount, msg.Resource, msg.Length)
