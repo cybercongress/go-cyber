@@ -1,5 +1,7 @@
 # Cyber - SuperIntelligence for The Great Web
 
+## Bostrom Launch 5 November ~13.20 GMT
+
 <div align="center">
  <img src="https://ipfs.io/ipfs/QmXcZz6tgnFSdF9agDpFYgGa7PRg5R2JiyGaYQvT5cSK91" width="800" />
 </div>
