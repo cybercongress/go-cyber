@@ -10,7 +10,7 @@ COMMIT := $(shell git log -1 --format='%H')
 TM_VERSION := $(shell go list -m github.com/tendermint/tendermint | sed 's:.* ::') # grab everything after the space in "github.com/tendermint/tendermint v0.34.7"
 
 BINDIR ?= $(GOPATH)/bin
-BUILDDIR ?= $(CURDIR)/build
+BUILDDIR ?= $(CURDIR)/build/
 
 include contrib/devtools/Makefile
 
