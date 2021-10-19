@@ -22,6 +22,10 @@ func NewCybCoin(amount int64) sdk.Coin {
 	return sdk.NewInt64Coin(CYB, amount)
 }
 
+func NewSCybCoin(amount int64) sdk.Coin {
+	return sdk.NewInt64Coin(SCYB, amount)
+}
+
 func NewVoltCoin(amount int64) sdk.Coin {
 	return sdk.NewInt64Coin(VOLT, amount)
 }

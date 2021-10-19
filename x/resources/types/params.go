@@ -167,7 +167,7 @@ func validateBaseInvestmintAmountVolt(i interface{}) error {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 
-	if v.IsLT(ctypes.NewCybCoin(ctypes.Mega*10)) {
+	if v.IsLT(ctypes.NewSCybCoin(ctypes.Mega*10)) {
 		return fmt.Errorf("base investmint amount for Volt must be more than 10000000: %d", v)
 	}
 
@@ -180,7 +180,7 @@ func validateBaseInvestmintAmountAmpere(i interface{}) error {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 
-	if v.IsLT(ctypes.NewCybCoin(ctypes.Mega*10)) {
+	if v.IsLT(ctypes.NewSCybCoin(ctypes.Mega*10)) {
 		return fmt.Errorf("base investmint amount for Ampere must be more than 10000000: %d", v)
 	}
 
