@@ -70,7 +70,7 @@ func (k Keeper) ConvertResource(
 	resource string,
 	length uint64,
 ) (error, sdk.Coin) {
-	periodAvailableFlag := k.CheckAvailablePeriod(ctx, length)
+	periodAvailableFlag := k.CheckAvailablePeriod(ctx, length, resource)
 	if periodAvailableFlag == false {
 		return types.ErrNotAvailablePeriod, sdk.Coin{}
 	}
@@ -313,6 +313,10 @@ func (k Keeper) CalculateInvestmint(ctx sdk.Context, amt sdk.Coin, resource stri
 		base := sdk.NewDec(amt.Amount.Int64()).QuoInt64(k.BaseInvestmintAmountVolt(ctx).Amount.Int64())
 		halving := sdk.NewDecWithPrec(int64(math.Pow(0.5, float64(ctx.BlockHeight() / int64(k.BaseHalvingPeriodVolt(ctx))))*10000),4)
 
+		if halving.LT(sdk.NewDecWithPrec(1, 2)) {
+			halving = sdk.NewDecWithPrec(1, 2)
+		}
+
 		toMint = ctypes.NewVoltCoin(base.Mul(cycles).Mul(halving).Mul(sdk.NewDec(1000)).TruncateInt64())
 
 		k.Logger(ctx).Info("Investmint", "cycles", cycles.String(), "base", base.String(), "halving", halving.String(), "mint", toMint.String())
@@ -322,6 +326,10 @@ func (k Keeper) CalculateInvestmint(ctx sdk.Context, amt sdk.Coin, resource stri
 		base := sdk.NewDec(amt.Amount.Int64()).QuoInt64(k.BaseInvestmintAmountAmpere(ctx).Amount.Int64())
 		halving := sdk.NewDecWithPrec(int64(math.Pow(0.5, float64(ctx.BlockHeight() / int64(k.BaseHalvingPeriodAmpere(ctx))))*10000),4)
 
+		if halving.LT(sdk.NewDecWithPrec(1, 2)) {
+			halving = sdk.NewDecWithPrec(1, 2)
+		}
+
 		toMint = ctypes.NewAmpereCoin(base.Mul(cycles).Mul(halving).Mul(sdk.NewDec(1000)).TruncateInt64())
 
 		k.Logger(ctx).Info("Investmint", "cycles", cycles.String(), "base", base.String(), "halving", halving.String(), "mint", toMint.String())
@@ -329,31 +337,23 @@ func (k Keeper) CalculateInvestmint(ctx sdk.Context, amt sdk.Coin, resource stri
 	return toMint
 }
 
-func (k Keeper) CheckAvailablePeriod(ctx sdk.Context, length uint64) bool {
+func (k Keeper) CheckAvailablePeriod(ctx sdk.Context, length uint64, resource string) bool {
 	var availableLength int64
 	passed := ctx.BlockHeight()
 
-	// TODO this is mocked available periods for testnet-5
-	switch {
-	case passed > 90000:
-		// after 90000 blocks available 7 days
-		availableLength = 604800
-	case passed > 75000:
-		// after 75000 blocks available 6 days
-		availableLength = 518400
-	case passed > 60000:
-		// after 60000 blocks available 5 days
-		availableLength = 432000
-	case passed > 45000:
-		// after 45000 blocks available 4 days
-		availableLength = 345600
-	case passed > 30000:
-		// after 30000 blocks available 3 days
-		availableLength = 259200
-	default:
-		// before 30000 blocks available 2 days
-		availableLength = 172800
+	// assuming 5 seconds block
+	switch resource {
+	case ctypes.VOLT:
+		halvingVolt := k.BaseHalvingPeriodVolt(ctx)
+		doubling := uint32(math.Pow(2, float64(passed / int64(halvingVolt))))
+		availableLength = int64(doubling * halvingVolt * 5)
+
+	case ctypes.AMPERE:
+		halvingAmpere := k.BaseHalvingPeriodAmpere(ctx)
+		doubling := uint32(math.Pow(2, float64(passed / int64(halvingAmpere))))
+		availableLength = int64(doubling * halvingAmpere * 5)
 	}
+
 	return length < uint64(availableLength)
 }
 
