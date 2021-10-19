@@ -8,10 +8,12 @@ ENV GO_ARCH 'linux-amd64'
 ENV GO_BIN_SHA 'dab7d9c34361dc21ec237d584590d72500652e7c909bf082758fb63064fca0ef'
 ENV DAEMON_HOME /root/.cyber
 ENV DAEMON_RESTART_AFTER_UPGRADE=on
+ENV DAEMON_LOG_BUFFER_SIZE=1048
+ENV UNSAFE_SKIP_BACKUP=true
 ENV GAIA_HOME ${DAEMON_HOME}
 ENV DAEMON_NAME cyber
 ENV BUILD_DIR /build
-ENV COSMWASM_VER "0.16.1"
+ENV COSMWASM_VER "1.0.0-soon2"
 ENV PATH /usr/local/go/bin:/root/.cargo/bin:/root/cargo/env:/root/.cyber/scripts:$PATH
 
 
@@ -80,17 +82,6 @@ RUN make build CUDA_ENABLED=true \
  && rm -rf ./build \
  && git reset --hard
 
-
- # Compile cyberd for AI-DEX upgrade version
-###########################################################################################
-
-#WORKDIR /sources
-# TODO: Update brach to master before merge\relaese
-#RUN git checkout  v0.2.0-beta5 \
-# && make build CUDA_ENABLED=true \
-# && chmod +x ./build/cyber \
-# && cp ./build/cyber /cyber/cosmovisor/upgrades/AI-DEX/bin 
-
 ###########################################################################################
 # Create runtime cyber image
 ###########################################################################################
@@ -108,7 +99,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends wget curl ca-ce
 # Download genesis file and links file from IPFS
 ###########################################################################################
 # PUT correct CID_OF_GENESIS here
-RUN wget -O /genesis.json https://gateway.ipfs.cybernode.ai/ipfs/QmPtHR1ee3s4PsSqHqpfQv68raHgk2W4XV9uvnUgnLkMSP
+RUN wget -O /genesis.json https://gateway.ipfs.cybernode.ai/ipfs/Qmc7j9C5Uc1tkcgHQqMC52TtFugdkmJzHSSdZa2NHfk1to
 
 WORKDIR /
 
