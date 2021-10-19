@@ -4,17 +4,16 @@
 ## Prepare your server
 
 First of all, you should set up a server.
-Your node should be running (online) constantly. This means that you will need a reliable server to keep it running.
-You may also consider using any cloud service with a dedicated GPU, like Hetzner (or use a local machine). Whatever you'll choose, for better stability and consistency we recommend to use a dedicated server for each validator node.
+Your node should be online constantly. This means that you will need a reliable server.
+You may also consider using any cloud service with a dedicated GPU, like Hetzner, Cherryservers etc. (or use a local machine). Whatever you'll choose, for better stability and consistency we recommend to use a dedicated server for each validator node.
 
-Cyberd is based on Cosmos-SDK and is written in Go.
+Cyber is based on Cosmos-SDK and is written in Go.
 It should work on any platform which can compile and run programs in Go.
 However, we strongly recommend running the validator node on a Linux-based server.
 
-The rank calculations are done via GPU computations.
-They are easy to parallelize. This is why we recommended using a GPU.
+Cyber-rank computations are performed on GPU, so it is required to have it(GPU) on-board your node.
 
-Recommended requirements:
+Recommended hardware setup:
 
 ```js
 CPU: 6 cores
@@ -25,25 +24,25 @@ GPU: Nvidia GeForce (or Tesla/Titan/Quadro) with CUDA-cores; 4+ Gb of video memo
 Software: Ubuntu 18.04 LTS / 20.04 LTS
 ```
 
-*Cyber runs well on consumer-grade cards like Geforce GTX 1070, but we expect load growth and advise to use Error Correction compatible cards from Tesla or Quadro families. Also, make sure your card is compatible with >=v.410 of NVIDIA drivers.*
+*Cyber runs well on consumer-grade cards like Geforce GTX 1070, but we expect load growth and advise to use Error Correction compatible cards from Tesla or Quadro families. Also, make sure your card is compatible with >= v.410 of NVIDIA driver.*
 
-Of course, the hardware is your own choice and technically it might be possible to run the node on "even - 1 CUDA core GPU", but you should be aware of stability drop and rank calculation speed decline .
+Of course, the hardware is your own choice and technically it might be possible to run the node on *"even - 1 CUDA core GPU"*, but you should be aware of performance drop and rank calculation speed decline.
 
 ## Node setup
 
-*To avoid possible misconfiguration issues and simplify the setup of `$ENV`, we recommend to perform all the commands as `root` (here root - is literally root, not just a user with root priveliges)*
+*To avoid possible misconfiguration issues and simplify the setup of `$ENV`, we recommend to perform all the commands as `root` (here root - is literally root, not just a user with root priveliges). For the case of dedicated server for cybernode it should be concidered as ok from the security side.*
 
 ### Third-party software
 
-You may skip any sections of the guide if you already have any of the necessary software configured. 
+The main distribution unit for Cyber is a [docker](https://www.docker.com/) container. All images are located in the default [Dockerhub registry](https://hub.docker.com/r/cyberd/cyber). In order to access the GPU from the container, Nvidia driver version **410+** and [Nvidia docker runtime](https://github.com/NVIDIA/nvidia-docker) should be installed on the host system.
 
-The main distribution unit for Cyber is a [docker](https://www.docker.com/) container. All images are located in the default [Dockerhub registry](https://hub.docker.com/r/cyberd/cyber). In order to access the GPU from the container, Nvidia drivers version **410+** and [Nvidia docker runtime](https://github.com/NVIDIA/nvidia-docker) should be installed on the host system.
+All commands below suppose `amd64` arcitecture, for the different arcitectures commands may differ accordingly.
 
 ### Docker installation
 
-Simply, copy the commands below into your CLI.
+Simply, copy the commands below and paste into CLI.
 
-1. Update the apt package index:
+1. Update the `apt` package index:
 
 ```bash
 sudo apt-get update
@@ -52,7 +51,7 @@ sudo apt-get update
 2. Install packages to allow apt to use a repository over HTTPS:
 
 ```bash
-sudo apt-get install \
+sudo apt install -y \
      apt-transport-https \
      ca-certificates \
      curl \
@@ -76,34 +75,24 @@ sudo add-apt-repository \
 4. Update the apt package index:
 
 ```bash
-sudo apt-get update
+sudo apt update
 ```
 
-5. Install the latest version of Docker CE and containerd or skip to the next step to install a specific version (as of Nov 2019 version 19.03 is required):
+5. Install the latest version of Docker CE and containerd:
 
 ```bash
 sudo apt-get install docker-ce docker-ce-cli containerd.io
 ```
 
-If you don’t want to preface docker commands with sudo create a Unix group called docker and add users to that group. When the Docker daemon starts it creates a Unix socket accessible by members of the docker group.
-
-6. Create the docker group:
+6. Reboot the system for the changes to take effect.
 
 ```bash
-sudo groupadd docker
+sudo reboot
 ```
-
-7. Add your user to the docker group:
-
-```bash
-sudo usermod -aG docker $YOUR-USER-NAME
-```
-
-8. Reboot the system for the changes to take effect.
 
 ### Installing Nvidia drivers
 
-1. To proceed, first, add the `ppa:graphics-drivers/ppa` repository into your system (you might see some warnings - press `enter`):
+1. To proceed, first add the `ppa:graphics-drivers/ppa` repository:
 
 ```bash
 sudo add-apt-repository ppa:graphics-drivers/ppa
@@ -119,7 +108,7 @@ sudo apt update
 sudo apt install -y ubuntu-drivers-common
 ```
 
-3. Next, identify your graphic card model and the recommended drivers:
+3. Next check what are recommended drivers for your card:
 
 ```bash
 ubuntu-drivers devices
@@ -133,17 +122,20 @@ modalias : pci:v000010DEd00001BA1sv00001462sd000011E4bc03sc00i00
 vendor   : NVIDIA Corporation
 model    : GP104M [GeForce GTX 1070 Mobile]
 driver   : nvidia-driver-418 - third-party free
-driver   : nvidia-driver-410 - third-party free
 driver   : nvidia-driver-430 - third-party free
-driver   : nvidia-driver-440 - third-party free recommended
+driver   : nvidia-driver-440 - third-party free
+driver   : nvidia-driver-460 - third-party free recommended
 driver   : xserver-xorg-video-nouveau - distro free builtin
 ```
 
-4. We need the **410+** drivers release. As you can see that v440 is recommended. The command below will install the recommended version of the drivers:
+4. We need the **410+** drivers release. As you can see that v460 is recommended. The command below will install the recommended version of the drivers:
 
 ```bash
 sudo ubuntu-drivers autoinstall
 ```
+
+To install specific version of driver use `sudo apt install nvidia-driver-460`
+
 
 The driver installation takes approximately 10 minutes.
 
@@ -152,25 +144,29 @@ DKMS: install completed.
 Setting up libxdamage1:i386 (1:1.1.4-3) ...
 Setting up libxext6:i386 (2:1.3.3-1) ...
 Setting up libxfixes3:i386 (1:5.0.3-1) ...
-Setting up libnvidia-decode-415:i386 (415.27-0ubuntu0~gpu18.04.1) ...
+Setting up libnvidia-decode-415:i386 (460.84-0ubuntu0~gpu18.04.1) ...
 Setting up build-essential (12.4ubuntu1) ...
-Setting up libnvidia-gl-415:i386 (415.27-0ubuntu0~gpu18.04.1) ...
-Setting up libnvidia-encode-415:i386 (415.27-0ubuntu0~gpu18.04.1) ...
-Setting up nvidia-driver-415 (415.27-0ubuntu0~gpu18.04.1) ...
+Setting up libnvidia-gl-415:i386 (460.84-0ubuntu0~gpu18.04.1) ...
+Setting up libnvidia-encode-415:i386 (460.84-0ubuntu0~gpu18.04.1) ...
+Setting up nvidia-driver-415 (460.84-0ubuntu0~gpu18.04.1) ...
 Setting up libxxf86vm1:i386 (1:1.1.4-1) ...
 Setting up libglx-mesa0:i386 (18.0.5-0ubuntu0~18.04.1) ...
 Setting up libglx0:i386 (1.0.0-2ubuntu2.2) ...
 Setting up libgl1:i386 (1.0.0-2ubuntu2.2) ...
-Setting up libnvidia-ifr1-415:i386 (415.27-0ubuntu0~gpu18.04.1) ...
-Setting up libnvidia-fbc1-415:i386 (415.27-0ubuntu0~gpu18.04.1) ...
+Setting up libnvidia-ifr1-415:i386 (460.84-0ubuntu0~gpu18.04.1) ...
+Setting up libnvidia-fbc1-415:i386 (460.84-0ubuntu0~gpu18.04.1) ...
 Processing triggers for libc-bin (2.27-3ubuntu1) ...
 Processing triggers for initramfs-tools (0.130ubuntu3.1) ...
 update-initramfs: Generating /boot/initrd.img-4.15.0-45-generic
 ```
 
-**Reboot** the system for the changes to take effect.
+5. **Reboot** the system for the changes to take effect.
 
-5. Check the installed drivers:
+```bash
+sudo reboot
+```
+
+6. Check the installed drivers:
 
 ```bash
 nvidia-smi
@@ -181,7 +177,7 @@ You should see this:
 
 ```bash
 +-----------------------------------------------------------------------------+
-| NVIDIA-SMI 440.26       Driver Version: 430.14       CUDA Version: 10.2     |
+| NVIDIA-SMI 460.84       Driver Version: 460.84       CUDA Version: 11.2     |
 |-------------------------------+----------------------+----------------------+
 | GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
 | Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
@@ -217,9 +213,9 @@ curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.li
 You should see something like this:
 
 ```bash
-deb https://nvidia.github.io/libnvidia-container/ubuntu18.04/$(ARCH) /
-deb https://nvidia.github.io/nvidia-container-runtime/ubuntu18.04/$(ARCH) /
-deb https://nvidia.github.io/nvidia-docker/ubuntu18.04/$(ARCH) /
+deb https://nvidia.github.io/libnvidia-container/ubuntu20.04/$(ARCH) /
+deb https://nvidia.github.io/nvidia-container-runtime/ubuntu20.04/$(ARCH) /
+deb https://nvidia.github.io/nvidia-docker/ubuntu20.04/$(ARCH) /
 ```
 
 2. Install nvidia-container toolkit and reload the Docker daemon configuration
@@ -230,7 +226,6 @@ sudo apt-get update && sudo apt-get install -y nvidia-container-toolkit
 
 ```bash
 sudo systemctl restart docker
-
 ```
 
 3. Test nvidia-smi with the latest official CUDA image
@@ -275,10 +270,10 @@ Mon Jun 21 14:07:52 2021
 +------------------------------------------------------------------------+
 ```
 
-Your machine is ready to launch the fullnode.
+Your machine is ready to launch the node.
 
 
-### Launching Cyberd fullnode
+### Launching cyber fullnode
 
 Make a directory tree for storing your daemon:
 
@@ -293,39 +288,49 @@ mkdir $HOME/.cyber/config
 (This will pull and extract the image from cyberd/cyber)
 
 ```bash
-docker run -d --gpus all --name=bostrom-testnet-5 --restart always -p 26656:26656 -p 26657:26657 -p 1317:1317 -e ALLOW_SEARCH=true -v $HOME/.cyber:/root/.cyber  cyberd/cyber:bostrom-testnet-5.1
+docker run -d --gpus all --name=bostrom-testnet-6 --restart always -p 26656:26656 -p 26657:26657 -p 1317:1317 -e ALLOW_SEARCH=true -v $HOME/.cyber:/root/.cyber  cyberd/cyber:bostrom-testnet-6
 ```
 
-3. After container successfully pulled and launched, check the status of your node:
+3. Setup some peers to `persistent_peers` and `seeds` of $HOME/.cyber/config/config.toml line 184:
+
 
 ```bash
-docker exec bostrom-testnet-5 cyber status
+# Comma separated list of seed nodes to connect to
+seeds = ""
+
+# Comma separated list of nodes to keep persistent connections to
+persistent_peers = ""
+```
+
+For peers addresses please refer to appropriate section of [networks](https://github.com/cybercongress/networks) repo.
+When done, please restart container using:
+
+4. To apply config changes restart the container:
+
+```bash
+docker restart bostrom-testnet-6
+```
+
+5. Then check the status of your node:
+
+```bash
+docker exec bostrom-testnet-6 cyber status
 ```
 
 A possible output may look like this:
 
 ```bash
-{"NodeInfo":{"protocol_version":{"p2p":"8","block":"11","app":"0"},"id":"808a3773d8adabc78bca6ef8d6b2ee20456bfbcb","listen_addr":"tcp://86.57.207.105:26656","network":"bostromdev-2","version":"","channels":"40202122233038606100","moniker":"node1234","other":
-{"tx_index":"on","rpc_address":"tcp://0.0.0.0:26657"}},"SyncInfo":{"latest_block_hash":"241BA3E744A9024A2D04BDF4CE7CF4985D7922054B38AF258712027D0854E930","latest_app_hash":"5BF4B64508A95984F017BD6C29012FE5E66ADCB367D06345EE1EB2ED18314437","latest_block_height":"52829",
+{"NodeInfo":{"protocol_version":{"p2p":"8","block":"11","app":"0"},"id":"808a3773d8adabc78bca6ef8d6b2ee20456bfbcb","listen_addr":"tcp://86.57.207.105:26656","network":"bostrom","version":"","channels":"40202122233038606100","moniker":"node1234","other":
+{"tx_index":"on","rpc_address":"tcp://0.0.0.0:26657"}},"SyncInfo":{"latest_block_hash":"241BA3E744A9024A2D04BDF4CE7CF4985D7922054B38AF258712027D0854E930","latest_app_hash":"5BF4B64508A95984F017BD6C29012FE5E66ADCB367D06345EE1EB2ED18314437","latest_block_height":"521",
 "latest_block_time":"2021-06-21T14:21:41.817756021Z","earliest_block_hash":"98DD3065543108F5EBEBC45FAAAEA868B3C84426572BE9FDA2E3F1C49A2C0CE8","earliest_app_hash":"E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855","earliest_block_height":"1",
 "earliest_block_time":"2021-06-10T00:00:00Z","catching_up":false},"ValidatorInfo":{"Address":"611C9F3568E7341155DBF0546795BF673FD84EB1","PubKey":{"type":"tendermint/PubKeyEd25519","value":"0iGriT3gyRJXQXR/98c+2MTAhChIo5F5v7FfPmOAH5o="},"VotingPower":"0"}}
 
 ```
 
-4. Setup some peers to `persistent_peers` or `seeds` of $HOME/.cyber/config/config.toml:
-
-For peers addresses please refer to [README](/README.md)
-
-When done, please restart container using:
+To check container logs use:
 
 ```bash
-docker restart bostrom-testnet-5
-```
-
-To ckeck logs of the syncing process in the terminal use:
-
-```bash
-docker logs bostrom-testnet-5 -f --tail 10
+docker logs bostrom-testnet-6 -f --tail 10
 ```
 
 ## Validator start
@@ -334,79 +339,55 @@ After your node has successfully synced, you can run a validator.
 
 ### Prepare the staking address
 
-1. To proceed further you need to add your address to node, or generete one and fund it. 
+1. To proceed further you need to add your existing address to the node, or generete one and fund it. 
 Please checkout if you're eligible for cyber Gift: **TODO add link to gift**
 Or use our [port](https://cyber.page/brain) to enter cyber.
 
-To create a new one use:
+To **create** a new one use:
 
 ```bash
-docker exec -ti bostrom-testnet-5 cyber keys add <your_key_name>
+docker exec -ti bostrom-testnet-6 cyber keys add <your_key_name>
 ```
 
-To import existing address use: 
-
-```bash
-docker exec -ti bostrom-testnet-5 cyber keys add <your_key_name> --recover
-```
-
-It also possible to import address from Ethereum private key:
-
-```bash
-docker exec -ti bostrom-testnet-5 cyber keys add import_private <your_key_name>
-```
-
-You could use your ledger device with the Cosmos app installed on it to sign and store cyber addresses:
-
-```bash
-docker exec -ti bostrom-testnet-5 cyber keys add <your_key_name> --ledger
-```
-
-**<your_key_name>** is any name you pick to represent this key pair.
-You have to refer to this parameter <your_key_name> later, when you use the keys to sign transactions.
-
-The command returns the address, a public key and a seed phrase, which you can use to
+The above command returns the address, the public key and the seed phrase, which you can use to
 recover your account if you forget your password later.
 
 **Keep you seed phrase safe. Your keys is only your responsibility!**
 
-#### Faucet usage
-
-If you dont have any tokens on your account, you may get some using our fauset. Use following command, but replace address to your own:
+To **import** existing address use: 
 
 ```bash
-curl --header "Content-Type: application/json" --request POST --data '{"denom":"boot","address":"bostrom1r7mdq9pfsampca35flpxdqve4qpqf084wa6swq"}' http://titan.cybernode.ai:8000/credit
+docker exec -ti bostrom-testnet-6 cyber keys add <your_key_name> --recover
 ```
 
+You could use your **ledger** device with the Cosmos app installed on it to sign transactions. Add address from Ledger:
+
+```bash
+docker exec -ti bostrom-testnet-6 cyber keys add <your_key_name> --ledger
+```
+
+**<your_key_name>** is any name you pick to represent this key pair.
+You have to refer to that name later, when you use cli to sign transactions.
 
 ### Send the create validator transaction
 
-Validators are actors on the network committing to new blocks by submitting their votes.
+Validators are actors on the network committing new blocks by submitting their votes.
 This refers to the node itself, not a single person or a single account.
-Therefore, the public key here is referring to the nodes public key,
-not the public key of the address you have just created.
 
-To get the nodes public key, run the following command:
-
-```bash
-docker exec bostrom-testnet-5 cyber tendermint show-validator
-```
-
-It will return a bech32 public key. Let’s call it **<your_node_pubkey>**.
 The next step is to to declare a validator candidate.
 To declare a validator candidate, run the following command adjusting the stake amount and the other fields:
 
 ```bash
-docker exec -ti bostrom-testnet-5 cyber tx staking create-validator \
+docker exec -ti bostrom-testnet-6 cyber tx staking create-validator \
   --amount=10000000boot \
   --min-self-delegation "1000000" \
-  --pubkey=<your_node_pubkey> \
+  --pubkey=$(docker exec -ti bostrom-testnet-6 cyber tendermint show-validator) \
   --moniker=<your_node_nickname> \
   --from=<your_key_name> \
   --commission-rate="0.10" \
   --commission-max-rate="0.20" \
   --commission-max-change-rate="0.01" \
-  --chain-id=bostrom-testnet-5 \
+  --chain-id=bostrom-testnet-6 \
   --gas-prices 0.01boot \
   --gas 600000
 ```
@@ -414,7 +395,7 @@ docker exec -ti bostrom-testnet-5 cyber tx staking create-validator \
 ### Verify that you are validating
 
 ```bash
-docker exec -ti bostrom-testnet-5 cyber query staking validators
+docker exec -ti bostrom-testnet-6 cyber query staking validators
 ```
 
 If you see your `<your_node_nickname>` with status `Bonded` and Jailed `false` everything is good.
@@ -428,7 +409,7 @@ If your validator got under slashing conditions, it will be jailed.
 After such event, an operator must unjail the validator manually:
 
 ```bash
-docker exec -ti bostrom-testnet-5 cyber tx slashing unjail --from=<your_key_name> --chain-id bostrom-testnet-5 --gas-prices 0.01boot --gas 300000
+docker exec -ti bostrom-testnet-6 cyber tx slashing unjail --from=<your_key_name> --chain-id bostrom-testnet-6 --gas-prices 0.01boot --gas 300000
 ```
 
 ### Back-up validator keys (!)
