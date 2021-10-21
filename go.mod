@@ -3,8 +3,8 @@ module github.com/cybercongress/go-cyber
 go 1.17
 
 require (
-	github.com/CosmWasm/wasmd v0.20.0-rc1
-	github.com/CosmWasm/wasmvm v1.0.0-soon2
+	github.com/CosmWasm/wasmd v0.20.0
+	github.com/CosmWasm/wasmvm v1.0.0-beta
 	github.com/armon/go-metrics v0.3.9
 	github.com/cosmos/cosmos-sdk v0.44.2
 	github.com/cosmos/iavl v0.17.1
