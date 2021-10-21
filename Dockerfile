@@ -13,7 +13,7 @@ ENV UNSAFE_SKIP_BACKUP=true
 ENV GAIA_HOME ${DAEMON_HOME}
 ENV DAEMON_NAME cyber
 ENV BUILD_DIR /build
-ENV COSMWASM_VER "1.0.0-soon2"
+ENV COSMWASM_VER "1.0.0-beta"
 ENV PATH /usr/local/go/bin:/root/.cargo/bin:/root/cargo/env:/root/.cyber/scripts:$PATH
 
 
