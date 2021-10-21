@@ -9,16 +9,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/msgservice"
 )
 
-func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(&MsgCreateThought{}, "cyber/MsgCreateThought", nil)
-	cdc.RegisterConcrete(&MsgForgetThought{}, "cyber/MsgForgetThought", nil)
-	cdc.RegisterConcrete(&MsgChangeThoughtParticle{}, "cyber/MsgChangeThoughtParticle", nil)
-	cdc.RegisterConcrete(&MsgChangeThoughtName{}, "cyber/MsgChangeThoughtName", nil)
-	cdc.RegisterConcrete(&MsgChangeThoughtCallData{}, "cyber/MsgChangeThoughtCallData", nil)
-	cdc.RegisterConcrete(&MsgChangeThoughtGasPrice{}, "cyber/MsgChangeThoughtGasPrice", nil)
-	cdc.RegisterConcrete(&MsgChangeThoughtPeriod{}, "cyber/MsgChangeThoughtPeriod", nil)
-	cdc.RegisterConcrete(&MsgChangeThoughtBlock{}, "cyber/MsgChangeThoughtBlock", nil)
-}
+func RegisterLegacyAminoCodec(_ *codec.LegacyAmino) {}
 
 func RegisterInterfaces(registry types.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
