@@ -6,14 +6,13 @@ require (
 	github.com/CosmWasm/wasmd v0.20.0
 	github.com/CosmWasm/wasmvm v1.0.0-beta
 	github.com/armon/go-metrics v0.3.9
-	github.com/cosmos/cosmos-sdk v0.44.2
+	github.com/cosmos/cosmos-sdk v0.44.3
 	github.com/cosmos/iavl v0.17.1
 	github.com/cosmos/ibc-go v1.2.2
 	github.com/dvsekhvalnov/jose2go v1.5.0 // indirect
 	github.com/gogo/protobuf v1.3.3
 	github.com/golang/protobuf v1.5.2
 	github.com/gorilla/mux v1.8.0
-	github.com/gravity-devs/liquidity v1.4.0
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
 	github.com/ipfs/go-cid v0.0.7
 	github.com/prometheus/client_golang v1.11.0
@@ -23,6 +22,7 @@ require (
 	github.com/spf13/viper v1.9.0
 	github.com/stretchr/testify v1.7.0
 	github.com/syndtr/goleveldb v1.0.1-0.20200815110645-5c35d600f0ca
+	github.com/tendermint/liquidity v1.4.1-rc1
 	github.com/tendermint/tendermint v0.34.14
 	github.com/tendermint/tm-db v0.6.4
 	google.golang.org/genproto v0.0.0-20210828152312-66f60bf46e71
@@ -136,3 +136,7 @@ require (
 replace github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
 
 replace github.com/CosmWasm/wasmd => github.com/cybercongress/wasmd v0.21.0
+
+replace github.com/cosmos/cosmos-sdk => github.com/cosmos/cosmos-sdk v0.44.3
+
+replace github.com/tendermint/tendermint => github.com/tendermint/tendermint v0.34.14

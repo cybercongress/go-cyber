@@ -30,9 +30,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/grpc/tmservice"
 	ctypes "github.com/cybercongress/go-cyber/types"
 	"github.com/gorilla/mux"
-	"github.com/gravity-devs/liquidity/x/liquidity"
-	liquiditykeeper "github.com/gravity-devs/liquidity/x/liquidity/keeper"
-	liquiditytypes "github.com/gravity-devs/liquidity/x/liquidity/types"
+	"github.com/tendermint/liquidity/x/liquidity"
+	liquiditykeeper "github.com/tendermint/liquidity/x/liquidity/keeper"
+	liquiditytypes "github.com/tendermint/liquidity/x/liquidity/types"
 	"github.com/rakyll/statik/fs"
 
 	wasmplugins "github.com/cybercongress/go-cyber/plugins"
