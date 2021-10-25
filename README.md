@@ -45,9 +45,12 @@ _____________
 [![version](https://img.shields.io/github/release/cybercongress/cyberd.svg?style=flat-square)](https://github.com/cybercongress/cyberd/releases/latest)
 [![CircleCI](https://img.shields.io/circleci/build/github/cybercongress/go-cyber/master?style=flat-square)](https://circleci.com/gh/cybercongress/workflows/go-cyber/tree/master)
 [![license](https://img.shields.io/badge/License-Cyber-brightgreen.svg?style=flat-square)](https://github.com/cybercongress/cyberd/blob/master/LICENSE)
-![Cosmos-SDK](https://img.shields.io/static/v1.svg?label=cosmos-sdk&message=0.42.9&color=blue&style=flat-square)
-![Tendermint](https://img.shields.io/static/v1.svg?label=tendermint&message=0.34.13&color=blue&style=flat-square)
-![Tendermint](https://img.shields.io/static/v1.svg?label=cosmwasm&message=0.16.1&color=blue&style=flat-square)
+[![contributors](https://img.shields.io/github/contributors/cybercongress/cyberd.svg?style=flat-square)](https://github.com/cybercongress/cyberd/graphs/contributors)
+![Cosmos-SDK](https://img.shields.io/static/v1.svg?label=cosmos-sdk&message=0.44.3&color=blue&style=flat-square)
+![Tendermint](https://img.shields.io/static/v1.svg?label=tendermint&message=0.34.14&color=blue&style=flat-square)
+![CosmWasm](https://img.shields.io/static/v1.svg?label=cosmwasm&message=1.0.0-beta&color=blue&style=flat-square)
+![IBC](https://img.shields.io/static/v1.svg?label=ibc-go&message=1.2.2&color=blue&style=flat-square)
+![Liquidity](https://img.shields.io/static/v1.svg?label=liquidity&message=1.4.1&color=blue&style=flat-square)
 [![LoC](https://tokei.rs/b1/github/cybercongress/cyberd?style=flat)](https://github.com/cybercongress/cyberd)
 [![contributors](https://img.shields.io/github/contributors/cybercongress/cyberd.svg?style=flat-square)](https://github.com/cybercongress/cyberd/graphs/contributors)
 [![Coverage Status](https://img.shields.io/coveralls/github/cybercongress/cyberd/master?style=flat-square)](https://coveralls.io/github/cybercongress/cyberd?branch=master)
@@ -56,8 +59,8 @@ _____________
 
 [![chain](https://img.shields.io/badge/Chain-bostrom--testnet--5-success.svg?style=flat-square)](https://github.com/cybercongress/cyberd/blob/master/docs/run_validator.md)
 [![block](https://img.shields.io/badge/dynamic/json?color=blue&label=Block%20Height&query=%24.result.sync_info.latest_block_height&url=https://rpc.bostromdev.cybernode.ai/status&style=flat-square)]()
-[![cyberlinks](https://img.shields.io/badge/dynamic/json?color=blue&label=Cyberlinks&query=%24.result.links&url=https://lcd.bostromdev.cybernode.ai/graph/graph_stats&style=flat-square)]()
-[![particles](https://img.shields.io/badge/dynamic/json?color=blue&label=Particles&query=%24.result.cids&url=https://lcd.bostromdev.cybernode.ai/graph/graph_stats&style=flat-square)]()
+[![cyberlinks](https://img.shields.io/badge/dynamic/json?color=blue&label=Cyberlinks&query=%24.result.cyberlinks&url=https://lcd.bostromdev.cybernode.ai/graph/graph_stats&style=flat-square)]()
+[![particles](https://img.shields.io/badge/dynamic/json?color=blue&label=Particles&query=%24.result.particles&url=https://lcd.bostromdev.cybernode.ai/graph/graph_stats&style=flat-square)]()
 [![negentropy](https://img.shields.io/badge/dynamic/json?color=blue&label=-Entropy&query=%24.result.negentropy&url=https://lcd.bostromdev.cybernode.ai/rank/negentropy&style=flat-square)]()
 [![validators](https://img.shields.io/badge/dynamic/json?label=Validators&query=%24.result.validators.length&url=https://rpc.bostromdev.cybernode.ai/validators%3F&style=flat-square)]()
 _________________________________________________________
@@ -65,8 +68,8 @@ _________________________________________________________
 ## Networks
 |Network|Cosmos|Hub|Launch|Security Token| Resources Token|Bandwidth Token| Power Token | Supported Tokens |
 |---|---|---|---|---|---|---|---|---|
-|Bostrom|🟢|Bootloader Hub|2021|BOOT |HYDROGEN|VOLT|AMPER|[ICS20, CW20, CW721, CW1155]|
-|Cyber|🔵|Cyber Hub|2022|CYB|HYDROGEN|VOLT|AMPER|[ICS20, CW20, CW721, CW1155]|
+|Bostrom|🟢|Canary -> Bootloader Hub|2021|BOOT |HYDROGEN|VOLT|AMPER|[ICS20, CW20, CW721, CW1155]|
+|Cyber|🔵|Cyber Hub|TBA|CYB|HYDROGEN|VOLT|AMPER|[ICS20, CW20, CW721, CW1155]|
 _________________________________________________________
 
 ## Computer Specification 🛠
