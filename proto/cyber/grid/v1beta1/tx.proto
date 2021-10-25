@@ -11,7 +11,7 @@ service Msg{
     rpc CreateRoute(MsgCreateRoute) returns (MsgCreateRouteResponse);
     rpc EditRoute(MsgEditRoute) returns (MsgEditRouteResponse);
     rpc DeleteRoute(MsgDeleteRoute) returns (MsgDeleteRouteResponse);
-    rpc EditRouteAlias(MsgEditRouteAlias) returns (MsgEditRouteAliasResponse);
+    rpc EditRouteName(MsgEditRouteName) returns (MsgEditRouteNameResponse);
 }
 
 message MsgCreateRoute {
@@ -20,7 +20,7 @@ message MsgCreateRoute {
 
     string source      = 1;
     string destination = 2;
-    string alias       = 3;
+    string name        = 3;
 }
 
 message MsgEditRoute {
@@ -43,16 +43,16 @@ message MsgDeleteRoute {
     string destination = 2;
 }
 
-message MsgEditRouteAlias {
+message MsgEditRouteName {
     option (gogoproto.equal)           = false;
     option (gogoproto.goproto_getters) = false;
 
     string source      = 1;
     string destination = 2;
-    string alias       = 3;
+    string name        = 3;
 }
 
 message MsgCreateRouteResponse {}
 message MsgEditRouteResponse {}
 message MsgDeleteRouteResponse {}
-message MsgEditRouteAliasResponse {}
+message MsgEditRouteNameResponse {}

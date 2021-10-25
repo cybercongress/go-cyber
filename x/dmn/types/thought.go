@@ -65,7 +65,7 @@ func NewStats (
 
 func NewLoad (calldata string, gasprice sdk.Coin) Load {
 	return Load{
-		CallData: calldata,
+		Input:    calldata,
 		GasPrice: gasprice,
 	}
 }

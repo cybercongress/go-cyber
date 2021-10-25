@@ -19,7 +19,7 @@ message Route {
 
     string source                           = 1;
     string destination                      = 2;
-    string alias                            = 3;
+    string name                             = 3;
     repeated cosmos.base.v1beta1.Coin value = 4 [
         (gogoproto.nullable) = false,
         (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"

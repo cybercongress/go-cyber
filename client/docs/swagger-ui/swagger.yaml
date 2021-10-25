@@ -566,9 +566,9 @@ paths:
                       format: byte
       tags:
         - Query
-  '/cyber/bandwidth/v1beta1/bandwidth/neuron/{address}':
+  '/cyber/bandwidth/v1beta1/bandwidth/neuron/{neuron}':
     get:
-      operationId: Neuron
+      operationId: NeuronBandwidth
       responses:
         '200':
           description: A successful response.
@@ -612,7 +612,7 @@ paths:
                       type: string
                       format: byte
       parameters:
-        - name: address
+        - name: neuron
           in: path
           required: true
           type: string
@@ -815,7 +815,7 @@ paths:
                       type: string
                     destination:
                       type: string
-                    alias:
+                    name:
                       type: string
                     value:
                       type: array
@@ -946,7 +946,7 @@ paths:
                     type: string
                   destination:
                     type: string
-                  alias:
+                  name:
                     type: string
                   value:
                     type: array
@@ -1016,7 +1016,7 @@ paths:
                       type: string
                     destination:
                       type: string
-                    alias:
+                    name:
                       type: string
                     value:
                       type: array
@@ -1216,7 +1216,7 @@ paths:
                       type: string
                     destination:
                       type: string
-                    alias:
+                    name:
                       type: string
                     value:
                       type: array
@@ -1513,7 +1513,7 @@ paths:
                   load:
                     type: object
                     properties:
-                      call_data:
+                      input:
                         type: string
                       gas_price:
                         type: object
@@ -1657,7 +1657,7 @@ paths:
                     load:
                       type: object
                       properties:
-                        call_data:
+                        input:
                           type: string
                         gas_price:
                           type: object
@@ -29374,7 +29374,16 @@ definitions:
       max_block_bandwidth:
         type: string
         format: uint64
-  cyber.bandwidth.v1beta1.QueryAccountResponse:
+  cyber.bandwidth.v1beta1.QueryLoadResponse:
+    type: object
+    properties:
+      load:
+        type: object
+        properties:
+          dec:
+            type: string
+        description: DecProto defines a Protobuf wrapper around a Dec object.
+  cyber.bandwidth.v1beta1.QueryNeuronBandwidthResponse:
     type: object
     properties:
       neuron_bandwidth:
@@ -29391,15 +29400,6 @@ definitions:
           max_value:
             type: string
             format: uint64
-  cyber.bandwidth.v1beta1.QueryLoadResponse:
-    type: object
-    properties:
-      load:
-        type: object
-        properties:
-          dec:
-            type: string
-        description: DecProto defines a Protobuf wrapper around a Dec object.
   cyber.bandwidth.v1beta1.QueryParamsResponse:
     type: object
     properties:
@@ -29546,7 +29546,7 @@ definitions:
             type: string
           destination:
             type: string
-          alias:
+          name:
             type: string
           value:
             type: array
@@ -29594,7 +29594,7 @@ definitions:
               type: string
             destination:
               type: string
-            alias:
+            name:
               type: string
             value:
               type: array
@@ -29645,7 +29645,7 @@ definitions:
         type: string
       destination:
         type: string
-      alias:
+      name:
         type: string
       value:
         type: array
@@ -29665,7 +29665,7 @@ definitions:
     type: object
   cyber.grid.v1beta1.MsgDeleteRouteResponse:
     type: object
-  cyber.grid.v1beta1.MsgEditRouteAliasResponse:
+  cyber.grid.v1beta1.MsgEditRouteNameResponse:
     type: object
   cyber.grid.v1beta1.MsgEditRouteResponse:
     type: object
@@ -29788,7 +29788,7 @@ definitions:
   cyber.dmn.v1beta1.Load:
     type: object
     properties:
-      call_data:
+      input:
         type: string
       gas_price:
         type: object
@@ -29849,7 +29849,7 @@ definitions:
           load:
             type: object
             properties:
-              call_data:
+              input:
                 type: string
               gas_price:
                 type: object
@@ -29914,7 +29914,7 @@ definitions:
             load:
               type: object
               properties:
-                call_data:
+                input:
                   type: string
                 gas_price:
                   type: object
@@ -29976,7 +29976,7 @@ definitions:
       load:
         type: object
         properties:
-          call_data:
+          input:
             type: string
           gas_price:
             type: object
@@ -30027,9 +30027,9 @@ definitions:
         format: uint64
   cyber.dmn.v1beta1.MsgChangeThoughtBlockResponse:
     type: object
-  cyber.dmn.v1beta1.MsgChangeThoughtCallDataResponse:
-    type: object
   cyber.dmn.v1beta1.MsgChangeThoughtGasPriceResponse:
+    type: object
+  cyber.dmn.v1beta1.MsgChangeThoughtInputResponse:
     type: object
   cyber.dmn.v1beta1.MsgChangeThoughtNameResponse:
     type: object

@@ -33,7 +33,7 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 type MsgCreateRoute struct {
 	Source      string `protobuf:"bytes,1,opt,name=source,proto3" json:"source,omitempty"`
 	Destination string `protobuf:"bytes,2,opt,name=destination,proto3" json:"destination,omitempty"`
-	Alias       string `protobuf:"bytes,3,opt,name=alias,proto3" json:"alias,omitempty"`
+	Name        string `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
 }
 
 func (m *MsgCreateRoute) Reset()         { *m = MsgCreateRoute{} }
@@ -146,24 +146,24 @@ func (m *MsgDeleteRoute) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgDeleteRoute proto.InternalMessageInfo
 
-type MsgEditRouteAlias struct {
+type MsgEditRouteName struct {
 	Source      string `protobuf:"bytes,1,opt,name=source,proto3" json:"source,omitempty"`
 	Destination string `protobuf:"bytes,2,opt,name=destination,proto3" json:"destination,omitempty"`
-	Alias       string `protobuf:"bytes,3,opt,name=alias,proto3" json:"alias,omitempty"`
+	Name        string `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
 }
 
-func (m *MsgEditRouteAlias) Reset()         { *m = MsgEditRouteAlias{} }
-func (m *MsgEditRouteAlias) String() string { return proto.CompactTextString(m) }
-func (*MsgEditRouteAlias) ProtoMessage()    {}
-func (*MsgEditRouteAlias) Descriptor() ([]byte, []int) {
+func (m *MsgEditRouteName) Reset()         { *m = MsgEditRouteName{} }
+func (m *MsgEditRouteName) String() string { return proto.CompactTextString(m) }
+func (*MsgEditRouteName) ProtoMessage()    {}
+func (*MsgEditRouteName) Descriptor() ([]byte, []int) {
 	return fileDescriptor_c3762e80adb8270a, []int{3}
 }
-func (m *MsgEditRouteAlias) XXX_Unmarshal(b []byte) error {
+func (m *MsgEditRouteName) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgEditRouteAlias) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgEditRouteName) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgEditRouteAlias.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgEditRouteName.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -173,17 +173,17 @@ func (m *MsgEditRouteAlias) XXX_Marshal(b []byte, deterministic bool) ([]byte, e
 		return b[:n], nil
 	}
 }
-func (m *MsgEditRouteAlias) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgEditRouteAlias.Merge(m, src)
+func (m *MsgEditRouteName) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgEditRouteName.Merge(m, src)
 }
-func (m *MsgEditRouteAlias) XXX_Size() int {
+func (m *MsgEditRouteName) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgEditRouteAlias) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgEditRouteAlias.DiscardUnknown(m)
+func (m *MsgEditRouteName) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgEditRouteName.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgEditRouteAlias proto.InternalMessageInfo
+var xxx_messageInfo_MsgEditRouteName proto.InternalMessageInfo
 
 type MsgCreateRouteResponse struct {
 }
@@ -293,21 +293,21 @@ func (m *MsgDeleteRouteResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgDeleteRouteResponse proto.InternalMessageInfo
 
-type MsgEditRouteAliasResponse struct {
+type MsgEditRouteNameResponse struct {
 }
 
-func (m *MsgEditRouteAliasResponse) Reset()         { *m = MsgEditRouteAliasResponse{} }
-func (m *MsgEditRouteAliasResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgEditRouteAliasResponse) ProtoMessage()    {}
-func (*MsgEditRouteAliasResponse) Descriptor() ([]byte, []int) {
+func (m *MsgEditRouteNameResponse) Reset()         { *m = MsgEditRouteNameResponse{} }
+func (m *MsgEditRouteNameResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgEditRouteNameResponse) ProtoMessage()    {}
+func (*MsgEditRouteNameResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_c3762e80adb8270a, []int{7}
 }
-func (m *MsgEditRouteAliasResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgEditRouteNameResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgEditRouteAliasResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgEditRouteNameResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgEditRouteAliasResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgEditRouteNameResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -317,62 +317,62 @@ func (m *MsgEditRouteAliasResponse) XXX_Marshal(b []byte, deterministic bool) ([
 		return b[:n], nil
 	}
 }
-func (m *MsgEditRouteAliasResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgEditRouteAliasResponse.Merge(m, src)
+func (m *MsgEditRouteNameResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgEditRouteNameResponse.Merge(m, src)
 }
-func (m *MsgEditRouteAliasResponse) XXX_Size() int {
+func (m *MsgEditRouteNameResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgEditRouteAliasResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgEditRouteAliasResponse.DiscardUnknown(m)
+func (m *MsgEditRouteNameResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgEditRouteNameResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgEditRouteAliasResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgEditRouteNameResponse proto.InternalMessageInfo
 
 func init() {
 	proto.RegisterType((*MsgCreateRoute)(nil), "cyber.grid.v1beta1.MsgCreateRoute")
 	proto.RegisterType((*MsgEditRoute)(nil), "cyber.grid.v1beta1.MsgEditRoute")
 	proto.RegisterType((*MsgDeleteRoute)(nil), "cyber.grid.v1beta1.MsgDeleteRoute")
-	proto.RegisterType((*MsgEditRouteAlias)(nil), "cyber.grid.v1beta1.MsgEditRouteAlias")
+	proto.RegisterType((*MsgEditRouteName)(nil), "cyber.grid.v1beta1.MsgEditRouteName")
 	proto.RegisterType((*MsgCreateRouteResponse)(nil), "cyber.grid.v1beta1.MsgCreateRouteResponse")
 	proto.RegisterType((*MsgEditRouteResponse)(nil), "cyber.grid.v1beta1.MsgEditRouteResponse")
 	proto.RegisterType((*MsgDeleteRouteResponse)(nil), "cyber.grid.v1beta1.MsgDeleteRouteResponse")
-	proto.RegisterType((*MsgEditRouteAliasResponse)(nil), "cyber.grid.v1beta1.MsgEditRouteAliasResponse")
+	proto.RegisterType((*MsgEditRouteNameResponse)(nil), "cyber.grid.v1beta1.MsgEditRouteNameResponse")
 }
 
 func init() { proto.RegisterFile("cyber/grid/v1beta1/tx.proto", fileDescriptor_c3762e80adb8270a) }
 
 var fileDescriptor_c3762e80adb8270a = []byte{
-	// 461 bytes of a gzipped FileDescriptorProto
+	// 459 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x54, 0x4f, 0x6b, 0xd4, 0x40,
-	0x14, 0x4f, 0x5c, 0x5a, 0xec, 0x8b, 0x14, 0x1c, 0x96, 0x25, 0x4d, 0x21, 0x59, 0x02, 0x62, 0x11,
-	0x76, 0x86, 0xd6, 0x9b, 0x37, 0x5b, 0x05, 0x2f, 0x7b, 0x09, 0x82, 0x20, 0x14, 0xcc, 0x9f, 0x71,
-	0x1c, 0xdd, 0xcd, 0x2c, 0x99, 0x49, 0x69, 0xef, 0x1e, 0x3c, 0xfa, 0x11, 0xfa, 0x21, 0xfc, 0x10,
-	0x3d, 0xf6, 0xe8, 0xa9, 0xc8, 0xee, 0xc5, 0xcf, 0xe0, 0x49, 0x32, 0xb3, 0x89, 0x53, 0xeb, 0xb2,
-	0x42, 0xe9, 0x29, 0x99, 0xf9, 0xfd, 0xe6, 0xbd, 0xdf, 0xfc, 0xde, 0x9b, 0x07, 0xbb, 0xf9, 0x59,
-	0x46, 0x2b, 0xc2, 0x2a, 0x5e, 0x90, 0x93, 0xfd, 0x8c, 0xaa, 0x74, 0x9f, 0xa8, 0x53, 0x3c, 0xab,
-	0x84, 0x12, 0x08, 0x69, 0x10, 0x37, 0x20, 0x5e, 0x82, 0x41, 0x9f, 0x09, 0x26, 0x34, 0x4c, 0x9a,
-	0x3f, 0xc3, 0x0c, 0xc2, 0x5c, 0xc8, 0xa9, 0x90, 0x24, 0x4b, 0x25, 0xed, 0xe2, 0xe4, 0x82, 0x97,
-	0x06, 0x8f, 0x3f, 0xc2, 0xf6, 0x58, 0xb2, 0xa3, 0x8a, 0xa6, 0x8a, 0x26, 0xa2, 0x56, 0x14, 0x0d,
-	0x60, 0x53, 0x8a, 0xba, 0xca, 0xa9, 0xef, 0x0e, 0xdd, 0xbd, 0xad, 0x64, 0xb9, 0x42, 0x43, 0xf0,
-	0x0a, 0x2a, 0x15, 0x2f, 0x53, 0xc5, 0x45, 0xe9, 0xdf, 0xd3, 0xa0, 0xbd, 0x85, 0xfa, 0xb0, 0x91,
-	0x4e, 0x78, 0x2a, 0xfd, 0x9e, 0xc6, 0xcc, 0xe2, 0xd9, 0xfd, 0x2f, 0xe7, 0x91, 0xf3, 0xf3, 0x3c,
-	0x72, 0xe2, 0x6f, 0x2e, 0x3c, 0x18, 0x4b, 0xf6, 0xb2, 0xe0, 0xea, 0xb6, 0xa9, 0xde, 0xc1, 0xc6,
-	0x49, 0x3a, 0xa9, 0xa9, 0x4e, 0xe5, 0x1d, 0xec, 0x60, 0x73, 0x4d, 0xdc, 0x5c, 0xb3, 0x75, 0x04,
-	0x1f, 0x09, 0x5e, 0x1e, 0x92, 0x8b, 0xab, 0xc8, 0xf9, 0x75, 0x15, 0x3d, 0x66, 0x5c, 0x7d, 0xa8,
-	0x33, 0x9c, 0x8b, 0x29, 0x59, 0x7a, 0x62, 0x3e, 0x23, 0x59, 0x7c, 0x22, 0xea, 0x6c, 0x46, 0xa5,
-	0x3e, 0x90, 0x98, 0xc0, 0x96, 0xec, 0xd7, 0xda, 0xa2, 0x17, 0x74, 0x42, 0x6f, 0x6d, 0x91, 0x15,
-	0x75, 0x0a, 0x0f, 0x6d, 0x2f, 0x9e, 0x37, 0x5e, 0xdd, 0xa1, 0xf7, 0x3e, 0x0c, 0xae, 0xd7, 0x39,
-	0xa1, 0x72, 0x26, 0x4a, 0x49, 0xe3, 0x01, 0xf4, 0x6d, 0x21, 0xdd, 0xbe, 0x39, 0x61, 0x5d, 0xbb,
-	0x43, 0x76, 0x61, 0xe7, 0x86, 0xf4, 0x16, 0x3c, 0xf8, 0xdc, 0x83, 0xde, 0x58, 0x32, 0x74, 0x0c,
-	0x9e, 0xdd, 0x55, 0x31, 0xbe, 0xd9, 0xb2, 0xf8, 0xba, 0xa2, 0xe0, 0xc9, 0x7a, 0x4e, 0x9b, 0x06,
-	0xbd, 0x81, 0xad, 0x3f, 0x7d, 0x34, 0x5c, 0x71, 0xb0, 0x63, 0x04, 0x7b, 0xeb, 0x18, 0x5d, 0xe0,
-	0x63, 0xf0, 0xec, 0x52, 0xaf, 0xd2, 0x6d, 0x71, 0x56, 0xea, 0xfe, 0x87, 0x77, 0xe8, 0x3d, 0x6c,
-	0xff, 0x55, 0xf3, 0x47, 0xeb, 0xa4, 0x69, 0x5a, 0x30, 0xfa, 0x2f, 0x5a, 0x9b, 0xe7, 0xf0, 0xd5,
-	0xc5, 0x3c, 0x74, 0x2f, 0xe7, 0xa1, 0xfb, 0x63, 0x1e, 0xba, 0x5f, 0x17, 0xa1, 0x73, 0xb9, 0x08,
-	0x9d, 0xef, 0x8b, 0xd0, 0x79, 0x8b, 0xed, 0x87, 0xd0, 0x84, 0xcc, 0x45, 0xc9, 0x2a, 0x2a, 0x25,
-	0x61, 0x62, 0x64, 0x86, 0xce, 0xa9, 0x19, 0x3b, 0xfa, 0x51, 0x64, 0x9b, 0x7a, 0x50, 0x3c, 0xfd,
-	0x1d, 0x00, 0x00, 0xff, 0xff, 0x12, 0xf4, 0x0f, 0x18, 0x91, 0x04, 0x00, 0x00,
+	0x14, 0x4f, 0x5c, 0x2d, 0xf6, 0x45, 0x45, 0x86, 0xb2, 0xc4, 0x08, 0xc9, 0x12, 0x04, 0x8b, 0xd8,
+	0x19, 0x5a, 0x6f, 0x1e, 0x5b, 0x05, 0x2f, 0xeb, 0x21, 0x08, 0x82, 0x50, 0x30, 0x7f, 0x86, 0x69,
+	0xb4, 0xc9, 0x2c, 0x99, 0x49, 0x69, 0x8f, 0xde, 0x3c, 0xfa, 0x11, 0xf6, 0x43, 0xf8, 0x21, 0xf6,
+	0xb8, 0x47, 0x4f, 0x8b, 0xec, 0x5e, 0xfc, 0x0c, 0x9e, 0x24, 0x33, 0x9b, 0x38, 0xab, 0x2e, 0x2b,
+	0x2c, 0x3d, 0x65, 0x32, 0xbf, 0xdf, 0xbc, 0xf7, 0x9b, 0xdf, 0x7b, 0xf3, 0xe0, 0x61, 0x7a, 0x95,
+	0xd0, 0x8a, 0xb0, 0x2a, 0xcf, 0xc8, 0xc5, 0x61, 0x42, 0x65, 0x7c, 0x48, 0xe4, 0x25, 0x1e, 0x55,
+	0x5c, 0x72, 0x84, 0x14, 0x88, 0x1b, 0x10, 0x2f, 0x41, 0x6f, 0x8f, 0x71, 0xc6, 0x15, 0x4c, 0x9a,
+	0x95, 0x66, 0x7a, 0x7e, 0xca, 0x45, 0xc1, 0x05, 0x49, 0x62, 0x41, 0xbb, 0x38, 0x29, 0xcf, 0x4b,
+	0x8d, 0x87, 0x67, 0x70, 0x6f, 0x28, 0xd8, 0x49, 0x45, 0x63, 0x49, 0x23, 0x5e, 0x4b, 0x8a, 0xfa,
+	0xb0, 0x23, 0x78, 0x5d, 0xa5, 0xd4, 0xb5, 0x07, 0xf6, 0xfe, 0x6e, 0xb4, 0xfc, 0x43, 0x03, 0x70,
+	0x32, 0x2a, 0x64, 0x5e, 0xc6, 0x32, 0xe7, 0xa5, 0x7b, 0x43, 0x81, 0xe6, 0x16, 0x42, 0x70, 0xb3,
+	0x8c, 0x0b, 0xea, 0xf6, 0x14, 0xa4, 0xd6, 0xcf, 0x6f, 0x7f, 0x1e, 0x07, 0xd6, 0x8f, 0x71, 0x60,
+	0x85, 0x5f, 0x6d, 0xb8, 0x33, 0x14, 0xec, 0x65, 0x96, 0xcb, 0x6d, 0x13, 0xbd, 0x87, 0x5b, 0x17,
+	0xf1, 0x79, 0xad, 0x33, 0x39, 0x47, 0x0f, 0xb0, 0xbe, 0x24, 0x6e, 0x2e, 0xd9, 0xfa, 0x81, 0x4f,
+	0x78, 0x5e, 0x1e, 0x93, 0xc9, 0x2c, 0xb0, 0x7e, 0xce, 0x82, 0xc7, 0x2c, 0x97, 0x67, 0x75, 0x82,
+	0x53, 0x5e, 0x90, 0xa5, 0x23, 0xfa, 0x73, 0x20, 0xb2, 0x8f, 0x44, 0x5e, 0x8d, 0xa8, 0x50, 0x07,
+	0x22, 0x1d, 0xd8, 0x90, 0xfd, 0x46, 0x19, 0xf4, 0x82, 0x9e, 0xd3, 0xad, 0x0d, 0x32, 0xa2, 0x7e,
+	0x80, 0xfb, 0xa6, 0x17, 0xaf, 0xe3, 0xe2, 0xfa, 0x8c, 0x77, 0xa1, 0xbf, 0x5a, 0xe2, 0x88, 0x8a,
+	0x11, 0x2f, 0x05, 0x0d, 0xfb, 0xb0, 0x67, 0xaa, 0xe8, 0xf6, 0xf5, 0x09, 0xe3, 0xce, 0x1d, 0xe2,
+	0x81, 0xfb, 0xa7, 0xee, 0x16, 0x3b, 0xfa, 0xd4, 0x83, 0xde, 0x50, 0x30, 0x74, 0x0a, 0x8e, 0xd9,
+	0x4f, 0x21, 0xfe, 0xbb, 0x59, 0xf1, 0xaa, 0x20, 0xef, 0xc9, 0x66, 0x4e, 0x9b, 0x06, 0xbd, 0x85,
+	0xdd, 0xdf, 0x3d, 0x34, 0x58, 0x73, 0xb0, 0x63, 0x78, 0xfb, 0x9b, 0x18, 0x5d, 0xe0, 0x53, 0x70,
+	0xcc, 0x32, 0xaf, 0xd3, 0x6d, 0x70, 0xd6, 0xea, 0xfe, 0x87, 0x75, 0x28, 0x85, 0xbb, 0xab, 0xf5,
+	0x7e, 0xb4, 0x49, 0x59, 0xc3, 0xf2, 0x9e, 0xfe, 0x0f, 0xab, 0x4d, 0x72, 0xfc, 0x6a, 0x32, 0xf7,
+	0xed, 0xe9, 0xdc, 0xb7, 0xbf, 0xcf, 0x7d, 0xfb, 0xcb, 0xc2, 0xb7, 0xa6, 0x0b, 0xdf, 0xfa, 0xb6,
+	0xf0, 0xad, 0x77, 0xd8, 0x7c, 0x01, 0x4d, 0xc4, 0x94, 0x97, 0xac, 0xa2, 0x42, 0x10, 0xc6, 0x0f,
+	0xf4, 0xac, 0xb9, 0xd4, 0xd3, 0x46, 0xbd, 0x86, 0x64, 0x47, 0xcd, 0x87, 0x67, 0xbf, 0x02, 0x00,
+	0x00, 0xff, 0xff, 0x83, 0x2a, 0x12, 0x10, 0x88, 0x04, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -390,7 +390,7 @@ type MsgClient interface {
 	CreateRoute(ctx context.Context, in *MsgCreateRoute, opts ...grpc.CallOption) (*MsgCreateRouteResponse, error)
 	EditRoute(ctx context.Context, in *MsgEditRoute, opts ...grpc.CallOption) (*MsgEditRouteResponse, error)
 	DeleteRoute(ctx context.Context, in *MsgDeleteRoute, opts ...grpc.CallOption) (*MsgDeleteRouteResponse, error)
-	EditRouteAlias(ctx context.Context, in *MsgEditRouteAlias, opts ...grpc.CallOption) (*MsgEditRouteAliasResponse, error)
+	EditRouteName(ctx context.Context, in *MsgEditRouteName, opts ...grpc.CallOption) (*MsgEditRouteNameResponse, error)
 }
 
 type msgClient struct {
@@ -428,9 +428,9 @@ func (c *msgClient) DeleteRoute(ctx context.Context, in *MsgDeleteRoute, opts ..
 	return out, nil
 }
 
-func (c *msgClient) EditRouteAlias(ctx context.Context, in *MsgEditRouteAlias, opts ...grpc.CallOption) (*MsgEditRouteAliasResponse, error) {
-	out := new(MsgEditRouteAliasResponse)
-	err := c.cc.Invoke(ctx, "/cyber.grid.v1beta1.Msg/EditRouteAlias", in, out, opts...)
+func (c *msgClient) EditRouteName(ctx context.Context, in *MsgEditRouteName, opts ...grpc.CallOption) (*MsgEditRouteNameResponse, error) {
+	out := new(MsgEditRouteNameResponse)
+	err := c.cc.Invoke(ctx, "/cyber.grid.v1beta1.Msg/EditRouteName", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -442,7 +442,7 @@ type MsgServer interface {
 	CreateRoute(context.Context, *MsgCreateRoute) (*MsgCreateRouteResponse, error)
 	EditRoute(context.Context, *MsgEditRoute) (*MsgEditRouteResponse, error)
 	DeleteRoute(context.Context, *MsgDeleteRoute) (*MsgDeleteRouteResponse, error)
-	EditRouteAlias(context.Context, *MsgEditRouteAlias) (*MsgEditRouteAliasResponse, error)
+	EditRouteName(context.Context, *MsgEditRouteName) (*MsgEditRouteNameResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
@@ -458,8 +458,8 @@ func (*UnimplementedMsgServer) EditRoute(ctx context.Context, req *MsgEditRoute)
 func (*UnimplementedMsgServer) DeleteRoute(ctx context.Context, req *MsgDeleteRoute) (*MsgDeleteRouteResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteRoute not implemented")
 }
-func (*UnimplementedMsgServer) EditRouteAlias(ctx context.Context, req *MsgEditRouteAlias) (*MsgEditRouteAliasResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method EditRouteAlias not implemented")
+func (*UnimplementedMsgServer) EditRouteName(ctx context.Context, req *MsgEditRouteName) (*MsgEditRouteNameResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EditRouteName not implemented")
 }
 
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
@@ -520,20 +520,20 @@ func _Msg_DeleteRoute_Handler(srv interface{}, ctx context.Context, dec func(int
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_EditRouteAlias_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgEditRouteAlias)
+func _Msg_EditRouteName_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgEditRouteName)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).EditRouteAlias(ctx, in)
+		return srv.(MsgServer).EditRouteName(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/cyber.grid.v1beta1.Msg/EditRouteAlias",
+		FullMethod: "/cyber.grid.v1beta1.Msg/EditRouteName",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).EditRouteAlias(ctx, req.(*MsgEditRouteAlias))
+		return srv.(MsgServer).EditRouteName(ctx, req.(*MsgEditRouteName))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -555,8 +555,8 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_DeleteRoute_Handler,
 		},
 		{
-			MethodName: "EditRouteAlias",
-			Handler:    _Msg_EditRouteAlias_Handler,
+			MethodName: "EditRouteName",
+			Handler:    _Msg_EditRouteName_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -583,10 +583,10 @@ func (m *MsgCreateRoute) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.Alias) > 0 {
-		i -= len(m.Alias)
-		copy(dAtA[i:], m.Alias)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Alias)))
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Name)))
 		i--
 		dAtA[i] = 0x1a
 	}
@@ -691,7 +691,7 @@ func (m *MsgDeleteRoute) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgEditRouteAlias) Marshal() (dAtA []byte, err error) {
+func (m *MsgEditRouteName) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -701,20 +701,20 @@ func (m *MsgEditRouteAlias) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgEditRouteAlias) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgEditRouteName) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgEditRouteAlias) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgEditRouteName) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.Alias) > 0 {
-		i -= len(m.Alias)
-		copy(dAtA[i:], m.Alias)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Alias)))
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Name)))
 		i--
 		dAtA[i] = 0x1a
 	}
@@ -804,7 +804,7 @@ func (m *MsgDeleteRouteResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) 
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgEditRouteAliasResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgEditRouteNameResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -814,12 +814,12 @@ func (m *MsgEditRouteAliasResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgEditRouteAliasResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgEditRouteNameResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgEditRouteAliasResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgEditRouteNameResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -852,7 +852,7 @@ func (m *MsgCreateRoute) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
-	l = len(m.Alias)
+	l = len(m.Name)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
@@ -895,7 +895,7 @@ func (m *MsgDeleteRoute) Size() (n int) {
 	return n
 }
 
-func (m *MsgEditRouteAlias) Size() (n int) {
+func (m *MsgEditRouteName) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -909,7 +909,7 @@ func (m *MsgEditRouteAlias) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
-	l = len(m.Alias)
+	l = len(m.Name)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
@@ -943,7 +943,7 @@ func (m *MsgDeleteRouteResponse) Size() (n int) {
 	return n
 }
 
-func (m *MsgEditRouteAliasResponse) Size() (n int) {
+func (m *MsgEditRouteNameResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1053,7 +1053,7 @@ func (m *MsgCreateRoute) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Alias", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1081,7 +1081,7 @@ func (m *MsgCreateRoute) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Alias = string(dAtA[iNdEx:postIndex])
+			m.Name = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -1365,7 +1365,7 @@ func (m *MsgDeleteRoute) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgEditRouteAlias) Unmarshal(dAtA []byte) error {
+func (m *MsgEditRouteName) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1388,10 +1388,10 @@ func (m *MsgEditRouteAlias) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgEditRouteAlias: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgEditRouteName: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgEditRouteAlias: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgEditRouteName: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1460,7 +1460,7 @@ func (m *MsgEditRouteAlias) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Alias", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1488,7 +1488,7 @@ func (m *MsgEditRouteAlias) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Alias = string(dAtA[iNdEx:postIndex])
+			m.Name = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -1661,7 +1661,7 @@ func (m *MsgDeleteRouteResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgEditRouteAliasResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgEditRouteNameResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1684,10 +1684,10 @@ func (m *MsgEditRouteAliasResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgEditRouteAliasResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgEditRouteNameResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgEditRouteAliasResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgEditRouteNameResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:

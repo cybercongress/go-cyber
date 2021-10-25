@@ -36,7 +36,7 @@ func (WasmMsgParser) Parse(_ sdk.AccAddress, _ wasmTypes.CosmosMsg) ([]sdk.Msg, 
 type CosmosMsg struct {
 	CreateThought         *types.MsgCreateThought         `json:"create_thought,omitempty"`
 	ForgetThought         *types.MsgForgetThought         `json:"forget_thought,omitempty"`
-	ChangeThoughtCallData *types.MsgChangeThoughtCallData `json:"change_thought_call_data,omitempty"`
+	ChangeThoughtInput    *types.MsgChangeThoughtInput    `json:"change_thought_input,omitempty"`
 	ChangeThoughtPeriod   *types.MsgChangeThoughtPeriod   `json:"change_thought_period,omitempty"`
 	ChangeThoughtBlock    *types.MsgChangeThoughtBlock    `json:"change_thought_block,omitempty"`
 	ChangeThoughtGasPrice *types.MsgChangeThoughtGasPrice `json:"change_thought_gas_price,omitempty"`
@@ -55,8 +55,8 @@ func (WasmMsgParser) ParseCustom(contractAddr sdk.AccAddress, data json.RawMessa
 		return []sdk.Msg{sdkMsg.CreateThought}, sdkMsg.CreateThought.ValidateBasic()
 	} else if sdkMsg.ForgetThought != nil {
 		return []sdk.Msg{sdkMsg.ForgetThought}, sdkMsg.ForgetThought.ValidateBasic()
-	} else if sdkMsg.ChangeThoughtCallData != nil {
-		return []sdk.Msg{sdkMsg.ChangeThoughtCallData}, sdkMsg.ChangeThoughtCallData.ValidateBasic()
+	} else if sdkMsg.ChangeThoughtInput != nil {
+		return []sdk.Msg{sdkMsg.ChangeThoughtInput}, sdkMsg.ChangeThoughtInput.ValidateBasic()
 	} else if sdkMsg.ChangeThoughtPeriod != nil {
 		return []sdk.Msg{sdkMsg.ChangeThoughtPeriod}, sdkMsg.ChangeThoughtPeriod.ValidateBasic()
 	} else if sdkMsg.ChangeThoughtBlock != nil {
@@ -101,7 +101,7 @@ type Trigger struct {
 }
 
 type Load struct {
-	CallData string `json:"call_data"`
+	Input    string           `json:"input"`
 	GasPrice wasmvmtypes.Coin `json:"gas_price"`
 }
 
@@ -190,7 +190,7 @@ func (querier WasmQuerier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([
 
 func convertLoadToWasmLoad(load types.Load) Load {
 	return Load{
-		load.CallData,
+		load.Input,
 		wasmplugins.ConvertSdkCoinToWasmCoin(load.GasPrice),
 	}
 }

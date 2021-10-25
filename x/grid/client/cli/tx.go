@@ -27,7 +27,7 @@ func NewTxCmd() *cobra.Command {
 		GetCmdCreateRoute(),
 		GetCmdEditRoute(),
 		GetCmdDeleteRoute(),
-		GetCmdEditRouteAlias(),
+		GetCmdEditRouteName(),
 	)
 
 	return gridTxCmd
@@ -35,9 +35,9 @@ func NewTxCmd() *cobra.Command {
 
 func GetCmdCreateRoute() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-route [destination] [alias]",
+		Use:   "create-route [destination] [name]",
 		Args:  cobra.ExactArgs(2),
-		Short: "Create grid route from your address to destination address with provided alias",
+		Short: "Create grid route from your address to destination address with provided name",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -136,11 +136,11 @@ func GetCmdDeleteRoute() *cobra.Command {
 	return cmd
 }
 
-func GetCmdEditRouteAlias() *cobra.Command {
+func GetCmdEditRouteName() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "edit-route-alias [destination] [alias]",
+		Use:   "edit-route-name [destination] [name]",
 		Args:  cobra.ExactArgs(2),
-		Short: "Edit alias of grid route to given destination address",
+		Short: "Edit name of grid route to given destination address",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -153,7 +153,7 @@ func GetCmdEditRouteAlias() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgEditRouteAlias(src, dst, args[1])
+			msg := types.NewMsgEditRouteName(src, dst, args[1])
 
 			err = msg.ValidateBasic()
 			if err != nil {

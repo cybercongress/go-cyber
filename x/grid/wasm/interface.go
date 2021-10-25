@@ -31,10 +31,10 @@ func NewWasmMsgParser() WasmMsgParser {
 func (WasmMsgParser) Parse(_ sdk.AccAddress, _ wasmvmtypes.CosmosMsg) ([]sdk.Msg, error) { return nil, nil }
 
 type CosmosMsg struct {
-	CreateEnergyRoute 	 *types.MsgCreateRoute `json:"create_energy_route,omitempty"`
-	EditEnergyRoute      *types.MsgEditRoute `json:"edit_energy_route,omitempty"`
-	EditEnergyRouteAlias *types.MsgEditRouteAlias `json:"edit_energy_route_alias,omitempty"`
-	DeleteEnergyRoute 	 *types.MsgDeleteRoute `json:"delete_energy_route,omitempty"`
+	CreateEnergyRoute 	 *types.MsgCreateRoute   `json:"create_energy_route,omitempty"`
+	EditEnergyRoute      *types.MsgEditRoute     `json:"edit_energy_route,omitempty"`
+	EditEnergyRouteName  *types.MsgEditRouteName `json:"edit_energy_route_name,omitempty"`
+	DeleteEnergyRoute    *types.MsgDeleteRoute   `json:"delete_energy_route,omitempty"`
 }
 
 func (WasmMsgParser) ParseCustom(contractAddr sdk.AccAddress, data json.RawMessage) ([]sdk.Msg, error) {
@@ -48,12 +48,12 @@ func (WasmMsgParser) ParseCustom(contractAddr sdk.AccAddress, data json.RawMessa
 		return []sdk.Msg{sdkMsg.CreateEnergyRoute}, sdkMsg.CreateEnergyRoute.ValidateBasic()
 	} else if sdkMsg.EditEnergyRoute != nil {
 		return []sdk.Msg{sdkMsg.EditEnergyRoute}, sdkMsg.EditEnergyRoute.ValidateBasic()
-	} else if sdkMsg.EditEnergyRouteAlias != nil {
-		return []sdk.Msg{sdkMsg.EditEnergyRouteAlias}, sdkMsg.EditEnergyRouteAlias.ValidateBasic()
+	} else if sdkMsg.EditEnergyRouteName != nil {
+		return []sdk.Msg{sdkMsg.EditEnergyRouteName}, sdkMsg.EditEnergyRouteName.ValidateBasic()
 	} else if sdkMsg.EditEnergyRoute != nil {
 		return []sdk.Msg{sdkMsg.EditEnergyRoute}, sdkMsg.EditEnergyRoute.ValidateBasic()
-	} else if sdkMsg.EditEnergyRouteAlias != nil {
-		return []sdk.Msg{sdkMsg.EditEnergyRouteAlias}, sdkMsg.EditEnergyRouteAlias.ValidateBasic()
+	} else if sdkMsg.EditEnergyRouteName != nil {
+		return []sdk.Msg{sdkMsg.EditEnergyRouteName}, sdkMsg.EditEnergyRouteName.ValidateBasic()
 	} else if sdkMsg.DeleteEnergyRoute != nil {
 		return []sdk.Msg{sdkMsg.DeleteEnergyRoute}, sdkMsg.DeleteEnergyRoute.ValidateBasic()
 	}
@@ -88,7 +88,7 @@ type CosmosQuery struct {
 type Route struct {
 	Source 		string `json:"source"`
 	Destination string `json:"destination"`
-	Alias 		string `json:"alias"`
+	Name 		string `json:"name"`
 	Value 		wasmvmtypes.Coins `json:"value"`
 }
 
@@ -182,7 +182,7 @@ func convertCyberRouteToWasmRoute(route types.Route) Route {
 	return Route{
 		route.Source,
 		route.Destination,
-		route.Alias,
+		route.Name,
 		wasmplugins.ConvertSdkCoinsToWasmCoins(route.Value),
 	}
 }

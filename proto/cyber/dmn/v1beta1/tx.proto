@@ -15,7 +15,7 @@ service Msg{
     rpc ForgetThought(MsgForgetThought) returns (MsgForgetThoughtResponse);
     rpc ChangeThoughtParticle(MsgChangeThoughtParticle) returns (MsgChangeThoughtParticleResponse);
     rpc ChangeThoughtName(MsgChangeThoughtName) returns (MsgChangeThoughtNameResponse);
-    rpc ChangeThoughtCallData(MsgChangeThoughtCallData) returns (MsgChangeThoughtCallDataResponse);
+    rpc ChangeThoughtInput(MsgChangeThoughtInput) returns (MsgChangeThoughtInputResponse);
     rpc ChangeThoughtGasPrice(MsgChangeThoughtGasPrice) returns (MsgChangeThoughtGasPriceResponse);
     rpc ChangeThoughtPeriod(MsgChangeThoughtPeriod) returns (MsgChangeThoughtPeriodResponse);
     rpc ChangeThoughtBlock(MsgChangeThoughtBlock) returns (MsgChangeThoughtBlockResponse);
@@ -46,10 +46,10 @@ message MsgChangeThoughtName {
     string new_name  = 3;
 }
 
-message MsgChangeThoughtCallData {
+message MsgChangeThoughtInput {
     string program   = 1;
     string name      = 2;
-    string call_data = 3;
+    string input     = 3;
 }
 
 message MsgChangeThoughtGasPrice {
@@ -77,7 +77,7 @@ message MsgCreateThoughtResponse {}
 message MsgForgetThoughtResponse {}
 message MsgChangeThoughtParticleResponse {}
 message MsgChangeThoughtNameResponse {}
-message MsgChangeThoughtCallDataResponse {}
+message MsgChangeThoughtInputResponse {}
 message MsgChangeThoughtGasPriceResponse {}
 message MsgChangeThoughtPeriodResponse {}
 message MsgChangeThoughtBlockResponse {}

@@ -202,7 +202,7 @@ func (k Keeper) UpdateThoughtGasPrice(
 
 	k.SetThought(ctx, types.NewThought(
 		thought.Program,
-		thought.Trigger, types.NewLoad(thought.Load.CallData, gasprice),
+		thought.Trigger, types.NewLoad(thought.Load.Input, gasprice),
 		thought.Name, thought.Particle,
 	))
 
@@ -457,7 +457,7 @@ func (k Keeper) ExecuteThoughtsQueue(ctx sdk.Context) {
 
 			program, _ := sdk.AccAddressFromBech32(thought.Program)
 			_, errExecute := k.executeThoughtWithSudo(
-				cacheContext, program, thought.Load.CallData,
+				cacheContext, program, thought.Load.Input,
 			)
 
 			gasUsedByThought := cacheContext.GasMeter().GasConsumed()

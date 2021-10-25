@@ -38,7 +38,7 @@ message Load {
     option (gogoproto.equal)            = false;
     option (gogoproto.goproto_getters)  = false;
 
-    string call_data                   = 1;
+    string input                       = 1;
     cosmos.base.v1beta1.Coin gas_price = 2 [
         (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.Coin",
         (gogoproto.nullable) = false

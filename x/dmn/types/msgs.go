@@ -16,7 +16,7 @@ const (
 	TypeMsgForgetThought 		 = "forget_thought"
 	TypeMsgChangeThoughtName 	 = "change_thought_name"
 	TypeMsgChangeThoughtParticle = "change_thought_particle"
-	TypeMsgChangeThoughtCallData = "change_thought_call_data"
+	TypeMsgChangeThoughtInput    = "change_thought_input"
 	TypeMsgChangeThoughtGasPrice = "change_thought_gas_price"
 	TypeMsgChangeThoughtPeriod   = "change_thought_period"
 	TypeMsgChangeThoughtBlock    = "change_thought_block"
@@ -47,7 +47,7 @@ func (msg MsgCreateThought) ValidateBasic() error {
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid program address (%s)", err)
 	}
-	if msg.Load.CallData == "" || len(msg.Load.CallData) > 512 {
+	if msg.Load.Input == "" || len(msg.Load.Input) > 512 {
 		return ErrBadCallData
 	}
 	if msg.Load.GasPrice.Denom != types.CYB {
@@ -210,23 +210,23 @@ func (msg MsgChangeThoughtParticle) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{addr}
 }
 
-func NewMsgChangeCallData(
+func NewMsgChangeCallInput(
 	program sdk.AccAddress,
 	name string,
-	calldata string,
-) *MsgChangeThoughtCallData {
-	return &MsgChangeThoughtCallData{
-		Program:  program.String(),
-		Name:     name,
-		CallData: calldata,
+	input string,
+) *MsgChangeThoughtInput {
+	return &MsgChangeThoughtInput{
+		Program: program.String(),
+		Name:    name,
+		Input:   input,
 	}
 }
 
-func (msg MsgChangeThoughtCallData) Route() string { return RouterKey }
+func (msg MsgChangeThoughtInput) Route() string { return RouterKey }
 
-func (msg MsgChangeThoughtCallData) Type() string { return TypeMsgChangeThoughtCallData }
+func (msg MsgChangeThoughtInput) Type() string { return TypeMsgChangeThoughtInput }
 
-func (msg MsgChangeThoughtCallData) ValidateBasic() error {
+func (msg MsgChangeThoughtInput) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Program)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid program address (%s)", err)
@@ -234,19 +234,19 @@ func (msg MsgChangeThoughtCallData) ValidateBasic() error {
 	if msg.Name == "" || len(msg.Name) > 32 {
 		return ErrBadName
 	}
-	if msg.CallData == "" || len(msg.CallData) > 512 {
+	if msg.Input == "" || len(msg.Input) > 512 {
 		return ErrBadCallData
 	}
 
 	return nil
 }
 
-func (msg MsgChangeThoughtCallData) GetSignBytes() []byte {
+func (msg MsgChangeThoughtInput) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(&msg)
 	return sdk.MustSortJSON(bz)
 }
 
-func (msg MsgChangeThoughtCallData) GetSigners() []sdk.AccAddress {
+func (msg MsgChangeThoughtInput) GetSigners() []sdk.AccAddress {
 	addr, err := sdk.AccAddressFromBech32(msg.Program)
 	if err != nil {
 		panic(err)

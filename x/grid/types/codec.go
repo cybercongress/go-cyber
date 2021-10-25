@@ -12,7 +12,7 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgCreateRoute{}, "cyber/MsgCreateRoute", nil)
 	cdc.RegisterConcrete(&MsgEditRoute{}, "cyber/MsgEditRoute", nil)
 	cdc.RegisterConcrete(&MsgDeleteRoute{}, "cyber/MsgDeleteRoute", nil)
-	cdc.RegisterConcrete(&MsgEditRouteAlias{}, "cyber/MsgEditRouteAlias", nil)
+	cdc.RegisterConcrete(&MsgEditRouteName{}, "cyber/MsgEditRouteName", nil)
 }
 
 func RegisterInterfaces(registry types.InterfaceRegistry) {
@@ -20,7 +20,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&MsgCreateRoute{},
 		&MsgEditRoute{},
 		&MsgDeleteRoute{},
-		&MsgEditRouteAlias{},
+		&MsgEditRouteName{},
 	)
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)

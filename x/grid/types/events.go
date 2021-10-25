@@ -3,13 +3,13 @@ package types
 const (
 	EventTypeCreateRoute   	= "create_route"
 	EventTypeEditRoute 		= "edit_route"
-	EventTypeDeleteRoute 	= "delete_route"
-	EventTypeEditRouteAlias = "edit_route_alias"
+	EventTypeDeleteRoute    = "delete_route"
+	EventTypeEditRouteName  = "edit_route_name"
 
 
 	AttributeKeySource      = "source"
 	AttributeKeyDestination = "destination"
-	AttributeKeyAlias       = "alias"
+	AttributeKeyName        = "name"
 	AttributeKeyValue       = "value"
 
 	AttributeValueCategory  = ModuleName

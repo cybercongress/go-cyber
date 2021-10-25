@@ -9,8 +9,8 @@ import (
 const(
 	ActionCreateRoute 	 = "create_route"
 	ActionEditRoute 	 = "edit_route"
-	ActionDeleteRoute 	 = "delete_route"
-	ActionEditRouteAlias = "edit_route_alias"
+	ActionDeleteRoute    = "delete_route"
+	ActionEditRouteName  = "edit_route_name"
 )
 
 
@@ -18,14 +18,14 @@ var (
 	_ sdk.Msg = &MsgCreateRoute{}
 	_ sdk.Msg = &MsgEditRoute{}
 	_ sdk.Msg = &MsgDeleteRoute{}
-	_ sdk.Msg = &MsgEditRouteAlias{}
+	_ sdk.Msg = &MsgEditRouteName{}
 )
 
-func NewMsgCreateRoute(src sdk.AccAddress, dst sdk.AccAddress, alias string) *MsgCreateRoute {
+func NewMsgCreateRoute(src sdk.AccAddress, dst sdk.AccAddress, name string) *MsgCreateRoute {
 	return &MsgCreateRoute{
-		Source: 	 src.String(),
+		Source:      src.String(),
 		Destination: dst.String(),
-		Alias:	     alias,
+		Name:        name,
 	}
 }
 
@@ -42,8 +42,8 @@ func (msg MsgCreateRoute) ValidateBasic() error {
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid destination address (%s)", err)
 	}
-	if len(msg.Alias) == 0 || len(msg.Alias) > 32 { // TODO fix validation
-		return ErrWrongAlias
+	if len(msg.Name) == 0 || len(msg.Name) > 32 { // TODO fix validation
+		return ErrWrongName
 	}
 
 	return nil
@@ -142,19 +142,19 @@ func (msg MsgDeleteRoute) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{addr}
 }
 
-func NewMsgEditRouteAlias(src sdk.AccAddress, dst sdk.AccAddress, alias string) *MsgEditRouteAlias {
-	return &MsgEditRouteAlias{
-		Source: 	 src.String(),
+func NewMsgEditRouteName(src sdk.AccAddress, dst sdk.AccAddress, name string) *MsgEditRouteName {
+	return &MsgEditRouteName{
+		Source:      src.String(),
 		Destination: dst.String(),
-		Alias:		 alias,
+		Name:        name,
 	}
 }
 
-func (msg MsgEditRouteAlias) Route() string { return RouterKey }
+func (msg MsgEditRouteName) Route() string { return RouterKey }
 
-func (msg MsgEditRouteAlias) Type() string  { return ActionEditRouteAlias }
+func (msg MsgEditRouteName) Type() string  { return ActionEditRouteName }
 
-func (msg MsgEditRouteAlias) ValidateBasic() error {
+func (msg MsgEditRouteName) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Source)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid source address (%s)", err)
@@ -163,19 +163,19 @@ func (msg MsgEditRouteAlias) ValidateBasic() error {
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid destination address (%s)", err)
 	}
-	if len(msg.Alias) == 0 || len(msg.Alias) > 32 {
-		return ErrWrongAlias
+	if len(msg.Name) == 0 || len(msg.Name) > 32 {
+		return ErrWrongName
 	}
 
 	return nil
 }
 
-func (msg MsgEditRouteAlias) GetSignBytes() []byte {
+func (msg MsgEditRouteName) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(&msg)
 	return sdk.MustSortJSON(bz)
 }
 
-func (msg MsgEditRouteAlias) GetSigners() []sdk.AccAddress {
+func (msg MsgEditRouteName) GetSigners() []sdk.AccAddress {
 	addr, err := sdk.AccAddressFromBech32(msg.Source)
 	if err != nil {
 		panic(err)

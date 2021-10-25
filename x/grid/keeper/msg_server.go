@@ -32,7 +32,7 @@ func (k msgServer) CreateRoute(goCtx context.Context, msg *types.MsgCreateRoute)
 		return nil, err
 	}
 
-	err = k.Keeper.CreateEnergyRoute(ctx, src, dst, msg.Alias)
+	err = k.Keeper.CreateEnergyRoute(ctx, src, dst, msg.Name)
 	if err != nil {
 		return nil, err
 	}
@@ -47,7 +47,7 @@ func (k msgServer) CreateRoute(goCtx context.Context, msg *types.MsgCreateRoute)
 			types.EventTypeCreateRoute,
 			sdk.NewAttribute(types.AttributeKeySource, msg.Source),
 			sdk.NewAttribute(types.AttributeKeyDestination, msg.Destination),
-			sdk.NewAttribute(types.AttributeKeyAlias, msg.Alias),
+			sdk.NewAttribute(types.AttributeKeyName, msg.Name),
 		),
 	})
 
@@ -121,7 +121,7 @@ func (k msgServer) DeleteRoute(goCtx context.Context, msg *types.MsgDeleteRoute)
 	return &types.MsgDeleteRouteResponse{}, nil
 }
 
-func (k msgServer) EditRouteAlias(goCtx context.Context, msg *types.MsgEditRouteAlias) (*types.MsgEditRouteAliasResponse, error) {
+func (k msgServer) EditRouteName(goCtx context.Context, msg *types.MsgEditRouteName) (*types.MsgEditRouteNameResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	src, err := sdk.AccAddressFromBech32(msg.Source)
@@ -133,7 +133,7 @@ func (k msgServer) EditRouteAlias(goCtx context.Context, msg *types.MsgEditRoute
 		return nil, err
 	}
 
-	err = k.Keeper.EditEnergyRouteAlias(ctx, src, dst, msg.Alias)
+	err = k.Keeper.EditEnergyRouteName(ctx, src, dst, msg.Name)
 	if err != nil {
 		return nil, err
 	}
@@ -145,12 +145,12 @@ func (k msgServer) EditRouteAlias(goCtx context.Context, msg *types.MsgEditRoute
 			sdk.NewAttribute(sdk.AttributeKeySender, msg.Source),
 		),
 		sdk.NewEvent(
-			types.EventTypeEditRouteAlias,
+			types.EventTypeEditRouteName,
 			sdk.NewAttribute(types.AttributeKeySource, msg.Source),
 			sdk.NewAttribute(types.AttributeKeyDestination, msg.Destination),
-			sdk.NewAttribute(types.AttributeKeyAlias, msg.Alias),
+			sdk.NewAttribute(types.AttributeKeyName, msg.Name),
 		),
 	})
 
-	return &types.MsgEditRouteAliasResponse{}, nil
+	return &types.MsgEditRouteNameResponse{}, nil
 }

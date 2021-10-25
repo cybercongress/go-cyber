@@ -131,12 +131,12 @@ func (k msgServer) ChangeThoughtName(goCtx context.Context, msg *types.MsgChange
 	return &types.MsgChangeThoughtNameResponse{}, nil
 }
 
-func (k msgServer) ChangeThoughtCallData(goCtx context.Context, msg *types.MsgChangeThoughtCallData) (*types.MsgChangeThoughtCallDataResponse, error) {
+func (k msgServer) ChangeThoughtInput(goCtx context.Context, msg *types.MsgChangeThoughtInput) (*types.MsgChangeThoughtInputResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	program, _ := sdk.AccAddressFromBech32(msg.Program)
 
-	err := k.UpdateThoughtCallData(ctx, program, msg.Name, msg.CallData)
+	err := k.UpdateThoughtCallData(ctx, program, msg.Name, msg.Input)
 	if err != nil {
 		return nil, err
 	}
@@ -148,13 +148,13 @@ func (k msgServer) ChangeThoughtCallData(goCtx context.Context, msg *types.MsgCh
 			sdk.NewAttribute(sdk.AttributeKeySender, msg.Program),
 		),
 		sdk.NewEvent(
-			types.EventTypeChangeThoughtCallData,
+			types.EventTypeChangeThoughtInput,
 			sdk.NewAttribute(types.AttributeKeyThoughtProgram, msg.Program),
-			sdk.NewAttribute(types.AttributeKeyThoughtCallData, msg.CallData),
+			sdk.NewAttribute(types.AttributeKeyThoughtInput, msg.Input),
 		),
 	})
 
-	return &types.MsgChangeThoughtCallDataResponse{}, nil
+	return &types.MsgChangeThoughtInputResponse{}, nil
 }
 
 func (k msgServer) ChangeThoughtGasPrice(goCtx context.Context, msg *types.MsgChangeThoughtGasPrice) (*types.MsgChangeThoughtGasPriceResponse, error) {

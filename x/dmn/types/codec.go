@@ -17,7 +17,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&MsgForgetThought{},
 		&MsgChangeThoughtParticle{},
 		&MsgChangeThoughtName{},
-		&MsgChangeThoughtCallData{},
+		&MsgChangeThoughtInput{},
 		&MsgChangeThoughtGasPrice{},
 		&MsgChangeThoughtPeriod{},
 		&MsgChangeThoughtBlock{},

@@ -63,7 +63,7 @@ func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
 	k.paramSpace.SetParamSet(ctx, &params)
 }
 
-func (k Keeper) CreateEnergyRoute(ctx sdk.Context, src, dst sdk.AccAddress, alias string) error {
+func (k Keeper) CreateEnergyRoute(ctx sdk.Context, src, dst sdk.AccAddress, name string) error {
 	if src.Equals(dst) {
 		return types.ErrSelfRoute
 	}
@@ -84,7 +84,7 @@ func (k Keeper) CreateEnergyRoute(ctx sdk.Context, src, dst sdk.AccAddress, alia
 		k.accountKeeper.SetAccount(ctx, acc)
 	}
 
-	k.SetRoute(ctx, src, dst, types.NewRoute(src, dst, alias, sdk.Coins{}))
+	k.SetRoute(ctx, src, dst, types.NewRoute(src, dst, name, sdk.Coins{}))
 
 	k.proxyKeeper.OnCoinsTransfer(ctx, nil, dst)
 
@@ -137,7 +137,7 @@ func (k Keeper) EditEnergyRoute(ctx sdk.Context, src, dst sdk.AccAddress, value 
 		newValues = sdk.NewCoins(sdk.NewCoin(ctypes.VOLT, volts), value)
 	}
 
-	k.SetRoute(ctx, src, dst, types.NewRoute(src, dst, route.Alias, newValues))
+	k.SetRoute(ctx, src, dst, types.NewRoute(src, dst, route.Name, newValues))
 
 	k.proxyKeeper.OnCoinsTransfer(ctx, src, dst)
 
@@ -164,13 +164,13 @@ func (k Keeper) DeleteEnergyRoute(ctx sdk.Context, src, dst sdk.AccAddress) erro
 	return nil
 }
 
-func (k Keeper) EditEnergyRouteAlias(ctx sdk.Context, src, dst sdk.AccAddress, alias string) error {
+func (k Keeper) EditEnergyRouteName(ctx sdk.Context, src, dst sdk.AccAddress, name string) error {
 	route, found := k.GetRoute(ctx, src, dst)
 	if !found {
 		return types.ErrRouteNotExist
 	}
 
-	k.SetRoute(ctx, src, dst, types.NewRoute(src, dst, alias, route.Value))
+	k.SetRoute(ctx, src, dst, types.NewRoute(src, dst, name, route.Value))
 
 	return nil
 }
@@ -194,7 +194,7 @@ func (k Keeper) SetRoutes(ctx sdk.Context, routes types.Routes) error {
 			k.SetRoutedEnergy(ctx, dst, energy.Add(route.Value...))
 		}
 
-		k.SetRoute(ctx, src, dst, types.NewRoute(src, dst, route.Alias, route.Value))
+		k.SetRoute(ctx, src, dst, types.NewRoute(src, dst, route.Name, route.Value))
 		k.proxyKeeper.OnCoinsTransfer(ctx, src, dst)
 	}
 	return nil
