@@ -33,15 +33,15 @@ func NewRank(state EMState, logger log.Logger, fullTree bool) Rank {
 
 	// Entropy and karma are experimental features
 	start := time.Now()
-	cidsCount := uint64(len(state.RankValues))
+	particlesCount := uint64(len(state.RankValues))
 
-	rankValues := make([]uint64, cidsCount)
+	rankValues := make([]uint64, particlesCount)
 	for i, f64 := range state.RankValues {
 		rankValues[i] = uint64(f64*1e15)
 	}
 	state.RankValues = nil
 
-	entropyValues := make([]uint64, cidsCount)
+	entropyValues := make([]uint64, particlesCount)
 	for i, f64 := range state.EntropyValues {
 		entropyValues[i] = uint64(f64*1e15)
 	}
@@ -79,13 +79,13 @@ func NewRank(state EMState, logger log.Logger, fullTree bool) Rank {
 	logger.Info("-Entropy", "bits", uint64(negEntropy))
 
 	return Rank{
-		RankValues: 	rankValues,
-		EntropyValues:  entropyValues,
-		KarmaValues: 	karmaValues,
-		MerkleTree: 	merkleTree,
-		CidCount: 		cidsCount,
-		TopCIDs: 		newSortedCIDs,
-		NegEntropy:     uint64(negEntropy),
+		RankValues:    rankValues,
+		EntropyValues: entropyValues,
+		KarmaValues:   karmaValues,
+		MerkleTree:    merkleTree,
+		CidCount:      particlesCount,
+		TopCIDs:       newSortedCIDs,
+		NegEntropy:    uint64(negEntropy),
 	}
 }
 
@@ -141,21 +141,12 @@ func (r *Rank) CopyWithoutTree() Rank {
 
 	copiedEntropyValues := make([]uint64, r.CidCount)
 	n = copy(copiedEntropyValues, r.EntropyValues)
-	//if n != len(r.EntropyValues) {
-	//	panic("Not all entropy values have been copied")
-	//}
 
 	copiedKarmaValues := make([]uint64, len(r.KarmaValues))
 	n = copy(copiedKarmaValues, r.KarmaValues)
-	//if n != len(r.KarmaValues) {
-	//	panic("Not all karma values have been copied")
-	//}
 
 	copiedTopCIDs := make([]RankedCidNumber, len(r.TopCIDs))
 	n = copy(copiedTopCIDs, r.TopCIDs)
-	//if n != len(r.TopCIDs) {
-	//	panic("Not all top particles values have been copied")
-	//}
 
 	return Rank{
 		RankValues: copiedRankValues,

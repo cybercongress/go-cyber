@@ -23,7 +23,7 @@ func NewMsgServerImpl(keeper Keeper) types.MsgServer {
 func (k msgServer) Investmint(goCtx context.Context, msg *types.MsgInvestmint) (*types.MsgInvestmintResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	agent, err := sdk.AccAddressFromBech32(msg.Neuron)
+	neuron, err := sdk.AccAddressFromBech32(msg.Neuron)
 	if err != nil {
 		return nil, err
 	}
@@ -39,7 +39,7 @@ func (k msgServer) Investmint(goCtx context.Context, msg *types.MsgInvestmint) (
 		}
 	}
 
-	err, minted := k.ConvertResource(ctx, agent, msg.Amount, msg.Resource, msg.Length)
+	err, minted := k.ConvertResource(ctx, neuron, msg.Amount, msg.Resource, msg.Length)
 	if err != nil {
 		return nil, err
 	}
@@ -60,6 +60,7 @@ func (k msgServer) Investmint(goCtx context.Context, msg *types.MsgInvestmint) (
 		),
 		sdk.NewEvent(
 			types.EventTypeInvestmint,
+			sdk.NewAttribute(types.AttributeKeyNeuron, msg.Neuron),
 			sdk.NewAttribute(types.AttributeKeyAmount, msg.Amount.String()),
 			sdk.NewAttribute(types.AttributeKeyResource, msg.Resource),
 			sdk.NewAttribute(types.AttributeKeyLength, strconv.FormatUint(msg.Length, 10)),

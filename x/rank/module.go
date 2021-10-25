@@ -88,8 +88,8 @@ func NewAppModule(
 }
 
 func AddModuleInitFlags(startCmd *cobra.Command) {
-	startCmd.Flags().Bool(FlagComputeGPU, false, "Compute on GPU") // TODO change to true before release
-	startCmd.Flags().Bool(FlagSearchAPI, true, "Run search API") // TODO change to false before release
+	startCmd.Flags().Bool(FlagComputeGPU, true, "Compute on GPU")
+	startCmd.Flags().Bool(FlagSearchAPI, false, "Run search API")
 }
 
 func (AppModule) Name() string { return types.ModuleName }

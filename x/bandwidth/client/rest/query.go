@@ -24,11 +24,11 @@ func registerQueryRoutes(cliCtx client.Context, r *mux.Router) {
 		"/bandwidth/price",
 		priceHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc(
-		"/bandwidth/desirable",
-		desirableBandwidthHandlerFn(cliCtx)).Methods("GET")
+		"/bandwidth/total",
+		totalBandwidthHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc(
-		"/bandwidth/account/{address}",
-		accountBandwidthHandlerFn(cliCtx)).Methods("GET")
+		"/bandwidth/neuron/{neuron}",
+		neuronBandwidthHandlerFn(cliCtx)).Methods("GET")
 }
 
 func queryParamsHandlerFn(cliCtx client.Context) http.HandlerFunc {
@@ -94,7 +94,7 @@ func priceHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	}
 }
 
-func desirableBandwidthHandlerFn(cliCtx client.Context) http.HandlerFunc {
+func totalBandwidthHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		route := fmt.Sprintf("custom/%s/%s", types.QuerierRoute, types.QueryDesirableBandwidth)
@@ -115,11 +115,11 @@ func desirableBandwidthHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	}
 }
 
-func accountBandwidthHandlerFn(cliCtx client.Context) http.HandlerFunc {
+func neuronBandwidthHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 
-		addr, err := sdk.AccAddressFromBech32(vars["address"])
+		addr, err := sdk.AccAddressFromBech32(vars["neuron"])
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
 			return

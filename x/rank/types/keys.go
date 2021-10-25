@@ -13,9 +13,8 @@ var (
 	LatestBlockNumber 		 = append(GlobalStoreKeyPrefix, []byte("latestBlockNumber")...)
 	LatestMerkleTree 		 = append(GlobalStoreKeyPrefix, []byte("latestMerkleTree")...)
 	NextMerkleTree 		     = append(GlobalStoreKeyPrefix, []byte("nextMerkleTree")...)
-	//RankCalcFinished 		 = append(GlobalStoreKeyPrefix, []byte("rankCalcFinished")...)
-	NextRankCidCount 		 = append(GlobalStoreKeyPrefix, []byte("nextRankCidCount")...)
-	ContextCidCount 		 = append(GlobalStoreKeyPrefix, []byte("contextCidCount")...)
-	ContextLinkCount 		 = append(GlobalStoreKeyPrefix, []byte("contextLinkCount")...)
+	NextRankCidCount 		 = append(GlobalStoreKeyPrefix, []byte("nextRankParticlesAmount")...)
+	ContextCidCount 		 = append(GlobalStoreKeyPrefix, []byte("contextParticlesAmount")...)
+	ContextLinkCount 		 = append(GlobalStoreKeyPrefix, []byte("contextLinkAmount")...)
 )
 

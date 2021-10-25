@@ -50,6 +50,7 @@ var appStores = []string{
 	"rank",
 	"dmn",
 	"resources",
+	"liquidity",
 }
 
 func Execute() error {

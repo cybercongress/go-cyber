@@ -35,8 +35,8 @@ func CidReverseStoreKey(num CidNumber) []byte {
 	return append(CidReverseStoreKeyPrefix, sdk.Uint64ToBigEndian(uint64(num))...)
 }
 
-func CyberlinksStoreKey(id uint64) []byte {
-	return append(CyberlinkStoreKeyPrefix, sdk.Uint64ToBigEndian(id)...)
+func CyberlinksStoreKey(linkKey []byte) []byte {
+	return append(CyberlinkStoreKeyPrefix, linkKey...)
 }
 
 func CyberlinksTStoreKey(link []byte) []byte {
@@ -49,10 +49,6 @@ func NeudegStoreKey(accNumber uint64) []byte {
 
 func NeudegTStoreKey(accNumber uint64) []byte {
 	return append(NeudegTStoreKeyPrefix, sdk.Uint64ToBigEndian(accNumber)...)
-}
-
-func CyberlinksNewStoreKey(linkKey []byte) []byte {
-	return append(CyberlinkStoreKeyPrefix, linkKey...)
 }
 
 func CyberlinkRawKey(link CompactLink) []byte {

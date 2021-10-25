@@ -15,10 +15,10 @@ func NewQuerier(k Keeper, legacyQuerierCdc *codec.LegacyAmino) sdk.Querier {
 		switch path[0] {
 		case types.QueryParams:
 			return queryParams(ctx, k, legacyQuerierCdc)
-		case types.QueryInvestmintAmount:
-			return queryInvestmintAmount(ctx, req, k, legacyQuerierCdc)
+		case types.QueryInvestmint:
+			return queryInvestmint(ctx, req, k, legacyQuerierCdc)
 		default:
-			return nil, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "unknown resources query endpoint")
+			return nil, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "unknown Resources query endpoint")
 		}
 	}
 }
@@ -34,8 +34,8 @@ func queryParams(ctx sdk.Context, k Keeper, legacyQuerierCdc *codec.LegacyAmino)
 	return res, nil
 }
 
-func queryInvestmintAmount(ctx sdk.Context, req abci.RequestQuery, k Keeper, legacyQuerierCdc *codec.LegacyAmino) ([]byte, error) {
-	var params types.QueryInvestmintAmountParams
+func queryInvestmint(ctx sdk.Context, req abci.RequestQuery, k Keeper, legacyQuerierCdc *codec.LegacyAmino) ([]byte, error) {
+	var params types.QueryInvestmintParams
 
 	err := legacyQuerierCdc.UnmarshalJSON(req.Data, &params); if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())

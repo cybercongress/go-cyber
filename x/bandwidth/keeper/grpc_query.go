@@ -39,16 +39,16 @@ func (bm *BandwidthMeter) TotalBandwidth(goCtx context.Context, _ *types.QueryTo
 	return &types.QueryTotalBandwidthResponse{TotalBandwidth: totalBandwidth}, nil
 }
 
-func (bm *BandwidthMeter) Account(goCtx context.Context, request *types.QueryAccountRequest) (*types.QueryAccountResponse, error) {
+func (bm *BandwidthMeter) NeuronBandwidth(goCtx context.Context, request *types.QueryNeuronBandwidthRequest) (*types.QueryNeuronBandwidthResponse, error) {
 	if request == nil {
 		return nil, status.Errorf(codes.InvalidArgument, "empty request")
 	}
 
-	if request.Address == "" {
+	if request.Neuron == "" {
 		return nil, status.Errorf(codes.InvalidArgument, "source address cannot be empty")
 	}
 
-	addr, err := sdk.AccAddressFromBech32(request.Address)
+	addr, err := sdk.AccAddressFromBech32(request.Neuron)
 	if err != nil {
 		return nil, err
 	}
@@ -57,5 +57,5 @@ func (bm *BandwidthMeter) Account(goCtx context.Context, request *types.QueryAcc
 
 	neuronBandwidth := bm.GetCurrentAccountBandwidth(ctx, addr)
 
-	return &types.QueryAccountResponse{NeuronBandwidth: neuronBandwidth}, nil
+	return &types.QueryNeuronBandwidthResponse{NeuronBandwidth: neuronBandwidth}, nil
 }

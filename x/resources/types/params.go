@@ -2,8 +2,8 @@ package types
 
 import (
 	"fmt"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	ctypes "github.com/cybercongress/go-cyber/types"
 )
@@ -11,22 +11,22 @@ import (
 const (
 	DefaultParamspace             = ModuleName
 	DefaultMaxSlots               = uint32(8)
-	DefaultHalvingPeriodVolt      = uint32(512)
-	DefaultHalvingPeriodAmpere    = uint32(512)
-	DefaultInvestmintPeriodVolt   = uint32(1024)
-	DefaultInvestmintPeriodAmpere = uint32(1024)
-	DefaultMinInvestmintPeriodSec = uint32(300)
+	DefaultHalvingPeriodVolt      = uint32(9000000)
+	DefaultHalvingPeriodAmpere    = uint32(9000000)
+	DefaultInvestmintPeriodVolt   = uint32(2592000)
+	DefaultInvestmintPeriodAmpere = uint32(2592000)
+	DefaultMinInvestmintPeriod    = uint32(86400)
 )
 
 var (
-	KeyMaxSlots   		          = []byte("MaxSlots")
-	KeyBaseHalvingPeriodVolt      = []byte("HalvingPeriodVoltPeriod")
-	KeyBaseHalvingPeriodAmpere    = []byte("HalvingPeriodAmperePeriod")
+	KeyMaxSlots                   = []byte("MaxSlots")
+	KeyHalvingPeriodVoltBlocks    = []byte("HalvingPeriodVoltBlocks")
+	KeyHalvingPeriodAmpereBlocks  = []byte("HalvingPeriodAmpereBlocks")
 	KeyBaseInvestmintPeriodVolt   = []byte("BaseInvestmintPeriodVolt")
 	KeyBaseInvestmintPeriodAmpere = []byte("BaseInvestmintPeriodAmpere")
 	KeyBaseInvestmintAmountVolt   = []byte("BaseInvestmintAmountVolt")
 	KeyBaseInvestmintAmountAmpere = []byte("BaseInvestmintAmountAmpere")
-	KeyMinInvestmintPeriodSec     = []byte("MinInvestmintPeriod")
+	KeyMinInvestmintPeriod        = []byte("MinInvestmintPeriod")
 )
 
 func ParamKeyTable() paramstypes.KeyTable {
@@ -35,27 +35,27 @@ func ParamKeyTable() paramstypes.KeyTable {
 }
 func DefaultParams() Params {
 	return Params{
-		MaxSlots: 		 			DefaultMaxSlots,
+		MaxSlots:                   DefaultMaxSlots,
 		HalvingPeriodVoltBlocks:    DefaultHalvingPeriodVolt,
 		HalvingPeriodAmpereBlocks:  DefaultHalvingPeriodAmpere,
 		BaseInvestmintPeriodVolt:   DefaultInvestmintPeriodVolt,
 		BaseInvestmintPeriodAmpere: DefaultInvestmintPeriodAmpere,
-		BaseInvestmintAmountVolt:   ctypes.NewCybCoin(ctypes.Mega*10),
-		BaseInvestmintAmountAmpere: ctypes.NewCybCoin(ctypes.Mega*10),
-		MinInvestmintPeriod:        DefaultMinInvestmintPeriodSec,
+		BaseInvestmintAmountVolt:   ctypes.NewSCybCoin(ctypes.Mega*1000),
+		BaseInvestmintAmountAmpere: ctypes.NewSCybCoin(ctypes.Mega*100),
+		MinInvestmintPeriod:        DefaultMinInvestmintPeriod,
 	}
 }
 
 func (p *Params) ParamSetPairs() paramstypes.ParamSetPairs {
 	return paramstypes.ParamSetPairs{
 		paramstypes.NewParamSetPair(KeyMaxSlots, &p.MaxSlots, validateMaxSlots),
-		paramstypes.NewParamSetPair(KeyBaseHalvingPeriodVolt, &p.HalvingPeriodVoltBlocks, validateBaseHalvingPeriodVolt),
-		paramstypes.NewParamSetPair(KeyBaseHalvingPeriodAmpere, &p.HalvingPeriodAmpereBlocks, validateBaseHalvingPeriodAmpere),
+		paramstypes.NewParamSetPair(KeyHalvingPeriodVoltBlocks, &p.HalvingPeriodVoltBlocks, validateHalvingPeriodVoltBlocks),
+		paramstypes.NewParamSetPair(KeyHalvingPeriodAmpereBlocks, &p.HalvingPeriodAmpereBlocks, validateHalvingPeriodAmpereBlocks),
 		paramstypes.NewParamSetPair(KeyBaseInvestmintPeriodVolt, &p.BaseInvestmintPeriodVolt, validateBaseInvestmintPeriodVolt),
 		paramstypes.NewParamSetPair(KeyBaseInvestmintPeriodAmpere, &p.BaseInvestmintPeriodAmpere, validateBaseInvestmintPeriodAmpere),
 		paramstypes.NewParamSetPair(KeyBaseInvestmintAmountVolt, &p.BaseInvestmintAmountVolt, validateBaseInvestmintAmountVolt),
 		paramstypes.NewParamSetPair(KeyBaseInvestmintAmountAmpere, &p.BaseInvestmintAmountAmpere, validateBaseInvestmintAmountAmpere),
-		paramstypes.NewParamSetPair(KeyMinInvestmintPeriodSec, &p.MinInvestmintPeriod, validateMinInvestmintPeriodSec),
+		paramstypes.NewParamSetPair(KeyMinInvestmintPeriod, &p.MinInvestmintPeriod, validateMinInvestmintPeriod),
 	}
 }
 
@@ -63,10 +63,10 @@ func (p Params) Validate() error {
 	if err := validateMaxSlots(p.MaxSlots); err != nil {
 		return err
 	}
-	if err := validateBaseHalvingPeriodVolt(p.HalvingPeriodVoltBlocks); err != nil {
+	if err := validateHalvingPeriodVoltBlocks(p.HalvingPeriodVoltBlocks); err != nil {
 		return err
 	}
-	if err := validateBaseHalvingPeriodAmpere(p.HalvingPeriodAmpereBlocks); err != nil {
+	if err := validateHalvingPeriodAmpereBlocks(p.HalvingPeriodAmpereBlocks); err != nil {
 		return err
 	}
 	if err := validateBaseInvestmintPeriodVolt(p.BaseInvestmintPeriodVolt); err != nil {
@@ -81,7 +81,7 @@ func (p Params) Validate() error {
 	if err := validateBaseInvestmintAmountAmpere(p.BaseInvestmintAmountAmpere); err != nil {
 		return err
 	}
-	if err := validateMinInvestmintPeriodSec(p.MinInvestmintPeriod); err != nil {
+	if err := validateMinInvestmintPeriod(p.MinInvestmintPeriod); err != nil {
 		return err
 	}
 
@@ -105,29 +105,27 @@ func validateMaxSlots(i interface{}) error {
 	return nil
 }
 
-func validateBaseHalvingPeriodVolt(i interface{}) error {
+func validateHalvingPeriodVoltBlocks(i interface{}) error {
 	v, ok := i.(uint32)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 
-	// TODO set production value
-	if v < 100 {
-		return fmt.Errorf("base halving period for Volt must be more than 100 blocks: %d", v)
+	if v < 6000000 {
+		return fmt.Errorf("base halving period for Volt must be more than 6000000 blocks: %d", v)
 	}
 
 	return nil
 }
 
-func validateBaseHalvingPeriodAmpere(i interface{}) error {
+func validateHalvingPeriodAmpereBlocks(i interface{}) error {
 	v, ok := i.(uint32)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 
-	// TODO set production value
-	if v < 100 {
-		return fmt.Errorf("base halving period for Ampere must be more than 100 blocks: %d", v)
+	if v < 6000000 {
+		return fmt.Errorf("base halving period for Ampere must be more than 6000000 blocks: %d", v)
 	}
 
 	return nil
@@ -139,9 +137,8 @@ func validateBaseInvestmintPeriodVolt(i interface{}) error {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 
-	// TODO set production value
-	if v < 100 {
-		return fmt.Errorf("base investmint period for Volt must be more than 100 blocks: %d", v)
+	if v < 604800 {
+		return fmt.Errorf("base investmint period for Volt must be more than 604800 seconds: %d", v)
 	}
 
 	return nil
@@ -153,9 +150,8 @@ func validateBaseInvestmintPeriodAmpere(i interface{}) error {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 
-	// TODO set production value
-	if v < 100 {
-		return fmt.Errorf("base investmint period for Ampere must be more than 100 blocks: %d", v)
+	if v < 604800 {
+		return fmt.Errorf("base investmint period for Ampere must be more than 604800 seconds: %d", v)
 	}
 
 	return nil
@@ -187,15 +183,14 @@ func validateBaseInvestmintAmountAmpere(i interface{}) error {
 	return nil
 }
 
-func validateMinInvestmintPeriodSec(i interface{}) error {
+func validateMinInvestmintPeriod(i interface{}) error {
 	v, ok := i.(uint32)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 
-	// TODO set production value
-	if v < 100 {
-		return fmt.Errorf("min investmint period must be more than 100 seconds: %d", v)
+	if v < 86400 {
+		return fmt.Errorf("min investmint period must be more than 86400 seconds: %d", v)
 	}
 
 	return nil

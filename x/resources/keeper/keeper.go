@@ -181,7 +181,7 @@ func (k Keeper) addCoinsToVestingSchedule(ctx sdk.Context, addr sdk.AccAddress, 
 	if len(vacc.VestingPeriods) == int(k.MaxSlots(ctx)) && !mergeSlot {
 		// case when there are already filled slots and no one already passed
 		if vacc.StartTime + vacc.VestingPeriods[0].Length > ctx.BlockTime().Unix() {
-			return sdkerrors.Wrapf(types.ErrFullSlots, "not enough slots")
+			return types.ErrFullSlots
 		} else {
 			// TODO refactor next code blocks
 			// case when there are passed slots and we are clean them to free space to new ones
@@ -297,8 +297,8 @@ func (k Keeper) Mint(ctx sdk.Context, recipientAddr sdk.AccAddress, amt sdk.Coin
 
 	if resource == ctypes.VOLT {
 		k.bandwidthMeter.AddToDesirableBandwidth(ctx, toMint.Amount.Uint64())
-		band := k.bandwidthMeter.GetAccountBandwidth(ctx, recipientAddr)
-		k.bandwidthMeter.ChargeAccountBandwidth(ctx, band, 1000)
+		neuronBandwidth := k.bandwidthMeter.GetAccountBandwidth(ctx, recipientAddr)
+		k.bandwidthMeter.ChargeAccountBandwidth(ctx, neuronBandwidth, 1000)
 	}
 
 	return nil, toMint
@@ -338,7 +338,7 @@ func (k Keeper) CalculateInvestmint(ctx sdk.Context, amt sdk.Coin, resource stri
 }
 
 func (k Keeper) CheckAvailablePeriod(ctx sdk.Context, length uint64, resource string) bool {
-	var availableLength int64
+	var availableLength uint64
 	passed := ctx.BlockHeight()
 
 	// assuming 5 seconds block
@@ -346,15 +346,15 @@ func (k Keeper) CheckAvailablePeriod(ctx sdk.Context, length uint64, resource st
 	case ctypes.VOLT:
 		halvingVolt := k.BaseHalvingPeriodVolt(ctx)
 		doubling := uint32(math.Pow(2, float64(passed / int64(halvingVolt))))
-		availableLength = int64(doubling * halvingVolt * 5)
+		availableLength = uint64(doubling * halvingVolt * 5)
 
 	case ctypes.AMPERE:
 		halvingAmpere := k.BaseHalvingPeriodAmpere(ctx)
 		doubling := uint32(math.Pow(2, float64(passed / int64(halvingAmpere))))
-		availableLength = int64(doubling * halvingAmpere * 5)
+		availableLength = uint64(doubling * halvingAmpere * 5)
 	}
 
-	return length < uint64(availableLength)
+	return length <= availableLength
 }
 
 func (k Keeper) MaxSlots(ctx sdk.Context) (res uint32) {
@@ -363,12 +363,12 @@ func (k Keeper) MaxSlots(ctx sdk.Context) (res uint32) {
 }
 
 func (k Keeper) BaseHalvingPeriodVolt(ctx sdk.Context) (res uint32) {
-	k.paramSpace.Get(ctx, types.KeyBaseHalvingPeriodVolt, &res)
+	k.paramSpace.Get(ctx, types.KeyHalvingPeriodVoltBlocks, &res)
 	return
 }
 
 func (k Keeper) BaseHalvingPeriodAmpere(ctx sdk.Context) (res uint32) {
-	k.paramSpace.Get(ctx, types.KeyBaseHalvingPeriodAmpere, &res)
+	k.paramSpace.Get(ctx, types.KeyHalvingPeriodAmpereBlocks, &res)
 	return
 }
 
@@ -393,6 +393,6 @@ func (k Keeper) BaseInvestmintAmountAmpere(ctx sdk.Context) (res sdk.Coin) {
 }
 
 func (k Keeper) MinInvestmintPeriodSec(ctx sdk.Context) (res uint32) {
-	k.paramSpace.Get(ctx, types.KeyMinInvestmintPeriodSec, &res)
+	k.paramSpace.Get(ctx, types.KeyMinInvestmintPeriod, &res)
 	return
 }

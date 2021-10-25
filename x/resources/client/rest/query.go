@@ -23,7 +23,7 @@ func registerQueryRoutes(cliCtx client.Context, r *mux.Router) {
 
 	r.HandleFunc(
 		fmt.Sprintf("/resources/investmint"),
-		queryInvestmintAmountHandlerFn(cliCtx)).Methods("GET")
+		queryInvestmintHandlerFn(cliCtx)).Methods("GET")
 }
 
 func queryParamsHandlerFn(cliCtx client.Context) http.HandlerFunc {
@@ -41,7 +41,7 @@ func queryParamsHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	}
 }
 
-func queryInvestmintAmountHandlerFn(cliCtx client.Context) http.HandlerFunc {
+func queryInvestmintHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var amount sdk.Coin
 		var resource string
@@ -53,6 +53,9 @@ func queryInvestmintAmountHandlerFn(cliCtx client.Context) http.HandlerFunc {
 			if err != nil {
 				rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
 				return
+			}
+			if amount.Denom != ctypes.SCYB {
+				rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
 			}
 		}
 		if v := r.URL.Query().Get("resource"); len(v) != 0 {
@@ -70,7 +73,7 @@ func queryInvestmintAmountHandlerFn(cliCtx client.Context) http.HandlerFunc {
 			}
 		}
 
-		params := types.NewQueryInvestmintAmountParams(amount, resource, length)
+		params := types.NewQueryInvestmintParams(amount, resource, length)
 
 		bz, err := codec.MarshalJSONIndent(cliCtx.LegacyAmino, params)
 		if err != nil {
@@ -78,7 +81,7 @@ func queryInvestmintAmountHandlerFn(cliCtx client.Context) http.HandlerFunc {
 			return
 		}
 
-		route := fmt.Sprintf("custom/%s/%s", types.QuerierRoute, types.QueryInvestmintAmount)
+		route := fmt.Sprintf("custom/%s/%s", types.QuerierRoute, types.QueryInvestmint)
 		res, height, err := cliCtx.QueryWithData(route, bz)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusNotFound, err.Error())

@@ -24,8 +24,8 @@ service Query {
         option (google.api.http).get = "/cyber/bandwidth/v1beta1/bandwidth/total";
     }
 
-    rpc Account(QueryAccountRequest) returns (QueryAccountResponse) {
-        option (google.api.http).get = "/cyber/bandwidth/v1beta1/bandwidth/neuron/{address}";
+    rpc NeuronBandwidth(QueryNeuronBandwidthRequest) returns (QueryNeuronBandwidthResponse) {
+        option (google.api.http).get = "/cyber/bandwidth/v1beta1/bandwidth/neuron/{neuron}";
     }
 
     rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
@@ -57,11 +57,11 @@ message QueryTotalBandwidthResponse {
     uint64 total_bandwidth = 1;
 }
 
-message QueryAccountRequest {
-    string address = 1;
+message QueryNeuronBandwidthRequest {
+    string neuron = 1;
 }
 
-message QueryAccountResponse {
+message QueryNeuronBandwidthResponse {
     NeuronBandwidth neuron_bandwidth = 1 [(gogoproto.nullable) = false];
 }
 

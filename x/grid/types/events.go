@@ -7,7 +7,7 @@ const (
 	EventTypeEditRouteAlias = "edit_route_alias"
 
 
-	AttributeKeySource      = "source" // TODO change to sender?
+	AttributeKeySource      = "source"
 	AttributeKeyDestination = "destination"
 	AttributeKeyAlias       = "alias"
 	AttributeKeyValue       = "value"

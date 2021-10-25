@@ -78,7 +78,7 @@ func queryNeuronBandwidth(ctx sdk.Context, req abci.RequestQuery, bm BandwidthMe
 
 	neuronBandwidth := bm.GetCurrentAccountBandwidth(ctx, params.Address)
 
-	res, err := codec.MarshalJSONIndent(legacyQuerierCdc, types.QueryAccountResponse{NeuronBandwidth: neuronBandwidth})
+	res, err := codec.MarshalJSONIndent(legacyQuerierCdc, types.QueryNeuronBandwidthResponse{NeuronBandwidth: neuronBandwidth})
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
 	}

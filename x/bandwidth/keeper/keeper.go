@@ -87,7 +87,7 @@ func (bm BandwidthMeter) StoreBandwidthPrice(ctx sdk.Context, price sdk.Dec) {
 
 func (bm BandwidthMeter) GetDesirableBandwidth(ctx sdk.Context) uint64 {
 	store := ctx.KVStore(bm.storeKey)
-	bandwidthAsBytes := store.Get(types.DesirableBandwidth)
+	bandwidthAsBytes := store.Get(types.TotalBandwidth)
 	if bandwidthAsBytes == nil {
 		return 0
 	}
@@ -97,7 +97,7 @@ func (bm BandwidthMeter) GetDesirableBandwidth(ctx sdk.Context) uint64 {
 func (bm BandwidthMeter) AddToDesirableBandwidth(ctx sdk.Context, toAdd uint64) {
 	current := bm.GetDesirableBandwidth(ctx)
 	store := ctx.KVStore(bm.storeKey)
-	store.Set(types.DesirableBandwidth, sdk.Uint64ToBigEndian(current+toAdd))
+	store.Set(types.TotalBandwidth, sdk.Uint64ToBigEndian(current+toAdd))
 }
 
 func (bm *BandwidthMeter) AddToBlockBandwidth(value uint64) {

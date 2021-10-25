@@ -3,16 +3,16 @@ package types
 import sdk "github.com/cosmos/cosmos-sdk/types"
 
 const (
-	QueryParams 	      = "params"
-	QueryInvestmintAmount = "investmint_amount"
+	QueryParams     = "params"
+	QueryInvestmint = "investmint"
 )
 
-type QueryInvestmintAmountParams struct {
+type QueryInvestmintParams struct {
 	Amount sdk.Coin
 	Resource string
 	Length uint64
 }
 
-func NewQueryInvestmintAmountParams(amount sdk.Coin, resource string, length uint64) QueryInvestmintAmountParams {
-	return QueryInvestmintAmountParams{amount, resource, length}
+func NewQueryInvestmintParams(amount sdk.Coin, resource string, length uint64) QueryInvestmintParams {
+	return QueryInvestmintParams{amount, resource, length}
 }

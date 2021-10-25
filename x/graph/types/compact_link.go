@@ -7,9 +7,9 @@ import (
 )
 
 type CompactLink struct {
-	From    uint64;
-	To      uint64;
-	Account uint64;
+	From    uint64
+	To      uint64
+	Account uint64
 }
 
 type LinkFilter func(CompactLink) bool

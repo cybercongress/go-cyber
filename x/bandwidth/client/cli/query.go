@@ -26,8 +26,8 @@ func GetQueryCmd() *cobra.Command {
 			GetCmdQueryParams(),
 			GetCmdQueryPrice(),
 			GetCmdQueryLoad(),
-			GetCmdQueryDesirableBandwidth(),
-			GetCmdQueryAccount(),
+			GetCmdQueryTotalBandwidth(),
+			GetCmdQueryNeuron(),
 	)
 
 	return bandwidthQueryCmd
@@ -120,10 +120,10 @@ func GetCmdQueryPrice() *cobra.Command {
 	return cmd
 }
 
-func GetCmdQueryDesirableBandwidth() *cobra.Command {
+func GetCmdQueryTotalBandwidth() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "desirable",
-		Short: "Query the desirable bandwidth",
+		Use:   "total",
+		Short: "Query the total bandwidth",
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -149,10 +149,10 @@ func GetCmdQueryDesirableBandwidth() *cobra.Command {
 	return cmd
 }
 
-func GetCmdQueryAccount() *cobra.Command {
+func GetCmdQueryNeuron() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "account [address]",
-		Short: "Query the account bandwidth [address]",
+		Use:   "neuron [address]",
+		Short: "Query the neuron bandwidth [address]",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -166,9 +166,9 @@ func GetCmdQueryAccount() *cobra.Command {
 				return err
 			}
 
-			res, err := queryClient.Account(
+			res, err := queryClient.NeuronBandwidth(
 				context.Background(),
-				&types.QueryAccountRequest{Address: addr.String()},
+				&types.QueryNeuronBandwidthRequest{Neuron: addr.String()},
 			)
 			if err != nil {
 				return err

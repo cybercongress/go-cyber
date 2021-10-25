@@ -55,7 +55,7 @@ func validateCalculationPeriod(i interface{}) error {
 	}
 
 	if v < int64(5) {
-		return fmt.Errorf("calculation period is too low: %d", v)
+		return fmt.Errorf("calculation period should be equal or more than 5 blocks: %d", v)
 	}
 
 	return nil
@@ -68,12 +68,12 @@ func validateDampingFactor(i interface{}) error {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 
-	if v.LTE(sdk.NewDecWithPrec(5,1)) {
-		return fmt.Errorf("damping factor should be more than 0.5: %s", v)
+	if v.LTE(sdk.NewDecWithPrec(7,1)) {
+		return fmt.Errorf("damping factor should be equal or more than 0.7: %s", v)
 	}
 
-	if v.GTE(sdk.OneDec()) {
-		return fmt.Errorf("damping factor should be < 1, is: %s", v)
+	if v.GTE(sdk.NewDecWithPrec(9,1)) {
+		return fmt.Errorf("damping factor should be equal or less than 0.9: %s", v)
 	}
 
 	return nil

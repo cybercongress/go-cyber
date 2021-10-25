@@ -62,7 +62,7 @@ func GetCmdQueryParams() *cobra.Command {
 func GetCmdQueryInvestmintAmount() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "investmint [amount] [resource] [length]",
-		Short: "Query potential resources return on investmint",
+		Short: "Query resources return on investmint",
 		Args: cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)

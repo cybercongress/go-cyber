@@ -51,7 +51,7 @@ func (gk GraphKeeper) SaveLink(ctx sdk.Context, link types.CompactLink) {
 	defer telemetry.IncrCounter(1.0, types.ModuleName, "cyberlinks")
 
 	store := ctx.KVStore(gk.key)
-	store.Set(types.CyberlinksNewStoreKey(types.CyberlinkRawKey(link)), sdk.Uint64ToBigEndian(uint64(ctx.BlockHeight())))
+	store.Set(types.CyberlinksStoreKey(types.CyberlinkRawKey(link)), sdk.Uint64ToBigEndian(uint64(ctx.BlockHeight())))
 
 	gk.IncrementLinksCount(ctx)
 }

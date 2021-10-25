@@ -223,11 +223,6 @@ func (drd DeductFeeBandDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulat
 				}
 				// TODO think to add to transient store
 				drd.bandMeter.AddToBlockBandwidth(txCost)
-
-				events := sdk.Events{sdk.NewEvent(sdk.EventTypeTx,
-					sdk.NewAttribute("bandwidth", string(txCost)),
-				)}
-				ctx.EventManager().EmitEvents(events)
 			}
 		}
 	}

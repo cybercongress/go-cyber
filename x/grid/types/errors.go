@@ -5,10 +5,10 @@ import (
 )
 
 var (
-	ErrWrongAlias           = sdkerrors.Register(ModuleName, 2, "length of the alias isn't valid")
-	ErrRouteNotExist		= sdkerrors.Register(ModuleName, 3, "the route isn't exist")
-	ErrRouteExist      		= sdkerrors.Register(ModuleName, 4, "the route is exist")
-	ErrWrongValueDenom 		= sdkerrors.Register(ModuleName, 5, "the denom of value isn't supported")
+	ErrWrongAlias           = sdkerrors.Register(ModuleName, 2, "length of the alias is not valid")
+	ErrRouteNotExist		= sdkerrors.Register(ModuleName, 3, "the route does not exist")
+	ErrRouteExist      		= sdkerrors.Register(ModuleName, 4, "the route exists")
+	ErrWrongValueDenom 		= sdkerrors.Register(ModuleName, 5, "the denom of value is not supported")
 	ErrMaxRoutes       		= sdkerrors.Register(ModuleName, 6, "max routes are exceeded")
 	ErrSelfRoute			= sdkerrors.Register(ModuleName, 7, "routing to self is not allowed")
 )

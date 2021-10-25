@@ -9,8 +9,8 @@ import (
 const (
 	DefaultParamspace = ModuleName
 
-	DefaultMaxSlots   uint32 = 10
-	DefaultMaxGas     uint32 = 1000000
+	DefaultMaxSlots   uint32 = 4
+	DefaultMaxGas     uint32 = 2000000
 	DefaultFeeTTL     uint32 = 50
 )
 
@@ -47,8 +47,8 @@ func validateMaxSlots(i interface{}) error {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 
-	if v == 0 {
-		return fmt.Errorf("max slots must be positive: %d", v)
+	if v < 4 {
+		return fmt.Errorf("max slots must be equal or more than 4: %d", v)
 	}
 
 	return nil
@@ -60,8 +60,8 @@ func validateMaxGas(i interface{}) error {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 
-	if v == 0 {
-		return fmt.Errorf("max gas must be positive: %d", v)
+	if v < 2000000 {
+		return fmt.Errorf("max gas must be equal or more than 2000000: %d", v)
 	}
 
 	return nil

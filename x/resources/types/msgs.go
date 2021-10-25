@@ -30,7 +30,7 @@ func (msg MsgInvestmint) Type() string { return ActionInvestmint }
 
 func (msg MsgInvestmint) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Neuron); if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid agent address: %s", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid neuron address: %s", err)
 	}
 
 	if !msg.Amount.IsValid() || !msg.Amount.IsPositive() {
@@ -42,7 +42,7 @@ func (msg MsgInvestmint) ValidateBasic() error {
 	}
 
 	if msg.Length == 0 {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "invalid length")
+		return ErrNotAvailablePeriod
 	}
 
 	return nil
