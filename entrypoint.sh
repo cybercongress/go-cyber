@@ -16,7 +16,7 @@ then
   cp -r /cyber/cosmovisor/  /root/.cyber
 fi
 
-# AI-DEX upgrade check
+# upgrade check
 #if [ ! -d "/root/.cyber/cosmovisor/upgrades/" ]
 #then
 #cp -r /cyber/cosmovisor/upgrades /root/.cyber/cosmovisor
