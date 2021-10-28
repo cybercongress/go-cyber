@@ -124,7 +124,7 @@ func (k Keeper) EditEnergyRoute(ctx sdk.Context, src, dst sdk.AccAddress, value 
 				return err // should never happen
 			}
 
-			k.SetRoutedEnergy(ctx, dst, energy.Sub(coins))
+			k.SetRoutedEnergy(ctx, dst, energy.Sort().Sub(coins))
 		}
 	}
 
@@ -137,7 +137,7 @@ func (k Keeper) EditEnergyRoute(ctx sdk.Context, src, dst sdk.AccAddress, value 
 		newValues = sdk.NewCoins(sdk.NewCoin(ctypes.VOLT, volts), value)
 	}
 
-	k.SetRoute(ctx, src, dst, types.NewRoute(src, dst, route.Name, newValues))
+	k.SetRoute(ctx, src, dst, types.NewRoute(src, dst, route.Name, newValues.Sort()))
 
 	k.proxyKeeper.OnCoinsTransfer(ctx, src, dst)
 

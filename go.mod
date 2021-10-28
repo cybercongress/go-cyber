@@ -135,7 +135,7 @@ require (
 
 replace github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
 
-replace github.com/CosmWasm/wasmd => github.com/cybercongress/wasmd v0.21.0
+replace github.com/CosmWasm/wasmd => github.com/cybercongress/wasmd v0.21.1
 
 replace github.com/cosmos/cosmos-sdk => github.com/cosmos/cosmos-sdk v0.44.3
 
