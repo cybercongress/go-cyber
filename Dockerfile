@@ -3,14 +3,13 @@
 ###########################################################################################
 FROM ubuntu:20.04  as build_stage_cuda
 
-ENV GO_VERSION '1.17.1'
+ENV GO_VERSION '1.17.2'
 ENV GO_ARCH 'linux-amd64'
-ENV GO_BIN_SHA 'dab7d9c34361dc21ec237d584590d72500652e7c909bf082758fb63064fca0ef'
+ENV GO_BIN_SHA 'f242a9db6a0ad1846de7b6d94d507915d14062660616a61ef7c808a76e4f1676'
 ENV DAEMON_HOME /root/.cyber
-ENV DAEMON_RESTART_AFTER_UPGRADE=on
+ENV DAEMON_RESTART_AFTER_UPGRADE=true
 ENV DAEMON_LOG_BUFFER_SIZE=1048
 ENV UNSAFE_SKIP_BACKUP=true
-ENV GAIA_HOME ${DAEMON_HOME}
 ENV DAEMON_NAME cyber
 ENV BUILD_DIR /build
 ENV COSMWASM_VER "1.0.0-beta"
@@ -40,11 +39,11 @@ RUN apt-get -y install --no-install-recommends \
 # Create appropriate folders layout
 ###########################################################################################
  RUN mkdir -p /cyber/cosmovisor/genesis/bin \
- && mkdir -p /cyber/cosmovisor/upgrades/AI-DEX/bin 
 
 # Compile cosmovisor
 ###########################################################################################
  RUN git clone --depth 1 https://github.com/cosmos/cosmos-sdk.git $BUILD_DIR/ \
+ && git checkout cosmovisor/v1.0.0 \
  && cd $BUILD_DIR/cosmovisor/ \
  && make cosmovisor \
  && cp cosmovisor /usr/bin/cosmovisor \
@@ -73,8 +72,6 @@ RUN cp ./build/libcbdrank.so /usr/lib/ && cp cbdrank.h /usr/lib/
 ###########################################################################################
 
 WORKDIR /sources
-# TODO: Update brach to master before merge\relaese
-#RUN git checkout  v0.2.0-beta4 \
 RUN make build CUDA_ENABLED=true \
  && chmod +x ./build/cyber \
  && cp ./build/cyber /cyber/cosmovisor/genesis/bin/ \
@@ -98,7 +95,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends wget curl ca-ce
 
 # Download genesis file and links file from IPFS
 ###########################################################################################
-# PUT correct CID_OF_GENESIS here
 RUN wget -O /genesis.json https://gateway.ipfs.cybernode.ai/ipfs/QmbuavZ6JnUhHbvYcU4P2QDoYPGDjKL67LhjRSMQ9f9FaT
 
 WORKDIR /
@@ -128,6 +124,6 @@ RUN chmod +x /entrypoint.sh
 
 #  Start
 ###############################################################################
-EXPOSE 26656 26657 1317 
+EXPOSE 26656 26657 1317 9090
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["./start_script.sh"]
