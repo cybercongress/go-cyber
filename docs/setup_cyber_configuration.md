@@ -148,7 +148,7 @@ On *line 172* of the config.toml we see the following:
 seeds = ""
 ```
 
-This line is dedicated to the list of seed nodes you want to establish a connection with. To get seed nodes addresses take a look at our [forum](https://ai.cybercongress.ai/) or ask on our [Telegram chat](https://t.me/fuckgoogle).
+This line is dedicated to the list of seed nodes you want to establish a connection with. To get some seed and peers addresses take a look at networks [repository](https://github.com/cybercongress/networks).
 
 - For validators with sentinel nodes or with a decent quantity of peers connected it is not required to fill it out:
 
@@ -223,8 +223,6 @@ This is the list of peers which IDs should not gossip to others.
 private_peer_ids = ""
 ```
 
-Or you may add your 2nd validator ID here (if you running more than 1 validator).
-
 - For Sentinel nodes, add your validator/s address  here:
 
 ```bash
@@ -282,5 +280,5 @@ To setup up your node moniker please refer to *line 16* and type in whatever you
 
 ```bash
 # A custom human readable name for this node
-moniker = "god_damn_node"
+moniker = "rocket_node"
 ```

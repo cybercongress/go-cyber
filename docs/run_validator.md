@@ -1,5 +1,5 @@
 
-# Join Cyber testnet as a Validator
+# Join cyber as a Validator
 
 ## Prepare your server
 
@@ -231,14 +231,14 @@ sudo systemctl restart docker
 3. Test nvidia-smi with the latest official CUDA image
 
 ```bash
-docker run --gpus all nvidia/cuda:11.0-base nvidia-smi
+docker run --gpus all nvidia/cuda:11.1-base nvidia-smi
 ```
 
 Output logs should coincide as earlier:
 
 ```bash
-Unable to find image 'nvidia/cuda:11.0-base' locally
-11.0-base: Pulling from nvidia/cuda
+Unable to find image 'nvidia/cuda:11.1-base' locally
+11.1-base: Pulling from nvidia/cuda
 54ee1f796a1e: Pull complete 
 f7bfea53ad12: Pull complete 
 46d371e02073: Pull complete 
@@ -247,7 +247,7 @@ b66c17bbf772: Pull complete
 e5ce55b8b4b9: Pull complete 
 155bc0332b0a: Pull complete 
 Digest: sha256:774ca3d612de15213102c2dbbba55df44dc5cf9870ca2be6c6e9c627fa63d67a
-Status: Downloaded newer image for nvidia/cuda:11.0-base
+Status: Downloaded newer image for nvidia/cuda:11.1-base
 Mon Jun 21 14:07:52 2021 
 +------------------------------------------------------------------------+
 |NVIDIA-SMI 460.84      Driver Version:460.84      CUDA Version: 11.2    |
@@ -288,10 +288,10 @@ mkdir $HOME/.cyber/config
 (This will pull and extract the image from cyberd/cyber)
 
 ```bash
-docker run -d --gpus all --name=bostrom-testnet-6 --restart always -p 26656:26656 -p 26657:26657 -p 1317:1317 -e ALLOW_SEARCH=true -v $HOME/.cyber:/root/.cyber  cyberd/cyber:bostrom-testnet-6
+docker run -d --gpus all --name=bostrom --restart always -p 26656:26656 -p 26657:26657 -p 1317:1317 -e ALLOW_SEARCH=true -v $HOME/.cyber:/root/.cyber  cyberd/cyber:bostrom-1
 ```
 
-3. Setup some peers to `persistent_peers` and `seeds` of $HOME/.cyber/config/config.toml line 184:
+3. Setup some peers to `persistent_peers` and `seeds` to $HOME/.cyber/config/config.toml line 184:
 
 
 ```bash
@@ -308,13 +308,13 @@ When done, please restart container using:
 4. To apply config changes restart the container:
 
 ```bash
-docker restart bostrom-testnet-6
+docker restart bostrom
 ```
 
 5. Then check the status of your node:
 
 ```bash
-docker exec bostrom-testnet-6 cyber status
+docker exec bostrom cyber status
 ```
 
 A possible output may look like this:
@@ -330,7 +330,7 @@ A possible output may look like this:
 To check container logs use:
 
 ```bash
-docker logs bostrom-testnet-6 -f --tail 10
+docker logs bostrom -f --tail 10
 ```
 
 ## Validator start
@@ -340,13 +340,11 @@ After your node has successfully synced, you can run a validator.
 ### Prepare the staking address
 
 1. To proceed further you need to add your existing address to the node, or generete one and fund it. 
-Please checkout if you're eligible for cyber Gift: **TODO add link to gift**
-Or use our [port](https://cyber.page/brain) to enter cyber.
 
 To **create** a new one use:
 
 ```bash
-docker exec -ti bostrom-testnet-6 cyber keys add <your_key_name>
+docker exec -ti bostrom cyber keys add <your_key_name>
 ```
 
 The above command returns the address, the public key and the seed phrase, which you can use to
@@ -357,13 +355,13 @@ recover your account if you forget your password later.
 To **import** existing address use: 
 
 ```bash
-docker exec -ti bostrom-testnet-6 cyber keys add <your_key_name> --recover
+docker exec -ti bostrom cyber keys add <your_key_name> --recover
 ```
 
 You could use your **ledger** device with the Cosmos app installed on it to sign transactions. Add address from Ledger:
 
 ```bash
-docker exec -ti bostrom-testnet-6 cyber keys add <your_key_name> --ledger
+docker exec -ti bostrom cyber keys add <your_key_name> --ledger
 ```
 
 **<your_key_name>** is any name you pick to represent this key pair.
@@ -378,16 +376,16 @@ The next step is to to declare a validator candidate.
 To declare a validator candidate, run the following command adjusting the stake amount and the other fields:
 
 ```bash
-docker exec -ti bostrom-testnet-6 cyber tx staking create-validator \
+docker exec -ti bostrom cyber tx staking create-validator \
   --amount=10000000boot \
   --min-self-delegation "1000000" \
-  --pubkey=$(docker exec -ti bostrom-testnet-6 cyber tendermint show-validator) \
+  --pubkey=$(docker exec -ti bostrom cyber tendermint show-validator) \
   --moniker=<your_node_nickname> \
   --from=<your_key_name> \
   --commission-rate="0.10" \
   --commission-max-rate="0.20" \
   --commission-max-change-rate="0.01" \
-  --chain-id=bostrom-testnet-6 \
+  --chain-id=bostrom \
   --gas-prices 0.01boot \
   --gas 600000
 ```
@@ -395,7 +393,7 @@ docker exec -ti bostrom-testnet-6 cyber tx staking create-validator \
 ### Verify that you are validating
 
 ```bash
-docker exec -ti bostrom-testnet-6 cyber query staking validators
+docker exec -ti bostrom cyber query staking validators
 ```
 
 If you see your `<your_node_nickname>` with status `Bonded` and Jailed `false` everything is good.
@@ -409,7 +407,7 @@ If your validator got under slashing conditions, it will be jailed.
 After such event, an operator must unjail the validator manually:
 
 ```bash
-docker exec -ti bostrom-testnet-6 cyber tx slashing unjail --from=<your_key_name> --chain-id bostrom-testnet-6 --gas-prices 0.01boot --gas 300000
+docker exec -ti bostrom cyber tx slashing unjail --from=<your_key_name> --chain-id bostrom --gas-prices 0.01boot --gas 300000
 ```
 
 ### Back-up validator keys (!)

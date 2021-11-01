@@ -143,21 +143,6 @@ allow_duplicate_ip = true
 ```
 _________________________________________________________
 
-## How to update from bostrom-testnet-5 to bostrom-testnet-6
-
-If you have your bostrom-testnet-4 node running on our docker container do:
-
-```bash
-docker stop bostrom-testnet-5
-docker rm bostrom-testnet-5
-docker rmi cyberd/cyber:bostrom-testnet-5.1
-docker run -d --gpus all --name=bostrom-testnet-6 --restart always -p 26656:26656 -p 26657:26657 -p 1317:1317 -e ALLOW_SEARCH=false -v $HOME/.cyber:/root/.cyber  cyberd/cyber:bostrom-testnet-6
-```
-This will pull new image and replace genesis and cyber binary to correct versions.
-
-Than you'll have to send create-validator [transaction](https://github.com/cybercongress/go-cyber/blob/bostrom-dev/docs/run_validator.md#send-the-create-validator-transaction).
-_________________________________________________________
-
 ## IBC
 
 ### Config for [Relayer](https://github.com/cosmos/relayer/)
