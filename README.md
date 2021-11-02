@@ -58,11 +58,11 @@ _____________
 ## Blockchain
 
 [![chain](https://img.shields.io/badge/Chain-bostrom--testnet--5-success.svg?style=flat-square)](https://github.com/cybercongress/cyberd/blob/master/docs/run_validator.md)
-[![block](https://img.shields.io/badge/dynamic/json?color=blue&label=Block%20Height&query=%24.result.sync_info.latest_block_height&url=https://rpc.bostromdev.cybernode.ai/status&style=flat-square)]()
-[![cyberlinks](https://img.shields.io/badge/dynamic/json?color=blue&label=Cyberlinks&query=%24.result.cyberlinks&url=https://lcd.bostromdev.cybernode.ai/graph/graph_stats&style=flat-square)]()
-[![particles](https://img.shields.io/badge/dynamic/json?color=blue&label=Particles&query=%24.result.particles&url=https://lcd.bostromdev.cybernode.ai/graph/graph_stats&style=flat-square)]()
-[![negentropy](https://img.shields.io/badge/dynamic/json?color=blue&label=-Entropy&query=%24.result.negentropy&url=https://lcd.bostromdev.cybernode.ai/rank/negentropy&style=flat-square)]()
-[![validators](https://img.shields.io/badge/dynamic/json?label=Validators&query=%24.result.validators.length&url=https://rpc.bostromdev.cybernode.ai/validators%3F&style=flat-square)]()
+[![block](https://img.shields.io/badge/dynamic/json?color=blue&label=Block%20Height&query=%24.result.sync_info.latest_block_height&url=https://rpc.bostrom.cybernode.ai/status&style=flat-square)]()
+[![cyberlinks](https://img.shields.io/badge/dynamic/json?color=blue&label=Cyberlinks&query=%24.result.cyberlinks&url=https://lcd.bostrom.cybernode.ai/graph/graph_stats&style=flat-square)]()
+[![particles](https://img.shields.io/badge/dynamic/json?color=blue&label=Particles&query=%24.result.particles&url=https://lcd.bostrom.cybernode.ai/graph/graph_stats&style=flat-square)]()
+[![negentropy](https://img.shields.io/badge/dynamic/json?color=blue&label=-Entropy&query=%24.result.negentropy&url=https://lcd.bostrom.cybernode.ai/rank/negentropy&style=flat-square)]()
+[![validators](https://img.shields.io/badge/dynamic/json?label=Validators&query=%24.result.validators.length&url=https://rpc.bostrom.cybernode.ai/validators%3F&style=flat-square)]()
 _________________________________________________________
 
 ## Networks
@@ -113,9 +113,9 @@ _________________________________________________________
 
 ## Setup
 
-Chain-ID: bostrom-testnet-6
+Chain-ID: bostrom
 
-Genesis: [Qmc7j9C5Uc1tkcgHQqMC52TtFugdkmJzHSSdZa2NHfk1to](http://cloudflare-ipfs.com/ipfs/Qmc7j9C5Uc1tkcgHQqMC52TtFugdkmJzHSSdZa2NHfk1to)
+Genesis: [QmYubyVNfghD4xCrTFj26zBwrF9s5GJhi1TmxvrwmJCipr](http://cloudflare-ipfs.com/ipfs/QmYubyVNfghD4xCrTFj26zBwrF9s5GJhi1TmxvrwmJCipr)
 
 Build: ```make install```
 
@@ -125,21 +125,13 @@ Run: ```cyber start ```
 To use as CLI with remote node just set CUDA_ENABLED=false in Makefile and build
 ```
 
-- Version - v0.2.0-rc1-33
-- RPC: `https://rpc.bostromdev.cybernode.ai/`
-- REST: `https://lcd.bostromdev.cybernode.ai/rank/parameters`
-- CLI: `... --node=https://rpc.bostromdev.cybernode.ai:443`
+- Version - v0.2.0
+- RPC: `https://rpc.bostrom.cybernode.ai/`
+- REST: `https://lcd.bostrom.cybernode.ai/rank/parameters`
+- CLI: `... --node=https://rpc.bostrom.cybernode.ai:443`
 - Seed: `d0518ce9881a4b0c5872e5e9b7c4ea8d760dad3f@85.10.207.173:26656`
 - Peers: `5d542c0eb40ae48dc2cac0c140aedb605ded77dc@195.201.105.229:26656,a7226dce9f543a4ecd8db1da2ffd7be05d40d3ad@185.186.208.36:26656,c72de1e20beed51b779d89b1cf08d8146016eec4@185.186.208.37:26656,4c130ed1c58f6d6be981c59a748511e581969c51@93.180.175.201:36656`
 
-For better network stability please update your `.cyber/config/config.toml` lines as following: 
-
-```
-addr_book_strict = false
-
-persistent_peers_max_dial_period = "300s"
-
-allow_duplicate_ip = true
 ```
 _________________________________________________________
 
@@ -147,7 +139,7 @@ _________________________________________________________
 
 ### Config for [Relayer](https://github.com/cosmos/relayer/)
 ```
-{"key":"agent","chain-id":"bostrom-testnet-5","rpc-addr":"https://rpc.bostromdev.cybernode.ai:443","account-prefix":"bostrom","gas-adjustment":1.5,"gas-prices":"0.01boot","trusting-period":"72h"}
+{"key":"agent","chain-id":"bostrom-testnet-5","rpc-addr":"https://rpc.bostrom.cybernode.ai:443","account-prefix":"bostrom","gas-adjustment":1.5,"gas-prices":"0.01boot","trusting-period":"72h"}
 ```
 _________________________________________________________
 
@@ -155,21 +147,21 @@ _________________________________________________________
 
 ### Follow hero and get HYDROGEN:
 ```
-cyber tx staking delegate bostromvaloper1hmkqhy8ygl6tnl5g8tc503rwrmmrkjcqf92r73 100000000boot --from <name> --chain-id bostrom-testnet-5 --gas 150000 --gas-prices 0.01boot --yes --node https://rpc.bostromdev.cybernode.ai:443   
+cyber tx staking delegate bostromvaloper1hmkqhy8ygl6tnl5g8tc503rwrmmrkjcqf92r73 100000000boot --from <name> --chain-id bostrom-testnet-5 --gas 150000 --gas-prices 0.01boot --yes --node https://rpc.bostrom.cybernode.ai:443   
 ```
 
 ### Investmint HYDROGEN to get resources:
 ```
-cyber tx resources investmint 75000000hydrogen millivolt 86400 --from <name> --chain-id bostrom-testnet-5--gas 160000 --gas-prices 0.01boot --yes --node https://rpc.bostromdev.cybernode.ai:443
+cyber tx resources investmint 75000000hydrogen millivolt 86400 --from <name> --chain-id bostrom-testnet-5--gas 160000 --gas-prices 0.01boot --yes --node https://rpc.bostrom.cybernode.ai:443
 
-cyber tx resources investmint 25000000hydrogen milliampere 86400 --from <name> --chain-id bostrom-testnet-5 --gas 160000 --gas-prices 0.01boot --yes --node https://rpc.bostromdev.cybernode.ai:443
+cyber tx resources investmint 25000000hydrogen milliampere 86400 --from <name> --chain-id bostrom-testnet-5 --gas 160000 --gas-prices 0.01boot --yes --node https://rpc.bostrom.cybernode.ai:443
 ```
 
 ### Cyberlink and Explore:
 ```
-cyber tx graph cyberlink QmdVWtX17m7UvF8FcvNLTJxcpxv2fSJd7Z3VBoYxxW9Qpu Qmb9xPYYwHt1F3bQysKCZzXRzAT8QLvAyMe5DyPy4rene8 --from <name> --chain-id bostrom-testnet-5 --yes --node https://rpc.bostromdev.cybernode.ai:443
+cyber tx graph cyberlink QmdVWtX17m7UvF8FcvNLTJxcpxv2fSJd7Z3VBoYxxW9Qpu Qmb9xPYYwHt1F3bQysKCZzXRzAT8QLvAyMe5DyPy4rene8 --from <name> --chain-id bostrom-testnet-5 --yes --node https://rpc.bostrom.cybernode.ai:443
 
-curl https://lcd.bostromdev.cybernode.ai/rank/search?cid=QmdVWtX17m7UvF8FcvNLTJxcpxv2fSJd7Z3VBoYxxW9Qpu
+curl https://lcd.bostrom.cybernode.ai/rank/search?cid=QmdVWtX17m7UvF8FcvNLTJxcpxv2fSJd7Z3VBoYxxW9Qpu
 ```
 _________________________________________________________
 

@@ -46,13 +46,13 @@ case "$PLATFORM" in
 #    ;;
       "Linux")
     # Linux distro,
-    curl -OL https://github.com/cybercongress/go-cyber/releases/download/v0.2.0-rc2/cyber_v0.2.0-rc2_linux-amd64.tar.gz
-    tar -xzf cyber_v0.2.0-rc2_linux-amd64.tar.gz -C ./
+    curl -OL https://github.com/cybercongress/go-cyber/releases/download/v0.2.0/cyber_v0.2.0_linux-amd64.tar.gz
+    tar -xzf cyber_v0.2.0_linux-amd64.tar.gz -C ./
     for binpath in $binpaths; do
-      if cp build_v0.2.0-rc2_linux_amd64/cyber "$binpath"; then
+      if cp build_v0.2.0_linux_amd64/cyber "$binpath"; then
         for libpath in $libpaths; do
-          if cp build_v0.2.0-rc2_linux_amd64/libgo_cosmwasm.dylib  "$libpath"; then
-            cp build_v0.2.0-rc2_linux_amd64/libgo_cosmwasm.so  "$libpath"
+          if cp build_v0.2.0_linux_amd64/libgo_cosmwasm.dylib  "$libpath"; then
+            cp build_v0.2.0_linux_amd64/libgo_cosmwasm.so  "$libpath"
             echo "Moved libgo_cosmwasm to $libpath"
             break
           else
@@ -63,14 +63,14 @@ case "$PLATFORM" in
         done
         echo "Moved $bin to $binpath"
         echo "Enjoy your cyber experience!"
-        rm cyber_v0.2.0-rc2_linux-amd64.tar.gz
-        rm -rf build_v0.2.0-rc2_linux_amd64
+        rm cyber_v0.2.0_linux-amd64.tar.gz
+        rm -rf build_v0.2.0_linux_amd64
         exit 0
       else
       if [ -d "$binpath" ] && [ ! -w "$binpath" ]; then
         is_write_perm_missing=1
-        rm cyber_v0.2.0-rc2_linux-amd64.tar.gz
-        rm -rf build_v0.2.0-rc2_linux_amd64
+        rm cyber_v0.2.0_linux-amd64.tar.gz
+        rm -rf build_v0.2.0_linux_amd64
       fi
       fi
     done
