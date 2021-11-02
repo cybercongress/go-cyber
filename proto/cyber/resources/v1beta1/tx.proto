@@ -16,7 +16,7 @@ message MsgInvestmint {
     option (gogoproto.goproto_getters) = false;
 
     string neuron                   = 1;
-    cosmos.base.v1beta1.Coin amount = 2 [(gogoproto.nullable) = false];
+    cosmos.base.v1beta1.Coin amount = 2 [(gogoproto.nullable) = false, (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.Coin"];
     string resource                 = 3;
     uint64 length                   = 4;
 }

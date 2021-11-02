@@ -65,8 +65,12 @@ func (msg MsgCreateThought) ValidateBasic() error {
 	if msg.Name == "" || len(msg.Name) > 32 {
 		return ErrBadName
 	}
-	if _, err := cid.Decode(string(msg.Particle)); err != nil {
+	particle, err := cid.Decode(msg.Particle)
+	if err != nil {
 		return graph.ErrInvalidParticle
+	}
+	if particle.Version() != 0 {
+		return graph.ErrCidVersion
 	}
 
 	return nil
@@ -187,8 +191,12 @@ func (msg MsgChangeThoughtParticle) ValidateBasic() error {
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid program address (%s)", err)
 	}
-	if _, err := cid.Decode(msg.Particle); err != nil {
+	particle, err := cid.Decode(msg.Particle)
+	if err != nil {
 		return graph.ErrInvalidParticle
+	}
+	if particle.Version() != 0 {
+		return graph.ErrCidVersion
 	}
 	if msg.Name == "" || len(msg.Name) > 32 {
 		return ErrBadName

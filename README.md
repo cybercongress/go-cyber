@@ -1,13 +1,19 @@
 # Cyber - SuperIntelligence for The Great Web
 
-## Bostrom Launch 5 November ~13.20 GMT
-
 <div align="center">
- <img src="https://ipfs.io/ipfs/QmXcZz6tgnFSdF9agDpFYgGa7PRg5R2JiyGaYQvT5cSK91" width="800" />
+ <img src="https://ipfs.io/ipfs/QmXcZz6tgnFSdF9agDpFYgGa7PRg5R2JiyGaYQvT5cSK91" width="600" />
 </div>
 
 <div align="center">
- <h3>Start to use right now - <a href="https://cyb.ai">cyb.ai</a></h3>
+ <h1>Start to use right now - <a href="https://cyb.ai">cyb.ai</a></h1>
+</div>
+
+<div align="center">
+ <h3>Bostrom Network Launch Event - 5 November 13.22:42 GMT / 1636118562</h3>
+</div>
+
+<div align="center">
+ <h3>Bostrom's genesis - <a href="http://cloudflare-ipfs.com/ipfs/QmYubyVNfghD4xCrTFj26zBwrF9s5GJhi1TmxvrwmJCipr">QmYubyVNfghD4xCrTFj26zBwrF9s5GJhi1TmxvrwmJCipr</a></h3>
 </div>
 
 <div align="center">
@@ -24,10 +30,6 @@
 
 <div align="center">
  <h3><a href="https://t.me/fuckgoogle">#fuckgoogle</a> and <a href="https://t.me/cyber_russian_community">cyber~Russian</a> communities </h3>
-</div>
-
-<div align="center">
- <h3><a href="">Gitcoin</a> and <a href="https://cybercongress.ai/post/">Blog</a></h3>
 </div>
 
 <div align="center">
@@ -57,7 +59,7 @@ _____________
 
 ## Blockchain
 
-[![chain](https://img.shields.io/badge/Chain-bostrom--testnet--5-success.svg?style=flat-square)](https://github.com/cybercongress/cyberd/blob/master/docs/run_validator.md)
+[![chain](https://img.shields.io/badge/Chain-bostrom-success.svg?style=flat-square)](https://github.com/cybercongress/cyberd/blob/master/docs/run_validator.md)
 [![block](https://img.shields.io/badge/dynamic/json?color=blue&label=Block%20Height&query=%24.result.sync_info.latest_block_height&url=https://rpc.bostrom.cybernode.ai/status&style=flat-square)]()
 [![cyberlinks](https://img.shields.io/badge/dynamic/json?color=blue&label=Cyberlinks&query=%24.result.cyberlinks&url=https://lcd.bostrom.cybernode.ai/graph/graph_stats&style=flat-square)]()
 [![particles](https://img.shields.io/badge/dynamic/json?color=blue&label=Particles&query=%24.result.particles&url=https://lcd.bostrom.cybernode.ai/graph/graph_stats&style=flat-square)]()
@@ -103,7 +105,7 @@ _________________________________________________________
 27. Future Graph VM support - GraphBLAS R&D
 28. Future IK protocol support - InterKnowledge protocol R&D
 
-**Try [cyb.ai](https://cyb.ai) on bostrom-testnet-5 network**
+**Try [cyb.ai](https://cyb.ai) on bostrom network**
 _________________________________________________________
 
 ## ELI-5
@@ -132,34 +134,49 @@ To use as CLI with remote node just set CUDA_ENABLED=false in Makefile and build
 - Seed: `d0518ce9881a4b0c5872e5e9b7c4ea8d760dad3f@85.10.207.173:26656`
 - Peers: `5d542c0eb40ae48dc2cac0c140aedb605ded77dc@195.201.105.229:26656,a7226dce9f543a4ecd8db1da2ffd7be05d40d3ad@185.186.208.36:26656,c72de1e20beed51b779d89b1cf08d8146016eec4@185.186.208.37:26656,4c130ed1c58f6d6be981c59a748511e581969c51@93.180.175.201:36656`
 
-```
 _________________________________________________________
 
 ## IBC
 
-### Config for [Relayer](https://github.com/cosmos/relayer/)
+### Example config for [Hermes](https://github.com/informalsystems/ibc-rs) relayer
+
 ```
-{"key":"agent","chain-id":"bostrom-testnet-5","rpc-addr":"https://rpc.bostrom.cybernode.ai:443","account-prefix":"bostrom","gas-adjustment":1.5,"gas-prices":"0.01boot","trusting-period":"72h"}
+[[chains]]
+id = 'bostrom'
+rpc_addr = 'http://127.0.0.1:26657'
+grpc_addr = 'http://127.0.0.1:9090'
+websocket_addr = 'ws://localhost:26657/websocket'
+rpc_timeout = '10s'
+account_prefix = 'bostrom'
+key_name = 'bostrom-key'
+store_prefix = 'ibc'
+max_gas = 2000000
+max_msg_num = 5
+gas_price = { price = 0.01, denom = 'boot' }
+gas_adjustment = 0.1
+clock_drift = '5s'
+trusting_period = '1days'
+trust_threshold = { numerator = '1', denominator = '3' }
 ```
 _________________________________________________________
 
 ### Basic operations
 
-### Follow hero and get HYDROGEN:
+### Follow Hero and get HYDROGEN:
 ```
-cyber tx staking delegate bostromvaloper1hmkqhy8ygl6tnl5g8tc503rwrmmrkjcqf92r73 100000000boot --from <name> --chain-id bostrom-testnet-5 --gas 150000 --gas-prices 0.01boot --yes --node https://rpc.bostrom.cybernode.ai:443   
+cyber tx staking delegate bostromvaloper1hmkqhy8ygl6tnl5g8tc503rwrmmrkjcqf92r73 1000000000boot --from <name> --chain-id bostrom --gas 200000 --gas-prices 0.01boot --yes --node https://rpc.bostrom.cybernode.ai:443   
 ```
 
 ### Investmint HYDROGEN to get resources:
 ```
-cyber tx resources investmint 75000000hydrogen millivolt 86400 --from <name> --chain-id bostrom-testnet-5--gas 160000 --gas-prices 0.01boot --yes --node https://rpc.bostrom.cybernode.ai:443
+cyber tx resources investmint 1000000000hydrogen millivolt 86400 --from <name> --chain-id bostrom --gas 200000 --gas-prices 0.01boot --yes --node https://rpc.bostrom.cybernode.ai:443
 
-cyber tx resources investmint 25000000hydrogen milliampere 86400 --from <name> --chain-id bostrom-testnet-5 --gas 160000 --gas-prices 0.01boot --yes --node https://rpc.bostrom.cybernode.ai:443
+cyber tx resources investmint 1000000000hydrogen milliampere 86400 --from <name> --chain-id bostrom --gas 200000 --gas-prices 0.01boot --yes --node https://rpc.bostrom.cybernode.ai:443
 ```
 
-### Cyberlink and Explore:
+### Cyberlink and Search:
 ```
-cyber tx graph cyberlink QmdVWtX17m7UvF8FcvNLTJxcpxv2fSJd7Z3VBoYxxW9Qpu Qmb9xPYYwHt1F3bQysKCZzXRzAT8QLvAyMe5DyPy4rene8 --from <name> --chain-id bostrom-testnet-5 --yes --node https://rpc.bostrom.cybernode.ai:443
+cyber tx graph cyberlink QmdVWtX17m7UvF8FcvNLTJxcpxv2fSJd7Z3VBoYxxW9Qpu Qmb9xPYYwHt1F3bQysKCZzXRzAT8QLvAyMe5DyPy4rene8 --from <name> --chain-id bostrom --yes --node https://rpc.bostrom.cybernode.ai:443
 
 curl https://lcd.bostrom.cybernode.ai/rank/search?cid=QmdVWtX17m7UvF8FcvNLTJxcpxv2fSJd7Z3VBoYxxW9Qpu
 ```
