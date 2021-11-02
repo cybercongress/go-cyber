@@ -1,10 +1,6 @@
 # Cyber - SuperIntelligence for The Great Web
 
 <div align="center">
- <img src="https://ipfs.io/ipfs/QmXcZz6tgnFSdF9agDpFYgGa7PRg5R2JiyGaYQvT5cSK91" width="600" />
-</div>
-
-<div align="center">
  <h1>Start to use right now - <a href="https://cyb.ai">cyb.ai</a></h1>
 </div>
 
@@ -21,11 +17,7 @@
 </div>
 
 <div align="center">
- <h3><a href="https://github.com/cybercongress/congress/blob/master/ecosystem/ELI-5%20FAQ.md">ELI-5</a> and <a href="https://github.com/cybercongress/congress/blob/master/ecosystem/Cyber%20Homestead%20doc.md">Homestead Documentation</a></h3>
-</div>
-
-<div align="center">
- <h3>Onboarding <a href="https://github.com/cybercongress/congress/blob/master/ecosystem/validators/onboarding.md">point</a> for cyber validators</a> and <a href="https://github.com/cybercongress/go-cyber/blob/bostrom-dev/docs/run_validator.md">Setup validator guide</a></h3>
+ <h3>Join us, Hero - <a href="https://github.com/cybercongress/go-cyber/blob/bostrom-dev/docs/run_validator.md">Setup validator guide</a></h3>
 </div>
 
 <div align="center">
@@ -95,7 +87,7 @@ _________________________________________________________
 17. Virtual Machine - CosmWasm | BOOT
 18. Programs Bus - Interconnect Line
 19. Autonomous Programs - Default Mode Network & Thoughts | BOOT
-20. Programs Income - execution fees | BOOT
+20. Programs Income - Execution fees 80% | BOOT
 21. API - Graph and Computer
 22. Client Library - cyber-js & cyber-py
 23. Indexer - cyberindex
@@ -104,6 +96,8 @@ _________________________________________________________
 26. License - Cyber License
 27. Future Graph VM support - GraphBLAS R&D
 28. Future IK protocol support - InterKnowledge protocol R&D
+29. Future InterChain Accounts support
+30. Future Graph pruning support
 
 **Try [cyb.ai](https://cyb.ai) on bostrom network**
 _________________________________________________________
