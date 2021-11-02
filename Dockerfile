@@ -38,12 +38,10 @@ RUN apt-get -y install --no-install-recommends \
 
 # Create appropriate folders layout
 ###########################################################################################
- RUN mkdir -p /cyber/cosmovisor/genesis/bin \
-
+ RUN mkdir -p /cyber/cosmovisor/genesis/bin
 # Compile cosmovisor
 ###########################################################################################
  RUN git clone --depth 1 https://github.com/cosmos/cosmos-sdk.git $BUILD_DIR/ \
- && git checkout cosmovisor/v1.0.0 \
  && cd $BUILD_DIR/cosmovisor/ \
  && make cosmovisor \
  && cp cosmovisor /usr/bin/cosmovisor \
