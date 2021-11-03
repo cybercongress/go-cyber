@@ -10,40 +10,40 @@ libpaths="/usr/lib /usr/local/lib"
 # because of missing write permissions.
 is_write_perm_missing=""
 
-# Download archive with cyberdcli binaries according to platform type
+# Download archive with cyber binaries according to platform type
 PLATFORM=$(uname)
 case "$PLATFORM" in
-#  "Darwin")
-#    # macOS
-#    curl -OL  https://github.com/cybercongress/go-cyber/releases/download/v0.1.6/cyberdcli_v0.1.6_darwin-amd64.tar.gz
-#    tar -xzf cyberdcli_v0.1.6_darwin-amd64.tar.gz
-#    for binpath in $binpaths; do
-#      if cp build_v0.1.6_darwin_amd64/cyberdcli "$binpath"; then
-#        for libpath in $libpaths; do
-#          if cp build_v0.1.6_darwin_amd64/libgo_cosmwasm.dylib  "$libpath"; then
-#            cp build_v0.1.6_darwin_amd64/libgo_cosmwasm.so  "$libpath"
-#            echo "Moved libgo_cosmwasm to $libpath"
-#            break
-#          else
-#          if [ -d "$libpath" ] && [ ! -w "$libpath" ]; then
-#            is_write_perm_missing=1
-#          fi
-#          fi
-#        done
-#        echo "Moved $bin to $binpath"
-#        echo "Enjoy your cyber experience!"
-#        rm cyberdcli_v0.1.6_darwin-amd64.tar.gz
-#        rm -rf build_v0.1.6_darwin_amd64
-#        exit 0
-#      else
-#      if [ -d "$binpath" ] && [ ! -w "$binpath" ]; then
-#        is_write_perm_missing=1
-#        rm cyberdcli_v0.1.6_darwin-amd64.tar.gz
-#        rm -rf build_v0.1.6_darwin_amd64
-#      fi
-#      fi
-#    done
-#    ;;
+  "Darwin")
+    # macOS
+    curl -OL  https://github.com/cybercongress/go-cyber/releases/download/v0.2.0/cyber_v0.2.0_darwin-amd64.tar.gz
+    tar -xzf cyber_v0.2.0_darwin-amd64.tar.gz
+    for binpath in $binpaths; do
+      if cp build_v0.2.0_darwin_amd64/cyber "$binpath"; then
+        for libpath in $libpaths; do
+          if cp build_v0.2.0_darwin_amd64/libwasmvm.dylib  "$libpath"; then
+            cp build_v0.2.0_darwin_amd64/libwasmvm.so  "$libpath"
+            echo "Moved libwasmvm to $libpath"
+            break
+          else
+          if [ -d "$libpath" ] && [ ! -w "$libpath" ]; then
+            is_write_perm_missing=1
+          fi
+          fi
+        done
+        echo "Moved $bin to $binpath"
+        echo "Enjoy your cyber experience!"
+        rm cyber_v0.2.0_darwin-amd64.tar.gz
+        rm -rf build_v0.2.0_darwin_amd64
+        exit 0
+      else
+      if [ -d "$binpath" ] && [ ! -w "$binpath" ]; then
+        is_write_perm_missing=1
+        rm cyber_v0.2.0_darwin-amd64.tar.gz
+        rm -rf build_v0.2.0_darwin_amd64
+      fi
+      fi
+    done
+    ;;
       "Linux")
     # Linux distro,
     curl -OL https://github.com/cybercongress/go-cyber/releases/download/v0.2.0/cyber_v0.2.0_linux-amd64.tar.gz
@@ -51,9 +51,9 @@ case "$PLATFORM" in
     for binpath in $binpaths; do
       if cp build_v0.2.0_linux_amd64/cyber "$binpath"; then
         for libpath in $libpaths; do
-          if cp build_v0.2.0_linux_amd64/libgo_cosmwasm.dylib  "$libpath"; then
-            cp build_v0.2.0_linux_amd64/libgo_cosmwasm.so  "$libpath"
-            echo "Moved libgo_cosmwasm to $libpath"
+          if cp build_v0.2.0_linux_amd64/libwasmvm.dylib  "$libpath"; then
+            cp build_v0.2.0_linux_amd64/libwasmvm.so  "$libpath"
+            echo "Moved libwasmvm to $libpath"
             break
           else
           if [ -d "$libpath" ] && [ ! -w "$libpath" ]; then
