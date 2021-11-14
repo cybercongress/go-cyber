@@ -154,6 +154,51 @@ trust_threshold = { numerator = '1', denominator = '3' }
 ```
 _________________________________________________________
 
+### Example config for [rly](https://github.com/informalsystems/ibc-rs) relayer & channel info
+
+```
+  cyberosmo:  
+    src:              
+      chain-id: bostrom            
+      client-id: 07-tendermint-3
+      connection-id: connection-0
+      channel-id: channel-0
+      port-id: transfer
+      order: UNORDERED
+      version: ics20-1
+    dst:
+      chain-id: osmosis-1
+      client-id: 07-tendermint-1567
+      connection-id: connection-1226
+      channel-id: channel-79
+      port-id: transfer
+      order: UNORDERED
+      version: ics20-1
+    strategy:
+      type: naive 
+  osmocyber:  
+      chain-id: osmosis-1
+      client-id: 07-tendermint-1567
+      connection-id: connection-1226
+      channel-id: channel-79
+      port-id: transfer
+      order: UNORDERED
+      version: ics20-1              
+    dst:
+      chain-id: bostrom            
+      client-id: 07-tendermint-3
+      connection-id: connection-0
+      channel-id: channel-0
+      port-id: transfer
+      order: UNORDERED
+      version: ics20-1
+    strategy:
+      type: naive 
+```
+
+
+
+
 ### Basic operations
 
 ### Follow Hero and get HYDROGEN:
