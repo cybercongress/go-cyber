@@ -123,7 +123,8 @@ func (am AppModule) InitGenesis(ctx sdk.Context, _ codec.JSONCodec, _ json.RawMe
 }
 
 func (am AppModule) ExportGenesis(ctx sdk.Context, _ codec.JSONCodec) json.RawMessage {
-	err := keeper.WriteGenesis(ctx, *am.gk, am.ik)
+	//err := keeper.WriteGenesis(ctx, *am.gk, am.ik)
+	err := keeper.WriteGraphCSV(ctx, *am.gk, am.ik, am.ak, am.bk)
 	if err != nil {
 		panic(err)
 	}
