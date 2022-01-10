@@ -4,7 +4,7 @@ NVCC = nvcc
 
 BUILD_DIR = build
 
-NVCCFLAGS = -fmad=false --compiler-options '-fPIC -frounding-math -fsignaling-nans'
+NVCCFLAGS = -fmad=false --compiler-options '-fPIC -frounding-math -fsignaling-nans -I/opt/cuda/include'
 
 all: build
 
