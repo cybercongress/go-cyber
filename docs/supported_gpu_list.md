@@ -29,4 +29,4 @@ In our `cyber protocol` implementation on `GO` proof of relevance root hash is c
 
 If you have used some GPU from `column` supported but without :white_check_mark: at `tested` column please submit a pull request with corrections. If you have tested GPU and it's not contained in that list submit PR too.
 
-**Note** If you using some old cards (like GTX 770, or older) make sure your card will be supported by al least **v.410** of NVIDIA diver for Linux.
+**Note** If you using some old cards (like GTX 770, or older) make sure your card will be supported by al least **v.410** of NVIDIA driver for Linux.
