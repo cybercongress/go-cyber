@@ -495,7 +495,7 @@ func (k Keeper) ExecuteThoughtsQueue(ctx sdk.Context) {
 
 			if errExecute != nil {
 				k.Logger(ctx).Info("Thought failed, state not applied", "Thought #", i)
-				k.Logger(ctx).Info("Failed with error: ", errExecute.Error())
+				k.Logger(ctx).Info("Failed with error: ", "Error", errExecute.Error())
 			} else {
 				writeFn() // apply cached context
 				k.Logger(ctx).Info("Thought finished, state applied", "Thought #", i)
