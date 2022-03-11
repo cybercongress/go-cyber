@@ -5,16 +5,16 @@
 The resources module allows neurons to invest into computer's resources.
 
 ### Examples:
-I would like to `investmint` 1000000000 BOOT (1 GBOOT) to VOLT resource with lock for 30 DAYS (no spendable) and I will get
+I would like to `investmint` 1000000000 HYDROGEN (1 GH) to VOLT resource with lock for 30 DAYS (no spendable) and I will get
 newly minted 1 VOLT to my account locked for 30 DAYS (no spendable).
 ```
-(1 GBOOT | 30 DAYS | VOLT) ---investmint---> locked (1 GBOOT | 30 DAYS) + minted and locked (1 VOLT | 30 DAYS)
+(1 GH | 30 DAYS | VOLT) ---investmint---> locked (1 GH | 30 DAYS) + minted and locked (1 VOLT | 30 DAYS)
 ```
 
-I would like to `investmint` 4000000000 BOOT (4 GBOOT) to AMPERE resource with lock for 7 DAYS (no spendable) and I will get
+I would like to `investmint` 4000000000 HYDROGEN (4 GH) to AMPERE resource with lock for 7 DAYS (no spendable) and I will get
 newly minted 1 AMPERE to my account locked for 7 DAYS (no spendable).
 ```
-(4.2 GBOOT | 7 DAYS | AMPERE) ---investmint---> locked (4.2 GBOOT | 7 DAYS) + minted and locked (1 AMPERE | 7 DAYS)
+(4.2 GH | 7 DAYS | AMPERE) ---investmint---> locked (4.2 GH | 7 DAYS) + minted and locked (1 AMPERE | 7 DAYS)
 ```
 
 ## Contents
