@@ -172,7 +172,7 @@ var (
 	// of "EnableAllProposals" (takes precedence over ProposalsEnabled)
 	// https://github.com/CosmWasm/wasmd/blob/02a54d33ff2c064f3539ae12d75d027d9c665f05/x/wasm/internal/types/proposal.go#L28-L34
 	//EnableSpecificProposals = "StoreCodeProposal,InstantiateContractProposal,MigrateContractProposal,ClearAdminProposal,PinCodes,UnpinCodes"
-	EnableSpecificProposals = "ExecuteContractProposal,PinCodes,UnpinCodes"
+	EnableSpecificProposals = "ExecuteContract,PinCodes,UnpinCodes"
 )
 
 // GetEnabledProposals parses the ProposalsEnabled / EnableSpecificProposals values to
@@ -764,13 +764,19 @@ func NewApp(
 		authtypes.ModuleName,
 		authz.ModuleName,
 		banktypes.ModuleName,
+		bandwidthtypes.ModuleName,
 		crisistypes.ModuleName,
+		cyberbanktypes.ModuleName,
 		feegrant.ModuleName,
 		genutiltypes.ModuleName,
 		govtypes.ModuleName,
+		graphtypes.ModuleName,
+		gridtypes.ModuleName,
 		ibctransfertypes.ModuleName,
 		ibchost.ModuleName,
 		paramstypes.ModuleName,
+		ranktypes.ModuleName,
+		resourcestypes.ModuleName,
 		vestingtypes.ModuleName,
 		wasm.ModuleName,
 	)
@@ -790,13 +796,16 @@ func NewApp(
 		banktypes.ModuleName,
 		capabilitytypes.ModuleName,
 		distrtypes.ModuleName,
+		dmntypes.ModuleName,
 		evidencetypes.ModuleName,
 		feegrant.ModuleName,
 		genutiltypes.ModuleName,
+		gridtypes.ModuleName,
 		ibchost.ModuleName,
 		ibctransfertypes.ModuleName,
 		minttypes.ModuleName,
 		paramstypes.ModuleName,
+		resourcestypes.ModuleName,
 		slashingtypes.ModuleName,
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
@@ -828,13 +837,14 @@ func NewApp(
 		paramstypes.ModuleName,
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
-		// graph and cyberbank will be initialized directly in InitChainer
 		wasm.ModuleName,
 		bandwidthtypes.ModuleName,
 		ranktypes.ModuleName,
 		gridtypes.ModuleName,
 		resourcestypes.ModuleName,
 		dmntypes.ModuleName,
+		graphtypes.ModuleName,
+		cyberbanktypes.ModuleName, // cyberbank will be initialized directly in InitChainer
 	)
 
 	app.mm.RegisterInvariants(&app.CrisisKeeper)
