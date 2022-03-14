@@ -24,6 +24,10 @@ type Proxy struct {
 	coinsTransferHooks []types.CoinsTransferHook
 }
 
+func (p *Proxy) HasSupply(ctx sdk.Context, denom string) bool {
+	return p.bk.HasSupply(ctx, denom)
+}
+
 func Wrap(bk bank.Keeper) *Proxy {
 	return &Proxy{
 		bk: bk,

@@ -12,7 +12,7 @@ ENV DAEMON_LOG_BUFFER_SIZE=1048
 ENV UNSAFE_SKIP_BACKUP=true
 ENV DAEMON_NAME cyber
 ENV BUILD_DIR /build
-ENV COSMWASM_VER "1.0.0-beta"
+ENV COSMWASM_VER "1.0.0-beta7"
 ENV PATH /usr/local/go/bin:/root/.cargo/bin:/root/cargo/env:/root/.cyber/scripts:$PATH
 
 
