@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"encoding/hex"
+	"encoding/base64"
 
 	"github.com/CosmWasm/wasmd/x/wasm"
 	"github.com/cosmos/cosmos-sdk/telemetry"
@@ -541,7 +542,11 @@ func (k Keeper) executeThoughtWithSudo(ctx sdk.Context, program sdk.AccAddress, 
 		telemetry.IncrCounter(1.0, types.ModuleName, "thought")
 	}()
 
-	callData, _ := hex.DecodeString(msg)
-	// TODO add err check
+	callData, berr := base64.StdEncoding.DecodeString(msg); if berr != nil {
+		// TODO remove hex later as deprecated
+		_, herr := hex.DecodeString(msg); if herr != nil {
+			return nil, types.ErrBadCallData
+		}
+	}
 	return k.wasmKeeper.Sudo(ctx, program, callData)
 }
