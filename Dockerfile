@@ -149,7 +149,6 @@ RUN chmod +x start_script.sh
 RUN chmod +x /entrypoint.sh
 RUN go version
 RUN cyber version
-RUN apt remove gcc make nvidia-cuda-toolkit g++
 
 
 #  Start
