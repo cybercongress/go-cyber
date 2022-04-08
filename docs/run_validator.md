@@ -5,13 +5,13 @@
 
 First of all, you should set up a server.
 Your node should be online constantly. This means that you will need a reliable server.
-You may also consider using any cloud service with a dedicated GPU, like Hetzner, Cherryservers etc. (or use a local machine). Whatever you'll choose, for better stability and consistency we recommend to use a dedicated server for each validator node.
+You may also consider using any cloud service with a dedicated GPU, like Hetzner, Cherryservers etc. (or use a local machine). Whatever you choose, for better stability and consistency we recommend to use a dedicated server for each validator node.
 
 Cyber is based on Cosmos-SDK and is written in Go.
 It should work on any platform which can compile and run programs in Go.
 However, we strongly recommend running the validator node on a Linux-based server.
 
-Cyber-rank computations are performed on GPU, so it is required to have it(GPU) on-board your node.
+Cyber-rank computations are performed on GPU, so it is required to have it (GPU) on-board your node.
 
 Recommended hardware setup:
 
@@ -30,13 +30,13 @@ Of course, the hardware is your own choice and technically it might be possible 
 
 ## Node setup
 
-*To avoid possible misconfiguration issues and simplify the setup of `$ENV`, we recommend to perform all the commands as `root` (here root - is literally root, not just a user with root priveliges). For the case of dedicated server for cybernode it should be concidered as ok from the security side.*
+*To avoid possible misconfiguration issues and to simplify the setup of `$ENV`, we recommend to perform all the commands as `root` (here root - is literally root, not just a user with root priveliges). For the case of a dedicated server for cybernode it should be considered as ok from the security side.*
 
 ### Third-party software
 
 The main distribution unit for Cyber is a [docker](https://www.docker.com/) container. All images are located in the default [Dockerhub registry](https://hub.docker.com/r/cyberd/cyber). In order to access the GPU from the container, Nvidia driver version **410+** and [Nvidia docker runtime](https://github.com/NVIDIA/nvidia-docker) should be installed on the host system.
 
-All commands below suppose `amd64` arcitecture, for the different arcitectures commands may differ accordingly.
+All commands below suppose `amd64` architecture, the different architectures commands may differ accordingly.
 
 ### Docker installation
 
@@ -108,7 +108,7 @@ sudo apt update
 sudo apt install -y ubuntu-drivers-common
 ```
 
-3. Next check what are recommended drivers for your card:
+3. Next, check for the recommended drivers for your card:
 
 ```bash
 ubuntu-drivers devices
@@ -128,7 +128,7 @@ driver   : nvidia-driver-460 - third-party free recommended
 driver   : xserver-xorg-video-nouveau - distro free builtin
 ```
 
-4. We need the **410+** drivers release. As you can see that v460 is recommended. The command below will install the recommended version of the drivers:
+4. We need the **410+** drivers release. As you can see, v460 is recommended. The command below will install the recommended version of the drivers:
 
 ```bash
 sudo ubuntu-drivers autoinstall
@@ -302,7 +302,7 @@ seeds = ""
 persistent_peers = ""
 ```
 
-For peers addresses please refer to appropriate section of [networks](https://github.com/cybercongress/networks) repo.
+For peers addresses please refer to the appropriate section of the [networks](https://github.com/cybercongress/networks) repo.
 When done, please restart container using:
 
 4. To apply config changes restart the container:
@@ -403,8 +403,8 @@ You are validating the network.
 
 ### Jailing
 
-If your validator got under slashing conditions, it will be jailed.
-After such event, an operator must unjail the validator manually:
+If your validator went under slashing conditions, it will be jailed.
+After such an event, an operator must unjail the validator manually:
 
 ```bash
 docker exec -ti bostrom cyber tx slashing unjail --from=<your_key_name> --chain-id bostrom --gas-prices 0.01boot --gas 300000
@@ -417,6 +417,6 @@ Your identity as validator consists of two things:
 - your account (to sign transactions)
 - your validator private key (to sign stuff on chain consensus layer)
 
-Please back up `$HOME/.cyber/config/priv_validator_key.json` along with your seed phrase. In case of occasional node loss you would be able to restore you validator operation with this file and another full node.
+Please back up `$HOME/.cyber/config/priv_validator_key.json` along with your seed phrase. In case of occasional node loss you would be able to restore your validator operation with this file and another full node.
 
-Also, in case if want to keep your cyber node ID consistent during networks please backup `$HOME/.cyber/config/node_key.json`.
+Finally, in case you want to keep your cyber node ID consistent during networks please backup `$HOME/.cyber/config/node_key.json`.
