@@ -3,6 +3,7 @@ package app
 import (
 	"fmt"
 	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
+	"github.com/cybercongress/go-cyber/plugins/liquidity_plugin"
 	"os"
 
 	"github.com/cosmos/cosmos-sdk/x/authz"
@@ -145,6 +146,8 @@ import (
 
 	"github.com/cybercongress/go-cyber/app/params"
 	tmjson "github.com/tendermint/tendermint/libs/json"
+
+	//store "github.com/cosmos/cosmos-sdk/store/types"
 )
 
 const (
@@ -582,6 +585,15 @@ func NewApp(
 		app.GetSubspace(dmntypes.ModuleName),
 	)
 
+	app.LiquidityKeeper = liquiditykeeper.NewKeeper(
+		appCodec,
+		keys[liquiditytypes.StoreKey],
+		app.GetSubspace(liquiditytypes.ModuleName),
+		app.CyberbankKeeper.Proxy,
+		app.AccountKeeper,
+		app.DistrKeeper,
+	)
+
 	// Initialize CosmWasm
 	wasmDir := filepath.Join(homePath, "wasm")
 	wasmConfig, err := wasm.ReadWasmConfig(appOpts)
@@ -597,7 +609,7 @@ func NewApp(
 		wasmplugins.WasmQueryRouteDmn:       dmnwasm.NewWasmQuerier(*app.DmnKeeper),
 		wasmplugins.WasmQueryRouteGrid:      gridwasm.NewWasmQuerier(app.GridKeeper),
 		wasmplugins.WasmQueryRouteBandwidth: bandwidthwasm.NewWasmQuerier(app.BandwidthMeter),
-		//wasmplugins.WasmQueryRouteLiquidity: liquidity_plugin.NewWasmQuerier(app.LiquidityKeeper),
+		wasmplugins.WasmQueryRouteLiquidity: liquidity_plugin.NewWasmQuerier(app.LiquidityKeeper),
 	}
 	querier.Queriers = queries
 	queryPlugins := &wasm.QueryPlugins{
@@ -611,7 +623,7 @@ func NewApp(
 		wasmplugins.WasmMsgParserRouteDmn:       dmnwasm.NewWasmMsgParser(),
 		wasmplugins.WasmMsgParserRouteGrid:      gridwasm.NewWasmMsgParser(),
 		wasmplugins.WasmMsgParserRouteResources: resourceswasm.NewWasmMsgParser(),
-		//wasmplugins.WasmMsgParserLiquidity:      liquidity_plugin.NewWasmMsgParser(),
+		wasmplugins.WasmMsgParserLiquidity:      liquidity_plugin.NewWasmMsgParser(),
 	}
 	parser.Parsers = parsers
 	customEncoders := &wasm.MessageEncoders{
@@ -676,15 +688,6 @@ func NewApp(
 		AddRoute(ibctransfertypes.ModuleName, transferModule).
 		AddRoute(wasm.ModuleName, wasm.NewIBCHandler(app.WasmKeeper, app.IBCKeeper.ChannelKeeper))
 	app.IBCKeeper.SetRouter(ibcRouter)
-
-	app.LiquidityKeeper = liquiditykeeper.NewKeeper(
-		appCodec,
-		keys[liquiditytypes.StoreKey],
-		app.GetSubspace(liquiditytypes.ModuleName),
-		app.CyberbankKeeper.Proxy,
-		app.AccountKeeper,
-		app.DistrKeeper,
-	)
 
 	// Create evidence Keeper for to register the IBC light client misbehaviour evidence route
 	evidenceKeeper := evidencekeeper.NewKeeper(
