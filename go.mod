@@ -3,12 +3,12 @@ module github.com/cybercongress/go-cyber
 go 1.17
 
 require (
-	github.com/CosmWasm/wasmd v0.24.0
-	github.com/CosmWasm/wasmvm v1.0.0-beta9
+	github.com/CosmWasm/wasmd v0.25.0
+	github.com/CosmWasm/wasmvm v1.0.0-beta10
 	github.com/armon/go-metrics v0.3.10
 	github.com/cosmos/cosmos-sdk v0.45.1
 	github.com/cosmos/iavl v0.17.3
-	github.com/cosmos/ibc-go/v2 v2.0.3
+	github.com/cosmos/ibc-go/v2 v2.2.0
 	github.com/dvsekhvalnov/jose2go v1.5.0 // indirect
 	github.com/gogo/protobuf v1.3.3
 	github.com/golang/protobuf v1.5.2
@@ -20,7 +20,7 @@ require (
 	github.com/spf13/cast v1.4.1
 	github.com/spf13/cobra v1.3.0
 	github.com/spf13/viper v1.10.1
-	github.com/stretchr/testify v1.7.0
+	github.com/stretchr/testify v1.7.1
 	github.com/syndtr/goleveldb v1.0.1-0.20200815110645-5c35d600f0ca
 	github.com/tendermint/liquidity v1.5.0
 	github.com/tendermint/tendermint v0.34.16
