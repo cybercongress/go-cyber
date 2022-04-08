@@ -122,7 +122,7 @@ ENV UNSAFE_SKIP_BACKUP=true
 
 # Download genesis file and links file from IPFS
 ###########################################################################################
-RUN wget -O /genesis.json https://gateway.ipfs.cybernode.ai/ipfs/QmZaZp9yGMSwSEQAi6PMYxd7EUNE1ceLUXf1r1jmYbveoo
+RUN wget -O /genesis.json https://gateway.ipfs.cybernode.ai/ipfs/QmYe81dBfxgYsVhX1mX4uiLQyu3jx2kJvR6CgytDnFgKzc
 
 WORKDIR /
 
