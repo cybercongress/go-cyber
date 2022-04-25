@@ -3,10 +3,10 @@ module github.com/cybercongress/go-cyber
 go 1.17
 
 require (
-	github.com/CosmWasm/wasmd v0.25.0
+	github.com/CosmWasm/wasmd v0.27.0-junity.0
 	github.com/CosmWasm/wasmvm v1.0.0-beta10
 	github.com/armon/go-metrics v0.3.10
-	github.com/cosmos/cosmos-sdk v0.45.1
+	github.com/cosmos/cosmos-sdk v0.45.3
 	github.com/cosmos/iavl v0.17.3
 	github.com/cosmos/ibc-go/v2 v2.2.0
 	github.com/dvsekhvalnov/jose2go v1.5.0 // indirect
@@ -18,15 +18,15 @@ require (
 	github.com/prometheus/client_golang v1.12.1
 	github.com/rakyll/statik v0.1.7
 	github.com/spf13/cast v1.4.1
-	github.com/spf13/cobra v1.3.0
+	github.com/spf13/cobra v1.4.0
 	github.com/spf13/viper v1.10.1
 	github.com/stretchr/testify v1.7.1
 	github.com/syndtr/goleveldb v1.0.1-0.20200815110645-5c35d600f0ca
 	github.com/tendermint/liquidity v1.5.0
-	github.com/tendermint/tendermint v0.34.16
+	github.com/tendermint/tendermint v0.34.19
 	github.com/tendermint/tm-db v0.6.7
-	google.golang.org/genproto v0.0.0-20211208223120-3a66f561d7aa
-	google.golang.org/grpc v1.44.0
+	google.golang.org/genproto v0.0.0-20211223182754-3ac035c7e7cb
+	google.golang.org/grpc v1.45.0
 )
 
 require (
