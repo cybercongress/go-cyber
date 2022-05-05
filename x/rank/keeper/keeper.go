@@ -87,7 +87,9 @@ func (s *StateKeeper) LoadState(ctx sdk.Context) {
 	s.index = s.BuildSearchIndex(s.Logger(ctx))
 	s.index.Load(s.graphIndexedKeeper.GetOutLinks())
 	s.getIndexError = s.index.Run()
+}
 
+func (s *StateKeeper) StartRankCalculation(ctx sdk.Context) {
 	params := s.GetParams(ctx)
 
 	dampingFactor, err := strconv.ParseFloat(params.DampingFactor.String(), 64)
@@ -169,6 +171,7 @@ func (s *StateKeeper) startRankCalculation(ctx sdk.Context, dampingFactor float6
 		s.allowSearch, dampingFactor, tolerance,
 		s.GetContextCidCount(ctx),
 		s.GetContextLinkCount(ctx),
+		s.GetAccountCount(ctx),
 	)
 
 	go CalculateRankInParallel(calcCtx, s.rankCalcChan, s.rankErrChan, s.computeUnit, s.Logger(ctx))
@@ -378,4 +381,8 @@ func (sk StateKeeper) StoreContextLinkCount(ctx sdk.Context, number uint64) {
 func (s *StateKeeper) prepareContext(ctx sdk.Context) {
 	s.StoreContextCidCount(ctx, s.graphKeeper.GetCidsCount(ctx))
 	s.StoreContextLinkCount(ctx, s.graphIndexedKeeper.GetLinksCount(ctx))
+}
+
+func (s *StateKeeper) GetAccountCount(ctx sdk.Context) uint64 {
+	return s.stakeKeeper.GetJustLastAccountNumber(ctx)
 }

@@ -2,13 +2,8 @@ package app
 
 import (
 	"fmt"
-	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
-	"github.com/cybercongress/go-cyber/plugins/liquidity_plugin"
-	"os"
-	"path"
-
 	store "github.com/cosmos/cosmos-sdk/store/types"
-	
+	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
 	"github.com/cosmos/cosmos-sdk/x/authz"
 	authzkeeper "github.com/cosmos/cosmos-sdk/x/authz/keeper"
 	authzmodule "github.com/cosmos/cosmos-sdk/x/authz/module"
@@ -26,8 +21,10 @@ import (
 	ibchost "github.com/cosmos/ibc-go/v2/modules/core/24-host"
 	ibckeeper "github.com/cosmos/ibc-go/v2/modules/core/keeper"
 	_ "github.com/cybercongress/go-cyber/client/docs/statik"
+	"github.com/cybercongress/go-cyber/plugins/liquidity_plugin"
 	"io"
 	"net/http"
+	"os"
 	"path/filepath"
 	"strings"
 	"time"
@@ -900,22 +897,22 @@ func NewApp(
 	app.UpgradeKeeper.SetUpgradeHandler(
 		upgradeName,
 		func(ctx sdk.Context, _ upgradetypes.Plan, fromVM module.VersionMap) (module.VersionMap, error) {
-	
+
 			//ctx.Logger().Info("start to init module...")
 			//ctx.Logger().Info("start to run module migrations...")
-	
+
 			return app.mm.RunMigrations(ctx, app.configurator, fromVM)
 		},
 	)
-	
+
 	upgradeInfo, err := app.UpgradeKeeper.ReadUpgradeInfoFromDisk()
 	if err != nil {
 		panic(fmt.Sprintf("failed to read upgrade info from disk %s", err))
 	}
-	
+
 	if upgradeInfo.Name == upgradeName && !app.UpgradeKeeper.IsSkipHeight(upgradeInfo.Height) {
 		storeUpgrades := store.StoreUpgrades{}
-	
+
 		// configure store loader that checks if version == upgradeHeight and applies store upgrades
 		app.SetStoreLoader(upgradetypes.UpgradeStoreLoader(upgradeInfo.Height, &storeUpgrades))
 	}
@@ -924,39 +921,42 @@ func NewApp(
 		if err := app.LoadLatestVersion(); err != nil {
 			tmos.Exit(fmt.Sprintf("failed to load latest version: %s", err))
 		}
-		freshCtx := app.BaseApp.NewUncachedContext(true, tmproto.Header{})
+
+		// TODO refactor load flow as updated state sync in sdk v45.X will be released
+		freshCtx := app.BaseApp.NewContext(true, tmproto.Header{})
 		freshCtx = freshCtx.WithBlockHeight(int64(app.RankKeeper.GetLatestBlockNumber(freshCtx)))
-
-		bandwidthParams := bandwidthtypes.DefaultParams()
-		rankParams := ranktypes.DefaultParams()
-		if app.LastBlockHeight() >= 1 {
-			bandwidthParams = app.BandwidthMeter.GetParams(freshCtx)
-			rankParams = app.RankKeeper.GetParams(freshCtx)
-		}
-		app.BandwidthMeter.SetParams(freshCtx, bandwidthParams)
-		app.RankKeeper.SetParams(freshCtx, rankParams)
-
-		calculationPeriod := app.RankKeeper.GetParams(freshCtx).CalculationPeriod
-		rankRoundBlockNumber := (freshCtx.BlockHeight() / calculationPeriod) * calculationPeriod
-		if rankRoundBlockNumber == 0 && freshCtx.BlockHeight() >= 1 {
-			rankRoundBlockNumber = 1
-		}
-
-		rankCtx, err := utils.NewContextWithMSVersion(db, rankRoundBlockNumber, keys)
-		if err != nil {
-			tmos.Exit(err.Error())
-		}
-
 		start := time.Now()
 		app.BaseApp.Logger().Info("Loading the brain state")
-		app.CyberbankKeeper.LoadState(rankCtx, freshCtx)
-		// TODO update index state load to one context as we store cyberlink' block now
-		app.IndexKeeper.LoadState(rankCtx, freshCtx)
-		app.BandwidthMeter.LoadState(freshCtx)
-		app.GraphKeeper.LoadNeudeg(rankCtx, freshCtx)
-		app.RankKeeper.LoadState(freshCtx)
 
-		// Initialize pinned codes in wasmvm as they are not persisted there
+		if app.LastBlockHeight() >= 1 {
+			calculationPeriod := app.RankKeeper.GetParams(freshCtx).CalculationPeriod
+			rankRoundBlockNumber := (freshCtx.BlockHeight() / calculationPeriod) * calculationPeriod
+			if rankRoundBlockNumber == 0 && freshCtx.BlockHeight() >= 1 {
+				rankRoundBlockNumber = 1
+			}
+
+			rankCtx, err := utils.NewContextWithMSVersion(db, rankRoundBlockNumber, keys)
+			if err != nil {
+				tmos.Exit(err.Error())
+			}
+
+			app.CyberbankKeeper.LoadState(rankCtx, freshCtx)
+			// TODO update index state load to one context as we store cyberlink' block now
+			app.IndexKeeper.LoadState(rankCtx, freshCtx)
+			app.BandwidthMeter.LoadState(freshCtx)
+			app.GraphKeeper.LoadNeudeg(rankCtx, freshCtx)
+			app.RankKeeper.LoadState(freshCtx)
+			app.RankKeeper.StartRankCalculation(freshCtx)
+		} else {
+			// genesis case
+			app.CyberbankKeeper.LoadState(freshCtx, freshCtx)
+			// TODO update index state load to one context as we store cyberlink' block now
+			app.IndexKeeper.LoadState(freshCtx, freshCtx)
+			app.BandwidthMeter.InitState()
+			app.GraphKeeper.LoadNeudeg(freshCtx, freshCtx)
+			app.RankKeeper.LoadState(freshCtx)
+		}
+
 		if err := app.WasmKeeper.InitializePinnedCodes(freshCtx); err != nil {
 			tmos.Exit(fmt.Sprintf("failed initialize pinned codes %s", err))
 		}
@@ -971,13 +971,6 @@ func NewApp(
 	app.ScopedIBCKeeper = scopedIBCKeeper
 	app.ScopedTransferKeeper = scopedTransferKeeper
 	app.ScopedWasmKeeper = scopedWasmKeeper
-
-	err = app.SnapshotManager().RegisterExtensions(
-		wasmplugins.NewWasmSnapshotter(path.Join(wasmDir, "wasm")),
-	)
-	if err != nil {
-		tmos.Exit(err.Error())
-	}
 
 	return app
 }

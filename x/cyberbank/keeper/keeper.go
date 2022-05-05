@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -110,16 +111,19 @@ func (k *IndexedKeeper) UpdateAccountsStakeAmpere(ctx sdk.Context) {
 
 	// trigger full account map rebuild in case of account' missing
 	// TODO migrate logic to storage listener in sdk 45+
+	// NOTE returns last not applied yet account number, so it's equal to current length of accounts ids array
 	lastAccountNumber := k.GetJustLastAccountNumber(ctx)
 	if uint64(len(k.userNewTotalStakeAmpere)) != lastAccountNumber {
+		startTime := time.Now()
 		for i := lastAccountNumber; i > 0; i-- {
 			if _, ok := k.userNewTotalStakeAmpere[i]; !ok {
-				k.Logger(ctx).Info("added to index account:", "index", i)
+				k.Logger(ctx).Info("added to stake index:", "account", i)
 				// TODO update in next release
 				//stake := k.GetAccountTotalStakeAmper(ctx, addr)
 				k.userNewTotalStakeAmpere[i] = 0
 			}
 		}
+		k.Logger(ctx).Info("rebuild stake index:", "time", time.Since(startTime))
 	}
 
 	k.accountToUpdate = make([]sdk.AccAddress, 0)
