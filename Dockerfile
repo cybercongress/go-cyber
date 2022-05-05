@@ -122,7 +122,7 @@ ENV UNSAFE_SKIP_BACKUP=true
 
 # Download genesis file and links file from IPFS
 ###########################################################################################
-RUN wget -O /genesis.json https://gateway.ipfs.cybernode.ai/ipfs/QmYe81dBfxgYsVhX1mX4uiLQyu3jx2kJvR6CgytDnFgKzc
+RUN wget -O /genesis.json https://gateway.ipfs.cybernode.ai/ipfs/QmQaux3zRF5ucdmtGYEVeNZTBfryfX4e49mj57SusMCo1p
 
 WORKDIR /
 
@@ -153,6 +153,6 @@ RUN cyber version
 
 #  Start
 ###############################################################################
-EXPOSE 26656 26657 1317 9090
+EXPOSE 26656 26657 1317 9090 20660
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["./start_script.sh"]
