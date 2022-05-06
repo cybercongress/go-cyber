@@ -9,7 +9,7 @@ import (
 type StakeKeeper interface {
 	DetectUsersStakeAmpereChange(ctx sdk.Context) bool
 	GetTotalStakesAmpere() map[uint64]uint64
-	GetJustLastAccountNumber(ctx sdk.Context) uint64
+	GetNextAccountNumber(ctx sdk.Context) uint64
 }
 
 type GraphIndexedKeeper interface {

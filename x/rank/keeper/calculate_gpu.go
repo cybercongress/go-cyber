@@ -32,7 +32,7 @@ func calculateRankGPU(ctx *types.CalculationContext, logger log.Logger) types.EM
 	dampingFactor := ctx.GetDampingFactor()
 
 	cidsCount := ctx.GetCidsCount()
-	stakesCount := len(ctx.GetStakes())
+	stakesCount := ctx.GetNeuronsCount()
 
 	rank := make([]float64, cidsCount)
 	entropy := make([]float64, cidsCount)
@@ -47,7 +47,7 @@ func calculateRankGPU(ctx *types.CalculationContext, logger log.Logger) types.EM
 	outLinksUsers := make([]uint64, 0)
 	// will fail if amount of indexed accounts will not equal all accounts
 	// distribute current flow through all neuron's cyberlinks
-	stakes := make([]uint64, ctx.GetNeuronsCount())
+	stakes := make([]uint64, stakesCount)
 	for neuron, stake := range ctx.GetStakes() {
 		neudeg := ctx.GetNeudegs()[neuron]
 		if neudeg != 0 {

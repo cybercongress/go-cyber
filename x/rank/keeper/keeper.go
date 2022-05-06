@@ -384,5 +384,5 @@ func (s *StateKeeper) prepareContext(ctx sdk.Context) {
 }
 
 func (s *StateKeeper) GetAccountCount(ctx sdk.Context) uint64 {
-	return s.stakeKeeper.GetJustLastAccountNumber(ctx)
+	return s.stakeKeeper.GetNextAccountNumber(ctx)
 }
