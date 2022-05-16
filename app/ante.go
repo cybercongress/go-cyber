@@ -16,8 +16,8 @@ import (
 	ctypes "github.com/cybercongress/go-cyber/types"
 
 	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
-	channelkeeper "github.com/cosmos/ibc-go/v2/modules/core/04-channel/keeper"
-	ibcante "github.com/cosmos/ibc-go/v2/modules/core/ante"
+	ibcante "github.com/cosmos/ibc-go/v3/modules/core/ante"
+	"github.com/cosmos/ibc-go/v3/modules/core/keeper"
 	bandwidthkeeper "github.com/cybercongress/go-cyber/x/bandwidth/keeper"
 	bandwidthtypes "github.com/cybercongress/go-cyber/x/bandwidth/types"
 	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
@@ -39,7 +39,7 @@ type HandlerBaseOptions struct {
 type HandlerOptions struct {
 	HandlerBaseOptions
 
-	IBCChannelkeeper  channelkeeper.Keeper
+	IBCKeeper 		  *keeper.Keeper
 	WasmConfig        *wasmTypes.WasmConfig
 	TXCounterStoreKey sdk.StoreKey
 }
@@ -74,20 +74,20 @@ func NewAnteHandler(options HandlerOptions) (sdk.AnteHandler, error) {
 		wasmkeeper.NewLimitSimulationGasDecorator(options.WasmConfig.SimulationGasLimit), // after setup context to enforce limits early
 		wasmkeeper.NewCountTXDecorator(options.TXCounterStoreKey),
 		ante.NewRejectExtensionOptionsDecorator(),
-		//ante.NewMempoolFeeDecorator(),
+		// overwrite ante.NewMempoolFeeDecorator(),
 		NewMempoolFeeDecorator(),
 		ante.NewValidateBasicDecorator(),
 		ante.NewTxTimeoutHeightDecorator(),
 		ante.NewValidateMemoDecorator(options.AccountKeeper),
 		ante.NewConsumeGasForTxSizeDecorator(options.AccountKeeper),
-		//ante.NewDeductFeeDecorator(options.AccountKeeper, options.BankKeeper, options.FeegrantKeeper),
+		// overwrite ante.NewDeductFeeDecorator(options.AccountKeeper, options.BankKeeper, options.FeegrantKeeper),
 		NewDeductFeeBandRouterDecorator(options.AccountKeeper, options.BankKeeper, options.BandwidthMeter, options.FeegrantKeeper),
 		ante.NewSetPubKeyDecorator(options.AccountKeeper), // SetPubKeyDecorator must be called before all signature verification decorators
 		ante.NewValidateSigCountDecorator(options.AccountKeeper),
 		ante.NewSigGasConsumeDecorator(options.AccountKeeper, sigGasConsumer),
 		ante.NewSigVerificationDecorator(options.AccountKeeper, options.SignModeHandler),
 		ante.NewIncrementSequenceDecorator(options.AccountKeeper),
-		ibcante.NewAnteDecorator(options.IBCChannelkeeper),
+		ibcante.NewAnteDecorator(options.IBCKeeper),
 	}
 
 	return sdk.ChainAnteDecorators(anteDecorators...), nil
