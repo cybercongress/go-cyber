@@ -151,7 +151,7 @@ import (
 
 const (
 	appName = "BostromHub"
-	upgradeName = "upgrade-1"
+	upgradeName = "cyberfrey"
 )
 
 // We pull these out so we can set them with LDFLAGS in the Makefile
