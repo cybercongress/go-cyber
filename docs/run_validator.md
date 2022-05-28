@@ -5,7 +5,7 @@
 
 First, you should set up a server.
 Your node should be online constantly. This means that you will need a reliable server.
-You may also consider using any cloud service with a dedicated GPU, like Hetzner, Cherryservers etc. (or use a local machine). Whatever you choose, in order tp achieve better stability and consistency we recommend you use a dedicated server for each validator node.
+You may also consider using any cloud service with a dedicated GPU, like Hetzner, Cherryservers etc. (or use a local machine). Whatever you choose, in order to achieve better stability and consistency we recommend you use a dedicated server for each validator node.
 
 Cyber is based on Cosmos-SDK and is written in Go.
 It should work on any platform which can compile and run programs in Go.
@@ -24,7 +24,7 @@ GPU: Nvidia GeForce (or Tesla/Titan/Quadro) with CUDA-cores; 4+ Gb of video memo
 Software: Ubuntu 18.04 LTS / 20.04 LTS
 ```
 
-*Cyber runs well on consumer-grade cards like Geforce GTX 1070, but we expect load growth and advise to use Error Correction compatible cards from Tesla or Quadro families. Also, make sure your card is compatible with >= v.410 of NVIDIA driver.*
+*Cyber runs well on consumer-grade cards like Geforce GTX 1070, but we expect load growth and advise you use Error Correction compatible cards from Tesla or Quadro families. Also, make sure your card is compatible with >= v.410 of NVIDIA driver.*
 
 Of course the hardware is your own choice and technically it might be possible to run the node on *"even - 1 CUDA core GPU"*, but you should be aware of performance drop and rank calculation speed decline.
 
@@ -284,7 +284,7 @@ mkdir $HOME/.cyber/config
 ```
 
 
-2. Run the fullnode:
+2. Run the full node:
 (This will pull and extract the image from cyberd/cyber)
 
 ```bash
@@ -302,7 +302,7 @@ seeds = ""
 persistent_peers = ""
 ```
 
-For peers addresses please refer to appropriate section of [networks](https://github.com/cybercongress/networks) repo.
+For peers addresses please refer to appropriate section of the [networks](https://github.com/cybercongress/networks) repo.
 When done, please restart container using:
 
 4. To apply config changes restart the container:
@@ -350,7 +350,7 @@ docker exec -ti bostrom cyber keys add <your_key_name>
 The above command returns the address, the public key and the seed phrase, which you can use to
 recover your account if you forget your password later.
 
-**Keep you seed phrase safe. Your keys is only your responsibility!**
+**Keep you seed phrase safe. Your keys are only your responsibility!**
 
 To **import** existing address use: 
 
@@ -358,7 +358,7 @@ To **import** existing address use:
 docker exec -ti bostrom cyber keys add <your_key_name> --recover
 ```
 
-You could use your **ledger** device with the Cosmos app installed on it to sign transactions. Add address from Ledger:
+You can use your **ledger** device with the Cosmos app installed on it to sign transactions. Add address from Ledger:
 
 ```bash
 docker exec -ti bostrom cyber keys add <your_key_name> --ledger
@@ -412,7 +412,7 @@ docker exec -ti bostrom cyber tx slashing unjail --from=<your_key_name> --chain-
 
 ### Back-up validator keys (!)
 
-Your identity as validator consists of two things: 
+Your identity as a validator consists of two things: 
 
 - your account (to sign transactions)
 - your validator private key (to sign stuff on the chain consensus layer)
