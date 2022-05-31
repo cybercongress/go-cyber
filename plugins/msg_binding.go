@@ -2,6 +2,7 @@ package plugins
 
 import (
 	"encoding/json"
+	liquiditytypes "github.com/tendermint/liquidity/x/liquidity/types"
 
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmTypes "github.com/CosmWasm/wasmvm/types"
@@ -40,6 +41,7 @@ const (
 	WasmMsgParserRouteDmn       = dmntypes.ModuleName
 	WasmMsgParserRouteGrid      = gridtypes.ModuleName
 	WasmMsgParserRouteResources = resourcestypes.ModuleName
+	WasmMsgParserLiquidity      = liquiditytypes.ModuleName
 )
 
 func (p MsgParser) ParseCustom(contractAddr sdk.AccAddress, data json.RawMessage) ([]sdk.Msg, error) {

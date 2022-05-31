@@ -47,7 +47,7 @@ func (msg MsgCreateThought) ValidateBasic() error {
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid program address (%s)", err)
 	}
-	if msg.Load.Input == "" || len(msg.Load.Input) > 512 {
+	if msg.Load.Input == "" || len(msg.Load.Input) > 2048 {
 		return ErrBadCallData
 	}
 	if msg.Load.GasPrice.Denom != types.CYB {
@@ -242,7 +242,7 @@ func (msg MsgChangeThoughtInput) ValidateBasic() error {
 	if msg.Name == "" || len(msg.Name) > 32 {
 		return ErrBadName
 	}
-	if msg.Input == "" || len(msg.Input) > 512 {
+	if msg.Input == "" || len(msg.Input) > 2048 {
 		return ErrBadCallData
 	}
 

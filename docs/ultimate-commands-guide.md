@@ -1,6 +1,6 @@
-# Ultimate cyberd CLI guide. Chain: bostrom
+# Ultimate cyber CLI guide. Chain: bostrom
 
-## Install cyberd client
+## Install cyber client
 
 It is possible to interact with cyber even if you don't have your own node. All you need to do is install `cyber` client on your machine using the script below, paste it in the console (currently Linux supported):
 

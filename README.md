@@ -17,7 +17,7 @@
 </div>
 
 <div align="center">
- <h3>Join us, Hero - <a href="https://github.com/cybercongress/go-cyber/blob/bostrom-dev/docs/run_validator.md">Setup validator guide</a></h3>
+ <h3>Join us, Hero - <a href="https://github.com/cybercongress/go-cyber/blob/main/docs/run_validator.md">Setup validator guide</a></h3>
 </div>
 
 <div align="center">
@@ -51,7 +51,7 @@ _____________
 
 ## Blockchain
 
-[![chain](https://img.shields.io/badge/Chain-bostrom-success.svg?style=flat-square)](https://github.com/cybercongress/cyberd/blob/master/docs/run_validator.md)
+[![chain](https://img.shields.io/badge/Chain-bostrom-success.svg?style=flat-square)](https://github.com/cybercongress/go-cyber/blob/main/docs/run_validator.md)
 [![block](https://img.shields.io/badge/dynamic/json?color=blue&label=Block%20Height&query=%24.result.sync_info.latest_block_height&url=https://rpc.bostrom.cybernode.ai/status&style=flat-square)]()
 [![cyberlinks](https://img.shields.io/badge/dynamic/json?color=blue&label=Cyberlinks&query=%24.result.cyberlinks&url=https://lcd.bostrom.cybernode.ai/graph/graph_stats&style=flat-square)]()
 [![particles](https://img.shields.io/badge/dynamic/json?color=blue&label=Particles&query=%24.result.particles&url=https://lcd.bostrom.cybernode.ai/graph/graph_stats&style=flat-square)]()

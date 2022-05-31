@@ -84,12 +84,6 @@ sudo apt update
 sudo apt-get install docker-ce docker-ce-cli containerd.io
 ```
 
-6. Reboot the system for the changes to take effect.
-
-```bash
-sudo reboot
-```
-
 ### Installing Nvidia drivers
 
 1. To proceed, first add the `ppa:graphics-drivers/ppa` repository:

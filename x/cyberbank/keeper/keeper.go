@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -108,24 +109,28 @@ func (k *IndexedKeeper) UpdateAccountsStakeAmpere(ctx sdk.Context) {
 		k.userNewTotalStakeAmpere[accountNumber] = uint64(stake)
 	}
 
-	// trigger full account map rebuild in case of account' missing
-	// TODO migrate logic to storage listener in sdk 45+
-	lastAccountNumber := k.GetJustLastAccountNumber(ctx)
-	if uint64(len(k.userNewTotalStakeAmpere)) != lastAccountNumber {
-		for i := lastAccountNumber; i > 0; i-- {
+	// trigger full account map rebuild in case of account' missing (and if new contract deployed)
+	// TODO migrate logic to storage listener in sdk 46?
+	// NOTE returns last not applied yet next! account number
+	// equal to current length of accounts ids array, but last id is equal to next-1
+	nextAccountNumber := k.GetNextAccountNumber(ctx)
+	if uint64(len(k.userNewTotalStakeAmpere)) != nextAccountNumber {
+		startTime := time.Now()
+		for i := nextAccountNumber-1; i > 0; i-- {
 			if _, ok := k.userNewTotalStakeAmpere[i]; !ok {
-				k.Logger(ctx).Info("added to index account:", "index", i)
+				k.Logger(ctx).Info("added to stake index:", "account", i)
 				// TODO update in next release
 				//stake := k.GetAccountTotalStakeAmper(ctx, addr)
 				k.userNewTotalStakeAmpere[i] = 0
 			}
 		}
+		k.Logger(ctx).Info("rebuild stake index:", "duration", time.Since(startTime).String())
 	}
 
 	k.accountToUpdate = make([]sdk.AccAddress, 0)
 }
 
-func (k IndexedKeeper) GetJustLastAccountNumber(ctx sdk.Context) uint64 {
+func (k IndexedKeeper) GetNextAccountNumber(ctx sdk.Context) uint64 {
 	var accNumber uint64
 	store := ctx.KVStore(k.authKey)
 	bz := store.Get([]byte("globalAccountNumber"))
