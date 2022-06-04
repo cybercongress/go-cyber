@@ -79,6 +79,7 @@ func (k Keeper) ConvertResource(
 		return sdkerrors.ErrInsufficientFunds, sdk.Coin{}
 	}
 
+	// comment this for local dev
 	if uint32(length) < k.MinInvestmintPeriodSec(ctx) {
 		return types.ErrNotAvailablePeriod, sdk.Coin{}
 	}
@@ -306,12 +307,19 @@ func (k Keeper) Mint(ctx sdk.Context, recipientAddr sdk.AccAddress, amt sdk.Coin
 
 func (k Keeper) CalculateInvestmint(ctx sdk.Context, amt sdk.Coin, resource string, length uint64) sdk.Coin {
 	var toMint sdk.Coin
+	var halving sdk.Dec
 	switch resource {
 	case ctypes.VOLT:
 		//cycles := sdk.NewDec(int64(length)).QuoInt64(int64(10)) // for local dev
 		cycles := sdk.NewDec(int64(length)).QuoInt64(int64(k.BaseInvestmintPeriodVolt(ctx)))
 		base := sdk.NewDec(amt.Amount.Int64()).QuoInt64(k.BaseInvestmintAmountVolt(ctx).Amount.Int64())
-		halving := sdk.NewDecWithPrec(int64(math.Pow(0.5, float64(ctx.BlockHeight() / int64(k.BaseHalvingPeriodVolt(ctx))))*10000),4)
+
+		// NOTE out of parametrization custom code is applied here in order to shift the FIRST HALVING 6M BLOCKS LATER but keep base halving parameter same
+		if ctx.BlockHeight() > 15000000 {
+			halving = sdk.NewDecWithPrec(int64(math.Pow(0.5, float64((ctx.BlockHeight()-600000) / int64(k.BaseHalvingPeriodVolt(ctx))))*10000),4)
+		} else {
+			halving = sdk.OneDec()
+		}
 
 		if halving.LT(sdk.NewDecWithPrec(1, 2)) {
 			halving = sdk.NewDecWithPrec(1, 2)
@@ -324,7 +332,13 @@ func (k Keeper) CalculateInvestmint(ctx sdk.Context, amt sdk.Coin, resource stri
 		//cycles := sdk.NewDec(int64(length)).QuoInt64(int64(10)) // for local dev
 		cycles := sdk.NewDec(int64(length)).QuoInt64(int64(k.BaseInvestmintPeriodAmpere(ctx)))
 		base := sdk.NewDec(amt.Amount.Int64()).QuoInt64(k.BaseInvestmintAmountAmpere(ctx).Amount.Int64())
-		halving := sdk.NewDecWithPrec(int64(math.Pow(0.5, float64(ctx.BlockHeight() / int64(k.BaseHalvingPeriodAmpere(ctx))))*10000),4)
+
+		// NOTE out of parametrization custom code is applied here in order to shift the FIRST HALVING 6M BLOCKS LATER but keep base halving parameter same
+		if ctx.BlockHeight() > 15000000 {
+			halving = sdk.NewDecWithPrec(int64(math.Pow(0.5, float64((ctx.BlockHeight()-600000) / int64(k.BaseHalvingPeriodAmpere(ctx))))*10000),4)
+		} else {
+			halving = sdk.OneDec()
+		}
 
 		if halving.LT(sdk.NewDecWithPrec(1, 2)) {
 			halving = sdk.NewDecWithPrec(1, 2)

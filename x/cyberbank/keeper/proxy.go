@@ -17,9 +17,9 @@ import (
 var _ bank.Keeper = (*Proxy)(nil)
 
 type Proxy struct {
-	bk	bank.Keeper
-	ak  authkeeper.AccountKeeper
-	ek  types.EnergyKeeper
+	bk bank.Keeper
+	ak authkeeper.AccountKeeper
+	ek types.EnergyKeeper
 
 	coinsTransferHooks []types.CoinsTransferHook
 }
@@ -272,4 +272,13 @@ func (p *Proxy) SupplyOf(ctx context.Context, request *banktypes.QuerySupplyOfRe
 
 func (p *Proxy) Params(ctx context.Context, request *banktypes.QueryParamsRequest) (*banktypes.QueryParamsResponse, error) {
 	return p.bk.Params(ctx, request)
+}
+
+
+func (p *Proxy) SpendableBalances(ctx context.Context, request *banktypes.QuerySpendableBalancesRequest) (*banktypes.QuerySpendableBalancesResponse, error) {
+	return p.bk.SpendableBalances(ctx, request)
+}
+
+func (p *Proxy) HasSupply(ctx sdk.Context, denom string) bool {
+	return p.bk.HasSupply(ctx, denom)
 }

@@ -2,27 +2,28 @@ package app
 
 import (
 	"fmt"
-	"os"
-
+	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
 	"github.com/cosmos/cosmos-sdk/x/authz"
 	authzkeeper "github.com/cosmos/cosmos-sdk/x/authz/keeper"
 	authzmodule "github.com/cosmos/cosmos-sdk/x/authz/module"
 	"github.com/cosmos/cosmos-sdk/x/feegrant"
 	feegrantkeeper "github.com/cosmos/cosmos-sdk/x/feegrant/keeper"
 	feegrantmodule "github.com/cosmos/cosmos-sdk/x/feegrant/module"
-	"github.com/cosmos/ibc-go/modules/apps/transfer"
-	ibctransferkeeper "github.com/cosmos/ibc-go/modules/apps/transfer/keeper"
-	ibctransfertypes "github.com/cosmos/ibc-go/modules/apps/transfer/types"
-	ibc "github.com/cosmos/ibc-go/modules/core"
-	ibcclient "github.com/cosmos/ibc-go/modules/core/02-client"
-	ibcclientclient "github.com/cosmos/ibc-go/modules/core/02-client/client"
-	ibcclienttypes "github.com/cosmos/ibc-go/modules/core/02-client/types"
-	porttypes "github.com/cosmos/ibc-go/modules/core/05-port/types"
-	ibchost "github.com/cosmos/ibc-go/modules/core/24-host"
-	ibckeeper "github.com/cosmos/ibc-go/modules/core/keeper"
+	"github.com/cosmos/ibc-go/v3/modules/apps/transfer"
+	ibctransferkeeper "github.com/cosmos/ibc-go/v3/modules/apps/transfer/keeper"
+	ibctransfertypes "github.com/cosmos/ibc-go/v3/modules/apps/transfer/types"
+	ibc "github.com/cosmos/ibc-go/v3/modules/core"
+	ibcclient "github.com/cosmos/ibc-go/v3/modules/core/02-client"
+	ibcclientclient "github.com/cosmos/ibc-go/v3/modules/core/02-client/client"
+	ibcclienttypes "github.com/cosmos/ibc-go/v3/modules/core/02-client/types"
+	porttypes "github.com/cosmos/ibc-go/v3/modules/core/05-port/types"
+	ibchost "github.com/cosmos/ibc-go/v3/modules/core/24-host"
+	ibckeeper "github.com/cosmos/ibc-go/v3/modules/core/keeper"
 	_ "github.com/cybercongress/go-cyber/client/docs/statik"
+	"github.com/cybercongress/go-cyber/plugins/liquidity_plugin"
 	"io"
 	"net/http"
+	"os"
 	"path/filepath"
 	"strings"
 	"time"
@@ -30,10 +31,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/grpc/tmservice"
 	ctypes "github.com/cybercongress/go-cyber/types"
 	"github.com/gorilla/mux"
+	"github.com/rakyll/statik/fs"
 	"github.com/tendermint/liquidity/x/liquidity"
 	liquiditykeeper "github.com/tendermint/liquidity/x/liquidity/keeper"
 	liquiditytypes "github.com/tendermint/liquidity/x/liquidity/types"
-	"github.com/rakyll/statik/fs"
 
 	wasmplugins "github.com/cybercongress/go-cyber/plugins"
 	"github.com/cybercongress/go-cyber/x/dmn"
@@ -143,10 +144,14 @@ import (
 	stakingwrap "github.com/cybercongress/go-cyber/x/staking"
 
 	"github.com/cybercongress/go-cyber/app/params"
+	tmjson "github.com/tendermint/tendermint/libs/json"
+
+	store "github.com/cosmos/cosmos-sdk/store/types"
 )
 
 const (
 	appName = "BostromHub"
+	upgradeName = "cyberfrey"
 )
 
 // We pull these out so we can set them with LDFLAGS in the Makefile
@@ -154,6 +159,7 @@ var (
 	NodeDir      = ".cyber"
 	Bech32Prefix = "bostrom"
 
+	// TODO clean
 	// DefaultBondDenom is the denomination of coin to use for bond/staking
 	DefaultBondDenom = "boot"
 	// DefaultFeeDenom is the denomination of coin to use for fees
@@ -162,13 +168,8 @@ var (
 	DefaultReDnmString = `[a-zA-Z][a-zA-Z0-9/\-\.]{2,127}`
 
 	// If EnabledSpecificProposals is "", and this is "true", then enable all x/wasm proposals.
-	// If EnabledSpecificProposals is "", and this is not "true", then disable all x/wasm proposals.
 	ProposalsEnabled = "true"
-	// If set to non-empty string it must be comma-separated list of values that are all a subset
-	// of "EnableAllProposals" (takes precedence over ProposalsEnabled)
-	// https://github.com/CosmWasm/wasmd/blob/02a54d33ff2c064f3539ae12d75d027d9c665f05/x/wasm/internal/types/proposal.go#L28-L34
-	//EnableSpecificProposals = "StoreCodeProposal,InstantiateContractProposal,MigrateContractProposal,ClearAdminProposal,PinCodes,UnpinCodes"
-	EnableSpecificProposals = "PinCodes,UnpinCodes"
+	EnableSpecificProposals = ""
 )
 
 // GetEnabledProposals parses the ProposalsEnabled / EnableSpecificProposals values to
@@ -197,8 +198,6 @@ var (
 )
 
 var (
-	//DefaultPowerReduction = sdk.NewIntFromUint64(1000000000)
-
 	// ModuleBasics defines the module BasicManager is in charge of setting up basic,
 	// non-dependant module elements, such as codec registration
 	// and genesis verification.
@@ -225,13 +224,13 @@ var (
 		slashing.AppModuleBasic{},
 		feegrantmodule.AppModuleBasic{},
 		authzmodule.AppModuleBasic{},
+		ibc.AppModuleBasic{},
 		upgrade.AppModuleBasic{},
 		evidence.AppModuleBasic{},
-		vesting.AppModuleBasic{},
-
-		ibc.AppModuleBasic{},
 		transfer.AppModuleBasic{},
-
+		vesting.AppModuleBasic{},
+		liquidity.AppModuleBasic{},
+		wasm.AppModuleBasic{},
 		bandwidth.AppModuleBasic{},
 		cyberbank.AppModuleBasic{},
 		graph.AppModuleBasic{},
@@ -239,8 +238,6 @@ var (
 		grid.AppModuleBasic{},
 		dmn.AppModuleBasic{},
 		resources.AppModuleBasic{},
-		wasm.AppModuleBasic{},
-		liquidity.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -252,10 +249,10 @@ var (
 		stakingtypes.NotBondedPoolName: {authtypes.Burner, authtypes.Staking},
 		govtypes.ModuleName:            {authtypes.Burner},
 		ibctransfertypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
-		gridtypes.GridPoolName:         nil,
-		resourcestypes.ResourcesName:   {authtypes.Minter, authtypes.Burner},
 		wasm.ModuleName:                {authtypes.Burner},
 		liquiditytypes.ModuleName:      {authtypes.Minter, authtypes.Burner},
+		gridtypes.GridPoolName:         nil,
+		resourcestypes.ResourcesName:   {authtypes.Minter, authtypes.Burner},
 	}
 
     // module accounts that are allowed to receive tokens
@@ -269,20 +266,16 @@ var (
 	_ servertypes.Application = (*App)(nil)
 )
 
+// TODO clean
 // SdkCoinDenomRegex returns a new sdk base denom regex string
 func SdkCoinDenomRegex() string {
 	return DefaultReDnmString
 }
 
-
-// App extends an ABCI application, but with most of its parameters exported.
-// They are exported for convenience in creating helper functions, as object
-// capabilities aren't needed for testing.
+// App extended ABCI application
+// TODO rename to CyberApp
 type App struct {
 	*baseapp.BaseApp
-
-	appName string
-
 	legacyAmino       *codec.LegacyAmino
 	appCodec          codec.Codec
 	interfaceRegistry types.InterfaceRegistry
@@ -306,12 +299,13 @@ type App struct {
 	CrisisKeeper     crisiskeeper.Keeper
 	UpgradeKeeper    upgradekeeper.Keeper
 	ParamsKeeper     paramskeeper.Keeper
+	IBCKeeper        *ibckeeper.Keeper // IBC Keeper must be a pointer in the app, so we can SetRouter on it correctly
 	EvidenceKeeper   evidencekeeper.Keeper
+	TransferKeeper   ibctransferkeeper.Keeper
 	FeeGrantKeeper   feegrantkeeper.Keeper
 	AuthzKeeper      authzkeeper.Keeper
-
-	IBCKeeper        *ibckeeper.Keeper // IBC Keeper must be a pointer in the app, so we can SetRouter on it correctly
-	TransferKeeper   ibctransferkeeper.Keeper
+	WasmKeeper       wasm.Keeper
+	LiquidityKeeper  liquiditykeeper.Keeper
 
 	BandwidthMeter   *bandwidthkeeper.BandwidthMeter
 	CyberbankKeeper  *cyberbankkeeper.IndexedKeeper
@@ -321,12 +315,11 @@ type App struct {
 	GridKeeper 		 gridkeeper.Keeper
 	DmnKeeper  		 *dmnkeeper.Keeper
 	ResourcesKeeper  resourceskeeper.Keeper
-	WasmKeeper       wasm.Keeper
-	LiquidityKeeper  liquiditykeeper.Keeper
 
 	// make scoped keepers public for test purposes
 	ScopedIBCKeeper      capabilitykeeper.ScopedKeeper
 	ScopedTransferKeeper capabilitykeeper.ScopedKeeper
+	ScopedWasmKeeper     capabilitykeeper.ScopedKeeper
 
 	// the module manager
 	mm *module.Manager
@@ -344,23 +337,24 @@ func NewApp(
 	homePath string,
 	invCheckPeriod uint,
 	encodingConfig params.EncodingConfig,
-	wasmOpts []wasm.Option,
 	enabledProposals []wasm.ProposalType,
 	appOpts servertypes.AppOptions,
+	wasmOpts []wasm.Option,
 	baseAppOptions ...func(*baseapp.BaseApp),
 ) *App {
-	config := sdk.NewConfig()
-	config.Seal()
+	// TODO clean
+	//config := sdk.NewConfig()
+	//config.Seal()
 
-	appCodec := encodingConfig.Marshaler
-	legacyAmino := encodingConfig.Amino
+	appCodec, legacyAmino := encodingConfig.Marshaler, encodingConfig.Amino
 	interfaceRegistry := encodingConfig.InterfaceRegistry
 
 	bApp := baseapp.NewBaseApp(appName, logger, db, encodingConfig.TxConfig.TxDecoder(), baseAppOptions...)
 	bApp.SetCommitMultiStoreTracer(traceStore)
 	bApp.SetVersion(version.Version)
 	bApp.SetInterfaceRegistry(interfaceRegistry)
-	sdk.SetCoinDenomRegex(SdkCoinDenomRegex)
+	// TODO clean
+	//sdk.SetCoinDenomRegex(SdkCoinDenomRegex)
 
 	keys := sdk.NewKVStoreKeys(
 		authtypes.StoreKey, banktypes.StoreKey, stakingtypes.StoreKey,
@@ -383,7 +377,6 @@ func NewApp(
 
 	app := &App{
 		BaseApp:           bApp,
-		appName:           appName,
 		legacyAmino:       legacyAmino,
 		appCodec:          appCodec,
 		interfaceRegistry: interfaceRegistry,
@@ -393,7 +386,12 @@ func NewApp(
 		memKeys:           memKeys,
 	}
 
-	app.ParamsKeeper = initParamsKeeper(appCodec, legacyAmino, keys[paramstypes.StoreKey], tkeys[paramstypes.TStoreKey])
+	app.ParamsKeeper = initParamsKeeper(
+		appCodec,
+		legacyAmino,
+		keys[paramstypes.StoreKey],
+		tkeys[paramstypes.TStoreKey],
+	)
 
 	// set the BaseApp's parameter store
 	bApp.SetParamStore(app.ParamsKeeper.Subspace(baseapp.Paramspace).WithKeyTable(paramskeeper.ConsensusParamsKeyTable()))
@@ -409,6 +407,7 @@ func NewApp(
 	scopedIBCKeeper := app.CapabilityKeeper.ScopeToModule(ibchost.ModuleName)
 	scopedTransferKeeper := app.CapabilityKeeper.ScopeToModule(ibctransfertypes.ModuleName)
 	scopedWasmKeeper := app.CapabilityKeeper.ScopeToModule(wasm.ModuleName)
+	app.CapabilityKeeper.Seal()
 
 	// add keepers
 	app.AccountKeeper = authkeeper.NewAccountKeeper(
@@ -434,6 +433,7 @@ func NewApp(
 		keys[feegrant.StoreKey],
 		app.AccountKeeper,
 	)
+	// Cyber uses custom bank module wrapped around SDK's bank module
 	app.CyberbankKeeper = cyberbankkeeper.NewIndexedKeeper(
 		appCodec,
 		keys[authtypes.StoreKey],
@@ -565,6 +565,7 @@ func NewApp(
 		keys[ibctransfertypes.StoreKey],
 		app.GetSubspace(ibctransfertypes.ModuleName),
 		app.IBCKeeper.ChannelKeeper,
+		app.IBCKeeper.ChannelKeeper,
 		&app.IBCKeeper.PortKeeper,
 		app.AccountKeeper,
 		app.CyberbankKeeper.Proxy,
@@ -577,6 +578,15 @@ func NewApp(
 		app.CyberbankKeeper.Proxy,
 		app.AccountKeeper,
 		app.GetSubspace(dmntypes.ModuleName),
+	)
+
+	app.LiquidityKeeper = liquiditykeeper.NewKeeper(
+		appCodec,
+		keys[liquiditytypes.StoreKey],
+		app.GetSubspace(liquiditytypes.ModuleName),
+		app.CyberbankKeeper.Proxy,
+		app.AccountKeeper,
+		app.DistrKeeper,
 	)
 
 	// Initialize CosmWasm
@@ -594,6 +604,7 @@ func NewApp(
 		wasmplugins.WasmQueryRouteDmn:       dmnwasm.NewWasmQuerier(*app.DmnKeeper),
 		wasmplugins.WasmQueryRouteGrid:      gridwasm.NewWasmQuerier(app.GridKeeper),
 		wasmplugins.WasmQueryRouteBandwidth: bandwidthwasm.NewWasmQuerier(app.BandwidthMeter),
+		wasmplugins.WasmQueryRouteLiquidity: liquidity_plugin.NewWasmQuerier(app.LiquidityKeeper),
 	}
 	querier.Queriers = queries
 	queryPlugins := &wasm.QueryPlugins{
@@ -607,6 +618,7 @@ func NewApp(
 		wasmplugins.WasmMsgParserRouteDmn:       dmnwasm.NewWasmMsgParser(),
 		wasmplugins.WasmMsgParserRouteGrid:      gridwasm.NewWasmMsgParser(),
 		wasmplugins.WasmMsgParserRouteResources: resourceswasm.NewWasmMsgParser(),
+		wasmplugins.WasmMsgParserLiquidity:      liquidity_plugin.NewWasmMsgParser(),
 	}
 	parser.Parsers = parsers
 	customEncoders := &wasm.MessageEncoders{
@@ -631,7 +643,6 @@ func NewApp(
 		&app.IBCKeeper.PortKeeper,
 		scopedWasmKeeper,
 		app.TransferKeeper,
-		app.Router(),
 		app.MsgServiceRouter(),
 		app.GRPCQueryRouter(),
 		wasmDir,
@@ -644,7 +655,8 @@ func NewApp(
 
 	// register the proposal types
 	govRouter := govtypes.NewRouter()
-	govRouter.AddRoute(govtypes.RouterKey, govtypes.ProposalHandler).
+	govRouter.
+		AddRoute(govtypes.RouterKey, govtypes.ProposalHandler).
 		AddRoute(paramproposal.RouterKey, sdkparams.NewParamChangeProposalHandler(app.ParamsKeeper)).
 		AddRoute(distrtypes.RouterKey, distr.NewCommunityPoolSpendProposalHandler(app.DistrKeeper)).
 		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.UpgradeKeeper)).
@@ -665,27 +677,13 @@ func NewApp(
 	)
 
 	transferModule := transfer.NewAppModule(app.TransferKeeper)
-
+	transferIBCModule := transfer.NewIBCModule(app.TransferKeeper)
 	// Create static IBC router, add transfer route, then set and seal it
 	ibcRouter := porttypes.NewRouter()
-	ibcRouter.AddRoute(
-		ibctransfertypes.ModuleName,
-		transferModule,
-	)
-	ibcRouter.AddRoute(
-		wasm.ModuleName,
-		wasm.NewIBCHandler(app.WasmKeeper, app.IBCKeeper.ChannelKeeper),
-	)
+	ibcRouter.
+		AddRoute(ibctransfertypes.ModuleName, transferIBCModule).
+		AddRoute(wasm.ModuleName, wasm.NewIBCHandler(app.WasmKeeper, app.IBCKeeper.ChannelKeeper))
 	app.IBCKeeper.SetRouter(ibcRouter)
-
-	app.LiquidityKeeper = liquiditykeeper.NewKeeper(
-		appCodec,
-		keys[liquiditytypes.StoreKey],
-		app.GetSubspace(liquiditytypes.ModuleName),
-		app.CyberbankKeeper.Proxy,
-		app.AccountKeeper,
-		app.DistrKeeper,
-	)
 
 	// Create evidence Keeper for to register the IBC light client misbehaviour evidence route
 	evidenceKeeper := evidencekeeper.NewKeeper(
@@ -716,24 +714,23 @@ func NewApp(
 		vesting.NewAppModule(app.AccountKeeper, app.CyberbankKeeper.Proxy),
 		bank.NewAppModule(appCodec, app.BankKeeper, app.AccountKeeper),
 		capability.NewAppModule(appCodec, *app.CapabilityKeeper),
-		crisis.NewAppModule(&app.CrisisKeeper, skipGenesisInvariants),
 		gov.NewAppModule(appCodec, app.GovKeeper, app.AccountKeeper, app.CyberbankKeeper.Proxy),
 		mint.NewAppModule(appCodec, app.MintKeeper, app.AccountKeeper),
 		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.CyberbankKeeper.Proxy, app.StakingKeeper),
 		distr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.CyberbankKeeper.Proxy, app.StakingKeeper),
+		// Cyber uses wrapped staking module that overrides some operations
 		stakingwrap.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.CyberbankKeeper.Proxy),
 		upgrade.NewAppModule(app.UpgradeKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),
 		feegrantmodule.NewAppModule(appCodec, app.AccountKeeper, app.CyberbankKeeper.Proxy, app.FeeGrantKeeper, app.interfaceRegistry),
 		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, app.CyberbankKeeper.Proxy, app.interfaceRegistry),
 		sdkparams.NewAppModule(app.ParamsKeeper),
-
+		crisis.NewAppModule(&app.CrisisKeeper, skipGenesisInvariants),
 		ibc.NewAppModule(app.IBCKeeper),
 		transferModule,
-
 		liquidity.NewAppModule(appCodec, app.LiquidityKeeper, app.AccountKeeper, app.CyberbankKeeper.Proxy, app.DistrKeeper),
-		wasm.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper),
-
+		wasm.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper, app.AccountKeeper, app.CyberbankKeeper.Proxy),
+		// Cyber uses custom bank module wrapped around SDK's bank module
 		cyberbank.NewAppModule(appCodec, app.CyberbankKeeper),
 		bandwidth.NewAppModule(appCodec, app.AccountKeeper, app.BandwidthMeter),
 		graph.NewAppModule(
@@ -750,17 +747,37 @@ func NewApp(
 	// there is nothing left over in the validator fee pool, so as to keep the
 	// CanWithdrawInvariant invariant.
 	// NOTE: staking module is required if HistoricalEntries param > 0
+	// NOTE: capability module's beginblocker must come before any modules using capabilities (e.g. IBC)
 	app.mm.SetOrderBeginBlockers(
+		// upgrades should be run first
 		upgradetypes.ModuleName,
 		capabilitytypes.ModuleName,
-		minttypes.ModuleName,
-		distrtypes.ModuleName,
-		slashingtypes.ModuleName,
-		evidencetypes.ModuleName,
 		stakingtypes.ModuleName,
 		liquiditytypes.ModuleName,
-		ibchost.ModuleName,
+		distrtypes.ModuleName,
+		slashingtypes.ModuleName,
+		minttypes.ModuleName,
+		evidencetypes.ModuleName,
 		dmntypes.ModuleName,
+
+		authtypes.ModuleName,
+		authz.ModuleName,
+		banktypes.ModuleName,
+		bandwidthtypes.ModuleName,
+		crisistypes.ModuleName,
+		cyberbanktypes.ModuleName,
+		feegrant.ModuleName,
+		genutiltypes.ModuleName,
+		govtypes.ModuleName,
+		graphtypes.ModuleName,
+		gridtypes.ModuleName,
+		ibctransfertypes.ModuleName,
+		ibchost.ModuleName,
+		paramstypes.ModuleName,
+		ranktypes.ModuleName,
+		resourcestypes.ModuleName,
+		vestingtypes.ModuleName,
+		wasm.ModuleName,
 	)
 
 	app.mm.SetOrderEndBlockers(
@@ -768,12 +785,30 @@ func NewApp(
 		govtypes.ModuleName,
 		stakingtypes.ModuleName,
 		liquiditytypes.ModuleName,
-		feegrant.ModuleName,
-		authz.ModuleName,
 		cyberbanktypes.ModuleName,
 		bandwidthtypes.ModuleName,
 		graphtypes.ModuleName,
 		ranktypes.ModuleName,
+
+		authtypes.ModuleName,
+		authz.ModuleName,
+		banktypes.ModuleName,
+		capabilitytypes.ModuleName,
+		distrtypes.ModuleName,
+		dmntypes.ModuleName,
+		evidencetypes.ModuleName,
+		feegrant.ModuleName,
+		genutiltypes.ModuleName,
+		gridtypes.ModuleName,
+		ibchost.ModuleName,
+		ibctransfertypes.ModuleName,
+		minttypes.ModuleName,
+		paramstypes.ModuleName,
+		resourcestypes.ModuleName,
+		slashingtypes.ModuleName,
+		upgradetypes.ModuleName,
+		vestingtypes.ModuleName,
+		wasm.ModuleName,
 	)
 
 	// NOTE: The genutils module must occur after staking so that pools are
@@ -783,7 +818,6 @@ func NewApp(
 	// can do so safely.
 	app.mm.SetOrderInitGenesis(
 		capabilitytypes.ModuleName,
-		authtypes.ModuleName,
 		banktypes.ModuleName,
 		distrtypes.ModuleName,
 		stakingtypes.ModuleName,
@@ -791,30 +825,35 @@ func NewApp(
 		govtypes.ModuleName,
 		minttypes.ModuleName,
 		crisistypes.ModuleName,
+		ibctransfertypes.ModuleName,
 		ibchost.ModuleName,
-		genutiltypes.ModuleName,
 		evidencetypes.ModuleName,
 		liquiditytypes.ModuleName,
-		ibctransfertypes.ModuleName,
 		feegrant.ModuleName,
 		authz.ModuleName,
-
-		// graph and cyberbank will be initialized directly in InitChainer
+		authtypes.ModuleName,
+		genutiltypes.ModuleName,
+		paramstypes.ModuleName,
+		upgradetypes.ModuleName,
+		vestingtypes.ModuleName,
 		wasm.ModuleName,
 		bandwidthtypes.ModuleName,
 		ranktypes.ModuleName,
 		gridtypes.ModuleName,
 		resourcestypes.ModuleName,
 		dmntypes.ModuleName,
+		graphtypes.ModuleName,
+		cyberbanktypes.ModuleName, // cyberbank will be initialized directly in InitChainer
 	)
 
 	app.mm.RegisterInvariants(&app.CrisisKeeper)
 	app.mm.RegisterRoutes(app.Router(), app.QueryRouter(), encodingConfig.Amino)
 	app.configurator = module.NewConfigurator(app.appCodec, app.MsgServiceRouter(), app.GRPCQueryRouter())
 
-	// TODO This needs to be refactored
+	// TODO This needs to be refactored (workaround hack)
 	// Bank module fails on register services using passed Proxy
 	// register all other modules services and then manually register bank's things
+	// NOTE check migrations for new ones
 	delete(app.mm.Modules, "bank")
 	app.mm.RegisterServices(app.configurator)
 	app.mm.Modules["bank"] = bank.NewAppModule(appCodec, app.CyberbankKeeper.Proxy, app.AccountKeeper)
@@ -823,6 +862,7 @@ func NewApp(
 	banktypes.RegisterQueryServer(app.configurator.QueryServer(), app.CyberbankKeeper.Proxy)
 	// migration wouldn't be called because bank's consensus version is 2
 	m := bankkeeper.NewMigrator(app.BankKeeper.(bankkeeper.BaseKeeper))
+	// TODO check current bank migrations
 	app.configurator.RegisterMigration(banktypes.ModuleName, 1, m.Migrate1to2)
 
 	// initialize stores
@@ -840,8 +880,9 @@ func NewApp(
 				SignModeHandler: encodingConfig.TxConfig.SignModeHandler(),
 				SigGasConsumer:  ante.DefaultSigVerificationGasConsumer,
 			},
-			IBCChannelkeeper:    app.IBCKeeper.ChannelKeeper,
-			txCounterStoreKey:   keys[wasm.StoreKey],
+			IBCKeeper:    		 app.IBCKeeper,
+			WasmConfig:        	 &wasmConfig,
+			TXCounterStoreKey:   keys[wasm.StoreKey],
 		},
 	)
 	if err != nil {
@@ -853,6 +894,34 @@ func NewApp(
 	app.SetBeginBlocker(app.BeginBlocker)
 	app.SetEndBlocker(app.EndBlocker)
 
+	// UPGRADES HANDLER SECTION
+	app.UpgradeKeeper.SetUpgradeHandler(
+		upgradeName,
+		func(ctx sdk.Context, _ upgradetypes.Plan, fromVM module.VersionMap) (module.VersionMap, error) {
+
+			//ctx.Logger().Info("start to init module...")
+			//ctx.Logger().Info("start to run module migrations...")
+
+			return app.mm.RunMigrations(ctx, app.configurator, fromVM)
+		},
+	)
+
+	upgradeInfo, err := app.UpgradeKeeper.ReadUpgradeInfoFromDisk()
+	if err != nil {
+		panic(fmt.Sprintf("failed to read upgrade info from disk %s", err))
+	}
+
+	if upgradeInfo.Name == upgradeName && !app.UpgradeKeeper.IsSkipHeight(upgradeInfo.Height) {
+		storeUpgrades := store.StoreUpgrades{}
+
+		// configure store loader that checks if version == upgradeHeight and applies store upgrades
+		app.SetStoreLoader(upgradetypes.UpgradeStoreLoader(upgradeInfo.Height, &storeUpgrades))
+	}
+
+	app.ScopedIBCKeeper = scopedIBCKeeper
+	app.ScopedTransferKeeper = scopedTransferKeeper
+	app.ScopedWasmKeeper = scopedWasmKeeper
+
 	if loadLatest {
 		if err := app.LoadLatestVersion(); err != nil {
 			tmos.Exit(fmt.Sprintf("failed to load latest version: %s", err))
@@ -861,47 +930,47 @@ func NewApp(
 		// TODO refactor load flow as updated state sync in sdk v45.X will be released
 		freshCtx := app.BaseApp.NewContext(true, tmproto.Header{})
 		freshCtx = freshCtx.WithBlockHeight(int64(app.RankKeeper.GetLatestBlockNumber(freshCtx)))
-
-		bandwidthParams := bandwidthtypes.DefaultParams()
-		rankParams := ranktypes.DefaultParams()
-		if app.LastBlockHeight() >= 1 {
-			bandwidthParams = app.BandwidthMeter.GetParams(freshCtx)
-			rankParams = app.RankKeeper.GetParams(freshCtx)
-		}
-		app.BandwidthMeter.SetParams(freshCtx, bandwidthParams)
-		app.RankKeeper.SetParams(freshCtx, rankParams)
-
-		calculationPeriod := app.RankKeeper.GetParams(freshCtx).CalculationPeriod
-		rankRoundBlockNumber := (freshCtx.BlockHeight() / calculationPeriod) * calculationPeriod
-		if rankRoundBlockNumber == 0 && freshCtx.BlockHeight() >= 1 {
-			rankRoundBlockNumber = 1
-		}
-
-		rankCtx, err := utils.NewContextWithMSVersion(db, rankRoundBlockNumber, keys)
-		if err != nil {
-			tmos.Exit(err.Error())
-		}
-
 		start := time.Now()
 		app.BaseApp.Logger().Info("Loading the brain state")
-		app.CyberbankKeeper.LoadState(rankCtx, freshCtx)
-		// TODO update index state load to one context as we store cyberlink' block now
-		app.IndexKeeper.LoadState(rankCtx, freshCtx)
-		app.BandwidthMeter.LoadState(freshCtx)
-		app.GraphKeeper.LoadNeudeg(rankCtx, freshCtx)
-		app.RankKeeper.LoadState(freshCtx)
 
-		app.CapabilityKeeper.Seal()
+		if app.LastBlockHeight() >= 1 {
+			calculationPeriod := app.RankKeeper.GetParams(freshCtx).CalculationPeriod
+			rankRoundBlockNumber := (freshCtx.BlockHeight() / calculationPeriod) * calculationPeriod
+			if rankRoundBlockNumber == 0 && freshCtx.BlockHeight() >= 1 {
+				rankRoundBlockNumber = 1
+			}
+
+			rankCtx, err := utils.NewContextWithMSVersion(db, rankRoundBlockNumber, keys)
+			if err != nil {
+				tmos.Exit(err.Error())
+			}
+
+			app.CyberbankKeeper.LoadState(rankCtx, freshCtx)
+			// TODO update index state load to one context as we store cyberlink' block now
+			app.IndexKeeper.LoadState(rankCtx, freshCtx)
+			app.BandwidthMeter.LoadState(freshCtx)
+			app.GraphKeeper.LoadNeudeg(rankCtx, freshCtx)
+			app.RankKeeper.LoadState(freshCtx)
+			app.RankKeeper.StartRankCalculation(freshCtx)
+		} else {
+			// genesis case
+			app.CyberbankKeeper.LoadState(freshCtx, freshCtx)
+			// TODO update index state load to one context as we store cyberlink' block now
+			app.IndexKeeper.LoadState(freshCtx, freshCtx)
+			app.BandwidthMeter.InitState()
+			app.GraphKeeper.LoadNeudeg(freshCtx, freshCtx)
+			app.RankKeeper.LoadState(freshCtx)
+		}
+
+		if err := app.WasmKeeper.InitializePinnedCodes(freshCtx); err != nil {
+			tmos.Exit(fmt.Sprintf("failed initialize pinned codes %s", err))
+		}
 
 		app.BaseApp.Logger().Info(
 			"Cyber Consensus Supercomputer is started!",
 			"duration", time.Since(start).String(),
 		)
 	}
-
-
-	app.ScopedIBCKeeper = scopedIBCKeeper
-	app.ScopedTransferKeeper = scopedTransferKeeper
 
 	return app
 }
@@ -922,7 +991,9 @@ func (app *App) EndBlocker(ctx sdk.Context, req abci.RequestEndBlock) abci.Respo
 // InitChainer application update at chain initialization
 func (app *App) InitChainer(ctx sdk.Context, req abci.RequestInitChain) abci.ResponseInitChain {
 	var genesisState GenesisState
-	app.legacyAmino.MustUnmarshalJSON(req.AppStateBytes, &genesisState)
+	if err := tmjson.Unmarshal(req.AppStateBytes, &genesisState); err != nil {
+		panic(err)
+	}
 
 	var bankGenesisState banktypes.GenesisState
 	app.appCodec.MustUnmarshalJSON(genesisState["bank"], &bankGenesisState)
@@ -1075,12 +1146,9 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(slashingtypes.ModuleName)
 	paramsKeeper.Subspace(govtypes.ModuleName).WithKeyTable(govtypes.ParamKeyTable())
 	paramsKeeper.Subspace(crisistypes.ModuleName)
-
 	paramsKeeper.Subspace(ibctransfertypes.ModuleName)
 	paramsKeeper.Subspace(ibchost.ModuleName)
-
 	paramsKeeper.Subspace(liquiditytypes.ModuleName)
-
 	paramsKeeper.Subspace(wasm.ModuleName)
 	paramsKeeper.Subspace(bandwidthtypes.ModuleName)
 	paramsKeeper.Subspace(ranktypes.ModuleName)
