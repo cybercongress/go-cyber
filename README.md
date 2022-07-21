@@ -58,7 +58,7 @@ _____________
 [![cyberlinks](https://img.shields.io/badge/dynamic/json?color=blue&label=Cyberlinks&query=%24.result.cyberlinks&url=https://lcd.bostrom.cybernode.ai/graph/graph_stats&style=flat-square)]()
 [![particles](https://img.shields.io/badge/dynamic/json?color=blue&label=Particles&query=%24.result.particles&url=https://lcd.bostrom.cybernode.ai/graph/graph_stats&style=flat-square)]()
 [![negentropy](https://img.shields.io/badge/dynamic/json?color=blue&label=-Entropy&query=%24.result.negentropy&url=https://lcd.bostrom.cybernode.ai/rank/negentropy&style=flat-square)]()
-[![validators](https://img.shields.io/badge/dynamic/json?label=Validators&query=%24.result.validators.length&url=https://rpc.bostrom.cybernode.ai/validators%3F&style=flat-square)]()
+[![validators](https://img.shields.io/badge/dynamic/json?label=Validators&query=%24.result.total&url=https://rpc.bostrom.cybernode.ai/validators%3F&style=flat-square)]()
 _________________________________________________________
 
 ## Networks
