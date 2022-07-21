@@ -1,3 +1,4 @@
+# Semantic non-deterministic Superintelligence consensus computer
 # Cyber - SuperIntelligence for The Great Web
 
 <div align="center">
