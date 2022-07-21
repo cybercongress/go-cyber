@@ -64,8 +64,8 @@ _________________________________________________________
 ## Networks
 |Network|Cosmos|Hub|Launch|Security Token| Resources Token|Bandwidth Token| Power Token | Supported Tokens |
 |---|---|---|---|---|---|---|---|---|
-|Bostrom|🟢|Canary -> Bootloader Hub|2021|BOOT |HYDROGEN|VOLT|AMPER|[ICS20, CW20, CW721, CW1155]|
-|Cyber|🔵|Cyber Hub|TBA|CYB|HYDROGEN|VOLT|AMPER|[ICS20, CW20, CW721, CW1155]|
+|Bostrom|🟢|Canary -> Bootloader Hub|2021|BOOT |HYDROGEN|VOLT|AMPERE|ICS20|
+|Cyber|🔵|Cyber Hub|TBA|CYB|HYDROGEN|VOLT|AMPERE|ICS20|
 _________________________________________________________
 
 ## Computer Specification 🛠
@@ -119,8 +119,9 @@ Build: ```make install```
 
 Run: ```cyber start ```
 
+To use as CLI with remote node:
 ```
-To use as CLI with remote node just set CUDA_ENABLED=false in Makefile and build
+make install SOFTWARE_2_ENABLED=false
 ```
 
 - Version - v0.2.0
