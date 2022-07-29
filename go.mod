@@ -3,7 +3,7 @@ module github.com/cybercongress/go-cyber
 go 1.17
 
 require (
-	github.com/CosmWasm/wasmd v0.27.0
+	github.com/CosmWasm/wasmd v0.28.0
 	github.com/CosmWasm/wasmvm v1.0.0
 	github.com/armon/go-metrics v0.3.10
 	github.com/cosmos/cosmos-sdk v0.45.5
@@ -135,7 +135,6 @@ require (
 )
 
 replace (
-	github.com/CosmWasm/wasmd => github.com/CosmosContracts/wasmd v0.27.0-patch.1
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
 	google.golang.org/grpc => google.golang.org/grpc v1.33.2
 )
