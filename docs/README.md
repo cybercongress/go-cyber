@@ -1,25 +1,52 @@
-# Documentation [WIP]
+# concepts
 
-## Contents
+## soft2 and soft3
+- content from presentation
+- knowledge graph
+- content oracle
+- particle  
+- cyberlink  
+- neuron  
 
-1. **[Run validator guide](run_validator.md)**
-2. **[Use CLI guide](ultimate-commands-guide.md)**
-3. **[Setup daemon config guide](setup_cyber_configuration.md)**
-4. **[Setup local dev environment guide](setup_dev_env.md)**
-5. **[Deploy contract guide]()**
-6. **[Create proposal guide]()**
-7. **[Supported GPUs list](supported_gpu_list.md)**
-8. **[Network upgrade guide](upgrade_guide.md)**
-9. **[Keystore guide](keystore.md)**
-10. **[Multisig guide](multisig_guide.md)**
-11. **[Ledger guide](cyber_Ledger_guide.md)**
-12. **[Tendermint KMS guide](validator_launch_with_tendermintKMS_and_ledger.md)**
-13. Modules documentation
-    - **[graph](../x/graph/spec/README.md)**
-    - **[rank](../x/rank/spec/README.md)**
-    - **[bandwidth](../x/bandwidth/spec/README.md)**
-    - **[cyberbank](../x/cyberbank/spec/README.md)**
-    - **[energy](../x/energy/spec/README.md)**
-    - **[resources](../x/resources/spec/README.md)**
-    - **[dmn](../x/dmn/spec/README.md)**
-    - **[staking](../x/staking/spec/README.md)**
+## consensus computer  
+- cyber-sdk: list of modules + docs from cosmos-sdk https://docs.cosmos.network/
+- resources
+- tendermint: docs from tendermint https://docs.tendermint.com/
+- abci
+- ibc: docs from https://ibc.cosmos.network/
+- ikp
+
+## sequential computation  
+- wasm: docs from wasm https://docs.cosmwasm.com/docs/1.0/
+- dmn
+- bindings
+- cw-cyber
+
+## parallel computation
+- relevance machine
+- semcon
+- linkchain
+- motif
+- blas
+- cyb and sparks
+- superintellgience
+
+# tutorials
+
+- install cyber cli
+- run node
+- send tx from dapp
+- cyberlink content in dapp
+- deploy contract
+
+# how-to
+
+- run validator
+- network upgrade guide
+- setup local environment  
+- daemon configuration
+- ultimate cli guide
+- managing multisig 
+
+# reference
+- swagger
