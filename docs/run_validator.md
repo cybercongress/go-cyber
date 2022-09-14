@@ -21,7 +21,7 @@ RAM: 32 GB
 SSD: 1 TB
 Connection: 50+Mbps, Stable and low-latency connection
 GPU: Nvidia GeForce (or Tesla/Titan/Quadro) with CUDA-cores; 4+ Gb of video memory*
-Software: Ubuntu 18.04 LTS / 20.04 LTS
+Software: Ubuntu  20.04 LTS / 22.04 LTS
 ```
 
 *Cyber runs well on consumer-grade cards like Geforce GTX 1070, but we expect load growth and advise you use Error Correction compatible cards from Tesla or Quadro families. Also, make sure your card is compatible with >= v.410 of NVIDIA driver.*
@@ -122,7 +122,7 @@ driver   : nvidia-driver-460 - third-party free recommended
 driver   : xserver-xorg-video-nouveau - distro free builtin
 ```
 
-4. We need the **410+** drivers release. As you can see the v460 is recommended. The command below will install the recommended version of the drivers:
+4. We need the **410+** drivers release, *up to v515 is tested*. As you can see the v460 is recommended. The command below will install the recommended version of the drivers:
 
 ```bash
 sudo ubuntu-drivers autoinstall
@@ -225,13 +225,13 @@ sudo systemctl restart docker
 3. Test nvidia-smi with the latest official CUDA image
 
 ```bash
-docker run --gpus all nvidia/cuda:11.1-base nvidia-smi
+docker run --gpus all nvidia/cuda:11.2.0-base-ubuntu20.04 nvidia-smi
 ```
 
 Output logs should coincide as earlier:
 
 ```bash
-Unable to find image 'nvidia/cuda:11.1-base' locally
+Unable to find image 'nvidia/cuda:11.2.0-base-ubuntu20.04' locally
 11.1-base: Pulling from nvidia/cuda
 54ee1f796a1e: Pull complete 
 f7bfea53ad12: Pull complete 
@@ -241,7 +241,7 @@ b66c17bbf772: Pull complete
 e5ce55b8b4b9: Pull complete 
 155bc0332b0a: Pull complete 
 Digest: sha256:774ca3d612de15213102c2dbbba55df44dc5cf9870ca2be6c6e9c627fa63d67a
-Status: Downloaded newer image for nvidia/cuda:11.1-base
+Status: Downloaded newer image for nvidia/cuda:11.2.0-base-ubuntu20.04
 Mon Jun 21 14:07:52 2021 
 +------------------------------------------------------------------------+
 |NVIDIA-SMI 460.84      Driver Version:460.84      CUDA Version: 11.2    |
@@ -279,10 +279,10 @@ mkdir $HOME/.cyber/config
 
 
 2. Run the full node:
-(This will pull and extract the image from cyberd/cyber)
+(This will pull and extract the image from cyberd/cyber of latest version, containing all upgrades binaries)
 
 ```bash
-docker run -d --gpus all --name=bostrom --restart always -p 26656:26656 -p 26657:26657 -p 1317:1317 -e ALLOW_SEARCH=true -v $HOME/.cyber:/root/.cyber  cyberd/cyber:bostrom-1
+docker run -d --gpus all --name=bostrom --restart always -p 26656:26656 -p 26657:26657 -p 1317:1317 -p 26660:26660 -e ALLOW_SEARCH=true -v $HOME/.cyber:/root/.cyber  cyberd/cyber:bostrom-2.1
 ```
 
 3. Setup some peers to `persistent_peers` and `seeds` to $HOME/.cyber/config/config.toml line 184:
@@ -297,15 +297,34 @@ persistent_peers = ""
 ```
 
 For peers addresses please refer to appropriate section of the [networks](https://github.com/cybercongress/networks) repo.
-When done, please restart container using:
 
-4. To apply config changes restart the container:
+4. To speed-up sync use chain snapshot (check for most recent pinned snap in [Hall of Fame](https://t.me/fameofcyber)). Download the snapshot, unpack it and replace your node `.cyber/data` and `.cyber/wasm` folders to one's from snapshot.
+
+```bash
+wget https://link_to_actual_snapshot:bostrom_pruned_4302990.tar.gz
+tar -I pigz -xf bostrom_pruned_4302990.tar.gz -C $HOME/.cyber
+rm -rf $HOME/.cyber/data $HOME/.cyber/wasm
+cp bostrom_pruned_4302990/* $HOME/.cyber
+```
+
+Also adjust your config `.cyber/config/app.toml` pruning stratege to be similar with snapshot you've selected (`pruning = "everything"` for pruned snapshot, `pruning = "nothing"` for archive)
+
+```bash
+nano $HOME/.cyber/config/app.toml
+set line 17 `pruning = "everything"`
+```
+
+If you would like to sync all the way from the bottom - you may just fill the peers and let thing spin, upgrade block would be handled automatically.
+
+
+
+5. To apply config changes restart the container:
 
 ```bash
 docker restart bostrom
 ```
 
-5. Then check the status of your node:
+6. Then check the status of your node:
 
 ```bash
 docker exec bostrom cyber status
