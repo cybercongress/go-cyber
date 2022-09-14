@@ -60,7 +60,7 @@ RUN apt-get -y install --no-install-recommends \
 && cp ./build/cyber /cyber/cosmovisor/genesis/bin/ \
 && cp ./build/cyber /usr/local/bin \ 
 && rm -rf ./build \
- # Compile cyber for genesis version
+ # Compile cyber for cyberfrey upgrade version
 ###########################################################################################
 && git checkout v0.3.0 \
 && cd /sources/x/rank/cuda \
@@ -69,6 +69,7 @@ RUN apt-get -y install --no-install-recommends \
 && make build CUDA_ENABLED=true \
 && cp ./build/cyber /cyber/cosmovisor/upgrades/cyberfrey/bin/ \
 && rm -rf ./build \
+# Changed flag from CUDA_ENABLED to SOFTWARE_3_ENABLED for future releases
 # Cleanup 
 ###########################################################################################
 && apt-get purge -y git \

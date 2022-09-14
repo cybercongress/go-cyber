@@ -1,7 +1,7 @@
 #!/usr/bin/make -f
 export GO111MODULE = on
 
-CUDA_ENABLED ?= false
+SOFTWARE_3_ENABLED ?= false
 LEDGER_ENABLED ?= true
 
 VERSION := $(shell echo $(shell git describe --tags) | sed 's/^v//')
@@ -43,13 +43,13 @@ ifeq ($(LEDGER_ENABLED),true)
   endif
 endif
 
-ifeq ($(CUDA_ENABLED),true)
+ifeq ($(SOFTWARE_3_ENABLED),true)
     NVCC_RESULT := $(shell which nvcc 2> NULL)
     NVCC_TEST := $(notdir $(NVCC_RESULT))
     ifeq ($(NVCC_TEST),nvcc)
         build_tags += cuda
     else
-        $(error CUDA not installed for GPU support, please install or set CUDA_ENABLED=false)
+        $(error CUDA not installed for SOFTWARE_3 support, please install or set SOFTWARE_3_ENABLED=false)
     endif
 endif
 
