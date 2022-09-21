@@ -1,6 +1,7 @@
 # concepts
 
 ## soft2 and soft3
+
 - content from presentation
 - knowledge graph
 - content oracle
@@ -8,21 +9,26 @@
 - cyberlink  
 - neuron  
 
-## consensus computer  
-- cyber-sdk: list of modules + docs from cosmos-sdk https://docs.cosmos.network/
+## consensus computer
+
+- cyber-sdk:
+  - list of modules
+  - [cosmos-sdk](./cosmos-sdk/README.md)
 - resources
-- tendermint: docs from tendermint https://docs.tendermint.com/
+- [tendermint](./tendermint/README.md):
 - abci
-- ibc: docs from https://ibc.cosmos.network/
+- [ibc](./ibc/README.md)
 - ikp
 
-## sequential computation  
+## sequential computation
+
 - wasm: docs from wasm https://docs.cosmwasm.com/docs/1.0/
 - dmn
 - bindings
 - cw-cyber
 
 ## parallel computation
+
 - relevance machine
 - semcon
 - linkchain
@@ -31,7 +37,7 @@
 - cyb and sparks
 - superintellgience
 
-# tutorials
+## tutorials
 
 - install cyber cli
 - run node
@@ -39,14 +45,15 @@
 - cyberlink content in dapp
 - deploy contract
 
-# how-to
+## how-to
 
 - run validator
 - network upgrade guide
-- setup local environment  
+- [setup local environment](./localbostrom/README.md)  
 - daemon configuration
 - ultimate cli guide
 - managing multisig 
 
-# reference
+## reference
+
 - swagger
