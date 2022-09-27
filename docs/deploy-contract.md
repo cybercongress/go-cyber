@@ -276,7 +276,7 @@ const wasmCode = new Uint8Array(wasmCodeData);
 With this gas and wasm information, add the command:
 
 ```typescript [https://github.com/b9lab/cosmjs-sandbox/blob/2c7b137/experiment.ts#L57-L63]
-// Execute the sendTokens Tx and store the result
+// Execute the upload Tx and store the result
 const result = await signingClient.upload(
     alice,
     wasmCode,
