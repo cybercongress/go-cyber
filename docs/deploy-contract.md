@@ -247,7 +247,7 @@ console.log(
 
 ## Upload wasm code
 
-Alice can now send some tokens to Bob, but to do so she also needs to pay the network's gas fee. How much gas should she use, and at what price?
+Alice can now upload wasm code, but to do so she also needs to pay the network's gas fee. How much gas should she use, and at what price?
 
 She can copy this and change GasLimit if need:
 
