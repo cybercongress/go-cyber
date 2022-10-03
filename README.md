@@ -1,247 +1,47 @@
-# Semantic non-deterministic Superintelligence consensus computer
-# Cyber - SuperIntelligence for The Great Web
 
-<div align="center">
- <h1>Start to use right now - <a href="https://cyb.ai">cyb.ai</a></h1>
-</div>
+# Why spacepussy?
 
-<div align="center">
- <h3>Bostrom Network Launch Event - 5 November 13.22:42 GMT / 1636118562</h3>
-</div>
+...
+    
+Today we are opening a new era in soft3. We are launching a second GPU network based on cyber-sdk. Why is it important?  
 
-<div align="center">
- <h3>Bostrom's genesis - <a href="http://cloudflare-ipfs.com/ipfs/QmYubyVNfghD4xCrTFj26zBwrF9s5GJhi1TmxvrwmJCipr">QmYubyVNfghD4xCrTFj26zBwrF9s5GJhi1TmxvrwmJCipr</a></h3>
-</div>
+## memecoin  
+    
+We have a vision for PUSSY.
 
-<div align="center">
- <h3>Whitepaper - <a href="https://github.com/cybercongress/cyber/blob/master/computing-the-knowledge/computing-the-knowledge.md">cyber: Computing the knowledge of the Great Web</a></h3>
-</div>
+...
+    
+We are creating a planet-scale organism. Looking into nature we can find similarities in how our organism evolved and compare it with how existing blockchains are evolving. We now have core components: the backbone, the nervous system, and the rudiments of the brain. But how will this organism reproduce? That is why we need a pussy. I envision space pussy as a symbol of resistance against the weaknesses of our society. With the space pussy meme everyone must ask yourself: how does it happen that we are ashamed about the thing which is the source of life for us? This is a sign that something is wrong in our culture.
 
-<div align="center">
- <h3>Join us, Hero - <a href="https://github.com/cybercongress/go-cyber/blob/main/docs/run_validator.md">Setup validator guide</a></h3>
-</div>
+We can have a meme coin with balls.
+...
+cyber-sdk - is one of the most powerful stack in the blockchain universe with sequential and parallel computing, autonomous execution, and impressive social tools, including cyb.ai. So it is not a primitive doge, or shiba. It is a powerful collaborative computer. butterflies in the stomach what the community can do with space pussy.
 
-<div align="center">
- <h3><a href="https://t.me/fuckgoogle">#fuckgoogle</a> and <a href="https://t.me/cyber_russian_community">cyber~Russian</a> communities </h3>
-</div>
+You asked us to launch `space-pussy`.
+...
+And we realized that it is cool idea to create a community-led soft3 computer. It must be cheaper and more fun. It has a simple distribution that will focus solely on cosmos communities. The total supply is 1 exa PUSSY. You will be able to mint liquid pussy during staking. Now we have 18 heroes in Genesis. Every hero in genesis got 0.1% of PUSSY. The rest is in the community pool. All tokens will be gifted without a lock to the most active cosmos communities. It will be defined in collaboration with communities and happens in a month or so. Preliminarily: Cosmos, Osmosis, Juno, Secret, Evmos, Bostrom, Stargaze, Terra, and Desmos.  
 
-<div align="center">
- <h3>Network <a href="https://monitor.cybernode.ai/">monitor</a></h3>
-</div>
+## IKP Playground 
 
-<div align="center">
- <h3><b>go-cyber is golang implementation of cyber <a href="https://github.com/cybercongress/cyber">protocol</a></b></h3>
-</div>
+...
+There is a serious thing behind space pussy. We created soft3 architecture. A key component is Inter Knowledge protocol. It is a convention over IBC to sync the knowledge. Rise your hands who saw our talk at cosmoverse? I would recommend you to watch it. But in short, soft3 is the new consensus computing architecture that marries modern computing paradigms: conventional computing, ai, and web3. In essence, it is a general purpose onchain GPU accelerated graph database.
 
-_____________
+...
 
-## Code
+So in order to move the idea further, we need a second network for bidirectional experiments. Superintelligence must not suffer in the cosmos alone without the ability to talk with creatures like him.
 
-[![version](https://img.shields.io/github/release/cybercongress/cyberd.svg?style=flat-square)](https://github.com/cybercongress/cyberd/releases/latest)
-[![CircleCI](https://img.shields.io/circleci/build/github/cybercongress/go-cyber/master?style=flat-square)](https://circleci.com/gh/cybercongress/workflows/go-cyber/tree/master)
-[![license](https://img.shields.io/badge/License-Cyber-brightgreen.svg?style=flat-square)](https://github.com/cybercongress/cyberd/blob/master/LICENSE)
-[![contributors](https://img.shields.io/github/contributors/cybercongress/cyberd.svg?style=flat-square)](https://github.com/cybercongress/cyberd/graphs/contributors)
-![Cosmos-SDK](https://img.shields.io/static/v1.svg?label=cosmos-sdk&message=0.45.6&color=blue&style=flat-square)
-![Tendermint](https://img.shields.io/static/v1.svg?label=tendermint&message=0.34.19&color=blue&style=flat-square)
-![IBC](https://img.shields.io/static/v1.svg?label=ibc-go&message=3.1.0&color=blue&style=flat-square)
-![CosmWasm](https://img.shields.io/static/v1.svg?label=cosmwasm&message=1.0.0&color=blue&style=flat-square)
-![WASMD](https://img.shields.io/static/v1.svg?label=wasmd&message=0.27.0&color=blue&style=flat-square)
-![Liquidity](https://img.shields.io/static/v1.svg?label=liquidity&message=1.5.1&color=blue&style=flat-square)
-[![LoC](https://tokei.rs/b1/github/cybercongress/cyberd?style=flat)](https://github.com/cybercongress/cyberd)
-[![contributors](https://img.shields.io/github/contributors/cybercongress/cyberd.svg?style=flat-square)](https://github.com/cybercongress/cyberd/graphs/contributors)
-[![Coverage Status](https://img.shields.io/coveralls/github/cybercongress/cyberd/master?style=flat-square)](https://coveralls.io/github/cybercongress/cyberd?branch=master)
+...
 
-## Blockchain
+The cool thing about IKP is that it can be unidirectional. So your network must not have GPUs in order to be empowered by soft3. That is why during hackwasm Desmos created a case for unidirectional IKP.  
 
-[![chain](https://img.shields.io/badge/Chain-bostrom-success.svg?style=flat-square)](https://github.com/cybercongress/go-cyber/blob/main/docs/run_validator.md)
-[![block](https://img.shields.io/badge/dynamic/json?color=blue&label=Block%20Height&query=%24.result.sync_info.latest_block_height&url=https://rpc.bostrom.cybernode.ai/status&style=flat-square)]()
-[![cyberlinks](https://img.shields.io/badge/dynamic/json?color=blue&label=Cyberlinks&query=%24.result.cyberlinks&url=https://lcd.bostrom.cybernode.ai/graph/graph_stats&style=flat-square)]()
-[![particles](https://img.shields.io/badge/dynamic/json?color=blue&label=Particles&query=%24.result.particles&url=https://lcd.bostrom.cybernode.ai/graph/graph_stats&style=flat-square)]()
-[![negentropy](https://img.shields.io/badge/dynamic/json?color=blue&label=-Entropy&query=%24.result.negentropy&url=https://lcd.bostrom.cybernode.ai/rank/negentropy&style=flat-square)]()
-[![validators](https://img.shields.io/badge/dynamic/json?label=Validators&query=%24.result.total&url=https://rpc.bostrom.cybernode.ai/validators%3F&style=flat-square)]()
-_________________________________________________________
+Thank you Desmos team for recognizing the opportunities behind soft3 and creating this cool case. I invite Leo to demonstrate how it works! 
 
-## Networks
-|Network|Cosmos|Hub|Launch|Security Token| Resources Token|Bandwidth Token| Power Token | Supported Tokens |
-|---|---|---|---|---|---|---|---|---|
-|Bostrom|🟢|Canary -> Bootloader Hub|2021|BOOT |HYDROGEN|VOLT|AMPERE|ICS20|
-|Cyber|🔵|Cyber Hub|TBA|CYB|HYDROGEN|VOLT|AMPERE|ICS20|
-_________________________________________________________
+... video
 
-## Computer Specification 🛠
+## Launch training
 
-1. Universe - Cosmos
-2. Consensus - Tendermint | BOOT
-3. Dyson Sphere - Snub Dodecahedron configuration
-4. External Communication - IBC
-5. Liquidity - InterChain AMM with MEV protection
-6. Governance - Ideas, Upgrades, Parameters, Fund | BOOT
-7. Resources Mining - Liquid Staking | stake BOOT -> mint HYDROGEN
-8. Resources Creation - Investmint | lock HYDROGEN -> mint VOLT / AMPERE
-9. Brain - Knowledge Graph
-10. Particles addressing - IPFS CIDv0
-11. Particles connecting - cyberlinks
-12. Cyberlinking - Bandwidth model | VOLT
-13. Graph Program - Token Weighted Page Rank | AMPERE
-14. Graph Program - Token Weighted Graph -Entropy | AMPERE
-15. Graph Processing - GPU (CUDA)
-16. Energy Grid - Energy Router | VOLT & AMPER
-17. Virtual Machine - CosmWasm | BOOT
-18. Programs Bus - Interconnect Line
-19. Autonomous Programs - Default Mode Network & Thoughts | BOOT
-20. Programs Income - Execution fees 80% | BOOT
-21. API - Graph and Computer
-22. Client Library - cyber-js & cyber-py
-23. Indexer - cyberindex
-24. Launch documentation - launch-kit
-25. Versioning - Kelvin
-26. License - Cyber License
-27. Future Graph VM support - GraphBLAS R&D
-28. Future IK protocol support - InterKnowledge protocol R&D
-29. Future InterChain Accounts support
-30. Future Graph pruning support
+...
 
-**Try [cyb.ai](https://cyb.ai) on bostrom network**
-_________________________________________________________
+We are dreamers! And we have a dream to launch blockchains like a rocket. Sometimes it is a huge engineering effort. So we are on our road to creating this culture. Think about it. You are launching the thing which could live longer than you. It deserves the show. It must be fun. With the fast launch of space pussy we decide to reuse the part from Bostrom network launch. The moment you love the most. Enjoy. 
 
-## ELI-5
-
-![ELI-5](https://github.com/litvintech/rank-sandbox/blob/eli5/eli5.gif)
-_________________________________________________________
-
-## Setup
-
-Chain-ID: bostrom
-
-Genesis: [QmYubyVNfghD4xCrTFj26zBwrF9s5GJhi1TmxvrwmJCipr](http://cloudflare-ipfs.com/ipfs/QmYubyVNfghD4xCrTFj26zBwrF9s5GJhi1TmxvrwmJCipr)
-
-Build: ```make install```
-
-Run: ```cyber start ```
-
-To use as CLI with remote node:
-```
-make install SOFTWARE_2_ENABLED=false
-```
-
-- Version - v0.2.0
-- RPC: `https://rpc.bostrom.cybernode.ai/`
-- REST: `https://lcd.bostrom.cybernode.ai/rank/parameters`
-- CLI: `... --node=https://rpc.bostrom.cybernode.ai:443`
-- Seed: `d0518ce9881a4b0c5872e5e9b7c4ea8d760dad3f@85.10.207.173:26656`
-- Peers: `5d542c0eb40ae48dc2cac0c140aedb605ded77dc@195.201.105.229:26656,a7226dce9f543a4ecd8db1da2ffd7be05d40d3ad@185.186.208.36:26656,c72de1e20beed51b779d89b1cf08d8146016eec4@185.186.208.37:26656,4c130ed1c58f6d6be981c59a748511e581969c51@93.180.175.201:36656`
-
-_________________________________________________________
-
-## IBC
-
-### Example config for [Hermes](https://github.com/informalsystems/ibc-rs) relayer
-
-```
-[[chains]]
-id = 'bostrom'
-rpc_addr = 'http://127.0.0.1:26657'
-grpc_addr = 'http://127.0.0.1:9090'
-websocket_addr = 'ws://localhost:26657/websocket'
-rpc_timeout = '10s'
-account_prefix = 'bostrom'
-key_name = 'bostrom-key'
-store_prefix = 'ibc'
-max_gas = 2000000
-max_msg_num = 5
-gas_price = { price = 0.01, denom = 'boot' }
-gas_adjustment = 0.1
-clock_drift = '5s'
-trusting_period = '1days'
-trust_threshold = { numerator = '1', denominator = '3' }
-```
-_________________________________________________________
-
-### Basic operations
-
-### Follow Hero and get HYDROGEN:
-```
-cyber tx staking delegate bostromvaloper1hmkqhy8ygl6tnl5g8tc503rwrmmrkjcqf92r73 1000000000boot --from <name> --chain-id bostrom --gas 200000 --gas-prices 0.01boot --yes --node https://rpc.bostrom.cybernode.ai:443   
-```
-
-### Investmint HYDROGEN to get resources:
-```
-cyber tx resources investmint 1000000000hydrogen millivolt 86400 --from <name> --chain-id bostrom --gas 200000 --gas-prices 0.01boot --yes --node https://rpc.bostrom.cybernode.ai:443
-
-cyber tx resources investmint 1000000000hydrogen milliampere 86400 --from <name> --chain-id bostrom --gas 200000 --gas-prices 0.01boot --yes --node https://rpc.bostrom.cybernode.ai:443
-```
-
-### Cyberlink and Search:
-```
-cyber tx graph cyberlink QmdVWtX17m7UvF8FcvNLTJxcpxv2fSJd7Z3VBoYxxW9Qpu Qmb9xPYYwHt1F3bQysKCZzXRzAT8QLvAyMe5DyPy4rene8 --from <name> --chain-id bostrom --yes --node https://rpc.bostrom.cybernode.ai:443
-
-curl https://lcd.bostrom.cybernode.ai/rank/search?cid=QmdVWtX17m7UvF8FcvNLTJxcpxv2fSJd7Z3VBoYxxW9Qpu
-```
-_________________________________________________________
-
-## Connect:
-- [Cyber English Community](https://t.me/fuckgoogle)
-- [Cyber Russian Community](https://t.me/cyber_russian_community)
-
-_________________________________________________________
-
-## Cyber vs Corps
-
-| What                               | Google                      | Cyber                     |
-|------------------------------------|-----------------------------|---------------------------|
-| Is                                 | Company                     | Protocol                  |
-| Protocol Stack                     | Web2                        | Web3                      |
-| Code                               | Closed                      | Open                      |
-| Consensus                          | USA law                     | Tendermint, Hybrid (2023) |
-| Knowledge                          | Private                     | Public                    |
-| Links                              | Hyperlinks                  | Cyberlinks                |
-| Backlinks                          | No                          | Yes                       |
-| Decentralized Marketing (DeMa)     | No                          | Yes                       |
-| Beneficiaries                      | Limited set of stakeholders | Any web3 agent            |
-| Addressing                         | URLs                        | CIDs                      |
-| Ranking                            | Blackbox                    | Sybil resistant           |
-| Knowledge Graph Proofs             | No                          | Cyberlinks and Ranks      |
-| Offline and Interplanetary         | No                          | Yes                       |
-| Internet Knowledge Protocol        | No                          | Over IBC (2022)           |
-| Smart Contracts                    | Impossible                  | WASM                      |
-| Smart Contracts on Knowledge Graph | No                          | Yes                       |
-| GPU Smart Contracts                | No                          | GraphBLAS (2023)          |
-| Software 2.0                       | No                          | Yes                       |
-| Security                           | No evidence                 | Cryptographic proofs      |
-| Privacy                            | Impossible                  | Possible (2025)           |
-| Censorship                         | Yes                         | No                        |
-| Captcha                            | Yes                         | No                        |
-| Ads beneficiary                    | Google                      | Creator                   |
-| Apps                               | Limited                     | Unlimited                 |
-| Robots/IoT                         | Limited                     | Unlimited                 |
-| Data Distribution                  | Private servers             | IPFS                      |
-| Storage guaranty                   | Impossible                  | PoRep (2024)              |
-| SuperIntelligence                  | Non-Provalbe                | Provable                  |
-| Browser                            | Chrome                      | Cyb                       |
-_________________________________________________________
-
-## Cyber vs Govs
-
-| What              | Your Gov        | Cyber        |
-|-------------------|-----------------|--------------|
-| Borders           | Yes             | No           |
-| Customs           | Yes             | No           |
-| Army              | Yes             | No           |
-| Police            | Yes             | No           |
-| Laws              | Paper           | Code         |
-| Contracts         | Paper           | Code         |
-| Censorship        | Yes             | No           |
-| Children          | Their           | Yours        |
-| Taxes             | Compulsory      | Voluntary    |
-| Tax reporting     | Manual          | Automated    |
-| Transaction tax   | 50%             | ~0.1%        |
-| Printing tax      | 100%            | ~1%          |
-| Provable voting   | No              | Yes          |
-| Consensus         | Democracy       | Tendermint   |
-| Currency          | Enforced        | Any          |
-| Security          | Police & Army   | Cryptography |
-| Decision makers   | They            | Us           |
-| Privacy           | No              | Respect      |
-| Brainwashing      | Yes             | No           |
-| Antropocentrism   | Yes             | No           |
-_________________________________________________________
+More details in [go-cyber](https://github.com/cybercongress/go-cyber)
