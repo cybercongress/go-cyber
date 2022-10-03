@@ -14,11 +14,15 @@ We have a vision for PUSSY.
 We are creating a planet-scale organism. Looking into nature we can find similarities in how our organism evolved and compare it with how existing blockchains are evolving. We now have core components: the backbone, the nervous system, and the rudiments of the brain. But how will this organism reproduce? That is why we need a pussy. I envision space pussy as a symbol of resistance against the weaknesses of our society. With the space pussy meme everyone must ask yourself: how does it happen that we are ashamed about the thing which is the source of life for us? This is a sign that something is wrong in our culture.
 
 We can have a meme coin with balls.
+
 ...
+
 cyber-sdk - is one of the most powerful stack in the blockchain universe with sequential and parallel computing, autonomous execution, and impressive social tools, including cyb.ai. So it is not a primitive doge, or shiba. It is a powerful collaborative computer. butterflies in the stomach what the community can do with space pussy.
 
 You asked us to launch `space-pussy`.
+
 ...
+
 And we realized that it is cool idea to create a community-led soft3 computer. It must be cheaper and more fun. It has a simple distribution that will focus solely on cosmos communities. The total supply is 1 exa PUSSY. You will be able to mint liquid pussy during staking. Now we have 18 heroes in Genesis. Every hero in genesis got 0.1% of PUSSY. The rest is in the community pool. All tokens will be gifted without a lock to the most active cosmos communities. It will be defined in collaboration with communities and happens in a month or so. Preliminarily: Cosmos, Osmosis, Juno, Secret, Evmos, Bostrom, Stargaze, Terra, and Desmos.  
 
 ## IKP Playground 
