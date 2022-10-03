@@ -57,11 +57,11 @@ func NewRootCmd() (*cobra.Command, params.EncodingConfig) {
 		WithAccountRetriever(types.AccountRetriever{}).
 		WithBroadcastMode(flags.BroadcastBlock).
 		WithHomeDir(app.DefaultNodeHome).
-		WithViper("BOOT")
+		WithViper("PUSSY")
 
 	rootCmd := &cobra.Command{
-		Use:   "cyber",
-		Short: "Bostrom Bootloader Hub",
+		Use:   "pussy",
+		Short: "Space Pussy",
 		PersistentPreRunE: func(cmd *cobra.Command, _ []string) error {
 			initClientCtx, err := client.ReadPersistentCommandFlags(initClientCtx, cmd.Flags())
 			if err != nil {
