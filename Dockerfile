@@ -85,7 +85,7 @@ RUN apt-get -y install --no-install-recommends \
 WORKDIR /
 COPY start_script.sh start_script.sh
 COPY entrypoint.sh /entrypoint.sh
-RUN wget -O /genesis.json https://gateway.ipfs.cybernode.ai/ipfs/QmYubyVNfghD4xCrTFj26zBwrF9s5GJhi1TmxvrwmJCipr \
+RUN wget -O /genesis.json https://raw.githubusercontent.com/joinresistance/networks/main/space-pussy/genesis.json \
 && chmod +x start_script.sh \
 && chmod +x /entrypoint.sh \
 && pussy version
