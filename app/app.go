@@ -19,8 +19,8 @@ import (
 	porttypes "github.com/cosmos/ibc-go/v3/modules/core/05-port/types"
 	ibchost "github.com/cosmos/ibc-go/v3/modules/core/24-host"
 	ibckeeper "github.com/cosmos/ibc-go/v3/modules/core/keeper"
-	_ "github.com/cybercongress/go-cyber/client/docs/statik"
-	"github.com/cybercongress/go-cyber/plugins/liquidity_plugin"
+	_ "github.com/joinresistance/space-pussy/client/docs/statik"
+	"github.com/joinresistance/space-pussy/plugins/liquidity_plugin"
 	"io"
 	"net/http"
 	"os"
@@ -29,16 +29,16 @@ import (
 	"time"
 
 	"github.com/cosmos/cosmos-sdk/client/grpc/tmservice"
-	ctypes "github.com/cybercongress/go-cyber/types"
 	"github.com/gorilla/mux"
+	ctypes "github.com/joinresistance/space-pussy/types"
 	"github.com/rakyll/statik/fs"
 	"github.com/tendermint/liquidity/x/liquidity"
 	liquiditykeeper "github.com/tendermint/liquidity/x/liquidity/keeper"
 	liquiditytypes "github.com/tendermint/liquidity/x/liquidity/types"
 
-	wasmplugins "github.com/cybercongress/go-cyber/plugins"
-	"github.com/cybercongress/go-cyber/x/dmn"
-	"github.com/cybercongress/go-cyber/x/resources"
+	wasmplugins "github.com/joinresistance/space-pussy/plugins"
+	"github.com/joinresistance/space-pussy/x/dmn"
+	"github.com/joinresistance/space-pussy/x/resources"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec/types"
@@ -106,69 +106,69 @@ import (
 
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/cybercongress/go-cyber/utils"
-	"github.com/cybercongress/go-cyber/x/bandwidth"
-	"github.com/cybercongress/go-cyber/x/cyberbank"
-	cyberbankkeeper "github.com/cybercongress/go-cyber/x/cyberbank/keeper"
-	cyberbanktypes "github.com/cybercongress/go-cyber/x/cyberbank/types"
-	"github.com/cybercongress/go-cyber/x/graph"
+	"github.com/joinresistance/space-pussy/utils"
+	"github.com/joinresistance/space-pussy/x/bandwidth"
+	"github.com/joinresistance/space-pussy/x/cyberbank"
+	cyberbankkeeper "github.com/joinresistance/space-pussy/x/cyberbank/keeper"
+	cyberbanktypes "github.com/joinresistance/space-pussy/x/cyberbank/types"
+	"github.com/joinresistance/space-pussy/x/graph"
 
-	bandwidthkeeper "github.com/cybercongress/go-cyber/x/bandwidth/keeper"
-	bandwidthtypes "github.com/cybercongress/go-cyber/x/bandwidth/types"
-	graphkeeper "github.com/cybercongress/go-cyber/x/graph/keeper"
-	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
-	"github.com/cybercongress/go-cyber/x/rank"
-	rankkeeper "github.com/cybercongress/go-cyber/x/rank/keeper"
-	ranktypes "github.com/cybercongress/go-cyber/x/rank/types"
+	bandwidthkeeper "github.com/joinresistance/space-pussy/x/bandwidth/keeper"
+	bandwidthtypes "github.com/joinresistance/space-pussy/x/bandwidth/types"
+	graphkeeper "github.com/joinresistance/space-pussy/x/graph/keeper"
+	graphtypes "github.com/joinresistance/space-pussy/x/graph/types"
+	"github.com/joinresistance/space-pussy/x/rank"
+	rankkeeper "github.com/joinresistance/space-pussy/x/rank/keeper"
+	ranktypes "github.com/joinresistance/space-pussy/x/rank/types"
 
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmclient "github.com/CosmWasm/wasmd/x/wasm/client"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 
-	bandwidthwasm "github.com/cybercongress/go-cyber/x/bandwidth/wasm"
-	dmnwasm "github.com/cybercongress/go-cyber/x/dmn/wasm"
-	graphwasm "github.com/cybercongress/go-cyber/x/graph/wasm"
-	gridwasm "github.com/cybercongress/go-cyber/x/grid/wasm"
-	rankwasm "github.com/cybercongress/go-cyber/x/rank/wasm"
-	resourceswasm "github.com/cybercongress/go-cyber/x/resources/wasm"
+	bandwidthwasm "github.com/joinresistance/space-pussy/x/bandwidth/wasm"
+	dmnwasm "github.com/joinresistance/space-pussy/x/dmn/wasm"
+	graphwasm "github.com/joinresistance/space-pussy/x/graph/wasm"
+	gridwasm "github.com/joinresistance/space-pussy/x/grid/wasm"
+	rankwasm "github.com/joinresistance/space-pussy/x/rank/wasm"
+	resourceswasm "github.com/joinresistance/space-pussy/x/resources/wasm"
 
-	grid "github.com/cybercongress/go-cyber/x/grid"
-	gridkeeper "github.com/cybercongress/go-cyber/x/grid/keeper"
-	gridtypes "github.com/cybercongress/go-cyber/x/grid/types"
+	grid "github.com/joinresistance/space-pussy/x/grid"
+	gridkeeper "github.com/joinresistance/space-pussy/x/grid/keeper"
+	gridtypes "github.com/joinresistance/space-pussy/x/grid/types"
 
-	dmnkeeper "github.com/cybercongress/go-cyber/x/dmn/keeper"
-	dmntypes "github.com/cybercongress/go-cyber/x/dmn/types"
+	dmnkeeper "github.com/joinresistance/space-pussy/x/dmn/keeper"
+	dmntypes "github.com/joinresistance/space-pussy/x/dmn/types"
 
-	resourceskeeper "github.com/cybercongress/go-cyber/x/resources/keeper"
-	resourcestypes "github.com/cybercongress/go-cyber/x/resources/types"
-	stakingwrap "github.com/cybercongress/go-cyber/x/staking"
+	resourceskeeper "github.com/joinresistance/space-pussy/x/resources/keeper"
+	resourcestypes "github.com/joinresistance/space-pussy/x/resources/types"
+	stakingwrap "github.com/joinresistance/space-pussy/x/staking"
 
-	"github.com/cybercongress/go-cyber/app/params"
+	"github.com/joinresistance/space-pussy/app/params"
 	tmjson "github.com/tendermint/tendermint/libs/json"
 
 	store "github.com/cosmos/cosmos-sdk/store/types"
 )
 
 const (
-	appName = "BostromHub"
+	appName     = "BostromHub"
 	upgradeName = "cyberfrey"
 )
 
 // We pull these out so we can set them with LDFLAGS in the Makefile
 var (
-	NodeDir      = ".cyber"
-	Bech32Prefix = "bostrom"
+	NodeDir      = ".pussy"
+	Bech32Prefix = "pussy"
 
 	// TODO clean
 	// DefaultBondDenom is the denomination of coin to use for bond/staking
-	DefaultBondDenom = "boot"
+	DefaultBondDenom = "pussy"
 	// DefaultFeeDenom is the denomination of coin to use for fees
-	DefaultFeeDenom = "boot"
+	DefaultFeeDenom = "pussy"
 	// DefaultReDnmString is the allowed denom regex expression
 	DefaultReDnmString = `[a-zA-Z][a-zA-Z0-9/\-\.]{2,127}`
 
 	// If EnabledSpecificProposals is "", and this is "true", then enable all x/wasm proposals.
-	ProposalsEnabled = "true"
+	ProposalsEnabled        = "true"
 	EnableSpecificProposals = ""
 )
 
@@ -255,7 +255,7 @@ var (
 		resourcestypes.ResourcesName:   {authtypes.Minter, authtypes.Burner},
 	}
 
-    // module accounts that are allowed to receive tokens
+	// module accounts that are allowed to receive tokens
 	allowedReceivingModAcc = map[string]bool{
 		distrtypes.ModuleName: true,
 	}
@@ -307,14 +307,14 @@ type App struct {
 	WasmKeeper       wasm.Keeper
 	LiquidityKeeper  liquiditykeeper.Keeper
 
-	BandwidthMeter   *bandwidthkeeper.BandwidthMeter
-	CyberbankKeeper  *cyberbankkeeper.IndexedKeeper
-	GraphKeeper      *graphkeeper.GraphKeeper
-	IndexKeeper      *graphkeeper.IndexKeeper
-	RankKeeper 		 *rankkeeper.StateKeeper
-	GridKeeper 		 gridkeeper.Keeper
-	DmnKeeper  		 *dmnkeeper.Keeper
-	ResourcesKeeper  resourceskeeper.Keeper
+	BandwidthMeter  *bandwidthkeeper.BandwidthMeter
+	CyberbankKeeper *cyberbankkeeper.IndexedKeeper
+	GraphKeeper     *graphkeeper.GraphKeeper
+	IndexKeeper     *graphkeeper.IndexKeeper
+	RankKeeper      *rankkeeper.StateKeeper
+	GridKeeper      gridkeeper.Keeper
+	DmnKeeper       *dmnkeeper.Keeper
+	ResourcesKeeper resourceskeeper.Keeper
 
 	// make scoped keepers public for test purposes
 	ScopedIBCKeeper      capabilitykeeper.ScopedKeeper
@@ -880,9 +880,9 @@ func NewApp(
 				SignModeHandler: encodingConfig.TxConfig.SignModeHandler(),
 				SigGasConsumer:  ante.DefaultSigVerificationGasConsumer,
 			},
-			IBCKeeper:    		 app.IBCKeeper,
-			WasmConfig:        	 &wasmConfig,
-			TXCounterStoreKey:   keys[wasm.StoreKey],
+			IBCKeeper:         app.IBCKeeper,
+			WasmConfig:        &wasmConfig,
+			TXCounterStoreKey: keys[wasm.StoreKey],
 		},
 	)
 	if err != nil {

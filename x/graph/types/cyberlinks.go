@@ -1,7 +1,7 @@
 package types
 
 import (
-	. "github.com/cybercongress/go-cyber/types"
+	. "github.com/joinresistance/space-pussy/types"
 )
 
 // map of map, where first key is cid, second key is account.String()

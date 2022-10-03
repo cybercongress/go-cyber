@@ -6,8 +6,8 @@ import (
 
 	"time"
 
-	"github.com/cybercongress/go-cyber/x/bandwidth/keeper"
-	"github.com/cybercongress/go-cyber/x/bandwidth/types"
+	"github.com/joinresistance/space-pussy/x/bandwidth/keeper"
+	"github.com/joinresistance/space-pussy/x/bandwidth/types"
 )
 
 var accountsToUpdate = make([]sdk.AccAddress, 0)

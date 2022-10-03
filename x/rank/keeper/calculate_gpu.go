@@ -1,3 +1,4 @@
+//go:build cuda
 // +build cuda
 
 package keeper
@@ -5,8 +6,8 @@ package keeper
 import (
 	"github.com/tendermint/tendermint/libs/log"
 
-	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
-	"github.com/cybercongress/go-cyber/x/rank/types"
+	graphtypes "github.com/joinresistance/space-pussy/x/graph/types"
+	"github.com/joinresistance/space-pussy/x/rank/types"
 
 	"time"
 )
@@ -22,9 +23,9 @@ func calculateRankGPU(ctx *types.CalculationContext, logger log.Logger) types.EM
 	start := time.Now()
 	if ctx.GetCidsCount() == 0 {
 		return types.EMState{
-			RankValues:       make([]float64, 0),
-			EntropyValues:    make([]float64, 0),
-			KarmaValues:      make([]float64, 0),
+			RankValues:    make([]float64, 0),
+			EntropyValues: make([]float64, 0),
+			KarmaValues:   make([]float64, 0),
 		}
 	}
 
@@ -61,7 +62,7 @@ func calculateRankGPU(ctx *types.CalculationContext, logger log.Logger) types.EM
 
 		if inLinks, sortedCids, ok := ctx.GetSortedInLinks(graphtypes.CidNumber(i)); ok {
 			for _, cid := range sortedCids {
-				inLinksCount[i]  += uint32(len(inLinks[cid]))
+				inLinksCount[i] += uint32(len(inLinks[cid]))
 				for acc := range inLinks[cid] {
 					inLinksOuts = append(inLinksOuts, uint64(cid))
 					inLinksUsers = append(inLinksUsers, uint64(acc))
@@ -109,7 +110,7 @@ func calculateRankGPU(ctx *types.CalculationContext, logger log.Logger) types.EM
 	C.calculate_rank(
 		cStakes, cStakesSize, cCidsSize, cLinksSize,
 		cInLinksCount, cOutLinksCount,
-		cInLinksOuts,  cOutLinksIns,
+		cInLinksOuts, cOutLinksIns,
 		cInLinksUsers, cOutLinksUsers,
 		cDampingFactor, cTolerance,
 		cRank, cEntropy, cLuminosity, cKarma,
@@ -118,8 +119,8 @@ func calculateRankGPU(ctx *types.CalculationContext, logger log.Logger) types.EM
 
 	//return rank
 	return types.EMState{
-		RankValues:       rank,
-		EntropyValues:    entropy,
-		KarmaValues:      karma,
+		RankValues:    rank,
+		EntropyValues: entropy,
+		KarmaValues:   karma,
 	}
 }

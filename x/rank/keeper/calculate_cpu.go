@@ -5,10 +5,9 @@ import (
 	//"encoding/binary"
 	"math"
 	//"math/big"
-	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
-	"github.com/cybercongress/go-cyber/x/rank/types"
+	graphtypes "github.com/joinresistance/space-pussy/x/graph/types"
+	"github.com/joinresistance/space-pussy/x/rank/types"
 )
-
 
 func calculateRankCPU(ctx *types.CalculationContext) types.EMState {
 
@@ -17,7 +16,7 @@ func calculateRankCPU(ctx *types.CalculationContext) types.EMState {
 	dampingFactor := ctx.GetDampingFactor()
 
 	size := ctx.GetCidsCount()
-	if size == 0  || len(ctx.GetStakes()) == 0 {
+	if size == 0 || len(ctx.GetStakes()) == 0 {
 		return types.EMState{
 			[]float64{},
 			[]float64{},
@@ -162,13 +161,19 @@ func entropyCalc(ctx *types.CalculationContext, entropy []float64, cidsCount int
 	}
 
 	for i, _ := range entropy {
-		if swd[i] == 0 { continue }
+		if swd[i] == 0 {
+			continue
+		}
 		for to := range ctx.GetInLinks()[graphtypes.CidNumber(i)] {
-			if sumswd[to] == 0 { continue }
+			if sumswd[to] == 0 {
+				continue
+			}
 			entropy[i] += math.Abs(-swd[i] / sumswd[to] * math.Log2(swd[i]/sumswd[to]))
 		}
 		for to := range ctx.GetOutLinks()[graphtypes.CidNumber(i)] {
-			if sumswd[to] == 0 { continue }
+			if sumswd[to] == 0 {
+				continue
+			}
 			entropy[i] += math.Abs(-swd[i] / sumswd[to] * math.Log2(swd[i]/sumswd[to]))
 		}
 	}
@@ -178,16 +183,22 @@ func karmaCalc(ctx *types.CalculationContext, rank []float64, entropy []float64,
 	for from := range ctx.GetOutLinks() {
 		stake := getOverallOutLinksStake(ctx, from)
 		for to := range ctx.GetOutLinks()[from] {
-			if (stake == 0) { continue }
+			if stake == 0 {
+				continue
+			}
 			users := ctx.GetOutLinks()[from][to]
 			for user := range users {
 				//if (ctx.GetStakes()[uint64(user)] == 0) { continue }
-				if getNormalizedStake(ctx, uint64(user)) == 0 { continue }
+				if getNormalizedStake(ctx, uint64(user)) == 0 {
+					continue
+				}
 				//w := float64(ctx.GetStakes()[uint64(user)]) / float64(stake)
 				w := float64(getNormalizedStake(ctx, uint64(user))) / float64(stake)
-				if math.IsNaN(w) { w = float64(0) }
+				if math.IsNaN(w) {
+					w = float64(0)
+				}
 				luminosity := rank[from] * entropy[from]
-				karma[user] += w*float64(luminosity)
+				karma[user] += w * float64(luminosity)
 			}
 		}
 	}

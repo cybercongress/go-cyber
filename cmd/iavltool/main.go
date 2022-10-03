@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/cybercongress/go-cyber/cmd/iavltool/cmd"
+	"github.com/joinresistance/space-pussy/cmd/iavltool/cmd"
 )
 
 func main() {

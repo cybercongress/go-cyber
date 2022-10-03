@@ -3,7 +3,7 @@ package rank
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/cybercongress/go-cyber/x/rank/keeper"
+	"github.com/joinresistance/space-pussy/x/rank/keeper"
 )
 
 func EndBlocker(ctx sdk.Context, k *keeper.StateKeeper) {

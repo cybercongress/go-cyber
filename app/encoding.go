@@ -3,7 +3,7 @@ package app
 import (
 	simappparams "github.com/cosmos/cosmos-sdk/simapp/params"
 	"github.com/cosmos/cosmos-sdk/std"
-	"github.com/cybercongress/go-cyber/app/params"
+	"github.com/joinresistance/space-pussy/app/params"
 )
 
 func MakeEncodingConfig() params.EncodingConfig {

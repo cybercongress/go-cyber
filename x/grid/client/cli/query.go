@@ -13,7 +13,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	//"github.com/cosmos/cosmos-sdk/codec"
 
-	"github.com/cybercongress/go-cyber/x/grid/types"
+	"github.com/joinresistance/space-pussy/x/grid/types"
 )
 
 func GetQueryCmd() *cobra.Command {
@@ -71,7 +71,7 @@ func GetCmdQuerySourceRoutes() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "routes-from [source]",
 		Short: "Query all grid routes that made from source account",
-		Args: cobra.ExactArgs(1),
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -106,7 +106,7 @@ func GetCmdQueryDestinationRoutes() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "routes-to [destination]",
 		Short: "Query all grid routes that routed to destination account",
-		Args: cobra.ExactArgs(1),
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -141,7 +141,7 @@ func GetCmdQuerySourceRoutedEnergy() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "routed-from [source]",
 		Short: "Query grid value that routed from source account",
-		Args: cobra.ExactArgs(1),
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -176,7 +176,7 @@ func GetCmdQueryDestinationRoutedEnergy() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "routed-to [destination]",
 		Short: "Query grid value that routed to destination account",
-		Args: cobra.ExactArgs(1),
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -211,7 +211,7 @@ func GetCmdQueryRoute() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "route  [source] [destination]",
 		Short: "Query grid route that routes for given source and destination accounts",
-		Args: cobra.ExactArgs(2),
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -232,7 +232,7 @@ func GetCmdQueryRoute() *cobra.Command {
 			res, err := queryClient.Route(
 				context.Background(),
 				&types.QueryRouteRequest{
-					Source: src.String(),
+					Source:      src.String(),
 					Destination: dst.String(),
 				},
 			)
@@ -253,7 +253,7 @@ func GetCmdQueryRoutes() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "routes",
 		Short: "Query all grid routes",
-		Args: cobra.ExactArgs(0),
+		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -284,4 +284,3 @@ func GetCmdQueryRoutes() *cobra.Command {
 
 	return cmd
 }
-

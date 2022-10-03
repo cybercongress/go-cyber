@@ -1,4 +1,4 @@
-module github.com/cybercongress/go-cyber
+module github.com/joinresistance/space-pussy
 
 go 1.17
 

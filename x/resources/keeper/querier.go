@@ -4,10 +4,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	ctypes "github.com/cybercongress/go-cyber/types"
+	ctypes "github.com/joinresistance/space-pussy/types"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/cybercongress/go-cyber/x/resources/types"
+	"github.com/joinresistance/space-pussy/x/resources/types"
 )
 
 func NewQuerier(k Keeper, legacyQuerierCdc *codec.LegacyAmino) sdk.Querier {
@@ -37,7 +37,8 @@ func queryParams(ctx sdk.Context, k Keeper, legacyQuerierCdc *codec.LegacyAmino)
 func queryInvestmint(ctx sdk.Context, req abci.RequestQuery, k Keeper, legacyQuerierCdc *codec.LegacyAmino) ([]byte, error) {
 	var params types.QueryInvestmintParams
 
-	err := legacyQuerierCdc.UnmarshalJSON(req.Data, &params); if err != nil {
+	err := legacyQuerierCdc.UnmarshalJSON(req.Data, &params)
+	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
 

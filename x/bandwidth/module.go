@@ -13,10 +13,10 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
 
-	"github.com/cybercongress/go-cyber/x/bandwidth/client/cli"
-	"github.com/cybercongress/go-cyber/x/bandwidth/client/rest"
-	"github.com/cybercongress/go-cyber/x/bandwidth/keeper"
-	"github.com/cybercongress/go-cyber/x/bandwidth/types"
+	"github.com/joinresistance/space-pussy/x/bandwidth/client/cli"
+	"github.com/joinresistance/space-pussy/x/bandwidth/client/rest"
+	"github.com/joinresistance/space-pussy/x/bandwidth/keeper"
+	"github.com/joinresistance/space-pussy/x/bandwidth/types"
 
 	"context"
 
@@ -29,8 +29,7 @@ var (
 	_ module.AppModuleBasic = AppModuleBasic{}
 )
 
-
-type AppModuleBasic struct{
+type AppModuleBasic struct {
 	cdc codec.Codec
 }
 
@@ -71,8 +70,8 @@ func (AppModuleBasic) RegisterInterfaces(_ codectypes.InterfaceRegistry) {}
 type AppModule struct {
 	AppModuleBasic
 
-	ak             authkeeper.AccountKeeper
-	bm			   *keeper.BandwidthMeter
+	ak authkeeper.AccountKeeper
+	bm *keeper.BandwidthMeter
 }
 
 func NewAppModule(
@@ -82,8 +81,8 @@ func NewAppModule(
 ) AppModule {
 	return AppModule{
 		AppModuleBasic: AppModuleBasic{cdc: cdc},
-		ak:		  ak,
-		bm:		  bm,
+		ak:             ak,
+		bm:             bm,
 	}
 }
 

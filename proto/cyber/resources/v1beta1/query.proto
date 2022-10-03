@@ -7,7 +7,7 @@ import "google/api/annotations.proto";
 import "cyber/resources/v1beta1/types.proto";
 import "cosmos/base/v1beta1/coin.proto";
 
-option go_package = "github.com/cybercongress/go-cyber/x/resources/types";
+option go_package = "github.com/joinresistance/space-pussy/x/resources/types";
 option (gogoproto.goproto_getters_all) = false;
 option (gogoproto.equal_all) = false;
 

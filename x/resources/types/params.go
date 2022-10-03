@@ -5,7 +5,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
-	ctypes "github.com/cybercongress/go-cyber/types"
+	ctypes "github.com/joinresistance/space-pussy/types"
 )
 
 const (
@@ -40,8 +40,8 @@ func DefaultParams() Params {
 		HalvingPeriodAmpereBlocks:  DefaultHalvingPeriodAmpere,
 		BaseInvestmintPeriodVolt:   DefaultInvestmintPeriodVolt,
 		BaseInvestmintPeriodAmpere: DefaultInvestmintPeriodAmpere,
-		BaseInvestmintAmountVolt:   ctypes.NewSCybCoin(ctypes.Mega*1000),
-		BaseInvestmintAmountAmpere: ctypes.NewSCybCoin(ctypes.Mega*100),
+		BaseInvestmintAmountVolt:   ctypes.NewSCybCoin(ctypes.Mega * 1000),
+		BaseInvestmintAmountAmpere: ctypes.NewSCybCoin(ctypes.Mega * 100),
 		MinInvestmintPeriod:        DefaultMinInvestmintPeriod,
 	}
 }
@@ -163,7 +163,7 @@ func validateBaseInvestmintAmountVolt(i interface{}) error {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 
-	if v.IsLT(ctypes.NewSCybCoin(ctypes.Mega*10)) {
+	if v.IsLT(ctypes.NewSCybCoin(ctypes.Mega * 10)) {
 		return fmt.Errorf("base investmint amount for Volt must be more than 10000000: %d", v)
 	}
 
@@ -176,7 +176,7 @@ func validateBaseInvestmintAmountAmpere(i interface{}) error {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 
-	if v.IsLT(ctypes.NewSCybCoin(ctypes.Mega*10)) {
+	if v.IsLT(ctypes.NewSCybCoin(ctypes.Mega * 10)) {
 		return fmt.Errorf("base investmint amount for Ampere must be more than 10000000: %d", v)
 	}
 

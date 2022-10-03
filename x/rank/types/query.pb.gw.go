@@ -13,7 +13,7 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/cybercongress/go-cyber/types/query"
+	"github.com/joinresistance/space-pussy/types/query"
 	"github.com/golang/protobuf/descriptor"
 	"github.com/golang/protobuf/proto"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"

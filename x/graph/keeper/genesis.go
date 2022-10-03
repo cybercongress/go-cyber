@@ -7,7 +7,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/cybercongress/go-cyber/utils"
+	"github.com/joinresistance/space-pussy/utils"
 )
 
 const (

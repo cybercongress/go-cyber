@@ -3,7 +3,7 @@ package cyber.graph.v1beta1;
 
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/cybercongress/go-cyber/x/graph/types";
+option go_package = "github.com/joinresistance/space-pussy/x/graph/types";
 
 message Link {
     option (gogoproto.equal)           = false;

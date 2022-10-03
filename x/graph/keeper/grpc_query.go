@@ -9,7 +9,7 @@ import (
 	//"github.com/cosmos/cosmos-sdk/types/query"
 	//"google.golang.org/grpc/codes"
 	//"google.golang.org/grpc/status"
-	"github.com/cybercongress/go-cyber/x/graph/types"
+	"github.com/joinresistance/space-pussy/x/graph/types"
 )
 
 var _ types.QueryServer = GraphKeeper{}

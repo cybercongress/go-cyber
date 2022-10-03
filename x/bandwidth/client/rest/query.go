@@ -10,7 +10,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/types/rest"
 
-	"github.com/cybercongress/go-cyber/x/bandwidth/types"
+	"github.com/joinresistance/space-pussy/x/bandwidth/types"
 )
 
 func registerQueryRoutes(cliCtx client.Context, r *mux.Router) {
@@ -148,4 +148,3 @@ func neuronBandwidthHandlerFn(cliCtx client.Context) http.HandlerFunc {
 		rest.PostProcessResponse(w, cliCtx, res)
 	}
 }
-

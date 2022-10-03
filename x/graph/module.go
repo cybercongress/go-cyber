@@ -10,8 +10,8 @@ import (
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	bandwidthkeeper "github.com/cybercongress/go-cyber/x/bandwidth/keeper"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	bandwidthkeeper "github.com/joinresistance/space-pussy/x/bandwidth/keeper"
 	abci "github.com/tendermint/tendermint/abci/types"
 	//"github.com/gogo/protobuf/codec"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -21,19 +21,19 @@ import (
 	"github.com/spf13/cobra"
 	//"github.com/tendermint/tendermint/abci/types"
 
-	cyberbankkeeper "github.com/cybercongress/go-cyber/x/cyberbank/keeper"
-	"github.com/cybercongress/go-cyber/x/graph/client/cli"
-	"github.com/cybercongress/go-cyber/x/graph/client/rest"
-	"github.com/cybercongress/go-cyber/x/graph/keeper"
-	"github.com/cybercongress/go-cyber/x/graph/types"
+	cyberbankkeeper "github.com/joinresistance/space-pussy/x/cyberbank/keeper"
+	"github.com/joinresistance/space-pussy/x/graph/client/cli"
+	"github.com/joinresistance/space-pussy/x/graph/client/rest"
+	"github.com/joinresistance/space-pussy/x/graph/keeper"
+	"github.com/joinresistance/space-pussy/x/graph/types"
 )
 
 var (
-	_ module.AppModule           = AppModule{}
-	_ module.AppModuleBasic      = AppModuleBasic{}
+	_ module.AppModule      = AppModule{}
+	_ module.AppModuleBasic = AppModuleBasic{}
 )
 
-type AppModuleBasic struct{
+type AppModuleBasic struct {
 	cdc codec.Codec
 }
 
@@ -45,7 +45,9 @@ func (AppModuleBasic) RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 
 func (AppModuleBasic) DefaultGenesis(_ codec.JSONCodec) json.RawMessage { return nil }
 
-func (AppModuleBasic) ValidateGenesis(_ codec.JSONCodec, _ client.TxEncodingConfig, _ json.RawMessage) error { return nil }
+func (AppModuleBasic) ValidateGenesis(_ codec.JSONCodec, _ client.TxEncodingConfig, _ json.RawMessage) error {
+	return nil
+}
 
 func (AppModuleBasic) RegisterRESTRoutes(clientCtx client.Context, rtr *mux.Router) {
 	rest.RegisterRoutes(clientCtx, rtr)
@@ -80,11 +82,11 @@ type AppModule struct {
 }
 
 func NewAppModule(
-	cdc 			codec.Codec,
-	graphKeeper     *keeper.GraphKeeper,
-	indexKeeper 	*keeper.IndexKeeper,
-	accountKeeper 	authkeeper.AccountKeeper,
-	bankKeeper      *cyberbankkeeper.IndexedKeeper,
+	cdc codec.Codec,
+	graphKeeper *keeper.GraphKeeper,
+	indexKeeper *keeper.IndexKeeper,
+	accountKeeper authkeeper.AccountKeeper,
+	bankKeeper *cyberbankkeeper.IndexedKeeper,
 	bandwidthKeeper *bandwidthkeeper.BandwidthMeter,
 ) AppModule {
 	return AppModule{
@@ -92,8 +94,8 @@ func NewAppModule(
 		gk:             graphKeeper,
 		ik:             indexKeeper,
 		ak:             accountKeeper,
-		bk:				bankKeeper,
-		bm: 			bandwidthKeeper,
+		bk:             bankKeeper,
+		bm:             bandwidthKeeper,
 	}
 }
 
@@ -140,4 +142,3 @@ func (am AppModule) EndBlock(ctx sdk.Context, _ abci.RequestEndBlock) []abci.Val
 	EndBlocker(ctx, am.gk, am.ik)
 	return []abci.ValidatorUpdate{}
 }
-

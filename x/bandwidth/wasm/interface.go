@@ -8,7 +8,7 @@ import (
 
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 
-	"github.com/cybercongress/go-cyber/x/bandwidth/keeper"
+	"github.com/joinresistance/space-pussy/x/bandwidth/keeper"
 )
 
 var _ WasmQuerierInterface = WasmQuerier{}
@@ -29,8 +29,8 @@ func NewWasmQuerier(keeper *keeper.BandwidthMeter) WasmQuerier {
 func (WasmQuerier) Query(_ sdk.Context, _ wasmvmtypes.QueryRequest) ([]byte, error) { return nil, nil }
 
 type CosmosQuery struct {
-	BandwidthPrice  *struct{} 			   		`json:"bandwidth_price,omitempty"`
-	BandwidthLoad   *struct{}              		`json:"bandwidth_load,omitempty"`
+	BandwidthPrice  *struct{}                   `json:"bandwidth_price,omitempty"`
+	BandwidthLoad   *struct{}                   `json:"bandwidth_load,omitempty"`
 	BandwidthTotal  *struct{}                   `json:"bandwidth_total,omitempty"`
 	NeuronBandwidth *QueryNeuronBandwidthParams `json:"neuron_bandwidth,omitempty"`
 }
@@ -52,10 +52,10 @@ type BandwidthTotalResponse struct {
 }
 
 type NeuronBandwidthResponse struct {
-	Neuron   		 string `json:"neuron"`
-	RemainedValue 	 uint64 `json:"remained_value"`
+	Neuron           string `json:"neuron"`
+	RemainedValue    uint64 `json:"remained_value"`
 	LastUpdatedBlock uint64 `json:"last_updated_block"`
-	MaxValue 		 uint64 `json:"max_value"`
+	MaxValue         uint64 `json:"max_value"`
 }
 
 func (querier WasmQuerier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([]byte, error) {
@@ -91,10 +91,10 @@ func (querier WasmQuerier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([
 		accountBandwidth := querier.BandwidthMeter.GetCurrentAccountBandwidth(ctx, address)
 
 		bz, err = json.Marshal(NeuronBandwidthResponse{
-			Neuron: accountBandwidth.Neuron,
-			RemainedValue: accountBandwidth.RemainedValue,
+			Neuron:           accountBandwidth.Neuron,
+			RemainedValue:    accountBandwidth.RemainedValue,
 			LastUpdatedBlock: accountBandwidth.LastUpdatedBlock,
-			MaxValue: accountBandwidth.MaxValue,
+			MaxValue:         accountBandwidth.MaxValue,
 		})
 	} else {
 		return nil, wasmvmtypes.UnsupportedRequest{Kind: "unknown Bandwidth variant"}

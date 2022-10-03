@@ -5,7 +5,7 @@ import "gogoproto/gogo.proto";
 
 import "cyber/grid/v1beta1/types.proto";
 
-option go_package = "github.com/cybercongress/go-cyber/x/grid/types";
+option go_package = "github.com/joinresistance/space-pussy/x/grid/types";
 
 message GenesisState {
     Params params = 1 [(gogoproto.nullable) = false];

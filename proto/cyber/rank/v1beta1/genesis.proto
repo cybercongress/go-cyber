@@ -4,7 +4,7 @@ package cyber.rank.v1beta1;
 import "gogoproto/gogo.proto";
 import "cyber/rank/v1beta1/types.proto";
 
-option go_package = "github.com/cybercongress/go-cyber/x/rank/types";
+option go_package = "github.com/joinresistance/space-pussy/x/rank/types";
 
 message GenesisState {
     Params params = 1 [(gogoproto.nullable) = false];

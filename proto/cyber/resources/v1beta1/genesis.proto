@@ -4,7 +4,7 @@ package cyber.resources.v1beta1;
 import "gogoproto/gogo.proto";
 import "cyber/resources/v1beta1/types.proto";
 
-option go_package = "github.com/cybercongress/go-cyber/x/resources/types";
+option go_package = "github.com/joinresistance/space-pussy/x/resources/types";
 
 message GenesisState {
     Params params = 1 [(gogoproto.nullable) = false];

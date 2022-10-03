@@ -17,10 +17,10 @@ import (
 	"github.com/spf13/cobra"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/cybercongress/go-cyber/x/resources/client/cli"
-	"github.com/cybercongress/go-cyber/x/resources/client/rest"
-	"github.com/cybercongress/go-cyber/x/resources/keeper"
-	"github.com/cybercongress/go-cyber/x/resources/types"
+	"github.com/joinresistance/space-pussy/x/resources/client/cli"
+	"github.com/joinresistance/space-pussy/x/resources/client/rest"
+	"github.com/joinresistance/space-pussy/x/resources/keeper"
+	"github.com/joinresistance/space-pussy/x/resources/types"
 )
 
 var (
@@ -28,7 +28,7 @@ var (
 	_ module.AppModuleBasic = AppModuleBasic{}
 )
 
-type AppModuleBasic struct{
+type AppModuleBasic struct {
 	cdc codec.Codec
 }
 
@@ -46,7 +46,8 @@ func (AppModuleBasic) DefaultGenesis(cdc codec.JSONCodec) json.RawMessage {
 
 func (AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, _ client.TxEncodingConfig, bz json.RawMessage) error {
 	var data types.GenesisState
-	err := cdc.UnmarshalJSON(bz, &data); if err != nil {
+	err := cdc.UnmarshalJSON(bz, &data)
+	if err != nil {
 		return fmt.Errorf("failed to unmarshal %s genesis state: %w", types.ModuleName, err)
 	}
 	return types.ValidateGenesis(data)
@@ -77,15 +78,15 @@ func (AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegistry) 
 type AppModule struct {
 	AppModuleBasic
 
-	keeper        keeper.Keeper
+	keeper keeper.Keeper
 }
 
 func NewAppModule(
 	cdc codec.Codec, k keeper.Keeper,
 ) AppModule {
 	return AppModule{
-		AppModuleBasic:      AppModuleBasic{cdc: cdc},
-		keeper:              k,
+		AppModuleBasic: AppModuleBasic{cdc: cdc},
+		keeper:         k,
 	}
 }
 

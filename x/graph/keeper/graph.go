@@ -7,13 +7,13 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/telemetry"
 
-	. "github.com/cybercongress/go-cyber/types"
-	"github.com/cybercongress/go-cyber/x/graph/types"
+	"github.com/joinresistance/space-pussy/x/graph/types"
 	"github.com/tendermint/tendermint/libs/log"
 
 	"io"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	. "github.com/joinresistance/space-pussy/types"
 )
 
 const (
@@ -22,11 +22,11 @@ const (
 )
 
 type GraphKeeper struct {
-	key    sdk.StoreKey
-	cdc    codec.BinaryCodec
-	neudeg map[uint64]uint64
+	key        sdk.StoreKey
+	cdc        codec.BinaryCodec
+	neudeg     map[uint64]uint64
 	rankNeudeg map[uint64]uint64
-	tkey   sdk.StoreKey
+	tkey       sdk.StoreKey
 }
 
 func NewKeeper(
@@ -35,10 +35,10 @@ func NewKeeper(
 	tkey sdk.StoreKey,
 ) *GraphKeeper {
 	return &GraphKeeper{
-		cdc: cdc,
-		key: storeKey,
-		tkey: tkey,
-		neudeg: make(map[uint64]uint64),
+		cdc:        cdc,
+		key:        storeKey,
+		tkey:       tkey,
+		neudeg:     make(map[uint64]uint64),
 		rankNeudeg: make(map[uint64]uint64),
 	}
 }
@@ -82,7 +82,7 @@ func (gk GraphKeeper) IterateLinks(ctx sdk.Context, process func(link types.Comp
 			From:    sdk.BigEndianToUint64(key[1:9]),
 			To:      sdk.BigEndianToUint64(key[17:25]),
 			Account: sdk.BigEndianToUint64(key[9:17]),
-	    }
+		}
 		process(compactLink)
 	})
 }

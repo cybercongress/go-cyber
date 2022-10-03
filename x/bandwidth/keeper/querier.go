@@ -6,7 +6,7 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/cybercongress/go-cyber/x/bandwidth/types"
+	"github.com/joinresistance/space-pussy/x/bandwidth/types"
 )
 
 func NewQuerier(bm *BandwidthMeter, legacyQuerierCdc *codec.LegacyAmino) sdk.Querier {
@@ -39,7 +39,7 @@ func queryParams(ctx sdk.Context, _ abci.RequestQuery, bm BandwidthMeter, legacy
 	return res, nil
 }
 
-func queryLoad(ctx sdk.Context, _ abci.RequestQuery, bm *BandwidthMeter, legacyQuerierCdc *codec.LegacyAmino,) ([]byte, error) {
+func queryLoad(ctx sdk.Context, _ abci.RequestQuery, bm *BandwidthMeter, legacyQuerierCdc *codec.LegacyAmino) ([]byte, error) {
 	load := bm.GetCurrentNetworkLoad(ctx)
 	res, err := codec.MarshalJSONIndent(legacyQuerierCdc, types.QueryLoadResponse{Load: sdk.DecProto{Dec: load}})
 	if err != nil {
@@ -49,7 +49,7 @@ func queryLoad(ctx sdk.Context, _ abci.RequestQuery, bm *BandwidthMeter, legacyQ
 	return res, nil
 }
 
-func queryPrice(_ sdk.Context, _ abci.RequestQuery, bm *BandwidthMeter, legacyQuerierCdc *codec.LegacyAmino,) ([]byte, error) {
+func queryPrice(_ sdk.Context, _ abci.RequestQuery, bm *BandwidthMeter, legacyQuerierCdc *codec.LegacyAmino) ([]byte, error) {
 	price := bm.GetCurrentCreditPrice()
 	res, err := codec.MarshalJSONIndent(legacyQuerierCdc, types.QueryPriceResponse{Price: sdk.DecProto{Dec: price}})
 	if err != nil {
@@ -59,7 +59,7 @@ func queryPrice(_ sdk.Context, _ abci.RequestQuery, bm *BandwidthMeter, legacyQu
 	return res, nil
 }
 
-func queryTotalBandwidth(ctx sdk.Context, _ abci.RequestQuery, bm *BandwidthMeter, legacyQuerierCdc *codec.LegacyAmino,) ([]byte, error) {
+func queryTotalBandwidth(ctx sdk.Context, _ abci.RequestQuery, bm *BandwidthMeter, legacyQuerierCdc *codec.LegacyAmino) ([]byte, error) {
 	totalBandwidth := bm.GetDesirableBandwidth(ctx)
 	res, err := codec.MarshalJSONIndent(legacyQuerierCdc, types.QueryTotalBandwidthResponse{TotalBandwidth: totalBandwidth})
 	if err != nil {
@@ -69,10 +69,11 @@ func queryTotalBandwidth(ctx sdk.Context, _ abci.RequestQuery, bm *BandwidthMete
 	return res, nil
 }
 
-func queryNeuronBandwidth(ctx sdk.Context, req abci.RequestQuery, bm BandwidthMeter, legacyQuerierCdc *codec.LegacyAmino,) ([]byte, error) {
+func queryNeuronBandwidth(ctx sdk.Context, req abci.RequestQuery, bm BandwidthMeter, legacyQuerierCdc *codec.LegacyAmino) ([]byte, error) {
 	var params types.QueryAccountBandwidthParams
 
-	err := legacyQuerierCdc.UnmarshalJSON(req.Data, &params); if err != nil {
+	err := legacyQuerierCdc.UnmarshalJSON(req.Data, &params)
+	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
 
@@ -85,5 +86,3 @@ func queryNeuronBandwidth(ctx sdk.Context, req abci.RequestQuery, bm BandwidthMe
 
 	return res, nil
 }
-
-

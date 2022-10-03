@@ -6,11 +6,11 @@ import (
 
 	"io"
 
-	. "github.com/cybercongress/go-cyber/types"
-	"github.com/cybercongress/go-cyber/utils"
-	"github.com/cybercongress/go-cyber/x/graph/types"
+	"github.com/joinresistance/space-pussy/utils"
+	"github.com/joinresistance/space-pussy/x/graph/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	. "github.com/joinresistance/space-pussy/types"
 	tmos "github.com/tendermint/tendermint/libs/os"
 )
 
@@ -26,7 +26,7 @@ type IndexKeeper struct {
 	nextRankOutLinks types.Links
 
 	// Inter-block cache for cyberlinks, reset on every block during Commit
-	tkey        sdk.StoreKey
+	tkey sdk.StoreKey
 
 	currentBlockLinks []types.CompactLink
 }
@@ -88,7 +88,9 @@ func (i *IndexKeeper) MergeContextLinks(ctx sdk.Context) {
 func (i *IndexKeeper) HasNewLinks(ctx sdk.Context) bool {
 	store := ctx.TransientStore(i.tkey)
 	hasLinks := store.Get(types.HasNewLinks)
-	if hasLinks == nil { return false }
+	if hasLinks == nil {
+		return false
+	}
 	return sdk.BigEndianToUint64(hasLinks) > 0
 }
 
@@ -158,5 +160,3 @@ func (i *IndexKeeper) LoadFromReader(ctx sdk.Context, reader io.Reader) (err err
 	}
 	return
 }
-
-

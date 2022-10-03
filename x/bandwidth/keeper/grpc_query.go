@@ -7,7 +7,7 @@ import (
 
 	"context"
 
-	"github.com/cybercongress/go-cyber/x/bandwidth/types"
+	"github.com/joinresistance/space-pussy/x/bandwidth/types"
 )
 
 var _ types.QueryServer = &BandwidthMeter{}

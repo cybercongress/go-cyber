@@ -8,7 +8,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/cybercongress/go-cyber/x/graph/types"
+	"github.com/joinresistance/space-pussy/x/graph/types"
 )
 
 // GetQueryCmd returns
@@ -27,7 +27,7 @@ func GetQueryCmd() *cobra.Command {
 	return graphQueryCmd
 }
 
-func GetCmdGraphStats() *cobra.Command{
+func GetCmdGraphStats() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "stats",
 		Short: "Query the graph stats",

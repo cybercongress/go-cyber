@@ -7,26 +7,26 @@ import (
 	"sort"
 	"time"
 
-	"github.com/cybercongress/go-cyber/merkle"
-	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
+	"github.com/joinresistance/space-pussy/merkle"
+	graphtypes "github.com/joinresistance/space-pussy/x/graph/types"
 
 	"github.com/tendermint/tendermint/libs/log"
 )
 
 type EMState struct {
-	RankValues       []float64
-	EntropyValues  	 []float64
-	KarmaValues		 []float64
+	RankValues    []float64
+	EntropyValues []float64
+	KarmaValues   []float64
 }
 
 type Rank struct {
-	RankValues 		 []uint64
-	EntropyValues 	 []uint64
-	KarmaValues 	 []uint64
-	MerkleTree 		 *merkle.Tree // ranks merkle
-	CidCount   		 uint64
-	TopCIDs	   		 []RankedCidNumber
-	NegEntropy       uint64
+	RankValues    []uint64
+	EntropyValues []uint64
+	KarmaValues   []uint64
+	MerkleTree    *merkle.Tree // ranks merkle
+	CidCount      uint64
+	TopCIDs       []RankedCidNumber
+	NegEntropy    uint64
 }
 
 func NewRank(state EMState, logger log.Logger, fullTree bool) Rank {
@@ -37,13 +37,13 @@ func NewRank(state EMState, logger log.Logger, fullTree bool) Rank {
 
 	rankValues := make([]uint64, particlesCount)
 	for i, f64 := range state.RankValues {
-		rankValues[i] = uint64(f64*1e15)
+		rankValues[i] = uint64(f64 * 1e15)
 	}
 	state.RankValues = nil
 
 	entropyValues := make([]uint64, particlesCount)
 	for i, f64 := range state.EntropyValues {
-		entropyValues[i] = uint64(f64*1e15)
+		entropyValues[i] = uint64(f64 * 1e15)
 	}
 	negEntropy := float64(0)
 	for _, f64 := range state.EntropyValues {
@@ -53,7 +53,7 @@ func NewRank(state EMState, logger log.Logger, fullTree bool) Rank {
 
 	karmaValues := make([]uint64, len(state.KarmaValues))
 	for i, f64 := range state.KarmaValues {
-		karmaValues[i] = uint64(f64*1e15)
+		karmaValues[i] = uint64(f64 * 1e15)
 	}
 	state.KarmaValues = nil
 
@@ -71,7 +71,7 @@ func NewRank(state EMState, logger log.Logger, fullTree bool) Rank {
 	// NOTE fulltree true if search index enabled
 	start = time.Now()
 	var newSortedCIDs []RankedCidNumber
-	if (fullTree == true) {
+	if fullTree == true {
 		newSortedCIDs = BuildTop(rankValues, 1000)
 		logger.Info("Build top", "duration", time.Since(start).String())
 	}
@@ -91,13 +91,13 @@ func NewRank(state EMState, logger log.Logger, fullTree bool) Rank {
 
 func NewFromMerkle(cidCount uint64, treeBytes []byte) Rank {
 	rank := Rank{
-		RankValues:       nil,
-		EntropyValues:    nil,
-		KarmaValues:      nil,
-		MerkleTree: 	  merkle.NewTree(sha256.New(), false),
-		CidCount:   	  cidCount,
-		TopCIDs:    	  nil,
-		NegEntropy:       0,
+		RankValues:    nil,
+		EntropyValues: nil,
+		KarmaValues:   nil,
+		MerkleTree:    merkle.NewTree(sha256.New(), false),
+		CidCount:      cidCount,
+		TopCIDs:       nil,
+		NegEntropy:    0,
 	}
 
 	rank.MerkleTree.ImportSubtreesRoots(treeBytes)
@@ -122,13 +122,13 @@ func (r *Rank) CopyWithoutTree() Rank {
 
 	if r.RankValues == nil {
 		return Rank{
-			RankValues: nil,
+			RankValues:    nil,
 			EntropyValues: nil,
-			KarmaValues: nil,
-			MerkleTree: nil,
-			CidCount: 0,
-			TopCIDs: nil,
-			NegEntropy: 0,
+			KarmaValues:   nil,
+			MerkleTree:    nil,
+			CidCount:      0,
+			TopCIDs:       nil,
+			NegEntropy:    0,
 		}
 	}
 
@@ -149,13 +149,13 @@ func (r *Rank) CopyWithoutTree() Rank {
 	n = copy(copiedTopCIDs, r.TopCIDs)
 
 	return Rank{
-		RankValues: copiedRankValues,
+		RankValues:    copiedRankValues,
 		EntropyValues: copiedEntropyValues,
-		KarmaValues: copiedKarmaValues,
-		MerkleTree: nil,
-		CidCount: r.CidCount,
-		TopCIDs: copiedTopCIDs,
-		NegEntropy: r.NegEntropy,
+		KarmaValues:   copiedKarmaValues,
+		MerkleTree:    nil,
+		CidCount:      r.CidCount,
+		TopCIDs:       copiedTopCIDs,
+		NegEntropy:    r.NegEntropy,
 	}
 }
 
@@ -184,13 +184,15 @@ func (r *Rank) AddNewCids(currentCidCount uint64) {
 func BuildTop(values []uint64, size int) []RankedCidNumber {
 	newSortedCIDs := make(sortableCidNumbers, 0, len(values))
 	for cid, rank := range values {
-		if (rank == 0) { continue }
+		if rank == 0 {
+			continue
+		}
 		newRankedCid := RankedCidNumber{graphtypes.CidNumber(cid), rank}
 		newSortedCIDs = append(newSortedCIDs, newRankedCid)
 	}
 	sort.Stable(sort.Reverse(newSortedCIDs))
-	if (len(values) > size) {
-		newSortedCIDs = newSortedCIDs[0:(size-1)]
+	if len(values) > size {
+		newSortedCIDs = newSortedCIDs[0:(size - 1)]
 	}
 	return newSortedCIDs
 }

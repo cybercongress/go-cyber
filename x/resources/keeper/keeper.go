@@ -12,24 +12,24 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/tendermint/tendermint/libs/log"
 
-	ctypes "github.com/cybercongress/go-cyber/types"
-	bandwithkeeper "github.com/cybercongress/go-cyber/x/bandwidth/keeper"
-	"github.com/cybercongress/go-cyber/x/resources/types"
+	ctypes "github.com/joinresistance/space-pussy/types"
+	bandwithkeeper "github.com/joinresistance/space-pussy/x/bandwidth/keeper"
+	"github.com/joinresistance/space-pussy/x/resources/types"
 )
 
 type Keeper struct {
-	cdc 			codec.BinaryCodec
-	accountKeeper   types.AccountKeeper
-	bankKeeper      types.BankKeeper
-	bandwidthMeter  *bandwithkeeper.BandwidthMeter
-	paramSpace      paramstypes.Subspace
+	cdc            codec.BinaryCodec
+	accountKeeper  types.AccountKeeper
+	bankKeeper     types.BankKeeper
+	bandwidthMeter *bandwithkeeper.BandwidthMeter
+	paramSpace     paramstypes.Subspace
 }
 
 func NewKeeper(
 	cdc codec.BinaryCodec,
-	ak 	types.AccountKeeper,
-	bk  types.BankKeeper,
-	bm  *bandwithkeeper.BandwidthMeter,
+	ak types.AccountKeeper,
+	bk types.BankKeeper,
+	bm *bandwithkeeper.BandwidthMeter,
 	paramSpace paramstypes.Subspace,
 ) Keeper {
 	if addr := ak.GetModuleAddress(types.ResourcesName); addr == nil {
@@ -41,11 +41,11 @@ func NewKeeper(
 	}
 
 	keeper := Keeper{
-		cdc:        	cdc,
-		accountKeeper: 	ak,
+		cdc:            cdc,
+		accountKeeper:  ak,
 		bankKeeper:     bk,
 		bandwidthMeter: bm,
-		paramSpace:    paramSpace,
+		paramSpace:     paramSpace,
 	}
 	return keeper
 }
@@ -112,7 +112,8 @@ func (k Keeper) AddTimeLockedCoinsToAccount(ctx sdk.Context, recipientAddr sdk.A
 }
 
 func (k Keeper) AddTimeLockedCoinsToPeriodicVestingAccount(ctx sdk.Context, recipientAddr sdk.AccAddress, amt sdk.Coins, length int64, mergeSlot bool) error {
-	err := k.addCoinsToVestingSchedule(ctx, recipientAddr, amt, length, mergeSlot); if err != nil {
+	err := k.addCoinsToVestingSchedule(ctx, recipientAddr, amt, length, mergeSlot)
+	if err != nil {
 		return err
 	}
 	return nil
@@ -181,7 +182,7 @@ func (k Keeper) addCoinsToVestingSchedule(ctx sdk.Context, addr sdk.AccAddress, 
 
 	if len(vacc.VestingPeriods) == int(k.MaxSlots(ctx)) && !mergeSlot {
 		// case when there are already filled slots and no one already passed
-		if vacc.StartTime + vacc.VestingPeriods[0].Length > ctx.BlockTime().Unix() {
+		if vacc.StartTime+vacc.VestingPeriods[0].Length > ctx.BlockTime().Unix() {
 			return types.ErrFullSlots
 		} else {
 			// TODO refactor next code blocks
@@ -190,7 +191,7 @@ func (k Keeper) addCoinsToVestingSchedule(ctx sdk.Context, addr sdk.AccAddress, 
 			accumulatedLength := int64(0)
 			shiftStartTime := int64(0)
 			for _, period := range vacc.VestingPeriods {
-				if vacc.StartTime + period.Length + accumulatedLength > ctx.BlockTime().Unix() {
+				if vacc.StartTime+period.Length+accumulatedLength > ctx.BlockTime().Unix() {
 					activePeriods = append(activePeriods, period)
 				} else {
 					shiftStartTime += period.Length
@@ -316,7 +317,7 @@ func (k Keeper) CalculateInvestmint(ctx sdk.Context, amt sdk.Coin, resource stri
 
 		// NOTE out of parametrization custom code is applied here in order to shift the FIRST HALVING 6M BLOCKS LATER but keep base halving parameter same
 		if ctx.BlockHeight() > 15000000 {
-			halving = sdk.NewDecWithPrec(int64(math.Pow(0.5, float64((ctx.BlockHeight()-600000) / int64(k.BaseHalvingPeriodVolt(ctx))))*10000),4)
+			halving = sdk.NewDecWithPrec(int64(math.Pow(0.5, float64((ctx.BlockHeight()-600000)/int64(k.BaseHalvingPeriodVolt(ctx))))*10000), 4)
 		} else {
 			halving = sdk.OneDec()
 		}
@@ -335,7 +336,7 @@ func (k Keeper) CalculateInvestmint(ctx sdk.Context, amt sdk.Coin, resource stri
 
 		// NOTE out of parametrization custom code is applied here in order to shift the FIRST HALVING 6M BLOCKS LATER but keep base halving parameter same
 		if ctx.BlockHeight() > 15000000 {
-			halving = sdk.NewDecWithPrec(int64(math.Pow(0.5, float64((ctx.BlockHeight()-600000) / int64(k.BaseHalvingPeriodAmpere(ctx))))*10000),4)
+			halving = sdk.NewDecWithPrec(int64(math.Pow(0.5, float64((ctx.BlockHeight()-600000)/int64(k.BaseHalvingPeriodAmpere(ctx))))*10000), 4)
 		} else {
 			halving = sdk.OneDec()
 		}
@@ -359,12 +360,12 @@ func (k Keeper) CheckAvailablePeriod(ctx sdk.Context, length uint64, resource st
 	switch resource {
 	case ctypes.VOLT:
 		halvingVolt := k.BaseHalvingPeriodVolt(ctx)
-		doubling := uint32(math.Pow(2, float64(passed / int64(halvingVolt))))
+		doubling := uint32(math.Pow(2, float64(passed/int64(halvingVolt))))
 		availableLength = uint64(doubling * halvingVolt * 5)
 
 	case ctypes.AMPERE:
 		halvingAmpere := k.BaseHalvingPeriodAmpere(ctx)
-		doubling := uint32(math.Pow(2, float64(passed / int64(halvingAmpere))))
+		doubling := uint32(math.Pow(2, float64(passed/int64(halvingAmpere))))
 		availableLength = uint64(doubling * halvingAmpere * 5)
 	}
 

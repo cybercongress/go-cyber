@@ -9,8 +9,8 @@ import (
 
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 
-	"github.com/cybercongress/go-cyber/x/graph/keeper"
-	"github.com/cybercongress/go-cyber/x/graph/types"
+	"github.com/joinresistance/space-pussy/x/graph/keeper"
+	"github.com/joinresistance/space-pussy/x/graph/types"
 )
 
 var _ WasmQuerierInterface = WasmQuerier{}
@@ -29,7 +29,9 @@ func NewWasmMsgParser() WasmMsgParser {
 	return WasmMsgParser{}
 }
 
-func (WasmMsgParser) Parse(_ sdk.AccAddress, _ wasmvmtypes.CosmosMsg) ([]sdk.Msg, error) { return nil, nil }
+func (WasmMsgParser) Parse(_ sdk.AccAddress, _ wasmvmtypes.CosmosMsg) ([]sdk.Msg, error) {
+	return nil, nil
+}
 
 type CosmosMsg struct {
 	Cyberlink *types.MsgCyberlink `json:"cyberlink,omitempty"`

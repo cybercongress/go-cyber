@@ -3,7 +3,7 @@ package cyber.rank.v1beta1;
 
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/cybercongress/go-cyber/x/rank/types";
+option go_package = "github.com/joinresistance/space-pussy/x/rank/types";
 
 message Params {
     option (gogoproto.equal)            = true;

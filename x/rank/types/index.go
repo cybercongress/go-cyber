@@ -9,21 +9,21 @@ import (
 
 	"github.com/tendermint/tendermint/libs/log"
 
-	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
+	graphtypes "github.com/joinresistance/space-pussy/x/graph/types"
 )
 
 type BaseSearchIndex struct {
-	links 	   []cidLinks
-	backlinks  []cidLinks
-	rank  	   Rank
+	links     []cidLinks
+	backlinks []cidLinks
+	rank      Rank
 
-	linksChan  chan graphtypes.CompactLink
-	rankChan   chan Rank
-	errChan    chan error
+	linksChan chan graphtypes.CompactLink
+	rankChan  chan Rank
+	errChan   chan error
 
-	locked     bool
+	locked bool
 
-	logger     log.Logger
+	logger log.Logger
 }
 
 func NewBaseSearchIndex(log log.Logger) *BaseSearchIndex {

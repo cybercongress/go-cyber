@@ -17,11 +17,11 @@ import (
 	"github.com/spf13/cobra"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/cybercongress/go-cyber/x/rank/client/cli"
-	"github.com/cybercongress/go-cyber/x/rank/client/rest"
+	"github.com/joinresistance/space-pussy/x/rank/client/cli"
+	"github.com/joinresistance/space-pussy/x/rank/client/rest"
 
-	"github.com/cybercongress/go-cyber/x/rank/keeper"
-	"github.com/cybercongress/go-cyber/x/rank/types"
+	"github.com/joinresistance/space-pussy/x/rank/keeper"
+	"github.com/joinresistance/space-pussy/x/rank/types"
 )
 
 var (
@@ -34,7 +34,7 @@ const (
 	FlagSearchAPI  = "search-api"
 )
 
-type AppModuleBasic struct{
+type AppModuleBasic struct {
 	cdc codec.Codec
 }
 

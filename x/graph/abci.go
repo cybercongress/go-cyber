@@ -6,8 +6,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/cybercongress/go-cyber/x/graph/keeper"
-	"github.com/cybercongress/go-cyber/x/graph/types"
+	"github.com/joinresistance/space-pussy/x/graph/keeper"
+	"github.com/joinresistance/space-pussy/x/graph/types"
 )
 
 func EndBlocker(ctx sdk.Context, gk *keeper.GraphKeeper, ik *keeper.IndexKeeper) {

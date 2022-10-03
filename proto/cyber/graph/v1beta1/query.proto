@@ -4,7 +4,7 @@ package cyber.graph.v1beta1;
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 
-option go_package = "github.com/cybercongress/go-cyber/x/graph/types";
+option go_package = "github.com/joinresistance/space-pussy/x/graph/types";
 
 service Query {
     rpc GraphStats(QueryGraphStatsRequest) returns (QueryGraphStatsResponse) {

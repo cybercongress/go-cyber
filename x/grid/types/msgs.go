@@ -3,16 +3,15 @@ package types
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	ctypes "github.com/cybercongress/go-cyber/types"
+	ctypes "github.com/joinresistance/space-pussy/types"
 )
 
-const(
-	ActionCreateRoute 	 = "create_route"
-	ActionEditRoute 	 = "edit_route"
-	ActionDeleteRoute    = "delete_route"
-	ActionEditRouteName  = "edit_route_name"
+const (
+	ActionCreateRoute   = "create_route"
+	ActionEditRoute     = "edit_route"
+	ActionDeleteRoute   = "delete_route"
+	ActionEditRouteName = "edit_route_name"
 )
-
 
 var (
 	_ sdk.Msg = &MsgCreateRoute{}
@@ -31,7 +30,7 @@ func NewMsgCreateRoute(src sdk.AccAddress, dst sdk.AccAddress, name string) *Msg
 
 func (msg MsgCreateRoute) Route() string { return RouterKey }
 
-func (msg MsgCreateRoute) Type() string  { return ActionCreateRoute }
+func (msg MsgCreateRoute) Type() string { return ActionCreateRoute }
 
 func (msg MsgCreateRoute) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Source)
@@ -62,18 +61,17 @@ func (msg MsgCreateRoute) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{addr}
 }
 
-
 func NewMsgEditRoute(src sdk.AccAddress, dst sdk.AccAddress, value sdk.Coin) *MsgEditRoute {
 	return &MsgEditRoute{
-		Source: 	 src.String(),
+		Source:      src.String(),
 		Destination: dst.String(),
-		Value:		 value,
+		Value:       value,
 	}
 }
 
 func (msg MsgEditRoute) Route() string { return RouterKey }
 
-func (msg MsgEditRoute) Type() string  { return ActionEditRoute }
+func (msg MsgEditRoute) Type() string { return ActionEditRoute }
 
 func (msg MsgEditRoute) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Source)
@@ -104,17 +102,16 @@ func (msg MsgEditRoute) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{addr}
 }
 
-
 func NewMsgDeleteRoute(src sdk.AccAddress, dst sdk.AccAddress) *MsgDeleteRoute {
 	return &MsgDeleteRoute{
-		Source: 	 src.String(),
+		Source:      src.String(),
 		Destination: dst.String(),
 	}
 }
 
 func (msg MsgDeleteRoute) Route() string { return RouterKey }
 
-func (msg MsgDeleteRoute) Type() string  { return ActionDeleteRoute }
+func (msg MsgDeleteRoute) Type() string { return ActionDeleteRoute }
 
 func (msg MsgDeleteRoute) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Source)
@@ -152,7 +149,7 @@ func NewMsgEditRouteName(src sdk.AccAddress, dst sdk.AccAddress, name string) *M
 
 func (msg MsgEditRouteName) Route() string { return RouterKey }
 
-func (msg MsgEditRouteName) Type() string  { return ActionEditRouteName }
+func (msg MsgEditRouteName) Type() string { return ActionEditRouteName }
 
 func (msg MsgEditRouteName) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Source)
@@ -182,5 +179,3 @@ func (msg MsgEditRouteName) GetSigners() []sdk.AccAddress {
 	}
 	return []sdk.AccAddress{addr}
 }
-
-

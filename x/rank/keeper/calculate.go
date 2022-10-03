@@ -4,7 +4,7 @@ import (
 	"runtime/debug"
 
 	"github.com/cosmos/cosmos-sdk/telemetry"
-	"github.com/cybercongress/go-cyber/x/rank/types"
+	"github.com/joinresistance/space-pussy/x/rank/types"
 
 	"github.com/tendermint/tendermint/libs/log"
 

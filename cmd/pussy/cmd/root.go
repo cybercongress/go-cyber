@@ -4,7 +4,7 @@ import (
 	"errors"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	"github.com/cosmos/cosmos-sdk/client/config"
-	"github.com/cybercongress/go-cyber/app"
+	"github.com/joinresistance/space-pussy/app"
 	"github.com/prometheus/client_golang/prometheus"
 	"io"
 	"os"
@@ -14,7 +14,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/snapshots"
 	"github.com/cosmos/cosmos-sdk/x/crisis"
 
-	"github.com/cybercongress/go-cyber/x/rank"
+	"github.com/joinresistance/space-pussy/x/rank"
 
 	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
@@ -38,7 +38,7 @@ import (
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
 
 	serverconfig "github.com/cosmos/cosmos-sdk/server/config"
-	"github.com/cybercongress/go-cyber/app/params"
+	"github.com/joinresistance/space-pussy/app/params"
 )
 
 // NewRootCmd creates a new root command for simd. It is called once in the
@@ -105,7 +105,6 @@ func initAppConfig() (string, interface{}) {
 func initRootCmd(rootCmd *cobra.Command, encodingConfig params.EncodingConfig) {
 	cfg := sdk.GetConfig()
 	cfg.Seal()
-
 
 	rootCmd.AddCommand(
 		genutilcli.InitCmd(app.ModuleBasics, app.DefaultNodeHome),
@@ -248,9 +247,9 @@ func (ac appCreator) newApp(
 		baseapp.SetInterBlockCache(cache),
 		baseapp.SetTrace(cast.ToBool(appOpts.Get(server.FlagTrace))),
 		baseapp.SetIndexEvents(cast.ToStringSlice(appOpts.Get(server.FlagIndexEvents))),
-        baseapp.SetSnapshotStore(snapshotStore),
-        baseapp.SetSnapshotInterval(cast.ToUint64(appOpts.Get(server.FlagStateSyncSnapshotInterval))),
-        baseapp.SetSnapshotKeepRecent(cast.ToUint32(appOpts.Get(server.FlagStateSyncSnapshotKeepRecent))),
+		baseapp.SetSnapshotStore(snapshotStore),
+		baseapp.SetSnapshotInterval(cast.ToUint64(appOpts.Get(server.FlagStateSyncSnapshotInterval))),
+		baseapp.SetSnapshotKeepRecent(cast.ToUint32(appOpts.Get(server.FlagStateSyncSnapshotKeepRecent))),
 	)
 }
 

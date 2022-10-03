@@ -5,8 +5,8 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/telemetry"
 
-	"github.com/cybercongress/go-cyber/utils"
-	"github.com/cybercongress/go-cyber/x/graph/types"
+	"github.com/joinresistance/space-pussy/utils"
+	"github.com/joinresistance/space-pussy/x/graph/types"
 
 	"io"
 
@@ -18,7 +18,6 @@ const (
 	CidNumberBytesSize = uint64(8)
 	CidCountBytesSize  = uint64(8)
 )
-
 
 // Return cid number and true, if cid exists
 func (gk GraphKeeper) GetCidNumber(ctx sdk.Context, cid types.Cid) (types.CidNumber, bool) {

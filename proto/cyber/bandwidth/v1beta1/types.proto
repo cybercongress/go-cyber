@@ -3,7 +3,7 @@ package cyber.bandwidth.v1beta1;
 
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/cybercongress/go-cyber/x/bandwidth/types";
+option go_package = "github.com/joinresistance/space-pussy/x/bandwidth/types";
 
 message Params {
     option (gogoproto.equal)            = true;
