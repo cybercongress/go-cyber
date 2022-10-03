@@ -5,8 +5,9 @@
     
 Today we are opening a new era in soft3. We are launching a second GPU network based on cyber-sdk. Why is it important?  
 
-## memecoin  
-    
+## memecoin
+
+
 We have a vision for PUSSY.
 
 ...
@@ -18,6 +19,8 @@ We can have a meme coin with balls.
 ...
 
 cyber-sdk - is one of the most powerful stack in the blockchain universe with sequential and parallel computing, autonomous execution, and impressive social tools, including cyb.ai. So it is not a primitive doge, or shiba. It is a powerful collaborative computer. butterflies in the stomach what the community can do with space pussy.
+
+<img width="954" alt="Screen Shot 2022-10-03 at 20 52 23" src="https://user-images.githubusercontent.com/410789/193680279-0aa7d806-5b18-4816-ae36-e717c8dde60d.png">
 
 You asked us to launch `space-pussy`.
 
