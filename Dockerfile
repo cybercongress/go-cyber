@@ -1,5 +1,5 @@
 ###########################################################################################
-# Build cyber
+# Build pussy
 ###########################################################################################
 FROM ubuntu:20.04
 
@@ -7,14 +7,14 @@ ENV GO_VERSION '1.17.8'
 ENV GO_ARCH 'linux-amd64'
 ENV GO_BIN_SHA '980e65a863377e69fd9b67df9d8395fd8e93858e7a24c9f55803421e453f4f99'
 ENV DEBIAN_FRONTEND=noninteractive 
-ENV DAEMON_HOME /root/.cyber
+ENV DAEMON_HOME /root/.pussy
 ENV DAEMON_RESTART_AFTER_UPGRADE=true
 ENV DAEMON_ALLOW_DOWNLOAD_BINARIES=false
 ENV DAEMON_LOG_BUFFER_SIZE=1048
 ENV UNSAFE_SKIP_BACKUP=true
-ENV DAEMON_NAME cyber
+ENV DAEMON_NAME pussy
 ENV BUILD_DIR /build
-ENV PATH /usr/local/go/bin:/root/.cargo/bin:/root/cargo/env:/root/.cyber/scripts:$PATH
+ENV PATH /usr/local/go/bin:/root/.cargo/bin:/root/cargo/env:/root/.pussy/scripts:$PATH
 ENV CUDA_VER '11.4.4-1'
 ENV PATH="/usr/local/go/bin:/usr/local/cuda/bin:$PATH"
 
@@ -32,7 +32,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends wget ca-certifi
 COPY . /sources
 WORKDIR /sources
 
-# Install CUDA, build tools and compile cyber
+# Install CUDA, build tools and compile pussy
 ###########################################################################################
 RUN apt-get -y install --no-install-recommends \
     make gcc g++ \
@@ -48,26 +48,15 @@ RUN apt-get -y install --no-install-recommends \
 && add-apt-repository "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/ /" \
 && apt-get update \
 && apt-get install cuda=${CUDA_VER} -y --no-install-recommends \
-&& mkdir -p /cyber/cosmovisor/genesis/bin \
-&& mkdir -p /cyber/cosmovisor/upgrades/cyberfrey/bin \
-# Compile cyber for genesis version
+&& mkdir -p /pussy/cosmovisor/genesis/bin \
+# Compile pussy for genesis version
 ###########################################################################################
-&& git checkout v0.2.0 \
 && cd /sources/x/rank/cuda \
 && make build \
 && cd /sources \
 && make build CUDA_ENABLED=true \
-&& cp ./build/cyber /cyber/cosmovisor/genesis/bin/ \
-&& cp ./build/cyber /usr/local/bin \ 
-&& rm -rf ./build \
- # Compile cyber for genesis version
-###########################################################################################
-&& git checkout v0.3.0 \
-&& cd /sources/x/rank/cuda \
-&& make build \
-&& cd  /sources \
-&& make build CUDA_ENABLED=true \
-&& cp ./build/cyber /cyber/cosmovisor/upgrades/cyberfrey/bin/ \
+&& cp ./build/pussy /pussy/cosmovisor/genesis/bin/ \
+&& cp ./build/pussy /usr/local/bin \ 
 && rm -rf ./build \
 # Cleanup 
 ###########################################################################################
@@ -99,7 +88,7 @@ COPY entrypoint.sh /entrypoint.sh
 RUN wget -O /genesis.json https://gateway.ipfs.cybernode.ai/ipfs/QmYubyVNfghD4xCrTFj26zBwrF9s5GJhi1TmxvrwmJCipr \
 && chmod +x start_script.sh \
 && chmod +x /entrypoint.sh \
-&& cyber version
+&& pussy version
 
 
 #  Start

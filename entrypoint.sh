@@ -1,38 +1,38 @@
 #!/bin/sh
 
-if [ ! -d "/root/.cyber/" ]
+if [ ! -d "/root/.pussy/" ]
 then
-  mkdir /root/.cyber/
-  mkdir /root/.cyber/config/
-  /cyber/cosmovisor/genesis/bin/cyber init ${NODE_MONIKER}
-  cp -r /cyber/cosmovisor/  /root/.cyber
+  mkdir /root/.pussy/
+  mkdir /root/.pussy/config/
+  /pussy/cosmovisor/genesis/bin/pussy init ${NODE_MONIKER}
+  cp -r /pussy/cosmovisor/  /root/.pussy
 fi
 
-if [ ! -f "/root/.cyber/config/node_key.json" ]
+if [ ! -f "/root/.pussy/config/node_key.json" ]
 then
-  /cyber/cosmovisor/genesis/bin/cyber init ${NODE_MONIKER}
-  cp /genesis.json /root/.cyber/config/
-  cp -r /cyber/cosmovisor/  /root/.cyber
+  /pussy/cosmovisor/genesis/bin/pussy init ${NODE_MONIKER}
+  cp /genesis.json /root/.pussy/config/
+  cp -r /pussy/cosmovisor/  /root/.pussy
 fi
 
-if [ ! -d "/root/.cyber/cosmovisor" ]
+if [ ! -d "/root/.pussy/cosmovisor" ]
 then
-  cp -r /cyber/cosmovisor/  /root/.cyber/
+  cp -r /pussy/cosmovisor/  /root/.pussy/
 fi
 
-if [ ! -d "/root/.cyber/cosmovisor/updgrades" ]
+if [ ! -d "/root/.pussy/cosmovisor/updgrades" ]
 then
-  cp -r /cyber/cosmovisor/upgrades  /root/.cyber/cosmovisor/
+  cp -r /pussy/cosmovisor/upgrades  /root/.pussy/cosmovisor/
 fi
 
-if [  -f "/root/.cyber/cosmovisor/genesis/bin/cyber" ]
+if [  -f "/root/.pussy/cosmovisor/genesis/bin/pussy" ]
 then
-  cp /cyber/cosmovisor/genesis/bin/cyber  /root/.cyber/cosmovisor/genesis/bin/cyber
+  cp /pussy/cosmovisor/genesis/bin/pussy  /root/.pussy/cosmovisor/genesis/bin/pussy
 fi
 
-if [ ! -f "/root/.cyber/config/genesis.json" ]
+if [ ! -f "/root/.pussy/config/genesis.json" ]
 then
-  cp /genesis.json /root/.cyber/config/
+  cp /genesis.json /root/.pussy/config/
 fi
 
 if [ "$2" = 'init' ]
