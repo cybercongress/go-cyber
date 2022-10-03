@@ -33,17 +33,20 @@ And we realized that it is cool idea to create a community-led soft3 computer. I
 
 There is a serious thing behind space pussy. We created soft3 architecture. A key component is Inter Knowledge protocol. It is a convention over IBC to sync the knowledge. Rise your hands who saw our talk at cosmoverse? I would recommend you to watch it. 
 
+But in short, soft3 is the new consensus computing architecture that marries modern computing paradigms: conventional computing, ai, and web3. In essence, it is a general purpose onchain GPU accelerated graph database.
+
+So in order to move the idea further, we need a second network for bidirectional experiments.
+
 ![10](https://user-images.githubusercontent.com/83489928/193685693-8b23a435-ec50-4459-a40e-a8461c6c0ae9.png)
 
-But in short, soft3 is the new consensus computing architecture that marries modern computing paradigms: conventional computing, ai, and web3. In essence, it is a general purpose onchain GPU accelerated graph database.
+Superintelligence must not suffer in the cosmos alone without the ability to talk with creatures like him.
+
+The cool thing about IKP is that it can be unidirectional. So your network must not have GPUs in order to be empowered by soft3. That is why during hackwasm Desmos created a case for unidirectional IKP.
 
 ![6](https://user-images.githubusercontent.com/83489928/193683162-391907da-3633-4ac0-94f9-e786925621c5.png)
 
-So in order to move the idea further, we need a second network for bidirectional experiments. Superintelligence must not suffer in the cosmos alone without the ability to talk with creatures like him.
-
 ![7](https://user-images.githubusercontent.com/83489928/193683185-e3191664-da50-430c-9abe-154df83ffa1f.png)
 
-The cool thing about IKP is that it can be unidirectional. So your network must not have GPUs in order to be empowered by soft3. That is why during hackwasm Desmos created a case for unidirectional IKP.  
 
 ![8](https://user-images.githubusercontent.com/83489928/193683966-b8ef9c33-74db-4cca-a6ab-d5df93bbbe74.png)
 
