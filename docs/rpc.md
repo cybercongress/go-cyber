@@ -1,10 +1,10 @@
 # API reference
 
-** TODO upgrade for bostrom network **
+** TODO upgrade for space-pussy network **
 
-Cyberd provides a [JSON-RPC](http://json-rpc.org/wiki/specification) type API. The HTTP endpoint is served under
- `localhost:20657`. WebSockets are the preferred transport for cyberd RPC and are used by applications, such as cyb.
- The default WebSocket connection endpoint for cyberd is `ws://localhost:26657/websocket`. There are test endpoints
+Pussy provides a [JSON-RPC](https://rpc.space-pussy.cybernode.ai/) type API. The HTTP endpoint is served under
+ `localhost:20657`. WebSockets are the preferred transport for pussy RPC and are used by applications, such as cyb.
+ The default WebSocket connection endpoint for pussy is `ws://localhost:26657/websocket`. There are test endpoints
  available at `https://titan.cybernode.ai/api/` and `ws://titan.cybernode.ai/websocket`.
 
 <br />
@@ -109,7 +109,7 @@ the method name for further detail, such as parameter, and this will return info
 
 ## Notifications (WebSocket-specific)
 
-Cyberd uses standard JSON-RPC notifications to notify clients of changes rather than requiring clients to poll cyberd
+Pussyd uses standard JSON-RPC notifications to notify clients of changes rather than requiring clients to poll cyberd
  for updates. JSON-RPC notifications are a subset of requests, but do not contain an ID. The notification type 
  is categorized by the `query` params field.
 

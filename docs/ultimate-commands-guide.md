@@ -1,34 +1,34 @@
-# Ultimate cyber CLI guide. Chain: bostrom
+# Ultimate pussy CLI guide. Chain: space-pussy
 
-## Install cyber client
+## Install pussy client
 
-It is possible to interact with cyber even if you don't have your own node. All you need to do is install `cyber` client on your machine using the script below, paste it in the console (currently Linux supported):
-
-```bash
-bash < <(curl -s https://raw.githubusercontent.com/cybercongress/go-cyber/main/scripts/install_cyber.sh)
-```
-
-After installation you will be able to use `cyber` to [import accounts](#account-management), create links or swap tokens.
-
-I case when you have your own node, which already running inside Docker container, please add `docker exec -ti container-name` before every cyber command:
+It is possible to interact with pussy even if you don't have your own node. All you need to do is install `pussy` client on your machine using the script below, paste it in the console (currently Linux supported):
 
 ```bash
-docker exec -ti bostrom cyber --help
+bash < <(curl -s https://raw.githubusercontent.com/pussycongress/go-pussy/main/scripts/install_pussy.sh)
 ```
 
-First of all, I would like to encourage you to use the  `--help` feature if you want to get a better experience of using cyber. This is a really easy way to find all the necessary commands with the appropriate options and flags.
+After installation you will be able to use `pussy` to [import accounts](#account-management), create links or swap tokens.
+
+I case when you have your own node, which already running inside Docker container, please add `docker exec -ti container-name` before every pussy command:
+
+```bash
+docker exec -ti space-pussy pussy --help
+```
+
+First of all, I would like to encourage you to use the  `--help` feature if you want to get a better experience of using pussy. This is a really easy way to find all the necessary commands with the appropriate options and flags.
 
 For example, you can enter:
 
 ```bash
-cyber --help
+pussy --help
 ```
 
 You should see this message:
 
 ```bash
 Usage:
-  cyber [command]
+  pussy [command]
 
 Available Commands:
   add-genesis-account Add a genesis account to genesis.json
@@ -55,15 +55,15 @@ Available Commands:
 The help feature works like a pyramid, you can use it with any command to find available options, subcommands and flags. For example, lets explore the `query` subcommands:
 
 ```bash
-cyber query --help
+pussy query --help
 ```
 
 You can see the structure of the subcommand:
 
 ```bash
 Usage:
-  cyber query [flags]
-  cyber query [command]
+  pussy query [flags]
+  pussy query [command]
 ```
 
 And the available subcommands and flags:
@@ -108,27 +108,27 @@ Flags:
   -h, --help              help for query
 
 Global Flags:
-      --home string         directory for config and data (default "/root/.cyber")
+      --home string         directory for config and data (default "/root/.pussy")
       --log_format string   The logging format (json|plain) (default "plain")
       --log_level string    The logging level (trace|debug|info|warn|error|fatal|panic) (default "info")
       --trace               print out full stack trace on errors
 
-Use "cyber query [command] --help" for more information about a command.
+Use "pussy query [command] --help" for more information about a command.
 
 ```
 
 Let's explore the `bank` subcommand:
 
 ```bash
-cyber query bank --help
+pussy query bank --help
 ```
 
 We can see all of the options available for this subcommands, namely and account address:
 
 ```bash
 Usage:
-  cyber query bank [flags]
-  cyber query bank [command]
+  pussy query bank [flags]
+  pussy query bank [command]
 
 Available Commands:
   balances       Query for account balances by address
@@ -140,10 +140,10 @@ In most cases you will need just two extra flags:
 
 ```bash
 --from <your_key_name> \
---chain-id bostrom
+--chain-id space-pussy
 ```
 
-That's it. This is a very useful tool for using cyber and troubleshooting.
+That's it. This is a very useful tool for using pussy and troubleshooting.
 
 ## Glossary
 
@@ -151,7 +151,7 @@ That's it. This is a very useful tool for using cyber and troubleshooting.
 
 **Commission** -  The tokens that you've earned via validating from delegators.
 
-**Dyson Sphere** - Construct in cyber responsible for energy transformation and routing.
+**Dyson Sphere** - Construct in pussy responsible for energy transformation and routing.
 
 **Investminting** - Process of convertation Hydrogen to Volts or Amperes, locking certain ammount of H for certain ammount of time produce some V or A.
 
@@ -159,12 +159,12 @@ That's it. This is a very useful tool for using cyber and troubleshooting.
 
 **Hydrogen** - Token issued after boot delegation, 1:1 H to boot. Used to generate enery through Dyson sphere(investminting process).
 
-**Unbonding** - The process of taking back your share (delegated tokens + any rewards). 4 days for `bostrom` chain.
+**Unbonding** - The process of taking back your share (delegated tokens + any rewards). 4 days for `space-pussy` chain.
 
 
 **link** - A reference between a CID key and a CID value. Link message cost is `100*n`, where `n` is the number of links in a message. Link finalization time is 1 block. New rank for CIDs of links will be recalculated at a period of 5 blocks.
 
-**liquid tokens** - Transferable tokens within the cyber.
+**liquid tokens** - Transferable tokens within the pussy.
 
 **local keystore** - A store with keys on your local machine.
 
@@ -172,17 +172,17 @@ That's it. This is a very useful tool for using cyber and troubleshooting.
 
 **<comission_rate_percentage>** - The commission that a validator gets for their work. Must be a fraction >0 and <=1
 
-**<delegator_address>** - Delegator address. Starts with `bostrom` most often coinciding with **<key_address>**
+**<delegator_address>** - Delegator address. Starts with `space-pussy` most often coinciding with **<key_address>**
 
-**<key_address>** - An account address. Starts with `bostrom`
+**<key_address>** - An account address. Starts with `space-pussy`
 
-**<key_name>** - The name of the account in cyber
+**<key_name>** - The name of the account in pussy
 
-**<operator_address>** - Validator address. Starts with `cybervaloper`
+**<operator_address>** - Validator address. Starts with `pussyvaloper`
 
 **<shares_percentage>** - The part of illiquid tokens that you want to unbond or redelegate. Must be a fraction >0 and <=1
 
-**<chain_id>** - The current version of the chain  (bostrom).
+**<chain_id>** - The current version of the chain  (space-pussy).
 
 ## General commands
 
@@ -191,7 +191,7 @@ That's it. This is a very useful tool for using cyber and troubleshooting.
 Return the set of all active and jailed validators:
 
 ```bash
-cyber query staking validators 
+pussy query staking validators 
 ```
 
 ### Show chain status
@@ -199,13 +199,13 @@ cyber query staking validators
 Return general chain information:
 
 ```bash
- cyber status
+ pussy status
 ```
 
 ### Distribution params
 
 ```bash
- cyber query distribution params 
+ pussy query distribution params 
 ```
 
 ### Staking params
@@ -213,13 +213,13 @@ Return general chain information:
 Chain staking info:
 
 ```bash
- cyber query staking params 
+ pussy query staking params 
 ```
 
 ### Staking pool
 
 ```bash
- cyber query staking pool 
+ pussy query staking pool 
 ```
 
 ## Account management
@@ -227,13 +227,13 @@ Chain staking info:
 ### Import an account with a seed phrase and store it in the local keystore
 
 ```bash
- cyber keys add <your_key_name> --recover
+ pussy keys add <your_key_name> --recover
 ```
 
 ### Create a new account
 
 ```bash
- cyber keys add <your_key_name>
+ pussy keys add <your_key_name>
 ```
 
 ### Show account information
@@ -241,7 +241,7 @@ Chain staking info:
 Name, address and the public key of the current account
 
 ```bash
- cyber keys show <your_key_name>
+ pussy keys show <your_key_name>
 ```
 
 ### Show account balance
@@ -249,26 +249,26 @@ Name, address and the public key of the current account
 Return account number and amount of tokens.
 
 ```bash
- cyber query bank balances <your_key_address>
+ pussy query bank balances <your_key_address>
 ```
 
 ### List existing keys
 
-Return all the existing keys in cyber:
+Return all the existing keys in pussy:
 
 ```bash
- cyber keys list
+ pussy keys list
 ```
 
-### Delete account from cyber
+### Delete account from pussy
 
 ```bash
- cyber keys delete <deleting_key_name>
+ pussy keys delete <deleting_key_name>
 ```
 
 ### Keyring manipulation settings
 
-**Important note**: Starting with v.38, Cosmos-SDK uses os-native keyring to store all of your keys. We've noticed that in certain cases it does not work well by default (for example if you don't have any GUI installed on your machine). If during the execution `cyber keys add` command, you are getting this type of error:
+**Important note**: Starting with v.38, Cosmos-SDK uses os-native keyring to store all of your keys. We've noticed that in certain cases it does not work well by default (for example if you don't have any GUI installed on your machine). If during the execution `pussy keys add` command, you are getting this type of error:
 
 ```bash
 panic: No such interface 'org.freedesktop.DBus.Properties' on object at path /
@@ -292,20 +292,20 @@ You will have to use another keyring backend to keep your keys.
 In that case you'll have to use file based keyring by adding `--keyring-backend file` option to every key manipulation command:
 
 ```bash
-cyber keys add key_name --keyring-backend file
+pussy keys add key_name --keyring-backend file
 ```
 
-That means that you've set your keyring-backend to a local file. *Note*, in this case, all the keys in your keyring will be encrypted using the same password. If you would like to set up a unique password for each key, you should set a unique `--home` folder for each key. To do that, just use `--home=/<unique_path_to_key_folder>/` with setup keyring backend and at all interactions with keys when using cyber:
+That means that you've set your keyring-backend to a local file. *Note*, in this case, all the keys in your keyring will be encrypted using the same password. If you would like to set up a unique password for each key, you should set a unique `--home` folder for each key. To do that, just use `--home=/<unique_path_to_key_folder>/` with setup keyring backend and at all interactions with keys when using pussy:
 
 ```bash
-cyber keys add <your_second_key_name> --keyring-backend file --home=/<unique_path_to_key_folder>/
-cyber keys list --home=/<unique_path_to_key_folder>/
+pussy keys add <your_second_key_name> --keyring-backend file --home=/<unique_path_to_key_folder>/
+pussy keys list --home=/<unique_path_to_key_folder>/
 ```
 
 ### Send tokens
 
 ```bash
-cyber tx bank send [from_key_or_address] [to_address] [amount] --chain-id bostrom
+pussy tx bank send [from_key_or_address] [to_address] [amount] --chain-id space-pussy
 ```
 
 ### Linking content
@@ -313,13 +313,13 @@ cyber tx bank send [from_key_or_address] [to_address] [amount] --chain-id bostro
 Only IPFS hashes are available to use as CIDs
 
 ```bash
-cyber tx graph cyberlink [cid-from] [cid-to] [flags] --chain-id=bostrom
+pussy tx graph pussylink [cid-from] [cid-to] [flags] --chain-id=space-pussy
 ```
 
 Real command example:
 
 ```bash 
-cyber tx graph cyberlink QmWZYRj344JSLShtBnrMS4vw5DQ2zsGqrytYKMqcQgEneB QmfZwbahFLTcB3MTMT8TA8si5khhRmzm7zbHToo4WVK3zn --from fuckgoogle --chain-id bostrom --yes
+pussy tx graph pussylink QmWZYRj344JSLShtBnrMS4vw5DQ2zsGqrytYKMqcQgEneB QmfZwbahFLTcB3MTMT8TA8si5khhRmzm7zbHToo4WVK3zn --from fuckgoogle --chain-id space-pussy --yes
 ```
 
 ## Validator commands
@@ -327,59 +327,59 @@ cyber tx graph cyberlink QmWZYRj344JSLShtBnrMS4vw5DQ2zsGqrytYKMqcQgEneB QmfZwbah
 ### Get all validators
 
 ```bash
- cyber query staking validators 
+ pussy query staking validators 
 ```
 
 ### State of a current validator
 
 ```bash
-cyber query staking validator <operator_address>
+ pussy query staking validator <operator_address>
 ```
 
 ### Return all delegations to a validator
 
 ```bash
- cyber query staking delegations-to <operator_address>
+ pussy query staking delegations-to <operator_address>
 ```
 
 ### Edit the commission in an existing validator account
 
 ```bash
- cyber tx staking edit-validator \
+ pussy tx staking edit-validator \
   --from=<your_key_name> \
   --commission-rate=<new_comission_rate_percentage> \
-  --chain-id=bostrom
+  --chain-id=space-pussy
 ```
 
 ### Withdraw the commission for any delegation
 
 ```bash
- cyber tx distribution withdraw-rewards <operator_address> \
+ pussy tx distribution withdraw-rewards <operator_address> \
   --from=<your_key_name> \
-  --chain-id=bostrom \
+  --chain-id=space-pussy \
   --commission
 ```
 
 ### Edit the site and description for an existing validator account
 
 ```bash
- cyber tx staking edit-validator \
+ pussy tx staking edit-validator \
   --from=<your_key_name> \
   --details="<description>" \
   --website=<your_website> \
-  --chain-id=bostrom
+  --chain-id=space-pussy
 ```
 
 ### Unjail a validator previously jailed for downtime
 
 ```bash
- cyber tx slashing unjail --from=<your_key_name> --chain-id=bostrom
+ pussy tx slashing unjail --from=<your_key_name> --chain-id=space-pussy
 ```
 
 ### Get info about a redelegation process from a validator
 
 ```bash
- cyber query staking redelegations-from <operator_address>
+ pussy query staking redelegations-from <operator_address>
 ```
 
 ## Delegator commands
@@ -387,57 +387,57 @@ cyber query staking validator <operator_address>
 ### Return distribution delegator rewards for a specified validator
 
 ```bash
- cyber query distribution rewards <delegator_address> <operator_address>
+ pussy query distribution rewards <delegator_address> <operator_address>
 ```
 
 ### Return delegator shares for the specified validator
 
 ```bash
- cyber query staking delegation <delegator_address> <operator_address>
+ pussy query staking delegation <delegator_address> <operator_address>
 ```
 
 ### Return all of the delegations made from a delegator
 
 ```bash
- cyber query staking delegations <delegator_address>
+ pussy query staking delegations <delegator_address>
 ```
 
 ### Return all unbonding delegations from a validator
 
 ```bash
- cyber query staking unbonding-delegations-from <operator_address>
+ pussy query staking unbonding-delegations-from <operator_address>
 ```
 
 ### Withdraw rewards for any delegation
 
 ```bash
- cyber tx distribution withdraw-rewards <operator_address> \
+ pussy tx distribution withdraw-rewards <operator_address> \
   --from=<your_key_name> \
-  --chain-id=bostrom
+  --chain-id=space-pussy
 ```
 
 ### Withdraw all delegation rewards
 
 ```bash
- cyber tx distribution withdraw-all-rewards \
+ pussy tx distribution withdraw-all-rewards \
   --from=<your_key_name> \
-  --chain-id=bostrom
+  --chain-id=space-pussy
 ```
 
 ### Change the default withdrawal address for rewards associated with an address
 
 ```bash
- cyber tx distribution set-withdraw-addr <your_new_address> \
+ pussy tx distribution set-withdraw-addr <your_new_address> \
   --from=<your_key_name> \
-  --chain-id=bostrom
+  --chain-id=space-pussy
 ```
 
 ### Delegate liquid tokens to a validator
 
 ```bash
- cyber tx staking delegate <operator_address> <amount_cyb> \
+ pussy tx staking delegate <operator_address> <amount_cyb> \
   --from=<your_key_name> \
-  --chain-id=bostrom
+  --chain-id=space-pussy
 ```
 
 ### Redelegate illiquid tokens from one validator to another in absolute cyb value
@@ -445,15 +445,15 @@ cyber query staking validator <operator_address>
 > There is a 4-day unbonding period
 
 ```bash
- cyber tx staking redelegate <old_operator_address> <new_operator_address> <amount_cyb> --from=<your_key_name> --chain-id=bostrom
+ pussy tx staking redelegate <old_operator_address> <new_operator_address> <amount_cyb> --from=<your_key_name> --chain-id=space-pussy
 ```
 
 ### Redelegate illiquid tokens from one validator to another in percentages
 
 ```bash
- cyber tx staking redelegate <old_operator_address> <new_operator_address> <shares_percentage>
+ pussy tx staking redelegate <old_operator_address> <new_operator_address> <shares_percentage>
   --from=<your_key_name> \
-  --chain-id=bostrom
+  --chain-id=space-pussy
 ```
 
 ### Unbond shares from a validator in absolute cyb value
@@ -461,9 +461,9 @@ cyber query staking validator <operator_address>
 > 4 days for unbonding
 
 ```bash
- cyber tx staking unbond <operator_address> <amount_cyb>
+ pussy tx staking unbond <operator_address> <amount_cyb>
   --from=<your_key_name> \
-  --chain-id=bostrom
+  --chain-id=space-pussy
 ```
 
 ### Unbond shares from a validator in percentages
@@ -471,33 +471,33 @@ cyber query staking validator <operator_address>
 > 4 days for unbonding
 
 ```bash
- cyber tx staking unbond <operator_address> <shares_percentage>
+ pussy tx staking unbond <operator_address> <shares_percentage>
   --from=<your_key_name> \
-  --chain-id=bostrom
+  --chain-id=space-pussy
 ```
 
 ### Get info about the unbonding delegation process to any validator
 
 ```bash
- cyber query staking unbonding-delegation <delegator_address> <operator_address>
+ pussy query staking unbonding-delegation <delegator_address> <operator_address>
 ```
 
 ### Get info about the unbonding delegation process to all unbonded validators
 
 ```bash
- cyber query staking unbonding-delegation <delegator_address>
+ pussy query staking unbonding-delegation <delegator_address>
 ```
 
 ### Get info about redelegation process from to current validator
 
 ```bash
- cyber query staking redelegation <delegator_address> <old_operator_address> <new_operator_address>
+ pussy query staking redelegation <delegator_address> <old_operator_address> <new_operator_address>
 ```
 
 ### Get the info about all the redelegation processes by a delegator
 
 ```bash
- cyber query staking redelegations <delegator_address>
+ pussy query staking redelegations <delegator_address>
 ```
 
 ## Governance and voting
@@ -505,43 +505,43 @@ cyber query staking validator <operator_address>
 ### Query specific proposal
 
 ```bash
-cyber q gov proposal <proposal_id> 
+ pussy q gov proposal <proposal_id> 
 ```
 
 ### Query all proposals
 
 ```bash
-cyber q gov proposals 
+ pussy q gov proposals 
 ```
 
 ### Query votes on proposal
 
 ```bash
-cyber q gov votes 
+ pussy q gov votes 
 ```
 
 ### Query parameters from governance module
 
 ```bash
-cyber q gov params
+ pussy q gov params
 ```
 
 ### Vote for specific proposal
 
 ```bash
-cyber tx gov vote <proposal_id> <vote_option:_yes_no_abstain> --from <your_key_name> --chain-id bostrom
+pussy tx gov vote <proposal_id> <vote_option:_yes_no_abstain> --from <your_key_name> --chain-id space-pussy
 ```
 
 ### Submit text proposal
 
 ```bash
-cyber tx gov submit-proposal --title="Test Proposal" --description="My awesome proposal" --type="Text" --deposit="10boot" --from <your_key_name> --chain-id bostrom
+pussy tx gov submit-proposal --title="Test Proposal" --description="My awesome proposal" --type="Text" --deposit="10boot" --from <your_key_name> --chain-id space-pussy
 ```
 
 ### Submit community spend proposal
 
 ```bash
-cyber tx gov submit-proposal community-pool-spend <path/to/proposal.json> --from <key_or_address> --chain-id bostrom
+pussy tx gov submit-proposal community-pool-spend <path/to/proposal.json> --from <key_or_address> --chain-id space-pussy
 ```
 
 Where `proposal.json` is a file, structured in following way:
@@ -550,7 +550,7 @@ Where `proposal.json` is a file, structured in following way:
 {
   "title": "Community Pool Spend",
   "description": "Pay me some boots!",
-  "recipient": "bostrom1s5afhd6gxevu37mkqcvvsj8qeylhn0rz46zdlq",
+  "recipient": "space-pussy1s5afhd6gxevu37mkqcvvsj8qeylhn0rz46zdlq",
   "amount": [
     {
       "denom": "boot",
@@ -569,7 +569,7 @@ Where `proposal.json` is a file, structured in following way:
 ### Submit chain parameters change proposal
 
 ```bash
-cyber tx gov submit-proposal param-change <path/to/proposal.json> --from=<key_or_address> --chain-id bostrom
+pussy tx gov submit-proposal param-change <path/to/proposal.json> --from=<key_or_address> --chain-id space-pussy
 ```
 
 Where `proposal.json` is a file, structured in following way:
@@ -648,14 +648,14 @@ Few examples of real param-change proposals:
 
 ## Liquidity and pools 
 
-Cyber has Gravity-DEX module implemented, so it is possible to create pools, swap tokens and add\remove liquidity to exisitng pools: 
+pussy has Gravity-DEX module implemented, so it is possible to create pools, swap tokens and add\remove liquidity to exisitng pools: 
 
 ```bash
 Liquidity transaction subcommands
 
 Usage:
-  cyber tx liquidity [flags]
-  cyber tx liquidity [command]
+  pussy tx liquidity [flags]
+  pussy tx liquidity [command]
 
 Available Commands:
   create-pool Create liquidity pool and deposit coins
@@ -674,7 +674,7 @@ New liquidity pools can be created only for coin combinations that do not alread
 [deposit-coins]: The amount of coins to deposit to the liquidity pool. The number of deposit coins must be 2 in pool type 1.
 
 ```json
-cyber tx liquidity create-pool 1 2000000milliampere,200000000000boot --from fuckgoogle --chain-id bostrom  --yes
+pussy tx liquidity create-pool 1 2000000milliampere,200000000000boot --from fuckgoogle --chain-id space-pussy  --yes
 ```
 
 ### Deposit tokens to liquidity pool
@@ -687,7 +687,7 @@ All requests in a batch are treated equally and executed at the same swap price.
 Example:
 
 ```bash
-cyber tx liquidity deposit 1 100000000milliampere,50000000000boot --from mykey
+pussy tx liquidity deposit 1 100000000milliampere,50000000000boot --from mykey
 ```
 
 This example request deposits 100000000milliampere and 50000000000boot to pool-id 1.
@@ -710,7 +710,7 @@ Swap orders are executed only when the execution swap price is equal to or great
 Example:
 
 ```bash
-cyber tx liquidity swap 1 1 50000000boot hydrogen 0.019 0.003 --from mykey
+pussy tx liquidity swap 1 1 50000000boot hydrogen 0.019 0.003 --from mykey
 ```
 
 For this example, imagine that an existing liquidity pool has with 1000000000hydrogen and 50000000000boot.
@@ -733,7 +733,7 @@ The only supported swap-type is 1. For the detailed swap algorithm, see https://
 Usage:
 
 ```bash
-  cyber tx liquidity swap [pool-id] [swap-type] [offer-coin] [demand-coin-denom] [order-price] [swap-fee-rate] [flags]
+  pussy tx liquidity swap [pool-id] [swap-type] [offer-coin] [demand-coin-denom] [order-price] [swap-fee-rate] [flags]
 ```
 
 ### Withdraw tokens from liquidity pool
@@ -746,7 +746,7 @@ All requests in a batch are treated equally and executed at the same swap price.
 Example:
 
 ```bash
- cyber tx liquidity withdraw 1 10000pool96EF6EA6E5AC828ED87E8D07E7AE2A8180570ADD212117B2DA6F0B75D17A6295 --from mykey
+ pussy tx liquidity withdraw 1 10000pool96EF6EA6E5AC828ED87E8D07E7AE2A8180570ADD212117B2DA6F0B75D17A6295 --from mykey
 ```
 
 This example request withdraws 10000 pool coin from the specified liquidity pool.
@@ -758,7 +758,7 @@ The appropriate pool coin must be requested from the specified pool.
 Usage:
 
 ```bash
-  cyber tx liquidity withdraw [pool-id] [pool-coin] [flags]
+  pussy tx liquidity withdraw [pool-id] [pool-coin] [flags]
 ```
 
 ### Query existing pools
@@ -766,20 +766,20 @@ Usage:
 Query details of a liquidity pool
 
 ```bash
-cyber query liquidity pool 1
+pussy query liquidity pool 1
 ```
 
 Example (with pool coin denom):
 
 ```bash
-cyber query liquidity pool --pool-coin-denom=[denom]
+pussy query liquidity pool --pool-coin-denom=[denom]
 ```
 
 Query details about all liquidity pools on a network.
 Example:
 
 ```bash
-cyber query liquidity pools
+pussy query liquidity pools
 ```
 
 ## 

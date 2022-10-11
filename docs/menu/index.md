@@ -7,7 +7,7 @@ headless: true
   - [Supported GPUs list]({{< relref "/docs/go-cyber/supported_gpu_list.md" >}})
   - [CLI guide]({{< relref "/docs/go-cyber/ultimate-commands-guide.md" >}})
   - [Port forwarding]({{< relref "/docs/go-cyber/port_forwarding_guide.md" >}})
-  - [Cyberd Ledger guide]({{< relref "/docs/go-cyber/cyber_Ledger_guide.md" >}})
+  - [Pussyd Ledger guide]({{< relref "/docs/go-cyber/pussy_Ledger_guide.md" >}})
   - [Multisig guide]({{< relref "/docs/go-cyber/multisig_guide.md" >}})
   - [Run validator with Tendermint and Ledger]({{< relref "/docs/go-cyber/validator_launch_with_tendermintKMS_and_ledger.md" >}})
   - [Set up config.toml in the right way]({{< relref "/docs/go-cyber/setup_cyber_configuration.md" >}})
