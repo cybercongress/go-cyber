@@ -4,7 +4,7 @@
 
 1. **[Run validator guide](run_validator.md)**
 2. **[Use CLI guide](ultimate-commands-guide.md)**
-3. **[Setup daemon config guide](setup_cyber_configuration.md)**
+3. **[Setup daemon config guide](setup_pussy_configuration.md)**
 4. **[Setup local dev environment guide](setup_dev_env.md)**
 5. **[Deploy contract guide]()**
 6. **[Create proposal guide]()**

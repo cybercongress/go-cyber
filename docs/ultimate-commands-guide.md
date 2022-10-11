@@ -5,7 +5,7 @@
 It is possible to interact with pussy even if you don't have your own node. All you need to do is install `pussy` client on your machine using the script below, paste it in the console (currently Linux supported):
 
 ```bash
-bash < <(curl -s https://raw.githubusercontent.com/pussycongress/go-pussy/main/scripts/install_pussy.sh)
+bash < <(curl -s https://raw.githubusercontent.com/cybercongress/go-cyber/main/scripts/install_cyber.sh)
 ```
 
 After installation you will be able to use `pussy` to [import accounts](#account-management), create links or swap tokens.
