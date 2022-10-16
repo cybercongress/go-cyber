@@ -19,7 +19,6 @@ func MakeEncodingConfig() params.EncodingConfig {
 }
 
 func MakeTestEncodingConfig() simappparams.EncodingConfig {
-
 	encodingConfig := params.MakeEncodingConfig()
 	std.RegisterLegacyAminoCodec(encodingConfig.Amino)
 	std.RegisterInterfaces(encodingConfig.InterfaceRegistry)

@@ -17,7 +17,7 @@ func NewThought(
 		Program:  program,
 		Trigger:  trigger,
 		Load:     load,
-		Name :    name,
+		Name:     name,
 		Particle: particle,
 	}
 }
@@ -34,22 +34,21 @@ func (js Thoughts) Len() int { return len(js) }
 
 func (js Thoughts) Less(i, j int) bool {
 	return js[j].Load.GasPrice.IsLT(js[i].Load.GasPrice)
-	//return js[i].Load.GasPrice.Amount.GT(js[j].Load.GasPrice.Amount)
+	// return js[i].Load.GasPrice.Amount.GT(js[j].Load.GasPrice.Amount)
 }
 
 func (js Thoughts) Swap(i, j int) { js[i], js[j] = js[j], js[i] }
 
 //______________________________________________________________________
 
-
-func NewTrigger (period, block uint64) Trigger {
+func NewTrigger(period, block uint64) Trigger {
 	return Trigger{
 		Period: period,
-		Block: block,
+		Block:  block,
 	}
 }
 
-func NewStats (
+func NewStats(
 	program, name string,
 	calls, fees, gas, block uint64,
 ) ThoughtStats {
@@ -63,7 +62,7 @@ func NewStats (
 	}
 }
 
-func NewLoad (calldata string, gasprice sdk.Coin) Load {
+func NewLoad(calldata string, gasprice sdk.Coin) Load {
 	return Load{
 		Input:    calldata,
 		GasPrice: gasprice,

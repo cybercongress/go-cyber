@@ -38,4 +38,3 @@ type CosmosApp interface {
 	// All the registered module account addreses.
 	ModuleAccountAddrs() map[string]bool
 }
-

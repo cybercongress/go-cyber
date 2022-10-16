@@ -21,12 +21,11 @@ func NewQuerier(gk GraphKeeper, legacyQuerierCdc *codec.LegacyAmino) sdk.Querier
 	}
 }
 
-func queryGraphStats(ctx sdk.Context, _ abci.RequestQuery, gk GraphKeeper, legacyQuerierCdc *codec.LegacyAmino,) ([]byte, error) {
+func queryGraphStats(ctx sdk.Context, _ abci.RequestQuery, gk GraphKeeper, legacyQuerierCdc *codec.LegacyAmino) ([]byte, error) {
 	links := gk.GetLinksCount(ctx)
 	cids := gk.GetCidsCount(ctx)
 
 	res, err := codec.MarshalJSONIndent(legacyQuerierCdc, types.QueryGraphStatsResponse{links, cids})
-
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
 	}

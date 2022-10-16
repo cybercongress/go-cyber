@@ -15,8 +15,10 @@ import (
 	"github.com/cybercongress/go-cyber/x/dmn/types"
 )
 
-var _ WasmQuerierInterface = WasmQuerier{}
-var _ WasmMsgParserInterface = WasmMsgParser{}
+var (
+	_ WasmQuerierInterface   = WasmQuerier{}
+	_ WasmMsgParserInterface = WasmMsgParser{}
+)
 
 //--------------------------------------------------
 
@@ -31,7 +33,9 @@ func NewWasmMsgParser() WasmMsgParser {
 	return WasmMsgParser{}
 }
 
-func (WasmMsgParser) Parse(_ sdk.AccAddress, _ wasmTypes.CosmosMsg) ([]sdk.Msg, error) { return nil, nil }
+func (WasmMsgParser) Parse(_ sdk.AccAddress, _ wasmTypes.CosmosMsg) ([]sdk.Msg, error) {
+	return nil, nil
+}
 
 type CosmosMsg struct {
 	CreateThought         *types.MsgCreateThought         `json:"create_thought,omitempty"`
@@ -106,16 +110,16 @@ type Load struct {
 }
 
 type QueryThoughtParams struct {
-	Program  string `json:"program"`
-	Name     string `json:"name"`
+	Program string `json:"program"`
+	Name    string `json:"name"`
 }
 
 type ThoughtQueryResponse struct {
-	Program  string `json:"program"`
+	Program  string  `json:"program"`
 	Trigger  Trigger `json:"trigger"`
-	Load 	 Load 	`json:"load"`
-	Name     string `json:"name"`
-	Particle string `json:"particle"`
+	Load     Load    `json:"load"`
+	Name     string  `json:"name"`
+	Particle string  `json:"particle"`
 }
 
 type ThoughtStatsQueryResponse struct {
@@ -134,7 +138,6 @@ type LowestFeeResponse struct {
 func (querier WasmQuerier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([]byte, error) {
 	var query CosmosQuery
 	err := json.Unmarshal(data, &query)
-
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
@@ -144,7 +147,8 @@ func (querier WasmQuerier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([
 	if query.Thought != nil {
 
 		program, _ := sdk.AccAddressFromBech32(query.Thought.Program)
-		thought, found := querier.Keeper.GetThought(ctx, program, query.Thought.Name); if found != true {
+		thought, found := querier.Keeper.GetThought(ctx, program, query.Thought.Name)
+		if found != true {
 			return nil, sdkerrors.ErrInvalidRequest
 		}
 
@@ -155,22 +159,23 @@ func (querier WasmQuerier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([
 				Load:     convertLoadToWasmLoad(thought.Load),
 				Name:     thought.Name,
 				Particle: thought.Particle,
-		})
+			})
 	} else if query.ThoughtStats != nil {
 		program, _ := sdk.AccAddressFromBech32(query.ThoughtStats.Program)
-		thoughtStats, found := querier.Keeper.GetThoughtStats(ctx, program, query.ThoughtStats.Name); if found != true {
+		thoughtStats, found := querier.Keeper.GetThoughtStats(ctx, program, query.ThoughtStats.Name)
+		if found != true {
 			return nil, sdkerrors.ErrInvalidRequest
 		}
 
 		bz, err = json.Marshal(
 			ThoughtStatsQueryResponse{
 				Program:   thoughtStats.Program,
-				Name :     thoughtStats.Name,
+				Name:      thoughtStats.Name,
 				Calls:     thoughtStats.Calls,
 				Fees:      thoughtStats.Fees,
 				Gas:       thoughtStats.Gas,
 				LastBlock: thoughtStats.LastBlock,
-		})
+			})
 	} else if query.LowestFee != nil {
 		lowestFee := querier.Keeper.GetLowestFee(ctx)
 		bz, err = json.Marshal(
