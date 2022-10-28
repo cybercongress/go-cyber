@@ -24,8 +24,8 @@ const (
 
 var (
 	DefaultHome = os.ExpandEnv("$HOME/") + ".cyber/data"
-	rootCmd = &cobra.Command{Use: "iavltool"}
-	home string
+	rootCmd     = &cobra.Command{Use: "iavltool"}
+	home        string
 )
 
 // TODO autoconf stores
@@ -70,7 +70,7 @@ func init() {
 var dataCmd = &cobra.Command{
 	Use:   "data [store] [version] [kv] [hash]",
 	Short: "Print data of given stores at given block",
-	Args: cobra.MinimumNArgs(0),
+	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		db, err := OpenDb(home)
 		if err != nil {
@@ -92,7 +92,9 @@ var dataCmd = &cobra.Command{
 			fallthrough
 		case 1:
 			var a []string
-			if args[0] != "all" { stores = append(a, args[0]) }
+			if args[0] != "all" {
+				stores = append(a, args[0])
+			}
 		}
 
 		for _, name := range stores {
@@ -104,7 +106,12 @@ var dataCmd = &cobra.Command{
 			if keysOpt {
 				PrintKeys(tree, hashingOpt)
 			}
-			fmt.Printf("Hash: %X\n", tree.Hash())
+			hash, err := tree.Hash()
+			if err != nil {
+				fmt.Printf("Error: %X\n", err)
+			} else {
+				fmt.Printf("Hash: %X\n", hash)
+			}
 			fmt.Printf("Size: %X\n", tree.Size())
 		}
 	},
@@ -113,7 +120,7 @@ var dataCmd = &cobra.Command{
 var shapeCmd = &cobra.Command{
 	Use:   "shape [store] [version]",
 	Short: "Print shape of given stores at given block",
-	Args: cobra.MinimumNArgs(0),
+	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		db, err := OpenDb(home)
 		if err != nil {
@@ -142,7 +149,7 @@ var shapeCmd = &cobra.Command{
 var versionsCmd = &cobra.Command{
 	Use:   "versions [store]",
 	Short: "Print shape of given stores at given block",
-	Args: cobra.MinimumNArgs(1),
+	Args:  cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		db, err := OpenDb(home)
 		if err != nil {
@@ -161,7 +168,7 @@ var versionsCmd = &cobra.Command{
 var deleteCmd = &cobra.Command{
 	Use:   "delete [store] [from] [to]",
 	Short: "Delete versions range for given stores",
-	Args: cobra.MinimumNArgs(0),
+	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		db, err := OpenDb(home)
 		if err != nil {
@@ -179,7 +186,9 @@ var deleteCmd = &cobra.Command{
 			fallthrough
 		case 1:
 			var a []string
-			if args[0] != "all" { stores = append(a, args[0]) }
+			if args[0] != "all" {
+				stores = append(a, args[0])
+			}
 		}
 
 		for _, name := range stores {
@@ -201,7 +210,7 @@ var deleteCmd = &cobra.Command{
 var statsCmd = &cobra.Command{
 	Use:   "stats [store] [version]",
 	Short: "Print shape of given stores at given block",
-	Args: cobra.MinimumNArgs(0),
+	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		db, err := OpenDb(home)
 		if err != nil {
@@ -215,11 +224,11 @@ var statsCmd = &cobra.Command{
 var pruneCmd = &cobra.Command{
 	Use:   "prune",
 	Short: "Prune leveldb",
-	Args: cobra.NoArgs,
+	Args:  cobra.NoArgs,
 	Run: func(cmd *cobra.Command, args []string) {
 		db, _ := goleveldb.OpenFile(home+"/application.db", nil)
 		defer db.Close()
-		_ = db.CompactRange(util.Range{nil,nil})
+		_ = db.CompactRange(util.Range{nil, nil})
 	},
 }
 
@@ -251,7 +260,7 @@ func PrintDbStats(db dbm.DB) {
 // If version is 0, load latest, otherwise, load named version
 func ReadTree(db dbm.DB, version int64, name string) (*iavl.MutableTree, error) {
 	fmt.Println("--------------[", name, "]--------------")
-	tree, err := iavl.NewMutableTree(dbm.NewPrefixDB(db, []byte("s/k:"+name+"/")), DefaultCacheSize)
+	tree, err := iavl.NewMutableTree(dbm.NewPrefixDB(db, []byte("s/k:"+name+"/")), DefaultCacheSize, false)
 	if err != nil {
 		return nil, err
 	}
@@ -261,7 +270,7 @@ func ReadTree(db dbm.DB, version int64, name string) (*iavl.MutableTree, error) 
 }
 
 func GetTree(db dbm.DB, name string) (*iavl.MutableTree, error) {
-	tree, err := iavl.NewMutableTree(dbm.NewPrefixDB(db, []byte("s/k:"+name+"/")), DefaultCacheSize)
+	tree, err := iavl.NewMutableTree(dbm.NewPrefixDB(db, []byte("s/k:"+name+"/")), DefaultCacheSize, false)
 	if err != nil {
 		return nil, err
 	}
@@ -310,8 +319,12 @@ func encodeID(id []byte) string {
 
 func PrintShape(tree *iavl.MutableTree) {
 	// shape := tree.RenderShape("  ", nil)
-	shape := tree.RenderShape("  ", nodeEncoder)
-	fmt.Println(strings.Join(shape, "\n"))
+	shape, err := tree.RenderShape("  ", nodeEncoder)
+	if err != nil {
+		fmt.Println("Error: ", err)
+	} else {
+		fmt.Println(strings.Join(shape, "\n"))
+	}
 }
 
 func nodeEncoder(id []byte, depth int, isLeaf bool) string {
