@@ -26,7 +26,7 @@ func (bk StateKeeper) Rank(goCtx context.Context, req *types.QueryRankRequest) (
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	cidNum, exist := bk.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(req.Particle))
-	if exist != true {
+	if !exist {
 		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, req.Particle)
 	}
 
@@ -42,7 +42,7 @@ func (bk *StateKeeper) Search(goCtx context.Context, req *types.QuerySearchReque
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	cidNum, exist := bk.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(req.Particle))
-	if exist != true {
+	if !exist {
 		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, "")
 	}
 
@@ -71,7 +71,7 @@ func (bk *StateKeeper) Backlinks(goCtx context.Context, req *types.QuerySearchRe
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	cidNum, exist := bk.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(req.Particle))
-	if exist != true {
+	if !exist {
 		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, req.Particle)
 	}
 
@@ -100,8 +100,7 @@ func (bk *StateKeeper) Top(goCtx context.Context, req *querytypes.PageRequest) (
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// TODO check pagination
-	page, limit := uint32(0), uint32(100)
-	page, limit = req.Page, req.PerPage
+	page, limit := req.Page, req.PerPage
 	topRankedCidNumbers, totalSize, err := bk.index.Top(page, limit)
 	if err != nil {
 		panic(err)
@@ -162,12 +161,12 @@ func (bk StateKeeper) IsAnyLinkExist(goCtx context.Context, req *types.QueryIsAn
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	cidNumFrom, exist := bk.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(req.From))
-	if exist != true {
+	if !exist {
 		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, req.From)
 	}
 
 	cidNumTo, exist := bk.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(req.To))
-	if exist != true {
+	if !exist {
 		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, req.To)
 	}
 
@@ -184,7 +183,7 @@ func (s *StateKeeper) ParticleNegentropy(goCtx context.Context, request *types.Q
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	cidNum, exist := s.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(request.Particle))
-	if exist != true {
+	if !exist {
 		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, request.Particle)
 	}
 

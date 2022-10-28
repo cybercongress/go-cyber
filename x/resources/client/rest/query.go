@@ -22,7 +22,7 @@ func registerQueryRoutes(cliCtx client.Context, r *mux.Router) {
 		queryParamsHandlerFn(cliCtx)).Methods("GET")
 
 	r.HandleFunc(
-		fmt.Sprintf("/resources/investmint"),
+		"/resources/investmint",
 		queryInvestmintHandlerFn(cliCtx)).Methods("GET")
 }
 

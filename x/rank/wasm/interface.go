@@ -31,15 +31,15 @@ func NewWasmQuerier(keeper *keeper.StateKeeper) WasmQuerier {
 func (WasmQuerier) Query(_ sdk.Context, _ wasmvmtypes.QueryRequest) ([]byte, error) { return nil, nil }
 
 type CosmosQuery struct {
-	ParticleRank      *QueryParticleRankParams `json:"particle_rank,omitempty"`
+	ParticleRank *QueryParticleRankParams `json:"particle_rank,omitempty"`
 }
 
 type QueryParticleRankParams struct {
-	Particle  string `json:"particle"`
+	Particle string `json:"particle"`
 }
 
 type ParticleRankResponse struct {
-	Rank 	  uint64 `json:"rank"`
+	Rank uint64 `json:"rank"`
 }
 
 func (querier WasmQuerier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([]byte, error) {

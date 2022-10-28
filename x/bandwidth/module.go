@@ -29,8 +29,7 @@ var (
 	_ module.AppModuleBasic = AppModuleBasic{}
 )
 
-
-type AppModuleBasic struct{
+type AppModuleBasic struct {
 	cdc codec.Codec
 }
 
@@ -71,8 +70,8 @@ func (AppModuleBasic) RegisterInterfaces(_ codectypes.InterfaceRegistry) {}
 type AppModule struct {
 	AppModuleBasic
 
-	ak             authkeeper.AccountKeeper
-	bm			   *keeper.BandwidthMeter
+	ak authkeeper.AccountKeeper
+	bm *keeper.BandwidthMeter
 }
 
 func NewAppModule(
@@ -82,8 +81,8 @@ func NewAppModule(
 ) AppModule {
 	return AppModule{
 		AppModuleBasic: AppModuleBasic{cdc: cdc},
-		ak:		  ak,
-		bm:		  bm,
+		ak:             ak,
+		bm:             bm,
 	}
 }
 

@@ -26,9 +26,7 @@ type IndexKeeper struct {
 	nextRankOutLinks types.Links
 
 	// Inter-block cache for cyberlinks, reset on every block during Commit
-	tkey        sdk.StoreKey
-
-	currentBlockLinks []types.CompactLink
+	tkey sdk.StoreKey
 }
 
 func NewIndexKeeper(gk GraphKeeper, tkey sdk.StoreKey) *IndexKeeper {
@@ -88,7 +86,9 @@ func (i *IndexKeeper) MergeContextLinks(ctx sdk.Context) {
 func (i *IndexKeeper) HasNewLinks(ctx sdk.Context) bool {
 	store := ctx.TransientStore(i.tkey)
 	hasLinks := store.Get(types.HasNewLinks)
-	if hasLinks == nil { return false }
+	if hasLinks == nil {
+		return false
+	}
 	return sdk.BigEndianToUint64(hasLinks) > 0
 }
 
@@ -158,5 +158,3 @@ func (i *IndexKeeper) LoadFromReader(ctx sdk.Context, reader io.Reader) (err err
 	}
 	return
 }
-
-

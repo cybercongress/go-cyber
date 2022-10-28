@@ -19,7 +19,6 @@ const (
 	CidCountBytesSize  = uint64(8)
 )
 
-
 // Return cid number and true, if cid exists
 func (gk GraphKeeper) GetCidNumber(ctx sdk.Context, cid types.Cid) (types.CidNumber, bool) {
 	store := ctx.KVStore(gk.key)

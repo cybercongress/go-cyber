@@ -13,17 +13,17 @@ import (
 )
 
 type BaseSearchIndex struct {
-	links 	   []cidLinks
-	backlinks  []cidLinks
-	rank  	   Rank
+	links     []cidLinks
+	backlinks []cidLinks
+	rank      Rank
 
-	linksChan  chan graphtypes.CompactLink
-	rankChan   chan Rank
-	errChan    chan error
+	linksChan chan graphtypes.CompactLink
+	rankChan  chan Rank
+	errChan   chan error
 
-	locked     bool
+	locked bool
 
-	logger     log.Logger
+	logger log.Logger
 }
 
 func NewBaseSearchIndex(log log.Logger) *BaseSearchIndex {
@@ -55,7 +55,7 @@ func (i *BaseSearchIndex) Load(links graphtypes.Links) {
 	for from, toCids := range links {
 		i.extendIndex(uint64(from))
 
-		for to, _ := range toCids {
+		for to := range toCids {
 			i.putLinkIntoIndex(from, to)
 
 			i.extendReverseIndex(uint64(to))
@@ -171,7 +171,7 @@ func (i *BaseSearchIndex) handleLink(link graphtypes.CompactLink) {
 	fromIndex := i.links[link.From]
 	// in case unlock signal received we could operate on this index otherwise put link in the end of queue and finish
 	select {
-	case _ = <-fromIndex.unlockSignal:
+	case <-fromIndex.unlockSignal:
 		i.putLinkIntoIndex(graphtypes.CidNumber(link.From), graphtypes.CidNumber(link.To))
 		fromIndex.Unlock()
 		break
@@ -187,7 +187,7 @@ func (i *BaseSearchIndex) handleBacklink(link graphtypes.CompactLink) {
 	toIndex := i.backlinks[link.To]
 	// in case unlock signal received we could operate on this index otherwise put link in the end of queue and finish
 	select {
-	case _ = <-toIndex.unlockSignal:
+	case <-toIndex.unlockSignal:
 		i.putBacklinkIntoIndex(graphtypes.CidNumber(link.From), graphtypes.CidNumber(link.To))
 		toIndex.Unlock()
 		break

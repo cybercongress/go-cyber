@@ -2,6 +2,13 @@ package app
 
 import (
 	"fmt"
+	"io"
+	"net/http"
+	"os"
+	"path/filepath"
+	"strings"
+	"time"
+
 	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
 	"github.com/cosmos/cosmos-sdk/x/authz"
 	authzkeeper "github.com/cosmos/cosmos-sdk/x/authz/keeper"
@@ -21,12 +28,6 @@ import (
 	ibckeeper "github.com/cosmos/ibc-go/v3/modules/core/keeper"
 	_ "github.com/cybercongress/go-cyber/client/docs/statik"
 	"github.com/cybercongress/go-cyber/plugins/liquidity_plugin"
-	"io"
-	"net/http"
-	"os"
-	"path/filepath"
-	"strings"
-	"time"
 
 	"github.com/cosmos/cosmos-sdk/client/grpc/tmservice"
 	ctypes "github.com/cybercongress/go-cyber/types"
@@ -150,7 +151,7 @@ import (
 )
 
 const (
-	appName = "BostromHub"
+	appName     = "BostromHub"
 	upgradeName = "cyberfrey"
 )
 
@@ -168,7 +169,7 @@ var (
 	DefaultReDnmString = `[a-zA-Z][a-zA-Z0-9/\-\.]{2,127}`
 
 	// If EnabledSpecificProposals is "", and this is "true", then enable all x/wasm proposals.
-	ProposalsEnabled = "true"
+	ProposalsEnabled        = "true"
 	EnableSpecificProposals = ""
 )
 
@@ -255,7 +256,7 @@ var (
 		resourcestypes.ResourcesName:   {authtypes.Minter, authtypes.Burner},
 	}
 
-    // module accounts that are allowed to receive tokens
+	// module accounts that are allowed to receive tokens
 	allowedReceivingModAcc = map[string]bool{
 		distrtypes.ModuleName: true,
 	}
@@ -307,14 +308,14 @@ type App struct {
 	WasmKeeper       wasm.Keeper
 	LiquidityKeeper  liquiditykeeper.Keeper
 
-	BandwidthMeter   *bandwidthkeeper.BandwidthMeter
-	CyberbankKeeper  *cyberbankkeeper.IndexedKeeper
-	GraphKeeper      *graphkeeper.GraphKeeper
-	IndexKeeper      *graphkeeper.IndexKeeper
-	RankKeeper 		 *rankkeeper.StateKeeper
-	GridKeeper 		 gridkeeper.Keeper
-	DmnKeeper  		 *dmnkeeper.Keeper
-	ResourcesKeeper  resourceskeeper.Keeper
+	BandwidthMeter  *bandwidthkeeper.BandwidthMeter
+	CyberbankKeeper *cyberbankkeeper.IndexedKeeper
+	GraphKeeper     *graphkeeper.GraphKeeper
+	IndexKeeper     *graphkeeper.IndexKeeper
+	RankKeeper      *rankkeeper.StateKeeper
+	GridKeeper      gridkeeper.Keeper
+	DmnKeeper       *dmnkeeper.Keeper
+	ResourcesKeeper resourceskeeper.Keeper
 
 	// make scoped keepers public for test purposes
 	ScopedIBCKeeper      capabilitykeeper.ScopedKeeper
@@ -863,7 +864,10 @@ func NewApp(
 	// migration wouldn't be called because bank's consensus version is 2
 	m := bankkeeper.NewMigrator(app.BankKeeper.(bankkeeper.BaseKeeper))
 	// TODO check current bank migrations
-	app.configurator.RegisterMigration(banktypes.ModuleName, 1, m.Migrate1to2)
+	err = app.configurator.RegisterMigration(banktypes.ModuleName, 1, m.Migrate1to2)
+	if err != nil {
+		panic(err)
+	}
 
 	// initialize stores
 	app.MountKVStores(keys)
@@ -880,9 +884,9 @@ func NewApp(
 				SignModeHandler: encodingConfig.TxConfig.SignModeHandler(),
 				SigGasConsumer:  ante.DefaultSigVerificationGasConsumer,
 			},
-			IBCKeeper:    		 app.IBCKeeper,
-			WasmConfig:        	 &wasmConfig,
-			TXCounterStoreKey:   keys[wasm.StoreKey],
+			IBCKeeper:         app.IBCKeeper,
+			WasmConfig:        &wasmConfig,
+			TXCounterStoreKey: keys[wasm.StoreKey],
 		},
 	)
 	if err != nil {

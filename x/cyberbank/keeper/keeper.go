@@ -14,12 +14,11 @@ import (
 	"github.com/cybercongress/go-cyber/x/cyberbank/types"
 )
 
-
 type IndexedKeeper struct {
 	*Proxy
-	accountKeeper     		types.AccountKeeper
-	cdc           			codec.BinaryCodec
-	authKey  				sdk.StoreKey
+	accountKeeper types.AccountKeeper
+	cdc           codec.BinaryCodec
+	authKey       sdk.StoreKey
 
 	userTotalStakeAmpere    map[uint64]uint64
 	userNewTotalStakeAmpere map[uint64]uint64
@@ -33,10 +32,10 @@ func NewIndexedKeeper(
 	ak types.AccountKeeper,
 ) *IndexedKeeper {
 	indexedKeeper := &IndexedKeeper{
-		Proxy: pbk,
-		cdc: cdc,
-		authKey: authKey,
-		accountKeeper: ak,
+		Proxy:           pbk,
+		cdc:             cdc,
+		authKey:         authKey,
+		accountKeeper:   ak,
 		accountToUpdate: make([]sdk.AccAddress, 0),
 	}
 	hook := func(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress) {
@@ -72,7 +71,7 @@ func (k *IndexedKeeper) getCollectFunc(ctx sdk.Context, userStake map[uint64]uin
 	}
 }
 
-func  (k *IndexedKeeper) InitializeStakeAmpere(account uint64, stake uint64) {
+func (k *IndexedKeeper) InitializeStakeAmpere(account uint64, stake uint64) {
 	k.userTotalStakeAmpere[account] = stake
 	k.userNewTotalStakeAmpere[account] = stake
 }
@@ -116,7 +115,7 @@ func (k *IndexedKeeper) UpdateAccountsStakeAmpere(ctx sdk.Context) {
 	nextAccountNumber := k.GetNextAccountNumber(ctx)
 	if uint64(len(k.userNewTotalStakeAmpere)) != nextAccountNumber {
 		startTime := time.Now()
-		for i := nextAccountNumber-1; i > 0; i-- {
+		for i := nextAccountNumber - 1; i > 0; i-- {
 			if _, ok := k.userNewTotalStakeAmpere[i]; !ok {
 				k.Logger(ctx).Info("added to stake index:", "account", i)
 				// TODO update in next release

@@ -145,13 +145,13 @@ func calculateChange(prevrank, rank []float64) float64 {
 func entropyCalc(ctx *types.CalculationContext, entropy []float64, cidsCount int64, dampingFactor float64) {
 	swd := make([]float64, cidsCount)
 	sumswd := make([]float64, cidsCount)
-	for i, _ := range swd {
+	for i := range swd {
 		swd[i] = dampingFactor*float64(
 			getOverallInLinksStake(ctx, graphtypes.CidNumber(i))) + (1-dampingFactor)*float64(
 			getOverallOutLinksStake(ctx, graphtypes.CidNumber(i)))
 	}
 
-	for i, _ := range sumswd {
+	for i := range sumswd {
 		for to := range ctx.GetInLinks()[graphtypes.CidNumber(i)] {
 			sumswd[i] += dampingFactor * swd[to]
 		}
@@ -160,7 +160,7 @@ func entropyCalc(ctx *types.CalculationContext, entropy []float64, cidsCount int
 		}
 	}
 
-	for i, _ := range entropy {
+	for i := range entropy {
 		if swd[i] == 0 {
 			continue
 		}

@@ -12,7 +12,7 @@ const (
 )
 
 var (
-	KeyMaxRoutes   = []byte("MaxRoutes")
+	KeyMaxRoutes = []byte("MaxRoutes")
 )
 
 func ParamKeyTable() paramstypes.KeyTable {

@@ -12,7 +12,7 @@ type RankedCidNumber struct {
 }
 
 func (c RankedCidNumber) GetNumber() graphtypes.CidNumber { return c.number }
-func (c RankedCidNumber) GetRank() uint64           { return c.rank }
+func (c RankedCidNumber) GetRank() uint64                 { return c.rank }
 
 // Local type for sorting
 type cidLinks struct {
@@ -74,7 +74,7 @@ func (i NoopSearchIndex) Top(page, perPage uint32) ([]RankedCidNumber, uint32, e
 	return nil, 0, errors.New("The search API is not enabled on this node")
 }
 func (i NoopSearchIndex) PutNewLinks(links []graphtypes.CompactLink) {}
-func (i NoopSearchIndex) PutNewRank(rank Rank)                 		 {}
+func (i NoopSearchIndex) PutNewRank(rank Rank)                       {}
 func (i NoopSearchIndex) GetRankValue(cidNumber graphtypes.CidNumber) uint64 {
 	return 0
 }

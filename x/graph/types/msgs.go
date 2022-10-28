@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	TypeMsgCyberlink    = "cyberlink"
+	TypeMsgCyberlink = "cyberlink"
 )
 
 var (
@@ -17,13 +17,13 @@ var (
 func NewMsgCyberlink(address sdk.AccAddress, links []Link) *MsgCyberlink {
 	return &MsgCyberlink{
 		Neuron: address.String(),
-		Links:   links,
+		Links:  links,
 	}
 }
 
 func (msg MsgCyberlink) Route() string { return RouterKey }
 
-func (msg MsgCyberlink) Type()  string { return TypeMsgCyberlink }
+func (msg MsgCyberlink) Type() string { return TypeMsgCyberlink }
 
 func (msg MsgCyberlink) GetSigners() []sdk.AccAddress {
 	addr, _ := sdk.AccAddressFromBech32(msg.Neuron)

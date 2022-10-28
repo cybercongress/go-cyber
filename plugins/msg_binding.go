@@ -22,7 +22,7 @@ type WasmMsgParserInterface interface {
 }
 
 type MsgParser struct {
- 	Parsers map[string]WasmMsgParserInterface
+	Parsers map[string]WasmMsgParserInterface
 }
 
 func NewMsgParser() MsgParser {

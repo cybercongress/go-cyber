@@ -1,4 +1,3 @@
-
 package staking
 
 import (
@@ -29,10 +28,10 @@ func NewAppModule(
 	bankKeeper bankkeeper.Keeper,
 ) AppModule {
 	return AppModule{
-		AppModule:     staking.NewAppModule(cdc, stakingKeeper, accountKeeper, bankKeeper),
-		sk: stakingKeeper,
-		bk: bankKeeper,
-		ak: accountKeeper,
+		AppModule: staking.NewAppModule(cdc, stakingKeeper, accountKeeper, bankKeeper),
+		sk:        stakingKeeper,
+		bk:        bankKeeper,
+		ak:        accountKeeper,
 	}
 }
 
@@ -42,5 +41,8 @@ func (am AppModule) RegisterServices(cfg module.Configurator) {
 	stakingtypes.RegisterQueryServer(cfg.QueryServer(), querier)
 
 	m := stakingkeeper.NewMigrator(am.sk)
-	cfg.RegisterMigration(stakingtypes.ModuleName, 1, m.Migrate1to2)
+	err := cfg.RegisterMigration(stakingtypes.ModuleName, 1, m.Migrate1to2)
+	if err != nil {
+		panic(err)
+	}
 }

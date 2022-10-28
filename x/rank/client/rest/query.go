@@ -453,5 +453,3 @@ func queryKarmaHandlerFn(cliCtx client.Context) http.HandlerFunc {
 		rest.PostProcessResponse(w, cliCtx, res)
 	}
 }
-
-

@@ -23,11 +23,11 @@ func GetQueryCmd() *cobra.Command {
 	}
 
 	bandwidthQueryCmd.AddCommand(
-			GetCmdQueryParams(),
-			GetCmdQueryPrice(),
-			GetCmdQueryLoad(),
-			GetCmdQueryTotalBandwidth(),
-			GetCmdQueryNeuron(),
+		GetCmdQueryParams(),
+		GetCmdQueryPrice(),
+		GetCmdQueryLoad(),
+		GetCmdQueryTotalBandwidth(),
+		GetCmdQueryNeuron(),
 	)
 
 	return bandwidthQueryCmd

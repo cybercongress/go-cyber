@@ -63,7 +63,7 @@ func GetCmdQueryInvestmintAmount() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "investmint [amount] [resource] [length]",
 		Short: "Query resources return on investmint",
-		Args: cobra.ExactArgs(3),
+		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -92,9 +92,9 @@ func GetCmdQueryInvestmintAmount() *cobra.Command {
 			res, err := queryClient.Investmint(
 				context.Background(),
 				&types.QueryInvestmintRequest{
-					Amount: amount,
+					Amount:   amount,
 					Resource: args[1],
-					Length: length,
+					Length:   length,
 				},
 			)
 
@@ -110,5 +110,3 @@ func GetCmdQueryInvestmintAmount() *cobra.Command {
 
 	return cmd
 }
-
-

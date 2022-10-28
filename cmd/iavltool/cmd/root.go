@@ -279,7 +279,7 @@ func GetTree(db dbm.DB, name string) (*iavl.MutableTree, error) {
 
 func PrintKeys(tree *iavl.MutableTree, hashing bool) {
 	fmt.Println("Printing all keys with hashed values (to detect diff)")
-	tree.Iterate(func(key []byte, value []byte) bool {
+	_, err := tree.Iterate(func(key []byte, value []byte) bool {
 		if hashing {
 			printKey := parseWeaveKey(key)
 			digest := sha256.Sum256(value)
@@ -289,6 +289,9 @@ func PrintKeys(tree *iavl.MutableTree, hashing bool) {
 		}
 		return false
 	})
+	if err != nil {
+		fmt.Println("ERROR:", err)
+	}
 }
 
 // parseWeaveKey assumes a separating : where all in front should be ascii,

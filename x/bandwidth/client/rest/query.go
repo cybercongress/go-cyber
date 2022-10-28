@@ -148,4 +148,3 @@ func neuronBandwidthHandlerFn(cliCtx client.Context) http.HandlerFunc {
 		rest.PostProcessResponse(w, cliCtx, res)
 	}
 }
-
