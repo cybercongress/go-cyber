@@ -66,7 +66,7 @@ func GetCmdQueryThought() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "thought [program] [name]",
 		Short: "Query thought",
-		Args: cobra.ExactArgs(2),
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -82,7 +82,7 @@ func GetCmdQueryThought() *cobra.Command {
 			res, err := queryClient.Thought(
 				context.Background(),
 				&types.QueryThoughtParamsRequest{
-					program.String(), args[1],
+					Program: program.String(), Name: args[1],
 				},
 			)
 
@@ -103,7 +103,7 @@ func GetCmdQueryThoughtStats() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "thought-stats [program] [name]",
 		Short: "Query thought stats",
-		Args: cobra.ExactArgs(2),
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -119,7 +119,7 @@ func GetCmdQueryThoughtStats() *cobra.Command {
 			res, err := queryClient.ThoughtStats(
 				context.Background(),
 				&types.QueryThoughtParamsRequest{
-					program.String(), args[1],
+					Program: program.String(), Name: args[1],
 				},
 			)
 
@@ -137,10 +137,10 @@ func GetCmdQueryThoughtStats() *cobra.Command {
 }
 
 func GetCmdQueryThoughts() *cobra.Command {
-	cmd :=  &cobra.Command{
+	cmd := &cobra.Command{
 		Use:   "thoughts",
 		Short: "Query all thoughts",
-		Args: cobra.ExactArgs(0),
+		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -167,10 +167,10 @@ func GetCmdQueryThoughts() *cobra.Command {
 }
 
 func GetCmdQueryThoughtsStats() *cobra.Command {
-	cmd :=  &cobra.Command{
+	cmd := &cobra.Command{
 		Use:   "thoughts-stats",
 		Short: "Query all thoughts stats",
-		Args: cobra.ExactArgs(0),
+		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -195,4 +195,3 @@ func GetCmdQueryThoughtsStats() *cobra.Command {
 
 	return cmd
 }
-

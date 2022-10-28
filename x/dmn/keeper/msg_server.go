@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"strconv"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
@@ -202,7 +203,7 @@ func (k msgServer) ChangeThoughtPeriod(goCtx context.Context, msg *types.MsgChan
 		sdk.NewEvent(
 			types.EventTypeChangeThoughtPeriod,
 			sdk.NewAttribute(types.AttributeKeyThoughtProgram, msg.Program),
-			sdk.NewAttribute(types.AttributeKeyThoughtPeriod, string(msg.Period)),
+			sdk.NewAttribute(types.AttributeKeyThoughtPeriod, strconv.FormatUint(msg.Period, 10)),
 		),
 	})
 
@@ -228,7 +229,7 @@ func (k msgServer) ChangeThoughtBlock(goCtx context.Context, msg *types.MsgChang
 		sdk.NewEvent(
 			types.EventTypeChangeThoughtBlock,
 			sdk.NewAttribute(types.AttributeKeyThoughtProgram, msg.Program),
-			sdk.NewAttribute(types.AttributeKeyThoughtBlock, string(msg.Block)),
+			sdk.NewAttribute(types.AttributeKeyThoughtBlock, strconv.FormatUint(msg.Block, 10)),
 		),
 	})
 
