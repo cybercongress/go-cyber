@@ -32,7 +32,6 @@
 <div align="center">
  <h3><b>go-cyber is golang implementation of cyber <a href="https://github.com/cybercongress/cyber">protocol</a></b></h3>
 </div>
-
 _____________
 
 ## Code
@@ -57,7 +56,7 @@ _____________
 [![block](https://img.shields.io/badge/dynamic/json?color=blue&label=Block%20Height&query=%24.result.sync_info.latest_block_height&url=https://rpc.bostrom.cybernode.ai/status&style=flat-square)]()
 [![cyberlinks](https://img.shields.io/badge/dynamic/json?color=blue&label=Cyberlinks&query=%24.result.cyberlinks&url=https://lcd.bostrom.cybernode.ai/graph/graph_stats&style=flat-square)]()
 [![particles](https://img.shields.io/badge/dynamic/json?color=blue&label=Particles&query=%24.result.particles&url=https://lcd.bostrom.cybernode.ai/graph/graph_stats&style=flat-square)]()
-[![negentropy](https://img.shields.io/badge/dynamic/json?color=blue&label=-Entropy&query=%24.result.negentropy&url=https://lcd.bostrom.cybernode.ai/rank/negentropy&style=flat-square)]()
+[![negentropy](https://img.shields.io/badge/dynamic/json?color=blue&label=Entropy&query=%24.result.negentropy&url=https://lcd.bostrom.cybernode.ai/rank/negentropy&style=flat-square)]()
 [![validators](https://img.shields.io/badge/dynamic/json?label=Validators&query=%24.result.total&url=https://rpc.bostrom.cybernode.ai/validators%3F&style=flat-square)]()
 _________________________________________________________
 
@@ -104,11 +103,6 @@ _________________________________________________________
 **Try [cyb.ai](https://cyb.ai) on bostrom network**
 _________________________________________________________
 
-## ELI-5
-
-![ELI-5](https://github.com/litvintech/rank-sandbox/blob/eli5/eli5.gif)
-_________________________________________________________
-
 ## Setup
 
 Chain-ID: bostrom
@@ -130,7 +124,6 @@ make install SOFTWARE_2_ENABLED=false
 - CLI: `... --node=https://rpc.bostrom.cybernode.ai:443`
 - Seed: `d0518ce9881a4b0c5872e5e9b7c4ea8d760dad3f@85.10.207.173:26656`
 - Peers: `5d542c0eb40ae48dc2cac0c140aedb605ded77dc@195.201.105.229:26656,a7226dce9f543a4ecd8db1da2ffd7be05d40d3ad@185.186.208.36:26656,c72de1e20beed51b779d89b1cf08d8146016eec4@185.186.208.37:26656,4c130ed1c58f6d6be981c59a748511e581969c51@93.180.175.201:36656`
-
 _________________________________________________________
 
 ## IBC
@@ -157,7 +150,7 @@ trust_threshold = { numerator = '1', denominator = '3' }
 ```
 _________________________________________________________
 
-### Basic operations
+## Basic operations
 
 ### Follow Hero and get HYDROGEN:
 ```
@@ -179,10 +172,35 @@ curl https://lcd.bostrom.cybernode.ai/rank/search?cid=QmdVWtX17m7UvF8FcvNLTJxcpx
 ```
 _________________________________________________________
 
-## Connect:
+## Documentation
+
+1. **[Run validator guide](run_validator.md)**
+2. **[Use CLI guide](ultimate-commands-guide.md)**
+3. **[Setup daemon config guide](setup_cyber_configuration.md)**
+4. **[Setup local dev environment guide](setup_dev_env.md)**
+5. **[Deploy contract guide]()**
+6. **[Create proposal guide]()**
+7. **[Supported GPUs list](supported_gpu_list.md)**
+8. **[Network upgrade guide](upgrade_guide.md)**
+9. **[Keystore guide](keystore.md)**
+10. **[Multisig guide](multisig_guide.md)**
+11. **[Ledger guide](cyber_Ledger_guide.md)**
+12. **[Tendermint KMS guide](validator_launch_with_tendermintKMS_and_ledger.md)**
+
+13. Modules documentation
+    - **[graph](../x/graph/spec/README.md)**
+    - **[rank](../x/rank/spec/README.md)**
+    - **[bandwidth](../x/bandwidth/spec/README.md)**
+    - **[cyberbank](../x/cyberbank/spec/README.md)**
+    - **[energy](../x/energy/spec/README.md)**
+    - **[resources](../x/resources/spec/README.md)**
+    - **[dmn](../x/dmn/spec/README.md)**
+    - **[staking](../x/staking/spec/README.md)**
+_________________________________________________________
+
+## Connect
 - [Cyber English Community](https://t.me/fuckgoogle)
 - [Cyber Russian Community](https://t.me/cyber_russian_community)
-
 _________________________________________________________
 
 ## Cyber vs Corps
