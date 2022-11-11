@@ -10,13 +10,13 @@ bash < <(curl -s https://raw.githubusercontent.com/cybercongress/go-cyber/main/s
 
 After installation you will be able to use `cyber` to [import accounts](#account-management), create links or swap tokens.
 
-I case when you have your own node, which already running inside Docker container, please add `docker exec -ti container-name` before every cyber command:
+In case you have your own node, which is already running inside Docker container, please add `docker exec -ti container-name` before every cyber command:
 
 ```bash
 docker exec -ti bostrom cyber --help
 ```
 
-First of all, I would like to encourage you to use the  `--help` feature if you want to get a better experience of using cyber. This is a really easy way to find all the necessary commands with the appropriate options and flags.
+First of all, I would like to encourage you to use the  `--help` feature if you want to have a better experience using cyber. This is a really easy way to find all the necessary commands with the appropriate options and flags.
 
 For example, you can enter:
 
@@ -123,7 +123,7 @@ Let's explore the `bank` subcommand:
 cyber query bank --help
 ```
 
-We can see all of the options available for this subcommands, namely and account address:
+We can see all of the options available for these subcommands, names and account address:
 
 ```bash
 Usage:
@@ -147,17 +147,17 @@ That's it. This is a very useful tool for using cyber and troubleshooting.
 
 ## Glossary
 
-**Bonded tokens** - Tokens that are nominated on validator, non transferable.
+**Bonded tokens** - Tokens that are nominated to a validator, non transferable.
 
 **Commission** -  The tokens that you've earned via validating from delegators.
 
 **Dyson Sphere** - Construct in cyber responsible for energy transformation and routing.
 
-**Investminting** - Process of convertation Hydrogen to Volts or Amperes, locking certain ammount of H for certain ammount of time produce some V or A.
+**Investminting** - Process of convertation Hydrogen to Volts or Amperes, locking a certain amount of H for a certain amount of time produces some V or A.
 
 **Hero** - A validator.
 
-**Hydrogen** - Token issued after boot delegation, 1:1 H to boot. Used to generate enery through Dyson sphere(investminting process).
+**Hydrogen** - Token issued after boot delegation, 1:1 H to boot. Used to generate enery through the Dyson sphere (investminting process).
 
 **Unbonding** - The process of taking back your share (delegated tokens + any rewards). 4 days for `bostrom` chain.
 
@@ -168,7 +168,7 @@ That's it. This is a very useful tool for using cyber and troubleshooting.
 
 **local keystore** - A store with keys on your local machine.
 
-**rewards** - Tokens that hero earned via delegation. To reduce network load all the rewards are stored in a pool. You can take your part of the bounty at any time with commands from the **delegator** section.
+**rewards** - Tokens that a hero earned via delegation. To reduce network load all the rewards are stored in a pool. You can take your part of the bounty at any time with commands from the **delegator** section.
 
 **<comission_rate_percentage>** - The commission that a validator gets for their work. Must be a fraction >0 and <=1
 
@@ -289,7 +289,7 @@ github.com/cosmos/cosmos-sdk/client/keys.RunAddCmd(0xc000f0b400, 0xc000f125f0, 0
 
 You will have to use another keyring backend to keep your keys. 
 
-In that case you'll have to use file based keyring by adding `--keyring-backend file` option to every key manipulation command:
+In that case you'll have to use file based keyring by adding the `--keyring-backend file` option to every key manipulation command:
 
 ```bash
 cyber keys add key_name --keyring-backend file
@@ -720,7 +720,7 @@ A sufficient balance of half of the swap-fee-rate of the offer coin is required 
 The order price is the exchange ratio of X/Y, where X is the amount of the first coin and Y is the amount of the second coin when their denoms are sorted alphabetically.
 Increasing order price reduces the possibility for your request to be processed and results in buying hydrogen at a lower price than the pool price.
 
-For explicit calculations, The swap fee rate must be the value that set as liquidity parameter in the current network.
+For explicit calculations, The swap fee rate must be the value that is set as liquidity parameter in the current network.
 The only supported swap-type is 1. For the detailed swap algorithm, see https://github.com/tendermint/liquidity
 
 [pool-id]: The pool id of the liquidity pool
@@ -728,7 +728,7 @@ The only supported swap-type is 1. For the detailed swap algorithm, see https://
 [offer-coin]: The amount of offer coin to swap
 [demand-coin-denom]: The denomination of the coin to exchange with offer coin
 [order-price]: The limit order price for the swap order. The price is the exchange ratio of X/Y where X is the amount of the first coin and Y is the amount of the second coin when their denoms are sorted alphabetically
-[swap-fee-rate]: The swap fee rate to pay for swap that is proportional to swap amount. The swap fee rate must be the value that set as liquidity parameter in the current network.
+[swap-fee-rate]: The swap fee rate to pay for swap that is proportional to swap amount. The swap fee rate must be the value that is set as liquidity parameter in the current network.
 
 Usage:
 
