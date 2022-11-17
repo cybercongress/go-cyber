@@ -380,8 +380,8 @@ docker exec -ti bostrom cyber tx staking create-validator \
   --commission-max-rate="0.20" \
   --commission-max-change-rate="0.01" \
   --chain-id=bostrom \
-  --gas-prices 0.01boot \
-  --gas 600000
+  --gas-prices=0.01boot \
+  --gas=600000
 ```
 
 ### Verify that you are validating
@@ -401,7 +401,7 @@ If your validator got under slashing conditions, it will be jailed.
 After such an event an operator must unjail the validator manually:
 
 ```bash
-docker exec -ti bostrom cyber tx slashing unjail --from=<your_key_name> --chain-id bostrom --gas-prices 0.01boot --gas 300000
+docker exec -ti bostrom cyber tx slashing unjail --from=<your_key_name> --chain-id=bostrom --gas-prices=0.01boot --gas=300000
 ```
 
 ### Back-up validator keys (!)
