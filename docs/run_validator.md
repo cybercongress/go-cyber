@@ -225,13 +225,13 @@ sudo systemctl restart docker
 3. Test nvidia-smi with the latest official CUDA image
 
 ```bash
-docker run --gpus all nvidia/cuda:11.1-base nvidia-smi
+docker run --gpus all nvidia/cuda:11.4.0-base nvidia-smi
 ```
 
 Output logs should coincide as earlier:
 
 ```bash
-Unable to find image 'nvidia/cuda:11.1-base' locally
+Unable to find image 'nvidia/cuda:11.4.0-base' locally
 11.1-base: Pulling from nvidia/cuda
 54ee1f796a1e: Pull complete 
 f7bfea53ad12: Pull complete 
