@@ -6,15 +6,15 @@ An obvious problem of decentralization is that no entity has a global vision of 
 
 By the way, a huge part of disconnections and, as result, validators jailing happens by this reason.
 
-Cyberd cli can’t automatically configure your router to open port `26656`, so you will need to manually configure your router.
+Pussyd cli can’t automatically configure your router to open port `26656`, so you will need to manually configure your router.
 
 Enabling inbound connections requires two steps:
 
 1. Giving your computer a static (unchanging) internal IP address by configuring the Dynamic Host Configuration Protocol (DHCP) on your router.
 
-2. Forwarding inbound connections from the Internet through your router to your computer where cyber container can process them.
+2. Forwarding inbound connections from the Internet through your router to your computer where pussy container can process them.
 
-3. Editing cyber configuration file.  
+3. Editing pussy configuration file.  
 
 ## Configuring DHCP
 
@@ -36,7 +36,7 @@ After logging in, you want to search your router’s menus for options related t
 
 In the reservation configuration, some routers will display a list of computers and devices currently connected to your network, and then let you select a device to make its current IP address permanent.
 
-If that’s the case, find the computer running cyber container in the list, select it, and add it to the list of reserved addresses. Make a note of its current IP address—we’ll use the address in the next section.
+If that’s the case, find the computer running pussy container in the list, select it, and add it to the list of reserved addresses. Make a note of its current IP address—we’ll use the address in the next section.
 
 Other routers require a more manual configuration. For these routers, you will need to look up the fixed address (MAC address) for your computer’s network card and add it to the list.
 
@@ -52,13 +52,13 @@ An easiest way to find some detailed instructions for you router is check [here]
 
 Here we'll provide you general idea of what has to be done.
 
-You need to know the local IP address of the computer running cyber container. You should have this information from configuring the DHCP assignment table in the subsection above.
+You need to know the local IP address of the computer running pussy container. You should have this information from configuring the DHCP assignment table in the subsection above.
 
 Login to your router using the same steps described near the top of the DHCP subsection. Look for an option called Port Forwarding, Port Assignment, or anything with “Port” in its name. On some routers, this option is buried in an Applications & Gaming menu.
 
 The port forwarding settings should allow you to map an external port on your router to the “internal port” of a device on your network.
 
-Both the external port and the internal port should be `26656` for cyber container.
+Both the external port and the internal port should be `26656` for pussy container.
 
 Make sure the IP address you enter is the same one you configured in the previous subsection.
 
@@ -68,15 +68,15 @@ If you still can’t connect and you use a firewall, you probably need to change
 
 If something else went wrong, it’s probably a problem with your router configuration. Re-read the instructions above to see if you missed anything, try to look for some port-forwarding instructions [here](https://portforward.com/router.htm) or [here](https://setuprouter.com/).
 
-## Configuring cyber
+## Configuring pussy
 
-Go to cyber daemon folder, then go to `config` folder and open `config.toml` file for editing.
+Go to pussy daemon folder, then go to `config` folder and open `config.toml` file for editing.
 
 Find `peer to peer configuration options` section and edit `external_address` variable with your IP address and port `26656`
 
 ![peer_to_peer_config](https://ipfs.io/ipfs/QmQRqM4PbPt8cbDN49nAktT23XWfCixbfzfyUEkSyDUWYP)
 
-Restart cyber service.
+Restart pussy service.
 
 ---
 

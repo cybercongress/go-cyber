@@ -1,5 +1,5 @@
 
-# Join cyber as a Validator
+# Join Pussy as a Validator
 
 ## Prepare your server
 
@@ -7,11 +7,11 @@ First, you should set up a server.
 Your node should be online constantly. This means that you will need a reliable server.
 You may also consider using any cloud service with a dedicated GPU, like Hetzner, Cherryservers etc. (or use a local machine). Whatever you choose, in order to achieve better stability and consistency we recommend you use a dedicated server for each validator node.
 
-Cyber is based on Cosmos-SDK and is written in Go.
+Pussy is based on Cosmos-SDK and is written in Go.
 It should work on any platform which can compile and run programs in Go.
 We strongly recommend running the validator node on a Linux-based server.
 
-Cyber-rank computations are performed on GPU, so it is required to have it (GPU) on-board your node.
+Pussy-rank computations are performed on GPU, so it is required to have it (GPU) on-board your node.
 
 Recommended hardware setup:
 
@@ -24,17 +24,17 @@ GPU: Nvidia GeForce (or Tesla/Titan/Quadro) with CUDA-cores; 4+ Gb of video memo
 Software: Ubuntu 18.04 LTS / 20.04 LTS
 ```
 
-*Cyber runs well on consumer-grade cards like Geforce GTX 1070, but we expect load growth and advise you use Error Correction compatible cards from Tesla or Quadro families. Also, make sure your card is compatible with >= v.410 of NVIDIA driver.*
+*Pussy runs well on consumer-grade cards like Geforce GTX 1070, but we expect load growth and advise you use Error Correction compatible cards from Tesla or Quadro families. Also, make sure your card is compatible with >= v.410 of NVIDIA driver.*
 
 Of course the hardware is your own choice and technically it might be possible to run the node on *"even - 1 CUDA core GPU"*, but you should be aware of performance drop and rank calculation speed decline.
 
 ## Node setup
 
-*To avoid possible misconfiguration issues and simplify the setup of `$ENV`, we recommend to perform all the commands as `root` (here root - is literally root, not just a user with root priveliges). For the case of a dedicated server for cybernode it should be concidered as ok from the security side.*
+*To avoid possible misconfiguration issues and simplify the setup of `$ENV`, we recommend to perform all the commands as `root` (here root - is literally root, not just a user with root priveliges). For the case of a dedicated server for pussynode it should be concidered as ok from the security side.*
 
 ### Third-party software
 
-The main distribution unit for Cyber is a [docker](https://www.docker.com/) container. All images are located in the default [Dockerhub registry](https://hub.docker.com/r/cyberd/cyber). In order to access the GPU from the container, Nvidia driver version **410+** and [Nvidia docker runtime](https://github.com/NVIDIA/nvidia-docker) should be installed on the host system.
+The main distribution unit for Pussy is a [docker](https://www.docker.com/) container. All images are located in the default [Dockerhub registry](https://hub.docker.com/layers/cyberd/space-pussy/v0.0.1-cuda11.4/images/sha256-84225b8734fbbef7368abb777f52883a8da6c9be46f890ae95d00e78d976511b?context=explore). In order to access the GPU from the container, Nvidia driver version **410+** and [Nvidia docker runtime](https://github.com/NVIDIA/nvidia-docker) should be installed on the host system.
 
 All commands below suppose `amd64` architecture, as the different architectures commands may differ accordingly.
 
@@ -267,14 +267,14 @@ Mon Jun 21 14:07:52 2021
 Your machine is ready to launch the node.
 
 
-### Launching cyber fullnode
+### Launching Pussy fullnode
 
 Make a directory tree for storing your daemon:
 
 ```bash
-mkdir $HOME/.cyber
-mkdir $HOME/.cyber/data
-mkdir $HOME/.cyber/config
+mkdir $HOME/.pussy
+mkdir $HOME/.pussy/data
+mkdir $HOME/.pussy/config
 ```
 
 
@@ -282,10 +282,10 @@ mkdir $HOME/.cyber/config
 (This will pull and extract the image from cyberd/cyber)
 
 ```bash
-docker run -d --gpus all --name=bostrom --restart always -p 26656:26656 -p 26657:26657 -p 1317:1317 -e ALLOW_SEARCH=true -v $HOME/.cyber:/root/.cyber  cyberd/cyber:bostrom-1
+docker run -d --gpus all --name=space-pussy --restart always -p 26656:26656 -p 26657:26657 -p 1317:1317 -e ALLOW_SEARCH=true -v $HOME/.pussy:/root/.pussy  cyberd/space-pussy:v0.0.1-cuda11.4
 ```
 
-3. Setup some peers to `persistent_peers` and `seeds` to $HOME/.cyber/config/config.toml line 184:
+3. Setup some peers to `persistent_peers` and `seeds` to $HOME/.pussy/config/config.toml line 184:
 
 
 ```bash
@@ -296,25 +296,25 @@ seeds = ""
 persistent_peers = ""
 ```
 
-For peers addresses please refer to appropriate section of the [networks](https://github.com/cybercongress/networks) repo.
+For peers addresses please refer to appropriate section of the [networks](https://github.com/joinresistance/networks) repo.
 When done, please restart container using:
 
 4. To apply config changes restart the container:
 
 ```bash
-docker restart bostrom
+docker restart space-pussy
 ```
 
 5. Then check the status of your node:
 
 ```bash
-docker exec bostrom cyber status
+docker exec -ti space-pussy pussy status
 ```
 
 A possible output may look like this:
 
 ```bash
-{"NodeInfo":{"protocol_version":{"p2p":"8","block":"11","app":"0"},"id":"808a3773d8adabc78bca6ef8d6b2ee20456bfbcb","listen_addr":"tcp://86.57.207.105:26656","network":"bostrom","version":"","channels":"40202122233038606100","moniker":"node1234","other":
+{"NodeInfo":{"protocol_version":{"p2p":"8","block":"11","app":"0"},"id":"808a3773d8adabc78bca6ef8d6b2ee20456bfbcb","listen_addr":"tcp://86.57.207.105:26656","network":"space-pussy","version":"","channels":"40202122233038606100","moniker":"node1234","other":
 {"tx_index":"on","rpc_address":"tcp://0.0.0.0:26657"}},"SyncInfo":{"latest_block_hash":"241BA3E744A9024A2D04BDF4CE7CF4985D7922054B38AF258712027D0854E930","latest_app_hash":"5BF4B64508A95984F017BD6C29012FE5E66ADCB367D06345EE1EB2ED18314437","latest_block_height":"521",
 "latest_block_time":"2021-06-21T14:21:41.817756021Z","earliest_block_hash":"98DD3065543108F5EBEBC45FAAAEA868B3C84426572BE9FDA2E3F1C49A2C0CE8","earliest_app_hash":"E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855","earliest_block_height":"1",
 "earliest_block_time":"2021-06-10T00:00:00Z","catching_up":false},"ValidatorInfo":{"Address":"611C9F3568E7341155DBF0546795BF673FD84EB1","PubKey":{"type":"tendermint/PubKeyEd25519","value":"0iGriT3gyRJXQXR/98c+2MTAhChIo5F5v7FfPmOAH5o="},"VotingPower":"0"}}
@@ -324,7 +324,7 @@ A possible output may look like this:
 To check container logs use:
 
 ```bash
-docker logs bostrom -f --tail 10
+docker logs space-pussy -f --tail 10
 ```
 
 ## Validator start
@@ -338,7 +338,7 @@ After your node has successfully synced, you can run a validator.
 To **create** a new one use:
 
 ```bash
-docker exec -ti bostrom cyber keys add <your_key_name>
+docker exec -ti space-pussy pussy keys add <your_key_name>
 ```
 
 The above command returns the address, the public key and the seed phrase, which you can use to
@@ -349,13 +349,13 @@ recover your account if you forget your password later.
 To **import** existing address use: 
 
 ```bash
-docker exec -ti bostrom cyber keys add <your_key_name> --recover
+docker exec -ti space-pussy pussy keys add <your_key_name> --recover
 ```
 
 You can use your **ledger** device with the Cosmos app installed on it to sign transactions. Add address from Ledger:
 
 ```bash
-docker exec -ti bostrom cyber keys add <your_key_name> --ledger
+docker exec -ti space-pussy pussy keys add <your_key_name> --ledger
 ```
 
 **<your_key_name>** is any name you pick to represent this key pair.
@@ -370,24 +370,24 @@ The next step is to to declare a validator candidate.
 To declare a validator candidate, run the following command adjusting the stake amount and the other fields:
 
 ```bash
-docker exec -ti bostrom cyber tx staking create-validator \
+docker exec -ti space-pussy pussy tx staking create-validator \
   --amount=10000000boot \
   --min-self-delegation "1000000" \
-  --pubkey=$(docker exec -ti bostrom cyber tendermint show-validator) \
+  --pubkey=$(docker exec -ti space-pussy pussy tendermint show-validator) \
   --moniker=<your_node_nickname> \
   --from=<your_key_name> \
   --commission-rate="0.10" \
   --commission-max-rate="0.20" \
   --commission-max-change-rate="0.01" \
   --chain-id=bostrom \
-  --gas-prices 0.01boot \
+  --gas-prices 0.01pussy \
   --gas 600000
 ```
 
 ### Verify that you are validating
 
 ```bash
-docker exec -ti bostrom cyber query staking validators
+docker exec -ti space-pussy pussy query staking validators
 ```
 
 If you see your `<your_node_nickname>` with the status `Bonded` and Jailed `false` everything is good.
@@ -401,7 +401,7 @@ If your validator got under slashing conditions, it will be jailed.
 After such an event an operator must unjail the validator manually:
 
 ```bash
-docker exec -ti bostrom cyber tx slashing unjail --from=<your_key_name> --chain-id bostrom --gas-prices 0.01boot --gas 300000
+docker exec -ti space-pussy pussy tx slashing unjail --from=<your_key_name> --chain-id space-pussy --gas-prices 0.01pussy --gas 300000
 ```
 
 ### Back-up validator keys (!)
@@ -411,6 +411,6 @@ Your identity as a validator consists of two things:
 - your account (to sign transactions)
 - your validator private key (to sign stuff on the chain consensus layer)
 
-Please back up `$HOME/.cyber/config/priv_validator_key.json` along with your seed phrase. In case of occasional node loss you would be able to restore your validator operation with this file and another full node.
+Please back up `$HOME/.pussy/config/priv_validator_key.json` along with your seed phrase. In case of occasional node loss you would be able to restore your validator operation with this file and another full node.
 
-Finally, in case you want to keep your cyber node ID consistent during networks please backup `$HOME/.cyber/config/node_key.json`.
+Finally, in case you want to keep your pussy node ID consistent during networks please backup `$HOME/.pussy/config/node_key.json`.
