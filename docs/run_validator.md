@@ -244,7 +244,7 @@ Digest: sha256:774ca3d612de15213102c2dbbba55df44dc5cf9870ca2be6c6e9c627fa63d67a
 Status: Downloaded newer image for nvidia/cuda:11.1-base
 Mon Jun 21 14:07:52 2021 
 +------------------------------------------------------------------------+
-|NVIDIA-SMI 460.84      Driver Version:460.84      CUDA Version: 11.2    |
+|NVIDIA-SMI 460.84      Driver Version:460.84      CUDA Version: 11.4    |
 |-----------------------------+--------------------+---------------------+
 |GPU  Name       Persistence-M| Bus-Id       Disp.A| Volatile Uncorr. ECC|
 |Fan  Temp  Perf Pwr:Usage/Cap|        Memory-Usage| GPU-Util  Compute M.|
@@ -282,8 +282,10 @@ mkdir $HOME/.cyber/config
 (This will pull and extract the image from cyberd/cyber)
 
 ```bash
-docker run -d --gpus all --name=bostrom --restart always -p 26656:26656 -p 26657:26657 -p 1317:1317 -e ALLOW_SEARCH=true -v $HOME/.cyber:/root/.cyber  cyberd/cyber:bostrom-2.1
+docker run -d --gpus all --name=bostrom --restart always -p 26656:26656 -p 26657:26657 -p 1317:1317 -e ALLOW_SEARCH=true -v $HOME/.cyber:/root/.cyber  cyberd/bostrom:dragonberry-cuda11.4
 ```
+
+Docker image already contain all binaries to either sync from 0 or start form snapshot.
 
 3. Setup some peers to `persistent_peers` and `seeds` to $HOME/.cyber/config/config.toml line 184:
 
