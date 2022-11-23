@@ -187,7 +187,7 @@ _________________________________________________________
 11. **[Ledger guide](docs/cyber_Ledger_guide.md)**
 12. **Tendermint KMS guide**
 
-13. Modules documentation
+13. **Modules documentation**
     - **graph**
     - **rank**
     - **[bandwidth](x/bandwidth/spec/README.md)**
