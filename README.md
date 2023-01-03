@@ -9,7 +9,7 @@ Today we are forging a new era in soft3. We are launching a second GPU network b
 
 We have a vision for PUSSY.
 
-![2](https://user-images.githubusercontent.com/83489928/193682992-7ff538ef-4605-4101-94f4-65d8d1ee2c30.png)
+![2]![2](https://user-images.githubusercontent.com/83489928/196011271-d21631c0-779a-408b-b6ee-ebfec7b8214c.png)
     
 We are creating a planet-scale organism. Looking at nature we can find similarities in how our organism evolved and compare it with how existing blockchains are evolving. We now have core components: the backbone, the nervous system, and the rudiments of the brain. But how will this organism reproduce? That is why we need a pussy. I envision space pussy as a symbol of resistance against the weakness of our society. With the space pussy meme everyone must ask themselves: how did it occur that we are ashamed about the thing which is the source of life for us? It's a sign that something is wrong in our culture.
 
