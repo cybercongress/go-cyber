@@ -109,7 +109,7 @@ go-mod-cache: go.sum
 go.sum: go.mod
 	@echo "--> Ensure dependencies have not been modified"
 	@go mod verify # TODO uncomment on release
-	go mod tidy -compat=1.17
+	go mod tidy
 .PHONY: go.sum
 
 lint:
