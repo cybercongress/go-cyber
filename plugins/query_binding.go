@@ -59,18 +59,3 @@ func (q Querier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([]byte, err
 		return nil, sdkerrors.Wrap(wasm.ErrQueryFailed, customQuery.Route)
 	}
 }
-
-func ConvertSdkCoinsToWasmCoins(coins []sdk.Coin) wasmvmtypes.Coins {
-	converted := make(wasmvmtypes.Coins, len(coins))
-	for i, c := range coins {
-		converted[i] = ConvertSdkCoinToWasmCoin(c)
-	}
-	return converted
-}
-
-func ConvertSdkCoinToWasmCoin(coin sdk.Coin) wasmvmtypes.Coin {
-	return wasmvmtypes.Coin{
-		Denom:  coin.Denom,
-		Amount: coin.Amount.String(),
-	}
-}

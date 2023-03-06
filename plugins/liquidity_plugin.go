@@ -1,8 +1,7 @@
-package liquidity_plugin
+package plugins
 
 import (
 	"encoding/json"
-	"github.com/cybercongress/go-cyber/plugins"
 	liquiditytypes "github.com/tendermint/liquidity/x/liquidity/types"
 
 	"github.com/CosmWasm/wasmd/x/wasm"
@@ -10,27 +9,30 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
+	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	"github.com/tendermint/liquidity/x/liquidity/keeper"
 )
 
-var _ plugins.WasmQuerierInterface = WasmQuerier{}
-var _ plugins.WasmMsgParserInterface = WasmMsgParser{}
+var _ WasmQuerierInterface = WasmQuerier{}
+var _ WasmMsgParserInterface = WasmMsgParser{}
 
 //--------------------------------------------------
 
 type WasmMsgParser struct{}
 
-func NewWasmMsgParser() WasmMsgParser {
+func NewLiquidityWasmMsgParser() WasmMsgParser {
 	return WasmMsgParser{}
 }
 
-func (WasmMsgParser) Parse(_ sdk.AccAddress, _ wasmTypes.CosmosMsg) ([]sdk.Msg, error) { return nil, nil }
+func (WasmMsgParser) Parse(_ sdk.AccAddress, _ wasmTypes.CosmosMsg) ([]sdk.Msg, error) {
+	return nil, nil
+}
 
 type CosmosMsg struct {
-	CreatePool            *liquiditytypes.MsgCreatePool			 `json:"create_pool,omitempty"`
-	DepositWithinBatch	  *liquiditytypes.MsgDepositWithinBatch  `json:"deposit_within_batch,omitempty"`
-	WithdrawWithinBatch   *liquiditytypes.MsgWithdrawWithinBatch `json:"withdraw_within_batch,omitempty"`
-	SwapWithinBatch       *liquiditytypes.MsgSwapWithinBatch     `json:"swap_within_batch,omitempty"`
+	CreatePool          *liquiditytypes.MsgCreatePool          `json:"create_pool,omitempty"`
+	DepositWithinBatch  *liquiditytypes.MsgDepositWithinBatch  `json:"deposit_within_batch,omitempty"`
+	WithdrawWithinBatch *liquiditytypes.MsgWithdrawWithinBatch `json:"withdraw_within_batch,omitempty"`
+	SwapWithinBatch     *liquiditytypes.MsgSwapWithinBatch     `json:"swap_within_batch,omitempty"`
 }
 
 func (WasmMsgParser) ParseCustom(contractAddr sdk.AccAddress, data json.RawMessage) ([]sdk.Msg, error) {
@@ -55,12 +57,11 @@ func (WasmMsgParser) ParseCustom(contractAddr sdk.AccAddress, data json.RawMessa
 
 //--------------------------------------------------
 
-
 type WasmQuerier struct {
 	keeper.Keeper
 }
 
-func NewWasmQuerier(keeper keeper.Keeper) WasmQuerier {
+func NewLiquidityWasmQuerier(keeper keeper.Keeper) WasmQuerier {
 	return WasmQuerier{keeper}
 }
 
@@ -79,10 +80,10 @@ type QueryPoolParams struct {
 }
 
 type PoolParamsResponse struct {
-	TypeId 				  uint32 `json:"type_id"`
-	ReserveCoinDenoms 	  []string `json:"reserve_coin_denoms"`
-	ReserveAccountAddress string `json:"reserve_account_address"`
-	PoolCoinDenom 		  string `json:"pool_coin_denom"`
+	TypeId                uint32   `json:"type_id"`
+	ReserveCoinDenoms     []string `json:"reserve_coin_denoms"`
+	ReserveAccountAddress string   `json:"reserve_account_address"`
+	PoolCoinDenom         string   `json:"pool_coin_denom"`
 }
 
 type PoolLiquidityResponse struct {
@@ -96,7 +97,6 @@ type PoolSupplyResponse struct {
 type PoolPriceResponse struct {
 	Price string `json:"price"`
 }
-
 
 type PoolAddressResponse struct {
 	Address string `json:"address"`
@@ -113,20 +113,22 @@ func (querier WasmQuerier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([
 	var bz []byte
 
 	if query.PoolParams != nil {
-		pool, found := querier.Keeper.GetPool(ctx, query.PoolParams.PoolId); if found != true {
+		pool, found := querier.Keeper.GetPool(ctx, query.PoolParams.PoolId)
+		if found != true {
 			return nil, sdkerrors.ErrInvalidRequest
 		}
 
 		bz, err = json.Marshal(
 			PoolParamsResponse{
-				TypeId: 		   	   pool.TypeId,
-				ReserveCoinDenoms: 	   pool.ReserveCoinDenoms,
+				TypeId:                pool.TypeId,
+				ReserveCoinDenoms:     pool.ReserveCoinDenoms,
 				ReserveAccountAddress: pool.ReserveAccountAddress,
-				PoolCoinDenom: 	       pool.PoolCoinDenom,
+				PoolCoinDenom:         pool.PoolCoinDenom,
 			},
 		)
 	} else if query.PoolLiquidity != nil {
-		pool, found := querier.Keeper.GetPool(ctx, query.PoolLiquidity.PoolId); if found != true {
+		pool, found := querier.Keeper.GetPool(ctx, query.PoolLiquidity.PoolId)
+		if found != true {
 			return nil, sdkerrors.ErrInvalidRequest
 		}
 
@@ -134,11 +136,12 @@ func (querier WasmQuerier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([
 
 		bz, err = json.Marshal(
 			PoolLiquidityResponse{
-				Liquidity: plugins.ConvertSdkCoinsToWasmCoins(reserveCoins),
+				Liquidity: wasmkeeper.ConvertSdkCoinsToWasmCoins(reserveCoins),
 			},
 		)
 	} else if query.PoolSupply != nil {
-		pool, found := querier.Keeper.GetPool(ctx, query.PoolSupply.PoolId); if found != true {
+		pool, found := querier.Keeper.GetPool(ctx, query.PoolSupply.PoolId)
+		if found != true {
 			return nil, sdkerrors.ErrInvalidRequest
 		}
 
@@ -146,11 +149,12 @@ func (querier WasmQuerier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([
 
 		bz, err = json.Marshal(
 			PoolSupplyResponse{
-				Supply: plugins.ConvertSdkCoinToWasmCoin(poolSupply),
+				Supply: wasmkeeper.ConvertSdkCoinToWasmCoin(poolSupply),
 			},
 		)
 	} else if query.PoolPrice != nil {
-		pool, found := querier.Keeper.GetPool(ctx, query.PoolPrice.PoolId); if found != true {
+		pool, found := querier.Keeper.GetPool(ctx, query.PoolPrice.PoolId)
+		if found != true {
 			return nil, sdkerrors.ErrInvalidRequest
 		}
 
@@ -164,7 +168,8 @@ func (querier WasmQuerier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([
 			},
 		)
 	} else if query.PoolAddress != nil {
-		pool, found := querier.Keeper.GetPool(ctx, query.PoolAddress.PoolId); if found != true {
+		pool, found := querier.Keeper.GetPool(ctx, query.PoolAddress.PoolId)
+		if found != true {
 			return nil, sdkerrors.ErrInvalidRequest
 		}
 
