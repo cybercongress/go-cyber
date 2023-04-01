@@ -7,14 +7,14 @@ import "google/api/annotations.proto";
 option go_package = "github.com/cybercongress/go-cyber/x/graph/types";
 
 service Query {
-    rpc GraphStats(QueryGraphStatsRequest) returns (QueryGraphStatsResponse) {
-        option (google.api.http).get = "/cyber/graph/v1beta1/graph_stats";
-    }
+  rpc GraphStats(QueryGraphStatsRequest) returns (QueryGraphStatsResponse) {
+    option (google.api.http).get = "/cyber/graph/v1beta1/graph_stats";
+  }
 }
 
 message QueryGraphStatsRequest {}
 
 message QueryGraphStatsResponse {
-    uint64 cyberlinks = 1;
-    uint64 particles = 2;
+  uint64 cyberlinks = 1;
+  uint64 particles = 2;
 }

@@ -78,7 +78,7 @@ type AppKeepers struct {
 
 	// keepers
 	AccountKeeper    authkeeper.AccountKeeper
-	BankKeeper       bankkeeper.Keeper
+	BankKeeper       *cyberbankkeeper.BankProxyKeeper
 	CapabilityKeeper *capabilitykeeper.Keeper
 	StakingKeeper    stakingkeeper.Keeper
 	SlashingKeeper   slashingkeeper.Keeper
@@ -160,27 +160,27 @@ func NewAppKeepers(
 		maccPerms,
 	)
 
-	appKeepers.BankKeeper = bankkeeper.NewBaseKeeper(
+	appKeepers.BankKeeper = cyberbankkeeper.WrapBank(bankkeeper.NewBaseKeeper(
 		appCodec,
 		appKeepers.keys[banktypes.StoreKey],
 		appKeepers.AccountKeeper,
 		appKeepers.GetSubspace(banktypes.ModuleName),
 		blockedAddress,
-	)
+	))
 
 	// Cyber uses custom bank module wrapped around SDK's bank module
 	appKeepers.CyberbankKeeper = cyberbankkeeper.NewIndexedKeeper(
 		appCodec,
-		appKeepers.keys[authtypes.StoreKey], // TODO check key
-		cyberbankkeeper.Wrap(appKeepers.BankKeeper),
+		appKeepers.BankKeeper,
 		appKeepers.AccountKeeper,
+		appKeepers.keys[authtypes.StoreKey],
 	)
 
 	stakingKeeper := stakingkeeper.NewKeeper(
 		appCodec,
 		appKeepers.keys[stakingtypes.StoreKey],
 		appKeepers.AccountKeeper,
-		appKeepers.CyberbankKeeper.Proxy,
+		appKeepers.BankKeeper,
 		appKeepers.GetSubspace(stakingtypes.ModuleName),
 	)
 
@@ -190,7 +190,7 @@ func NewAppKeepers(
 		appKeepers.GetSubspace(minttypes.ModuleName),
 		&stakingKeeper,
 		appKeepers.AccountKeeper,
-		appKeepers.CyberbankKeeper.Proxy,
+		appKeepers.BankKeeper,
 		authtypes.FeeCollectorName,
 	)
 
@@ -199,7 +199,7 @@ func NewAppKeepers(
 		appKeepers.keys[distrtypes.StoreKey],
 		appKeepers.GetSubspace(distrtypes.ModuleName),
 		appKeepers.AccountKeeper,
-		appKeepers.CyberbankKeeper.Proxy,
+		appKeepers.BankKeeper,
 		&stakingKeeper,
 		authtypes.FeeCollectorName,
 		blockedAddress,
@@ -215,7 +215,7 @@ func NewAppKeepers(
 	appKeepers.CrisisKeeper = crisiskeeper.NewKeeper(
 		appKeepers.GetSubspace(crisistypes.ModuleName),
 		invCheckPeriod,
-		appKeepers.CyberbankKeeper.Proxy,
+		appKeepers.BankKeeper,
 		authtypes.FeeCollectorName,
 	)
 	appKeepers.UpgradeKeeper = upgradekeeper.NewKeeper(
@@ -237,14 +237,14 @@ func NewAppKeepers(
 
 	// Start cyber's keepers configuration
 
-	appKeepers.CyberbankKeeper.Proxy.AddHook(
+	appKeepers.BankKeeper.AddBalanceListener(
 		bandwidth.CollectAddressesWithStakeChange(),
 	)
 
 	appKeepers.BandwidthMeter = bandwidthkeeper.NewBandwidthMeter(
 		appCodec,
 		appKeepers.keys[bandwidthtypes.StoreKey],
-		appKeepers.CyberbankKeeper.Proxy,
+		appKeepers.CyberbankKeeper,
 		appKeepers.GetSubspace(bandwidthtypes.ModuleName),
 	)
 
@@ -275,17 +275,18 @@ func NewAppKeepers(
 	appKeepers.GridKeeper = gridkeeper.NewKeeper(
 		appCodec,
 		appKeepers.keys[gridtypes.ModuleName],
-		appKeepers.CyberbankKeeper.Proxy,
+		appKeepers.BankKeeper,
 		appKeepers.AccountKeeper,
 		appKeepers.GetSubspace(gridtypes.ModuleName),
 	)
-	appKeepers.CyberbankKeeper.Proxy.SetGridKeeper(&appKeepers.GridKeeper)
-	appKeepers.CyberbankKeeper.Proxy.SetAccountKeeper(appKeepers.AccountKeeper)
+	appKeepers.CyberbankKeeper.SetGridKeeper(&appKeepers.GridKeeper)
+	// TODO need this?
+	appKeepers.CyberbankKeeper.SetAccountKeeper(appKeepers.AccountKeeper)
 
 	appKeepers.ResourcesKeeper = resourceskeeper.NewKeeper(
 		appCodec,
 		appKeepers.AccountKeeper,
-		appKeepers.CyberbankKeeper.Proxy,
+		appKeepers.BankKeeper,
 		appKeepers.BandwidthMeter,
 		appKeepers.GetSubspace(resourcestypes.ModuleName),
 	)
@@ -293,7 +294,7 @@ func NewAppKeepers(
 	appKeepers.DmnKeeper = dmnkeeper.NewKeeper(
 		appCodec,
 		appKeepers.keys[dmntypes.StoreKey],
-		appKeepers.CyberbankKeeper.Proxy,
+		appKeepers.BankKeeper,
 		appKeepers.AccountKeeper,
 		appKeepers.GetSubspace(dmntypes.ModuleName),
 	)
@@ -302,7 +303,7 @@ func NewAppKeepers(
 		appCodec,
 		appKeepers.keys[liquiditytypes.StoreKey],
 		appKeepers.GetSubspace(liquiditytypes.ModuleName),
-		appKeepers.CyberbankKeeper.Proxy,
+		appKeepers.BankKeeper,
 		appKeepers.AccountKeeper,
 		appKeepers.DistrKeeper,
 	)
@@ -360,7 +361,7 @@ func NewAppKeepers(
 		appKeepers.IBCKeeper.ChannelKeeper,
 		&appKeepers.IBCKeeper.PortKeeper,
 		appKeepers.AccountKeeper,
-		appKeepers.CyberbankKeeper.Proxy,
+		appKeepers.BankKeeper,
 		scopedTransferKeeper,
 	)
 
@@ -401,7 +402,7 @@ func NewAppKeepers(
 		appKeepers.keys[wasm.StoreKey],
 		appKeepers.GetSubspace(wasm.ModuleName),
 		appKeepers.AccountKeeper,
-		appKeepers.CyberbankKeeper.Proxy,
+		appKeepers.BankKeeper,
 		appKeepers.StakingKeeper,
 		appKeepers.DistrKeeper,
 		appKeepers.IBCKeeper.ChannelKeeper,
@@ -442,7 +443,7 @@ func NewAppKeepers(
 		appKeepers.keys[govtypes.StoreKey],
 		appKeepers.GetSubspace(govtypes.ModuleName),
 		appKeepers.AccountKeeper,
-		appKeepers.CyberbankKeeper.Proxy,
+		appKeepers.BankKeeper,
 		&stakingKeeper,
 		govRouter,
 	)

@@ -3,6 +3,7 @@ package app
 import (
 	"fmt"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
+	"github.com/cosmos/cosmos-sdk/x/bank"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 	ibcclientclient "github.com/cosmos/ibc-go/v4/modules/core/02-client/client"
@@ -223,11 +224,19 @@ func NewApp(
 
 	app.mm.RegisterInvariants(&app.CrisisKeeper)
 	app.mm.RegisterRoutes(app.Router(), app.QueryRouter(), encodingConfig.Amino)
+
+	// TODO hack to initialize application
+	// from sdk.bank/module.go: AppModule RegisterServices
+	// 	m := keeper.NewMigrator(am.keeper.(keeper.BaseKeeper))
+	bankMigModule := bank.NewAppModule(appCodec, *app.BankKeeper.GetBankKeeper(), app.AccountKeeper)
+	proxy := app.mm.Modules[banktypes.ModuleName]
+	app.mm.Modules[banktypes.ModuleName] = bankMigModule
 	app.mm.RegisterServices(cfg)
+	app.mm.Modules[banktypes.ModuleName] = proxy
 
 	// TODO refactor bank reinitialization flow
 	// NOTE custom implementation
-	reinitializeBank(app, cfg)
+	//reinitializeBank(app, cfg)
 
 	// initialize stores
 	app.MountKVStores(app.GetKVStoreKey())
@@ -246,7 +255,7 @@ func NewApp(
 		HandlerOptions{
 			HandlerBaseOptions: HandlerBaseOptions{
 				AccountKeeper:   app.AccountKeeper,
-				BankKeeper:      app.CyberbankKeeper.Proxy,
+				BankKeeper:      app.BankKeeper,
 				FeegrantKeeper:  app.FeeGrantKeeper,
 				SignModeHandler: encodingConfig.TxConfig.SignModeHandler(),
 				SigGasConsumer:  ante.DefaultSigVerificationGasConsumer,

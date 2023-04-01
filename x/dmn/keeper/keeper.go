@@ -1,10 +1,9 @@
 package keeper
 
 import (
-	"fmt"
-
-	"encoding/hex"
 	"encoding/base64"
+	"encoding/hex"
+	"fmt"
 
 	"github.com/CosmWasm/wasmd/x/wasm"
 	"github.com/cosmos/cosmos-sdk/telemetry"
@@ -26,7 +25,7 @@ import (
 type Keeper struct {
 	storeKey      sdk.StoreKey
 	cdc           codec.BinaryCodec
-	wasmKeeper 	  wasm.Keeper
+	wasmKeeper    wasm.Keeper
 	accountKeeper types.AccountKeeper
 	proxyKeeper   types.BankKeeper
 	paramspace    paramstypes.Subspace
@@ -35,8 +34,8 @@ type Keeper struct {
 func NewKeeper(
 	cdc codec.BinaryCodec,
 	key sdk.StoreKey,
-	bk  types.BankKeeper,
-	ak  types.AccountKeeper,
+	bk types.BankKeeper,
+	ak types.AccountKeeper,
 	paramSpace paramstypes.Subspace,
 ) *Keeper {
 
@@ -45,11 +44,11 @@ func NewKeeper(
 	}
 
 	return &Keeper{
-		storeKey:   key,
-		cdc:        cdc,
+		storeKey:      key,
+		cdc:           cdc,
 		proxyKeeper:   bk,
 		accountKeeper: ak,
-		paramspace: paramSpace,
+		paramspace:    paramSpace,
 	}
 }
 
@@ -103,7 +102,7 @@ func (k Keeper) SaveThought(
 	k.SetThoughtStats(ctx, program, name,
 		types.NewStats(
 			program.String(), name,
-			0,0, 0, uint64(ctx.BlockHeight()),
+			0, 0, 0, uint64(ctx.BlockHeight()),
 		),
 	)
 
@@ -169,7 +168,7 @@ func (k Keeper) UpdateThoughtName(
 		types.NewStats(
 			program.String(), nameNew,
 			thoughtStats.Calls, thoughtStats.Fees, thoughtStats.Fees, thoughtStats.LastBlock,
-	))
+		))
 
 	return nil
 }
@@ -258,9 +257,7 @@ func (k Keeper) UpdateThoughtBlock(
 	return nil
 }
 
-
 //______________________________________________________________________
-
 
 func (k Keeper) MaxThougths(ctx sdk.Context) (res uint32) {
 	k.paramspace.Get(ctx, types.KeyMaxSlots, &res)
@@ -441,7 +438,7 @@ func (k Keeper) ExecuteThoughtsQueue(ctx sdk.Context) {
 			price := thought.Load.GasPrice
 
 			k.Logger(ctx).Info("Started thought", "number", i, "gas price", price)
-			thoughtsTriggered = thoughtsTriggered +1
+			thoughtsTriggered = thoughtsTriggered + 1
 
 			cacheContext, writeFn := ctx.CacheContext()
 			cacheContext = cacheContext.WithGasMeter(sdk.NewGasMeter(sdk.Gas(maxGasPerThought)))
@@ -463,7 +460,7 @@ func (k Keeper) ExecuteThoughtsQueue(ctx sdk.Context) {
 
 			gasUsedByThought := cacheContext.GasMeter().GasConsumed()
 			ctx.GasMeter().ConsumeGas(gasUsedByThought, "thought execution")
-			if gasUsedTotal +gasUsedByThought > uint64(maxGas) {
+			if gasUsedTotal+gasUsedByThought > uint64(maxGas) {
 				break
 			} else {
 				gasUsedTotal += gasUsedByThought
@@ -472,7 +469,7 @@ func (k Keeper) ExecuteThoughtsQueue(ctx sdk.Context) {
 			js, _ := k.GetThoughtStats(ctx, program, thought.Name)
 			// TODO move to more advanced fee system, 10X fee reducer applied (min 0.1 per gas)
 			amtGasFee := price.Amount.Int64() * int64(gasUsedByThought) / 10
-			amtTTLFee := (ctx.BlockHeight() - int64(js.LastBlock))*int64(feeTTL)
+			amtTTLFee := (ctx.BlockHeight() - int64(js.LastBlock)) * int64(feeTTL)
 			amtTotalFee := amtGasFee + amtTTLFee
 
 			k.Logger(ctx).Info("Gas thought execution stats",
@@ -542,9 +539,11 @@ func (k Keeper) executeThoughtWithSudo(ctx sdk.Context, program sdk.AccAddress, 
 		telemetry.IncrCounter(1.0, types.ModuleName, "thought")
 	}()
 
-	callData, berr := base64.StdEncoding.DecodeString(msg); if berr != nil {
+	callData, berr := base64.StdEncoding.DecodeString(msg)
+	if berr != nil {
 		// TODO remove hex later as deprecated
-		_, herr := hex.DecodeString(msg); if herr != nil {
+		_, herr := hex.DecodeString(msg)
+		if herr != nil {
 			return nil, types.ErrBadCallData
 		}
 	}
