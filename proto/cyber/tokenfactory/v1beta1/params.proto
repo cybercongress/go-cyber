@@ -3,7 +3,6 @@ package cyber.tokenfactory.v1beta1;
 
 import "gogoproto/gogo.proto";
 import "cyber/tokenfactory/v1beta1/authorityMetadata.proto";
-import "cosmos_proto/cosmos.proto";
 import "cosmos/base/v1beta1/coin.proto";
 
 option go_package = "github.com/cybercongress/go-cyber/x/tokenfactory/types";

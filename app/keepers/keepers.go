@@ -1,6 +1,8 @@
 package keepers
 
 import (
+	"path/filepath"
+
 	"github.com/CosmWasm/wasmd/x/wasm"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -48,6 +50,10 @@ import (
 	porttypes "github.com/cosmos/ibc-go/v4/modules/core/05-port/types"
 	ibchost "github.com/cosmos/ibc-go/v4/modules/core/24-host"
 	ibckeeper "github.com/cosmos/ibc-go/v4/modules/core/keeper"
+	"github.com/spf13/cast"
+	liquiditykeeper "github.com/tendermint/liquidity/x/liquidity/keeper"
+	liquiditytypes "github.com/tendermint/liquidity/x/liquidity/types"
+
 	wasmplugins "github.com/cybercongress/go-cyber/plugins"
 	"github.com/cybercongress/go-cyber/x/bandwidth"
 	bandwidthkeeper "github.com/cybercongress/go-cyber/x/bandwidth/keeper"
@@ -64,10 +70,8 @@ import (
 	ranktypes "github.com/cybercongress/go-cyber/x/rank/types"
 	resourceskeeper "github.com/cybercongress/go-cyber/x/resources/keeper"
 	resourcestypes "github.com/cybercongress/go-cyber/x/resources/types"
-	"github.com/spf13/cast"
-	liquiditykeeper "github.com/tendermint/liquidity/x/liquidity/keeper"
-	liquiditytypes "github.com/tendermint/liquidity/x/liquidity/types"
-	"path/filepath"
+	tokenfactorykeeper "github.com/cybercongress/go-cyber/x/tokenfactory/keeper"
+	tokenfactorytypes "github.com/cybercongress/go-cyber/x/tokenfactory/types"
 )
 
 type AppKeepers struct {
@@ -95,16 +99,17 @@ type AppKeepers struct {
 	FeeGrantKeeper   feegrantkeeper.Keeper
 	AuthzKeeper      authzkeeper.Keeper
 
-	WasmKeeper      wasm.Keeper
-	LiquidityKeeper liquiditykeeper.Keeper
-	BandwidthMeter  *bandwidthkeeper.BandwidthMeter
-	CyberbankKeeper *cyberbankkeeper.IndexedKeeper
-	GraphKeeper     *graphkeeper.GraphKeeper
-	IndexKeeper     *graphkeeper.IndexKeeper
-	RankKeeper      *rankkeeper.StateKeeper
-	GridKeeper      gridkeeper.Keeper
-	DmnKeeper       *dmnkeeper.Keeper
-	ResourcesKeeper resourceskeeper.Keeper
+	WasmKeeper         wasm.Keeper
+	LiquidityKeeper    liquiditykeeper.Keeper
+	BandwidthMeter     *bandwidthkeeper.BandwidthMeter
+	CyberbankKeeper    *cyberbankkeeper.IndexedKeeper
+	GraphKeeper        *graphkeeper.GraphKeeper
+	IndexKeeper        *graphkeeper.IndexKeeper
+	RankKeeper         *rankkeeper.StateKeeper
+	GridKeeper         gridkeeper.Keeper
+	DmnKeeper          *dmnkeeper.Keeper
+	ResourcesKeeper    resourceskeeper.Keeper
+	TokenFactoryKeeper tokenfactorykeeper.Keeper
 
 	ScopedIBCKeeper      capabilitykeeper.ScopedKeeper
 	ScopedTransferKeeper capabilitykeeper.ScopedKeeper
@@ -352,6 +357,14 @@ func NewAppKeepers(
 		appKeepers.BankKeeper,
 	)
 
+	appKeepers.TokenFactoryKeeper = tokenfactorykeeper.NewKeeper(
+		appKeepers.keys[tokenfactorytypes.StoreKey],
+		appKeepers.GetSubspace(tokenfactorytypes.ModuleName),
+		appKeepers.AccountKeeper,
+		appKeepers.BankKeeper,
+		appKeepers.DistrKeeper,
+	)
+
 	// Create Transfer Keepers
 	appKeepers.TransferKeeper = ibctransferkeeper.NewKeeper(
 		appCodec,
@@ -475,6 +488,8 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(gridtypes.ModuleName)
 	paramsKeeper.Subspace(dmntypes.ModuleName)
 	paramsKeeper.Subspace(resourcestypes.ModuleName)
+	paramsKeeper.Subspace(ibcfeetypes.ModuleName)
+	paramsKeeper.Subspace(tokenfactorytypes.ModuleName)
 
 	return paramsKeeper
 }

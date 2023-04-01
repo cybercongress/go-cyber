@@ -41,6 +41,9 @@ import (
 	ibctransfertypes "github.com/cosmos/ibc-go/v4/modules/apps/transfer/types"
 	ibc "github.com/cosmos/ibc-go/v4/modules/core"
 	ibchost "github.com/cosmos/ibc-go/v4/modules/core/24-host"
+	"github.com/tendermint/liquidity/x/liquidity"
+	liquiditytypes "github.com/tendermint/liquidity/x/liquidity/types"
+
 	"github.com/cybercongress/go-cyber/app/params"
 	"github.com/cybercongress/go-cyber/x/bandwidth"
 	bandwidthtypes "github.com/cybercongress/go-cyber/x/bandwidth/types"
@@ -57,8 +60,8 @@ import (
 	"github.com/cybercongress/go-cyber/x/resources"
 	resourcestypes "github.com/cybercongress/go-cyber/x/resources/types"
 	stakingwrap "github.com/cybercongress/go-cyber/x/staking"
-	"github.com/tendermint/liquidity/x/liquidity"
-	liquiditytypes "github.com/tendermint/liquidity/x/liquidity/types"
+	"github.com/cybercongress/go-cyber/x/tokenfactory"
+	tokenfactorytypes "github.com/cybercongress/go-cyber/x/tokenfactory/types"
 
 	authsims "github.com/cosmos/cosmos-sdk/x/auth/simulation"
 )
@@ -77,6 +80,7 @@ var maccPerms = map[string][]string{
 	liquiditytypes.ModuleName:      {authtypes.Minter, authtypes.Burner},
 	gridtypes.GridPoolName:         nil,
 	resourcestypes.ResourcesName:   {authtypes.Minter, authtypes.Burner},
+	tokenfactorytypes.ModuleName:   {authtypes.Minter, authtypes.Burner},
 }
 
 // ModuleBasics TODO add notes which modules have functional blockers
@@ -112,6 +116,7 @@ var ModuleBasics = module.NewBasicManager(
 	grid.AppModuleBasic{},
 	dmn.AppModuleBasic{},
 	resources.AppModuleBasic{},
+	tokenfactory.AppModuleBasic{},
 )
 
 func appModules(
@@ -158,6 +163,7 @@ func appModules(
 		dmn.NewAppModule(appCodec, *app.DmnKeeper),
 		resources.NewAppModule(appCodec, app.ResourcesKeeper),
 		stakingwrap.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper),
+		tokenfactory.NewAppModule(app.TokenFactoryKeeper, app.AccountKeeper, app.BankKeeper),
 	}
 }
 
@@ -187,6 +193,7 @@ func simulationModules(
 		ibc.NewAppModule(app.IBCKeeper),
 		transfer.NewAppModule(app.TransferKeeper),
 		ibcfee.NewAppModule(app.IBCFeeKeeper),
+		// tokenfactory.NewAppModule(app.TokenFactoryKeeper, app.AccountKeeper, app.BankKeeper),
 	}
 }
 
@@ -224,6 +231,7 @@ func orderBeginBlockers() []string {
 		vestingtypes.ModuleName,
 		ibcfeetypes.ModuleName,
 		wasm.ModuleName,
+		tokenfactorytypes.ModuleName,
 	}
 }
 
@@ -258,6 +266,7 @@ func orderEndBlockers() []string {
 		vestingtypes.ModuleName,
 		ibcfeetypes.ModuleName,
 		wasm.ModuleName,
+		tokenfactorytypes.ModuleName,
 	}
 }
 
@@ -283,6 +292,7 @@ func orderInitBlockers() []string {
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 		ibcfeetypes.ModuleName,
+		tokenfactorytypes.ModuleName,
 		wasm.ModuleName,
 		bandwidthtypes.ModuleName,
 		ranktypes.ModuleName,

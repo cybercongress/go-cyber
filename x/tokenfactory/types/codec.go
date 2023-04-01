@@ -5,17 +5,14 @@ import (
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	// this line is used by starport scaffolding # 1
 	"github.com/cosmos/cosmos-sdk/types/msgservice"
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(&MsgCreateDenom{}, "osmosis/tokenfactory/create-denom", nil)
-	cdc.RegisterConcrete(&MsgMint{}, "osmosis/tokenfactory/mint", nil)
-	cdc.RegisterConcrete(&MsgBurn{}, "osmosis/tokenfactory/burn", nil)
-	// cdc.RegisterConcrete(&MsgForceTransfer{}, "osmosis/tokenfactory/force-transfer", nil)
-	cdc.RegisterConcrete(&MsgChangeAdmin{}, "osmosis/tokenfactory/change-admin", nil)
+	cdc.RegisterConcrete(&MsgCreateDenom{}, "cyber/MsgCreateDenom", nil)
+	cdc.RegisterConcrete(&MsgMint{}, "cyber/MsgMint", nil)
+	cdc.RegisterConcrete(&MsgBurn{}, "cyber/MsgBurn", nil)
+	cdc.RegisterConcrete(&MsgChangeAdmin{}, "cyber/MsgChangeAdmin", nil)
 }
 
 func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
@@ -24,7 +21,6 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgCreateDenom{},
 		&MsgMint{},
 		&MsgBurn{},
-		// &MsgForceTransfer{},
 		&MsgChangeAdmin{},
 	)
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
@@ -32,7 +28,7 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 
 var (
 	amino     = codec.NewLegacyAmino()
-	ModuleCdc = codec.NewProtoCodec(cdctypes.NewInterfaceRegistry())
+	ModuleCdc = codec.NewAminoCodec(amino)
 )
 
 func init() {

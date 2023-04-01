@@ -3,8 +3,6 @@ package simulation
 import (
 	"math/rand"
 
-	"github.com/CosmWasm/token-factory/app/params"
-	"github.com/CosmWasm/token-factory/x/tokenfactory/types"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	simappparams "github.com/cosmos/cosmos-sdk/simapp/params"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -12,6 +10,8 @@ import (
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
+
+	"github.com/cybercongress/go-cyber/x/tokenfactory/types"
 )
 
 // Simulation operation weights constants
@@ -23,6 +23,13 @@ const (
 	OpWeightMsgBurn             = "op_weight_msg_burn"
 	OpWeightMsgChangeAdmin      = "op_weight_msg_change_admin"
 	OpWeightMsgSetDenomMetadata = "op_weight_msg_set_denom_metadata"
+
+	// TODO move op weights to params/params.go
+	DefaultWeightMsgCreateDenom      int = 100
+	DefaultWeightMsgMint             int = 100
+	DefaultWeightMsgBurn             int = 100
+	DefaultWeightMsgChangeAdmin      int = 100
+	DefaultWeightMsgSetDenomMetadata int = 100
 )
 
 type TokenfactoryKeeper interface {
@@ -44,7 +51,6 @@ func WeightedOperations(
 	ak types.AccountKeeper,
 	bk BankKeeper,
 ) simulation.WeightedOperations {
-
 	var (
 		weightMsgCreateDenom      int
 		weightMsgMint             int
@@ -55,27 +61,27 @@ func WeightedOperations(
 
 	simstate.AppParams.GetOrGenerate(simstate.Cdc, OpWeightMsgCreateDenom, &weightMsgCreateDenom, nil,
 		func(_ *rand.Rand) {
-			weightMsgCreateDenom = params.DefaultWeightMsgCreateDenom
+			weightMsgCreateDenom = DefaultWeightMsgCreateDenom
 		},
 	)
 	simstate.AppParams.GetOrGenerate(simstate.Cdc, OpWeightMsgMint, &weightMsgMint, nil,
 		func(_ *rand.Rand) {
-			weightMsgMint = params.DefaultWeightMsgMint
+			weightMsgMint = DefaultWeightMsgMint
 		},
 	)
 	simstate.AppParams.GetOrGenerate(simstate.Cdc, OpWeightMsgBurn, &weightMsgBurn, nil,
 		func(_ *rand.Rand) {
-			weightMsgBurn = params.DefaultWeightMsgBurn
+			weightMsgBurn = DefaultWeightMsgBurn
 		},
 	)
 	simstate.AppParams.GetOrGenerate(simstate.Cdc, OpWeightMsgChangeAdmin, &weightMsgChangeAdmin, nil,
 		func(_ *rand.Rand) {
-			weightMsgChangeAdmin = params.DefaultWeightMsgChangeAdmin
+			weightMsgChangeAdmin = DefaultWeightMsgChangeAdmin
 		},
 	)
 	simstate.AppParams.GetOrGenerate(simstate.Cdc, OpWeightMsgSetDenomMetadata, &weightMsgSetDenomMetadata, nil,
 		func(_ *rand.Rand) {
-			weightMsgSetDenomMetadata = params.DefaultWeightMsgSetDenomMetadata
+			weightMsgSetDenomMetadata = DefaultWeightMsgSetDenomMetadata
 		},
 	)
 

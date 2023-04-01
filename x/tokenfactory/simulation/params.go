@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"math/rand"
 
-	"github.com/CosmWasm/token-factory/x/tokenfactory/types"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
+
+	"github.com/cybercongress/go-cyber/x/tokenfactory/types"
 )
 
 func ParamChanges(r *rand.Rand) []simtypes.ParamChange {

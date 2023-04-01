@@ -14,8 +14,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/simapp"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/CosmWasm/token-factory/app"
 	"github.com/CosmWasm/wasmd/x/wasm/keeper"
+
+	"github.com/cybercongress/go-cyber/app"
 )
 
 func CreateTestInput() (*app.TokenApp, sdk.Context) {
