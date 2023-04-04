@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
@@ -12,11 +13,13 @@ var _ bankkeeper.Keeper = (*BankProxyKeeper)(nil)
 
 // TODO revisit check that all need accounts indexed
 
-type CoinsTransferHook = func(sdk.Context, []sdk.AccAddress)
-type BankProxyKeeper struct {
-	bk        bankkeeper.Keeper
-	listeners []CoinsTransferHook
-}
+type (
+	CoinsTransferHook = func(sdk.Context, []sdk.AccAddress)
+	BankProxyKeeper   struct {
+		bk        bankkeeper.Keeper
+		listeners []CoinsTransferHook
+	}
+)
 
 func WrapBank(bk bankkeeper.Keeper) *BankProxyKeeper {
 	return &BankProxyKeeper{

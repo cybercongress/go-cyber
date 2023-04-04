@@ -7,8 +7,9 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ctypes "github.com/cybercongress/go-cyber/types"
 	"github.com/gorilla/mux"
+
+	ctypes "github.com/cybercongress/go-cyber/types"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/types/rest"
@@ -28,7 +29,6 @@ func registerQueryRoutes(cliCtx client.Context, r *mux.Router) {
 
 func queryParamsHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-
 		route := fmt.Sprintf("custom/%s/%s", types.QuerierRoute, types.QueryParams)
 
 		res, _, err := cliCtx.QueryWithData(route, nil)

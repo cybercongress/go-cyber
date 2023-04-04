@@ -41,8 +41,10 @@ import (
 	ibctransfertypes "github.com/cosmos/ibc-go/v4/modules/apps/transfer/types"
 	ibc "github.com/cosmos/ibc-go/v4/modules/core"
 	ibchost "github.com/cosmos/ibc-go/v4/modules/core/24-host"
-	"github.com/tendermint/liquidity/x/liquidity"
-	liquiditytypes "github.com/tendermint/liquidity/x/liquidity/types"
+	"github.com/cybercongress/go-cyber/x/tokenfactory"
+	tokenfactorytypes "github.com/cybercongress/go-cyber/x/tokenfactory/types"
+	"github.com/gravity-devs/liquidity/x/liquidity"
+	liquiditytypes "github.com/gravity-devs/liquidity/x/liquidity/types"
 
 	"github.com/cybercongress/go-cyber/app/params"
 	"github.com/cybercongress/go-cyber/x/bandwidth"
@@ -60,8 +62,6 @@ import (
 	"github.com/cybercongress/go-cyber/x/resources"
 	resourcestypes "github.com/cybercongress/go-cyber/x/resources/types"
 	stakingwrap "github.com/cybercongress/go-cyber/x/staking"
-	"github.com/cybercongress/go-cyber/x/tokenfactory"
-	tokenfactorytypes "github.com/cybercongress/go-cyber/x/tokenfactory/types"
 
 	authsims "github.com/cosmos/cosmos-sdk/x/auth/simulation"
 )

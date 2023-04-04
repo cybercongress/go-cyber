@@ -3,6 +3,7 @@ package types
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	ctypes "github.com/cybercongress/go-cyber/types"
 )
 
@@ -29,7 +30,8 @@ func (msg MsgInvestmint) Route() string { return RouterKey }
 func (msg MsgInvestmint) Type() string { return ActionInvestmint }
 
 func (msg MsgInvestmint) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Neuron); if err != nil {
+	_, err := sdk.AccAddressFromBech32(msg.Neuron)
+	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid neuron address: %s", err)
 	}
 
@@ -60,4 +62,3 @@ func (msg MsgInvestmint) GetSigners() []sdk.AccAddress {
 	}
 	return []sdk.AccAddress{addr}
 }
-

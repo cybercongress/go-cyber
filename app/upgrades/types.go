@@ -5,8 +5,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
-	"github.com/cybercongress/go-cyber/app/keepers"
 	abci "github.com/tendermint/tendermint/abci/types"
+
+	"github.com/cybercongress/go-cyber/app/keepers"
 )
 
 // BaseAppParamManager defines an interrace that BaseApp is expected to fullfil

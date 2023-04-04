@@ -2,27 +2,30 @@ package app
 
 import (
 	"fmt"
+	"io"
+	"os"
+	"strings"
+	"time"
+
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	"github.com/cosmos/cosmos-sdk/x/bank"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 	ibcclientclient "github.com/cosmos/ibc-go/v4/modules/core/02-client/client"
+
 	"github.com/cybercongress/go-cyber/app/keepers"
 
 	_ "github.com/cybercongress/go-cyber/client/docs/statik"
-	"io"
-	"os"
-	"strings"
-	"time"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/grpc/tmservice"
 	"github.com/cosmos/cosmos-sdk/codec/types"
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
 	authtx "github.com/cosmos/cosmos-sdk/x/auth/tx"
-	ctypes "github.com/cybercongress/go-cyber/types"
 	"github.com/spf13/cast"
 	dbm "github.com/tendermint/tm-db"
+
+	ctypes "github.com/cybercongress/go-cyber/types"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client/rpc"
@@ -49,20 +52,22 @@ import (
 
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmclient "github.com/CosmWasm/wasmd/x/wasm/client"
+	tmjson "github.com/tendermint/tendermint/libs/json"
+
 	"github.com/cybercongress/go-cyber/app/params"
 	"github.com/cybercongress/go-cyber/utils"
 	cyberbanktypes "github.com/cybercongress/go-cyber/x/cyberbank/types"
-	tmjson "github.com/tendermint/tendermint/libs/json"
 
 	"github.com/cosmos/cosmos-sdk/simapp"
 
 	govclient "github.com/cosmos/cosmos-sdk/x/gov/client"
+
 	upgrades "github.com/cybercongress/go-cyber/app/upgrades"
 )
 
 const (
 	appName = "BostromHub"
-	//upgradeName = "cyberfrey" // TODO move to upgrades
+	// upgradeName = "cyberfrey" // TODO move to upgrades
 )
 
 // We pull these out so we can set them with LDFLAGS in the Makefile
@@ -118,12 +123,10 @@ func getGovProposalHandlers() []govclient.ProposalHandler {
 	return govProposalHandlers
 }
 
-var (
-	// module accounts that are allowed to receive tokens
-	allowedReceivingModAcc = map[string]bool{
-		distrtypes.ModuleName: true,
-	}
-)
+// module accounts that are allowed to receive tokens
+var allowedReceivingModAcc = map[string]bool{
+	distrtypes.ModuleName: true,
+}
 
 var (
 	_ simapp.App              = (*App)(nil)
@@ -236,7 +239,7 @@ func NewApp(
 
 	// TODO refactor bank reinitialization flow
 	// NOTE custom implementation
-	//reinitializeBank(app, cfg)
+	// reinitializeBank(app, cfg)
 
 	// initialize stores
 	app.MountKVStores(app.GetKVStoreKey())

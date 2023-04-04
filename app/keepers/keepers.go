@@ -1,6 +1,8 @@
 package keepers
 
 import (
+	tokenfactorykeeper "github.com/cybercongress/go-cyber/x/tokenfactory/keeper"
+	tokenfactorytypes "github.com/cybercongress/go-cyber/x/tokenfactory/types"
 	"path/filepath"
 
 	"github.com/CosmWasm/wasmd/x/wasm"
@@ -50,9 +52,9 @@ import (
 	porttypes "github.com/cosmos/ibc-go/v4/modules/core/05-port/types"
 	ibchost "github.com/cosmos/ibc-go/v4/modules/core/24-host"
 	ibckeeper "github.com/cosmos/ibc-go/v4/modules/core/keeper"
+	liquiditykeeper "github.com/gravity-devs/liquidity/x/liquidity/keeper"
+	liquiditytypes "github.com/gravity-devs/liquidity/x/liquidity/types"
 	"github.com/spf13/cast"
-	liquiditykeeper "github.com/tendermint/liquidity/x/liquidity/keeper"
-	liquiditytypes "github.com/tendermint/liquidity/x/liquidity/types"
 
 	wasmplugins "github.com/cybercongress/go-cyber/plugins"
 	"github.com/cybercongress/go-cyber/x/bandwidth"
@@ -70,8 +72,6 @@ import (
 	ranktypes "github.com/cybercongress/go-cyber/x/rank/types"
 	resourceskeeper "github.com/cybercongress/go-cyber/x/resources/keeper"
 	resourcestypes "github.com/cybercongress/go-cyber/x/resources/types"
-	tokenfactorykeeper "github.com/cybercongress/go-cyber/x/tokenfactory/keeper"
-	tokenfactorytypes "github.com/cybercongress/go-cyber/x/tokenfactory/types"
 )
 
 type AppKeepers struct {

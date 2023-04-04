@@ -2,7 +2,8 @@ package plugins
 
 import (
 	"encoding/json"
-	liquiditytypes "github.com/tendermint/liquidity/x/liquidity/types"
+
+	liquiditytypes "github.com/gravity-devs/liquidity/x/liquidity/types"
 
 	wasm "github.com/CosmWasm/wasmd/x/wasm"
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
@@ -48,7 +49,6 @@ const (
 func (q Querier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([]byte, error) {
 	var customQuery WasmCustomQuery
 	err := json.Unmarshal(data, &customQuery)
-
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}

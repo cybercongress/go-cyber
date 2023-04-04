@@ -38,7 +38,6 @@ func NewKeeper(
 	ak types.AccountKeeper,
 	paramSpace paramstypes.Subspace,
 ) *Keeper {
-
 	if !paramSpace.HasKeyTable() {
 		paramSpace = paramSpace.WithKeyTable(types.ParamKeyTable())
 	}
@@ -74,7 +73,6 @@ func (k Keeper) SaveThought(
 	trigger types.Trigger, load types.Load,
 	name string, particle graphtypes.Cid,
 ) error {
-
 	if trigger.Block != 0 && ctx.BlockHeight() > int64(trigger.Block) {
 		return types.ErrBadTrigger
 	}

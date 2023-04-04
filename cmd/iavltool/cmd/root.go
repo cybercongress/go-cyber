@@ -2,12 +2,11 @@ package cmd
 
 import (
 	"bytes"
-	"strconv"
-
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/spf13/cobra"

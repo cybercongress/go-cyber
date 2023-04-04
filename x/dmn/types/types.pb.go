@@ -5,19 +5,22 @@ package types
 
 import (
 	fmt "fmt"
-	_ "github.com/cosmos/cosmos-sdk/types"
-	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
-	_ "github.com/cosmos/gogoproto/gogoproto"
-	proto "github.com/cosmos/gogoproto/proto"
 	io "io"
 	math "math"
 	math_bits "math/bits"
+
+	_ "github.com/cosmos/cosmos-sdk/types"
+	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
+	_ "github.com/cosmos/gogoproto/gogoproto"
+	proto "github.com/gogo/protobuf/proto"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
-var _ = proto.Marshal
-var _ = fmt.Errorf
-var _ = math.Inf
+var (
+	_ = proto.Marshal
+	_ = fmt.Errorf
+	_ = math.Inf
+)
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -37,9 +40,11 @@ func (*Params) ProtoMessage()    {}
 func (*Params) Descriptor() ([]byte, []int) {
 	return fileDescriptor_a414790454046b0b, []int{0}
 }
+
 func (m *Params) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *Params) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_Params.Marshal(b, m, deterministic)
@@ -52,12 +57,15 @@ func (m *Params) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
+
 func (m *Params) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Params.Merge(m, src)
 }
+
 func (m *Params) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *Params) XXX_DiscardUnknown() {
 	xxx_messageInfo_Params.DiscardUnknown(m)
 }
@@ -99,9 +107,11 @@ func (*Thought) ProtoMessage()    {}
 func (*Thought) Descriptor() ([]byte, []int) {
 	return fileDescriptor_a414790454046b0b, []int{1}
 }
+
 func (m *Thought) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *Thought) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_Thought.Marshal(b, m, deterministic)
@@ -114,12 +124,15 @@ func (m *Thought) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
+
 func (m *Thought) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Thought.Merge(m, src)
 }
+
 func (m *Thought) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *Thought) XXX_DiscardUnknown() {
 	xxx_messageInfo_Thought.DiscardUnknown(m)
 }
@@ -137,9 +150,11 @@ func (*Trigger) ProtoMessage()    {}
 func (*Trigger) Descriptor() ([]byte, []int) {
 	return fileDescriptor_a414790454046b0b, []int{2}
 }
+
 func (m *Trigger) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *Trigger) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_Trigger.Marshal(b, m, deterministic)
@@ -152,12 +167,15 @@ func (m *Trigger) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
+
 func (m *Trigger) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Trigger.Merge(m, src)
 }
+
 func (m *Trigger) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *Trigger) XXX_DiscardUnknown() {
 	xxx_messageInfo_Trigger.DiscardUnknown(m)
 }
@@ -175,9 +193,11 @@ func (*Load) ProtoMessage()    {}
 func (*Load) Descriptor() ([]byte, []int) {
 	return fileDescriptor_a414790454046b0b, []int{3}
 }
+
 func (m *Load) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *Load) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_Load.Marshal(b, m, deterministic)
@@ -190,12 +210,15 @@ func (m *Load) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
+
 func (m *Load) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Load.Merge(m, src)
 }
+
 func (m *Load) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *Load) XXX_DiscardUnknown() {
 	xxx_messageInfo_Load.DiscardUnknown(m)
 }
@@ -217,9 +240,11 @@ func (*ThoughtStats) ProtoMessage()    {}
 func (*ThoughtStats) Descriptor() ([]byte, []int) {
 	return fileDescriptor_a414790454046b0b, []int{4}
 }
+
 func (m *ThoughtStats) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *ThoughtStats) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_ThoughtStats.Marshal(b, m, deterministic)
@@ -232,12 +257,15 @@ func (m *ThoughtStats) XXX_Marshal(b []byte, deterministic bool) ([]byte, error)
 		return b[:n], nil
 	}
 }
+
 func (m *ThoughtStats) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ThoughtStats.Merge(m, src)
 }
+
 func (m *ThoughtStats) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *ThoughtStats) XXX_DiscardUnknown() {
 	xxx_messageInfo_ThoughtStats.DiscardUnknown(m)
 }
@@ -322,6 +350,7 @@ func (this *Params) Equal(that interface{}) bool {
 	}
 	return true
 }
+
 func (m *Params) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -565,6 +594,7 @@ func encodeVarintTypes(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
+
 func (m *Params) Size() (n int) {
 	if m == nil {
 		return 0
@@ -670,9 +700,11 @@ func (m *ThoughtStats) Size() (n int) {
 func sovTypes(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
+
 func sozTypes(x uint64) (n int) {
 	return sovTypes(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
+
 func (m *Params) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -780,6 +812,7 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *Thought) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -992,6 +1025,7 @@ func (m *Thought) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *Trigger) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1080,6 +1114,7 @@ func (m *Trigger) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *Load) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1195,6 +1230,7 @@ func (m *Load) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *ThoughtStats) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1385,6 +1421,7 @@ func (m *ThoughtStats) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func skipTypes(dAtA []byte) (n int, err error) {
 	l := len(dAtA)
 	iNdEx := 0
