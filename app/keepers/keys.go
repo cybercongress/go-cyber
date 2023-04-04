@@ -20,7 +20,7 @@ import (
 	ibcfeetypes "github.com/cosmos/ibc-go/v4/modules/apps/29-fee/types"
 	ibctransfertypes "github.com/cosmos/ibc-go/v4/modules/apps/transfer/types"
 	ibchost "github.com/cosmos/ibc-go/v4/modules/core/24-host"
-	liquiditytypes "github.com/tendermint/liquidity/x/liquidity/types"
+	liquiditytypes "github.com/gravity-devs/liquidity/x/liquidity/types"
 
 	bandwidthtypes "github.com/cybercongress/go-cyber/x/bandwidth/types"
 	dmntypes "github.com/cybercongress/go-cyber/x/dmn/types"

@@ -3,7 +3,7 @@ package plugins
 import (
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
-	liquiditykeeper "github.com/tendermint/liquidity/x/liquidity/keeper"
+	liquiditykeeper "github.com/gravity-devs/liquidity/x/liquidity/keeper"
 
 	bandwidthkeeper "github.com/cybercongress/go-cyber/x/bandwidth/keeper"
 	bandwidthwasm "github.com/cybercongress/go-cyber/x/bandwidth/wasm"

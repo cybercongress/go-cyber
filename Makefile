@@ -3,8 +3,7 @@ CUDA_ENABLED ?= false
 LEDGER_ENABLED ?= true
 VERSION := $(shell echo $(shell git describe --tags) | sed 's/^v//')
 COMMIT := $(shell git log -1 --format='%H')
-# TODO update to CometBFT after migration
-TM_VERSION := $(shell go list -m github.com/tendermint/tendermint | sed 's:.* ::')
+#TM_VERSION := $(shell go list -m github.com/cometbft/cometbft | sed 's:.* ::')
 
 BINDIR ?= $(GOPATH)/bin
 BUILDDIR ?= $(CURDIR)/build/
@@ -67,8 +66,8 @@ ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=cyber \
 		  -X github.com/cosmos/cosmos-sdk/version.AppName=cyber \
 		  -X github.com/cosmos/cosmos-sdk/version.Version=$(VERSION) \
 		  -X github.com/cosmos/cosmos-sdk/version.Commit=$(COMMIT) \
-		  -X "github.com/cosmos/cosmos-sdk/version.BuildTags=$(build_tags_comma_sep)" \
-		  -X github.com/tendermint/tendermint/version.TMCoreSemVer=$(TM_VERSION)
+		  -X "github.com/cosmos/cosmos-sdk/version.BuildTags=$(build_tags_comma_sep)"
+#		  -X github.com/cometbft/cometbft/version.TMCoreSemVer=$(TM_VERSION)
 
 ldflags += $(LDFLAGS)
 ldflags := $(strip $(ldflags))

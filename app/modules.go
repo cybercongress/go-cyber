@@ -41,8 +41,8 @@ import (
 	ibctransfertypes "github.com/cosmos/ibc-go/v4/modules/apps/transfer/types"
 	ibc "github.com/cosmos/ibc-go/v4/modules/core"
 	ibchost "github.com/cosmos/ibc-go/v4/modules/core/24-host"
-	"github.com/tendermint/liquidity/x/liquidity"
-	liquiditytypes "github.com/tendermint/liquidity/x/liquidity/types"
+	"github.com/gravity-devs/liquidity/x/liquidity"
+	liquiditytypes "github.com/gravity-devs/liquidity/x/liquidity/types"
 
 	"github.com/cybercongress/go-cyber/app/params"
 	"github.com/cybercongress/go-cyber/x/bandwidth"
