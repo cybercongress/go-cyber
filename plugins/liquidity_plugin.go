@@ -2,6 +2,7 @@ package plugins
 
 import (
 	"encoding/json"
+
 	liquiditytypes "github.com/tendermint/liquidity/x/liquidity/types"
 
 	"github.com/CosmWasm/wasmd/x/wasm"
@@ -13,8 +14,10 @@ import (
 	"github.com/tendermint/liquidity/x/liquidity/keeper"
 )
 
-var _ WasmQuerierInterface = WasmQuerier{}
-var _ WasmMsgParserInterface = WasmMsgParser{}
+var (
+	_ WasmQuerierInterface   = WasmQuerier{}
+	_ WasmMsgParserInterface = WasmMsgParser{}
+)
 
 //--------------------------------------------------
 
@@ -105,7 +108,6 @@ type PoolAddressResponse struct {
 func (querier WasmQuerier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([]byte, error) {
 	var query CosmosQuery
 	err := json.Unmarshal(data, &query)
-
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}

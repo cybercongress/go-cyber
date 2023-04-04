@@ -20,12 +20,13 @@ import (
 	ibcfeetypes "github.com/cosmos/ibc-go/v4/modules/apps/29-fee/types"
 	ibctransfertypes "github.com/cosmos/ibc-go/v4/modules/apps/transfer/types"
 	ibchost "github.com/cosmos/ibc-go/v4/modules/core/24-host"
+	liquiditytypes "github.com/tendermint/liquidity/x/liquidity/types"
+
 	bandwidthtypes "github.com/cybercongress/go-cyber/x/bandwidth/types"
 	dmntypes "github.com/cybercongress/go-cyber/x/dmn/types"
 	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
 	gridtypes "github.com/cybercongress/go-cyber/x/grid/types"
 	ranktypes "github.com/cybercongress/go-cyber/x/rank/types"
-	liquiditytypes "github.com/tendermint/liquidity/x/liquidity/types"
 )
 
 func (appKeepers *AppKeepers) GenerateKeys() {

@@ -2,10 +2,12 @@ package keeper
 
 import (
 	"fmt"
-	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
-	ctypes "github.com/cybercongress/go-cyber/types"
 	"math"
 	"time"
+
+	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
+
+	ctypes "github.com/cybercongress/go-cyber/types"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -161,7 +163,7 @@ func (k *IndexedKeeper) UpdateAccountsStakeAmpere(ctx sdk.Context) {
 			if _, ok := k.userNewTotalStakeAmpere[i]; !ok {
 				k.Logger(ctx).Info("added to stake index:", "account", i)
 				// TODO update in next release
-				//stake := k.GetAccountTotalStakeAmper(ctx, addr)
+				// stake := k.GetAccountTotalStakeAmper(ctx, addr)
 				k.userNewTotalStakeAmpere[i] = 0
 			}
 		}

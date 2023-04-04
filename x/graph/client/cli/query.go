@@ -27,7 +27,7 @@ func GetQueryCmd() *cobra.Command {
 	return graphQueryCmd
 }
 
-func GetCmdGraphStats() *cobra.Command{
+func GetCmdGraphStats() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "stats",
 		Short: "Query the graph stats",

@@ -3,6 +3,8 @@ package plugins
 import (
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
+	liquiditykeeper "github.com/tendermint/liquidity/x/liquidity/keeper"
+
 	bandwidthkeeper "github.com/cybercongress/go-cyber/x/bandwidth/keeper"
 	bandwidthwasm "github.com/cybercongress/go-cyber/x/bandwidth/wasm"
 	dmnkeeper "github.com/cybercongress/go-cyber/x/dmn/keeper"
@@ -14,7 +16,6 @@ import (
 	rankkeeper "github.com/cybercongress/go-cyber/x/rank/keeper"
 	rankwasm "github.com/cybercongress/go-cyber/x/rank/wasm"
 	resourceswasm "github.com/cybercongress/go-cyber/x/resources/wasm"
-	liquiditykeeper "github.com/tendermint/liquidity/x/liquidity/keeper"
 )
 
 func RegisterCustomPlugins(
