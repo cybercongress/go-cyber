@@ -327,6 +327,10 @@ To check container logs use:
 docker logs space-pussy -f --tail 10
 ```
 
+6. Deploy node snapshot to speed-up syncronization:
+
+Follow up [this guide](https://github.com/greatweb/networks/blob/main/space-pussy/deploy_node_from_snapshot.md) to downloadn and deploy state snapshot.
+
 ## Validator start
 
 After your node has successfully synced, you can run a validator.
