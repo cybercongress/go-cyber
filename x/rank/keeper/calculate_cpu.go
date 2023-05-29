@@ -17,9 +17,9 @@ func calculateRankCPU(ctx *types.CalculationContext) types.EMState {
 	size := ctx.GetCidsCount()
 	if size == 0 || len(ctx.GetStakes()) == 0 {
 		return types.EMState{
-			[]float64{},
-			[]float64{},
-			[]float64{},
+			RankValues:    []float64{},
+			EntropyValues: []float64{},
+			KarmaValues:   []float64{},
 		}
 	}
 
@@ -56,9 +56,9 @@ func calculateRankCPU(ctx *types.CalculationContext) types.EMState {
 	karmaCalc(ctx, rank, entropy, karma)
 
 	return types.EMState{
-		rank,
-		entropy,
-		karma,
+		RankValues:    rank,
+		EntropyValues: entropy,
+		KarmaValues:   karma,
 	}
 }
 
