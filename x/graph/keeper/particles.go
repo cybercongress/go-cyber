@@ -2,13 +2,12 @@ package keeper
 
 import (
 	"encoding/binary"
+	"io"
 
 	"github.com/cosmos/cosmos-sdk/telemetry"
 
-	"github.com/cybercongress/go-cyber/utils"
-	"github.com/cybercongress/go-cyber/x/graph/types"
-
-	"io"
+	"github.com/cybercongress/go-cyber/v2/utils"
+	"github.com/cybercongress/go-cyber/v2/x/graph/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -18,7 +17,6 @@ const (
 	CidNumberBytesSize = uint64(8)
 	CidCountBytesSize  = uint64(8)
 )
-
 
 // Return cid number and true, if cid exists
 func (gk GraphKeeper) GetCidNumber(ctx sdk.Context, cid types.Cid) (types.CidNumber, bool) {
@@ -43,7 +41,6 @@ func (gk GraphKeeper) GetCid(ctx sdk.Context, num types.CidNumber) types.Cid {
 // for given link, CIDs added in order [CID1, CID2] (if they both new to chain)
 // This method performs lookup of CIDs, returns index value, or create and put in index new value if not exists.
 func (gk GraphKeeper) GetOrPutCidNumber(ctx sdk.Context, cid types.Cid) types.CidNumber {
-
 	store := ctx.KVStore(gk.key)
 	cidIndexAsBytes := store.Get(types.CidStoreKey(cid))
 
@@ -97,7 +94,7 @@ func (gk GraphKeeper) IterateCids(ctx sdk.Context, process func(types.Cid, types
 
 // write CIDs to writer in binary format: <n><cid1_size><cid1><cid1_number><cid2_size><cid2><cid2_number>....<cidn_size><cidn><cidn_number>
 func (gk GraphKeeper) WriteCids(ctx sdk.Context, writer io.Writer) (err error) {
-	uintAsBytes := make([]byte, 8) //common bytes array to convert uints
+	uintAsBytes := make([]byte, 8) // common bytes array to convert uints
 
 	cidsCount := gk.GetCidsCount(ctx)
 	binary.LittleEndian.PutUint64(uintAsBytes, cidsCount)
@@ -109,7 +106,7 @@ func (gk GraphKeeper) WriteCids(ctx sdk.Context, writer io.Writer) (err error) {
 	gk.IterateCids(ctx, func(cid types.Cid, number types.CidNumber) {
 		cidLength := len(cid)
 		if cidLength > 255 {
-			//err = errors.New("cid length cannot be over 255")
+			// err = errors.New("cid length cannot be over 255")
 			return
 		}
 

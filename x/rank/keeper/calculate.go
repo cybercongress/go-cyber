@@ -1,15 +1,14 @@
 package keeper
 
 import (
+	"fmt"
 	"runtime/debug"
+	"time"
 
 	"github.com/cosmos/cosmos-sdk/telemetry"
-	"github.com/cybercongress/go-cyber/x/rank/types"
+	"github.com/cybercongress/go-cyber/v2/x/rank/types"
 
 	"github.com/tendermint/tendermint/libs/log"
-
-	"fmt"
-	"time"
 )
 
 func CalculateRank(ctx *types.CalculationContext, unit types.ComputeUnit, logger log.Logger) (rank types.Rank) {
@@ -17,7 +16,7 @@ func CalculateRank(ctx *types.CalculationContext, unit types.ComputeUnit, logger
 	defer telemetry.ModuleMeasureSince(types.ModuleName, time.Now(), "rank_calculation")
 
 	if unit == types.CPU {
-		//used only for development
+		// used only for development
 		rank = types.NewRank(calculateRankCPU(ctx), logger, ctx.FullTree)
 	} else {
 		rank = types.NewRank(calculateRankGPU(ctx, logger), logger, ctx.FullTree)

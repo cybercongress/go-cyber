@@ -2,25 +2,6 @@ package app
 
 import (
 	"fmt"
-	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
-	"github.com/cosmos/cosmos-sdk/x/authz"
-	authzkeeper "github.com/cosmos/cosmos-sdk/x/authz/keeper"
-	authzmodule "github.com/cosmos/cosmos-sdk/x/authz/module"
-	"github.com/cosmos/cosmos-sdk/x/feegrant"
-	feegrantkeeper "github.com/cosmos/cosmos-sdk/x/feegrant/keeper"
-	feegrantmodule "github.com/cosmos/cosmos-sdk/x/feegrant/module"
-	"github.com/cosmos/ibc-go/v3/modules/apps/transfer"
-	ibctransferkeeper "github.com/cosmos/ibc-go/v3/modules/apps/transfer/keeper"
-	ibctransfertypes "github.com/cosmos/ibc-go/v3/modules/apps/transfer/types"
-	ibc "github.com/cosmos/ibc-go/v3/modules/core"
-	ibcclient "github.com/cosmos/ibc-go/v3/modules/core/02-client"
-	ibcclientclient "github.com/cosmos/ibc-go/v3/modules/core/02-client/client"
-	ibcclienttypes "github.com/cosmos/ibc-go/v3/modules/core/02-client/types"
-	porttypes "github.com/cosmos/ibc-go/v3/modules/core/05-port/types"
-	ibchost "github.com/cosmos/ibc-go/v3/modules/core/24-host"
-	ibckeeper "github.com/cosmos/ibc-go/v3/modules/core/keeper"
-	_ "github.com/cybercongress/go-cyber/client/docs/statik"
-	"github.com/cybercongress/go-cyber/plugins/liquidity_plugin"
 	"io"
 	"net/http"
 	"os"
@@ -28,17 +9,37 @@ import (
 	"strings"
 	"time"
 
+	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
+	"github.com/cosmos/cosmos-sdk/x/authz"
+	authzkeeper "github.com/cosmos/cosmos-sdk/x/authz/keeper"
+	authzmodule "github.com/cosmos/cosmos-sdk/x/authz/module"
+	"github.com/cosmos/cosmos-sdk/x/feegrant"
+	feegrantkeeper "github.com/cosmos/cosmos-sdk/x/feegrant/keeper"
+	feegrantmodule "github.com/cosmos/cosmos-sdk/x/feegrant/module"
+	"github.com/cosmos/ibc-go/v4/modules/apps/transfer"
+	ibctransferkeeper "github.com/cosmos/ibc-go/v4/modules/apps/transfer/keeper"
+	ibctransfertypes "github.com/cosmos/ibc-go/v4/modules/apps/transfer/types"
+	ibc "github.com/cosmos/ibc-go/v4/modules/core"
+	ibcclient "github.com/cosmos/ibc-go/v4/modules/core/02-client"
+	ibcclientclient "github.com/cosmos/ibc-go/v4/modules/core/02-client/client"
+	ibcclienttypes "github.com/cosmos/ibc-go/v4/modules/core/02-client/types"
+	porttypes "github.com/cosmos/ibc-go/v4/modules/core/05-port/types"
+	ibchost "github.com/cosmos/ibc-go/v4/modules/core/24-host"
+	ibckeeper "github.com/cosmos/ibc-go/v4/modules/core/keeper"
+	_ "github.com/cybercongress/go-cyber/v2/client/docs/statik"
+	"github.com/cybercongress/go-cyber/v2/plugins/liquidity_plugin"
+
 	"github.com/cosmos/cosmos-sdk/client/grpc/tmservice"
-	ctypes "github.com/cybercongress/go-cyber/types"
+	ctypes "github.com/cybercongress/go-cyber/v2/types"
 	"github.com/gorilla/mux"
 	"github.com/rakyll/statik/fs"
 	"github.com/tendermint/liquidity/x/liquidity"
 	liquiditykeeper "github.com/tendermint/liquidity/x/liquidity/keeper"
 	liquiditytypes "github.com/tendermint/liquidity/x/liquidity/types"
 
-	wasmplugins "github.com/cybercongress/go-cyber/plugins"
-	"github.com/cybercongress/go-cyber/x/dmn"
-	"github.com/cybercongress/go-cyber/x/resources"
+	wasmplugins "github.com/cybercongress/go-cyber/v2/plugins"
+	"github.com/cybercongress/go-cyber/v2/x/dmn"
+	"github.com/cybercongress/go-cyber/v2/x/resources"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec/types"
@@ -106,51 +107,51 @@ import (
 
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/cybercongress/go-cyber/utils"
-	"github.com/cybercongress/go-cyber/x/bandwidth"
-	"github.com/cybercongress/go-cyber/x/cyberbank"
-	cyberbankkeeper "github.com/cybercongress/go-cyber/x/cyberbank/keeper"
-	cyberbanktypes "github.com/cybercongress/go-cyber/x/cyberbank/types"
-	"github.com/cybercongress/go-cyber/x/graph"
+	"github.com/cybercongress/go-cyber/v2/utils"
+	"github.com/cybercongress/go-cyber/v2/x/bandwidth"
+	"github.com/cybercongress/go-cyber/v2/x/cyberbank"
+	cyberbankkeeper "github.com/cybercongress/go-cyber/v2/x/cyberbank/keeper"
+	cyberbanktypes "github.com/cybercongress/go-cyber/v2/x/cyberbank/types"
+	"github.com/cybercongress/go-cyber/v2/x/graph"
 
-	bandwidthkeeper "github.com/cybercongress/go-cyber/x/bandwidth/keeper"
-	bandwidthtypes "github.com/cybercongress/go-cyber/x/bandwidth/types"
-	graphkeeper "github.com/cybercongress/go-cyber/x/graph/keeper"
-	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
-	"github.com/cybercongress/go-cyber/x/rank"
-	rankkeeper "github.com/cybercongress/go-cyber/x/rank/keeper"
-	ranktypes "github.com/cybercongress/go-cyber/x/rank/types"
+	bandwidthkeeper "github.com/cybercongress/go-cyber/v2/x/bandwidth/keeper"
+	bandwidthtypes "github.com/cybercongress/go-cyber/v2/x/bandwidth/types"
+	graphkeeper "github.com/cybercongress/go-cyber/v2/x/graph/keeper"
+	graphtypes "github.com/cybercongress/go-cyber/v2/x/graph/types"
+	"github.com/cybercongress/go-cyber/v2/x/rank"
+	rankkeeper "github.com/cybercongress/go-cyber/v2/x/rank/keeper"
+	ranktypes "github.com/cybercongress/go-cyber/v2/x/rank/types"
 
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmclient "github.com/CosmWasm/wasmd/x/wasm/client"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 
-	bandwidthwasm "github.com/cybercongress/go-cyber/x/bandwidth/wasm"
-	dmnwasm "github.com/cybercongress/go-cyber/x/dmn/wasm"
-	graphwasm "github.com/cybercongress/go-cyber/x/graph/wasm"
-	gridwasm "github.com/cybercongress/go-cyber/x/grid/wasm"
-	rankwasm "github.com/cybercongress/go-cyber/x/rank/wasm"
-	resourceswasm "github.com/cybercongress/go-cyber/x/resources/wasm"
+	bandwidthwasm "github.com/cybercongress/go-cyber/v2/x/bandwidth/wasm"
+	dmnwasm "github.com/cybercongress/go-cyber/v2/x/dmn/wasm"
+	graphwasm "github.com/cybercongress/go-cyber/v2/x/graph/wasm"
+	gridwasm "github.com/cybercongress/go-cyber/v2/x/grid/wasm"
+	rankwasm "github.com/cybercongress/go-cyber/v2/x/rank/wasm"
+	resourceswasm "github.com/cybercongress/go-cyber/v2/x/resources/wasm"
 
-	grid "github.com/cybercongress/go-cyber/x/grid"
-	gridkeeper "github.com/cybercongress/go-cyber/x/grid/keeper"
-	gridtypes "github.com/cybercongress/go-cyber/x/grid/types"
+	grid "github.com/cybercongress/go-cyber/v2/x/grid"
+	gridkeeper "github.com/cybercongress/go-cyber/v2/x/grid/keeper"
+	gridtypes "github.com/cybercongress/go-cyber/v2/x/grid/types"
 
-	dmnkeeper "github.com/cybercongress/go-cyber/x/dmn/keeper"
-	dmntypes "github.com/cybercongress/go-cyber/x/dmn/types"
+	dmnkeeper "github.com/cybercongress/go-cyber/v2/x/dmn/keeper"
+	dmntypes "github.com/cybercongress/go-cyber/v2/x/dmn/types"
 
-	resourceskeeper "github.com/cybercongress/go-cyber/x/resources/keeper"
-	resourcestypes "github.com/cybercongress/go-cyber/x/resources/types"
-	stakingwrap "github.com/cybercongress/go-cyber/x/staking"
+	resourceskeeper "github.com/cybercongress/go-cyber/v2/x/resources/keeper"
+	resourcestypes "github.com/cybercongress/go-cyber/v2/x/resources/types"
+	stakingwrap "github.com/cybercongress/go-cyber/v2/x/staking"
 
-	"github.com/cybercongress/go-cyber/app/params"
+	"github.com/cybercongress/go-cyber/v2/app/params"
 	tmjson "github.com/tendermint/tendermint/libs/json"
 
 	store "github.com/cosmos/cosmos-sdk/store/types"
 )
 
 const (
-	appName = "BostromHub"
+	appName     = "BostromHub"
 	upgradeName = "cyberfrey"
 )
 
@@ -168,7 +169,7 @@ var (
 	DefaultReDnmString = `[a-zA-Z][a-zA-Z0-9/\-\.]{2,127}`
 
 	// If EnabledSpecificProposals is "", and this is "true", then enable all x/wasm proposals.
-	ProposalsEnabled = "true"
+	ProposalsEnabled        = "true"
 	EnableSpecificProposals = ""
 )
 
@@ -255,7 +256,7 @@ var (
 		resourcestypes.ResourcesName:   {authtypes.Minter, authtypes.Burner},
 	}
 
-    // module accounts that are allowed to receive tokens
+	// module accounts that are allowed to receive tokens
 	allowedReceivingModAcc = map[string]bool{
 		distrtypes.ModuleName: true,
 	}
@@ -307,14 +308,14 @@ type App struct {
 	WasmKeeper       wasm.Keeper
 	LiquidityKeeper  liquiditykeeper.Keeper
 
-	BandwidthMeter   *bandwidthkeeper.BandwidthMeter
-	CyberbankKeeper  *cyberbankkeeper.IndexedKeeper
-	GraphKeeper      *graphkeeper.GraphKeeper
-	IndexKeeper      *graphkeeper.IndexKeeper
-	RankKeeper 		 *rankkeeper.StateKeeper
-	GridKeeper 		 gridkeeper.Keeper
-	DmnKeeper  		 *dmnkeeper.Keeper
-	ResourcesKeeper  resourceskeeper.Keeper
+	BandwidthMeter  *bandwidthkeeper.BandwidthMeter
+	CyberbankKeeper *cyberbankkeeper.IndexedKeeper
+	GraphKeeper     *graphkeeper.GraphKeeper
+	IndexKeeper     *graphkeeper.IndexKeeper
+	RankKeeper      *rankkeeper.StateKeeper
+	GridKeeper      gridkeeper.Keeper
+	DmnKeeper       *dmnkeeper.Keeper
+	ResourcesKeeper resourceskeeper.Keeper
 
 	// make scoped keepers public for test purposes
 	ScopedIBCKeeper      capabilitykeeper.ScopedKeeper
@@ -343,8 +344,8 @@ func NewApp(
 	baseAppOptions ...func(*baseapp.BaseApp),
 ) *App {
 	// TODO clean
-	//config := sdk.NewConfig()
-	//config.Seal()
+	// config := sdk.NewConfig()
+	// config.Seal()
 
 	appCodec, legacyAmino := encodingConfig.Marshaler, encodingConfig.Amino
 	interfaceRegistry := encodingConfig.InterfaceRegistry
@@ -354,7 +355,7 @@ func NewApp(
 	bApp.SetVersion(version.Version)
 	bApp.SetInterfaceRegistry(interfaceRegistry)
 	// TODO clean
-	//sdk.SetCoinDenomRegex(SdkCoinDenomRegex)
+	// sdk.SetCoinDenomRegex(SdkCoinDenomRegex)
 
 	keys := sdk.NewKVStoreKeys(
 		authtypes.StoreKey, banktypes.StoreKey, stakingtypes.StoreKey,
@@ -699,7 +700,7 @@ func NewApp(
 
 	// NOTE: we may consider parsing `appOpts` inside module constructors. For the moment
 	// we prefer to be more strict in what arguments the modules expect.
-	var skipGenesisInvariants = cast.ToBool(appOpts.Get(crisis.FlagSkipGenesisInvariants))
+	skipGenesisInvariants := cast.ToBool(appOpts.Get(crisis.FlagSkipGenesisInvariants))
 
 	// NOTE: Any module instantiated in the module manager that is later modified
 	// must be passed by reference here.
@@ -880,9 +881,9 @@ func NewApp(
 				SignModeHandler: encodingConfig.TxConfig.SignModeHandler(),
 				SigGasConsumer:  ante.DefaultSigVerificationGasConsumer,
 			},
-			IBCKeeper:    		 app.IBCKeeper,
-			WasmConfig:        	 &wasmConfig,
-			TXCounterStoreKey:   keys[wasm.StoreKey],
+			IBCKeeper:         app.IBCKeeper,
+			WasmConfig:        &wasmConfig,
+			TXCounterStoreKey: keys[wasm.StoreKey],
 		},
 	)
 	if err != nil {
@@ -898,9 +899,8 @@ func NewApp(
 	app.UpgradeKeeper.SetUpgradeHandler(
 		upgradeName,
 		func(ctx sdk.Context, _ upgradetypes.Plan, fromVM module.VersionMap) (module.VersionMap, error) {
-
-			//ctx.Logger().Info("start to init module...")
-			//ctx.Logger().Info("start to run module migrations...")
+			// ctx.Logger().Info("start to init module...")
+			// ctx.Logger().Info("start to run module migrations...")
 
 			return app.mm.RunMigrations(ctx, app.configurator, fromVM)
 		},

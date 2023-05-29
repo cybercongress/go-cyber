@@ -2,19 +2,20 @@ package cmd
 
 import (
 	"errors"
-	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
-	"github.com/cosmos/cosmos-sdk/client/config"
-	"github.com/cybercongress/go-cyber/app"
-	"github.com/prometheus/client_golang/prometheus"
 	"io"
 	"os"
 	"path/filepath"
+
+	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
+	"github.com/cosmos/cosmos-sdk/client/config"
+	"github.com/cybercongress/go-cyber/v2/app"
+	"github.com/prometheus/client_golang/prometheus"
 
 	"github.com/CosmWasm/wasmd/x/wasm"
 	"github.com/cosmos/cosmos-sdk/snapshots"
 	"github.com/cosmos/cosmos-sdk/x/crisis"
 
-	"github.com/cybercongress/go-cyber/x/rank"
+	"github.com/cybercongress/go-cyber/v2/x/rank"
 
 	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
@@ -38,7 +39,7 @@ import (
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
 
 	serverconfig "github.com/cosmos/cosmos-sdk/server/config"
-	"github.com/cybercongress/go-cyber/app/params"
+	"github.com/cybercongress/go-cyber/v2/app/params"
 )
 
 // NewRootCmd creates a new root command for simd. It is called once in the
@@ -85,7 +86,6 @@ func NewRootCmd() (*cobra.Command, params.EncodingConfig) {
 }
 
 func initAppConfig() (string, interface{}) {
-
 	type CustomAppConfig struct {
 		serverconfig.Config
 	}
@@ -105,7 +105,6 @@ func initAppConfig() (string, interface{}) {
 func initRootCmd(rootCmd *cobra.Command, encodingConfig params.EncodingConfig) {
 	cfg := sdk.GetConfig()
 	cfg.Seal()
-
 
 	rootCmd.AddCommand(
 		genutilcli.InitCmd(app.ModuleBasics, app.DefaultNodeHome),
@@ -248,9 +247,9 @@ func (ac appCreator) newApp(
 		baseapp.SetInterBlockCache(cache),
 		baseapp.SetTrace(cast.ToBool(appOpts.Get(server.FlagTrace))),
 		baseapp.SetIndexEvents(cast.ToStringSlice(appOpts.Get(server.FlagIndexEvents))),
-        baseapp.SetSnapshotStore(snapshotStore),
-        baseapp.SetSnapshotInterval(cast.ToUint64(appOpts.Get(server.FlagStateSyncSnapshotInterval))),
-        baseapp.SetSnapshotKeepRecent(cast.ToUint32(appOpts.Get(server.FlagStateSyncSnapshotKeepRecent))),
+		baseapp.SetSnapshotStore(snapshotStore),
+		baseapp.SetSnapshotInterval(cast.ToUint64(appOpts.Get(server.FlagStateSyncSnapshotInterval))),
+		baseapp.SetSnapshotKeepRecent(cast.ToUint32(appOpts.Get(server.FlagStateSyncSnapshotKeepRecent))),
 	)
 }
 
@@ -263,7 +262,6 @@ func (ac appCreator) appExport(
 	jailAllowedAddrs []string,
 	appOpts servertypes.AppOptions,
 ) (servertypes.ExportedApp, error) {
-
 	homePath, ok := appOpts.Get(flags.FlagHome).(string)
 	if !ok || homePath == "" {
 		return servertypes.ExportedApp{}, errors.New("application home is not set")

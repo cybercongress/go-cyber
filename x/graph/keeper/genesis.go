@@ -7,7 +7,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/cybercongress/go-cyber/utils"
+	"github.com/cybercongress/go-cyber/v2/utils"
 )
 
 const (
@@ -47,7 +47,6 @@ func InitGenesis(
 func WriteGenesis(
 	ctx sdk.Context, gk GraphKeeper, ik *IndexKeeper,
 ) (err error) {
-
 	linksFilePath := utils.RootifyPath(LinksExportFileName)
 	dirName := filepath.Dir(linksFilePath)
 	if _, err := os.Stat(dirName); err != nil {

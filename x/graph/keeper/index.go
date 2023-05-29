@@ -2,13 +2,13 @@ package keeper
 
 import (
 	"encoding/binary"
-	//"fmt"
-
 	"io"
 
-	. "github.com/cybercongress/go-cyber/types"
-	"github.com/cybercongress/go-cyber/utils"
-	"github.com/cybercongress/go-cyber/x/graph/types"
+	//"fmt"
+
+	. "github.com/cybercongress/go-cyber/v2/types"
+	"github.com/cybercongress/go-cyber/v2/utils"
+	"github.com/cybercongress/go-cyber/v2/x/graph/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	tmos "github.com/tendermint/tendermint/libs/os"
@@ -26,7 +26,7 @@ type IndexKeeper struct {
 	nextRankOutLinks types.Links
 
 	// Inter-block cache for cyberlinks, reset on every block during Commit
-	tkey        sdk.StoreKey
+	tkey sdk.StoreKey
 
 	currentBlockLinks []types.CompactLink
 }
@@ -50,7 +50,6 @@ func (i *IndexKeeper) LoadState(rankCtx sdk.Context, freshCtx sdk.Context) {
 	newInLinks, newOutLinks, err := i.GraphKeeper.GetAllLinksFiltered(freshCtx, func(l types.CompactLink) bool {
 		return !i.currentRankOutLinks.IsLinkExist(types.CidNumber(l.From), types.CidNumber(l.To), AccNumber(l.Account))
 	})
-
 	if err != nil {
 		tmos.Exit(err.Error())
 	}
@@ -88,7 +87,9 @@ func (i *IndexKeeper) MergeContextLinks(ctx sdk.Context) {
 func (i *IndexKeeper) HasNewLinks(ctx sdk.Context) bool {
 	store := ctx.TransientStore(i.tkey)
 	hasLinks := store.Get(types.HasNewLinks)
-	if hasLinks == nil { return false }
+	if hasLinks == nil {
+		return false
+	}
 	return sdk.BigEndianToUint64(hasLinks) > 0
 }
 
@@ -158,5 +159,3 @@ func (i *IndexKeeper) LoadFromReader(ctx sdk.Context, reader io.Reader) (err err
 	}
 	return
 }
-
-

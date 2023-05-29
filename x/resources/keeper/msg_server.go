@@ -2,14 +2,15 @@ package keeper
 
 import (
 	"context"
+	"strconv"
+
 	"github.com/armon/go-metrics"
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	ctypes "github.com/cybercongress/go-cyber/types"
-	"strconv"
+	ctypes "github.com/cybercongress/go-cyber/v2/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cybercongress/go-cyber/x/resources/types"
+	"github.com/cybercongress/go-cyber/v2/x/resources/types"
 )
 
 type msgServer struct {

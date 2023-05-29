@@ -6,7 +6,7 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/cybercongress/go-cyber/x/graph/types"
+	"github.com/cybercongress/go-cyber/v2/x/graph/types"
 )
 
 func NewQuerier(gk GraphKeeper, legacyQuerierCdc *codec.LegacyAmino) sdk.Querier {
@@ -21,12 +21,11 @@ func NewQuerier(gk GraphKeeper, legacyQuerierCdc *codec.LegacyAmino) sdk.Querier
 	}
 }
 
-func queryGraphStats(ctx sdk.Context, _ abci.RequestQuery, gk GraphKeeper, legacyQuerierCdc *codec.LegacyAmino,) ([]byte, error) {
+func queryGraphStats(ctx sdk.Context, _ abci.RequestQuery, gk GraphKeeper, legacyQuerierCdc *codec.LegacyAmino) ([]byte, error) {
 	links := gk.GetLinksCount(ctx)
 	cids := gk.GetCidsCount(ctx)
 
 	res, err := codec.MarshalJSONIndent(legacyQuerierCdc, types.QueryGraphStatsResponse{links, cids})
-
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
 	}

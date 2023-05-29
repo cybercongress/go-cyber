@@ -1,4 +1,3 @@
-
 package cli
 
 import (
@@ -21,7 +20,7 @@ import (
 	"github.com/ipfs/go-cid"
 	"github.com/spf13/cobra"
 
-	"github.com/cybercongress/go-cyber/x/graph/types"
+	"github.com/cybercongress/go-cyber/v2/x/graph/types"
 )
 
 func NewTxCmd() *cobra.Command {
@@ -59,7 +58,7 @@ $ %s tx link cyberlink QmWZYRj344JSLShtBnrMS4vw5DQ2zsGqrytYKMqcQgEneB QmfZwbahFL
 			}
 
 			cidFrom := types.Cid(args[0])
-			cidTo   := types.Cid(args[1])
+			cidTo := types.Cid(args[1])
 
 			if _, err := cid.Decode(string(cidFrom)); err != nil {
 				return types.ErrInvalidParticle
@@ -86,7 +85,6 @@ $ %s tx link cyberlink QmWZYRj344JSLShtBnrMS4vw5DQ2zsGqrytYKMqcQgEneB QmfZwbahFL
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
-
 
 	return cmd
 }
