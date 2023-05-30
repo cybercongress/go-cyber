@@ -26,7 +26,7 @@ func (bk StateKeeper) Rank(goCtx context.Context, req *types.QueryRankRequest) (
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	cidNum, exist := bk.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(req.Particle))
-	if exist != true {
+	if !exist {
 		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, req.Particle)
 	}
 
@@ -42,7 +42,7 @@ func (bk *StateKeeper) Search(goCtx context.Context, req *types.QuerySearchReque
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	cidNum, exist := bk.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(req.Particle))
-	if exist != true {
+	if !exist {
 		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, "")
 	}
 
@@ -71,7 +71,7 @@ func (bk *StateKeeper) Backlinks(goCtx context.Context, req *types.QuerySearchRe
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	cidNum, exist := bk.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(req.Particle))
-	if exist != true {
+	if !exist {
 		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, req.Particle)
 	}
 
@@ -128,12 +128,12 @@ func (bk StateKeeper) IsLinkExist(goCtx context.Context, req *types.QueryIsLinkE
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	cidNumFrom, exist := bk.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(req.From))
-	if exist != true {
+	if !exist {
 		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, req.From)
 	}
 
 	cidNumTo, exist := bk.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(req.To))
-	if exist != true {
+	if !exist {
 		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, req.To)
 	}
 
@@ -162,12 +162,12 @@ func (bk StateKeeper) IsAnyLinkExist(goCtx context.Context, req *types.QueryIsAn
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	cidNumFrom, exist := bk.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(req.From))
-	if exist != true {
+	if !exist {
 		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, req.From)
 	}
 
 	cidNumTo, exist := bk.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(req.To))
-	if exist != true {
+	if !exist {
 		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, req.To)
 	}
 
