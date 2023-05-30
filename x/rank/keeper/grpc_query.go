@@ -184,7 +184,7 @@ func (s *StateKeeper) ParticleNegentropy(goCtx context.Context, request *types.Q
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	cidNum, exist := s.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(request.Particle))
-	if exist != true {
+	if !exist {
 		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, request.Particle)
 	}
 

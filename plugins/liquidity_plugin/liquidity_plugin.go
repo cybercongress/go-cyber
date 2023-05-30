@@ -116,7 +116,7 @@ func (querier WasmQuerier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([
 
 	if query.PoolParams != nil {
 		pool, found := querier.Keeper.GetPool(ctx, query.PoolParams.PoolId)
-		if found != true {
+		if !found {
 			return nil, sdkerrors.ErrInvalidRequest
 		}
 
@@ -130,7 +130,7 @@ func (querier WasmQuerier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([
 		)
 	} else if query.PoolLiquidity != nil {
 		pool, found := querier.Keeper.GetPool(ctx, query.PoolLiquidity.PoolId)
-		if found != true {
+		if !found {
 			return nil, sdkerrors.ErrInvalidRequest
 		}
 
@@ -143,7 +143,7 @@ func (querier WasmQuerier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([
 		)
 	} else if query.PoolSupply != nil {
 		pool, found := querier.Keeper.GetPool(ctx, query.PoolSupply.PoolId)
-		if found != true {
+		if !found {
 			return nil, sdkerrors.ErrInvalidRequest
 		}
 
@@ -156,7 +156,7 @@ func (querier WasmQuerier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([
 		)
 	} else if query.PoolPrice != nil {
 		pool, found := querier.Keeper.GetPool(ctx, query.PoolPrice.PoolId)
-		if found != true {
+		if !found {
 			return nil, sdkerrors.ErrInvalidRequest
 		}
 
@@ -171,7 +171,7 @@ func (querier WasmQuerier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([
 		)
 	} else if query.PoolAddress != nil {
 		pool, found := querier.Keeper.GetPool(ctx, query.PoolAddress.PoolId)
-		if found != true {
+		if !found {
 			return nil, sdkerrors.ErrInvalidRequest
 		}
 

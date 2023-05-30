@@ -255,7 +255,7 @@ func (k Keeper) UpdateThoughtBlock(
 	return nil
 }
 
-//______________________________________________________________________
+// ______________________________________________________________________
 
 func (k Keeper) MaxThougths(ctx sdk.Context) (res uint32) {
 	k.paramspace.Get(ctx, types.KeyMaxSlots, &res)
@@ -272,7 +272,7 @@ func (k Keeper) FeeTTL(ctx sdk.Context) (res uint32) {
 	return
 }
 
-//______________________________________________________________________
+// ______________________________________________________________________
 
 func (k Keeper) SetThought(ctx sdk.Context, thought types.Thought) {
 	store := ctx.KVStore(k.storeKey)
@@ -309,7 +309,7 @@ func (k Keeper) DeleteThoughtStats(ctx sdk.Context, program sdk.AccAddress, name
 	store.Delete(types.GetThoughtStatsKey(program, name))
 }
 
-//______________________________________________________________________
+// ______________________________________________________________________
 
 func (k Keeper) GetThought(ctx sdk.Context, program sdk.AccAddress, name string) (thought types.Thought, found bool) {
 	store := ctx.KVStore(k.storeKey)
@@ -436,7 +436,7 @@ func (k Keeper) ExecuteThoughtsQueue(ctx sdk.Context) {
 			price := thought.Load.GasPrice
 
 			k.Logger(ctx).Info("Started thought", "number", i, "gas price", price)
-			thoughtsTriggered = thoughtsTriggered + 1
+			thoughtsTriggered++
 
 			cacheContext, writeFn := ctx.CacheContext()
 			cacheContext = cacheContext.WithGasMeter(sdk.NewGasMeter(sdk.Gas(maxGasPerThought)))

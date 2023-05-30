@@ -61,7 +61,7 @@ func queryRank(ctx sdk.Context, req abci.RequestQuery, sk *StateKeeper, legacyQu
 	}
 
 	cidNum, exist := sk.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(params.Cid))
-	if exist != true {
+	if !exist {
 		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, params.Cid)
 	}
 
@@ -84,7 +84,7 @@ func querySearch(ctx sdk.Context, req abci.RequestQuery, sk *StateKeeper, legacy
 	}
 
 	cidNum, exist := sk.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(params.Cid))
-	if exist != true {
+	if !exist {
 		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, "")
 	}
 
@@ -115,7 +115,7 @@ func queryBacklinks(ctx sdk.Context, req abci.RequestQuery, sk *StateKeeper, leg
 	}
 
 	cidNum, exist := sk.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(params.Cid))
-	if exist != true {
+	if !exist {
 		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, params.Cid)
 	}
 
@@ -172,12 +172,12 @@ func queryIsLinkExist(ctx sdk.Context, req abci.RequestQuery, sk *StateKeeper, l
 	}
 
 	cidNumFrom, exist := sk.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(params.From))
-	if exist != true {
+	if !exist {
 		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, params.From)
 	}
 
 	cidNumTo, exist := sk.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(params.To))
-	if exist != true {
+	if !exist {
 		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, params.To)
 	}
 
@@ -212,12 +212,12 @@ func queryIsAnyLinkExist(ctx sdk.Context, req abci.RequestQuery, sk *StateKeeper
 	}
 
 	cidNumFrom, exist := sk.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(params.From))
-	if exist != true {
+	if !exist {
 		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, params.From)
 	}
 
 	cidNumTo, exist := sk.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(params.To))
-	if exist != true {
+	if !exist {
 		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, params.To)
 	}
 
@@ -240,7 +240,7 @@ func queryEntropy(ctx sdk.Context, req abci.RequestQuery, sk *StateKeeper, legac
 	}
 
 	cidNum, exist := sk.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(params.Cid))
-	if exist != true {
+	if !exist {
 		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, params.Cid)
 	}
 
@@ -254,7 +254,7 @@ func queryEntropy(ctx sdk.Context, req abci.RequestQuery, sk *StateKeeper, legac
 	return res, nil
 }
 
-func queryNegentropy(ctx sdk.Context, _ abci.RequestQuery, sk *StateKeeper, legacyQuerierCdc *codec.LegacyAmino) ([]byte, error) {
+func queryNegentropy(_ sdk.Context, _ abci.RequestQuery, sk *StateKeeper, legacyQuerierCdc *codec.LegacyAmino) ([]byte, error) {
 	negentropy := sk.GetNegEntropy()
 
 	res, err := codec.MarshalJSONIndent(legacyQuerierCdc, &types.QueryNegentropyResponse{Negentropy: negentropy})

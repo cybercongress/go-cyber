@@ -1,14 +1,14 @@
 package types
 
 import (
-	. "github.com/cybercongress/go-cyber/v2/types"
+	"github.com/cybercongress/go-cyber/v2/types"
 )
 
 // map of map, where first key is cid, second key is account.String()
 // second map is used as set for fast contains check
 type (
 	Links    map[CidNumber]CidLinks
-	CidLinks map[CidNumber]map[AccNumber]struct{}
+	CidLinks map[CidNumber]map[types.AccNumber]struct{}
 )
 
 type (
@@ -16,14 +16,14 @@ type (
 	CidNumber uint64
 )
 
-func (links Links) Put(from CidNumber, to CidNumber, acc AccNumber) {
+func (links Links) Put(from CidNumber, to CidNumber, acc types.AccNumber) {
 	cidLinks := links[from]
 	if cidLinks == nil {
 		cidLinks = make(CidLinks)
 	}
 	users := cidLinks[to]
 	if users == nil {
-		users = make(map[AccNumber]struct{})
+		users = make(map[types.AccNumber]struct{})
 	}
 	users[acc] = struct{}{}
 	cidLinks[to] = users
@@ -46,7 +46,7 @@ func (links Links) Copy() Links {
 	for from := range links {
 		fromLinks := make(CidLinks, len(links[from]))
 		for to := range links[from] {
-			users := make(map[AccNumber]struct{}, len(links[from][to]))
+			users := make(map[types.AccNumber]struct{}, len(links[from][to]))
 			for u := range links[from][to] {
 				users[u] = struct{}{}
 			}
@@ -69,7 +69,7 @@ func (links Links) IsAnyLinkExist(from CidNumber, to CidNumber) bool {
 	return false
 }
 
-func (links Links) IsLinkExist(from CidNumber, to CidNumber, acc AccNumber) bool {
+func (links Links) IsLinkExist(from CidNumber, to CidNumber, acc types.AccNumber) bool {
 	toLinks, fromExists := links[from]
 	if fromExists {
 		linkAccs, toExists := toLinks[to]

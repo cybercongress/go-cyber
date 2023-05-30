@@ -155,7 +155,7 @@ func (querier WasmQuerier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([
 		source, _ := sdk.AccAddressFromBech32(query.Route.Source)
 		destination, _ := sdk.AccAddressFromBech32(query.Route.Destination)
 		route, found := querier.Keeper.GetRoute(ctx, source, destination)
-		if found != true {
+		if !found {
 			return nil, sdkerrors.ErrInvalidRequest
 		}
 

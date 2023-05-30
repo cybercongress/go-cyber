@@ -1,10 +1,10 @@
 package keeper
 
 import (
-	//"fmt"
-	//"encoding/binary"
+	// "fmt"
+	// "encoding/binary"
 	"math"
-	//"math/big"
+	// "math/big"
 	graphtypes "github.com/cybercongress/go-cyber/v2/x/graph/types"
 	"github.com/cybercongress/go-cyber/v2/x/rank/types"
 )
@@ -37,7 +37,7 @@ func calculateRankCPU(ctx *types.CalculationContext) types.EMState {
 	}
 
 	innerProductOverSize := defaultRank * (float64(danglingNodesSize) / float64(size))
-	defaultRankWithCorrection := float64(dampingFactor*innerProductOverSize) + defaultRank
+	defaultRankWithCorrection := dampingFactor*innerProductOverSize + defaultRank
 
 	change := tolerance + 1
 
@@ -182,17 +182,15 @@ func karmaCalc(ctx *types.CalculationContext, rank []float64, entropy []float64,
 			}
 			users := ctx.GetOutLinks()[from][to]
 			for user := range users {
-				// if (ctx.GetStakes()[uint64(user)] == 0) { continue }
 				if getNormalizedStake(ctx, uint64(user)) == 0 {
 					continue
 				}
-				// w := float64(ctx.GetStakes()[uint64(user)]) / float64(stake)
 				w := float64(getNormalizedStake(ctx, uint64(user))) / float64(stake)
 				if math.IsNaN(w) {
 					w = float64(0)
 				}
 				luminosity := rank[from] * entropy[from]
-				karma[user] += w * float64(luminosity)
+				karma[user] += w * luminosity
 			}
 		}
 	}

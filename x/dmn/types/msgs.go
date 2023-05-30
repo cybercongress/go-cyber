@@ -89,7 +89,7 @@ func (msg MsgCreateThought) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{addr}
 }
 
-//______________________________________________________________________
+// ______________________________________________________________________
 
 func NewMsgForgetThought(program sdk.AccAddress, label string) *MsgForgetThought {
 	return &MsgForgetThought{

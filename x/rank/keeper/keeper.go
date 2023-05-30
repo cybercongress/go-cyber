@@ -140,7 +140,7 @@ func (s *StateKeeper) EndBlocker(ctx sdk.Context) {
 		}
 
 		s.checkRankCalcFinished(ctx, true)
-		s.applyNextRank(ctx)
+		s.applyNextRank()
 
 		s.cidCount = int64(currentCidsCount)
 		stakeChanged := s.stakeKeeper.DetectUsersStakeAmpereChange(ctx)
@@ -209,7 +209,7 @@ func (s *StateKeeper) handleNextRank(ctx sdk.Context, newRank types.Rank) {
 	s.rankCalculationFinished = true
 }
 
-func (s *StateKeeper) applyNextRank(ctx sdk.Context) {
+func (s *StateKeeper) applyNextRank() {
 	if !s.nextCidRank.IsEmpty() {
 		s.networkCidRank = s.nextCidRank
 		s.index.PutNewRank(s.networkCidRank)
@@ -226,7 +226,7 @@ func (s *StateKeeper) GetRankValueByNumber(number uint64) uint64 {
 
 func (s *StateKeeper) GetRankValueByParticle(ctx sdk.Context, particle string) (uint64, error) {
 	number, exist := s.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(particle))
-	if exist != true {
+	if !exist {
 		return 0, sdkerrors.ErrInvalidRequest
 	}
 	return s.networkCidRank.RankValues[number], nil

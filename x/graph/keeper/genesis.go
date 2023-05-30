@@ -77,5 +77,5 @@ func WriteGenesis(
 	err = linksFile.Close()
 
 	gk.Logger(ctx).Info("Particles and cyberlinks exported. File created.", "path", linksFilePath)
-	return
+	return err
 }

@@ -130,7 +130,7 @@ func (k Keeper) EditEnergyRoute(ctx sdk.Context, src, dst sdk.AccAddress, value 
 
 	ampers := route.Value.AmountOf(ctypes.AMPERE)
 	volts := route.Value.AmountOf(ctypes.VOLT)
-	newValues := sdk.Coins{}
+	var newValues sdk.Coins
 	if value.Denom == ctypes.VOLT {
 		newValues = sdk.NewCoins(value, sdk.NewCoin(ctypes.AMPERE, ampers))
 	} else {
