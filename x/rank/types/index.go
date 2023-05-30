@@ -162,7 +162,7 @@ func (i *BaseSearchIndex) Top(page, perPage uint32) ([]RankedCidNumber, uint32, 
 
 // make sure that this link (from-to) is new
 func (i *BaseSearchIndex) handleLink(link graphtypes.CompactLink) {
-	i.extendIndex(uint64(link.From))
+	i.extendIndex(link.From)
 
 	fromIndex := i.links[link.From]
 	// in case unlock signal received we could operate on this index otherwise put link in the end of queue and finish
@@ -177,7 +177,7 @@ func (i *BaseSearchIndex) handleLink(link graphtypes.CompactLink) {
 }
 
 func (i *BaseSearchIndex) handleBacklink(link graphtypes.CompactLink) {
-	i.extendReverseIndex(uint64(link.To))
+	i.extendReverseIndex(link.To)
 
 	toIndex := i.backlinks[link.To]
 	// in case unlock signal received we could operate on this index otherwise put link in the end of queue and finish
