@@ -124,7 +124,7 @@ func (gk GraphKeeper) WriteCids(ctx sdk.Context, writer io.Writer) (err error) {
 			return
 		}
 	})
-	return
+	return err
 }
 
 func (gk GraphKeeper) LoadFromReader(ctx sdk.Context, reader io.Reader) (err error) {

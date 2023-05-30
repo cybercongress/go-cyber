@@ -930,7 +930,10 @@ func NewApp(
 	// migration wouldn't be called because bank's consensus version is 2
 	m := bankkeeper.NewMigrator(app.BankKeeper.(bankkeeper.BaseKeeper))
 	// TODO check current bank migrations
-	app.configurator.RegisterMigration(banktypes.ModuleName, 1, m.Migrate1to2)
+	err = app.configurator.RegisterMigration(banktypes.ModuleName, 1, m.Migrate1to2)
+	if err != nil {
+		panic(fmt.Errorf("failed to create register bank migrations"))
+	}
 
 	// initialize stores
 	app.MountKVStores(keys)

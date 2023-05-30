@@ -8,7 +8,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/telemetry"
 
-	. "github.com/cybercongress/go-cyber/v2/types"
+	ctypes "github.com/cybercongress/go-cyber/v2/types"
 	"github.com/cybercongress/go-cyber/v2/x/graph/types"
 	"github.com/tendermint/tendermint/libs/log"
 
@@ -65,8 +65,8 @@ func (gk GraphKeeper) GetAllLinksFiltered(ctx sdk.Context, filter types.LinkFilt
 
 	gk.IterateLinks(ctx, func(link types.CompactLink) {
 		if filter(link) {
-			types.Links(outLinks).Put(types.CidNumber(link.From), types.CidNumber(link.To), AccNumber(link.Account))
-			types.Links(inLinks).Put(types.CidNumber(link.To), types.CidNumber(link.From), AccNumber(link.Account))
+			types.Links(outLinks).Put(types.CidNumber(link.From), types.CidNumber(link.To), ctypes.AccNumber(link.Account))
+			types.Links(inLinks).Put(types.CidNumber(link.To), types.CidNumber(link.From), ctypes.AccNumber(link.Account))
 		}
 	})
 

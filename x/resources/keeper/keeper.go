@@ -208,7 +208,7 @@ func (k Keeper) addCoinsToVestingSchedule(ctx sdk.Context, addr sdk.AccAddress, 
 			}
 			vacc.OriginalVesting = updatedOriginalVesting.Add(amt...)
 			vacc.VestingPeriods = updatedPeriods
-			vacc.StartTime = vacc.StartTime + shiftStartTime
+			vacc.StartTime += shiftStartTime
 		}
 	}
 
@@ -253,18 +253,20 @@ func (k Keeper) addCoinsToVestingSchedule(ctx sdk.Context, addr sdk.AccAddress, 
 				continue
 			}
 			lengthCounter += period.Length
-			if lengthCounter < elapsedTime+length { // 1
+			switch {
+			case lengthCounter < elapsedTime+length:
 				newPeriods = append(newPeriods, period)
-			} else if lengthCounter == elapsedTime+length {
+			case lengthCounter == elapsedTime+length:
 				newPeriod := types.NewPeriod(period.Amount.Add(amt...), period.Length)
 				newPeriods = append(newPeriods, newPeriod)
 				appendRemaining = true
-			} else {
+			default:
 				newPeriod := types.NewPeriod(amt, elapsedTime+length-types.GetTotalVestingPeriodLength(newPeriods))
 				previousPeriod := types.NewPeriod(period.Amount, period.Length-newPeriod.Length)
 				newPeriods = append(newPeriods, newPeriod, previousPeriod)
 				appendRemaining = true
 			}
+
 		}
 		vacc.VestingPeriods = newPeriods
 	}

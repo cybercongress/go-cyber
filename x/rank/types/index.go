@@ -167,7 +167,7 @@ func (i *BaseSearchIndex) handleLink(link graphtypes.CompactLink) {
 	fromIndex := i.links[link.From]
 	// in case unlock signal received we could operate on this index otherwise put link in the end of queue and finish
 	select {
-	case _ = <-fromIndex.unlockSignal:
+	case <-fromIndex.unlockSignal:
 		i.putLinkIntoIndex(graphtypes.CidNumber(link.From), graphtypes.CidNumber(link.To))
 		fromIndex.Unlock()
 		break
@@ -182,7 +182,7 @@ func (i *BaseSearchIndex) handleBacklink(link graphtypes.CompactLink) {
 	toIndex := i.backlinks[link.To]
 	// in case unlock signal received we could operate on this index otherwise put link in the end of queue and finish
 	select {
-	case _ = <-toIndex.unlockSignal:
+	case <-toIndex.unlockSignal:
 		i.putBacklinkIntoIndex(graphtypes.CidNumber(link.From), graphtypes.CidNumber(link.To))
 		toIndex.Unlock()
 		break
