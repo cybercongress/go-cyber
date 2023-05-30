@@ -25,7 +25,7 @@ func queryGraphStats(ctx sdk.Context, _ abci.RequestQuery, gk GraphKeeper, legac
 	links := gk.GetLinksCount(ctx)
 	cids := gk.GetCidsCount(ctx)
 
-	res, err := codec.MarshalJSONIndent(legacyQuerierCdc, types.QueryGraphStatsResponse{links, cids})
+	res, err := codec.MarshalJSONIndent(legacyQuerierCdc, types.QueryGraphStatsResponse{Cyberlinks: links, Particles: cids})
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
 	}

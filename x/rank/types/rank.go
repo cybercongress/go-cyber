@@ -71,7 +71,7 @@ func NewRank(state EMState, logger log.Logger, fullTree bool) Rank {
 	// NOTE fulltree true if search index enabled
 	start = time.Now()
 	var newSortedCIDs []RankedCidNumber
-	if fullTree == true {
+	if fullTree {
 		newSortedCIDs = BuildTop(rankValues, 1000)
 		logger.Info("Build top", "duration", time.Since(start).String())
 	}

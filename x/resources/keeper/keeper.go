@@ -72,7 +72,7 @@ func (k Keeper) ConvertResource(
 	length uint64,
 ) (error, sdk.Coin) {
 	periodAvailableFlag := k.CheckAvailablePeriod(ctx, length, resource)
-	if periodAvailableFlag == false {
+	if !periodAvailableFlag {
 		return types.ErrNotAvailablePeriod, sdk.Coin{}
 	}
 
