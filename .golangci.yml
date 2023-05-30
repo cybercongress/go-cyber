@@ -58,6 +58,7 @@ linters-settings:
     disabled-checks:
       - ifElseChain
       - assignOp
+      - badCall
 
   nolintlint:
     allow-unused: false
