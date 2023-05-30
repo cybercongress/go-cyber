@@ -12,7 +12,6 @@ import (
 	bandwidthtypes "github.com/cybercongress/go-cyber/v2/x/bandwidth/types"
 	cyberbankkeeper "github.com/cybercongress/go-cyber/v2/x/cyberbank/keeper"
 
-	// sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cybercongress/go-cyber/v2/x/graph/types"
 )
 
