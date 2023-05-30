@@ -54,6 +54,10 @@ linters-settings:
   revive:
     # When set to false, ignores files with "GENERATED" header, similar to golint
     ignore-generated-header: true
+  gocritic:
+    disabled-checks:
+      - ifElseChain
+      - assignOp
 
   nolintlint:
     allow-unused: false
