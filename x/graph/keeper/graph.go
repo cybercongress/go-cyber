@@ -8,9 +8,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/telemetry"
 
+	"github.com/cometbft/cometbft/libs/log"
 	ctypes "github.com/cybercongress/go-cyber/v2/types"
 	"github.com/cybercongress/go-cyber/v2/x/graph/types"
-	"github.com/tendermint/tendermint/libs/log"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )

@@ -1,8 +1,8 @@
 package keeper
 
 import (
+	abci "github.com/cometbft/cometbft/abci/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	abci "github.com/tendermint/tendermint/abci/types"
 
 	querytypes "github.com/cybercongress/go-cyber/v2/types/query"
 	graphtypes "github.com/cybercongress/go-cyber/v2/x/graph/types"

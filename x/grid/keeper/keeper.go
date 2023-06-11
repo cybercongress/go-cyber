@@ -3,10 +3,10 @@ package keeper
 import (
 	"fmt"
 
+	"github.com/cometbft/cometbft/libs/log"
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	ctypes "github.com/cybercongress/go-cyber/v2/types"
-	"github.com/tendermint/tendermint/libs/log"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"

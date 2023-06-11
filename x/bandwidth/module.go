@@ -19,8 +19,8 @@ import (
 	"github.com/cybercongress/go-cyber/v2/x/bandwidth/keeper"
 	"github.com/cybercongress/go-cyber/v2/x/bandwidth/types"
 
+	abci "github.com/cometbft/cometbft/abci/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	abci "github.com/tendermint/tendermint/abci/types"
 )
 
 var (

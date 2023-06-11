@@ -5,8 +5,8 @@ import (
 	"io"
 	"path/filepath"
 
+	"github.com/cometbft/cometbft/libs/cli"
 	"github.com/spf13/viper"
-	"github.com/tendermint/tendermint/libs/cli"
 )
 
 func RootifyPath(path string) string {

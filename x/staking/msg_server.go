@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/armon/go-metrics"
+	tmstrings "github.com/cometbft/cometbft/libs/strings"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -14,7 +15,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/staking/types"
 	ctypes "github.com/cybercongress/go-cyber/v2/types"
 	resourcestypes "github.com/cybercongress/go-cyber/v2/x/resources/types"
-	tmstrings "github.com/tendermint/tendermint/libs/strings"
 )
 
 type msgServer struct {

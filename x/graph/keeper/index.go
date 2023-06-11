@@ -8,8 +8,8 @@ import (
 	"github.com/cybercongress/go-cyber/v2/utils"
 	"github.com/cybercongress/go-cyber/v2/x/graph/types"
 
+	tmos "github.com/cometbft/cometbft/libs/os"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	tmos "github.com/tendermint/tendermint/libs/os"
 )
 
 type IndexKeeper struct {

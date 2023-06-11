@@ -10,8 +10,8 @@ import (
 	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
+	"github.com/cometbft/cometbft/libs/log"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	"github.com/tendermint/tendermint/libs/log"
 
 	ctypes "github.com/cybercongress/go-cyber/v2/types"
 	bandwithkeeper "github.com/cybercongress/go-cyber/v2/x/bandwidth/keeper"

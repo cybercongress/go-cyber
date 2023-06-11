@@ -7,7 +7,7 @@ import (
 
 	// "time"
 
-	"github.com/tendermint/tendermint/libs/log"
+	"github.com/cometbft/cometbft/libs/log"
 
 	graphtypes "github.com/cybercongress/go-cyber/v2/x/graph/types"
 )

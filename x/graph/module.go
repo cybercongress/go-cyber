@@ -6,13 +6,13 @@ import (
 
 	// "fmt"
 
+	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	bandwidthkeeper "github.com/cybercongress/go-cyber/v2/x/bandwidth/keeper"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-	abci "github.com/tendermint/tendermint/abci/types"
 
 	// "github.com/gogo/protobuf/codec"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -21,7 +21,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
 
-	// "github.com/tendermint/tendermint/abci/types"
+	// "github.com/cometbft/cometbft/abci/types"
 
 	cyberbankkeeper "github.com/cybercongress/go-cyber/v2/x/cyberbank/keeper"
 	"github.com/cybercongress/go-cyber/v2/x/graph/client/cli"
