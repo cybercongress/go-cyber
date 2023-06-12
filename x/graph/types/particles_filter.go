@@ -3,6 +3,7 @@ package types
 type CidsFilter map[Cid]map[Cid]struct{}
 
 func (cf CidsFilter) Put(from Cid, to Cid) {
+
 	cidLinks := cf[from]
 	if cidLinks == nil {
 		cidLinks = make(map[Cid]struct{})
@@ -12,6 +13,7 @@ func (cf CidsFilter) Put(from Cid, to Cid) {
 }
 
 func (cf CidsFilter) Contains(from Cid, to Cid) bool {
+
 	cidLinks := cf[from]
 	if cidLinks == nil {
 		return false

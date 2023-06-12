@@ -7,20 +7,20 @@ import (
 )
 
 type CalculationContext struct {
-	CidsCount    int64
-	LinksCount   int64
+	CidsCount  int64
+	LinksCount int64
 	NeuronsCount int64
 
 	inLinks  map[graphtypes.CidNumber]graphtypes.CidLinks
 	outLinks map[graphtypes.CidNumber]graphtypes.CidLinks
 
-	stakes  map[uint64]uint64
+	stakes map[uint64]uint64
 	neudegs map[uint64]uint64
 
 	FullTree bool
 
 	DampingFactor float64
-	Tolerance     float64
+	Tolerance 	  float64
 }
 
 func NewCalcContext(
@@ -28,21 +28,23 @@ func NewCalcContext(
 	stakeKeeper StakeKeeper, fullTree bool, dampingFactor float64, tolerance float64,
 	cidsCount, linksCount, neuronsCount uint64,
 ) *CalculationContext {
+
 	return &CalculationContext{
-		CidsCount:    int64(cidsCount),
-		LinksCount:   int64(linksCount),
+
+		CidsCount:  int64(cidsCount),
+		LinksCount: int64(linksCount),
 		NeuronsCount: int64(neuronsCount),
 
 		inLinks:  linkIndex.GetInLinks(),
 		outLinks: linkIndex.GetOutLinks(),
 
-		stakes:  stakeKeeper.GetTotalStakesAmpere(),
+		stakes: stakeKeeper.GetTotalStakesAmpere(),
 		neudegs: graphKeeper.GetNeudegs(),
 
 		FullTree: fullTree,
 
 		DampingFactor: dampingFactor,
-		Tolerance:     tolerance,
+		Tolerance: tolerance,
 	}
 }
 

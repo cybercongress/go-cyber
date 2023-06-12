@@ -2,13 +2,6 @@ package app
 
 import (
 	"fmt"
-	"io"
-	"net/http"
-	"os"
-	"path/filepath"
-	"strings"
-	"time"
-
 	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
 	"github.com/cosmos/cosmos-sdk/x/authz"
 	authzkeeper "github.com/cosmos/cosmos-sdk/x/authz/keeper"
@@ -28,6 +21,12 @@ import (
 	ibckeeper "github.com/cosmos/ibc-go/v3/modules/core/keeper"
 	_ "github.com/cybercongress/go-cyber/client/docs/statik"
 	"github.com/cybercongress/go-cyber/plugins/liquidity_plugin"
+	"io"
+	"net/http"
+	"os"
+	"path/filepath"
+	"strings"
+	"time"
 
 	"github.com/cosmos/cosmos-sdk/client/grpc/tmservice"
 	ctypes "github.com/cybercongress/go-cyber/types"
@@ -151,7 +150,7 @@ import (
 )
 
 const (
-	appName     = "BostromHub"
+	appName = "BostromHub"
 	upgradeName = "cyberfrey"
 )
 
@@ -169,7 +168,7 @@ var (
 	DefaultReDnmString = `[a-zA-Z][a-zA-Z0-9/\-\.]{2,127}`
 
 	// If EnabledSpecificProposals is "", and this is "true", then enable all x/wasm proposals.
-	ProposalsEnabled        = "true"
+	ProposalsEnabled = "true"
 	EnableSpecificProposals = ""
 )
 
@@ -256,7 +255,7 @@ var (
 		resourcestypes.ResourcesName:   {authtypes.Minter, authtypes.Burner},
 	}
 
-	// module accounts that are allowed to receive tokens
+    // module accounts that are allowed to receive tokens
 	allowedReceivingModAcc = map[string]bool{
 		distrtypes.ModuleName: true,
 	}
@@ -308,14 +307,14 @@ type App struct {
 	WasmKeeper       wasm.Keeper
 	LiquidityKeeper  liquiditykeeper.Keeper
 
-	BandwidthMeter  *bandwidthkeeper.BandwidthMeter
-	CyberbankKeeper *cyberbankkeeper.IndexedKeeper
-	GraphKeeper     *graphkeeper.GraphKeeper
-	IndexKeeper     *graphkeeper.IndexKeeper
-	RankKeeper      *rankkeeper.StateKeeper
-	GridKeeper      gridkeeper.Keeper
-	DmnKeeper       *dmnkeeper.Keeper
-	ResourcesKeeper resourceskeeper.Keeper
+	BandwidthMeter   *bandwidthkeeper.BandwidthMeter
+	CyberbankKeeper  *cyberbankkeeper.IndexedKeeper
+	GraphKeeper      *graphkeeper.GraphKeeper
+	IndexKeeper      *graphkeeper.IndexKeeper
+	RankKeeper 		 *rankkeeper.StateKeeper
+	GridKeeper 		 gridkeeper.Keeper
+	DmnKeeper  		 *dmnkeeper.Keeper
+	ResourcesKeeper  resourceskeeper.Keeper
 
 	// make scoped keepers public for test purposes
 	ScopedIBCKeeper      capabilitykeeper.ScopedKeeper
@@ -344,8 +343,8 @@ func NewApp(
 	baseAppOptions ...func(*baseapp.BaseApp),
 ) *App {
 	// TODO clean
-	// config := sdk.NewConfig()
-	// config.Seal()
+	//config := sdk.NewConfig()
+	//config.Seal()
 
 	appCodec, legacyAmino := encodingConfig.Marshaler, encodingConfig.Amino
 	interfaceRegistry := encodingConfig.InterfaceRegistry
@@ -355,7 +354,7 @@ func NewApp(
 	bApp.SetVersion(version.Version)
 	bApp.SetInterfaceRegistry(interfaceRegistry)
 	// TODO clean
-	// sdk.SetCoinDenomRegex(SdkCoinDenomRegex)
+	//sdk.SetCoinDenomRegex(SdkCoinDenomRegex)
 
 	keys := sdk.NewKVStoreKeys(
 		authtypes.StoreKey, banktypes.StoreKey, stakingtypes.StoreKey,
@@ -700,7 +699,7 @@ func NewApp(
 
 	// NOTE: we may consider parsing `appOpts` inside module constructors. For the moment
 	// we prefer to be more strict in what arguments the modules expect.
-	skipGenesisInvariants := cast.ToBool(appOpts.Get(crisis.FlagSkipGenesisInvariants))
+	var skipGenesisInvariants = cast.ToBool(appOpts.Get(crisis.FlagSkipGenesisInvariants))
 
 	// NOTE: Any module instantiated in the module manager that is later modified
 	// must be passed by reference here.
@@ -881,9 +880,9 @@ func NewApp(
 				SignModeHandler: encodingConfig.TxConfig.SignModeHandler(),
 				SigGasConsumer:  ante.DefaultSigVerificationGasConsumer,
 			},
-			IBCKeeper:         app.IBCKeeper,
-			WasmConfig:        &wasmConfig,
-			TXCounterStoreKey: keys[wasm.StoreKey],
+			IBCKeeper:    		 app.IBCKeeper,
+			WasmConfig:        	 &wasmConfig,
+			TXCounterStoreKey:   keys[wasm.StoreKey],
 		},
 	)
 	if err != nil {
@@ -899,8 +898,9 @@ func NewApp(
 	app.UpgradeKeeper.SetUpgradeHandler(
 		upgradeName,
 		func(ctx sdk.Context, _ upgradetypes.Plan, fromVM module.VersionMap) (module.VersionMap, error) {
-			// ctx.Logger().Info("start to init module...")
-			// ctx.Logger().Info("start to run module migrations...")
+
+			//ctx.Logger().Info("start to init module...")
+			//ctx.Logger().Info("start to run module migrations...")
 
 			return app.mm.RunMigrations(ctx, app.configurator, fromVM)
 		},

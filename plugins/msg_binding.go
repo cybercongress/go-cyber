@@ -2,7 +2,6 @@ package plugins
 
 import (
 	"encoding/json"
-
 	liquiditytypes "github.com/tendermint/liquidity/x/liquidity/types"
 
 	"github.com/CosmWasm/wasmd/x/wasm"
@@ -23,7 +22,7 @@ type WasmMsgParserInterface interface {
 }
 
 type MsgParser struct {
-	Parsers map[string]WasmMsgParserInterface
+ 	Parsers map[string]WasmMsgParserInterface
 }
 
 func NewMsgParser() MsgParser {

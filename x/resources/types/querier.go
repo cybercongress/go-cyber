@@ -8,9 +8,9 @@ const (
 )
 
 type QueryInvestmintParams struct {
-	Amount   sdk.Coin
+	Amount sdk.Coin
 	Resource string
-	Length   uint64
+	Length uint64
 }
 
 func NewQueryInvestmintParams(amount sdk.Coin, resource string, length uint64) QueryInvestmintParams {

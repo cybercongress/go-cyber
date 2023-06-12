@@ -9,15 +9,15 @@ import (
 const (
 	DefaultParamspace = ModuleName
 
-	DefaultMaxSlots uint32 = 4
-	DefaultMaxGas   uint32 = 2000000
-	DefaultFeeTTL   uint32 = 50
+	DefaultMaxSlots   uint32 = 4
+	DefaultMaxGas     uint32 = 2000000
+	DefaultFeeTTL     uint32 = 50
 )
 
 var (
-	KeyMaxSlots = []byte("MaxSlots")
-	KeyMaxGas   = []byte("MaxGas")
-	KeyFeeTTL   = []byte("FeeTTL")
+	KeyMaxSlots   = []byte("MaxSlots")
+	KeyMaxGas     = []byte("MaxGas")
+	KeyFeeTTL     = []byte("FeeTTL")
 )
 
 func ParamKeyTable() paramstypes.KeyTable {
@@ -39,6 +39,7 @@ func (p *Params) ParamSetPairs() paramstypes.ParamSetPairs {
 		paramstypes.NewParamSetPair(KeyFeeTTL, &p.FeeTtl, validateFeeTTL),
 	}
 }
+
 
 func validateMaxSlots(i interface{}) error {
 	v, ok := i.(uint32)

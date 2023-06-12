@@ -28,15 +28,13 @@ func NewWasmMsgParser() WasmMsgParser {
 	return WasmMsgParser{}
 }
 
-func (WasmMsgParser) Parse(_ sdk.AccAddress, _ wasmvmtypes.CosmosMsg) ([]sdk.Msg, error) {
-	return nil, nil
-}
+func (WasmMsgParser) Parse(_ sdk.AccAddress, _ wasmvmtypes.CosmosMsg) ([]sdk.Msg, error) { return nil, nil }
 
 type CosmosMsg struct {
-	CreateEnergyRoute   *types.MsgCreateRoute   `json:"create_energy_route,omitempty"`
-	EditEnergyRoute     *types.MsgEditRoute     `json:"edit_energy_route,omitempty"`
-	EditEnergyRouteName *types.MsgEditRouteName `json:"edit_energy_route_name,omitempty"`
-	DeleteEnergyRoute   *types.MsgDeleteRoute   `json:"delete_energy_route,omitempty"`
+	CreateEnergyRoute 	 *types.MsgCreateRoute   `json:"create_energy_route,omitempty"`
+	EditEnergyRoute      *types.MsgEditRoute     `json:"edit_energy_route,omitempty"`
+	EditEnergyRouteName  *types.MsgEditRouteName `json:"edit_energy_route_name,omitempty"`
+	DeleteEnergyRoute    *types.MsgDeleteRoute   `json:"delete_energy_route,omitempty"`
 }
 
 func (WasmMsgParser) ParseCustom(contractAddr sdk.AccAddress, data json.RawMessage) ([]sdk.Msg, error) {
@@ -81,17 +79,17 @@ func NewWasmQuerier(keeper keeper.Keeper) WasmQuerier {
 func (WasmQuerier) Query(_ sdk.Context, _ wasmvmtypes.QueryRequest) ([]byte, error) { return nil, nil }
 
 type CosmosQuery struct {
-	SourceRoutes            *QuerySourceParams      `json:"source_routes,omitempty"`
-	SourceRoutedEnergy      *QuerySourceParams      `json:"source_routed_energy,omitempty"`
+	SourceRoutes      		*QuerySourceParams 		`json:"source_routes,omitempty"`
+	SourceRoutedEnergy      *QuerySourceParams 		`json:"source_routed_energy,omitempty"`
 	DestinationRoutedEnergy *QueryDestinationParams `json:"destination_routed_energy,omitempty"`
-	Route                   *QueryRouteParams       `json:"route,omitempty"`
+	Route 					*QueryRouteParams 		`json:"route,omitempty"`
 }
 
 type Route struct {
-	Source      string            `json:"source"`
-	Destination string            `json:"destination"`
-	Name        string            `json:"name"`
-	Value       wasmvmtypes.Coins `json:"value"`
+	Source 		string `json:"source"`
+	Destination string `json:"destination"`
+	Name 		string `json:"name"`
+	Value 		wasmvmtypes.Coins `json:"value"`
 }
 
 type Routes []Route
@@ -105,7 +103,7 @@ type QueryDestinationParams struct {
 }
 
 type QueryRouteParams struct {
-	Source      string `json:"source"`
+	Source  	string `json:"source"`
 	Destination string `json:"destination"`
 }
 
@@ -124,6 +122,7 @@ type RouteResponse struct {
 func (querier WasmQuerier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([]byte, error) {
 	var query CosmosQuery
 	err := json.Unmarshal(data, &query)
+
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
@@ -154,8 +153,7 @@ func (querier WasmQuerier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([
 	} else if query.Route != nil {
 		source, _ := sdk.AccAddressFromBech32(query.Route.Source)
 		destination, _ := sdk.AccAddressFromBech32(query.Route.Destination)
-		route, found := querier.Keeper.GetRoute(ctx, source, destination)
-		if found != true {
+		route, found := querier.Keeper.GetRoute(ctx, source, destination); if found != true {
 			return nil, sdkerrors.ErrInvalidRequest
 		}
 

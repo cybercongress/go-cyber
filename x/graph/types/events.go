@@ -1,11 +1,11 @@
 package types
 
 const (
-	EventTypeCyberlink = "cyberlink"
+	EventTypeCyberlink       = "cyberlink"
 
 	AttributeKeyParticleFrom = "particleFrom"
 	AttributeKeyParticleTo   = "particleTo"
 	AttributeKeyNeuron       = "neuron"
 
-	AttributeValueCategory = ModuleName
+	AttributeValueCategory   = ModuleName
 )

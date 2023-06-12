@@ -5,6 +5,6 @@ import (
 )
 
 var (
-	ErrNotEnoughBandwidth        = sdkerrors.Register(ModuleName, 2, "not enough personal bandwidth")
+	ErrNotEnoughBandwidth = sdkerrors.Register(ModuleName, 2, "not enough personal bandwidth")
 	ErrExceededMaxBlockBandwidth = sdkerrors.Register(ModuleName, 3, "exceeded max block bandwidth")
 )

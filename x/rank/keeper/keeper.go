@@ -3,11 +3,8 @@ package keeper
 import (
 	"bytes"
 	"encoding/binary"
-	"fmt"
-	"strconv"
-	"time"
-
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
@@ -20,9 +17,13 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/tendermint/tendermint/libs/log"
+
+	"fmt"
+	"time"
 )
 
 type StateKeeper struct {
+
 	networkCidRank types.Rank
 	nextCidRank    types.Rank
 
@@ -41,21 +42,21 @@ type StateKeeper struct {
 	graphIndexedKeeper *graphkeeper.IndexKeeper
 	accountKeeper      keeper.AccountKeeper
 
-	storeKey   sdk.StoreKey
-	paramSpace paramstypes.Subspace
+	storeKey      sdk.StoreKey
+	paramSpace    paramstypes.Subspace
 
 	index         types.SearchIndex
 	getIndexError types.GetError
 }
 
 func NewKeeper(
-	key sdk.StoreKey,
-	paramSpace paramstypes.Subspace,
-	allowSearch bool,
-	stakeIndex types.StakeKeeper,
-	graphIndexedKeeper *graphkeeper.IndexKeeper,
-	graphKeeper types.GraphKeeper,
-	accountKeeper keeper.AccountKeeper,
+	key 				sdk.StoreKey,
+	paramSpace 			paramstypes.Subspace,
+	allowSearch 		bool,
+	stakeIndex 			types.StakeKeeper,
+	graphIndexedKeeper 	*graphkeeper.IndexKeeper,
+	graphKeeper 		types.GraphKeeper,
+	accountKeeper 		keeper.AccountKeeper,
 	unit types.ComputeUnit,
 ) *StateKeeper {
 	if !paramSpace.HasKeyTable() {
@@ -63,18 +64,18 @@ func NewKeeper(
 	}
 
 	return &StateKeeper{
-		storeKey:                key,
-		paramSpace:              paramSpace,
-		allowSearch:             allowSearch,
-		rankCalcChan:            make(chan types.Rank, 1),
-		rankErrChan:             make(chan error),
+		storeKey:       key,
+		paramSpace: 	paramSpace,
+		allowSearch:    allowSearch,
+		rankCalcChan:   make(chan types.Rank, 1),
+		rankErrChan:    make(chan error),
 		rankCalculationFinished: true,
-		stakeKeeper:             stakeIndex,
-		graphIndexedKeeper:      graphIndexedKeeper,
-		graphKeeper:             graphKeeper,
-		accountKeeper:           accountKeeper,
-		computeUnit:             unit,
-		hasNewLinksForPeriod:    true,
+		stakeKeeper:    stakeIndex,
+		graphIndexedKeeper: graphIndexedKeeper,
+		graphKeeper:    graphKeeper,
+		accountKeeper:  accountKeeper,
+		computeUnit:    unit,
+		hasNewLinksForPeriod: true,
 	}
 }
 
@@ -177,6 +178,7 @@ func (s *StateKeeper) startRankCalculation(ctx sdk.Context, dampingFactor float6
 }
 
 func (s *StateKeeper) checkRankCalcFinished(ctx sdk.Context, block bool) {
+
 	if !s.rankCalculationFinished {
 		for {
 			select {
@@ -218,15 +220,12 @@ func (s *StateKeeper) applyNextRank(ctx sdk.Context) {
 }
 
 func (s *StateKeeper) GetRankValueByNumber(number uint64) uint64 {
-	if number >= uint64(len(s.networkCidRank.RankValues)) {
-		return 0
-	}
+	if number >= uint64(len(s.networkCidRank.RankValues)) { return 0 }
 	return s.networkCidRank.RankValues[number]
 }
 
 func (s *StateKeeper) GetRankValueByParticle(ctx sdk.Context, particle string) (uint64, error) {
-	number, exist := s.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(particle))
-	if exist != true {
+	number, exist := s.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(particle)); if exist != true {
 		return 0, sdkerrors.ErrInvalidRequest
 	}
 	return s.networkCidRank.RankValues[number], nil
@@ -320,7 +319,7 @@ func (sk StateKeeper) GetNextMerkleTree(ctx sdk.Context) []byte {
 
 func (sk StateKeeper) StoreNextMerkleTree(ctx sdk.Context, treeAsBytes []byte) {
 	store := ctx.KVStore(sk.storeKey)
-	if bytes.Compare(sk.GetNextMerkleTree(ctx), treeAsBytes) != 0 {
+	if bytes.Compare(sk.GetNextMerkleTree(ctx), treeAsBytes) !=0 {
 		store.Set(types.NextMerkleTree, treeAsBytes)
 	}
 }

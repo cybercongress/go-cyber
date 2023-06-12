@@ -16,9 +16,9 @@ type LinkFilter func(CompactLink) bool
 
 func NewLink(from CidNumber, to CidNumber, acc AccNumber) CompactLink {
 	return CompactLink{
-		From:    uint64(from),
-		To:      uint64(to),
-		Account: uint64(acc),
+		From:     uint64(from),
+		To:       uint64(to),
+		Account:  uint64(acc),
 	}
 }
 
@@ -37,3 +37,5 @@ func (l CompactLink) MarshalBinaryLink() []byte {
 	binary.LittleEndian.PutUint64(b[16:24], l.Account)
 	return b
 }
+
+

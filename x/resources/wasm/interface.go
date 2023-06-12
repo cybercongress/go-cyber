@@ -25,12 +25,10 @@ func NewWasmMsgParser() WasmMsgParser {
 	return WasmMsgParser{}
 }
 
-func (WasmMsgParser) Parse(_ sdk.AccAddress, _ wasmTypes.CosmosMsg) ([]sdk.Msg, error) {
-	return nil, nil
-}
+func (WasmMsgParser) Parse(_ sdk.AccAddress, _ wasmTypes.CosmosMsg) ([]sdk.Msg, error) { return nil, nil }
 
 type CosmosMsg struct {
-	Investmint *types.MsgInvestmint `json:"investmint,omitempty"`
+	Investmint 			  *types.MsgInvestmint `json:"investmint,omitempty"`
 }
 
 func (WasmMsgParser) ParseCustom(contractAddr sdk.AccAddress, data json.RawMessage) ([]sdk.Msg, error) {

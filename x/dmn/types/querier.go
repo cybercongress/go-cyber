@@ -3,7 +3,7 @@ package types
 import sdk "github.com/cosmos/cosmos-sdk/types"
 
 const (
-	QueryParams        = "params"
+	QueryParams   	   = "params"
 	QueryThought       = "thought"
 	QueryThoughtStats  = "thought_stats"
 	QueryThoughts      = "thoughts"

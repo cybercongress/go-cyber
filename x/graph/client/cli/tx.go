@@ -1,3 +1,4 @@
+
 package cli
 
 import (
@@ -58,7 +59,7 @@ $ %s tx link cyberlink QmWZYRj344JSLShtBnrMS4vw5DQ2zsGqrytYKMqcQgEneB QmfZwbahFL
 			}
 
 			cidFrom := types.Cid(args[0])
-			cidTo := types.Cid(args[1])
+			cidTo   := types.Cid(args[1])
 
 			if _, err := cid.Decode(string(cidFrom)); err != nil {
 				return types.ErrInvalidParticle
@@ -85,6 +86,7 @@ $ %s tx link cyberlink QmWZYRj344JSLShtBnrMS4vw5DQ2zsGqrytYKMqcQgEneB QmfZwbahFL
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
+
 
 	return cmd
 }

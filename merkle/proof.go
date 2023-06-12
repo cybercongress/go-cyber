@@ -11,6 +11,7 @@ type Proof struct {
 
 // calculate sum hash
 func (p *Proof) SumWith(hashF hash.Hash, hash []byte) []byte {
+
 	if p.LeftSide {
 		return sum(hashF, p.Hash, hash)
 	} else {

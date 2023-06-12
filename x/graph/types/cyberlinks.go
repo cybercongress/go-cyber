@@ -6,15 +6,11 @@ import (
 
 // map of map, where first key is cid, second key is account.String()
 // second map is used as set for fast contains check
-type (
-	Links    map[CidNumber]CidLinks
-	CidLinks map[CidNumber]map[AccNumber]struct{}
-)
+type Links map[CidNumber]CidLinks
+type CidLinks map[CidNumber]map[AccNumber]struct{}
 
-type (
-	Cid       string
-	CidNumber uint64
-)
+type Cid string
+type CidNumber uint64
 
 func (links Links) Put(from CidNumber, to CidNumber, acc AccNumber) {
 	cidLinks := links[from]
@@ -41,6 +37,7 @@ func (links Links) PutAll(newLinks Links) {
 }
 
 func (links Links) Copy() Links {
+
 	linksCopy := make(Links, len(links))
 
 	for from := range links {
@@ -58,6 +55,7 @@ func (links Links) Copy() Links {
 }
 
 func (links Links) IsAnyLinkExist(from CidNumber, to CidNumber) bool {
+
 	toLinks, fromExists := links[from]
 	if fromExists {
 		linkAccs, toExists := toLinks[to]
@@ -70,6 +68,7 @@ func (links Links) IsAnyLinkExist(from CidNumber, to CidNumber) bool {
 }
 
 func (links Links) IsLinkExist(from CidNumber, to CidNumber, acc AccNumber) bool {
+
 	toLinks, fromExists := links[from]
 	if fromExists {
 		linkAccs, toExists := toLinks[to]

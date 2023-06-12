@@ -10,7 +10,7 @@ import (
 var (
 	KeyCalculationPeriod = []byte("CalculationPeriod")
 	KeyDampingFactor     = []byte("DampingFactor")
-	KeyTolerance         = []byte("Tolerance")
+	KeyTolerance		 = []byte("Tolerance")
 )
 
 func ParamKeyTable() paramstypes.KeyTable {
@@ -20,7 +20,7 @@ func ParamKeyTable() paramstypes.KeyTable {
 func DefaultParams() Params {
 	return Params{
 		CalculationPeriod: int64(5),
-		DampingFactor:     sdk.NewDecWithPrec(85, 2),
+		DampingFactor:	   sdk.NewDecWithPrec(85, 2),
 		Tolerance:         sdk.NewDecWithPrec(1, 3),
 	}
 }
@@ -68,11 +68,11 @@ func validateDampingFactor(i interface{}) error {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 
-	if v.LTE(sdk.NewDecWithPrec(7, 1)) {
+	if v.LTE(sdk.NewDecWithPrec(7,1)) {
 		return fmt.Errorf("damping factor should be equal or more than 0.7: %s", v)
 	}
 
-	if v.GTE(sdk.NewDecWithPrec(9, 1)) {
+	if v.GTE(sdk.NewDecWithPrec(9,1)) {
 		return fmt.Errorf("damping factor should be equal or less than 0.9: %s", v)
 	}
 

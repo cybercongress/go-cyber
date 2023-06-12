@@ -29,8 +29,7 @@ func (msg MsgInvestmint) Route() string { return RouterKey }
 func (msg MsgInvestmint) Type() string { return ActionInvestmint }
 
 func (msg MsgInvestmint) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Neuron)
-	if err != nil {
+	_, err := sdk.AccAddressFromBech32(msg.Neuron); if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid neuron address: %s", err)
 	}
 
@@ -61,3 +60,4 @@ func (msg MsgInvestmint) GetSigners() []sdk.AccAddress {
 	}
 	return []sdk.AccAddress{addr}
 }
+

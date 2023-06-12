@@ -2,13 +2,12 @@ package keeper
 
 import (
 	"fmt"
-	"math"
-
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
+	"math"
 
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/tendermint/tendermint/libs/log"
@@ -19,18 +18,18 @@ import (
 )
 
 type Keeper struct {
-	cdc            codec.BinaryCodec
-	accountKeeper  types.AccountKeeper
-	bankKeeper     types.BankKeeper
-	bandwidthMeter *bandwithkeeper.BandwidthMeter
-	paramSpace     paramstypes.Subspace
+	cdc 			codec.BinaryCodec
+	accountKeeper   types.AccountKeeper
+	bankKeeper      types.BankKeeper
+	bandwidthMeter  *bandwithkeeper.BandwidthMeter
+	paramSpace      paramstypes.Subspace
 }
 
 func NewKeeper(
 	cdc codec.BinaryCodec,
-	ak types.AccountKeeper,
-	bk types.BankKeeper,
-	bm *bandwithkeeper.BandwidthMeter,
+	ak 	types.AccountKeeper,
+	bk  types.BankKeeper,
+	bm  *bandwithkeeper.BandwidthMeter,
 	paramSpace paramstypes.Subspace,
 ) Keeper {
 	if addr := ak.GetModuleAddress(types.ResourcesName); addr == nil {
@@ -42,11 +41,11 @@ func NewKeeper(
 	}
 
 	keeper := Keeper{
-		cdc:            cdc,
-		accountKeeper:  ak,
+		cdc:        	cdc,
+		accountKeeper: 	ak,
 		bankKeeper:     bk,
 		bandwidthMeter: bm,
-		paramSpace:     paramSpace,
+		paramSpace:    paramSpace,
 	}
 	return keeper
 }
@@ -113,8 +112,7 @@ func (k Keeper) AddTimeLockedCoinsToAccount(ctx sdk.Context, recipientAddr sdk.A
 }
 
 func (k Keeper) AddTimeLockedCoinsToPeriodicVestingAccount(ctx sdk.Context, recipientAddr sdk.AccAddress, amt sdk.Coins, length int64, mergeSlot bool) error {
-	err := k.addCoinsToVestingSchedule(ctx, recipientAddr, amt, length, mergeSlot)
-	if err != nil {
+	err := k.addCoinsToVestingSchedule(ctx, recipientAddr, amt, length, mergeSlot); if err != nil {
 		return err
 	}
 	return nil
@@ -144,16 +142,16 @@ func (k Keeper) addCoinsToVestingSchedule(ctx sdk.Context, addr sdk.AccAddress, 
 	if vacc.EndTime < ctx.BlockTime().Unix() {
 		// edge case one - the vesting account's end time is in the past (ie, all previous vesting periods have completed)
 		// append a new period to the vesting account, update the end time, update the account in the store and return
-		// newPeriodLength := (ctx.BlockTime().Unix() - vacc.EndTime) + length // 110 - 100 + 6 = 16
-		// newPeriod := types.NewPeriod(amt, newPeriodLength)
-		// vacc.VestingPeriods = append(vacc.VestingPeriods, newPeriod)
-		// vacc.EndTime = ctx.BlockTime().Unix() + length
-		// k.accountKeeper.SetAccount(ctx, vacc)
-		// return nil
+		//newPeriodLength := (ctx.BlockTime().Unix() - vacc.EndTime) + length // 110 - 100 + 6 = 16
+		//newPeriod := types.NewPeriod(amt, newPeriodLength)
+		//vacc.VestingPeriods = append(vacc.VestingPeriods, newPeriod)
+		//vacc.EndTime = ctx.BlockTime().Unix() + length
+		//k.accountKeeper.SetAccount(ctx, vacc)
+		//return nil
 
 		// edge case one - the vesting account's end time is in the past (ie, all previous vesting periods have completed)
 		// delete all passed periods, add a new period to the vesting account, update the end time, update the account in the store and return
-		// newPeriodLength := (ctx.BlockTime().Unix() - vacc.EndTime) + length // 110 - 100 + 6 = 16
+		//newPeriodLength := (ctx.BlockTime().Unix() - vacc.EndTime) + length // 110 - 100 + 6 = 16
 		newPeriod := types.NewPeriod(amt, length)
 		vacc.VestingPeriods = append(vestingtypes.Periods{}, newPeriod)
 		vacc.StartTime = ctx.BlockTime().Unix()
@@ -183,7 +181,7 @@ func (k Keeper) addCoinsToVestingSchedule(ctx sdk.Context, addr sdk.AccAddress, 
 
 	if len(vacc.VestingPeriods) == int(k.MaxSlots(ctx)) && !mergeSlot {
 		// case when there are already filled slots and no one already passed
-		if vacc.StartTime+vacc.VestingPeriods[0].Length > ctx.BlockTime().Unix() {
+		if vacc.StartTime + vacc.VestingPeriods[0].Length > ctx.BlockTime().Unix() {
 			return types.ErrFullSlots
 		} else {
 			// TODO refactor next code blocks
@@ -192,7 +190,7 @@ func (k Keeper) addCoinsToVestingSchedule(ctx sdk.Context, addr sdk.AccAddress, 
 			accumulatedLength := int64(0)
 			shiftStartTime := int64(0)
 			for _, period := range vacc.VestingPeriods {
-				if vacc.StartTime+period.Length+accumulatedLength > ctx.BlockTime().Unix() {
+				if vacc.StartTime + period.Length + accumulatedLength > ctx.BlockTime().Unix() {
 					activePeriods = append(activePeriods, period)
 				} else {
 					shiftStartTime += period.Length
@@ -312,13 +310,13 @@ func (k Keeper) CalculateInvestmint(ctx sdk.Context, amt sdk.Coin, resource stri
 	var halving sdk.Dec
 	switch resource {
 	case ctypes.VOLT:
-		// cycles := sdk.NewDec(int64(length)).QuoInt64(int64(10)) // for local dev
+		//cycles := sdk.NewDec(int64(length)).QuoInt64(int64(10)) // for local dev
 		cycles := sdk.NewDec(int64(length)).QuoInt64(int64(k.BaseInvestmintPeriodVolt(ctx)))
 		base := sdk.NewDec(amt.Amount.Int64()).QuoInt64(k.BaseInvestmintAmountVolt(ctx).Amount.Int64())
 
 		// NOTE out of parametrization custom code is applied here in order to shift the FIRST HALVING 6M BLOCKS LATER but keep base halving parameter same
 		if ctx.BlockHeight() > 15000000 {
-			halving = sdk.NewDecWithPrec(int64(math.Pow(0.5, float64((ctx.BlockHeight()-600000)/int64(k.BaseHalvingPeriodVolt(ctx))))*10000), 4)
+			halving = sdk.NewDecWithPrec(int64(math.Pow(0.5, float64((ctx.BlockHeight()-600000) / int64(k.BaseHalvingPeriodVolt(ctx))))*10000),4)
 		} else {
 			halving = sdk.OneDec()
 		}
@@ -331,13 +329,13 @@ func (k Keeper) CalculateInvestmint(ctx sdk.Context, amt sdk.Coin, resource stri
 
 		k.Logger(ctx).Info("Investmint", "cycles", cycles.String(), "base", base.String(), "halving", halving.String(), "mint", toMint.String())
 	case ctypes.AMPERE:
-		// cycles := sdk.NewDec(int64(length)).QuoInt64(int64(10)) // for local dev
+		//cycles := sdk.NewDec(int64(length)).QuoInt64(int64(10)) // for local dev
 		cycles := sdk.NewDec(int64(length)).QuoInt64(int64(k.BaseInvestmintPeriodAmpere(ctx)))
 		base := sdk.NewDec(amt.Amount.Int64()).QuoInt64(k.BaseInvestmintAmountAmpere(ctx).Amount.Int64())
 
 		// NOTE out of parametrization custom code is applied here in order to shift the FIRST HALVING 6M BLOCKS LATER but keep base halving parameter same
 		if ctx.BlockHeight() > 15000000 {
-			halving = sdk.NewDecWithPrec(int64(math.Pow(0.5, float64((ctx.BlockHeight()-600000)/int64(k.BaseHalvingPeriodAmpere(ctx))))*10000), 4)
+			halving = sdk.NewDecWithPrec(int64(math.Pow(0.5, float64((ctx.BlockHeight()-600000) / int64(k.BaseHalvingPeriodAmpere(ctx))))*10000),4)
 		} else {
 			halving = sdk.OneDec()
 		}
@@ -361,12 +359,12 @@ func (k Keeper) CheckAvailablePeriod(ctx sdk.Context, length uint64, resource st
 	switch resource {
 	case ctypes.VOLT:
 		halvingVolt := k.BaseHalvingPeriodVolt(ctx)
-		doubling := uint32(math.Pow(2, float64(passed/int64(halvingVolt))))
+		doubling := uint32(math.Pow(2, float64(passed / int64(halvingVolt))))
 		availableLength = uint64(doubling * halvingVolt * 5)
 
 	case ctypes.AMPERE:
 		halvingAmpere := k.BaseHalvingPeriodAmpere(ctx)
-		doubling := uint32(math.Pow(2, float64(passed/int64(halvingAmpere))))
+		doubling := uint32(math.Pow(2, float64(passed / int64(halvingAmpere))))
 		availableLength = uint64(doubling * halvingAmpere * 5)
 	}
 

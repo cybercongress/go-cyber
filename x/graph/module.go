@@ -1,10 +1,10 @@
 package graph
 
 import (
-	"context"
 	"encoding/json"
-
 	//"fmt"
+
+	"context"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
@@ -29,11 +29,11 @@ import (
 )
 
 var (
-	_ module.AppModule      = AppModule{}
-	_ module.AppModuleBasic = AppModuleBasic{}
+	_ module.AppModule           = AppModule{}
+	_ module.AppModuleBasic      = AppModuleBasic{}
 )
 
-type AppModuleBasic struct {
+type AppModuleBasic struct{
 	cdc codec.Codec
 }
 
@@ -45,9 +45,7 @@ func (AppModuleBasic) RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 
 func (AppModuleBasic) DefaultGenesis(_ codec.JSONCodec) json.RawMessage { return nil }
 
-func (AppModuleBasic) ValidateGenesis(_ codec.JSONCodec, _ client.TxEncodingConfig, _ json.RawMessage) error {
-	return nil
-}
+func (AppModuleBasic) ValidateGenesis(_ codec.JSONCodec, _ client.TxEncodingConfig, _ json.RawMessage) error { return nil }
 
 func (AppModuleBasic) RegisterRESTRoutes(clientCtx client.Context, rtr *mux.Router) {
 	rest.RegisterRoutes(clientCtx, rtr)
@@ -82,11 +80,11 @@ type AppModule struct {
 }
 
 func NewAppModule(
-	cdc codec.Codec,
-	graphKeeper *keeper.GraphKeeper,
-	indexKeeper *keeper.IndexKeeper,
-	accountKeeper authkeeper.AccountKeeper,
-	bankKeeper *cyberbankkeeper.IndexedKeeper,
+	cdc 			codec.Codec,
+	graphKeeper     *keeper.GraphKeeper,
+	indexKeeper 	*keeper.IndexKeeper,
+	accountKeeper 	authkeeper.AccountKeeper,
+	bankKeeper      *cyberbankkeeper.IndexedKeeper,
 	bandwidthKeeper *bandwidthkeeper.BandwidthMeter,
 ) AppModule {
 	return AppModule{
@@ -94,8 +92,8 @@ func NewAppModule(
 		gk:             graphKeeper,
 		ik:             indexKeeper,
 		ak:             accountKeeper,
-		bk:             bankKeeper,
-		bm:             bandwidthKeeper,
+		bk:				bankKeeper,
+		bm: 			bandwidthKeeper,
 	}
 }
 
@@ -142,3 +140,4 @@ func (am AppModule) EndBlock(ctx sdk.Context, _ abci.RequestEndBlock) []abci.Val
 	EndBlocker(ctx, am.gk, am.ik)
 	return []abci.ValidatorUpdate{}
 }
+

@@ -7,21 +7,23 @@ import (
 )
 
 const (
-	TypeMsgCyberlink = "cyberlink"
+	TypeMsgCyberlink    = "cyberlink"
 )
 
-var _ sdk.Msg = &MsgCyberlink{}
+var (
+	_ sdk.Msg = &MsgCyberlink{}
+)
 
 func NewMsgCyberlink(address sdk.AccAddress, links []Link) *MsgCyberlink {
 	return &MsgCyberlink{
 		Neuron: address.String(),
-		Links:  links,
+		Links:   links,
 	}
 }
 
 func (msg MsgCyberlink) Route() string { return RouterKey }
 
-func (msg MsgCyberlink) Type() string { return TypeMsgCyberlink }
+func (msg MsgCyberlink) Type()  string { return TypeMsgCyberlink }
 
 func (msg MsgCyberlink) GetSigners() []sdk.AccAddress {
 	addr, _ := sdk.AccAddressFromBech32(msg.Neuron)
@@ -33,6 +35,7 @@ func (msg MsgCyberlink) GetSignBytes() []byte {
 }
 
 func (msg MsgCyberlink) ValidateBasic() error {
+
 	_, err := sdk.AccAddressFromBech32(msg.Neuron)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid neuron address: %s", err)
@@ -42,7 +45,7 @@ func (msg MsgCyberlink) ValidateBasic() error {
 		return ErrZeroLinks
 	}
 
-	filter := make(CidsFilter)
+	var filter = make(CidsFilter)
 	for _, link := range msg.Links {
 		if link.From == link.To {
 			return ErrSelfLink

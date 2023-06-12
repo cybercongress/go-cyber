@@ -38,6 +38,7 @@ func registerQueryRoutes(cliCtx client.Context, r *mux.Router) {
 
 func queryParamsHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+
 		route := fmt.Sprintf("custom/%s/%s", types.QuerierRoute, types.QueryParams)
 
 		res, _, err := cliCtx.QueryWithData(route, nil)
@@ -52,6 +53,7 @@ func queryParamsHandlerFn(cliCtx client.Context) http.HandlerFunc {
 
 func queryThoughtHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+
 		vars := mux.Vars(r)
 		name := vars[Name]
 
@@ -95,6 +97,7 @@ func queryThoughtHandlerFn(cliCtx client.Context) http.HandlerFunc {
 
 func queryThoughtStatsHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+
 		vars := mux.Vars(r)
 		name := vars[Name]
 
@@ -137,6 +140,7 @@ func queryThoughtStatsHandlerFn(cliCtx client.Context) http.HandlerFunc {
 
 func queryThoughtsHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+
 		route := fmt.Sprintf("custom/%s/%s", types.QuerierRoute, types.QueryThoughts)
 
 		res, height, err := cliCtx.QueryWithData(route, nil)
@@ -157,6 +161,7 @@ func queryThoughtsHandlerFn(cliCtx client.Context) http.HandlerFunc {
 
 func queryThoughtsStatsHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+
 		route := fmt.Sprintf("custom/%s/%s", types.QuerierRoute, types.QueryThoughtsStats)
 
 		res, height, err := cliCtx.QueryWithData(route, nil)

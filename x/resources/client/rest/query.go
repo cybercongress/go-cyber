@@ -28,6 +28,7 @@ func registerQueryRoutes(cliCtx client.Context, r *mux.Router) {
 
 func queryParamsHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+
 		route := fmt.Sprintf("custom/%s/%s", types.QuerierRoute, types.QueryParams)
 
 		res, _, err := cliCtx.QueryWithData(route, nil)

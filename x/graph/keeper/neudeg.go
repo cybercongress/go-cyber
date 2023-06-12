@@ -36,18 +36,14 @@ func (gk GraphKeeper) IncrementNeudeg(ctx sdk.Context, accNumber uint64) {
 func (gk GraphKeeper) GetNeudeg(ctx sdk.Context, accNumber uint64) uint64 {
 	store := ctx.KVStore(gk.key)
 	neudeg := store.Get(types.NeudegStoreKey(accNumber))
-	if neudeg == nil {
-		return 0
-	}
+	if neudeg == nil { return 0 }
 	return sdk.BigEndianToUint64(neudeg)
 }
 
 func (gk GraphKeeper) GetTNeudeg(ctx sdk.Context, accNumber uint64) uint64 {
 	store := ctx.TransientStore(gk.tkey)
 	neudeg := store.Get(types.NeudegTStoreKey(accNumber))
-	if neudeg == nil {
-		return 0
-	}
+	if neudeg == nil { return 0 }
 	return sdk.BigEndianToUint64(neudeg)
 }
 

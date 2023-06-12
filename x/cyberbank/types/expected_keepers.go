@@ -5,6 +5,7 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 )
 
+
 type AccountKeeper interface {
 	IterateAccounts(ctx sdk.Context, process func(i authtypes.AccountI) (stop bool))
 	GetAccount(ctx sdk.Context, addr sdk.AccAddress) authtypes.AccountI

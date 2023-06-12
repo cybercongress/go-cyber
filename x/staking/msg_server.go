@@ -2,8 +2,6 @@ package staking
 
 import (
 	"context"
-	"time"
-
 	"github.com/armon/go-metrics"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	"github.com/cosmos/cosmos-sdk/telemetry"
@@ -15,6 +13,7 @@ import (
 	ctypes "github.com/cybercongress/go-cyber/types"
 	resourcestypes "github.com/cybercongress/go-cyber/x/resources/types"
 	tmstrings "github.com/tendermint/tendermint/libs/strings"
+	"time"
 )
 
 type msgServer struct {
@@ -27,7 +26,7 @@ type msgServer struct {
 func NewMsgServerImpl(keeper keeper.Keeper, bk bankkeeper.Keeper) types.MsgServer {
 	return &msgServer{
 		Keeper: keeper,
-		bk:     bk,
+		bk: bk,
 	}
 }
 
@@ -35,7 +34,7 @@ var _ types.MsgServer = msgServer{}
 
 // CreateValidator defines a method for creating a new validator
 func (k msgServer) CreateValidator(goCtx context.Context, msg *types.MsgCreateValidator) (*types.MsgCreateValidatorResponse, error) {
-	result, err := WrapCreateValidator(goCtx, k.bk, msg)
+	result, err := WrapCreateValidator(goCtx, k.bk , msg)
 	if err != nil {
 		return nil, err
 	}
@@ -204,7 +203,7 @@ func (k msgServer) EditValidator(goCtx context.Context, msg *types.MsgEditValida
 
 // Delegate defines a method for performing a delegation of coins from a delegator to a validator
 func (k msgServer) Delegate(goCtx context.Context, msg *types.MsgDelegate) (*types.MsgDelegateResponse, error) {
-	result, err := WrapDelegate(goCtx, k.bk, msg)
+	result, err := WrapDelegate(goCtx, k.bk , msg)
 	if err != nil {
 		return nil, err
 	}
@@ -341,7 +340,7 @@ func (k msgServer) BeginRedelegate(goCtx context.Context, msg *types.MsgBeginRed
 
 // Undelegate defines a method for performing an undelegation from a delegate and a validator
 func (k msgServer) Undelegate(goCtx context.Context, msg *types.MsgUndelegate) (*types.MsgUndelegateResponse, error) {
-	result, err := WrapUndelegate(goCtx, k.bk, msg)
+	result, err := WrapUndelegate(goCtx, k.bk , msg)
 	if err != nil {
 		return nil, err
 	}
@@ -419,17 +418,14 @@ func WrapDelegate(
 ) (bool, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	delegator, err := sdk.AccAddressFromBech32(msg.DelegatorAddress)
-	if err != nil {
+	delegator, err := sdk.AccAddressFromBech32(msg.DelegatorAddress); if err != nil {
 		return false, err
 	}
 	toMint := sdk.NewCoin(ctypes.SCYB, msg.Amount.Amount)
-	err = bk.MintCoins(ctx, resourcestypes.ResourcesName, sdk.NewCoins(toMint))
-	if err != nil {
+	err = bk.MintCoins(ctx, resourcestypes.ResourcesName, sdk.NewCoins(toMint)); if err != nil {
 		return false, err
 	}
-	err = bk.SendCoinsFromModuleToAccount(ctx, resourcestypes.ResourcesName, delegator, sdk.NewCoins(toMint))
-	if err != nil {
+	err = bk.SendCoinsFromModuleToAccount(ctx, resourcestypes.ResourcesName, delegator, sdk.NewCoins(toMint)); if err != nil {
 		return false, err
 	}
 
@@ -443,17 +439,14 @@ func WrapUndelegate(
 ) (bool, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	delegator, err := sdk.AccAddressFromBech32(msg.DelegatorAddress)
-	if err != nil {
+	delegator, err := sdk.AccAddressFromBech32(msg.DelegatorAddress); if err != nil {
 		return false, err
 	}
 	toBurn := sdk.NewCoin(ctypes.SCYB, msg.Amount.Amount)
-	err = bk.SendCoinsFromAccountToModule(ctx, delegator, resourcestypes.ResourcesName, sdk.NewCoins(toBurn))
-	if err != nil {
+	err = bk.SendCoinsFromAccountToModule(ctx, delegator, resourcestypes.ResourcesName, sdk.NewCoins(toBurn)); if err != nil {
 		return false, err
 	}
-	err = bk.BurnCoins(ctx, resourcestypes.ResourcesName, sdk.NewCoins(toBurn))
-	if err != nil {
+	err = bk.BurnCoins(ctx, resourcestypes.ResourcesName, sdk.NewCoins(toBurn)); if err != nil {
 		return false, err
 	}
 
@@ -467,19 +460,17 @@ func WrapCreateValidator(
 ) (bool, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	delegator, err := sdk.AccAddressFromBech32(msg.DelegatorAddress)
-	if err != nil {
+	delegator, err := sdk.AccAddressFromBech32(msg.DelegatorAddress); if err != nil {
 		return false, err
 	}
 	toMint := sdk.NewCoin(ctypes.SCYB, msg.Value.Amount)
-	err = bk.MintCoins(ctx, resourcestypes.ResourcesName, sdk.NewCoins(toMint))
-	if err != nil {
+	err = bk.MintCoins(ctx, resourcestypes.ResourcesName, sdk.NewCoins(toMint)); if err != nil {
 		return false, err
 	}
-	err = bk.SendCoinsFromModuleToAccount(ctx, resourcestypes.ResourcesName, delegator, sdk.NewCoins(toMint))
-	if err != nil {
+	err = bk.SendCoinsFromModuleToAccount(ctx, resourcestypes.ResourcesName, delegator, sdk.NewCoins(toMint)); if err != nil {
 		return false, err
 	}
 
 	return true, nil
 }
+

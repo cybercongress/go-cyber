@@ -11,7 +11,9 @@ const (
 	DefaultMaxRoutes  = uint32(8)
 )
 
-var KeyMaxRoutes = []byte("MaxRoutes")
+var (
+	KeyMaxRoutes   = []byte("MaxRoutes")
+)
 
 func ParamKeyTable() paramstypes.KeyTable {
 	return paramstypes.NewKeyTable().RegisterParamSet(&Params{})

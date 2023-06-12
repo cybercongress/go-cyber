@@ -12,7 +12,7 @@ const (
 
 	AttributeKeyThoughtProgram  = "program"
 	AttributeKeyThoughtTrigger  = "trigger"
-	AttributeKeyThoughtLoad     = "load"
+	AttributeKeyThoughtLoad 	= "load"
 	AttributeKeyThoughtName     = "name"
 	AttributeKeyThoughtParticle = "particle"
 	AttributeKeyThoughtInput    = "input"
@@ -20,5 +20,5 @@ const (
 	AttributeKeyThoughtPeriod   = "period"
 	AttributeKeyThoughtBlock    = "block"
 
-	AttributeValueCategory = ModuleName
+	AttributeValueCategory     = ModuleName
 )

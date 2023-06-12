@@ -2,11 +2,10 @@ package utils
 
 import (
 	"errors"
-	"io"
-	"path/filepath"
-
 	"github.com/spf13/viper"
 	"github.com/tendermint/tendermint/libs/cli"
+	"io"
+	"path/filepath"
 )
 
 func RootifyPath(path string) string {
