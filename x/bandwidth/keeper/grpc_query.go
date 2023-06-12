@@ -4,10 +4,9 @@ import (
 	"context"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cybercongress/go-cyber/x/bandwidth/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-
-	"github.com/cybercongress/go-cyber/x/bandwidth/types"
 )
 
 var _ types.QueryServer = &BandwidthMeter{}

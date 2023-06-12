@@ -3,11 +3,9 @@ package wasm
 import (
 	"encoding/json"
 
+	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-
-	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
-
 	"github.com/cybercongress/go-cyber/x/bandwidth/keeper"
 )
 

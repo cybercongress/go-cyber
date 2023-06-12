@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	ctypes "github.com/cybercongress/go-cyber/types"
 )

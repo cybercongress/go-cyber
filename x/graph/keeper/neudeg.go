@@ -6,7 +6,7 @@ import (
 )
 
 // In order to calculate the flow of amperes through cyberlinks created by given agents than need to compute neurons out-degree
-// transient store used to sync values to in-memory at the end block
+// transient store used to sync values to in-memory at the end block.
 func (gk *GraphKeeper) LoadNeudeg(rankCtx sdk.Context, freshCtx sdk.Context) {
 	iterator := sdk.KVStorePrefixIterator(rankCtx.KVStore(gk.key), types.NeudegStoreKeyPrefix)
 	for ; iterator.Valid(); iterator.Next() {

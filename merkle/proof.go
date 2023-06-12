@@ -9,7 +9,7 @@ type Proof struct {
 	Hash     []byte `json:"hash"`
 }
 
-// calculate sum hash
+// calculate sum hash.
 func (p *Proof) SumWith(hashF hash.Hash, hash []byte) []byte {
 	if p.LeftSide {
 		return sum(hashF, p.Hash, hash)

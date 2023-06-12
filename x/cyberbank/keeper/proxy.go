@@ -9,7 +9,6 @@ import (
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	bank "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-
 	ctypes "github.com/cybercongress/go-cyber/types"
 	"github.com/cybercongress/go-cyber/x/cyberbank/types"
 )
@@ -129,7 +128,7 @@ func (p *Proxy) SendCoinsFromModuleToAccount(ctx sdk.Context, senderModule strin
 func (p *Proxy) SendCoinsFromModuleToModule(ctx sdk.Context, senderModule, recipientModule string, amt sdk.Coins) error {
 	err := p.bk.SendCoinsFromModuleToModule(ctx, senderModule, recipientModule, amt)
 
-	//if err == nil {
+	// if err == nil {
 	//	p.OnCoinsTransfer(ctx, p.ak.GetModuleAddress(senderModule), p.ak.GetModuleAddress(recipientModule))
 	//}
 	return err

@@ -5,11 +5,8 @@ import (
 	"sort"
 	"time"
 
-	//"time"
-
-	"github.com/tendermint/tendermint/libs/log"
-
 	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
+	"github.com/tendermint/tendermint/libs/log"
 )
 
 type BaseSearchIndex struct {
@@ -43,7 +40,7 @@ func (i *BaseSearchIndex) Run() GetError {
 	return i.checkIndexError
 }
 
-// LoadState links with zero rank values. No sorting. Index should be unavailable for read
+// LoadState links with zero rank values. No sorting. Index should be unavailable for read.
 func (i *BaseSearchIndex) Load(links graphtypes.Links) {
 	startTime := time.Now()
 	i.lock() // lock index for read
@@ -160,7 +157,7 @@ func (i *BaseSearchIndex) Top(page, perPage uint32) ([]RankedCidNumber, uint32, 
 	return resultSet, totalSize, nil
 }
 
-// make sure that this link (from-to) is new
+// make sure that this link (from-to) is new.
 func (i *BaseSearchIndex) handleLink(link graphtypes.CompactLink) {
 	i.extendIndex(uint64(link.From))
 
@@ -240,7 +237,7 @@ func (i *BaseSearchIndex) putBacklinkIntoIndex(from graphtypes.CidNumber, to gra
 	i.backlinks[uint64(to)].sortedLinks = toLinks
 }
 
-// for parallel usage
+// for parallel usage.
 func (i *BaseSearchIndex) startListenNewLinks() {
 	defer func() {
 		if r := recover(); r != nil {
@@ -256,7 +253,7 @@ func (i *BaseSearchIndex) startListenNewLinks() {
 	}
 }
 
-// for parallel usage
+// for parallel usage.
 func (i *BaseSearchIndex) startListenNewRank() {
 	defer func() {
 		if r := recover(); r != nil {
@@ -278,7 +275,6 @@ func (i *BaseSearchIndex) recalculateIndices() {
 
 	// TODO: run in parallel
 	for j := 0; j < n; j++ {
-
 		<-i.links[j].unlockSignal // wait till some operations done on this index
 
 		currentSortedLinks := i.links[j].sortedLinks
@@ -296,7 +292,6 @@ func (i *BaseSearchIndex) recalculateIndices() {
 	n = len(i.backlinks)
 
 	for j := 0; j < n; j++ {
-
 		<-i.backlinks[j].unlockSignal // wait till some operations done on this index
 
 		currentSortedLinks := i.backlinks[j].sortedLinks

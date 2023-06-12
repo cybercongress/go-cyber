@@ -14,7 +14,7 @@ type RankedCidNumber struct {
 func (c RankedCidNumber) GetNumber() graphtypes.CidNumber { return c.number }
 func (c RankedCidNumber) GetRank() uint64                 { return c.rank }
 
-// Local type for sorting
+// Local type for sorting.
 type cidLinks struct {
 	sortedLinks sortableCidNumbers
 
@@ -30,14 +30,14 @@ func NewCidLinks() cidLinks {
 
 type sortableCidNumbers []RankedCidNumber
 
-// Sort Interface functions
+// Sort Interface functions.
 func (links sortableCidNumbers) Len() int { return len(links) }
 
 func (links sortableCidNumbers) Less(i, j int) bool { return links[i].rank < links[j].rank }
 
 func (links sortableCidNumbers) Swap(i, j int) { links[i], links[j] = links[j], links[i] }
 
-// Send unlock signal so others could operate on this index
+// Send unlock signal so others could operate on this index.
 func (links cidLinks) Unlock() {
 	links.unlockSignal <- struct{}{}
 }

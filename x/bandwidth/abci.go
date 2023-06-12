@@ -5,14 +5,13 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	"github.com/cybercongress/go-cyber/x/bandwidth/keeper"
 	"github.com/cybercongress/go-cyber/x/bandwidth/types"
 )
 
 var accountsToUpdate = make([]sdk.AccAddress, 0)
 
-// recover and update bandwidth for accounts with changed stake
+// recover and update bandwidth for accounts with changed stake.
 func updateAccountsMaxBandwidth(ctx sdk.Context, meter *keeper.BandwidthMeter) {
 	for _, addr := range accountsToUpdate {
 		meter.UpdateAccountMaxBandwidth(ctx, addr)
@@ -20,7 +19,7 @@ func updateAccountsMaxBandwidth(ctx sdk.Context, meter *keeper.BandwidthMeter) {
 	accountsToUpdate = make([]sdk.AccAddress, 0)
 }
 
-// collect all addresses with updated stake
+// collect all addresses with updated stake.
 func CollectAddressesWithStakeChange() func(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress) {
 	return func(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress) {
 		if ctx.IsCheckTx() {

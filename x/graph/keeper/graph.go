@@ -7,12 +7,10 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/telemetry"
-
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	. "github.com/cybercongress/go-cyber/types"
 	"github.com/cybercongress/go-cyber/x/graph/types"
 	"github.com/tendermint/tendermint/libs/log"
-
-	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 const (

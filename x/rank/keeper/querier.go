@@ -1,15 +1,13 @@
 package keeper
 
 import (
+	"github.com/cosmos/cosmos-sdk/codec"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	abci "github.com/tendermint/tendermint/abci/types"
-
 	querytypes "github.com/cybercongress/go-cyber/types/query"
 	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
 	"github.com/cybercongress/go-cyber/x/rank/types"
-
-	"github.com/cosmos/cosmos-sdk/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	abci "github.com/tendermint/tendermint/abci/types"
 )
 
 func NewQuerier(sk *StateKeeper, legacyQuerierCdc *codec.LegacyAmino) sdk.Querier {

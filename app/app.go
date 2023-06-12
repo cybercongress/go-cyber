@@ -9,50 +9,19 @@ import (
 	"strings"
 	"time"
 
-	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
-	"github.com/cosmos/cosmos-sdk/x/authz"
-	authzkeeper "github.com/cosmos/cosmos-sdk/x/authz/keeper"
-	authzmodule "github.com/cosmos/cosmos-sdk/x/authz/module"
-	"github.com/cosmos/cosmos-sdk/x/feegrant"
-	feegrantkeeper "github.com/cosmos/cosmos-sdk/x/feegrant/keeper"
-	feegrantmodule "github.com/cosmos/cosmos-sdk/x/feegrant/module"
-	"github.com/cosmos/ibc-go/v3/modules/apps/transfer"
-	ibctransferkeeper "github.com/cosmos/ibc-go/v3/modules/apps/transfer/keeper"
-	ibctransfertypes "github.com/cosmos/ibc-go/v3/modules/apps/transfer/types"
-	ibc "github.com/cosmos/ibc-go/v3/modules/core"
-	ibcclient "github.com/cosmos/ibc-go/v3/modules/core/02-client"
-	ibcclientclient "github.com/cosmos/ibc-go/v3/modules/core/02-client/client"
-	ibcclienttypes "github.com/cosmos/ibc-go/v3/modules/core/02-client/types"
-	porttypes "github.com/cosmos/ibc-go/v3/modules/core/05-port/types"
-	ibchost "github.com/cosmos/ibc-go/v3/modules/core/24-host"
-	ibckeeper "github.com/cosmos/ibc-go/v3/modules/core/keeper"
-	_ "github.com/cybercongress/go-cyber/client/docs/statik"
-	"github.com/cybercongress/go-cyber/plugins/liquidity_plugin"
-
-	"github.com/cosmos/cosmos-sdk/client/grpc/tmservice"
-	ctypes "github.com/cybercongress/go-cyber/types"
-	"github.com/gorilla/mux"
-	"github.com/rakyll/statik/fs"
-	"github.com/tendermint/liquidity/x/liquidity"
-	liquiditykeeper "github.com/tendermint/liquidity/x/liquidity/keeper"
-	liquiditytypes "github.com/tendermint/liquidity/x/liquidity/types"
-
-	wasmplugins "github.com/cybercongress/go-cyber/plugins"
-	"github.com/cybercongress/go-cyber/x/dmn"
-	"github.com/cybercongress/go-cyber/x/resources"
-
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/codec/types"
-	servertypes "github.com/cosmos/cosmos-sdk/server/types"
-	authtx "github.com/cosmos/cosmos-sdk/x/auth/tx"
-	"github.com/spf13/cast"
-	dbm "github.com/tendermint/tm-db"
-
+	"github.com/CosmWasm/wasmd/x/wasm"
+	wasmclient "github.com/CosmWasm/wasmd/x/wasm/client"
+	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	"github.com/cosmos/cosmos-sdk/baseapp"
+	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/grpc/tmservice"
 	"github.com/cosmos/cosmos-sdk/client/rpc"
 	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/server/api"
 	"github.com/cosmos/cosmos-sdk/server/config"
+	servertypes "github.com/cosmos/cosmos-sdk/server/types"
+	store "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
@@ -60,8 +29,13 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/ante"
 	authrest "github.com/cosmos/cosmos-sdk/x/auth/client/rest"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
+	authtx "github.com/cosmos/cosmos-sdk/x/auth/tx"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/vesting"
+	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
+	"github.com/cosmos/cosmos-sdk/x/authz"
+	authzkeeper "github.com/cosmos/cosmos-sdk/x/authz/keeper"
+	authzmodule "github.com/cosmos/cosmos-sdk/x/authz/module"
 	"github.com/cosmos/cosmos-sdk/x/bank"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
@@ -78,6 +52,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/evidence"
 	evidencekeeper "github.com/cosmos/cosmos-sdk/x/evidence/keeper"
 	evidencetypes "github.com/cosmos/cosmos-sdk/x/evidence/types"
+	"github.com/cosmos/cosmos-sdk/x/feegrant"
+	feegrantkeeper "github.com/cosmos/cosmos-sdk/x/feegrant/keeper"
+	feegrantmodule "github.com/cosmos/cosmos-sdk/x/feegrant/module"
 	"github.com/cosmos/cosmos-sdk/x/genutil"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 	"github.com/cosmos/cosmos-sdk/x/gov"
@@ -101,53 +78,62 @@ import (
 	upgradeclient "github.com/cosmos/cosmos-sdk/x/upgrade/client"
 	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
-	abci "github.com/tendermint/tendermint/abci/types"
-	"github.com/tendermint/tendermint/libs/log"
-	tmos "github.com/tendermint/tendermint/libs/os"
-
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-
+	"github.com/cosmos/ibc-go/v3/modules/apps/transfer"
+	ibctransferkeeper "github.com/cosmos/ibc-go/v3/modules/apps/transfer/keeper"
+	ibctransfertypes "github.com/cosmos/ibc-go/v3/modules/apps/transfer/types"
+	ibc "github.com/cosmos/ibc-go/v3/modules/core"
+	ibcclient "github.com/cosmos/ibc-go/v3/modules/core/02-client"
+	ibcclientclient "github.com/cosmos/ibc-go/v3/modules/core/02-client/client"
+	ibcclienttypes "github.com/cosmos/ibc-go/v3/modules/core/02-client/types"
+	porttypes "github.com/cosmos/ibc-go/v3/modules/core/05-port/types"
+	ibchost "github.com/cosmos/ibc-go/v3/modules/core/24-host"
+	ibckeeper "github.com/cosmos/ibc-go/v3/modules/core/keeper"
+	"github.com/cybercongress/go-cyber/app/params"
+	_ "github.com/cybercongress/go-cyber/client/docs/statik"
+	wasmplugins "github.com/cybercongress/go-cyber/plugins"
+	"github.com/cybercongress/go-cyber/plugins/liquidity_plugin"
+	ctypes "github.com/cybercongress/go-cyber/types"
 	"github.com/cybercongress/go-cyber/utils"
 	"github.com/cybercongress/go-cyber/x/bandwidth"
+	bandwidthkeeper "github.com/cybercongress/go-cyber/x/bandwidth/keeper"
+	bandwidthtypes "github.com/cybercongress/go-cyber/x/bandwidth/types"
+	bandwidthwasm "github.com/cybercongress/go-cyber/x/bandwidth/wasm"
 	"github.com/cybercongress/go-cyber/x/cyberbank"
 	cyberbankkeeper "github.com/cybercongress/go-cyber/x/cyberbank/keeper"
 	cyberbanktypes "github.com/cybercongress/go-cyber/x/cyberbank/types"
+	"github.com/cybercongress/go-cyber/x/dmn"
+	dmnkeeper "github.com/cybercongress/go-cyber/x/dmn/keeper"
+	dmntypes "github.com/cybercongress/go-cyber/x/dmn/types"
+	dmnwasm "github.com/cybercongress/go-cyber/x/dmn/wasm"
 	"github.com/cybercongress/go-cyber/x/graph"
-
-	bandwidthkeeper "github.com/cybercongress/go-cyber/x/bandwidth/keeper"
-	bandwidthtypes "github.com/cybercongress/go-cyber/x/bandwidth/types"
 	graphkeeper "github.com/cybercongress/go-cyber/x/graph/keeper"
 	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
-	"github.com/cybercongress/go-cyber/x/rank"
-	rankkeeper "github.com/cybercongress/go-cyber/x/rank/keeper"
-	ranktypes "github.com/cybercongress/go-cyber/x/rank/types"
-
-	"github.com/CosmWasm/wasmd/x/wasm"
-	wasmclient "github.com/CosmWasm/wasmd/x/wasm/client"
-	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
-
-	bandwidthwasm "github.com/cybercongress/go-cyber/x/bandwidth/wasm"
-	dmnwasm "github.com/cybercongress/go-cyber/x/dmn/wasm"
 	graphwasm "github.com/cybercongress/go-cyber/x/graph/wasm"
-	gridwasm "github.com/cybercongress/go-cyber/x/grid/wasm"
-	rankwasm "github.com/cybercongress/go-cyber/x/rank/wasm"
-	resourceswasm "github.com/cybercongress/go-cyber/x/resources/wasm"
-
 	grid "github.com/cybercongress/go-cyber/x/grid"
 	gridkeeper "github.com/cybercongress/go-cyber/x/grid/keeper"
 	gridtypes "github.com/cybercongress/go-cyber/x/grid/types"
-
-	dmnkeeper "github.com/cybercongress/go-cyber/x/dmn/keeper"
-	dmntypes "github.com/cybercongress/go-cyber/x/dmn/types"
-
+	gridwasm "github.com/cybercongress/go-cyber/x/grid/wasm"
+	"github.com/cybercongress/go-cyber/x/rank"
+	rankkeeper "github.com/cybercongress/go-cyber/x/rank/keeper"
+	ranktypes "github.com/cybercongress/go-cyber/x/rank/types"
+	rankwasm "github.com/cybercongress/go-cyber/x/rank/wasm"
+	"github.com/cybercongress/go-cyber/x/resources"
 	resourceskeeper "github.com/cybercongress/go-cyber/x/resources/keeper"
 	resourcestypes "github.com/cybercongress/go-cyber/x/resources/types"
+	resourceswasm "github.com/cybercongress/go-cyber/x/resources/wasm"
 	stakingwrap "github.com/cybercongress/go-cyber/x/staking"
-
-	"github.com/cybercongress/go-cyber/app/params"
+	"github.com/gorilla/mux"
+	"github.com/rakyll/statik/fs"
+	"github.com/spf13/cast"
+	"github.com/tendermint/liquidity/x/liquidity"
+	liquiditykeeper "github.com/tendermint/liquidity/x/liquidity/keeper"
+	liquiditytypes "github.com/tendermint/liquidity/x/liquidity/types"
+	abci "github.com/tendermint/tendermint/abci/types"
 	tmjson "github.com/tendermint/tendermint/libs/json"
-
-	store "github.com/cosmos/cosmos-sdk/store/types"
+	"github.com/tendermint/tendermint/libs/log"
+	tmos "github.com/tendermint/tendermint/libs/os"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
+	dbm "github.com/tendermint/tm-db"
 )
 
 const (
@@ -155,17 +141,17 @@ const (
 	upgradeName = "cyberfrey"
 )
 
-// We pull these out so we can set them with LDFLAGS in the Makefile
+// We pull these out so we can set them with LDFLAGS in the Makefile.
 var (
 	NodeDir      = ".cyber"
 	Bech32Prefix = "bostrom"
 
 	// TODO clean
-	// DefaultBondDenom is the denomination of coin to use for bond/staking
+	// DefaultBondDenom is the denomination of coin to use for bond/staking.
 	DefaultBondDenom = "boot"
-	// DefaultFeeDenom is the denomination of coin to use for fees
+	// DefaultFeeDenom is the denomination of coin to use for fees.
 	DefaultFeeDenom = "boot"
-	// DefaultReDnmString is the allowed denom regex expression
+	// DefaultReDnmString is the allowed denom regex expression.
 	DefaultReDnmString = `[a-zA-Z][a-zA-Z0-9/\-\.]{2,127}`
 
 	// If EnabledSpecificProposals is "", and this is "true", then enable all x/wasm proposals.
@@ -192,9 +178,9 @@ func GetEnabledProposals() []wasm.ProposalType {
 
 // These constants are derived from the above variables.
 // These are the ones we will want to use in the code, based on
-// any overrides above
+// any overrides above.
 var (
-	// DefaultNodeHome default home directories for wasmd
+	// DefaultNodeHome default home directories for wasmd.
 	DefaultNodeHome = os.ExpandEnv("$HOME/") + NodeDir
 )
 
@@ -241,7 +227,7 @@ var (
 		resources.AppModuleBasic{},
 	)
 
-	// module account permissions
+	// module account permissions.
 	maccPerms = map[string][]string{
 		authtypes.FeeCollectorName:     nil,
 		distrtypes.ModuleName:          nil,
@@ -256,7 +242,7 @@ var (
 		resourcestypes.ResourcesName:   {authtypes.Minter, authtypes.Burner},
 	}
 
-	// module accounts that are allowed to receive tokens
+	// module accounts that are allowed to receive tokens.
 	allowedReceivingModAcc = map[string]bool{
 		distrtypes.ModuleName: true,
 	}
@@ -268,13 +254,13 @@ var (
 )
 
 // TODO clean
-// SdkCoinDenomRegex returns a new sdk base denom regex string
+// SdkCoinDenomRegex returns a new sdk base denom regex string.
 func SdkCoinDenomRegex() string {
 	return DefaultReDnmString
 }
 
 // App extended ABCI application
-// TODO rename to CyberApp
+// TODO rename to CyberApp.
 type App struct {
 	*baseapp.BaseApp
 	legacyAmino       *codec.LegacyAmino
@@ -975,20 +961,20 @@ func NewApp(
 	return app
 }
 
-// Name returns the name of the App
+// Name returns the name of the App.
 func (app *App) Name() string { return app.BaseApp.Name() }
 
-// BeginBlocker application updates every begin block
+// BeginBlocker application updates every begin block.
 func (app *App) BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock) abci.ResponseBeginBlock {
 	return app.mm.BeginBlock(ctx, req)
 }
 
-// EndBlocker application updates every end block
+// EndBlocker application updates every end block.
 func (app *App) EndBlocker(ctx sdk.Context, req abci.RequestEndBlock) abci.ResponseEndBlock {
 	return app.mm.EndBlock(ctx, req)
 }
 
-// InitChainer application update at chain initialization
+// InitChainer application update at chain initialization.
 func (app *App) InitChainer(ctx sdk.Context, req abci.RequestInitChain) abci.ResponseInitChain {
 	var genesisState GenesisState
 	if err := tmjson.Unmarshal(req.AppStateBytes, &genesisState); err != nil {
@@ -1008,7 +994,7 @@ func (app *App) InitChainer(ctx sdk.Context, req abci.RequestInitChain) abci.Res
 	return resp
 }
 
-// LoadHeight loads a particular height
+// LoadHeight loads a particular height.
 func (app *App) LoadHeight(height int64) error {
 	return app.LoadVersion(height)
 }
@@ -1050,7 +1036,7 @@ func (app *App) AppCodec() codec.Codec {
 	return app.appCodec
 }
 
-// InterfaceRegistry returns Cyber's InterfaceRegistry
+// InterfaceRegistry returns Cyber's InterfaceRegistry.
 func (app *App) InterfaceRegistry() types.InterfaceRegistry {
 	return app.interfaceRegistry
 }
@@ -1115,7 +1101,7 @@ func (app *App) RegisterTendermintService(clientCtx client.Context) {
 	tmservice.RegisterTendermintService(app.BaseApp.GRPCQueryRouter(), clientCtx, app.interfaceRegistry)
 }
 
-// RegisterSwaggerAPI registers swagger route with API Server
+// RegisterSwaggerAPI registers swagger route with API Server.
 func RegisterSwaggerAPI(rtr *mux.Router) {
 	statikFS, err := fs.New()
 	if err != nil {
@@ -1126,7 +1112,7 @@ func RegisterSwaggerAPI(rtr *mux.Router) {
 	rtr.PathPrefix("/swagger/").Handler(http.StripPrefix("/swagger/", staticServer))
 }
 
-// GetMaccPerms returns a copy of the module account permissions
+// GetMaccPerms returns a copy of the module account permissions.
 func GetMaccPerms() map[string][]string {
 	dupMaccPerms := make(map[string][]string)
 	for k, v := range maccPerms {
@@ -1161,7 +1147,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 
 // MakeCodecs constructs the *std.Codec and *codec.LegacyAmino instances used by
 // Cyber's app. It is useful for tests and clients who do not want to construct the
-// full Cyber app
+// full Cyber app.
 func MakeCodecs() (codec.Codec, *codec.LegacyAmino) {
 	config := MakeEncodingConfig()
 	return config.Marshaler, config.Amino

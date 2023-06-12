@@ -5,13 +5,11 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
-
-	"github.com/spf13/cobra"
-
 	"github.com/cybercongress/go-cyber/x/graph/types"
+	"github.com/spf13/cobra"
 )
 
-// GetQueryCmd returns
+// GetQueryCmd returns.
 func GetQueryCmd() *cobra.Command {
 	graphQueryCmd := &cobra.Command{
 		Use:                        types.ModuleName,

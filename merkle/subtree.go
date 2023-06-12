@@ -16,7 +16,7 @@ type Subtree struct {
 	hashF hash.Hash
 }
 
-// get proofs for root of this subtree
+// get proofs for root of this subtree.
 func (t *Subtree) GetRootProofs() []Proof {
 	proofs := make([]Proof, 0)
 
@@ -37,7 +37,7 @@ func (t *Subtree) getLeftSubtreesProof() []Proof {
 }
 
 // right proof is only one cause we have to sum all right subtrees
-// we have to sum hashes from right to left
+// we have to sum hashes from right to left.
 func (t *Subtree) getRightSubtreesProof() []Proof {
 	if t.right == nil {
 		return make([]Proof, 0)

@@ -6,10 +6,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
+	"github.com/cybercongress/go-cyber/x/grid/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-
-	"github.com/cybercongress/go-cyber/x/grid/types"
 )
 
 var _ types.QueryServer = Keeper{}
@@ -42,7 +41,7 @@ func (k Keeper) SourceRoutes(goCtx context.Context, request *types.QuerySourceRe
 	return &types.QueryRoutesResponse{Routes: routes}, nil
 }
 
-// DestinationRoutes TODO add pagination
+// DestinationRoutes TODO add pagination.
 func (k Keeper) DestinationRoutes(goCtx context.Context, request *types.QueryDestinationRequest) (*types.QueryRoutesResponse, error) {
 	if request == nil {
 		return nil, status.Errorf(codes.InvalidArgument, "empty request")

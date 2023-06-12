@@ -4,13 +4,11 @@ import (
 	"encoding/json"
 
 	"github.com/CosmWasm/wasmd/x/wasm"
+	wasmTypes "github.com/CosmWasm/wasmvm/types"
+	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	wasmplugins "github.com/cybercongress/go-cyber/plugins"
-
-	wasmTypes "github.com/CosmWasm/wasmvm/types"
-
-	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 	"github.com/cybercongress/go-cyber/x/dmn/keeper"
 	"github.com/cybercongress/go-cyber/x/dmn/types"
 )
@@ -145,7 +143,6 @@ func (querier WasmQuerier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([
 	var bz []byte
 
 	if query.Thought != nil {
-
 		program, _ := sdk.AccAddressFromBech32(query.Thought.Program)
 		thought, found := querier.Keeper.GetThought(ctx, program, query.Thought.Name)
 		if found != true {

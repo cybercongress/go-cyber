@@ -9,12 +9,11 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/cosmos/iavl"
 	"github.com/spf13/cobra"
 	goleveldb "github.com/syndtr/goleveldb/leveldb"
 	"github.com/syndtr/goleveldb/leveldb/util"
 	dbm "github.com/tendermint/tm-db"
-
-	"github.com/cosmos/iavl"
 )
 
 const (
@@ -27,7 +26,7 @@ var (
 	home        string
 )
 
-// TODO autoconf stores
+// TODO autoconf stores.
 var appStores = []string{
 	"acc",
 	"bank",
@@ -253,7 +252,7 @@ func PrintDbStats(db dbm.DB) {
 }
 
 // ReadTree loads an iavl tree from the directory
-// If version is 0, load latest, otherwise, load named version
+// If version is 0, load latest, otherwise, load named version.
 func ReadTree(db dbm.DB, version int64, name string) (*iavl.MutableTree, error) {
 	fmt.Println("--------------[", name, "]--------------")
 	tree, err := iavl.NewMutableTree(dbm.NewPrefixDB(db, []byte("s/k:"+name+"/")), DefaultCacheSize, false)
@@ -292,7 +291,7 @@ func PrintKeys(tree *iavl.MutableTree, hashing bool) {
 }
 
 // parseWeaveKey assumes a separating : where all in front should be ascii,
-// and all afterwards may be ascii or binary
+// and all afterwards may be ascii or binary.
 func parseWeaveKey(key []byte) string {
 	cut := bytes.IndexRune(key, ':')
 	if cut == -1 {
@@ -303,7 +302,7 @@ func parseWeaveKey(key []byte) string {
 	return fmt.Sprintf("%s:%s", encodeID(prefix), encodeID(id))
 }
 
-// casts to a string if it is printable ascii, hex-encodes otherwise
+// casts to a string if it is printable ascii, hex-encodes otherwise.
 func encodeID(id []byte) string {
 	for _, b := range id {
 		if b < 0x20 || b >= 0x80 {

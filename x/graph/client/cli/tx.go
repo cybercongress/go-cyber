@@ -1,26 +1,24 @@
 package cli
 
 import (
-	//"bufio"
-	//"bytes"
+	// "bufio"
+	//"bytes".
 	"fmt"
 	"strings"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
-
-	//"github.com/cosmos/cosmos-sdk/client/context"
-	//"github.com/cosmos/cosmos-sdk/client/flags"
+	// "github.com/cosmos/cosmos-sdk/client/context"
+	//"github.com/cosmos/cosmos-sdk/client/flags".
 	"github.com/cosmos/cosmos-sdk/client/tx"
-	//"github.com/cosmos/cosmos-sdk/codec"
-	//sdk "github.com/cosmos/cosmos-sdk/types"
+	// "github.com/cosmos/cosmos-sdk/codec"
+	//sdk "github.com/cosmos/cosmos-sdk/types".
 	"github.com/cosmos/cosmos-sdk/version"
-	//"github.com/cosmos/cosmos-sdk/x/auth"
-	//authclient "github.com/cosmos/cosmos-sdk/x/auth/client/utils"
+	"github.com/cybercongress/go-cyber/x/graph/types"
+	// "github.com/cosmos/cosmos-sdk/x/auth"
+	//authclient "github.com/cosmos/cosmos-sdk/x/auth/client/utils".
 	"github.com/ipfs/go-cid"
 	"github.com/spf13/cobra"
-
-	"github.com/cybercongress/go-cyber/x/graph/types"
 )
 
 func NewTxCmd() *cobra.Command {

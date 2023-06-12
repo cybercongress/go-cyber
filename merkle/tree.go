@@ -33,7 +33,6 @@ func NewTree(hashF hash.Hash, full bool) *Tree {
 
 func (t *Tree) joinAllSubtrees() {
 	for t.subTree.left != nil && t.subTree.height == t.subTree.left.height {
-
 		newSubtreeRoot := &Node{
 			hash:       sum(t.hashF, t.subTree.left.root.hash, t.subTree.root.hash),
 			firstIndex: t.subTree.left.root.firstIndex,
@@ -71,7 +70,7 @@ func (t *Tree) Reset() {
 }
 
 // build completely new tree with data
-// works the same (by time) as using Push method one by one
+// works the same (by time) as using Push method one by one.
 func (t *Tree) BuildNew(data [][]byte) {
 	t.Reset()
 	itemsLeft := int64(len(data))
@@ -81,7 +80,6 @@ func (t *Tree) BuildNew(data [][]byte) {
 	endIndex := startIndex + nextSubtreeLen
 
 	for nextSubtreeLen != 0 {
-
 		nextSubtree := buildSubTree(t.hashF, t.full, int(startIndex), data[startIndex:endIndex])
 
 		if t.subTree != nil {
@@ -103,7 +101,7 @@ func (t *Tree) BuildNew(data [][]byte) {
 	t.lastIndex = int(endIndex)
 }
 
-// n*log(n)
+// n*log(n).
 func (t *Tree) Push(data []byte) {
 	newSubtreeRoot := &Node{
 		hash:       sum(t.hashF, data),
@@ -132,7 +130,7 @@ func (t *Tree) Push(data []byte) {
 	t.joinAllSubtrees()
 }
 
-// going from right trees to left
+// going from right trees to left.
 func (t *Tree) GetIndexProofs(i int) []Proof {
 	// we cannot build proofs with not full tree
 	if !t.full {
@@ -142,7 +140,6 @@ func (t *Tree) GetIndexProofs(i int) []Proof {
 	proofs := make([]Proof, 0, int64(math.Log2(float64(t.lastIndex))))
 
 	for current := t.subTree; current != nil; {
-
 		if i >= current.root.firstIndex && i <= current.root.lastIndex {
 			proofs = append(proofs, current.root.GetIndexProofs(i)...)
 			proofs = append(proofs, current.GetRootProofs()...)
@@ -190,7 +187,7 @@ func (t *Tree) RootHash() []byte {
 
 // from right to left
 // we need to export root hash and height of tree
-// from those bytes we could restore it later and use for consensus
+// from those bytes we could restore it later and use for consensus.
 func (t *Tree) ExportSubtreesRoots() []byte {
 	if t.subTree == nil {
 		return make([]byte, 0)
@@ -214,7 +211,7 @@ func (t *Tree) ExportSubtreesRoots() []byte {
 }
 
 // from right to left
-// after import we loosing indices (actually they don't need for consensus and pushing)
+// after import we loosing indices (actually they don't need for consensus and pushing).
 func (t *Tree) ImportSubtreesRoots(subTreesRoots []byte) {
 	t.Reset()
 	t.full = false

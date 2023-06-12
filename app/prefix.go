@@ -16,7 +16,7 @@ var (
 	CoinType               = 118
 )
 
-// SetConfig sets the configuration for the network using mainnet or testnet
+// SetConfig sets the configuration for the network using mainnet or testnet.
 func SetConfig() {
 	config := sdk.GetConfig()
 	config.SetCoinType(uint32(CoinType))

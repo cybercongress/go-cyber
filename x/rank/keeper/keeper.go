@@ -7,18 +7,14 @@ import (
 	"strconv"
 	"time"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-
 	"github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
-
 	"github.com/cybercongress/go-cyber/merkle"
 	graphkeeper "github.com/cybercongress/go-cyber/x/graph/keeper"
 	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
 	"github.com/cybercongress/go-cyber/x/rank/types"
-
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	"github.com/tendermint/tendermint/libs/log"
 )
 
@@ -128,7 +124,6 @@ func (s *StateKeeper) EndBlocker(ctx sdk.Context) {
 	params := s.GetParams(ctx)
 
 	if ctx.BlockHeight()%params.CalculationPeriod == 0 || ctx.BlockHeight() == 1 {
-
 		dampingFactor, err := strconv.ParseFloat(params.DampingFactor.String(), 64)
 		if err != nil {
 			panic(err)

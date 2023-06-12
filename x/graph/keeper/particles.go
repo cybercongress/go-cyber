@@ -5,11 +5,9 @@ import (
 	"io"
 
 	"github.com/cosmos/cosmos-sdk/telemetry"
-
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cybercongress/go-cyber/utils"
 	"github.com/cybercongress/go-cyber/x/graph/types"
-
-	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 const (
@@ -18,7 +16,7 @@ const (
 	CidCountBytesSize  = uint64(8)
 )
 
-// Return cid number and true, if cid exists
+// Return cid number and true, if cid exists.
 func (gk GraphKeeper) GetCidNumber(ctx sdk.Context, cid types.Cid) (types.CidNumber, bool) {
 	store := ctx.KVStore(gk.key)
 	cidIndexAsBytes := store.Get(types.CidStoreKey(cid))
@@ -92,7 +90,7 @@ func (gk GraphKeeper) IterateCids(ctx sdk.Context, process func(types.Cid, types
 	}
 }
 
-// write CIDs to writer in binary format: <n><cid1_size><cid1><cid1_number><cid2_size><cid2><cid2_number>....<cidn_size><cidn><cidn_number>
+// write CIDs to writer in binary format: <n><cid1_size><cid1><cid1_number><cid2_size><cid2><cid2_number>....<cidn_size><cidn><cidn_number>.
 func (gk GraphKeeper) WriteCids(ctx sdk.Context, writer io.Writer) (err error) {
 	uintAsBytes := make([]byte, 8) // common bytes array to convert uints
 

@@ -4,13 +4,10 @@ import (
 	"encoding/binary"
 	"io"
 
-	//"fmt"
-
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	. "github.com/cybercongress/go-cyber/types"
 	"github.com/cybercongress/go-cyber/utils"
 	"github.com/cybercongress/go-cyber/x/graph/types"
-
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	tmos "github.com/tendermint/tendermint/libs/os"
 )
 
@@ -93,7 +90,7 @@ func (i *IndexKeeper) HasNewLinks(ctx sdk.Context) bool {
 	return sdk.BigEndianToUint64(hasLinks) > 0
 }
 
-// Use transient store because need to commit cyberlinks to cache only when transaction is successful
+// Use transient store because need to commit cyberlinks to cache only when transaction is successful.
 func (i *IndexKeeper) PutLink(ctx sdk.Context, link types.CompactLink) {
 	store := ctx.TransientStore(i.tkey)
 	store.Set(types.CyberlinksTStoreKey(link.MarshalBinaryLink()), []byte{1})

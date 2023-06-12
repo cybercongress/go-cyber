@@ -7,10 +7,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
-	"github.com/tendermint/tendermint/libs/log"
-
 	"github.com/cybercongress/go-cyber/x/bandwidth/types"
 	gtypes "github.com/cybercongress/go-cyber/x/graph/types"
+	"github.com/tendermint/tendermint/libs/log"
 )
 
 type BandwidthMeter struct {
@@ -115,7 +114,7 @@ func (bm *BandwidthMeter) AddToBlockBandwidth(value uint64) {
 }
 
 // Here we move bandwidth window:
-// Remove first block of window and add new block to window end
+// Remove first block of window and add new block to window end.
 func (bm *BandwidthMeter) CommitBlockBandwidth(ctx sdk.Context) {
 	params := bm.GetParams(ctx)
 	defer func() {

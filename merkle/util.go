@@ -15,7 +15,7 @@ func sum(h hash.Hash, data ...[]byte) []byte {
 }
 
 // number of data elements should be power of 2
-// not suitable for parallel calculations cause using same hash.Hash
+// not suitable for parallel calculations cause using same hash.Hash.
 func buildSubTree(h hash.Hash, full bool, startIndex int, data [][]byte) *Subtree {
 	nodes := make([]*Node, len(data))
 	for i := 0; i < len(data); i++ {

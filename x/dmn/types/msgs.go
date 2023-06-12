@@ -3,12 +3,9 @@ package types
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/ipfs/go-cid"
-
-	// sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-
 	"github.com/cybercongress/go-cyber/types"
 	graph "github.com/cybercongress/go-cyber/x/graph/types"
+	"github.com/ipfs/go-cid"
 )
 
 const (
@@ -89,7 +86,7 @@ func (msg MsgCreateThought) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{addr}
 }
 
-//______________________________________________________________________
+// ______________________________________________________________________
 
 func NewMsgForgetThought(program sdk.AccAddress, label string) *MsgForgetThought {
 	return &MsgForgetThought{

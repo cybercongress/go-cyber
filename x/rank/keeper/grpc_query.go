@@ -5,12 +5,11 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
-
 	querytypes "github.com/cybercongress/go-cyber/types/query"
 	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
 	"github.com/cybercongress/go-cyber/x/rank/types"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 var _ types.QueryServer = &StateKeeper{}

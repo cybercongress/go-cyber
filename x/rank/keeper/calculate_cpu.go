@@ -1,10 +1,11 @@
 package keeper
 
 import (
-	//"fmt"
-	//"encoding/binary"
+	// "fmt"
+	//"encoding/binary".
 	"math"
-	//"math/big"
+
+
 	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
 	"github.com/cybercongress/go-cyber/x/rank/types"
 )

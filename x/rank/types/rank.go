@@ -4,13 +4,11 @@ import (
 	"crypto/sha256"
 	"encoding/binary"
 
-	//"fmt"
 	"sort"
 	"time"
 
 	"github.com/cybercongress/go-cyber/merkle"
 	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
-
 	"github.com/tendermint/tendermint/libs/log"
 )
 
@@ -158,7 +156,7 @@ func (r *Rank) CopyWithoutTree() Rank {
 	}
 }
 
-// TODO: optimize. Possible solution: adjust capacity of rank values slice after rank calculation
+// TODO: optimize. Possible solution: adjust capacity of rank values slice after rank calculation.
 func (r *Rank) AddNewCids(currentCidCount uint64) {
 	newCidsCount := currentCidCount - r.CidCount
 

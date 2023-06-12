@@ -5,7 +5,6 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/server"
 	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
-
 	"github.com/cybercongress/go-cyber/app"
 	"github.com/cybercongress/go-cyber/cmd/cyber/cmd"
 )

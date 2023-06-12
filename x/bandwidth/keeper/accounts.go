@@ -2,7 +2,6 @@ package keeper
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	"github.com/cybercongress/go-cyber/x/bandwidth/types"
 )
 

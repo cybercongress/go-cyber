@@ -5,7 +5,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-// NewRoute creates a new route object
+// NewRoute creates a new route object.
 func NewRoute(src sdk.AccAddress, dst sdk.AccAddress, name string, value sdk.Coins) Route {
 	return Route{
 		Source:      src.String(),
@@ -21,7 +21,7 @@ func NewValue(coins sdk.Coins) Value {
 	return Value{coins}
 }
 
-// MustMarshalRoute returns the route bytes. Panics if fails
+// MustMarshalRoute returns the route bytes. Panics if fails.
 func MustMarshalRoute(cdc codec.BinaryCodec, route Route) []byte {
 	return cdc.MustMarshal(&route)
 }

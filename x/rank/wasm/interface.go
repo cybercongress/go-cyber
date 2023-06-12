@@ -3,15 +3,12 @@ package wasm
 import (
 	"encoding/json"
 
-	"github.com/ipfs/go-cid"
-
+	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-
-	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
-
 	"github.com/cybercongress/go-cyber/x/rank/keeper"
+	"github.com/ipfs/go-cid"
 )
 
 type WasmQuerierInterface interface {

@@ -5,21 +5,19 @@ import (
 
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
+	wasmTypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/types/tx/signing"
 	"github.com/cosmos/cosmos-sdk/x/auth/ante"
+	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
-
-	ctypes "github.com/cybercongress/go-cyber/types"
-
-	wasmTypes "github.com/CosmWasm/wasmd/x/wasm/types"
-	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
 	ibcante "github.com/cosmos/ibc-go/v3/modules/core/ante"
 	"github.com/cosmos/ibc-go/v3/modules/core/keeper"
+	ctypes "github.com/cybercongress/go-cyber/types"
 	bandwidthkeeper "github.com/cybercongress/go-cyber/x/bandwidth/keeper"
 	bandwidthtypes "github.com/cybercongress/go-cyber/x/bandwidth/types"
 	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
@@ -280,7 +278,7 @@ func DeductFees(bankKeeper bankkeeper.Keeper, ctx sdk.Context, acc authtypes.Acc
 // If fee is too low, decorator returns error and tx is rejected from mempool.
 // Note this only applies when ctx.CheckTx = true
 // If fee is high enough or not CheckTx, then call next AnteHandler
-// CONTRACT: Tx must implement FeeTx to use MempoolFeeDecorator
+// CONTRACT: Tx must implement FeeTx to use MempoolFeeDecorator.
 type MempoolFeeDecorator struct{}
 
 func NewMempoolFeeDecorator() MempoolFeeDecorator {

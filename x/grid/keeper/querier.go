@@ -5,9 +5,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	abci "github.com/tendermint/tendermint/abci/types"
-
 	"github.com/cybercongress/go-cyber/x/grid/types"
+	abci "github.com/tendermint/tendermint/abci/types"
 )
 
 func NewQuerier(k Keeper, legacyQuerierCdc *codec.LegacyAmino) sdk.Querier {
@@ -62,7 +61,7 @@ func querySourceRoutes(ctx sdk.Context, req abci.RequestQuery, k Keeper, legacyQ
 	return res, nil
 }
 
-// queryDestinationRoutes TODO add pagination
+// queryDestinationRoutes TODO add pagination.
 func queryDestinationRoutes(ctx sdk.Context, req abci.RequestQuery, k Keeper, legacyQuerierCdc *codec.LegacyAmino) ([]byte, error) {
 	var params types.QueryDestinationParams
 

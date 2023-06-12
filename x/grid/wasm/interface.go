@@ -4,10 +4,9 @@ import (
 	"encoding/json"
 
 	"github.com/CosmWasm/wasmd/x/wasm"
+	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-
-	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 	wasmplugins "github.com/cybercongress/go-cyber/plugins"
 	"github.com/cybercongress/go-cyber/x/grid/keeper"
 	"github.com/cybercongress/go-cyber/x/grid/types"

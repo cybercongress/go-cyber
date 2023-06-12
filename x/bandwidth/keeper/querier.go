@@ -4,9 +4,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	abci "github.com/tendermint/tendermint/abci/types"
-
 	"github.com/cybercongress/go-cyber/x/bandwidth/types"
+	abci "github.com/tendermint/tendermint/abci/types"
 )
 
 func NewQuerier(bm *BandwidthMeter, legacyQuerierCdc *codec.LegacyAmino) sdk.Querier {

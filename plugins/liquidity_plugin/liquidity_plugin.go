@@ -3,15 +3,13 @@ package liquidity_plugin
 import (
 	"encoding/json"
 
-	"github.com/cybercongress/go-cyber/plugins"
-	liquiditytypes "github.com/tendermint/liquidity/x/liquidity/types"
-
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmTypes "github.com/CosmWasm/wasmvm/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-
+	"github.com/cybercongress/go-cyber/plugins"
 	"github.com/tendermint/liquidity/x/liquidity/keeper"
+	liquiditytypes "github.com/tendermint/liquidity/x/liquidity/types"
 )
 
 var (
