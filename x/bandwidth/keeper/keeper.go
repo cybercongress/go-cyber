@@ -69,6 +69,16 @@ func (bm *BandwidthMeter) LoadState(ctx sdk.Context) {
 	bm.currentBlockSpentBandwidth = 0
 }
 
+func (bm *BandwidthMeter) InitState() {
+	bm.totalSpentForSlidingWindow = 0
+
+	window := make(map[uint64]uint64)
+	window[1] = 0
+	bm.bandwidthSpentByBlock = window
+
+	bm.currentBlockSpentBandwidth = 0
+}
+
 func (bm BandwidthMeter) GetBandwidthPrice(ctx sdk.Context, basePrice sdk.Dec) sdk.Dec {
 	store := ctx.KVStore(bm.storeKey)
 	priceAsBytes := store.Get(types.LastBandwidthPrice)

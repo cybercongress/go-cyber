@@ -9,6 +9,7 @@ import (
 type CalculationContext struct {
 	CidsCount  int64
 	LinksCount int64
+	NeuronsCount int64
 
 	inLinks  map[graphtypes.CidNumber]graphtypes.CidLinks
 	outLinks map[graphtypes.CidNumber]graphtypes.CidLinks
@@ -25,13 +26,14 @@ type CalculationContext struct {
 func NewCalcContext(
 	linkIndex GraphIndexedKeeper, graphKeeper GraphKeeper,
 	stakeKeeper StakeKeeper, fullTree bool, dampingFactor float64, tolerance float64,
-	cidsCount, linksCount uint64,
+	cidsCount, linksCount, neuronsCount uint64,
 ) *CalculationContext {
 
 	return &CalculationContext{
 
 		CidsCount:  int64(cidsCount),
 		LinksCount: int64(linksCount),
+		NeuronsCount: int64(neuronsCount),
 
 		inLinks:  linkIndex.GetInLinks(),
 		outLinks: linkIndex.GetOutLinks(),
@@ -56,6 +58,10 @@ func (c *CalculationContext) GetOutLinks() map[graphtypes.CidNumber]graphtypes.C
 
 func (c *CalculationContext) GetCidsCount() int64 {
 	return c.CidsCount
+}
+
+func (c *CalculationContext) GetNeuronsCount() int64 {
+	return c.NeuronsCount
 }
 
 func (c *CalculationContext) GetStakes() map[uint64]uint64 {

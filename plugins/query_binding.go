@@ -2,6 +2,7 @@ package plugins
 
 import (
 	"encoding/json"
+	liquiditytypes "github.com/tendermint/liquidity/x/liquidity/types"
 
 	wasm "github.com/CosmWasm/wasmd/x/wasm"
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
@@ -41,6 +42,7 @@ const (
 	WasmQueryRouteDmn       = dmntypes.ModuleName
 	WasmQueryRouteGrid      = gridtypes.ModuleName
 	WasmQueryRouteBandwidth = bandwidthtypes.ModuleName
+	WasmQueryRouteLiquidity = liquiditytypes.ModuleName
 )
 
 func (q Querier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([]byte, error) {

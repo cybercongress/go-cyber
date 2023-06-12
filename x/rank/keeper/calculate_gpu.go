@@ -32,7 +32,7 @@ func calculateRankGPU(ctx *types.CalculationContext, logger log.Logger) types.EM
 	dampingFactor := ctx.GetDampingFactor()
 
 	cidsCount := ctx.GetCidsCount()
-	stakesCount := len(ctx.GetStakes())
+	stakesCount := ctx.GetNeuronsCount()
 
 	rank := make([]float64, cidsCount)
 	entropy := make([]float64, cidsCount)

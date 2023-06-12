@@ -1,6 +1,6 @@
 # A guide for creating a 2 of 3 multisig account and sending transactions
 
-To follow this guide you'll need `cyber` installed and connected to any cyber node (refer to our cli [guide](https://cybercongress.ai/docs/go-cyber/ultimate-commands-guide/)).
+To follow this guide you'll need `cyber` installed and connected to any cyber node (refer to our cli [guide](https://github.com/cybercongress/go-cyber/blob/main/docs/ultimate-commands-guide.md)).
 A reminder: this guide covers all types of transactions, not only send transactions. This guide is also relevant for Cosmos Hub Gaiacli users, except for the bandwidth params, in Cosmos we pay a fee using tokens.
 
 Do not forget about the `--chain-id` flag in `cyber`, and in the `Cosmos Hub` networks.
@@ -35,7 +35,7 @@ cyber keys list
 3. Now, we can create and test the 2-of-3 multisig account, named for example: `multitest1` with keys `test1`,`test2` on a local machine and `test3` on a remote thresholder:
 
 ```bash
-cyber keys add multitest1 --multisig=test1,test2,test3 --multisig-threshold 2
+cyber keys add multitest1 --multisig=test1,test2,test3 --multisig-threshold=2
 ```
 
 4. You should top up the balance of your multisig account. Make sure that you have enough bandwidth to execute transactions later.
@@ -45,13 +45,19 @@ cyber keys add multitest1 --multisig=test1,test2,test3 --multisig-threshold 2
 5. Create an unsigned transaction from the multisig account and store it in the `unsigned.json` file:
 
 ```bash
-cyber tx send <recipient_address> <amount>cyb --from=<multisig_address> --chain-id=<chain_id> --generate-only > unsigned.json
+cyber tx send <recipient_address> <amount>boot \
+--from=<multisig_address> \
+--chain-id=<chain_id> \
+--generate-only > unsigned.json
 ```
 
 6. Sign this transaction with the following command and then store the signed file in `sign1.json`:
 
 ```bash
-cyber tx sign unsigned.json --multisig=<multisig_address> --from=<your_account_name> --output-document sign1.json --chain-id=<chain_id>
+cyber tx sign unsigned.json --multisig=<multisig_address> \
+--from=<your_account_name> \
+--output-document=sign1.json \
+--chain-id=<chain_id>
 ```
 
 7. You need to send the obtained file to a remote thresholders for signing. You can see the content of the file containing the transaction with:
@@ -74,10 +80,11 @@ cp sign2.json $HOME/.cyber
 Your cli-home folder should content 3 `.json` files:
 `unsigned.json`, `sign1.json`, and `sign2.json` (at least). Those are the necessary and sufficient conditions, because we've set up a 2-out-of 3 multisig account.
 
-10. Generate a multisig transaction with all of the signatures:
+10. Generate a multisig transaction with all signatures:
 
 ```bash
-cyber tx multisign unsigned.json multitest1 sign1.json sign2.json --chain-id=<chain_id> > signed.json
+cyber tx multisign unsigned.json multitest1 sign1.json sign2.json \
+--chain-id=<chain_id> > signed.json
 ```
 
 11. Finally, we need to broadcast this transaction to the network:
