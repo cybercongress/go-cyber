@@ -3,7 +3,6 @@ package types
 import (
 	"crypto/sha256"
 	"encoding/binary"
-
 	"sort"
 	"time"
 

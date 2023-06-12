@@ -1,16 +1,15 @@
 package cli
 
 import (
-
 	"context"
 	"fmt"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
-	//"github.com/cosmos/cosmos-sdk/client/context"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cybercongress/go-cyber/x/grid/types"
-	//"github.com/cosmos/cosmos-sdk/version"
+
 	"github.com/spf13/cobra"
 )
 

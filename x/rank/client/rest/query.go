@@ -7,7 +7,6 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	"github.com/cosmos/cosmos-sdk/types/rest"
 	"github.com/cybercongress/go-cyber/x/rank/types"
 	"github.com/gorilla/mux"

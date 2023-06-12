@@ -5,12 +5,11 @@ import (
 	"encoding/json"
 
 	"github.com/cosmos/cosmos-sdk/client"
-	//"github.com/gogo/protobuf/codec"
+
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	bandwidthkeeper "github.com/cybercongress/go-cyber/x/bandwidth/keeper"
 	cyberbankkeeper "github.com/cybercongress/go-cyber/x/cyberbank/keeper"
