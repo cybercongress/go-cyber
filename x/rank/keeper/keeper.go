@@ -204,7 +204,7 @@ func (s *StateKeeper) handleNextRank(ctx sdk.Context, newRank types.Rank) {
 	s.rankCalculationFinished = true
 }
 
-func (s *StateKeeper) applyNextRank(ctx sdk.Context) {
+func (s *StateKeeper) applyNextRank(_ sdk.Context) {
 	if !s.nextCidRank.IsEmpty() {
 		s.networkCidRank = s.nextCidRank
 		s.index.PutNewRank(s.networkCidRank)

@@ -154,7 +154,7 @@ func (bm *BandwidthMeter) CommitBlockBandwidth(ctx sdk.Context) {
 	bm.bandwidthSpentByBlock[uint64(newWindowEnd)] = bm.currentBlockSpentBandwidth
 }
 
-func (bm *BandwidthMeter) GetCurrentBlockSpentBandwidth(ctx sdk.Context) uint64 {
+func (bm *BandwidthMeter) GetCurrentBlockSpentBandwidth(_ sdk.Context) uint64 {
 	return bm.currentBlockSpentBandwidth
 }
 
@@ -196,7 +196,7 @@ func (bm *BandwidthMeter) AdjustPrice(ctx sdk.Context) {
 	}
 }
 
-func (bm *BandwidthMeter) GetTotalCyberlinksCost(ctx sdk.Context, tx sdk.Tx) uint64 {
+func (bm *BandwidthMeter) GetTotalCyberlinksCost(_ sdk.Context, tx sdk.Tx) uint64 {
 	bandwidthForTx := uint64(0)
 	for _, msg := range tx.GetMsgs() {
 		linkMsg := msg.(*gtypes.MsgCyberlink)

@@ -78,7 +78,7 @@ func (k *IndexedKeeper) GetTotalStakesAmpere() map[uint64]uint64 {
 	return k.userTotalStakeAmpere
 }
 
-func (k *IndexedKeeper) DetectUsersStakeAmpereChange(ctx sdk.Context) bool {
+func (k *IndexedKeeper) DetectUsersStakeAmpereChange() bool {
 	stakeChanged := false
 	for o, n := range k.userNewTotalStakeAmpere {
 		if _, ok := k.userTotalStakeAmpere[o]; ok {

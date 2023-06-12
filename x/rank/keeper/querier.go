@@ -252,7 +252,7 @@ func queryEntropy(ctx sdk.Context, req abci.RequestQuery, sk *StateKeeper, legac
 	return res, nil
 }
 
-func queryNegentropy(ctx sdk.Context, _ abci.RequestQuery, sk *StateKeeper, legacyQuerierCdc *codec.LegacyAmino) ([]byte, error) {
+func queryNegentropy(_ sdk.Context, _ abci.RequestQuery, sk *StateKeeper, legacyQuerierCdc *codec.LegacyAmino) ([]byte, error) {
 	negentropy := sk.GetNegEntropy()
 
 	res, err := codec.MarshalJSONIndent(legacyQuerierCdc, &types.QueryNegentropyResponse{Negentropy: negentropy})

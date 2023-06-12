@@ -63,20 +63,20 @@ func (i NoopSearchIndex) Run() GetError {
 	}
 }
 
-func (i NoopSearchIndex) Load(links graphtypes.Links) {}
-func (i NoopSearchIndex) Search(cidNumber graphtypes.CidNumber, page, perPage uint32) ([]RankedCidNumber, uint32, error) {
-	return nil, 0, errors.New("The search API is not enabled on this node")
+func (i NoopSearchIndex) Load(_ graphtypes.Links) {}
+func (i NoopSearchIndex) Search(_ graphtypes.CidNumber, _, _ uint32) ([]RankedCidNumber, uint32, error) {
+	return nil, 0, errors.New("the search API is not enabled on this node")
 }
 
-func (i NoopSearchIndex) Backlinks(cidNumber graphtypes.CidNumber, page, perPage uint32) ([]RankedCidNumber, uint32, error) {
-	return nil, 0, errors.New("The search API is not enabled on this node")
+func (i NoopSearchIndex) Backlinks(_ graphtypes.CidNumber, _, _ uint32) ([]RankedCidNumber, uint32, error) {
+	return nil, 0, errors.New("the search API is not enabled on this node")
 }
 
-func (i NoopSearchIndex) Top(page, perPage uint32) ([]RankedCidNumber, uint32, error) {
-	return nil, 0, errors.New("The search API is not enabled on this node")
+func (i NoopSearchIndex) Top(_, _ uint32) ([]RankedCidNumber, uint32, error) {
+	return nil, 0, errors.New("the search API is not enabled on this node")
 }
-func (i NoopSearchIndex) PutNewLinks(links []graphtypes.CompactLink) {}
-func (i NoopSearchIndex) PutNewRank(rank Rank)                       {}
-func (i NoopSearchIndex) GetRankValue(cidNumber graphtypes.CidNumber) uint64 {
+func (i NoopSearchIndex) PutNewLinks(_ []graphtypes.CompactLink) {}
+func (i NoopSearchIndex) PutNewRank(_ Rank)                      {}
+func (i NoopSearchIndex) GetRankValue(_ graphtypes.CidNumber) uint64 {
 	return 0
 }

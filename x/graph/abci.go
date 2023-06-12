@@ -9,7 +9,7 @@ import (
 	"github.com/cybercongress/go-cyber/x/graph/types"
 )
 
-func EndBlocker(ctx sdk.Context, gk *keeper.GraphKeeper, ik *keeper.IndexKeeper) {
+func EndBlocker(ctx sdk.Context, gk *keeper.GraphKeeper, _ *keeper.IndexKeeper) {
 	amountParticles := gk.GetCidsCount(ctx)
 	amountLinks := gk.GetLinksCount(ctx)
 	defer telemetry.ModuleMeasureSince(types.ModuleName, time.Now(), telemetry.MetricKeyEndBlocker)

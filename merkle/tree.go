@@ -159,7 +159,7 @@ func (t *Tree) ValidateIndex(i int, data []byte) bool {
 	return t.ValidateIndexByProofs(i, data, t.GetIndexProofs(i))
 }
 
-func (t *Tree) ValidateIndexByProofs(i int, data []byte, proofs []Proof) bool {
+func (t *Tree) ValidateIndexByProofs(_ int, data []byte, proofs []Proof) bool {
 	rootHash := sum(t.hashF, data)
 	for _, proof := range proofs {
 		rootHash = proof.SumWith(t.hashF, rootHash)

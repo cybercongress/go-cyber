@@ -108,7 +108,7 @@ func (i *BaseSearchIndex) Backlinks(cidNumber graphtypes.CidNumber, page, perPag
 	i.logger.Info("Backlinks query", "cid", cidNumber, "page", page, "perPage", perPage)
 
 	if i.locked {
-		return nil, 0, errors.New("The search index is currently unavailable after node restart")
+		return nil, 0, errors.New("the search index is currently unavailable after node restart")
 	}
 
 	if uint64(cidNumber) >= uint64(len(i.backlinks)) {
@@ -138,7 +138,7 @@ func (i *BaseSearchIndex) Backlinks(cidNumber graphtypes.CidNumber, page, perPag
 
 func (i *BaseSearchIndex) Top(page, perPage uint32) ([]RankedCidNumber, uint32, error) {
 	if i.locked {
-		return nil, 0, errors.New("The search index is currently unavailable after node restart")
+		return nil, 0, errors.New("the search index is currently unavailable after node restart")
 	}
 
 	totalSize := uint32(len(i.rank.TopCIDs))
