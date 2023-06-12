@@ -18,8 +18,8 @@ import (
 
 	wasmTypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
-	ibcante "github.com/cosmos/ibc-go/v3/modules/core/ante"
-	"github.com/cosmos/ibc-go/v3/modules/core/keeper"
+	ibcante "github.com/cosmos/ibc-go/v4/modules/core/ante"
+	"github.com/cosmos/ibc-go/v4/modules/core/keeper"
 	bandwidthkeeper "github.com/cybercongress/go-cyber/x/bandwidth/keeper"
 	bandwidthtypes "github.com/cybercongress/go-cyber/x/bandwidth/types"
 	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
