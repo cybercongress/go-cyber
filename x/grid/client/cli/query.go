@@ -6,10 +6,8 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cybercongress/go-cyber/x/grid/types"
-
 	"github.com/spf13/cobra"
 )
 

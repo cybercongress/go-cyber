@@ -4,6 +4,7 @@ import (
 	// "fmt"
 	// "encoding/binary".
 	"math"
+
 	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
 	"github.com/cybercongress/go-cyber/x/rank/types"
 )
