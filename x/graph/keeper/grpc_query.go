@@ -17,5 +17,5 @@ func (gk GraphKeeper) GraphStats(goCtx context.Context, _ *types.QueryGraphStats
 
 	links := gk.GetLinksCount(ctx)
 	cids := gk.GetCidsCount(ctx)
-	return &types.QueryGraphStatsResponse{links, cids}, nil
+	return &types.QueryGraphStatsResponse{Cyberlinks: links, Particles: cids}, nil
 }

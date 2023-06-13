@@ -311,7 +311,7 @@ func GetCmdQueryIsAnyLinkExist() *cobra.Command {
 
 			res, err := queryClient.IsAnyLinkExist(
 				context.Background(),
-				&types.QueryIsAnyLinkExistRequest{args[0], args[1]},
+				&types.QueryIsAnyLinkExistRequest{From: args[0], To: args[1]},
 			)
 			if err != nil {
 				return err

@@ -14,18 +14,18 @@ import (
 	liquiditytypes "github.com/tendermint/liquidity/x/liquidity/types"
 )
 
-type WasmMsgParserInterface interface {
+type MsgParserInterface interface {
 	Parse(contractAddr sdk.AccAddress, msg wasmTypes.CosmosMsg) ([]sdk.Msg, error)
 	ParseCustom(contractAddr sdk.AccAddress, data json.RawMessage) ([]sdk.Msg, error)
 }
 
 type MsgParser struct {
-	Parsers map[string]WasmMsgParserInterface
+	Parsers map[string]MsgParserInterface
 }
 
 func NewMsgParser() MsgParser {
 	return MsgParser{
-		Parsers: make(map[string]WasmMsgParserInterface),
+		Parsers: make(map[string]MsgParserInterface),
 	}
 }
 
@@ -35,11 +35,11 @@ type WasmCustomMsg struct {
 }
 
 const (
-	WasmMsgParserRouteGraph     = graphtypes.ModuleName
-	WasmMsgParserRouteDmn       = dmntypes.ModuleName
-	WasmMsgParserRouteGrid      = gridtypes.ModuleName
-	WasmMsgParserRouteResources = resourcestypes.ModuleName
-	WasmMsgParserLiquidity      = liquiditytypes.ModuleName
+	MsgParserRouteGraph     = graphtypes.ModuleName
+	MsgParserRouteDmn       = dmntypes.ModuleName
+	MsgParserRouteGrid      = gridtypes.ModuleName
+	MsgParserRouteResources = resourcestypes.ModuleName
+	MsgParserLiquidity      = liquiditytypes.ModuleName
 )
 
 func (p MsgParser) ParseCustom(contractAddr sdk.AccAddress, data json.RawMessage) ([]sdk.Msg, error) {

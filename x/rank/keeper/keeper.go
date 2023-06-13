@@ -138,7 +138,7 @@ func (s *StateKeeper) EndBlocker(ctx sdk.Context) {
 		s.applyNextRank(ctx)
 
 		s.cidCount = int64(currentCidsCount)
-		stakeChanged := s.stakeKeeper.DetectUsersStakeAmpereChange(ctx)
+		stakeChanged := s.stakeKeeper.DetectUsersStakeAmpereChange()
 
 		// start new calculation
 		if s.hasNewLinksForPeriod || stakeChanged {

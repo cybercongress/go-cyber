@@ -600,12 +600,12 @@ func NewApp(
 
 	// Initialize Cyber's encoder integrations
 	parser := wasmplugins.NewMsgParser()
-	parsers := map[string]wasmplugins.WasmMsgParserInterface{
-		wasmplugins.WasmMsgParserRouteGraph:     graphwasm.NewWasmMsgParser(),
-		wasmplugins.WasmMsgParserRouteDmn:       dmnwasm.NewWasmMsgParser(),
-		wasmplugins.WasmMsgParserRouteGrid:      gridwasm.NewWasmMsgParser(),
-		wasmplugins.WasmMsgParserRouteResources: resourceswasm.NewWasmMsgParser(),
-		wasmplugins.WasmMsgParserLiquidity:      liquidity_plugin.NewWasmMsgParser(),
+	parsers := map[string]wasmplugins.MsgParserInterface{
+		wasmplugins.MsgParserRouteGraph:     graphwasm.NewMsgParser(),
+		wasmplugins.MsgParserRouteDmn:       dmnwasm.NewMsgParser(),
+		wasmplugins.MsgParserRouteGrid:      gridwasm.NewMsgParser(),
+		wasmplugins.MsgParserRouteResources: resourceswasm.NewMsgParser(),
+		wasmplugins.MsgParserLiquidity:      liquidity_plugin.NewMsgParser(),
 	}
 	parser.Parsers = parsers
 	customEncoders := &wasm.MessageEncoders{

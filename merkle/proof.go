@@ -13,7 +13,6 @@ type Proof struct {
 func (p *Proof) SumWith(hashF hash.Hash, hash []byte) []byte {
 	if p.LeftSide {
 		return sum(hashF, p.Hash, hash)
-	} else {
-		return sum(hashF, hash, p.Hash)
 	}
+	return sum(hashF, hash, p.Hash)
 }

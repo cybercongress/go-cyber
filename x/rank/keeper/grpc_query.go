@@ -91,7 +91,7 @@ func (bk *StateKeeper) Backlinks(goCtx context.Context, req *types.QuerySearchRe
 	return &types.QuerySearchResponse{Result: result, Pagination: &querytypes.PageResponse{Total: totalSize}}, nil
 }
 
-func (bk *StateKeeper) Top(goCtx context.Context, req *querytypes.PageRequest) (*types.QuerySearchResponse, error) {
+func (s *StateKeeper) Top(goCtx context.Context, req *querytypes.PageRequest) (*types.QuerySearchResponse, error) {
 	if req == nil {
 		return nil, status.Errorf(codes.InvalidArgument, "empty request")
 	}
@@ -101,14 +101,14 @@ func (bk *StateKeeper) Top(goCtx context.Context, req *querytypes.PageRequest) (
 	// TODO check pagination
 	page, _ := uint32(0), uint32(100)
 	page, limit := req.Page, req.PerPage
-	topRankedCidNumbers, totalSize, err := bk.index.Top(page, limit)
+	topRankedCidNumbers, totalSize, err := s.index.Top(page, limit)
 	if err != nil {
 		panic(err)
 	}
 
 	result := make([]types.RankedParticle, 0, len(topRankedCidNumbers))
 	for _, c := range topRankedCidNumbers {
-		result = append(result, types.RankedParticle{Particle: string(bk.graphKeeper.GetCid(ctx, c.GetNumber())), Rank: c.GetRank()})
+		result = append(result, types.RankedParticle{Particle: string(s.graphKeeper.GetCid(ctx, c.GetNumber())), Rank: c.GetRank()})
 	}
 
 	return &types.QuerySearchResponse{Result: result, Pagination: &querytypes.PageResponse{Total: totalSize}}, nil
@@ -153,24 +153,24 @@ func (bk StateKeeper) IsLinkExist(goCtx context.Context, req *types.QueryIsLinkE
 	return &types.QueryLinkExistResponse{Exist: exists}, nil
 }
 
-func (bk StateKeeper) IsAnyLinkExist(goCtx context.Context, req *types.QueryIsAnyLinkExistRequest) (*types.QueryLinkExistResponse, error) {
+func (s StateKeeper) IsAnyLinkExist(goCtx context.Context, req *types.QueryIsAnyLinkExistRequest) (*types.QueryLinkExistResponse, error) {
 	if req == nil {
 		return nil, status.Errorf(codes.InvalidArgument, "empty request")
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	cidNumFrom, exist := bk.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(req.From))
+	cidNumFrom, exist := s.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(req.From))
 	if exist != true {
 		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, req.From)
 	}
 
-	cidNumTo, exist := bk.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(req.To))
+	cidNumTo, exist := s.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(req.To))
 	if exist != true {
 		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, req.To)
 	}
 
-	exists := bk.graphIndexedKeeper.IsAnyLinkExist(cidNumFrom, cidNumTo)
+	exists := s.graphIndexedKeeper.IsAnyLinkExist(cidNumFrom, cidNumTo)
 
 	return &types.QueryLinkExistResponse{Exist: exists}, nil
 }

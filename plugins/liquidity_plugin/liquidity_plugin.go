@@ -13,19 +13,19 @@ import (
 )
 
 var (
-	_ plugins.WasmQuerierInterface   = WasmQuerier{}
-	_ plugins.WasmMsgParserInterface = WasmMsgParser{}
+	_ plugins.WasmQuerierInterface = WasmQuerier{}
+	_ plugins.MsgParserInterface   = MsgParser{}
 )
 
 //--------------------------------------------------
 
-type WasmMsgParser struct{}
+type MsgParser struct{}
 
-func NewWasmMsgParser() WasmMsgParser {
-	return WasmMsgParser{}
+func NewMsgParser() MsgParser {
+	return MsgParser{}
 }
 
-func (WasmMsgParser) Parse(_ sdk.AccAddress, _ wasmTypes.CosmosMsg) ([]sdk.Msg, error) {
+func (MsgParser) Parse(_ sdk.AccAddress, _ wasmTypes.CosmosMsg) ([]sdk.Msg, error) {
 	return nil, nil
 }
 
@@ -36,7 +36,7 @@ type CosmosMsg struct {
 	SwapWithinBatch     *liquiditytypes.MsgSwapWithinBatch     `json:"swap_within_batch,omitempty"`
 }
 
-func (WasmMsgParser) ParseCustom(_ sdk.AccAddress, data json.RawMessage) ([]sdk.Msg, error) {
+func (MsgParser) ParseCustom(_ sdk.AccAddress, data json.RawMessage) ([]sdk.Msg, error) {
 	var sdkMsg CosmosMsg
 	err := json.Unmarshal(data, &sdkMsg)
 	if err != nil {
@@ -114,7 +114,7 @@ func (querier WasmQuerier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([
 
 	if query.PoolParams != nil {
 		pool, found := querier.Keeper.GetPool(ctx, query.PoolParams.PoolId)
-		if found != true {
+		if !found {
 			return nil, sdkerrors.ErrInvalidRequest
 		}
 

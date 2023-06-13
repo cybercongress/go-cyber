@@ -6,7 +6,7 @@ import (
 )
 
 type StakeKeeper interface {
-	DetectUsersStakeAmpereChange(ctx sdk.Context) bool
+	DetectUsersStakeAmpereChange() bool
 	GetTotalStakesAmpere() map[uint64]uint64
 	GetNextAccountNumber(ctx sdk.Context) uint64
 }
