@@ -190,9 +190,9 @@ func queryIsLinkExist(ctx sdk.Context, req abci.RequestQuery, sk *StateKeeper, l
 	}
 
 	exists := sk.graphIndexedKeeper.IsLinkExist(graphtypes.CompactLink{
-		uint64(cidNumFrom),
-		uint64(cidNumTo),
-		accountNum,
+		From:    uint64(cidNumFrom),
+		To:      uint64(cidNumTo),
+		Account: accountNum,
 	})
 
 	res, err := codec.MarshalJSONIndent(legacyQuerierCdc, &types.QueryLinkExistResponse{Exist: exists})

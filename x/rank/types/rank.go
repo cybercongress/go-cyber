@@ -139,13 +139,13 @@ func (r *Rank) CopyWithoutTree() Rank {
 	}
 
 	copiedEntropyValues := make([]uint64, r.CidCount)
-	n = copy(copiedEntropyValues, r.EntropyValues)
+	_ = copy(copiedEntropyValues, r.EntropyValues)
 
 	copiedKarmaValues := make([]uint64, len(r.KarmaValues))
-	n = copy(copiedKarmaValues, r.KarmaValues)
+	_ = copy(copiedKarmaValues, r.KarmaValues)
 
 	copiedTopCIDs := make([]RankedCidNumber, len(r.TopCIDs))
-	n = copy(copiedTopCIDs, r.TopCIDs)
+	_ = copy(copiedTopCIDs, r.TopCIDs)
 
 	return Rank{
 		RankValues:    copiedRankValues,

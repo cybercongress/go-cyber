@@ -8,14 +8,13 @@ import (
 
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	"github.com/cosmos/cosmos-sdk/client/config"
-	"github.com/cosmos/cosmos-sdk/client/pruning"
-	"github.com/cosmos/cosmos-sdk/version"
+	"github.com/cybercongress/go-cyber/app"
 	"github.com/prometheus/client_golang/prometheus"
 
-	"github.com/cybercongress/go-cyber/app"
-
 	"github.com/CosmWasm/wasmd/x/wasm"
+	"github.com/cosmos/cosmos-sdk/client/pruning"
 	"github.com/cosmos/cosmos-sdk/snapshots"
+	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/cosmos/cosmos-sdk/x/crisis"
 
 	"github.com/cybercongress/go-cyber/x/rank"
@@ -105,6 +104,7 @@ func initAppConfig() (string, interface{}) {
 	srvCfg := serverconfig.DefaultConfig()
 	srvCfg.StateSync.SnapshotInterval = 1000
 	srvCfg.StateSync.SnapshotKeepRecent = 10
+	srvCfg.IAVLDisableFastNode = false
 
 	GaiaAppCfg := CustomAppConfig{Config: *srvCfg}
 
