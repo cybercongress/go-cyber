@@ -1,10 +1,12 @@
 package keepers
 
 import (
+	"fmt"
 	"github.com/cybercongress/go-cyber/x/tokenfactory/bindings"
 	tokenfactorykeeper "github.com/cybercongress/go-cyber/x/tokenfactory/keeper"
 	tokenfactorytypes "github.com/cybercongress/go-cyber/x/tokenfactory/types"
 	"path/filepath"
+	"strings"
 
 	"github.com/CosmWasm/wasmd/x/wasm"
 	"github.com/cosmos/cosmos-sdk/baseapp"
@@ -351,7 +353,7 @@ func NewAppKeepers(
 		appCodec,
 		appKeepers.keys[ibcfeetypes.StoreKey],
 		appKeepers.GetSubspace(ibcfeetypes.ModuleName),
-		appKeepers.IBCKeeper.ChannelKeeper,
+		appKeepers.IBCKeeper.ChannelKeeper, // may be replaced with IBC middleware
 		appKeepers.IBCKeeper.ChannelKeeper,
 		&appKeepers.IBCKeeper.PortKeeper,
 		appKeepers.AccountKeeper,
@@ -393,12 +395,9 @@ func NewAppKeepers(
 
 	wasmConfig, err := wasm.ReadWasmConfig(appOpts)
 	if err != nil {
-		panic("error while reading wasm config: " + err.Error())
+		panic(fmt.Sprintf("error while reading wasm config: %s", err))
 	}
 
-	// TODO add cosmwasm_1_2 as wasmd v0.31 will be released
-	// See https://github.com/CosmWasm/cosmwasm/blob/main/docs/CAPABILITIES-BUILT-IN.md
-	supportedFeatures := "iterator,staking,stargate,cyber,cosmwasm_1_1,token_factory"
 	cyberOpts := wasmplugins.RegisterCustomPlugins(
 		appKeepers.RankKeeper,
 		appKeepers.GraphKeeper,
@@ -412,6 +411,7 @@ func NewAppKeepers(
 
 	// The last arguments can contain custom message handlers, and custom query handlers,
 	// if we want to allow any custom callbacks
+	availableCapabilities := strings.Join(AllCapabilities(), ",")
 	appKeepers.WasmKeeper = wasm.NewKeeper(
 		appCodec,
 		appKeepers.keys[wasm.StoreKey],
@@ -420,6 +420,7 @@ func NewAppKeepers(
 		appKeepers.BankKeeper,
 		appKeepers.StakingKeeper,
 		appKeepers.DistrKeeper,
+		appKeepers.IBCFeeKeeper,
 		appKeepers.IBCKeeper.ChannelKeeper,
 		&appKeepers.IBCKeeper.PortKeeper,
 		scopedWasmKeeper,
@@ -428,7 +429,7 @@ func NewAppKeepers(
 		bApp.GRPCQueryRouter(),
 		wasmDir,
 		wasmConfig,
-		supportedFeatures,
+		availableCapabilities,
 		wasmOpts...,
 	)
 
@@ -500,4 +501,19 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 func (appKeepers *AppKeepers) GetSubspace(moduleName string) paramstypes.Subspace {
 	subspace, _ := appKeepers.ParamsKeeper.GetSubspace(moduleName)
 	return subspace
+}
+
+// AllCapabilities returns all capabilities available with the current wasmvm
+// See https://github.com/CosmWasm/cosmwasm/blob/main/docs/CAPABILITIES-BUILT-IN.md
+// This functionality is going to be moved upstream: https://github.com/CosmWasm/wasmvm/issues/425
+func AllCapabilities() []string {
+	return []string{
+		"iterator",
+		"staking",
+		"stargate",
+		"cyber",
+		"cosmwasm_1_1",
+		"cosmwasm_1_2",
+		"token_factory",
+	}
 }

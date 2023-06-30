@@ -105,7 +105,9 @@ var dataCmd = &cobra.Command{
 			if keysOpt {
 				PrintKeys(tree, hashingOpt)
 			}
-			fmt.Printf("Hash: %X\n", tree.Hash())
+
+			hash, _ := tree.Hash()
+			fmt.Printf("Hash: %X\n", hash)
 			fmt.Printf("Size: %X\n", tree.Size())
 		}
 	},
@@ -223,7 +225,7 @@ var pruneCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		db, _ := goleveldb.OpenFile(home+"/application.db", nil)
 		defer db.Close()
-		_ = db.CompactRange(util.Range{nil, nil})
+		_ = db.CompactRange(util.Range{Start: nil, Limit: nil})
 	},
 }
 
@@ -255,7 +257,7 @@ func PrintDbStats(db dbm.DB) {
 // If version is 0, load latest, otherwise, load named version
 func ReadTree(db dbm.DB, version int64, name string) (*iavl.MutableTree, error) {
 	fmt.Println("--------------[", name, "]--------------")
-	tree, err := iavl.NewMutableTree(dbm.NewPrefixDB(db, []byte("s/k:"+name+"/")), DefaultCacheSize)
+	tree, err := iavl.NewMutableTree(dbm.NewPrefixDB(db, []byte("s/k:"+name+"/")), DefaultCacheSize, false)
 	if err != nil {
 		return nil, err
 	}
@@ -265,7 +267,7 @@ func ReadTree(db dbm.DB, version int64, name string) (*iavl.MutableTree, error) 
 }
 
 func GetTree(db dbm.DB, name string) (*iavl.MutableTree, error) {
-	tree, err := iavl.NewMutableTree(dbm.NewPrefixDB(db, []byte("s/k:"+name+"/")), DefaultCacheSize)
+	tree, err := iavl.NewMutableTree(dbm.NewPrefixDB(db, []byte("s/k:"+name+"/")), DefaultCacheSize, false)
 	if err != nil {
 		return nil, err
 	}
@@ -314,7 +316,7 @@ func encodeID(id []byte) string {
 
 func PrintShape(tree *iavl.MutableTree) {
 	// shape := tree.RenderShape("  ", nil)
-	shape := tree.RenderShape("  ", nodeEncoder)
+	shape, _ := tree.RenderShape("  ", nodeEncoder)
 	fmt.Println(strings.Join(shape, "\n"))
 }
 

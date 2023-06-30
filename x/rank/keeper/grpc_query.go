@@ -146,9 +146,9 @@ func (bk StateKeeper) IsLinkExist(goCtx context.Context, req *types.QueryIsLinkE
 	}
 
 	exists := bk.graphIndexedKeeper.IsLinkExist(graphtypes.CompactLink{
-		uint64(cidNumFrom),
-		uint64(cidNumTo),
-		accountNum,
+		From:    uint64(cidNumFrom),
+		To:      uint64(cidNumTo),
+		Account: accountNum,
 	})
 
 	return &types.QueryLinkExistResponse{Exist: exists}, nil
