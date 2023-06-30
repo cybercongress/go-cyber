@@ -9,10 +9,12 @@ import (
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(&MsgCreateDenom{}, "cyber/MsgCreateDenom", nil)
-	cdc.RegisterConcrete(&MsgMint{}, "cyber/MsgMint", nil)
-	cdc.RegisterConcrete(&MsgBurn{}, "cyber/MsgBurn", nil)
-	cdc.RegisterConcrete(&MsgChangeAdmin{}, "cyber/MsgChangeAdmin", nil)
+	// TODO revisit naming
+	cdc.RegisterConcrete(&MsgCreateDenom{}, "cyber/tokenfactory/MsgCreateDenom", nil)
+	cdc.RegisterConcrete(&MsgMint{}, "cyber/tokenfactory/MsgMint", nil)
+	cdc.RegisterConcrete(&MsgBurn{}, "cyber/tokenfactory/MsgBurn", nil)
+	cdc.RegisterConcrete(&MsgChangeAdmin{}, "cyber/tokenfactory/MsgChangeAdmin", nil)
+	cdc.RegisterConcrete(&MsgSetDenomMetadata{}, "cyber/tokenfactory/MsgSetDenomMetadata", nil)
 }
 
 func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {

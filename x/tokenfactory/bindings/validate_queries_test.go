@@ -77,7 +77,7 @@ func TestDenomAdmin(t *testing.T) {
 	require.NoError(t, err)
 	require.NotEmpty(t, tfDenom)
 
-	queryPlugin := wasmbinding.NewQueryPlugin(&app.BankKeeper, &app.TokenFactoryKeeper)
+	queryPlugin := wasmbinding.NewQueryPlugin(app.BankKeeper, &app.TokenFactoryKeeper)
 
 	testCases := []struct {
 		name        string

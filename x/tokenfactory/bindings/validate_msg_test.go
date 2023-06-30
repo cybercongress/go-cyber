@@ -50,7 +50,7 @@ func TestCreateDenom(t *testing.T) {
 	for name, spec := range specs {
 		t.Run(name, func(t *testing.T) {
 			// when
-			_, gotErr := wasmbinding.PerformCreateDenom(&tokenz.TokenFactoryKeeper, &tokenz.BankKeeper, ctx, actor, spec.createDenom)
+			_, gotErr := wasmbinding.PerformCreateDenom(&tokenz.TokenFactoryKeeper, tokenz.BankKeeper, ctx, actor, spec.createDenom)
 			// then
 			if spec.expErr {
 				require.Error(t, gotErr)
@@ -148,7 +148,7 @@ func TestChangeAdmin(t *testing.T) {
 			actorAmount := sdk.NewCoins(sdk.NewCoin(types.DefaultParams().DenomCreationFee[0].Denom, types.DefaultParams().DenomCreationFee[0].Amount.MulRaw(100)))
 			fundAccount(t, ctx, tokenz, tokenCreator, actorAmount)
 
-			_, err := wasmbinding.PerformCreateDenom(&tokenz.TokenFactoryKeeper, &tokenz.BankKeeper, ctx, tokenCreator, &bindings.CreateDenom{
+			_, err := wasmbinding.PerformCreateDenom(&tokenz.TokenFactoryKeeper, tokenz.BankKeeper, ctx, tokenCreator, &bindings.CreateDenom{
 				Subdenom: validDenom,
 			})
 			require.NoError(t, err)
@@ -177,13 +177,13 @@ func TestMint(t *testing.T) {
 	validDenom := bindings.CreateDenom{
 		Subdenom: "MOON",
 	}
-	_, err := wasmbinding.PerformCreateDenom(&tokenz.TokenFactoryKeeper, &tokenz.BankKeeper, ctx, creator, &validDenom)
+	_, err := wasmbinding.PerformCreateDenom(&tokenz.TokenFactoryKeeper, tokenz.BankKeeper, ctx, creator, &validDenom)
 	require.NoError(t, err)
 
 	emptyDenom := bindings.CreateDenom{
 		Subdenom: "",
 	}
-	_, err = wasmbinding.PerformCreateDenom(&tokenz.TokenFactoryKeeper, &tokenz.BankKeeper, ctx, creator, &emptyDenom)
+	_, err = wasmbinding.PerformCreateDenom(&tokenz.TokenFactoryKeeper, tokenz.BankKeeper, ctx, creator, &emptyDenom)
 	require.NoError(t, err)
 
 	validDenomStr := fmt.Sprintf("factory/%s/%s", creator.String(), validDenom.Subdenom)
@@ -273,7 +273,7 @@ func TestMint(t *testing.T) {
 	for name, spec := range specs {
 		t.Run(name, func(t *testing.T) {
 			// when
-			gotErr := wasmbinding.PerformMint(&tokenz.TokenFactoryKeeper, &tokenz.BankKeeper, ctx, creator, spec.mint)
+			gotErr := wasmbinding.PerformMint(&tokenz.TokenFactoryKeeper, tokenz.BankKeeper, ctx, creator, spec.mint)
 			// then
 			if spec.expErr {
 				require.Error(t, gotErr)
@@ -296,13 +296,13 @@ func TestBurn(t *testing.T) {
 	validDenom := bindings.CreateDenom{
 		Subdenom: "MOON",
 	}
-	_, err := wasmbinding.PerformCreateDenom(&tokenz.TokenFactoryKeeper, &tokenz.BankKeeper, ctx, creator, &validDenom)
+	_, err := wasmbinding.PerformCreateDenom(&tokenz.TokenFactoryKeeper, tokenz.BankKeeper, ctx, creator, &validDenom)
 	require.NoError(t, err)
 
 	emptyDenom := bindings.CreateDenom{
 		Subdenom: "",
 	}
-	_, err = wasmbinding.PerformCreateDenom(&tokenz.TokenFactoryKeeper, &tokenz.BankKeeper, ctx, creator, &emptyDenom)
+	_, err = wasmbinding.PerformCreateDenom(&tokenz.TokenFactoryKeeper, tokenz.BankKeeper, ctx, creator, &emptyDenom)
 	require.NoError(t, err)
 
 	lucky := RandomAccountAddress()
@@ -390,7 +390,7 @@ func TestBurn(t *testing.T) {
 				Amount:        mintAmount,
 				MintToAddress: creator.String(),
 			}
-			err := wasmbinding.PerformMint(&tokenz.TokenFactoryKeeper, &tokenz.BankKeeper, ctx, creator, mintBinding)
+			err := wasmbinding.PerformMint(&tokenz.TokenFactoryKeeper, tokenz.BankKeeper, ctx, creator, mintBinding)
 			require.NoError(t, err)
 
 			emptyDenomMintBinding := &bindings.MintTokens{
@@ -398,7 +398,7 @@ func TestBurn(t *testing.T) {
 				Amount:        mintAmount,
 				MintToAddress: creator.String(),
 			}
-			err = wasmbinding.PerformMint(&tokenz.TokenFactoryKeeper, &tokenz.BankKeeper, ctx, creator, emptyDenomMintBinding)
+			err = wasmbinding.PerformMint(&tokenz.TokenFactoryKeeper, tokenz.BankKeeper, ctx, creator, emptyDenomMintBinding)
 			require.NoError(t, err)
 
 			// when

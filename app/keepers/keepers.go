@@ -1,6 +1,7 @@
 package keepers
 
 import (
+	"github.com/cybercongress/go-cyber/x/tokenfactory/bindings"
 	tokenfactorykeeper "github.com/cybercongress/go-cyber/x/tokenfactory/keeper"
 	tokenfactorytypes "github.com/cybercongress/go-cyber/x/tokenfactory/types"
 	"path/filepath"
@@ -397,7 +398,7 @@ func NewAppKeepers(
 
 	// TODO add cosmwasm_1_2 as wasmd v0.31 will be released
 	// See https://github.com/CosmWasm/cosmwasm/blob/main/docs/CAPABILITIES-BUILT-IN.md
-	supportedFeatures := "iterator,staking,stargate,cyber,cosmwasm_1_1"
+	supportedFeatures := "iterator,staking,stargate,cyber,cosmwasm_1_1,token_factory"
 	cyberOpts := wasmplugins.RegisterCustomPlugins(
 		appKeepers.RankKeeper,
 		appKeepers.GraphKeeper,
@@ -407,6 +408,7 @@ func NewAppKeepers(
 		appKeepers.LiquidityKeeper,
 	)
 	wasmOpts = append(wasmOpts, cyberOpts...)
+	wasmOpts = append(wasmOpts, bindings.RegisterCustomPlugins(appKeepers.BankKeeper, &appKeepers.TokenFactoryKeeper)...)
 
 	// The last arguments can contain custom message handlers, and custom query handlers,
 	// if we want to allow any custom callbacks

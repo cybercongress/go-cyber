@@ -57,7 +57,7 @@ func (suite *KeeperTestSuite) TestMsgCreateDenom() {
 	suite.Require().NotEmpty(res.GetNewTokenDenom())
 
 	// Make sure that an address with a "/" in it can't create denoms
-	_, err = suite.msgServer.CreateDenom(sdk.WrapSDKContext(suite.Ctx), types.NewMsgCreateDenom("osmosis.eth/creator", "bitcoin"))
+	_, err = suite.msgServer.CreateDenom(sdk.WrapSDKContext(suite.Ctx), types.NewMsgCreateDenom("cyber.eth/creator", "bitcoin"))
 	suite.Require().Error(err)
 }
 

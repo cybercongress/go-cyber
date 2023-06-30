@@ -2,21 +2,20 @@ package bindings
 
 import (
 	"fmt"
+	"github.com/cybercongress/go-cyber/x/cyberbank/keeper"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
-
 	bindingstypes "github.com/cybercongress/go-cyber/x/tokenfactory/bindings/types"
 	tokenfactorykeeper "github.com/cybercongress/go-cyber/x/tokenfactory/keeper"
 )
 
 type QueryPlugin struct {
-	bankKeeper         *bankkeeper.BaseKeeper
+	bankKeeper         *keeper.BankProxyKeeper
 	tokenFactoryKeeper *tokenfactorykeeper.Keeper
 }
 
 // NewQueryPlugin returns a reference to a new QueryPlugin.
-func NewQueryPlugin(b *bankkeeper.BaseKeeper, tfk *tokenfactorykeeper.Keeper) *QueryPlugin {
+func NewQueryPlugin(b *keeper.BankProxyKeeper, tfk *tokenfactorykeeper.Keeper) *QueryPlugin {
 	return &QueryPlugin{
 		bankKeeper:         b,
 		tokenFactoryKeeper: tfk,

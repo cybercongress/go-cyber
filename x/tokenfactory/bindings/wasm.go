@@ -2,16 +2,15 @@ package bindings
 
 import (
 	"github.com/CosmWasm/wasmd/x/wasm"
+	"github.com/cybercongress/go-cyber/x/cyberbank/keeper"
 
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
-
-	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 
 	tokenfactorykeeper "github.com/cybercongress/go-cyber/x/tokenfactory/keeper"
 )
 
 func RegisterCustomPlugins(
-	bank *bankkeeper.BaseKeeper,
+	bank *keeper.BankProxyKeeper,
 	tokenFactory *tokenfactorykeeper.Keeper,
 ) []wasmkeeper.Option {
 	wasmQueryPlugin := NewQueryPlugin(bank, tokenFactory)

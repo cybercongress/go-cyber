@@ -2,12 +2,12 @@ package bindings
 
 import (
 	"encoding/json"
+	"github.com/cybercongress/go-cyber/x/cyberbank/keeper"
 
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
 	bindingstypes "github.com/cybercongress/go-cyber/x/tokenfactory/bindings/types"
@@ -16,7 +16,7 @@ import (
 )
 
 // CustomMessageDecorator returns decorator for custom CosmWasm bindings messages
-func CustomMessageDecorator(bank *bankkeeper.BaseKeeper, tokenFactory *tokenfactorykeeper.Keeper) func(wasmkeeper.Messenger) wasmkeeper.Messenger {
+func CustomMessageDecorator(bank *keeper.BankProxyKeeper, tokenFactory *tokenfactorykeeper.Keeper) func(wasmkeeper.Messenger) wasmkeeper.Messenger {
 	return func(old wasmkeeper.Messenger) wasmkeeper.Messenger {
 		return &CustomMessenger{
 			wrapped:      old,
@@ -28,7 +28,7 @@ func CustomMessageDecorator(bank *bankkeeper.BaseKeeper, tokenFactory *tokenfact
 
 type CustomMessenger struct {
 	wrapped      wasmkeeper.Messenger
-	bank         *bankkeeper.BaseKeeper
+	bank         *keeper.BankProxyKeeper
 	tokenFactory *tokenfactorykeeper.Keeper
 }
 
@@ -78,7 +78,7 @@ func (m *CustomMessenger) createDenom(ctx sdk.Context, contractAddr sdk.AccAddre
 }
 
 // PerformCreateDenom is used with createDenom to create a token denom; validates the msgCreateDenom.
-func PerformCreateDenom(f *tokenfactorykeeper.Keeper, b *bankkeeper.BaseKeeper, ctx sdk.Context, contractAddr sdk.AccAddress, createDenom *bindingstypes.CreateDenom) ([]byte, error) {
+func PerformCreateDenom(f *tokenfactorykeeper.Keeper, b *keeper.BankProxyKeeper, ctx sdk.Context, contractAddr sdk.AccAddress, createDenom *bindingstypes.CreateDenom) ([]byte, error) {
 	if createDenom == nil {
 		return nil, wasmvmtypes.InvalidRequest{Err: "create denom null create denom"}
 	}
@@ -121,7 +121,7 @@ func (m *CustomMessenger) mintTokens(ctx sdk.Context, contractAddr sdk.AccAddres
 }
 
 // PerformMint used with mintTokens to validate the mint message and mint through token factory.
-func PerformMint(f *tokenfactorykeeper.Keeper, b *bankkeeper.BaseKeeper, ctx sdk.Context, contractAddr sdk.AccAddress, mint *bindingstypes.MintTokens) error {
+func PerformMint(f *tokenfactorykeeper.Keeper, b *keeper.BankProxyKeeper, ctx sdk.Context, contractAddr sdk.AccAddress, mint *bindingstypes.MintTokens) error {
 	if mint == nil {
 		return wasmvmtypes.InvalidRequest{Err: "mint token null mint"}
 	}
@@ -225,7 +225,7 @@ func (m *CustomMessenger) setMetadata(ctx sdk.Context, contractAddr sdk.AccAddre
 
 // PerformSetMetadata is used with setMetadata to add new metadata
 // It also is called inside CreateDenom if optional metadata field is set
-func PerformSetMetadata(f *tokenfactorykeeper.Keeper, b *bankkeeper.BaseKeeper, ctx sdk.Context, contractAddr sdk.AccAddress, denom string, metadata bindingstypes.Metadata) error {
+func PerformSetMetadata(f *tokenfactorykeeper.Keeper, b *keeper.BankProxyKeeper, ctx sdk.Context, contractAddr sdk.AccAddress, denom string, metadata bindingstypes.Metadata) error {
 	// ensure contract address is admin of denom
 	auth, err := f.GetAuthorityMetadata(ctx, denom)
 	if err != nil {

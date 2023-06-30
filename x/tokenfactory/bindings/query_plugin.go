@@ -16,7 +16,7 @@ func CustomQuerier(qp *QueryPlugin) func(ctx sdk.Context, request json.RawMessag
 	return func(ctx sdk.Context, request json.RawMessage) ([]byte, error) {
 		var contractQuery bindingstypes.TokenFactoryQuery
 		if err := json.Unmarshal(request, &contractQuery); err != nil {
-			return nil, sdkerrors.Wrap(err, "osmosis query")
+			return nil, sdkerrors.Wrap(err, "cyber query")
 		}
 		if contractQuery.Token == nil {
 			return nil, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "nil token field")

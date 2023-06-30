@@ -12,6 +12,6 @@ option go_package = "github.com/cybercongress/go-cyber/x/tokenfactory/types";
 message DenomAuthorityMetadata {
   option (gogoproto.equal) = true;
 
-  // Can be empty for no admin, or a valid osmosis address
+  // Can be empty for no admin, or a valid bostrom/cyber address
   string admin = 1 [ (gogoproto.moretags) = "yaml:\"admin\"" ];
 }
