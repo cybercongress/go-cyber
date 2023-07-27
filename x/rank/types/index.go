@@ -174,7 +174,7 @@ func (i *BaseSearchIndex) handleLink(link graphtypes.CompactLink) {
 }
 
 func (i *BaseSearchIndex) handleBacklink(link graphtypes.CompactLink) {
-	i.extendReverseIndex(uint64(link.To))
+	i.extendReverseIndex(link.To)
 
 	toIndex := i.backlinks[link.To]
 	// in case unlock signal received we could operate on this index otherwise put link in the end of queue and finish

@@ -38,7 +38,7 @@ func calculateRankCPU(ctx *types.CalculationContext) types.EMState {
 	}
 
 	innerProductOverSize := defaultRank * (float64(danglingNodesSize) / float64(size))
-	defaultRankWithCorrection := float64(dampingFactor*innerProductOverSize) + defaultRank
+	defaultRankWithCorrection := dampingFactor*innerProductOverSize + defaultRank
 
 	change := tolerance + 1
 
@@ -193,7 +193,7 @@ func karmaCalc(ctx *types.CalculationContext, rank, entropy, karma []float64) {
 					w = float64(0)
 				}
 				luminosity := rank[from] * entropy[from]
-				karma[user] += w * float64(luminosity)
+				karma[user] += w * luminosity
 			}
 		}
 	}
