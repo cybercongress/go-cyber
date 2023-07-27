@@ -25,8 +25,6 @@ type IndexKeeper struct {
 
 	// Inter-block cache for cyberlinks, reset on every block during Commit
 	tkey sdk.StoreKey
-
-	currentBlockLinks []types.CompactLink
 }
 
 func NewIndexKeeper(gk GraphKeeper, tkey sdk.StoreKey) *IndexKeeper {

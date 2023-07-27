@@ -32,12 +32,12 @@ func (ab *NeuronBandwidth) Recover(currentBlock, recoveryPeriod uint64) {
 		recoverAmount = fullRecoveryAmount
 	}
 
-	ab.RemainedValue = ab.RemainedValue + uint64(recoverAmount)
+	ab.RemainedValue += uint64(recoverAmount)
 	ab.LastUpdatedBlock = currentBlock
 }
 
 func (ab *NeuronBandwidth) Consume(bandwidthToConsume uint64) error {
-	ab.RemainedValue = ab.RemainedValue - bandwidthToConsume
+	ab.RemainedValue -= bandwidthToConsume
 	if ab.RemainedValue < 0 {
 		return ErrNotEnoughBandwidth
 	}

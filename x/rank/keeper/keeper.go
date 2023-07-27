@@ -305,7 +305,7 @@ func (sk StateKeeper) GetLatestMerkleTree(ctx sdk.Context) []byte {
 
 func (sk StateKeeper) StoreLatestMerkleTree(ctx sdk.Context, treeAsBytes []byte) {
 	store := ctx.KVStore(sk.storeKey)
-	if bytes.Compare(sk.GetLatestMerkleTree(ctx), treeAsBytes) != 0 {
+	if !bytes.Equal(sk.GetLatestMerkleTree(ctx), treeAsBytes) {
 		store.Set(types.LatestMerkleTree, treeAsBytes)
 	}
 }
@@ -317,7 +317,7 @@ func (sk StateKeeper) GetNextMerkleTree(ctx sdk.Context) []byte {
 
 func (sk StateKeeper) StoreNextMerkleTree(ctx sdk.Context, treeAsBytes []byte) {
 	store := ctx.KVStore(sk.storeKey)
-	if bytes.Compare(sk.GetNextMerkleTree(ctx), treeAsBytes) != 0 {
+	if !bytes.Equal(sk.GetNextMerkleTree(ctx), treeAsBytes) {
 		store.Set(types.NextMerkleTree, treeAsBytes)
 	}
 }
