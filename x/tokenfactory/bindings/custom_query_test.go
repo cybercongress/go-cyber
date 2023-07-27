@@ -47,6 +47,7 @@ type ChainResponse struct {
 }
 
 func queryCustom(t *testing.T, ctx sdk.Context, tokenz *app.App, contract sdk.AccAddress, request bindings.TokenQuery, response interface{}) {
+	t.Helper()
 	wrapped := bindings.TokenFactoryQuery{
 		Token: &request,
 	}

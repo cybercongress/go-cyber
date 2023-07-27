@@ -2,6 +2,7 @@ package bindings
 
 import (
 	"fmt"
+
 	"github.com/cybercongress/go-cyber/x/cyberbank/keeper"
 	bindingstypes "github.com/cybercongress/go-cyber/x/tokenfactory/bindings/types"
 	tokenfactorykeeper "github.com/cybercongress/go-cyber/x/tokenfactory/keeper"
