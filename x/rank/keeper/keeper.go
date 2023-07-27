@@ -223,7 +223,7 @@ func (s *StateKeeper) GetRankValueByNumber(number uint64) uint64 {
 
 func (s *StateKeeper) GetRankValueByParticle(ctx sdk.Context, particle string) (uint64, error) {
 	number, exist := s.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(particle))
-	if exist != true {
+	if !exist {
 		return 0, sdkerrors.ErrInvalidRequest
 	}
 	return s.networkCidRank.RankValues[number], nil

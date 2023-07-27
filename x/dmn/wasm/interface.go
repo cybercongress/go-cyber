@@ -147,7 +147,7 @@ func (querier WasmQuerier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([
 
 		program, _ := sdk.AccAddressFromBech32(query.Thought.Program)
 		thought, found := querier.Keeper.GetThought(ctx, program, query.Thought.Name)
-		if found != true {
+		if !found {
 			return nil, sdkerrors.ErrInvalidRequest
 		}
 
@@ -162,7 +162,7 @@ func (querier WasmQuerier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([
 	} else if query.ThoughtStats != nil {
 		program, _ := sdk.AccAddressFromBech32(query.ThoughtStats.Program)
 		thoughtStats, found := querier.Keeper.GetThoughtStats(ctx, program, query.ThoughtStats.Name)
-		if found != true {
+		if !found {
 			return nil, sdkerrors.ErrInvalidRequest
 		}
 

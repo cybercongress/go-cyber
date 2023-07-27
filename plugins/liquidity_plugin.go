@@ -170,7 +170,7 @@ func (querier WasmQuerier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([
 		)
 	} else if query.PoolAddress != nil {
 		pool, found := querier.Keeper.GetPool(ctx, query.PoolAddress.PoolId)
-		if found != true {
+		if !found {
 			return nil, sdkerrors.ErrInvalidRequest
 		}
 
