@@ -297,7 +297,7 @@ func NewApp(
 	//	panic(fmt.Sprintf("failed to read upgrade info from disk %s", err))
 	//}
 	//
-	//if upgradeInfo.Name == upgradeName && !app.UpgradeKeeper.IsSkipHeight(upgradeInfo.Height) {
+	// if upgradeInfo.Name == upgradeName && !app.UpgradeKeeper.IsSkipHeight(upgradeInfo.Height) {
 	//	storeUpgrades := store.StoreUpgrades{}
 	//
 	//	// configure store loader that checks if version == upgradeHeight and applies store upgrades

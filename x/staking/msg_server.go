@@ -209,7 +209,7 @@ func (k msgServer) Delegate(goCtx context.Context, msg *types.MsgDelegate) (*typ
 	if err != nil {
 		return nil, err
 	}
-	if result == false {
+	if !result {
 		return nil, sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "unauthorized message: %T", msg)
 	}
 
@@ -346,7 +346,7 @@ func (k msgServer) Undelegate(goCtx context.Context, msg *types.MsgUndelegate) (
 	if err != nil {
 		return nil, err
 	}
-	if result == false {
+	if !result {
 		return nil, sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "unauthorized message: %T", msg)
 	}
 

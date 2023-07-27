@@ -126,7 +126,6 @@ var shapeCmd = &cobra.Command{
 		version := int64(0)
 		switch len(args) {
 		case 2:
-			store = args[0]
 			version, _ = strconv.ParseInt(args[1], 10, 64)
 			fallthrough
 		case 1:
