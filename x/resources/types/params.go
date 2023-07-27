@@ -165,7 +165,7 @@ func validateBaseInvestmintAmountVolt(i interface{}) error {
 	}
 
 	if v.IsLT(ctypes.NewSCybCoin(ctypes.Mega * 10)) {
-		return fmt.Errorf("base investmint amount for Volt must be more than 10000000: %d", v)
+		return fmt.Errorf("base investmint amount for Volt must be more than 10000000: %v", v)
 	}
 
 	return nil
@@ -178,7 +178,7 @@ func validateBaseInvestmintAmountAmpere(i interface{}) error {
 	}
 
 	if v.IsLT(ctypes.NewSCybCoin(ctypes.Mega * 10)) {
-		return fmt.Errorf("base investmint amount for Ampere must be more than 10000000: %d", v)
+		return fmt.Errorf("base investmint amount for Ampere must be more than 10000000: %v", v)
 	}
 
 	return nil

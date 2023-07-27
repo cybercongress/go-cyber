@@ -65,15 +65,15 @@ func (i NoopSearchIndex) Run() GetError {
 
 func (i NoopSearchIndex) Load(links graphtypes.Links) {}
 func (i NoopSearchIndex) Search(cidNumber graphtypes.CidNumber, page, perPage uint32) ([]RankedCidNumber, uint32, error) {
-	return nil, 0, errors.New("The search API is not enabled on this node")
+	return nil, 0, errors.New("the search API is not enabled on this node")
 }
 
 func (i NoopSearchIndex) Backlinks(cidNumber graphtypes.CidNumber, page, perPage uint32) ([]RankedCidNumber, uint32, error) {
-	return nil, 0, errors.New("The search API is not enabled on this node")
+	return nil, 0, errors.New("the search API is not enabled on this node")
 }
 
 func (i NoopSearchIndex) Top(page, perPage uint32) ([]RankedCidNumber, uint32, error) {
-	return nil, 0, errors.New("The search API is not enabled on this node")
+	return nil, 0, errors.New("the search API is not enabled on this node")
 }
 func (i NoopSearchIndex) PutNewLinks(links []graphtypes.CompactLink) {}
 func (i NoopSearchIndex) PutNewRank(rank Rank)                       {}
