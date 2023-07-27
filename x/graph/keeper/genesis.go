@@ -57,25 +57,25 @@ func WriteGenesis(
 
 	linksFile, err := os.Create(linksFilePath)
 	if err != nil {
-		return
+		return err
 	}
 
 	writer := bufio.NewWriter(linksFile) // 4096 byte chunk
 	err = gk.WriteCids(ctx, writer)
 	if err != nil {
-		return
+		return err
 	}
 	err = ik.WriteLinks(ctx, writer)
 	if err != nil {
-		return
+		return err
 	}
 
 	err = writer.Flush()
 	if err != nil {
-		return
+		return err
 	}
 	err = linksFile.Close()
 
 	gk.Logger(ctx).Info("Particles and cyberlinks exported. File created.", "path", linksFilePath)
-	return
+	return err
 }

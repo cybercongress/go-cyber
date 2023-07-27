@@ -292,7 +292,6 @@ func PrintKeys(tree *iavl.MutableTree, hashing bool) {
 	if err != nil {
 		panic(err)
 	}
-
 }
 
 // parseWeaveKey assumes a separating : where all in front should be ascii,

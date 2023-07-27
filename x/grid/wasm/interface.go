@@ -54,8 +54,6 @@ func (WasmMsgParser) ParseCustom(contractAddr sdk.AccAddress, data json.RawMessa
 		return []sdk.Msg{sdkMsg.EditEnergyRouteName}, sdkMsg.EditEnergyRouteName.ValidateBasic()
 	} else if sdkMsg.EditEnergyRoute != nil {
 		return []sdk.Msg{sdkMsg.EditEnergyRoute}, sdkMsg.EditEnergyRoute.ValidateBasic()
-	} else if sdkMsg.EditEnergyRouteName != nil {
-		return []sdk.Msg{sdkMsg.EditEnergyRouteName}, sdkMsg.EditEnergyRouteName.ValidateBasic()
 	} else if sdkMsg.DeleteEnergyRoute != nil {
 		return []sdk.Msg{sdkMsg.DeleteEnergyRoute}, sdkMsg.DeleteEnergyRoute.ValidateBasic()
 	}

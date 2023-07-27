@@ -99,7 +99,7 @@ func (gk GraphKeeper) WriteCids(ctx sdk.Context, writer io.Writer) (err error) {
 	binary.LittleEndian.PutUint64(uintAsBytes, cidsCount)
 	_, err = writer.Write(uintAsBytes)
 	if err != nil {
-		return
+		return err
 	}
 
 	gk.IterateCids(ctx, func(cid types.Cid, number types.CidNumber) {
@@ -123,7 +123,7 @@ func (gk GraphKeeper) WriteCids(ctx sdk.Context, writer io.Writer) (err error) {
 			return
 		}
 	})
-	return
+	return err
 }
 
 func (gk GraphKeeper) LoadFromReader(ctx sdk.Context, reader io.Reader) (err error) {

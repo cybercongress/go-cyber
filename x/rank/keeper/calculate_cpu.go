@@ -2,7 +2,7 @@ package keeper
 
 import (
 	// "fmt"
-	//"encoding/binary"
+	// "encoding/binary"
 	"math"
 
 	// "math/big"

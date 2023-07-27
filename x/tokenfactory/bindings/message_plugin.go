@@ -2,8 +2,6 @@ package bindings
 
 import (
 	"encoding/json"
-
-
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 	"github.com/cybercongress/go-cyber/x/cyberbank/keeper"

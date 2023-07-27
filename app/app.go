@@ -292,7 +292,7 @@ func NewApp(
 	//	},
 	//)
 	//
-	//upgradeInfo, err := app.UpgradeKeeper.ReadUpgradeInfoFromDisk()
+	// upgradeInfo, err := app.UpgradeKeeper.ReadUpgradeInfoFromDisk()
 	//if err != nil {
 	//	panic(fmt.Sprintf("failed to read upgrade info from disk %s", err))
 	//}
