@@ -16,7 +16,7 @@ type (
 	CidNumber uint64
 )
 
-func (links Links) Put(from CidNumber, to CidNumber, acc AccNumber) {
+func (links Links) Put(from, to CidNumber, acc AccNumber) {
 	cidLinks := links[from]
 	if cidLinks == nil {
 		cidLinks = make(CidLinks)
@@ -57,7 +57,7 @@ func (links Links) Copy() Links {
 	return linksCopy
 }
 
-func (links Links) IsAnyLinkExist(from CidNumber, to CidNumber) bool {
+func (links Links) IsAnyLinkExist(from, to CidNumber) bool {
 	toLinks, fromExists := links[from]
 	if fromExists {
 		linkAccs, toExists := toLinks[to]
@@ -69,7 +69,7 @@ func (links Links) IsAnyLinkExist(from CidNumber, to CidNumber) bool {
 	return false
 }
 
-func (links Links) IsLinkExist(from CidNumber, to CidNumber, acc AccNumber) bool {
+func (links Links) IsLinkExist(from, to CidNumber, acc AccNumber) bool {
 	toLinks, fromExists := links[from]
 	if fromExists {
 		linkAccs, toExists := toLinks[to]

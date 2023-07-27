@@ -4,14 +4,14 @@ import (
 	context "context"
 	"math"
 
+	ctypes "github.com/cybercongress/go-cyber/types"
+	"github.com/cybercongress/go-cyber/x/cyberbank/types"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	bank "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-
-	ctypes "github.com/cybercongress/go-cyber/types"
-	"github.com/cybercongress/go-cyber/x/cyberbank/types"
 )
 
 var _ bank.Keeper = (*Proxy)(nil)
@@ -43,7 +43,7 @@ func (p *Proxy) SetAccountKeeper(ak authkeeper.AccountKeeper) {
 	p.ak = ak
 }
 
-func (p *Proxy) OnCoinsTransfer(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress) {
+func (p *Proxy) OnCoinsTransfer(ctx sdk.Context, from, to sdk.AccAddress) {
 	for _, hook := range p.coinsTransferHooks {
 		hook(ctx, from, to)
 	}
@@ -101,7 +101,7 @@ func (p *Proxy) InputOutputCoins(ctx sdk.Context, inputs []banktypes.Input, outp
 	return err
 }
 
-func (p *Proxy) SendCoins(ctx sdk.Context, fromAddr sdk.AccAddress, toAddr sdk.AccAddress, amt sdk.Coins) error {
+func (p *Proxy) SendCoins(ctx sdk.Context, fromAddr, toAddr sdk.AccAddress, amt sdk.Coins) error {
 	err := p.bk.SendCoins(ctx, fromAddr, toAddr, amt)
 	if err == nil {
 		p.OnCoinsTransfer(ctx, fromAddr, toAddr)
@@ -129,7 +129,7 @@ func (p *Proxy) SendCoinsFromModuleToAccount(ctx sdk.Context, senderModule strin
 func (p *Proxy) SendCoinsFromModuleToModule(ctx sdk.Context, senderModule, recipientModule string, amt sdk.Coins) error {
 	err := p.bk.SendCoinsFromModuleToModule(ctx, senderModule, recipientModule, amt)
 
-	//if err == nil {
+	// if err == nil {
 	//	p.OnCoinsTransfer(ctx, p.ak.GetModuleAddress(senderModule), p.ak.GetModuleAddress(recipientModule))
 	//}
 	return err

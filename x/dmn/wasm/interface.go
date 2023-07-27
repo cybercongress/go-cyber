@@ -3,17 +3,15 @@ package wasm
 import (
 	"encoding/json"
 
-	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
-
 	"github.com/CosmWasm/wasmd/x/wasm"
+	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmTypes "github.com/CosmWasm/wasmvm/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
-
 	"github.com/cybercongress/go-cyber/x/dmn/keeper"
 	"github.com/cybercongress/go-cyber/x/dmn/types"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 var (

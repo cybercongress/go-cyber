@@ -7,62 +7,52 @@ import (
 	"strings"
 	"time"
 
+	"github.com/CosmWasm/wasmd/x/wasm"
+	wasmclient "github.com/CosmWasm/wasmd/x/wasm/client"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
-	"github.com/cosmos/cosmos-sdk/x/bank"
-	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
-	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 	ibcclientclient "github.com/cosmos/ibc-go/v4/modules/core/02-client/client"
-
 	"github.com/cybercongress/go-cyber/app/keepers"
-
+	"github.com/cybercongress/go-cyber/app/params"
+	upgrades "github.com/cybercongress/go-cyber/app/upgrades"
 	_ "github.com/cybercongress/go-cyber/client/docs/statik"
-
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/client/grpc/tmservice"
-	"github.com/cosmos/cosmos-sdk/codec/types"
-	servertypes "github.com/cosmos/cosmos-sdk/server/types"
-	authtx "github.com/cosmos/cosmos-sdk/x/auth/tx"
+	ctypes "github.com/cybercongress/go-cyber/types"
+	"github.com/cybercongress/go-cyber/utils"
+	cyberbanktypes "github.com/cybercongress/go-cyber/x/cyberbank/types"
 	"github.com/spf13/cast"
+	abci "github.com/tendermint/tendermint/abci/types"
+	tmjson "github.com/tendermint/tendermint/libs/json"
+	"github.com/tendermint/tendermint/libs/log"
+	tmos "github.com/tendermint/tendermint/libs/os"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
 
-	ctypes "github.com/cybercongress/go-cyber/types"
-
 	"github.com/cosmos/cosmos-sdk/baseapp"
+	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/grpc/tmservice"
 	"github.com/cosmos/cosmos-sdk/client/rpc"
 	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/server/api"
 	"github.com/cosmos/cosmos-sdk/server/config"
+	servertypes "github.com/cosmos/cosmos-sdk/server/types"
+	"github.com/cosmos/cosmos-sdk/simapp"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/cosmos/cosmos-sdk/x/auth/ante"
 	authrest "github.com/cosmos/cosmos-sdk/x/auth/client/rest"
+	authtx "github.com/cosmos/cosmos-sdk/x/auth/tx"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	"github.com/cosmos/cosmos-sdk/x/bank"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/cosmos/cosmos-sdk/x/crisis"
 	distrclient "github.com/cosmos/cosmos-sdk/x/distribution/client"
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
-	paramsclient "github.com/cosmos/cosmos-sdk/x/params/client"
-	upgradeclient "github.com/cosmos/cosmos-sdk/x/upgrade/client"
-	abci "github.com/tendermint/tendermint/abci/types"
-	"github.com/tendermint/tendermint/libs/log"
-	tmos "github.com/tendermint/tendermint/libs/os"
-
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-
-	"github.com/CosmWasm/wasmd/x/wasm"
-	wasmclient "github.com/CosmWasm/wasmd/x/wasm/client"
-	tmjson "github.com/tendermint/tendermint/libs/json"
-
-	"github.com/cybercongress/go-cyber/app/params"
-	"github.com/cybercongress/go-cyber/utils"
-	cyberbanktypes "github.com/cybercongress/go-cyber/x/cyberbank/types"
-
-	"github.com/cosmos/cosmos-sdk/simapp"
-
 	govclient "github.com/cosmos/cosmos-sdk/x/gov/client"
-
-	upgrades "github.com/cybercongress/go-cyber/app/upgrades"
+	paramsclient "github.com/cosmos/cosmos-sdk/x/params/client"
+	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
+	upgradeclient "github.com/cosmos/cosmos-sdk/x/upgrade/client"
+	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 )
 
 const (
@@ -291,7 +281,7 @@ func NewApp(
 	app.setupUpgradeStoreLoaders()
 
 	// UPGRADES HANDLER SECTION
-	//app.UpgradeKeeper.SetUpgradeHandler(
+	// app.UpgradeKeeper.SetUpgradeHandler(
 	//	upgradeName,
 	//	func(ctx sdk.Context, _ upgradetypes.Plan, fromVM module.VersionMap) (module.VersionMap, error) {
 	//

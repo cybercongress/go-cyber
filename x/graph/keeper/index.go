@@ -4,14 +4,12 @@ import (
 	"encoding/binary"
 	"io"
 
-	//"fmt"
-
 	. "github.com/cybercongress/go-cyber/types"
 	"github.com/cybercongress/go-cyber/utils"
 	"github.com/cybercongress/go-cyber/x/graph/types"
+	tmos "github.com/tendermint/tendermint/libs/os"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	tmos "github.com/tendermint/tendermint/libs/os"
 )
 
 type IndexKeeper struct {
@@ -38,7 +36,7 @@ func NewIndexKeeper(gk GraphKeeper, tkey sdk.StoreKey) *IndexKeeper {
 	}
 }
 
-func (i *IndexKeeper) LoadState(rankCtx sdk.Context, freshCtx sdk.Context) {
+func (i *IndexKeeper) LoadState(rankCtx, freshCtx sdk.Context) {
 	inLinks, outLinks, err := i.GraphKeeper.GetAllLinks(rankCtx)
 	if err != nil {
 		tmos.Exit(err.Error())
@@ -127,7 +125,7 @@ func (i *IndexKeeper) GetCurrentBlockNewLinks(ctx sdk.Context) []types.CompactLi
 	return result
 }
 
-func (i *IndexKeeper) IsAnyLinkExist(from types.CidNumber, to types.CidNumber) bool {
+func (i *IndexKeeper) IsAnyLinkExist(from, to types.CidNumber) bool {
 	return i.currentRankOutLinks.IsAnyLinkExist(from, to) || i.nextRankOutLinks.IsAnyLinkExist(from, to)
 }
 

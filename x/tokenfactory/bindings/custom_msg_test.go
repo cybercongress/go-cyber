@@ -5,15 +5,14 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/stretchr/testify/require"
-
 	"github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	"github.com/cybercongress/go-cyber/app"
 	bindings "github.com/cybercongress/go-cyber/x/tokenfactory/bindings/types"
 	"github.com/cybercongress/go-cyber/x/tokenfactory/types"
+	"github.com/stretchr/testify/require"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 func TestCreateDenomMsg(t *testing.T) {
@@ -246,7 +245,7 @@ type ReflectSubMsgs struct {
 	Msgs []wasmvmtypes.SubMsg `json:"msgs"`
 }
 
-func executeCustom(t *testing.T, ctx sdk.Context, app *app.App, contract sdk.AccAddress, sender sdk.AccAddress, msg bindings.TokenMsg, funds sdk.Coin) error {
+func executeCustom(t *testing.T, ctx sdk.Context, app *app.App, contract, sender sdk.AccAddress, msg bindings.TokenMsg, funds sdk.Coin) error {
 	wrapped := bindings.TokenFactoryMsg{
 		Token: &msg,
 	}

@@ -3,18 +3,16 @@ package plugins
 import (
 	"encoding/json"
 
-	liquiditytypes "github.com/gravity-devs/liquidity/x/liquidity/types"
-
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmTypes "github.com/CosmWasm/wasmvm/types"
-
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-
 	dmntypes "github.com/cybercongress/go-cyber/x/dmn/types"
 	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
 	gridtypes "github.com/cybercongress/go-cyber/x/grid/types"
 	resourcestypes "github.com/cybercongress/go-cyber/x/resources/types"
+	liquiditytypes "github.com/gravity-devs/liquidity/x/liquidity/types"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 type WasmMsgParserInterface interface {

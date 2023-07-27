@@ -2,11 +2,13 @@ package bindings
 
 import (
 	"fmt"
-	"github.com/cybercongress/go-cyber/x/cyberbank/keeper"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	"github.com/cybercongress/go-cyber/x/cyberbank/keeper"
 	bindingstypes "github.com/cybercongress/go-cyber/x/tokenfactory/bindings/types"
 	tokenfactorykeeper "github.com/cybercongress/go-cyber/x/tokenfactory/keeper"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 type QueryPlugin struct {

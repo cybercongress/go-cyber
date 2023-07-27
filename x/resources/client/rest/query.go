@@ -5,16 +5,14 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/cosmos/cosmos-sdk/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	ctypes "github.com/cybercongress/go-cyber/types"
+	"github.com/cybercongress/go-cyber/x/resources/types"
 	"github.com/gorilla/mux"
 
-	ctypes "github.com/cybercongress/go-cyber/types"
-
 	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/codec"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/rest"
-
-	"github.com/cybercongress/go-cyber/x/resources/types"
 )
 
 func registerQueryRoutes(cliCtx client.Context, r *mux.Router) {

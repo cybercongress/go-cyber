@@ -6,19 +6,17 @@ import (
 	"fmt"
 
 	"github.com/CosmWasm/wasmd/x/wasm"
-	"github.com/cosmos/cosmos-sdk/telemetry"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
+	ctypes "github.com/cybercongress/go-cyber/types"
+	"github.com/cybercongress/go-cyber/x/dmn/types"
+	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
 	"github.com/tendermint/tendermint/libs/log"
 
 	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	ctypes "github.com/cybercongress/go-cyber/types"
-
-	"github.com/cybercongress/go-cyber/x/dmn/types"
-	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 )
 
 // Keeper of the power store
@@ -255,7 +253,7 @@ func (k Keeper) UpdateThoughtBlock(
 	return nil
 }
 
-//______________________________________________________________________
+// ______________________________________________________________________
 
 func (k Keeper) MaxThougths(ctx sdk.Context) (res uint32) {
 	k.paramspace.Get(ctx, types.KeyMaxSlots, &res)
@@ -272,7 +270,7 @@ func (k Keeper) FeeTTL(ctx sdk.Context) (res uint32) {
 	return
 }
 
-//______________________________________________________________________
+// ______________________________________________________________________
 
 func (k Keeper) SetThought(ctx sdk.Context, thought types.Thought) {
 	store := ctx.KVStore(k.storeKey)
@@ -309,7 +307,7 @@ func (k Keeper) DeleteThoughtStats(ctx sdk.Context, program sdk.AccAddress, name
 	store.Delete(types.GetThoughtStatsKey(program, name))
 }
 
-//______________________________________________________________________
+// ______________________________________________________________________
 
 func (k Keeper) GetThought(ctx sdk.Context, program sdk.AccAddress, name string) (thought types.Thought, found bool) {
 	store := ctx.KVStore(k.storeKey)

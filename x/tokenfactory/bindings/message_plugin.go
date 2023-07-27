@@ -2,17 +2,18 @@ package bindings
 
 import (
 	"encoding/json"
-	"github.com/cybercongress/go-cyber/x/cyberbank/keeper"
+
 
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-
+	"github.com/cybercongress/go-cyber/x/cyberbank/keeper"
 	bindingstypes "github.com/cybercongress/go-cyber/x/tokenfactory/bindings/types"
 	tokenfactorykeeper "github.com/cybercongress/go-cyber/x/tokenfactory/keeper"
 	tokenfactorytypes "github.com/cybercongress/go-cyber/x/tokenfactory/types"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 )
 
 // CustomMessageDecorator returns decorator for custom CosmWasm bindings messages
@@ -254,7 +255,7 @@ func PerformSetMetadata(f *tokenfactorykeeper.Keeper, b *keeper.BankProxyKeeper,
 }
 
 // GetFullDenom is a function, not method, so the message_plugin can use it
-func GetFullDenom(contract string, subDenom string) (string, error) {
+func GetFullDenom(contract, subDenom string) (string, error) {
 	// Address validation
 	if _, err := parseAddress(contract); err != nil {
 		return "", err

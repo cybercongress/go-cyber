@@ -5,18 +5,15 @@ import (
 	"math"
 	"time"
 
-	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
-
 	ctypes "github.com/cybercongress/go-cyber/types"
+	"github.com/cybercongress/go-cyber/x/cyberbank/types"
+	gogotypes "github.com/gogo/protobuf/types"
+	"github.com/tendermint/tendermint/libs/log"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	gogotypes "github.com/gogo/protobuf/types"
-
+	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	"github.com/tendermint/tendermint/libs/log"
-
-	"github.com/cybercongress/go-cyber/x/cyberbank/types"
 )
 
 type IndexedKeeper struct {
@@ -64,7 +61,7 @@ func (k IndexedKeeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
 
-func (k *IndexedKeeper) LoadState(rankCtx sdk.Context, freshCtx sdk.Context) {
+func (k *IndexedKeeper) LoadState(rankCtx, freshCtx sdk.Context) {
 	k.userTotalStakeAmpere = make(map[uint64]uint64)
 	k.accountKeeper.IterateAccounts(rankCtx, k.getCollectFunc(rankCtx, k.userTotalStakeAmpere))
 
@@ -115,7 +112,7 @@ func (k *IndexedKeeper) getCollectFunc(ctx sdk.Context, userStake map[uint64]uin
 	}
 }
 
-func (k *IndexedKeeper) InitializeStakeAmpere(account uint64, stake uint64) {
+func (k *IndexedKeeper) InitializeStakeAmpere(account, stake uint64) {
 	k.userTotalStakeAmpere[account] = stake
 	k.userNewTotalStakeAmpere[account] = stake
 }

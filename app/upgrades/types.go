@@ -1,13 +1,13 @@
 package upgrades
 
 import (
+	"github.com/cybercongress/go-cyber/app/keepers"
+	abci "github.com/tendermint/tendermint/abci/types"
+
 	store "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
-	abci "github.com/tendermint/tendermint/abci/types"
-
-	"github.com/cybercongress/go-cyber/app/keepers"
 )
 
 // BaseAppParamManager defines an interrace that BaseApp is expected to fullfil

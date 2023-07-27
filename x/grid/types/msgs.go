@@ -1,10 +1,10 @@
 package types
 
 import (
+	ctypes "github.com/cybercongress/go-cyber/types"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-
-	ctypes "github.com/cybercongress/go-cyber/types"
 )
 
 const (
@@ -21,7 +21,7 @@ var (
 	_ sdk.Msg = &MsgEditRouteName{}
 )
 
-func NewMsgCreateRoute(src sdk.AccAddress, dst sdk.AccAddress, name string) *MsgCreateRoute {
+func NewMsgCreateRoute(src, dst sdk.AccAddress, name string) *MsgCreateRoute {
 	return &MsgCreateRoute{
 		Source:      src.String(),
 		Destination: dst.String(),
@@ -62,7 +62,7 @@ func (msg MsgCreateRoute) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{addr}
 }
 
-func NewMsgEditRoute(src sdk.AccAddress, dst sdk.AccAddress, value sdk.Coin) *MsgEditRoute {
+func NewMsgEditRoute(src, dst sdk.AccAddress, value sdk.Coin) *MsgEditRoute {
 	return &MsgEditRoute{
 		Source:      src.String(),
 		Destination: dst.String(),
@@ -103,7 +103,7 @@ func (msg MsgEditRoute) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{addr}
 }
 
-func NewMsgDeleteRoute(src sdk.AccAddress, dst sdk.AccAddress) *MsgDeleteRoute {
+func NewMsgDeleteRoute(src, dst sdk.AccAddress) *MsgDeleteRoute {
 	return &MsgDeleteRoute{
 		Source:      src.String(),
 		Destination: dst.String(),
@@ -140,7 +140,7 @@ func (msg MsgDeleteRoute) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{addr}
 }
 
-func NewMsgEditRouteName(src sdk.AccAddress, dst sdk.AccAddress, name string) *MsgEditRouteName {
+func NewMsgEditRouteName(src, dst sdk.AccAddress, name string) *MsgEditRouteName {
 	return &MsgEditRouteName{
 		Source:      src.String(),
 		Destination: dst.String(),

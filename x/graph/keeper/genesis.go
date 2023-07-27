@@ -5,9 +5,9 @@ import (
 	"os"
 	"path/filepath"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	"github.com/cybercongress/go-cyber/utils"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 const (

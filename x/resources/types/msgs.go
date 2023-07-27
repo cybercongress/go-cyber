@@ -1,10 +1,10 @@
 package types
 
 import (
+	ctypes "github.com/cybercongress/go-cyber/types"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-
-	ctypes "github.com/cybercongress/go-cyber/types"
 )
 
 const (

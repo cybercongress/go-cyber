@@ -38,7 +38,7 @@ func GetTokenDenom(creator, subdenom string) (string, error) {
 // DeconstructDenom takes a token denom string and verifies that it is a valid
 // denom of the tokenfactory module, and is of the form `factory/{creator}/{subdenom}`
 // If valid, it returns the creator address and subdenom
-func DeconstructDenom(denom string) (creator string, subdenom string, err error) {
+func DeconstructDenom(denom string) (creator, subdenom string, err error) {
 	err = sdk.ValidateDenom(denom)
 	if err != nil {
 		return "", "", err

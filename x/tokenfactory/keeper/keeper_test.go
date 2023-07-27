@@ -3,13 +3,14 @@ package keeper_test
 import (
 	"testing"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cybercongress/go-cyber/app/apptesting"
 	"github.com/cybercongress/go-cyber/x/tokenfactory/keeper"
 	"github.com/cybercongress/go-cyber/x/tokenfactory/testhelpers"
 	"github.com/cybercongress/go-cyber/x/tokenfactory/types"
 	"github.com/stretchr/testify/suite"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 type KeeperTestSuite struct {

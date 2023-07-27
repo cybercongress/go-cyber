@@ -25,7 +25,7 @@ type CalculationContext struct {
 
 func NewCalcContext(
 	linkIndex GraphIndexedKeeper, graphKeeper GraphKeeper,
-	stakeKeeper StakeKeeper, fullTree bool, dampingFactor float64, tolerance float64,
+	stakeKeeper StakeKeeper, fullTree bool, dampingFactor, tolerance float64,
 	cidsCount, linksCount, neuronsCount uint64,
 ) *CalculationContext {
 	return &CalculationContext{

@@ -94,7 +94,7 @@ func (t *Tree) BuildNew(data [][]byte) {
 
 		t.subTreesCount++
 
-		itemsLeft = itemsLeft - nextSubtreeLen
+		itemsLeft -= nextSubtreeLen
 		nextSubtreeLen = int64(math.Pow(2, float64(int64(math.Log2(float64(itemsLeft))))))
 		startIndex = endIndex
 		endIndex = startIndex + nextSubtreeLen

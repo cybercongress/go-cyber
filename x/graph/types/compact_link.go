@@ -14,7 +14,7 @@ type CompactLink struct {
 
 type LinkFilter func(CompactLink) bool
 
-func NewLink(from CidNumber, to CidNumber, acc AccNumber) CompactLink {
+func NewLink(from, to CidNumber, acc AccNumber) CompactLink {
 	return CompactLink{
 		From:    uint64(from),
 		To:      uint64(to),

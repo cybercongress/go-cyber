@@ -1,9 +1,10 @@
 package types
 
 import (
+	"github.com/ipfs/go-cid"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/ipfs/go-cid"
 )
 
 const (

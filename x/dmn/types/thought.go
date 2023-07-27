@@ -39,7 +39,7 @@ func (js Thoughts) Less(i, j int) bool {
 
 func (js Thoughts) Swap(i, j int) { js[i], js[j] = js[j], js[i] }
 
-//______________________________________________________________________
+// ______________________________________________________________________
 
 func NewTrigger(period, block uint64) Trigger {
 	return Trigger{

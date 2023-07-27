@@ -5,11 +5,8 @@ import (
 	"sort"
 	"time"
 
-	//"time"
-
-	"github.com/tendermint/tendermint/libs/log"
-
 	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
+	"github.com/tendermint/tendermint/libs/log"
 )
 
 type BaseSearchIndex struct {
@@ -220,7 +217,7 @@ func (i *BaseSearchIndex) extendReverseIndex(fromCidNumber uint64) {
 	}
 }
 
-func (i *BaseSearchIndex) putLinkIntoIndex(from graphtypes.CidNumber, to graphtypes.CidNumber) {
+func (i *BaseSearchIndex) putLinkIntoIndex(from, to graphtypes.CidNumber) {
 	fromLinks := i.links[uint64(from)].sortedLinks
 	rankedTo := RankedCidNumber{to, i.GetRankValue(to)}
 	pos := sort.Search(len(fromLinks), func(i int) bool { return fromLinks[i].rank < rankedTo.rank })
@@ -230,7 +227,7 @@ func (i *BaseSearchIndex) putLinkIntoIndex(from graphtypes.CidNumber, to graphty
 	i.links[uint64(from)].sortedLinks = fromLinks
 }
 
-func (i *BaseSearchIndex) putBacklinkIntoIndex(from graphtypes.CidNumber, to graphtypes.CidNumber) {
+func (i *BaseSearchIndex) putBacklinkIntoIndex(from, to graphtypes.CidNumber) {
 	toLinks := i.backlinks[uint64(to)].sortedLinks
 	rankedFrom := RankedCidNumber{from, i.GetRankValue(from)}
 	pos := sort.Search(len(toLinks), func(i int) bool { return toLinks[i].rank < rankedFrom.rank })

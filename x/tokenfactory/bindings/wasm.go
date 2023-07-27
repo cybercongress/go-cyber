@@ -2,10 +2,8 @@ package bindings
 
 import (
 	"github.com/CosmWasm/wasmd/x/wasm"
-	"github.com/cybercongress/go-cyber/x/cyberbank/keeper"
-
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
-
+	"github.com/cybercongress/go-cyber/x/cyberbank/keeper"
 	tokenfactorykeeper "github.com/cybercongress/go-cyber/x/tokenfactory/keeper"
 )
 

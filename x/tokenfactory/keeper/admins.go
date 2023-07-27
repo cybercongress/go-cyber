@@ -1,10 +1,10 @@
 package keeper
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cybercongress/go-cyber/x/tokenfactory/types"
 	"github.com/gogo/protobuf/proto"
 
-	"github.com/cybercongress/go-cyber/x/tokenfactory/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 // GetAuthorityMetadata returns the authority metadata for a specific denom
@@ -37,7 +37,7 @@ func (k Keeper) setAuthorityMetadata(ctx sdk.Context, denom string, metadata typ
 	return nil
 }
 
-func (k Keeper) setAdmin(ctx sdk.Context, denom string, admin string) error {
+func (k Keeper) setAdmin(ctx sdk.Context, denom, admin string) error {
 	metadata, err := k.GetAuthorityMetadata(ctx, denom)
 	if err != nil {
 		return err

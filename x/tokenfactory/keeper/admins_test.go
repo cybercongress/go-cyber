@@ -3,10 +3,10 @@ package keeper_test
 import (
 	"fmt"
 
+	"github.com/cybercongress/go-cyber/x/tokenfactory/types"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-
-	"github.com/cybercongress/go-cyber/x/tokenfactory/types"
 )
 
 func (suite *KeeperTestSuite) TestAdminMsgs() {

@@ -4,16 +4,15 @@ import (
 	"context"
 	"strconv"
 
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/client/flags"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cybercongress/go-cyber/types/query"
+	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
+	"github.com/cybercongress/go-cyber/x/rank/types"
 	"github.com/ipfs/go-cid"
 	"github.com/spf13/cobra"
 
-	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
-
-	"github.com/cybercongress/go-cyber/types/query"
-	"github.com/cybercongress/go-cyber/x/rank/types"
+	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/flags"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 func GetQueryCmd() *cobra.Command {

@@ -2,13 +2,45 @@ package keepers
 
 import (
 	"fmt"
-	"github.com/cybercongress/go-cyber/x/tokenfactory/bindings"
-	tokenfactorykeeper "github.com/cybercongress/go-cyber/x/tokenfactory/keeper"
-	tokenfactorytypes "github.com/cybercongress/go-cyber/x/tokenfactory/types"
 	"path/filepath"
 	"strings"
 
+
 	"github.com/CosmWasm/wasmd/x/wasm"
+	ibcfee "github.com/cosmos/ibc-go/v4/modules/apps/29-fee"
+	ibcfeekeeper "github.com/cosmos/ibc-go/v4/modules/apps/29-fee/keeper"
+	ibcfeetypes "github.com/cosmos/ibc-go/v4/modules/apps/29-fee/types"
+	"github.com/cosmos/ibc-go/v4/modules/apps/transfer"
+	ibctransferkeeper "github.com/cosmos/ibc-go/v4/modules/apps/transfer/keeper"
+	ibctransfertypes "github.com/cosmos/ibc-go/v4/modules/apps/transfer/types"
+	ibcclient "github.com/cosmos/ibc-go/v4/modules/core/02-client"
+	ibcclienttypes "github.com/cosmos/ibc-go/v4/modules/core/02-client/types"
+	porttypes "github.com/cosmos/ibc-go/v4/modules/core/05-port/types"
+	ibchost "github.com/cosmos/ibc-go/v4/modules/core/24-host"
+	ibckeeper "github.com/cosmos/ibc-go/v4/modules/core/keeper"
+	wasmplugins "github.com/cybercongress/go-cyber/plugins"
+	"github.com/cybercongress/go-cyber/x/bandwidth"
+	bandwidthkeeper "github.com/cybercongress/go-cyber/x/bandwidth/keeper"
+	bandwidthtypes "github.com/cybercongress/go-cyber/x/bandwidth/types"
+	cyberbankkeeper "github.com/cybercongress/go-cyber/x/cyberbank/keeper"
+	dmnkeeper "github.com/cybercongress/go-cyber/x/dmn/keeper"
+	dmntypes "github.com/cybercongress/go-cyber/x/dmn/types"
+	graphkeeper "github.com/cybercongress/go-cyber/x/graph/keeper"
+	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
+	gridkeeper "github.com/cybercongress/go-cyber/x/grid/keeper"
+	gridtypes "github.com/cybercongress/go-cyber/x/grid/types"
+	"github.com/cybercongress/go-cyber/x/rank"
+	rankkeeper "github.com/cybercongress/go-cyber/x/rank/keeper"
+	ranktypes "github.com/cybercongress/go-cyber/x/rank/types"
+	resourceskeeper "github.com/cybercongress/go-cyber/x/resources/keeper"
+	resourcestypes "github.com/cybercongress/go-cyber/x/resources/types"
+	"github.com/cybercongress/go-cyber/x/tokenfactory/bindings"
+	tokenfactorykeeper "github.com/cybercongress/go-cyber/x/tokenfactory/keeper"
+	tokenfactorytypes "github.com/cybercongress/go-cyber/x/tokenfactory/types"
+	liquiditykeeper "github.com/gravity-devs/liquidity/x/liquidity/keeper"
+	liquiditytypes "github.com/gravity-devs/liquidity/x/liquidity/types"
+	"github.com/spf13/cast"
+
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
@@ -44,37 +76,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/upgrade"
 	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
-	ibcfee "github.com/cosmos/ibc-go/v4/modules/apps/29-fee"
-	ibcfeekeeper "github.com/cosmos/ibc-go/v4/modules/apps/29-fee/keeper"
-	ibcfeetypes "github.com/cosmos/ibc-go/v4/modules/apps/29-fee/types"
-	"github.com/cosmos/ibc-go/v4/modules/apps/transfer"
-	ibctransferkeeper "github.com/cosmos/ibc-go/v4/modules/apps/transfer/keeper"
-	ibctransfertypes "github.com/cosmos/ibc-go/v4/modules/apps/transfer/types"
-	ibcclient "github.com/cosmos/ibc-go/v4/modules/core/02-client"
-	ibcclienttypes "github.com/cosmos/ibc-go/v4/modules/core/02-client/types"
-	porttypes "github.com/cosmos/ibc-go/v4/modules/core/05-port/types"
-	ibchost "github.com/cosmos/ibc-go/v4/modules/core/24-host"
-	ibckeeper "github.com/cosmos/ibc-go/v4/modules/core/keeper"
-	liquiditykeeper "github.com/gravity-devs/liquidity/x/liquidity/keeper"
-	liquiditytypes "github.com/gravity-devs/liquidity/x/liquidity/types"
-	"github.com/spf13/cast"
-
-	wasmplugins "github.com/cybercongress/go-cyber/plugins"
-	"github.com/cybercongress/go-cyber/x/bandwidth"
-	bandwidthkeeper "github.com/cybercongress/go-cyber/x/bandwidth/keeper"
-	bandwidthtypes "github.com/cybercongress/go-cyber/x/bandwidth/types"
-	cyberbankkeeper "github.com/cybercongress/go-cyber/x/cyberbank/keeper"
-	dmnkeeper "github.com/cybercongress/go-cyber/x/dmn/keeper"
-	dmntypes "github.com/cybercongress/go-cyber/x/dmn/types"
-	graphkeeper "github.com/cybercongress/go-cyber/x/graph/keeper"
-	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
-	gridkeeper "github.com/cybercongress/go-cyber/x/grid/keeper"
-	gridtypes "github.com/cybercongress/go-cyber/x/grid/types"
-	"github.com/cybercongress/go-cyber/x/rank"
-	rankkeeper "github.com/cybercongress/go-cyber/x/rank/keeper"
-	ranktypes "github.com/cybercongress/go-cyber/x/rank/types"
-	resourceskeeper "github.com/cybercongress/go-cyber/x/resources/keeper"
-	resourcestypes "github.com/cybercongress/go-cyber/x/resources/types"
 )
 
 type AppKeepers struct {
@@ -381,7 +382,7 @@ func NewAppKeepers(
 		scopedTransferKeeper,
 	)
 
-	// Create evidence Keeper for to register the IBC light client misbehaviour evidence route
+	// Create evidence Keeper for to register the IBC light client misbehavior evidence route
 	evidenceKeeper := evidencekeeper.NewKeeper(
 		appCodec,
 		appKeepers.keys[evidencetypes.StoreKey],

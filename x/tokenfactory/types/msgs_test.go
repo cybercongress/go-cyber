@@ -4,14 +4,13 @@ import (
 	fmt "fmt"
 	"testing"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/stretchr/testify/require"
-
 	"github.com/cybercongress/go-cyber/x/tokenfactory/testhelpers"
 	"github.com/cybercongress/go-cyber/x/tokenfactory/types"
-
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
+	"github.com/stretchr/testify/require"
 	"github.com/tendermint/tendermint/crypto/ed25519"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 )
 
 // // Test authz serialize and de-serializes for tokenfactory msg.

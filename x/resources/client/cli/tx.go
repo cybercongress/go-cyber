@@ -5,16 +5,15 @@ import (
 	"strconv"
 	"strings"
 
+	ctypes "github.com/cybercongress/go-cyber/types"
+	"github.com/cybercongress/go-cyber/x/resources/types"
+	"github.com/spf13/cobra"
+
+	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/version"
-	"github.com/spf13/cobra"
-
-	"github.com/cosmos/cosmos-sdk/client"
-
-	ctypes "github.com/cybercongress/go-cyber/types"
-	"github.com/cybercongress/go-cyber/x/resources/types"
 )
 
 func NewTxCmd() *cobra.Command {

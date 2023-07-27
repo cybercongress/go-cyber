@@ -5,11 +5,10 @@ import (
 	"runtime/debug"
 	"time"
 
-	"github.com/cosmos/cosmos-sdk/telemetry"
-
 	"github.com/cybercongress/go-cyber/x/rank/types"
-
 	"github.com/tendermint/tendermint/libs/log"
+
+	"github.com/cosmos/cosmos-sdk/telemetry"
 )
 
 func CalculateRank(ctx *types.CalculationContext, unit types.ComputeUnit, logger log.Logger) (rank types.Rank) {

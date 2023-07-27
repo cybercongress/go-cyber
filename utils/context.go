@@ -1,10 +1,11 @@
 package utils
 
 import (
-	"github.com/cosmos/cosmos-sdk/store"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	db "github.com/tendermint/tm-db"
+
+	"github.com/cosmos/cosmos-sdk/store"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 func NewContextWithMSVersion(db db.DB, version int64, keys map[string]*sdk.KVStoreKey) (sdk.Context, error) {

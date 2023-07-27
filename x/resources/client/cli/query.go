@@ -5,13 +5,13 @@ import (
 	"fmt"
 	"strconv"
 
+	ctypes "github.com/cybercongress/go-cyber/types"
+	"github.com/cybercongress/go-cyber/x/resources/types"
+	"github.com/spf13/cobra"
+
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/spf13/cobra"
-
-	ctypes "github.com/cybercongress/go-cyber/types"
-	"github.com/cybercongress/go-cyber/x/resources/types"
 )
 
 func GetQueryCmd() *cobra.Command {

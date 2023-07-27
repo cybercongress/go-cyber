@@ -3,12 +3,11 @@ package wasm
 import (
 	"encoding/json"
 
+	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
+	"github.com/cybercongress/go-cyber/x/bandwidth/keeper"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-
-	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
-
-	"github.com/cybercongress/go-cyber/x/bandwidth/keeper"
 )
 
 var _ WasmQuerierInterface = WasmQuerier{}

@@ -4,11 +4,10 @@ import (
 	"encoding/binary"
 	"io"
 
-	"github.com/cosmos/cosmos-sdk/telemetry"
-
 	"github.com/cybercongress/go-cyber/utils"
 	"github.com/cybercongress/go-cyber/x/graph/types"
 
+	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 

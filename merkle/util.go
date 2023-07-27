@@ -50,7 +50,7 @@ func sumNodes(h hash.Hash, full bool, nodes []*Node) []*Node {
 	return sumNodes(h, full, newNodes)
 }
 
-func joinNodes(h hash.Hash, full bool, left *Node, right *Node) *Node {
+func joinNodes(h hash.Hash, full bool, left, right *Node) *Node {
 	newNode := &Node{
 		firstIndex: left.firstIndex,
 		lastIndex:  right.lastIndex,

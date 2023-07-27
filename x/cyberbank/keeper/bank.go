@@ -73,7 +73,7 @@ func (pk BankProxyKeeper) InputOutputCoins(ctx sdk.Context, inputs []banktypes.I
 	return nil
 }
 
-func (pk BankProxyKeeper) SendCoins(ctx sdk.Context, fromAddr sdk.AccAddress, toAddr sdk.AccAddress, amt sdk.Coins) error {
+func (pk BankProxyKeeper) SendCoins(ctx sdk.Context, fromAddr, toAddr sdk.AccAddress, amt sdk.Coins) error {
 	err := pk.bk.SendCoins(ctx, fromAddr, toAddr, amt)
 	if err != nil {
 		return err

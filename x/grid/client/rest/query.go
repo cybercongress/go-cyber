@@ -4,13 +4,12 @@ import (
 	"fmt"
 	"net/http"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cybercongress/go-cyber/x/grid/types"
 	"github.com/gorilla/mux"
 
 	"github.com/cosmos/cosmos-sdk/client"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/rest"
-
-	"github.com/cybercongress/go-cyber/x/grid/types"
 )
 
 // RegisterRoutes defines routes that get registered by the main application.

@@ -4,12 +4,11 @@ import (
 	"fmt"
 	"testing"
 
+	wasmbinding "github.com/cybercongress/go-cyber/x/tokenfactory/bindings"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	wasmbinding "github.com/cybercongress/go-cyber/x/tokenfactory/bindings"
 )
 
 func TestFullDenom(t *testing.T) {

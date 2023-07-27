@@ -1,10 +1,11 @@
 package keeper
 
 import (
-	//"fmt"
+	// "fmt"
 	//"encoding/binary"
 	"math"
-	//"math/big"
+
+	// "math/big"
 	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
 	"github.com/cybercongress/go-cyber/x/rank/types"
 )
@@ -62,7 +63,7 @@ func calculateRankCPU(ctx *types.CalculationContext) types.EMState {
 	}
 }
 
-func step(ctx *types.CalculationContext, defaultRankWithCorrection float64, dampingFactor float64, prevrank []float64) []float64 {
+func step(ctx *types.CalculationContext, defaultRankWithCorrection, dampingFactor float64, prevrank []float64) []float64 {
 	rank := append(make([]float64, 0, len(prevrank)), prevrank...)
 
 	for cid := range ctx.GetInLinks() {
@@ -89,7 +90,7 @@ func step(ctx *types.CalculationContext, defaultRankWithCorrection float64, damp
 	return rank
 }
 
-func getOverallLinkStake(ctx *types.CalculationContext, from graphtypes.CidNumber, to graphtypes.CidNumber) uint64 {
+func getOverallLinkStake(ctx *types.CalculationContext, from, to graphtypes.CidNumber) uint64 {
 	stake := uint64(0)
 	users := ctx.GetOutLinks()[from][to]
 	for user := range users {
@@ -173,7 +174,7 @@ func entropyCalc(ctx *types.CalculationContext, entropy []float64, cidsCount int
 	}
 }
 
-func karmaCalc(ctx *types.CalculationContext, rank []float64, entropy []float64, karma []float64) {
+func karmaCalc(ctx *types.CalculationContext, rank, entropy, karma []float64) {
 	for from := range ctx.GetOutLinks() {
 		stake := getOverallOutLinksStake(ctx, from)
 		for to := range ctx.GetOutLinks()[from] {

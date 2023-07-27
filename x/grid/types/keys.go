@@ -20,7 +20,7 @@ func GetRoutedEnergyByDestinationKey(dst sdk.AccAddress) []byte {
 	return append(RoutedEnergyByDestinationKey, dst.Bytes()...)
 }
 
-func GetRouteKey(src sdk.AccAddress, dst sdk.AccAddress) []byte {
+func GetRouteKey(src, dst sdk.AccAddress) []byte {
 	return append(GetRoutesKey(src), dst.Bytes()...)
 }
 

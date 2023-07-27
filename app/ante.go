@@ -6,6 +6,13 @@ import (
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
+	ibcante "github.com/cosmos/ibc-go/v4/modules/core/ante"
+	ibckeeper "github.com/cosmos/ibc-go/v4/modules/core/keeper"
+	ctypes "github.com/cybercongress/go-cyber/types"
+	bandwidthkeeper "github.com/cybercongress/go-cyber/x/bandwidth/keeper"
+	bandwidthtypes "github.com/cybercongress/go-cyber/x/bandwidth/types"
+	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/types/tx/signing"
@@ -14,16 +21,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
-
-	ctypes "github.com/cybercongress/go-cyber/types"
-
-	wasmTypes "github.com/CosmWasm/wasmd/x/wasm/types"
-	ibcante "github.com/cosmos/ibc-go/v4/modules/core/ante"
-	ibckeeper "github.com/cosmos/ibc-go/v4/modules/core/keeper"
-
-	bandwidthkeeper "github.com/cybercongress/go-cyber/x/bandwidth/keeper"
-	bandwidthtypes "github.com/cybercongress/go-cyber/x/bandwidth/types"
-	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
 )
 
 // HandlerOptions are the options required for constructing a default SDK AnteHandler.
@@ -42,7 +39,7 @@ type HandlerOptions struct {
 
 	BandwidthMeter    *bandwidthkeeper.BandwidthMeter
 	IBCKeeper         *ibckeeper.Keeper
-	WasmConfig        *wasmTypes.WasmConfig
+	WasmConfig        *wasmtypes.WasmConfig
 	TXCounterStoreKey sdk.StoreKey
 }
 

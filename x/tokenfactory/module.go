@@ -14,23 +14,21 @@ import (
 	"fmt"
 	"math/rand"
 
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/codec"
-	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/module"
+	"github.com/cybercongress/go-cyber/x/tokenfactory/client/cli"
+	"github.com/cybercongress/go-cyber/x/tokenfactory/keeper"
+	simulation "github.com/cybercongress/go-cyber/x/tokenfactory/simulation"
+	"github.com/cybercongress/go-cyber/x/tokenfactory/types"
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
 	abci "github.com/tendermint/tendermint/abci/types"
 
+	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/codec"
+	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
-
-	simulation "github.com/cybercongress/go-cyber/x/tokenfactory/simulation"
-
-	"github.com/cybercongress/go-cyber/x/tokenfactory/client/cli"
-	"github.com/cybercongress/go-cyber/x/tokenfactory/keeper"
-	"github.com/cybercongress/go-cyber/x/tokenfactory/types"
 )
 
 var (

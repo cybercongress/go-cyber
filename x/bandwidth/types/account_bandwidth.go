@@ -13,7 +13,7 @@ func NewGenesisNeuronBandwidth(address sdk.AccAddress, bandwidth uint64) NeuronB
 	}
 }
 
-func (ab *NeuronBandwidth) UpdateMax(newValue uint64, currentBlock uint64, recoveryPeriod uint64) {
+func (ab *NeuronBandwidth) UpdateMax(newValue, currentBlock, recoveryPeriod uint64) {
 	ab.Recover(currentBlock, recoveryPeriod)
 	ab.MaxValue = newValue
 	ab.LastUpdatedBlock = currentBlock
@@ -23,7 +23,7 @@ func (ab *NeuronBandwidth) UpdateMax(newValue uint64, currentBlock uint64, recov
 	}
 }
 
-func (ab *NeuronBandwidth) Recover(currentBlock uint64, recoveryPeriod uint64) {
+func (ab *NeuronBandwidth) Recover(currentBlock, recoveryPeriod uint64) {
 	recoverPerBlock := float64(ab.MaxValue) / float64(recoveryPeriod)
 	fullRecoveryAmount := float64(ab.MaxValue - ab.RemainedValue)
 

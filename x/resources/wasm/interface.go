@@ -4,12 +4,11 @@ import (
 	"encoding/json"
 
 	"github.com/CosmWasm/wasmd/x/wasm"
+	wasmTypes "github.com/CosmWasm/wasmvm/types"
+	"github.com/cybercongress/go-cyber/x/resources/types"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-
-	wasmTypes "github.com/CosmWasm/wasmvm/types"
-
-	"github.com/cybercongress/go-cyber/x/resources/types"
 )
 
 var _ WasmMsgParserInterface = WasmMsgParser{}

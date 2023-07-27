@@ -5,10 +5,10 @@ import (
 	"fmt"
 
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
+	bindingstypes "github.com/cybercongress/go-cyber/x/tokenfactory/bindings/types"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-
-	bindingstypes "github.com/cybercongress/go-cyber/x/tokenfactory/bindings/types"
 )
 
 // CustomQuerier dispatches custom CosmWasm bindings queries.

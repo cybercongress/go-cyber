@@ -4,18 +4,17 @@ import (
 	"fmt"
 	"math"
 
-	"github.com/cosmos/cosmos-sdk/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
-	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
-
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	"github.com/tendermint/tendermint/libs/log"
-
 	ctypes "github.com/cybercongress/go-cyber/types"
 	bandwithkeeper "github.com/cybercongress/go-cyber/x/bandwidth/keeper"
 	"github.com/cybercongress/go-cyber/x/resources/types"
+	"github.com/tendermint/tendermint/libs/log"
+
+	"github.com/cosmos/cosmos-sdk/codec"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
+	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 )
 
 type Keeper struct {

@@ -7,19 +7,16 @@ import (
 	"strconv"
 	"time"
 
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-
-	"github.com/cosmos/cosmos-sdk/x/auth/keeper"
-	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
-
 	"github.com/cybercongress/go-cyber/merkle"
 	graphkeeper "github.com/cybercongress/go-cyber/x/graph/keeper"
 	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
 	"github.com/cybercongress/go-cyber/x/rank/types"
+	"github.com/tendermint/tendermint/libs/log"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	"github.com/tendermint/tendermint/libs/log"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/cosmos/cosmos-sdk/x/auth/keeper"
+	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 )
 
 type StateKeeper struct {
@@ -164,7 +161,7 @@ func (s *StateKeeper) EndBlocker(ctx sdk.Context) {
 	s.StoreLatestMerkleTree(ctx, networkMerkleTreeAsBytes)
 }
 
-func (s *StateKeeper) startRankCalculation(ctx sdk.Context, dampingFactor float64, tolerance float64) {
+func (s *StateKeeper) startRankCalculation(ctx sdk.Context, dampingFactor, tolerance float64) {
 	calcCtx := types.NewCalcContext(
 		s.graphIndexedKeeper, s.graphKeeper, s.stakeKeeper,
 		s.allowSearch, dampingFactor, tolerance,
