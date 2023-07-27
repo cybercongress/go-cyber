@@ -207,7 +207,7 @@ func (k Keeper) addCoinsToVestingSchedule(ctx sdk.Context, addr sdk.AccAddress, 
 			}
 			vacc.OriginalVesting = updatedOriginalVesting.Add(amt...)
 			vacc.VestingPeriods = updatedPeriods
-			vacc.StartTime = vacc.StartTime + shiftStartTime
+			vacc.StartTime += shiftStartTime
 		}
 	}
 
