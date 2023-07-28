@@ -38,7 +38,7 @@ func (ab *NeuronBandwidth) Recover(currentBlock, recoveryPeriod uint64) {
 
 func (ab *NeuronBandwidth) Consume(bandwidthToConsume uint64) error {
 	ab.RemainedValue -= bandwidthToConsume
-	if ab.RemainedValue < 0 {
+	if ab.RemainedValue < 1 {
 		return ErrNotEnoughBandwidth
 	}
 	return nil
