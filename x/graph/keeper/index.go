@@ -4,7 +4,7 @@ import (
 	"encoding/binary"
 	"io"
 
-	. "github.com/cybercongress/go-cyber/types"
+	cybertypes "github.com/cybercongress/go-cyber/types"
 	"github.com/cybercongress/go-cyber/utils"
 	"github.com/cybercongress/go-cyber/x/graph/types"
 	tmos "github.com/tendermint/tendermint/libs/os"
@@ -44,7 +44,7 @@ func (i *IndexKeeper) LoadState(rankCtx, freshCtx sdk.Context) {
 	i.currentRankOutLinks = outLinks
 
 	newInLinks, newOutLinks, err := i.GraphKeeper.GetAllLinksFiltered(freshCtx, func(l types.CompactLink) bool {
-		return !i.currentRankOutLinks.IsLinkExist(types.CidNumber(l.From), types.CidNumber(l.To), AccNumber(l.Account))
+		return !i.currentRankOutLinks.IsLinkExist(types.CidNumber(l.From), types.CidNumber(l.To), cybertypes.AccNumber(l.Account))
 	})
 	if err != nil {
 		tmos.Exit(err.Error())
@@ -69,8 +69,8 @@ func (i *IndexKeeper) MergeContextLinks(ctx sdk.Context) {
 	defer iterator.Close()
 	for ; iterator.Valid(); iterator.Next() {
 		link := types.UnmarshalBinaryLink(iterator.Key()[1:])
-		i.nextRankOutLinks.Put(types.CidNumber(link.From), types.CidNumber(link.To), AccNumber(link.Account))
-		i.nextRankInLinks.Put(types.CidNumber(link.To), types.CidNumber(link.From), AccNumber(link.Account))
+		i.nextRankOutLinks.Put(types.CidNumber(link.From), types.CidNumber(link.To), cybertypes.AccNumber(link.Account))
+		i.nextRankInLinks.Put(types.CidNumber(link.To), types.CidNumber(link.From), cybertypes.AccNumber(link.Account))
 		lenLinks++
 	}
 
@@ -128,8 +128,8 @@ func (i *IndexKeeper) IsAnyLinkExist(from, to types.CidNumber) bool {
 }
 
 func (i *IndexKeeper) IsLinkExist(link types.CompactLink) bool {
-	return i.currentRankOutLinks.IsLinkExist(types.CidNumber(link.From), types.CidNumber(link.To), AccNumber(link.Account)) ||
-		i.nextRankOutLinks.IsLinkExist(types.CidNumber(link.From), types.CidNumber(link.To), AccNumber(link.Account))
+	return i.currentRankOutLinks.IsLinkExist(types.CidNumber(link.From), types.CidNumber(link.To), cybertypes.AccNumber(link.Account)) ||
+		i.nextRankOutLinks.IsLinkExist(types.CidNumber(link.From), types.CidNumber(link.To), cybertypes.AccNumber(link.Account))
 }
 
 func (i *IndexKeeper) IsLinkExistInCache(ctx sdk.Context, link types.CompactLink) bool {

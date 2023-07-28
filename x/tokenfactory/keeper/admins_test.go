@@ -130,7 +130,8 @@ func (suite *KeeperTestSuite) TestBurnDenom() {
 	suite.CreateDefaultDenom()
 
 	// mint 10 default token for testAcc[0]
-	suite.msgServer.Mint(sdk.WrapSDKContext(suite.Ctx), types.NewMsgMint(suite.TestAccs[0].String(), sdk.NewInt64Coin(suite.defaultDenom, 10))) //nolint:errcheck
+	_, err := suite.msgServer.Mint(sdk.WrapSDKContext(suite.Ctx), types.NewMsgMint(suite.TestAccs[0].String(), sdk.NewInt64Coin(suite.defaultDenom, 10)))
+	suite.Require().NoError(err)
 	addr0bal += 10
 
 	for _, tc := range []struct {

@@ -434,7 +434,7 @@ func (k Keeper) ExecuteThoughtsQueue(ctx sdk.Context) {
 			price := thought.Load.GasPrice
 
 			k.Logger(ctx).Info("Started thought", "number", i, "gas price", price)
-			thoughtsTriggered = thoughtsTriggered + 1
+			thoughtsTriggered++
 
 			cacheContext, writeFn := ctx.CacheContext()
 			cacheContext = cacheContext.WithGasMeter(sdk.NewGasMeter(sdk.Gas(maxGasPerThought)))

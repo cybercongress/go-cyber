@@ -7,8 +7,6 @@ import (
 	"strings"
 
 	"github.com/cybercongress/go-cyber/x/graph/types"
-	// "github.com/cosmos/cosmos-sdk/x/auth"
-
 	"github.com/ipfs/go-cid"
 	"github.com/spf13/cobra"
 

@@ -100,8 +100,8 @@ func (bk *StateKeeper) Top(goCtx context.Context, req *querytypes.PageRequest) (
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// TODO check pagination
-	page, limit := uint32(0), uint32(100)
-	page, limit = req.Page, req.PerPage
+	page, _ := uint32(0), uint32(100)
+	page, limit := req.Page, req.PerPage
 	topRankedCidNumbers, totalSize, err := bk.index.Top(page, limit)
 	if err != nil {
 		panic(err)

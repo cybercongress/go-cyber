@@ -114,9 +114,7 @@ func GetCmdQueryThoughtStats() *cobra.Command {
 
 			res, err := queryClient.ThoughtStats(
 				context.Background(),
-				&types.QueryThoughtParamsRequest{
-					program.String(), args[1],
-				},
+				&types.QueryThoughtParamsRequest{Program: program.String(), Name: args[1]},
 			)
 			if err != nil {
 				return err

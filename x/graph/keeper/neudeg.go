@@ -62,7 +62,7 @@ func (gk *GraphKeeper) UpdateMemNeudegs(ctx sdk.Context) {
 	defer iterator.Close()
 	for ; iterator.Valid(); iterator.Next() {
 		acc := sdk.BigEndianToUint64(iterator.Key()[1:])
-		gk.neudeg[acc] = gk.neudeg[acc] + sdk.BigEndianToUint64(iterator.Value())
+		gk.neudeg[acc] += sdk.BigEndianToUint64(iterator.Value())
 	}
 }
 

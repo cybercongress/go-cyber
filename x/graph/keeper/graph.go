@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io"
 
-	. "github.com/cybercongress/go-cyber/types"
+	cybertypes "github.com/cybercongress/go-cyber/types"
 	"github.com/cybercongress/go-cyber/x/graph/types"
 	"github.com/tendermint/tendermint/libs/log"
 
@@ -64,8 +64,8 @@ func (gk GraphKeeper) GetAllLinksFiltered(ctx sdk.Context, filter types.LinkFilt
 
 	gk.IterateLinks(ctx, func(link types.CompactLink) {
 		if filter(link) {
-			types.Links(outLinks).Put(types.CidNumber(link.From), types.CidNumber(link.To), AccNumber(link.Account))
-			types.Links(inLinks).Put(types.CidNumber(link.To), types.CidNumber(link.From), AccNumber(link.Account))
+			types.Links(outLinks).Put(types.CidNumber(link.From), types.CidNumber(link.To), cybertypes.AccNumber(link.Account))
+			types.Links(inLinks).Put(types.CidNumber(link.To), types.CidNumber(link.From), cybertypes.AccNumber(link.Account))
 		}
 	})
 

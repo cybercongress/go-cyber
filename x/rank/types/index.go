@@ -108,7 +108,7 @@ func (i *BaseSearchIndex) Backlinks(cidNumber graphtypes.CidNumber, page, perPag
 	i.logger.Info("Backlinks query", "cid", cidNumber, "page", page, "perPage", perPage)
 
 	if i.locked {
-		return nil, 0, errors.New("The search index is currently unavailable after node restart")
+		return nil, 0, errors.New("the search index is currently unavailable after node restart")
 	}
 
 	if uint64(cidNumber) >= uint64(len(i.backlinks)) {
@@ -138,7 +138,7 @@ func (i *BaseSearchIndex) Backlinks(cidNumber graphtypes.CidNumber, page, perPag
 
 func (i *BaseSearchIndex) Top(page, perPage uint32) ([]RankedCidNumber, uint32, error) {
 	if i.locked {
-		return nil, 0, errors.New("The search index is currently unavailable after node restart")
+		return nil, 0, errors.New("the search index is currently unavailable after node restart")
 	}
 
 	totalSize := uint32(len(i.rank.TopCIDs))
@@ -164,7 +164,7 @@ func (i *BaseSearchIndex) handleLink(link graphtypes.CompactLink) {
 	fromIndex := i.links[link.From]
 	// in case unlock signal received we could operate on this index otherwise put link in the end of queue and finish
 	select {
-	case _ = <-fromIndex.unlockSignal:
+	case <-fromIndex.unlockSignal:
 		i.putLinkIntoIndex(graphtypes.CidNumber(link.From), graphtypes.CidNumber(link.To))
 		fromIndex.Unlock()
 		break
@@ -179,7 +179,7 @@ func (i *BaseSearchIndex) handleBacklink(link graphtypes.CompactLink) {
 	toIndex := i.backlinks[link.To]
 	// in case unlock signal received we could operate on this index otherwise put link in the end of queue and finish
 	select {
-	case _ = <-toIndex.unlockSignal:
+	case <-toIndex.unlockSignal:
 		i.putBacklinkIntoIndex(graphtypes.CidNumber(link.From), graphtypes.CidNumber(link.To))
 		toIndex.Unlock()
 		break

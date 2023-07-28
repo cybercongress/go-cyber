@@ -198,6 +198,10 @@ func queryRouteHandlerFn(cliCtx client.Context) http.HandlerFunc {
 		vars := mux.Vars(r)
 
 		src, err := sdk.AccAddressFromBech32(vars[Source])
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
+			return
+		}
 		dst, err := sdk.AccAddressFromBech32(vars[Destination])
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
