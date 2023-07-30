@@ -6,23 +6,26 @@ package types
 import (
 	context "context"
 	fmt "fmt"
+	io "io"
+	math "math"
+	math_bits "math/bits"
+
 	_ "github.com/cosmos/cosmos-sdk/types"
 	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
-	_ "github.com/gogo/protobuf/gogoproto"
+	_ "github.com/cosmos/gogoproto/gogoproto"
 	grpc1 "github.com/gogo/protobuf/grpc"
 	proto "github.com/gogo/protobuf/proto"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-	io "io"
-	math "math"
-	math_bits "math/bits"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
-var _ = proto.Marshal
-var _ = fmt.Errorf
-var _ = math.Inf
+var (
+	_ = proto.Marshal
+	_ = fmt.Errorf
+	_ = math.Inf
+)
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -44,9 +47,11 @@ func (*MsgCreateThought) ProtoMessage()    {}
 func (*MsgCreateThought) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4770788ccd571dd4, []int{0}
 }
+
 func (m *MsgCreateThought) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *MsgCreateThought) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_MsgCreateThought.Marshal(b, m, deterministic)
@@ -59,12 +64,15 @@ func (m *MsgCreateThought) XXX_Marshal(b []byte, deterministic bool) ([]byte, er
 		return b[:n], nil
 	}
 }
+
 func (m *MsgCreateThought) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_MsgCreateThought.Merge(m, src)
 }
+
 func (m *MsgCreateThought) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *MsgCreateThought) XXX_DiscardUnknown() {
 	xxx_messageInfo_MsgCreateThought.DiscardUnknown(m)
 }
@@ -82,9 +90,11 @@ func (*MsgForgetThought) ProtoMessage()    {}
 func (*MsgForgetThought) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4770788ccd571dd4, []int{1}
 }
+
 func (m *MsgForgetThought) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *MsgForgetThought) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_MsgForgetThought.Marshal(b, m, deterministic)
@@ -97,12 +107,15 @@ func (m *MsgForgetThought) XXX_Marshal(b []byte, deterministic bool) ([]byte, er
 		return b[:n], nil
 	}
 }
+
 func (m *MsgForgetThought) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_MsgForgetThought.Merge(m, src)
 }
+
 func (m *MsgForgetThought) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *MsgForgetThought) XXX_DiscardUnknown() {
 	xxx_messageInfo_MsgForgetThought.DiscardUnknown(m)
 }
@@ -121,9 +134,11 @@ func (*MsgChangeThoughtParticle) ProtoMessage()    {}
 func (*MsgChangeThoughtParticle) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4770788ccd571dd4, []int{2}
 }
+
 func (m *MsgChangeThoughtParticle) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *MsgChangeThoughtParticle) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_MsgChangeThoughtParticle.Marshal(b, m, deterministic)
@@ -136,12 +151,15 @@ func (m *MsgChangeThoughtParticle) XXX_Marshal(b []byte, deterministic bool) ([]
 		return b[:n], nil
 	}
 }
+
 func (m *MsgChangeThoughtParticle) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_MsgChangeThoughtParticle.Merge(m, src)
 }
+
 func (m *MsgChangeThoughtParticle) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *MsgChangeThoughtParticle) XXX_DiscardUnknown() {
 	xxx_messageInfo_MsgChangeThoughtParticle.DiscardUnknown(m)
 }
@@ -160,9 +178,11 @@ func (*MsgChangeThoughtName) ProtoMessage()    {}
 func (*MsgChangeThoughtName) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4770788ccd571dd4, []int{3}
 }
+
 func (m *MsgChangeThoughtName) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *MsgChangeThoughtName) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_MsgChangeThoughtName.Marshal(b, m, deterministic)
@@ -175,12 +195,15 @@ func (m *MsgChangeThoughtName) XXX_Marshal(b []byte, deterministic bool) ([]byte
 		return b[:n], nil
 	}
 }
+
 func (m *MsgChangeThoughtName) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_MsgChangeThoughtName.Merge(m, src)
 }
+
 func (m *MsgChangeThoughtName) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *MsgChangeThoughtName) XXX_DiscardUnknown() {
 	xxx_messageInfo_MsgChangeThoughtName.DiscardUnknown(m)
 }
@@ -199,9 +222,11 @@ func (*MsgChangeThoughtInput) ProtoMessage()    {}
 func (*MsgChangeThoughtInput) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4770788ccd571dd4, []int{4}
 }
+
 func (m *MsgChangeThoughtInput) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *MsgChangeThoughtInput) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_MsgChangeThoughtInput.Marshal(b, m, deterministic)
@@ -214,12 +239,15 @@ func (m *MsgChangeThoughtInput) XXX_Marshal(b []byte, deterministic bool) ([]byt
 		return b[:n], nil
 	}
 }
+
 func (m *MsgChangeThoughtInput) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_MsgChangeThoughtInput.Merge(m, src)
 }
+
 func (m *MsgChangeThoughtInput) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *MsgChangeThoughtInput) XXX_DiscardUnknown() {
 	xxx_messageInfo_MsgChangeThoughtInput.DiscardUnknown(m)
 }
@@ -238,9 +266,11 @@ func (*MsgChangeThoughtGasPrice) ProtoMessage()    {}
 func (*MsgChangeThoughtGasPrice) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4770788ccd571dd4, []int{5}
 }
+
 func (m *MsgChangeThoughtGasPrice) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *MsgChangeThoughtGasPrice) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_MsgChangeThoughtGasPrice.Marshal(b, m, deterministic)
@@ -253,12 +283,15 @@ func (m *MsgChangeThoughtGasPrice) XXX_Marshal(b []byte, deterministic bool) ([]
 		return b[:n], nil
 	}
 }
+
 func (m *MsgChangeThoughtGasPrice) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_MsgChangeThoughtGasPrice.Merge(m, src)
 }
+
 func (m *MsgChangeThoughtGasPrice) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *MsgChangeThoughtGasPrice) XXX_DiscardUnknown() {
 	xxx_messageInfo_MsgChangeThoughtGasPrice.DiscardUnknown(m)
 }
@@ -277,9 +310,11 @@ func (*MsgChangeThoughtPeriod) ProtoMessage()    {}
 func (*MsgChangeThoughtPeriod) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4770788ccd571dd4, []int{6}
 }
+
 func (m *MsgChangeThoughtPeriod) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *MsgChangeThoughtPeriod) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_MsgChangeThoughtPeriod.Marshal(b, m, deterministic)
@@ -292,12 +327,15 @@ func (m *MsgChangeThoughtPeriod) XXX_Marshal(b []byte, deterministic bool) ([]by
 		return b[:n], nil
 	}
 }
+
 func (m *MsgChangeThoughtPeriod) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_MsgChangeThoughtPeriod.Merge(m, src)
 }
+
 func (m *MsgChangeThoughtPeriod) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *MsgChangeThoughtPeriod) XXX_DiscardUnknown() {
 	xxx_messageInfo_MsgChangeThoughtPeriod.DiscardUnknown(m)
 }
@@ -316,9 +354,11 @@ func (*MsgChangeThoughtBlock) ProtoMessage()    {}
 func (*MsgChangeThoughtBlock) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4770788ccd571dd4, []int{7}
 }
+
 func (m *MsgChangeThoughtBlock) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *MsgChangeThoughtBlock) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_MsgChangeThoughtBlock.Marshal(b, m, deterministic)
@@ -331,20 +371,22 @@ func (m *MsgChangeThoughtBlock) XXX_Marshal(b []byte, deterministic bool) ([]byt
 		return b[:n], nil
 	}
 }
+
 func (m *MsgChangeThoughtBlock) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_MsgChangeThoughtBlock.Merge(m, src)
 }
+
 func (m *MsgChangeThoughtBlock) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *MsgChangeThoughtBlock) XXX_DiscardUnknown() {
 	xxx_messageInfo_MsgChangeThoughtBlock.DiscardUnknown(m)
 }
 
 var xxx_messageInfo_MsgChangeThoughtBlock proto.InternalMessageInfo
 
-type MsgCreateThoughtResponse struct {
-}
+type MsgCreateThoughtResponse struct{}
 
 func (m *MsgCreateThoughtResponse) Reset()         { *m = MsgCreateThoughtResponse{} }
 func (m *MsgCreateThoughtResponse) String() string { return proto.CompactTextString(m) }
@@ -352,9 +394,11 @@ func (*MsgCreateThoughtResponse) ProtoMessage()    {}
 func (*MsgCreateThoughtResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4770788ccd571dd4, []int{8}
 }
+
 func (m *MsgCreateThoughtResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *MsgCreateThoughtResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_MsgCreateThoughtResponse.Marshal(b, m, deterministic)
@@ -367,20 +411,22 @@ func (m *MsgCreateThoughtResponse) XXX_Marshal(b []byte, deterministic bool) ([]
 		return b[:n], nil
 	}
 }
+
 func (m *MsgCreateThoughtResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_MsgCreateThoughtResponse.Merge(m, src)
 }
+
 func (m *MsgCreateThoughtResponse) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *MsgCreateThoughtResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_MsgCreateThoughtResponse.DiscardUnknown(m)
 }
 
 var xxx_messageInfo_MsgCreateThoughtResponse proto.InternalMessageInfo
 
-type MsgForgetThoughtResponse struct {
-}
+type MsgForgetThoughtResponse struct{}
 
 func (m *MsgForgetThoughtResponse) Reset()         { *m = MsgForgetThoughtResponse{} }
 func (m *MsgForgetThoughtResponse) String() string { return proto.CompactTextString(m) }
@@ -388,9 +434,11 @@ func (*MsgForgetThoughtResponse) ProtoMessage()    {}
 func (*MsgForgetThoughtResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4770788ccd571dd4, []int{9}
 }
+
 func (m *MsgForgetThoughtResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *MsgForgetThoughtResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_MsgForgetThoughtResponse.Marshal(b, m, deterministic)
@@ -403,20 +451,22 @@ func (m *MsgForgetThoughtResponse) XXX_Marshal(b []byte, deterministic bool) ([]
 		return b[:n], nil
 	}
 }
+
 func (m *MsgForgetThoughtResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_MsgForgetThoughtResponse.Merge(m, src)
 }
+
 func (m *MsgForgetThoughtResponse) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *MsgForgetThoughtResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_MsgForgetThoughtResponse.DiscardUnknown(m)
 }
 
 var xxx_messageInfo_MsgForgetThoughtResponse proto.InternalMessageInfo
 
-type MsgChangeThoughtParticleResponse struct {
-}
+type MsgChangeThoughtParticleResponse struct{}
 
 func (m *MsgChangeThoughtParticleResponse) Reset()         { *m = MsgChangeThoughtParticleResponse{} }
 func (m *MsgChangeThoughtParticleResponse) String() string { return proto.CompactTextString(m) }
@@ -424,9 +474,11 @@ func (*MsgChangeThoughtParticleResponse) ProtoMessage()    {}
 func (*MsgChangeThoughtParticleResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4770788ccd571dd4, []int{10}
 }
+
 func (m *MsgChangeThoughtParticleResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *MsgChangeThoughtParticleResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_MsgChangeThoughtParticleResponse.Marshal(b, m, deterministic)
@@ -439,20 +491,22 @@ func (m *MsgChangeThoughtParticleResponse) XXX_Marshal(b []byte, deterministic b
 		return b[:n], nil
 	}
 }
+
 func (m *MsgChangeThoughtParticleResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_MsgChangeThoughtParticleResponse.Merge(m, src)
 }
+
 func (m *MsgChangeThoughtParticleResponse) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *MsgChangeThoughtParticleResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_MsgChangeThoughtParticleResponse.DiscardUnknown(m)
 }
 
 var xxx_messageInfo_MsgChangeThoughtParticleResponse proto.InternalMessageInfo
 
-type MsgChangeThoughtNameResponse struct {
-}
+type MsgChangeThoughtNameResponse struct{}
 
 func (m *MsgChangeThoughtNameResponse) Reset()         { *m = MsgChangeThoughtNameResponse{} }
 func (m *MsgChangeThoughtNameResponse) String() string { return proto.CompactTextString(m) }
@@ -460,9 +514,11 @@ func (*MsgChangeThoughtNameResponse) ProtoMessage()    {}
 func (*MsgChangeThoughtNameResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4770788ccd571dd4, []int{11}
 }
+
 func (m *MsgChangeThoughtNameResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *MsgChangeThoughtNameResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_MsgChangeThoughtNameResponse.Marshal(b, m, deterministic)
@@ -475,20 +531,22 @@ func (m *MsgChangeThoughtNameResponse) XXX_Marshal(b []byte, deterministic bool)
 		return b[:n], nil
 	}
 }
+
 func (m *MsgChangeThoughtNameResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_MsgChangeThoughtNameResponse.Merge(m, src)
 }
+
 func (m *MsgChangeThoughtNameResponse) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *MsgChangeThoughtNameResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_MsgChangeThoughtNameResponse.DiscardUnknown(m)
 }
 
 var xxx_messageInfo_MsgChangeThoughtNameResponse proto.InternalMessageInfo
 
-type MsgChangeThoughtInputResponse struct {
-}
+type MsgChangeThoughtInputResponse struct{}
 
 func (m *MsgChangeThoughtInputResponse) Reset()         { *m = MsgChangeThoughtInputResponse{} }
 func (m *MsgChangeThoughtInputResponse) String() string { return proto.CompactTextString(m) }
@@ -496,9 +554,11 @@ func (*MsgChangeThoughtInputResponse) ProtoMessage()    {}
 func (*MsgChangeThoughtInputResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4770788ccd571dd4, []int{12}
 }
+
 func (m *MsgChangeThoughtInputResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *MsgChangeThoughtInputResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_MsgChangeThoughtInputResponse.Marshal(b, m, deterministic)
@@ -511,20 +571,22 @@ func (m *MsgChangeThoughtInputResponse) XXX_Marshal(b []byte, deterministic bool
 		return b[:n], nil
 	}
 }
+
 func (m *MsgChangeThoughtInputResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_MsgChangeThoughtInputResponse.Merge(m, src)
 }
+
 func (m *MsgChangeThoughtInputResponse) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *MsgChangeThoughtInputResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_MsgChangeThoughtInputResponse.DiscardUnknown(m)
 }
 
 var xxx_messageInfo_MsgChangeThoughtInputResponse proto.InternalMessageInfo
 
-type MsgChangeThoughtGasPriceResponse struct {
-}
+type MsgChangeThoughtGasPriceResponse struct{}
 
 func (m *MsgChangeThoughtGasPriceResponse) Reset()         { *m = MsgChangeThoughtGasPriceResponse{} }
 func (m *MsgChangeThoughtGasPriceResponse) String() string { return proto.CompactTextString(m) }
@@ -532,9 +594,11 @@ func (*MsgChangeThoughtGasPriceResponse) ProtoMessage()    {}
 func (*MsgChangeThoughtGasPriceResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4770788ccd571dd4, []int{13}
 }
+
 func (m *MsgChangeThoughtGasPriceResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *MsgChangeThoughtGasPriceResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_MsgChangeThoughtGasPriceResponse.Marshal(b, m, deterministic)
@@ -547,20 +611,22 @@ func (m *MsgChangeThoughtGasPriceResponse) XXX_Marshal(b []byte, deterministic b
 		return b[:n], nil
 	}
 }
+
 func (m *MsgChangeThoughtGasPriceResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_MsgChangeThoughtGasPriceResponse.Merge(m, src)
 }
+
 func (m *MsgChangeThoughtGasPriceResponse) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *MsgChangeThoughtGasPriceResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_MsgChangeThoughtGasPriceResponse.DiscardUnknown(m)
 }
 
 var xxx_messageInfo_MsgChangeThoughtGasPriceResponse proto.InternalMessageInfo
 
-type MsgChangeThoughtPeriodResponse struct {
-}
+type MsgChangeThoughtPeriodResponse struct{}
 
 func (m *MsgChangeThoughtPeriodResponse) Reset()         { *m = MsgChangeThoughtPeriodResponse{} }
 func (m *MsgChangeThoughtPeriodResponse) String() string { return proto.CompactTextString(m) }
@@ -568,9 +634,11 @@ func (*MsgChangeThoughtPeriodResponse) ProtoMessage()    {}
 func (*MsgChangeThoughtPeriodResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4770788ccd571dd4, []int{14}
 }
+
 func (m *MsgChangeThoughtPeriodResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *MsgChangeThoughtPeriodResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_MsgChangeThoughtPeriodResponse.Marshal(b, m, deterministic)
@@ -583,20 +651,22 @@ func (m *MsgChangeThoughtPeriodResponse) XXX_Marshal(b []byte, deterministic boo
 		return b[:n], nil
 	}
 }
+
 func (m *MsgChangeThoughtPeriodResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_MsgChangeThoughtPeriodResponse.Merge(m, src)
 }
+
 func (m *MsgChangeThoughtPeriodResponse) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *MsgChangeThoughtPeriodResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_MsgChangeThoughtPeriodResponse.DiscardUnknown(m)
 }
 
 var xxx_messageInfo_MsgChangeThoughtPeriodResponse proto.InternalMessageInfo
 
-type MsgChangeThoughtBlockResponse struct {
-}
+type MsgChangeThoughtBlockResponse struct{}
 
 func (m *MsgChangeThoughtBlockResponse) Reset()         { *m = MsgChangeThoughtBlockResponse{} }
 func (m *MsgChangeThoughtBlockResponse) String() string { return proto.CompactTextString(m) }
@@ -604,9 +674,11 @@ func (*MsgChangeThoughtBlockResponse) ProtoMessage()    {}
 func (*MsgChangeThoughtBlockResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4770788ccd571dd4, []int{15}
 }
+
 func (m *MsgChangeThoughtBlockResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *MsgChangeThoughtBlockResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_MsgChangeThoughtBlockResponse.Marshal(b, m, deterministic)
@@ -619,12 +691,15 @@ func (m *MsgChangeThoughtBlockResponse) XXX_Marshal(b []byte, deterministic bool
 		return b[:n], nil
 	}
 }
+
 func (m *MsgChangeThoughtBlockResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_MsgChangeThoughtBlockResponse.Merge(m, src)
 }
+
 func (m *MsgChangeThoughtBlockResponse) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *MsgChangeThoughtBlockResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_MsgChangeThoughtBlockResponse.DiscardUnknown(m)
 }
@@ -700,8 +775,10 @@ var fileDescriptor_4770788ccd571dd4 = []byte{
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
-var _ context.Context
-var _ grpc.ClientConn
+var (
+	_ context.Context
+	_ grpc.ClientConn
+)
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
@@ -814,30 +891,36 @@ type MsgServer interface {
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
-type UnimplementedMsgServer struct {
-}
+type UnimplementedMsgServer struct{}
 
 func (*UnimplementedMsgServer) CreateThought(ctx context.Context, req *MsgCreateThought) (*MsgCreateThoughtResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateThought not implemented")
 }
+
 func (*UnimplementedMsgServer) ForgetThought(ctx context.Context, req *MsgForgetThought) (*MsgForgetThoughtResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ForgetThought not implemented")
 }
+
 func (*UnimplementedMsgServer) ChangeThoughtParticle(ctx context.Context, req *MsgChangeThoughtParticle) (*MsgChangeThoughtParticleResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ChangeThoughtParticle not implemented")
 }
+
 func (*UnimplementedMsgServer) ChangeThoughtName(ctx context.Context, req *MsgChangeThoughtName) (*MsgChangeThoughtNameResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ChangeThoughtName not implemented")
 }
+
 func (*UnimplementedMsgServer) ChangeThoughtInput(ctx context.Context, req *MsgChangeThoughtInput) (*MsgChangeThoughtInputResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ChangeThoughtInput not implemented")
 }
+
 func (*UnimplementedMsgServer) ChangeThoughtGasPrice(ctx context.Context, req *MsgChangeThoughtGasPrice) (*MsgChangeThoughtGasPriceResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ChangeThoughtGasPrice not implemented")
 }
+
 func (*UnimplementedMsgServer) ChangeThoughtPeriod(ctx context.Context, req *MsgChangeThoughtPeriod) (*MsgChangeThoughtPeriodResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ChangeThoughtPeriod not implemented")
 }
+
 func (*UnimplementedMsgServer) ChangeThoughtBlock(ctx context.Context, req *MsgChangeThoughtBlock) (*MsgChangeThoughtBlockResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ChangeThoughtBlock not implemented")
 }
@@ -1590,6 +1673,7 @@ func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
+
 func (m *MsgCreateThought) Size() (n int) {
 	if m == nil {
 		return 0
@@ -1829,9 +1913,11 @@ func (m *MsgChangeThoughtBlockResponse) Size() (n int) {
 func sovTx(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
+
 func sozTx(x uint64) (n int) {
 	return sovTx(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
+
 func (m *MsgCreateThought) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2044,6 +2130,7 @@ func (m *MsgCreateThought) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *MsgForgetThought) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2158,6 +2245,7 @@ func (m *MsgForgetThought) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *MsgChangeThoughtParticle) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2304,6 +2392,7 @@ func (m *MsgChangeThoughtParticle) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *MsgChangeThoughtName) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2450,6 +2539,7 @@ func (m *MsgChangeThoughtName) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *MsgChangeThoughtInput) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2596,6 +2686,7 @@ func (m *MsgChangeThoughtInput) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *MsgChangeThoughtGasPrice) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2743,6 +2834,7 @@ func (m *MsgChangeThoughtGasPrice) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *MsgChangeThoughtPeriod) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2876,6 +2968,7 @@ func (m *MsgChangeThoughtPeriod) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *MsgChangeThoughtBlock) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -3009,6 +3102,7 @@ func (m *MsgChangeThoughtBlock) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *MsgCreateThoughtResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -3059,6 +3153,7 @@ func (m *MsgCreateThoughtResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *MsgForgetThoughtResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -3109,6 +3204,7 @@ func (m *MsgForgetThoughtResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *MsgChangeThoughtParticleResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -3159,6 +3255,7 @@ func (m *MsgChangeThoughtParticleResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *MsgChangeThoughtNameResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -3209,6 +3306,7 @@ func (m *MsgChangeThoughtNameResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *MsgChangeThoughtInputResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -3259,6 +3357,7 @@ func (m *MsgChangeThoughtInputResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *MsgChangeThoughtGasPriceResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -3309,6 +3408,7 @@ func (m *MsgChangeThoughtGasPriceResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *MsgChangeThoughtPeriodResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -3359,6 +3459,7 @@ func (m *MsgChangeThoughtPeriodResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *MsgChangeThoughtBlockResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -3409,6 +3510,7 @@ func (m *MsgChangeThoughtBlockResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func skipTx(dAtA []byte) (n int, err error) {
 	l := len(dAtA)
 	iNdEx := 0

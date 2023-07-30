@@ -8,30 +8,30 @@ import "cosmos/base/v1beta1/coin.proto";
 option go_package = "github.com/cybercongress/go-cyber/x/grid/types";
 
 message Params {
-    option (gogoproto.equal)            = true;
+  option (gogoproto.equal) = true;
 
-    uint32 max_routes = 1;
+  uint32 max_routes = 1;
 }
 
 message Route {
-    option (gogoproto.equal)            = false;
-    option (gogoproto.goproto_getters)  = false;
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
 
-    string source                           = 1;
-    string destination                      = 2;
-    string name                             = 3;
-    repeated cosmos.base.v1beta1.Coin value = 4 [
-        (gogoproto.nullable) = false,
-        (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
-    ];
+  string source = 1;
+  string destination = 2;
+  string name = 3;
+  repeated cosmos.base.v1beta1.Coin value = 4 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
 }
 
 message Value {
-    option (gogoproto.equal)            = false;
-    option (gogoproto.goproto_getters)  = false;
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
 
-    repeated cosmos.base.v1beta1.Coin value = 1 [
-        (gogoproto.nullable) = false,
-        (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
-    ];
+  repeated cosmos.base.v1beta1.Coin value = 1 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
 }

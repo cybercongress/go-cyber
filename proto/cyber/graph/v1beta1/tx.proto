@@ -3,20 +3,17 @@ package cyber.graph.v1beta1;
 
 import "gogoproto/gogo.proto";
 import "cyber/graph/v1beta1/types.proto";
-import "cosmos/base/v1beta1/coin.proto";
 
 option go_package = "github.com/cybercongress/go-cyber/x/graph/types";
 
-service Msg {
-    rpc Cyberlink(MsgCyberlink) returns (MsgCyberlinkResponse);
-}
+service Msg { rpc Cyberlink(MsgCyberlink) returns (MsgCyberlinkResponse); }
 
 message MsgCyberlink {
-    option (gogoproto.equal)           = false;
-    option (gogoproto.goproto_getters) = false;
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
 
-    string   neuron                         = 1;
-    repeated cyber.graph.v1beta1.Link links = 2 [(gogoproto.nullable) = false];
+  string neuron = 1;
+  repeated cyber.graph.v1beta1.Link links = 2 [ (gogoproto.nullable) = false ];
 }
 
 message MsgCyberlinkResponse {}

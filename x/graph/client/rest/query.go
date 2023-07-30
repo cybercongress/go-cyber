@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/types/rest"
+	"github.com/cybercongress/go-cyber/x/graph/types"
 	"github.com/gorilla/mux"
 
-	"github.com/cybercongress/go-cyber/x/graph/types"
+	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/types/rest"
 )
 
 func registerQueryRoutes(cliCtx client.Context, r *mux.Router) {

@@ -9,12 +9,11 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/cosmos/iavl"
 	"github.com/spf13/cobra"
 	goleveldb "github.com/syndtr/goleveldb/leveldb"
 	"github.com/syndtr/goleveldb/leveldb/util"
 	dbm "github.com/tendermint/tm-db"
-
-	"github.com/cosmos/iavl"
 )
 
 const (
@@ -227,7 +226,7 @@ var pruneCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		db, _ := goleveldb.OpenFile(home+"/application.db", nil)
 		defer db.Close()
-		_ = db.CompactRange(util.Range{nil, nil})
+		_ = db.CompactRange(util.Range{Start: nil, Limit: nil})
 	},
 }
 
@@ -282,7 +281,7 @@ func GetTree(db dbm.DB, name string) (*iavl.MutableTree, error) {
 
 func PrintKeys(tree *iavl.MutableTree, hashing bool) {
 	fmt.Println("Printing all keys with hashed values (to detect diff)")
-	tree.Iterate(func(key []byte, value []byte) bool {
+	_, err := tree.Iterate(func(key, value []byte) bool {
 		if hashing {
 			printKey := parseWeaveKey(key)
 			digest := sha256.Sum256(value)
@@ -292,6 +291,9 @@ func PrintKeys(tree *iavl.MutableTree, hashing bool) {
 		}
 		return false
 	})
+	if err != nil {
+		panic(err)
+	}
 }
 
 // parseWeaveKey assumes a separating : where all in front should be ascii,

@@ -2,14 +2,15 @@ package keeper
 
 import (
 	"context"
-	"github.com/armon/go-metrics"
-	"github.com/cosmos/cosmos-sdk/telemetry"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	ctypes "github.com/cybercongress/go-cyber/types"
 	"strconv"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/armon/go-metrics"
+	ctypes "github.com/cybercongress/go-cyber/types"
 	"github.com/cybercongress/go-cyber/x/resources/types"
+
+	"github.com/cosmos/cosmos-sdk/telemetry"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 type msgServer struct {
@@ -39,7 +40,7 @@ func (k msgServer) Investmint(goCtx context.Context, msg *types.MsgInvestmint) (
 		}
 	}
 
-	err, minted := k.ConvertResource(ctx, neuron, msg.Amount, msg.Resource, msg.Length)
+	minted, err := k.ConvertResource(ctx, neuron, msg.Amount, msg.Resource, msg.Length)
 	if err != nil {
 		return nil, err
 	}

@@ -5,15 +5,14 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/cosmos/cosmos-sdk/client"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cybercongress/go-cyber/x/rank/types"
 	"github.com/gorilla/mux"
 	"github.com/ipfs/go-cid"
 
-	//"github.com/cosmos/cosmos-sdk/client/context"
+	"github.com/cosmos/cosmos-sdk/client"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	// "github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/types/rest"
-
-	"github.com/cybercongress/go-cyber/x/rank/types"
 )
 
 func registerQueryRoutes(cliCtx client.Context, r *mux.Router) {
@@ -51,7 +50,6 @@ func registerQueryRoutes(cliCtx client.Context, r *mux.Router) {
 
 func queryParamsHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-
 		route := fmt.Sprintf("custom/%s/%s", types.QuerierRoute, types.QueryParameters)
 
 		res, height, err := cliCtx.QueryWithData(route, nil)
@@ -453,5 +451,3 @@ func queryKarmaHandlerFn(cliCtx client.Context) http.HandlerFunc {
 		rest.PostProcessResponse(w, cliCtx, res)
 	}
 }
-
-
