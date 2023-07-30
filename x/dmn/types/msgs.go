@@ -1,20 +1,18 @@
 package types
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/ipfs/go-cid"
-
-	//sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-
 	"github.com/cybercongress/go-cyber/types"
 	graph "github.com/cybercongress/go-cyber/x/graph/types"
+	"github.com/ipfs/go-cid"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 const (
-	TypeMsgCreateThought 		 = "create_thought"
-	TypeMsgForgetThought 		 = "forget_thought"
-	TypeMsgChangeThoughtName 	 = "change_thought_name"
+	TypeMsgCreateThought         = "create_thought"
+	TypeMsgForgetThought         = "forget_thought"
+	TypeMsgChangeThoughtName     = "change_thought_name"
 	TypeMsgChangeThoughtParticle = "change_thought_particle"
 	TypeMsgChangeThoughtInput    = "change_thought_input"
 	TypeMsgChangeThoughtGasPrice = "change_thought_gas_price"
@@ -40,14 +38,14 @@ func NewMsgCreateThought(
 
 func (msg MsgCreateThought) Route() string { return RouterKey }
 
-func (msg MsgCreateThought) Type() string  { return TypeMsgCreateThought }
+func (msg MsgCreateThought) Type() string { return TypeMsgCreateThought }
 
 func (msg MsgCreateThought) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Program)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid program address (%s)", err)
 	}
-	if msg.Load.Input == "" || len(msg.Load.Input) > 512 {
+	if msg.Load.Input == "" || len(msg.Load.Input) > 2048 {
 		return ErrBadCallData
 	}
 	if msg.Load.GasPrice.Denom != types.CYB {
@@ -56,10 +54,10 @@ func (msg MsgCreateThought) ValidateBasic() error {
 	if !msg.Load.GasPrice.Amount.IsPositive() {
 		return ErrBadGasPrice
 	}
-	if (msg.Trigger.Period == 0 && msg.Trigger.Block == 0) {
+	if msg.Trigger.Period == 0 && msg.Trigger.Block == 0 {
 		return ErrBadTrigger
 	}
-	if (msg.Trigger.Period > 0 && msg.Trigger.Block > 0) {
+	if msg.Trigger.Period > 0 && msg.Trigger.Block > 0 {
 		return ErrBadTrigger
 	}
 	if msg.Name == "" || len(msg.Name) > 32 {
@@ -89,18 +87,18 @@ func (msg MsgCreateThought) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{addr}
 }
 
-//______________________________________________________________________
+// ______________________________________________________________________
 
 func NewMsgForgetThought(program sdk.AccAddress, label string) *MsgForgetThought {
 	return &MsgForgetThought{
-		Program:  program.String(),
-		Name: label,
+		Program: program.String(),
+		Name:    label,
 	}
 }
 
 func (msg MsgForgetThought) Route() string { return RouterKey }
 
-func (msg MsgForgetThought) Type() string  { return TypeMsgForgetThought }
+func (msg MsgForgetThought) Type() string { return TypeMsgForgetThought }
 
 func (msg MsgForgetThought) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Program)
@@ -132,9 +130,9 @@ func NewMsgChangeThoughtName(
 	name, newName string,
 ) *MsgChangeThoughtName {
 	return &MsgChangeThoughtName{
-		Program:  program.String(),
-		Name:     name,
-		NewName:  newName,
+		Program: program.String(),
+		Name:    name,
+		NewName: newName,
 	}
 }
 
@@ -176,8 +174,8 @@ func NewMsgChangeThoughtParticle(
 	cid string,
 ) *MsgChangeThoughtParticle {
 	return &MsgChangeThoughtParticle{
-		Program: program.String(),
-		Name: label,
+		Program:  program.String(),
+		Name:     label,
 		Particle: cid,
 	}
 }
@@ -242,7 +240,7 @@ func (msg MsgChangeThoughtInput) ValidateBasic() error {
 	if msg.Name == "" || len(msg.Name) > 32 {
 		return ErrBadName
 	}
-	if msg.Input == "" || len(msg.Input) > 512 {
+	if msg.Input == "" || len(msg.Input) > 2048 {
 		return ErrBadCallData
 	}
 
@@ -269,7 +267,7 @@ func NewMsgChangeThoughtGasPrice(
 ) *MsgChangeThoughtGasPrice {
 	return &MsgChangeThoughtGasPrice{
 		Program:  program.String(),
-		Name :    name,
+		Name:     name,
 		GasPrice: gasprice,
 	}
 }
@@ -315,9 +313,9 @@ func NewMsgChangeThoughtPeriod(
 	period uint64,
 ) *MsgChangeThoughtPeriod {
 	return &MsgChangeThoughtPeriod{
-		Program:  program.String(),
-		Name:	  name,
-		Period:   period,
+		Program: program.String(),
+		Name:    name,
+		Period:  period,
 	}
 }
 
@@ -359,9 +357,9 @@ func NewMsgChangeThoughtBlock(
 	block uint64,
 ) *MsgChangeThoughtBlock {
 	return &MsgChangeThoughtBlock{
-		Program:  program.String(),
-		Name :    name,
-		Block:    block,
+		Program: program.String(),
+		Name:    name,
+		Block:   block,
 	}
 }
 

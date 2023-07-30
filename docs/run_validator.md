@@ -3,15 +3,15 @@
 
 ## Prepare your server
 
-First of all, you should set up a server.
+First, you should set up a server.
 Your node should be online constantly. This means that you will need a reliable server.
-You may also consider using any cloud service with a dedicated GPU, like Hetzner, Cherryservers etc. (or use a local machine). Whatever you'll choose, for better stability and consistency we recommend to use a dedicated server for each validator node.
+You may also consider using any cloud service with a dedicated GPU, like Hetzner, Cherryservers etc. (or use a local machine). Whatever you choose, in order to achieve better stability and consistency we recommend you use a dedicated server for each validator node.
 
 Cyber is based on Cosmos-SDK and is written in Go.
 It should work on any platform which can compile and run programs in Go.
-However, we strongly recommend running the validator node on a Linux-based server.
+We strongly recommend running the validator node on a Linux-based server.
 
-Cyber-rank computations are performed on GPU, so it is required to have it(GPU) on-board your node.
+Cyber-rank computations are performed on GPU, so it is required to have it (GPU) on-board your node.
 
 Recommended hardware setup:
 
@@ -24,23 +24,23 @@ GPU: Nvidia GeForce (or Tesla/Titan/Quadro) with CUDA-cores; 4+ Gb of video memo
 Software: Ubuntu 18.04 LTS / 20.04 LTS
 ```
 
-*Cyber runs well on consumer-grade cards like Geforce GTX 1070, but we expect load growth and advise to use Error Correction compatible cards from Tesla or Quadro families. Also, make sure your card is compatible with >= v.410 of NVIDIA driver.*
+*Cyber runs well on consumer-grade cards like Geforce GTX 1070, but we expect load growth and advise you use Error Correction compatible cards from Tesla or Quadro families. Also, make sure your card is compatible with >= v.410 of NVIDIA driver.*
 
-Of course, the hardware is your own choice and technically it might be possible to run the node on *"even - 1 CUDA core GPU"*, but you should be aware of performance drop and rank calculation speed decline.
+Of course the hardware is your own choice and technically it might be possible to run the node on *"even - 1 CUDA core GPU"*, but you should be aware of performance drop and rank calculation speed decline.
 
 ## Node setup
 
-*To avoid possible misconfiguration issues and simplify the setup of `$ENV`, we recommend to perform all the commands as `root` (here root - is literally root, not just a user with root priveliges). For the case of dedicated server for cybernode it should be concidered as ok from the security side.*
+*To avoid possible misconfiguration issues and simplify the setup of `$ENV`, we recommend to perform all the commands as `root` (here root - is literally root, not just a user with root priveliges). For the case of a dedicated server for cybernode it should be concidered as ok from the security side.*
 
 ### Third-party software
 
 The main distribution unit for Cyber is a [docker](https://www.docker.com/) container. All images are located in the default [Dockerhub registry](https://hub.docker.com/r/cyberd/cyber). In order to access the GPU from the container, Nvidia driver version **410+** and [Nvidia docker runtime](https://github.com/NVIDIA/nvidia-docker) should be installed on the host system.
 
-All commands below suppose `amd64` arcitecture, for the different arcitectures commands may differ accordingly.
+All commands below suppose `amd64` architecture, as the different architectures commands may differ accordingly.
 
 ### Docker installation
 
-Simply, copy the commands below and paste into CLI.
+Simply copy the commands below and paste into CLI.
 
 1. Update the `apt` package index:
 
@@ -84,12 +84,6 @@ sudo apt update
 sudo apt-get install docker-ce docker-ce-cli containerd.io
 ```
 
-6. Reboot the system for the changes to take effect.
-
-```bash
-sudo reboot
-```
-
 ### Installing Nvidia drivers
 
 1. To proceed, first add the `ppa:graphics-drivers/ppa` repository:
@@ -128,13 +122,13 @@ driver   : nvidia-driver-460 - third-party free recommended
 driver   : xserver-xorg-video-nouveau - distro free builtin
 ```
 
-4. We need the **410+** drivers release. As you can see that v460 is recommended. The command below will install the recommended version of the drivers:
+4. We need the **410+** drivers release. As you can see the v460 is recommended. The command below will install the recommended version of the drivers:
 
 ```bash
 sudo ubuntu-drivers autoinstall
 ```
 
-To install specific version of driver use `sudo apt install nvidia-driver-460`
+To install specific version of a driver use `sudo apt install nvidia-driver-460`
 
 
 The driver installation takes approximately 10 minutes.
@@ -231,13 +225,13 @@ sudo systemctl restart docker
 3. Test nvidia-smi with the latest official CUDA image
 
 ```bash
-docker run --gpus all nvidia/cuda:11.1-base nvidia-smi
+docker run --gpus all nvidia/cuda:11.4.0-base nvidia-smi
 ```
 
 Output logs should coincide as earlier:
 
 ```bash
-Unable to find image 'nvidia/cuda:11.1-base' locally
+Unable to find image 'nvidia/cuda:11.4.0-base' locally
 11.1-base: Pulling from nvidia/cuda
 54ee1f796a1e: Pull complete 
 f7bfea53ad12: Pull complete 
@@ -250,7 +244,7 @@ Digest: sha256:774ca3d612de15213102c2dbbba55df44dc5cf9870ca2be6c6e9c627fa63d67a
 Status: Downloaded newer image for nvidia/cuda:11.1-base
 Mon Jun 21 14:07:52 2021 
 +------------------------------------------------------------------------+
-|NVIDIA-SMI 460.84      Driver Version:460.84      CUDA Version: 11.2    |
+|NVIDIA-SMI 460.84      Driver Version:460.84      CUDA Version: 11.4    |
 |-----------------------------+--------------------+---------------------+
 |GPU  Name       Persistence-M| Bus-Id       Disp.A| Volatile Uncorr. ECC|
 |Fan  Temp  Perf Pwr:Usage/Cap|        Memory-Usage| GPU-Util  Compute M.|
@@ -284,12 +278,14 @@ mkdir $HOME/.cyber/config
 ```
 
 
-2. Run the fullnode:
+2. Run the full node:
 (This will pull and extract the image from cyberd/cyber)
 
 ```bash
-docker run -d --gpus all --name=bostrom --restart always -p 26656:26656 -p 26657:26657 -p 1317:1317 -e ALLOW_SEARCH=true -v $HOME/.cyber:/root/.cyber  cyberd/cyber:bostrom-1
+docker run -d --gpus all --name=bostrom --restart always -p 26656:26656 -p 26657:26657 -p 1317:1317 -e ALLOW_SEARCH=true -v $HOME/.cyber:/root/.cyber  cyberd/bostrom:dragonberry-cuda11.4
 ```
+
+Docker image already contain all binaries to either sync from 0 or start form snapshot.
 
 3. Setup some peers to `persistent_peers` and `seeds` to $HOME/.cyber/config/config.toml line 184:
 
@@ -302,7 +298,7 @@ seeds = ""
 persistent_peers = ""
 ```
 
-For peers addresses please refer to appropriate section of [networks](https://github.com/cybercongress/networks) repo.
+For peers addresses please refer to appropriate section of the [networks](https://github.com/cybercongress/networks) repo.
 When done, please restart container using:
 
 4. To apply config changes restart the container:
@@ -339,7 +335,7 @@ After your node has successfully synced, you can run a validator.
 
 ### Prepare the staking address
 
-1. To proceed further you need to add your existing address to the node, or generete one and fund it. 
+1. To proceed further you need to add your existing address to the node or generate one and fund it. 
 
 To **create** a new one use:
 
@@ -350,7 +346,7 @@ docker exec -ti bostrom cyber keys add <your_key_name>
 The above command returns the address, the public key and the seed phrase, which you can use to
 recover your account if you forget your password later.
 
-**Keep you seed phrase safe. Your keys is only your responsibility!**
+**Keep you seed phrase safe. Your keys are only your responsibility!**
 
 To **import** existing address use: 
 
@@ -358,14 +354,14 @@ To **import** existing address use:
 docker exec -ti bostrom cyber keys add <your_key_name> --recover
 ```
 
-You could use your **ledger** device with the Cosmos app installed on it to sign transactions. Add address from Ledger:
+You can use your **ledger** device with the Cosmos app installed on it to sign transactions. Add address from Ledger:
 
 ```bash
 docker exec -ti bostrom cyber keys add <your_key_name> --ledger
 ```
 
 **<your_key_name>** is any name you pick to represent this key pair.
-You have to refer to that name later, when you use cli to sign transactions.
+You have to refer to that name later when you use cli to sign transactions.
 
 ### Send the create validator transaction
 
@@ -386,8 +382,8 @@ docker exec -ti bostrom cyber tx staking create-validator \
   --commission-max-rate="0.20" \
   --commission-max-change-rate="0.01" \
   --chain-id=bostrom \
-  --gas-prices 0.01boot \
-  --gas 600000
+  --gas-prices=0.01boot \
+  --gas=600000
 ```
 
 ### Verify that you are validating
@@ -396,7 +392,7 @@ docker exec -ti bostrom cyber tx staking create-validator \
 docker exec -ti bostrom cyber query staking validators
 ```
 
-If you see your `<your_node_nickname>` with status `Bonded` and Jailed `false` everything is good.
+If you see your `<your_node_nickname>` with the status `Bonded` and Jailed `false` everything is good.
 You are validating the network.
 
 ## Maintenance of the validator
@@ -404,19 +400,19 @@ You are validating the network.
 ### Jailing
 
 If your validator got under slashing conditions, it will be jailed.
-After such event, an operator must unjail the validator manually:
+After such an event an operator must unjail the validator manually:
 
 ```bash
-docker exec -ti bostrom cyber tx slashing unjail --from=<your_key_name> --chain-id bostrom --gas-prices 0.01boot --gas 300000
+docker exec -ti bostrom cyber tx slashing unjail --from=<your_key_name> --chain-id=bostrom --gas-prices=0.01boot --gas=300000
 ```
 
 ### Back-up validator keys (!)
 
-Your identity as validator consists of two things: 
+Your identity as a validator consists of two things: 
 
 - your account (to sign transactions)
-- your validator private key (to sign stuff on chain consensus layer)
+- your validator private key (to sign stuff on the chain consensus layer)
 
-Please back up `$HOME/.cyber/config/priv_validator_key.json` along with your seed phrase. In case of occasional node loss you would be able to restore you validator operation with this file and another full node.
+Please back up `$HOME/.cyber/config/priv_validator_key.json` along with your seed phrase. In case of occasional node loss you would be able to restore your validator operation with this file and another full node.
 
-Also, in case if want to keep your cyber node ID consistent during networks please backup `$HOME/.cyber/config/node_key.json`.
+Finally, in case you want to keep your cyber node ID consistent during networks please backup `$HOME/.cyber/config/node_key.json`.

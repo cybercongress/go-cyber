@@ -3,13 +3,13 @@ package keeper
 import (
 	"context"
 
-	"github.com/cosmos/cosmos-sdk/store/prefix"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/query"
+	"github.com/cybercongress/go-cyber/x/grid/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/cybercongress/go-cyber/x/grid/types"
+	"github.com/cosmos/cosmos-sdk/store/prefix"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/query"
 )
 
 var _ types.QueryServer = Keeper{}
@@ -154,7 +154,7 @@ func (k Keeper) Routes(goCtx context.Context, request *types.QueryRoutesRequest)
 
 	store := ctx.KVStore(k.storeKey)
 	routesStore := prefix.NewStore(store, types.RouteKey)
-	pageRes, err := query.Paginate(routesStore, request.Pagination, func(key []byte, value []byte) error {
+	pageRes, err := query.Paginate(routesStore, request.Pagination, func(key, value []byte) error {
 		route, err := types.UnmarshalRoute(k.cdc, value)
 		if err != nil {
 			return err

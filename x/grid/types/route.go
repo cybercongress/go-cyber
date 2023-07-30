@@ -6,7 +6,7 @@ import (
 )
 
 // NewRoute creates a new route object
-func NewRoute(src sdk.AccAddress, dst sdk.AccAddress, name string, value sdk.Coins) Route {
+func NewRoute(src, dst sdk.AccAddress, name string, value sdk.Coins) Route {
 	return Route{
 		Source:      src.String(),
 		Destination: dst.String(),

@@ -1,3 +1,4 @@
+# Semantic non-deterministic Superintelligence consensus computer
 # Cyber - SuperIntelligence for The Great Web
 
 <div align="center">
@@ -13,11 +14,11 @@
 </div>
 
 <div align="center">
- <h3>Whitepaper - <a href="https://ipfs.io/ipfs/QmQ1Vong13MDNxixDyUdjniqqEj8sjuNEBYMyhQU4gQgq3">cyber: Computing the knowledge of the Great Web</a></h3>
+ <h3>Whitepaper - <a href="https://github.com/cybercongress/cyber/blob/master/computing-the-knowledge/computing-the-knowledge.md">cyber: Computing the knowledge of the Great Web</a></h3>
 </div>
 
 <div align="center">
- <h3>Join us, Hero - <a href="https://github.com/cybercongress/go-cyber/blob/bostrom-dev/docs/run_validator.md">Setup validator guide</a></h3>
+ <h3>Join us, Hero - <a href="https://github.com/cybercongress/go-cyber/blob/main/docs/run_validator.md">Setup validator guide</a></h3>
 </div>
 
 <div align="center">
@@ -31,7 +32,6 @@
 <div align="center">
  <h3><b>go-cyber is golang implementation of cyber <a href="https://github.com/cybercongress/cyber">protocol</a></b></h3>
 </div>
-
 _____________
 
 ## Code
@@ -40,30 +40,31 @@ _____________
 [![CircleCI](https://img.shields.io/circleci/build/github/cybercongress/go-cyber/master?style=flat-square)](https://circleci.com/gh/cybercongress/workflows/go-cyber/tree/master)
 [![license](https://img.shields.io/badge/License-Cyber-brightgreen.svg?style=flat-square)](https://github.com/cybercongress/cyberd/blob/master/LICENSE)
 [![contributors](https://img.shields.io/github/contributors/cybercongress/cyberd.svg?style=flat-square)](https://github.com/cybercongress/cyberd/graphs/contributors)
-![Cosmos-SDK](https://img.shields.io/static/v1.svg?label=cosmos-sdk&message=0.44.3&color=blue&style=flat-square)
-![Tendermint](https://img.shields.io/static/v1.svg?label=tendermint&message=0.34.14&color=blue&style=flat-square)
-![CosmWasm](https://img.shields.io/static/v1.svg?label=cosmwasm&message=1.0.0-beta&color=blue&style=flat-square)
-![IBC](https://img.shields.io/static/v1.svg?label=ibc-go&message=1.2.2&color=blue&style=flat-square)
-![Liquidity](https://img.shields.io/static/v1.svg?label=liquidity&message=1.4.1&color=blue&style=flat-square)
+![Cosmos-SDK](https://img.shields.io/static/v1.svg?label=cosmos-sdk&message=0.45.6&color=blue&style=flat-square)
+![Tendermint](https://img.shields.io/static/v1.svg?label=tendermint&message=0.34.19&color=blue&style=flat-square)
+![IBC](https://img.shields.io/static/v1.svg?label=ibc-go&message=3.1.0&color=blue&style=flat-square)
+![CosmWasm](https://img.shields.io/static/v1.svg?label=cosmwasm&message=1.0.0&color=blue&style=flat-square)
+![WASMD](https://img.shields.io/static/v1.svg?label=wasmd&message=0.27.0&color=blue&style=flat-square)
+![Liquidity](https://img.shields.io/static/v1.svg?label=liquidity&message=1.5.1&color=blue&style=flat-square)
 [![LoC](https://tokei.rs/b1/github/cybercongress/cyberd?style=flat)](https://github.com/cybercongress/cyberd)
 [![contributors](https://img.shields.io/github/contributors/cybercongress/cyberd.svg?style=flat-square)](https://github.com/cybercongress/cyberd/graphs/contributors)
 [![Coverage Status](https://img.shields.io/coveralls/github/cybercongress/cyberd/master?style=flat-square)](https://coveralls.io/github/cybercongress/cyberd?branch=master)
 
 ## Blockchain
 
-[![chain](https://img.shields.io/badge/Chain-bostrom-success.svg?style=flat-square)](https://github.com/cybercongress/cyberd/blob/master/docs/run_validator.md)
+[![chain](https://img.shields.io/badge/Chain-bostrom-success.svg?style=flat-square)](https://github.com/cybercongress/go-cyber/blob/main/docs/run_validator.md)
 [![block](https://img.shields.io/badge/dynamic/json?color=blue&label=Block%20Height&query=%24.result.sync_info.latest_block_height&url=https://rpc.bostrom.cybernode.ai/status&style=flat-square)]()
 [![cyberlinks](https://img.shields.io/badge/dynamic/json?color=blue&label=Cyberlinks&query=%24.result.cyberlinks&url=https://lcd.bostrom.cybernode.ai/graph/graph_stats&style=flat-square)]()
 [![particles](https://img.shields.io/badge/dynamic/json?color=blue&label=Particles&query=%24.result.particles&url=https://lcd.bostrom.cybernode.ai/graph/graph_stats&style=flat-square)]()
-[![negentropy](https://img.shields.io/badge/dynamic/json?color=blue&label=-Entropy&query=%24.result.negentropy&url=https://lcd.bostrom.cybernode.ai/rank/negentropy&style=flat-square)]()
-[![validators](https://img.shields.io/badge/dynamic/json?label=Validators&query=%24.result.validators.length&url=https://rpc.bostrom.cybernode.ai/validators%3F&style=flat-square)]()
+[![negentropy](https://img.shields.io/badge/dynamic/json?color=blue&label=Entropy&query=%24.result.negentropy&url=https://lcd.bostrom.cybernode.ai/rank/negentropy&style=flat-square)]()
+[![validators](https://img.shields.io/badge/dynamic/json?label=Validators&query=%24.result.total&url=https://rpc.bostrom.cybernode.ai/validators%3F&style=flat-square)]()
 _________________________________________________________
 
 ## Networks
 |Network|Cosmos|Hub|Launch|Security Token| Resources Token|Bandwidth Token| Power Token | Supported Tokens |
 |---|---|---|---|---|---|---|---|---|
-|Bostrom|🟢|Canary -> Bootloader Hub|2021|BOOT |HYDROGEN|VOLT|AMPER|[ICS20, CW20, CW721, CW1155]|
-|Cyber|🔵|Cyber Hub|TBA|CYB|HYDROGEN|VOLT|AMPER|[ICS20, CW20, CW721, CW1155]|
+|Bostrom|🟢|Canary -> Bootloader Hub|2021|BOOT |HYDROGEN|VOLT|AMPERE|ICS20|
+|Cyber|🔵|Cyber Hub|TBA|CYB|HYDROGEN|VOLT|AMPERE|ICS20|
 _________________________________________________________
 
 ## Computer Specification 🛠
@@ -102,11 +103,6 @@ _________________________________________________________
 **Try [cyb.ai](https://cyb.ai) on bostrom network**
 _________________________________________________________
 
-## ELI-5
-
-![ELI-5](https://github.com/litvintech/rank-sandbox/blob/eli5/eli5.gif)
-_________________________________________________________
-
 ## Setup
 
 Chain-ID: bostrom
@@ -117,8 +113,9 @@ Build: ```make install```
 
 Run: ```cyber start ```
 
+To use as CLI with remote node:
 ```
-To use as CLI with remote node just set CUDA_ENABLED=false in Makefile and build
+make install SOFTWARE_2_ENABLED=false
 ```
 
 - Version - v0.2.0
@@ -127,7 +124,6 @@ To use as CLI with remote node just set CUDA_ENABLED=false in Makefile and build
 - CLI: `... --node=https://rpc.bostrom.cybernode.ai:443`
 - Seed: `d0518ce9881a4b0c5872e5e9b7c4ea8d760dad3f@85.10.207.173:26656`
 - Peers: `5d542c0eb40ae48dc2cac0c140aedb605ded77dc@195.201.105.229:26656,a7226dce9f543a4ecd8db1da2ffd7be05d40d3ad@185.186.208.36:26656,c72de1e20beed51b779d89b1cf08d8146016eec4@185.186.208.37:26656,4c130ed1c58f6d6be981c59a748511e581969c51@93.180.175.201:36656`
-
 _________________________________________________________
 
 ## IBC
@@ -154,7 +150,7 @@ trust_threshold = { numerator = '1', denominator = '3' }
 ```
 _________________________________________________________
 
-### Basic operations
+## Basic operations
 
 ### Follow Hero and get HYDROGEN:
 ```
@@ -176,10 +172,34 @@ curl https://lcd.bostrom.cybernode.ai/rank/search?cid=QmdVWtX17m7UvF8FcvNLTJxcpx
 ```
 _________________________________________________________
 
-## Connect:
+## Documentation
+
+1. **[Run validator guide](docs/run_validator.md)**
+2. **[Use CLI guide](docs/ultimate-commands-guide.md)**
+3. **[Setup daemon config guide](docs/setup_cyber_configuration.md)**
+4. **[Setup local dev environment guide](docs/setup_dev_env.md)**
+5. **Deploy contract guide**
+6. **Create proposal guide**
+7. **[Supported GPUs list](docs/supported_gpu_list.md)**
+8. **Network upgrade guide**
+9. **[Keystore guide](docs/keystore.md)**
+10. **[Multisig guide](docs/multisig_guide.md)**
+11. **[Ledger guide](docs/cyber_Ledger_guide.md)**
+12. **Tendermint KMS guide**
+
+13. **Modules documentation**
+    - **graph**
+    - **rank**
+    - **[bandwidth](x/bandwidth/spec/README.md)**
+    - **[cyberbank](x/cyberbank/spec/README.md)**
+    - **[resources](x/resources/spec/README.md)**
+    - **dmn**
+    - **staking**
+_________________________________________________________
+
+## Connect
 - [Cyber English Community](https://t.me/fuckgoogle)
 - [Cyber Russian Community](https://t.me/cyber_russian_community)
-
 _________________________________________________________
 
 ## Cyber vs Corps

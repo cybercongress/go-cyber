@@ -3,14 +3,13 @@ package cli
 import (
 	"fmt"
 
-	"github.com/cosmos/cosmos-sdk/client/tx"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cybercongress/go-cyber/x/grid/types"
 	"github.com/spf13/cobra"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
-
-	"github.com/cybercongress/go-cyber/x/grid/types"
+	"github.com/cosmos/cosmos-sdk/client/tx"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 // GetTxCmd returns the transaction commands for this module

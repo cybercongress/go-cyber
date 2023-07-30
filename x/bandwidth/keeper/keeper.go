@@ -2,14 +2,15 @@ package keeper
 
 import (
 	"fmt"
+
+	"github.com/cybercongress/go-cyber/x/bandwidth/types"
+	gtypes "github.com/cybercongress/go-cyber/x/graph/types"
+	"github.com/tendermint/tendermint/libs/log"
+
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
-	"github.com/tendermint/tendermint/libs/log"
-
-	"github.com/cybercongress/go-cyber/x/bandwidth/types"
-	gtypes "github.com/cybercongress/go-cyber/x/graph/types"
 )
 
 type BandwidthMeter struct {
@@ -30,7 +31,6 @@ func NewBandwidthMeter(
 	asp types.AccountStakeProvider,
 	paramSpace paramstypes.Subspace,
 ) *BandwidthMeter {
-
 	if !paramSpace.HasKeyTable() {
 		paramSpace = paramSpace.WithKeyTable(types.ParamKeyTable())
 	}
@@ -66,6 +66,16 @@ func (bm *BandwidthMeter) LoadState(ctx sdk.Context) {
 		bm.totalSpentForSlidingWindow += spentBandwidth
 	}
 	bm.currentCreditPrice = bm.GetBandwidthPrice(ctx, params.BasePrice)
+	bm.currentBlockSpentBandwidth = 0
+}
+
+func (bm *BandwidthMeter) InitState() {
+	bm.totalSpentForSlidingWindow = 0
+
+	window := make(map[uint64]uint64)
+	window[1] = 0
+	bm.bandwidthSpentByBlock = window
+
 	bm.currentBlockSpentBandwidth = 0
 }
 
@@ -187,11 +197,11 @@ func (bm *BandwidthMeter) AdjustPrice(ctx sdk.Context) {
 	}
 }
 
-func (bm *BandwidthMeter) GetTotalCyberlinksCost(ctx sdk.Context, tx sdk.Tx) (uint64) {
+func (bm *BandwidthMeter) GetTotalCyberlinksCost(ctx sdk.Context, tx sdk.Tx) uint64 {
 	bandwidthForTx := uint64(0)
 	for _, msg := range tx.GetMsgs() {
 		linkMsg := msg.(*gtypes.MsgCyberlink)
-		bandwidthForTx = bandwidthForTx + uint64(len(linkMsg.Links)) * 1000
+		bandwidthForTx += uint64(len(linkMsg.Links)) * 1000
 	}
 	return bandwidthForTx
 }
@@ -201,7 +211,8 @@ func (bm *BandwidthMeter) GetPricedTotalCyberlinksCost(ctx sdk.Context, tx sdk.T
 }
 
 func (bm *BandwidthMeter) ConsumeAccountBandwidth(ctx sdk.Context, bw types.NeuronBandwidth, amt uint64) error {
-	err := bw.Consume(amt); if err != nil {
+	err := bw.Consume(amt)
+	if err != nil {
 		return err
 	}
 	bm.SetAccountBandwidth(ctx, bw)

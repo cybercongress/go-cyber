@@ -20,6 +20,11 @@ then
   cp -r /cyber/cosmovisor/  /root/.cyber/
 fi
 
+if [ ! -d "/root/.cyber/cosmovisor/updgrades" ]
+then
+  cp -r /cyber/cosmovisor/upgrades  /root/.cyber/cosmovisor/
+fi
+
 if [  -f "/root/.cyber/cosmovisor/genesis/bin/cyber" ]
 then
   cp /cyber/cosmovisor/genesis/bin/cyber  /root/.cyber/cosmovisor/genesis/bin/cyber

@@ -1,14 +1,15 @@
 package types
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 type StakeKeeper interface {
 	DetectUsersStakeAmpereChange(ctx sdk.Context) bool
 	GetTotalStakesAmpere() map[uint64]uint64
+	GetNextAccountNumber(ctx sdk.Context) uint64
 }
 
 type GraphIndexedKeeper interface {
