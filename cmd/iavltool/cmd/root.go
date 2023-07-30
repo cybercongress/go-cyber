@@ -104,8 +104,11 @@ var dataCmd = &cobra.Command{
 			if keysOpt {
 				PrintKeys(tree, hashingOpt)
 			}
-
-			hash, _ := tree.Hash()
+			hash, err := tree.Hash()
+			if err != nil {
+				_, _ = fmt.Fprintf(os.Stderr, "Error reading data: %s\n", err)
+				os.Exit(1)
+			}
 			fmt.Printf("Hash: %X\n", hash)
 			fmt.Printf("Size: %X\n", tree.Size())
 		}
