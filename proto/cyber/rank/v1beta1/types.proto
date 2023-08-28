@@ -6,22 +6,22 @@ import "gogoproto/gogo.proto";
 option go_package = "github.com/cybercongress/go-cyber/x/rank/types";
 
 message Params {
-    option (gogoproto.equal)            = true;
+  option (gogoproto.equal) = true;
 
-    int64 calculation_period = 1;
+  int64 calculation_period = 1;
 
-    string damping_factor = 2 [
-        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-        (gogoproto.nullable)   = false
-    ];
+  string damping_factor = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
 
-    string tolerance = 3 [
-        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-        (gogoproto.nullable)   = false
-    ];
+  string tolerance = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message RankedParticle {
-    string particle  = 1;
-    uint64 rank = 2;
+  string particle = 1;
+  uint64 rank = 2;
 }

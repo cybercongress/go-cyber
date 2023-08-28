@@ -3,11 +3,11 @@ package graph
 import (
 	"time"
 
-	"github.com/cosmos/cosmos-sdk/telemetry"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	"github.com/cybercongress/go-cyber/x/graph/keeper"
 	"github.com/cybercongress/go-cyber/x/graph/types"
+
+	"github.com/cosmos/cosmos-sdk/telemetry"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 func EndBlocker(ctx sdk.Context, gk *keeper.GraphKeeper, ik *keeper.IndexKeeper) {
@@ -18,5 +18,5 @@ func EndBlocker(ctx sdk.Context, gk *keeper.GraphKeeper, ik *keeper.IndexKeeper)
 	defer telemetry.ModuleSetGauge(types.ModuleName, float32(amountParticles), "total_particles")
 
 	gk.UpdateMemNeudegs(ctx)
-	//ik.MergeContextLinks(ctx)
+	// ik.MergeContextLinks(ctx)
 }

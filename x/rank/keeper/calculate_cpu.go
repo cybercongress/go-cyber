@@ -1,27 +1,26 @@
 package keeper
 
 import (
-	//"fmt"
-	//"encoding/binary"
+	// "fmt"
+	// "encoding/binary"
 	"math"
-	//"math/big"
+
+	// "math/big"
 	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
 	"github.com/cybercongress/go-cyber/x/rank/types"
 )
 
-
 func calculateRankCPU(ctx *types.CalculationContext) types.EMState {
-
 	inLinks := ctx.GetInLinks()
 	tolerance := ctx.GetTolerance()
 	dampingFactor := ctx.GetDampingFactor()
 
 	size := ctx.GetCidsCount()
-	if size == 0  || len(ctx.GetStakes()) == 0 {
+	if size == 0 || len(ctx.GetStakes()) == 0 {
 		return types.EMState{
-			[]float64{},
-			[]float64{},
-			[]float64{},
+			RankValues:    []float64{},
+			EntropyValues: []float64{},
+			KarmaValues:   []float64{},
 		}
 	}
 
@@ -39,7 +38,7 @@ func calculateRankCPU(ctx *types.CalculationContext) types.EMState {
 	}
 
 	innerProductOverSize := defaultRank * (float64(danglingNodesSize) / float64(size))
-	defaultRankWithCorrection := float64(dampingFactor*innerProductOverSize) + defaultRank
+	defaultRankWithCorrection := dampingFactor*innerProductOverSize + defaultRank
 
 	change := tolerance + 1
 
@@ -58,14 +57,13 @@ func calculateRankCPU(ctx *types.CalculationContext) types.EMState {
 	karmaCalc(ctx, rank, entropy, karma)
 
 	return types.EMState{
-		rank,
-		entropy,
-		karma,
+		RankValues:    rank,
+		EntropyValues: entropy,
+		KarmaValues:   karma,
 	}
 }
 
-func step(ctx *types.CalculationContext, defaultRankWithCorrection float64, dampingFactor float64, prevrank []float64) []float64 {
-
+func step(ctx *types.CalculationContext, defaultRankWithCorrection, dampingFactor float64, prevrank []float64) []float64 {
 	rank := append(make([]float64, 0, len(prevrank)), prevrank...)
 
 	for cid := range ctx.GetInLinks() {
@@ -82,29 +80,27 @@ func step(ctx *types.CalculationContext, defaultRankWithCorrection float64, damp
 					continue
 				}
 				weight := float64(linkStake) / float64(jCidOutStake)
-				//if math.IsNaN(weight) { weight = float64(0) }
-				ksum = prevrank[j]*weight + ksum //force no-fma here by explicit conversion
+				// if math.IsNaN(weight) { weight = float64(0) }
+				ksum = prevrank[j]*weight + ksum // force no-fma here by explicit conversion
 			}
-			rank[cid] = ksum*dampingFactor + defaultRankWithCorrection //force no-fma here by explicit conversion
+			rank[cid] = ksum*dampingFactor + defaultRankWithCorrection // force no-fma here by explicit conversion
 		}
 	}
 
 	return rank
 }
 
-func getOverallLinkStake(ctx *types.CalculationContext, from graphtypes.CidNumber, to graphtypes.CidNumber) uint64 {
-
+func getOverallLinkStake(ctx *types.CalculationContext, from, to graphtypes.CidNumber) uint64 {
 	stake := uint64(0)
 	users := ctx.GetOutLinks()[from][to]
 	for user := range users {
-		//stake += ctx.GetStakes()[uint64(user)]
+		// stake += ctx.GetStakes()[uint64(user)]
 		stake += getNormalizedStake(ctx, uint64(user))
 	}
 	return stake
 }
 
 func getOverallOutLinksStake(ctx *types.CalculationContext, from graphtypes.CidNumber) uint64 {
-
 	stake := uint64(0)
 	for to := range ctx.GetOutLinks()[from] {
 		stake += getOverallLinkStake(ctx, from, to)
@@ -113,7 +109,6 @@ func getOverallOutLinksStake(ctx *types.CalculationContext, from graphtypes.CidN
 }
 
 func getOverallInLinksStake(ctx *types.CalculationContext, from graphtypes.CidNumber) uint64 {
-
 	stake := uint64(0)
 	for to := range ctx.GetInLinks()[from] {
 		stake += getOverallLinkStake(ctx, to, from) // reverse order here
@@ -126,7 +121,6 @@ func getNormalizedStake(ctx *types.CalculationContext, agent uint64) uint64 {
 }
 
 func calculateChange(prevrank, rank []float64) float64 {
-
 	maxDiff := 0.0
 	diff := 0.0
 	for i, pForI := range prevrank {
@@ -146,13 +140,13 @@ func calculateChange(prevrank, rank []float64) float64 {
 func entropyCalc(ctx *types.CalculationContext, entropy []float64, cidsCount int64, dampingFactor float64) {
 	swd := make([]float64, cidsCount)
 	sumswd := make([]float64, cidsCount)
-	for i, _ := range swd {
+	for i := range swd {
 		swd[i] = dampingFactor*float64(
 			getOverallInLinksStake(ctx, graphtypes.CidNumber(i))) + (1-dampingFactor)*float64(
 			getOverallOutLinksStake(ctx, graphtypes.CidNumber(i)))
 	}
 
-	for i, _ := range sumswd {
+	for i := range sumswd {
 		for to := range ctx.GetInLinks()[graphtypes.CidNumber(i)] {
 			sumswd[i] += dampingFactor * swd[to]
 		}
@@ -161,33 +155,45 @@ func entropyCalc(ctx *types.CalculationContext, entropy []float64, cidsCount int
 		}
 	}
 
-	for i, _ := range entropy {
-		if swd[i] == 0 { continue }
+	for i := range entropy {
+		if swd[i] == 0 {
+			continue
+		}
 		for to := range ctx.GetInLinks()[graphtypes.CidNumber(i)] {
-			if sumswd[to] == 0 { continue }
+			if sumswd[to] == 0 {
+				continue
+			}
 			entropy[i] += math.Abs(-swd[i] / sumswd[to] * math.Log2(swd[i]/sumswd[to]))
 		}
 		for to := range ctx.GetOutLinks()[graphtypes.CidNumber(i)] {
-			if sumswd[to] == 0 { continue }
+			if sumswd[to] == 0 {
+				continue
+			}
 			entropy[i] += math.Abs(-swd[i] / sumswd[to] * math.Log2(swd[i]/sumswd[to]))
 		}
 	}
 }
 
-func karmaCalc(ctx *types.CalculationContext, rank []float64, entropy []float64, karma []float64) {
+func karmaCalc(ctx *types.CalculationContext, rank, entropy, karma []float64) {
 	for from := range ctx.GetOutLinks() {
 		stake := getOverallOutLinksStake(ctx, from)
 		for to := range ctx.GetOutLinks()[from] {
-			if (stake == 0) { continue }
+			if stake == 0 {
+				continue
+			}
 			users := ctx.GetOutLinks()[from][to]
 			for user := range users {
-				//if (ctx.GetStakes()[uint64(user)] == 0) { continue }
-				if getNormalizedStake(ctx, uint64(user)) == 0 { continue }
-				//w := float64(ctx.GetStakes()[uint64(user)]) / float64(stake)
+				// if (ctx.GetStakes()[uint64(user)] == 0) { continue }
+				if getNormalizedStake(ctx, uint64(user)) == 0 {
+					continue
+				}
+				// w := float64(ctx.GetStakes()[uint64(user)]) / float64(stake)
 				w := float64(getNormalizedStake(ctx, uint64(user))) / float64(stake)
-				if math.IsNaN(w) { w = float64(0) }
+				if math.IsNaN(w) {
+					w = float64(0)
+				}
 				luminosity := rank[from] * entropy[from]
-				karma[user] += w*float64(luminosity)
+				karma[user] += w * luminosity
 			}
 		}
 	}

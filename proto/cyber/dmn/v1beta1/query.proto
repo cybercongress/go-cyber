@@ -11,60 +11,60 @@ option (gogoproto.goproto_getters_all) = false;
 option (gogoproto.equal_all) = false;
 
 service Query {
-    rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-        option (google.api.http).get = "/cyber/dmn/v1beta1/dmn/params";
-    }
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/cyber/dmn/v1beta1/dmn/params";
+  }
 
-    rpc Thought(QueryThoughtParamsRequest) returns (QueryThoughtResponse) {
-        option (google.api.http).get = "/cyber/dmn/v1beta1/dmn/thought";
-    }
+  rpc Thought(QueryThoughtParamsRequest) returns (QueryThoughtResponse) {
+    option (google.api.http).get = "/cyber/dmn/v1beta1/dmn/thought";
+  }
 
-    rpc ThoughtStats(QueryThoughtParamsRequest) returns (QueryThoughtStatsResponse) {
-        option (google.api.http).get = "/cyber/dmn/v1beta1/dmn/thought_stats";
-    }
+  rpc ThoughtStats(QueryThoughtParamsRequest)
+      returns (QueryThoughtStatsResponse) {
+    option (google.api.http).get = "/cyber/dmn/v1beta1/dmn/thought_stats";
+  }
 
-    rpc Thoughts(QueryThoughtsRequest) returns (QueryThoughtsResponse) {
-        option (google.api.http).get = "/cyber/dmn/v1beta1/dmn/thoughts";
-    }
+  rpc Thoughts(QueryThoughtsRequest) returns (QueryThoughtsResponse) {
+    option (google.api.http).get = "/cyber/dmn/v1beta1/dmn/thoughts";
+  }
 
-    rpc ThoughtsStats(QueryThoughtsStatsRequest) returns (QueryThoughtsStatsResponse) {
-        option (google.api.http).get = "/cyber/dmn/v1beta1/dmn/thoughts_stats";
-    }
+  rpc ThoughtsStats(QueryThoughtsStatsRequest)
+      returns (QueryThoughtsStatsResponse) {
+    option (google.api.http).get = "/cyber/dmn/v1beta1/dmn/thoughts_stats";
+  }
 }
 
 message QueryParamsRequest {}
 
-message QueryParamsResponse{
-    Params params = 1 [(gogoproto.nullable) = false];
+message QueryParamsResponse {
+  Params params = 1 [ (gogoproto.nullable) = false ];
 }
 
 message QueryThoughtParamsRequest {
-    string program  = 1;
-    string name     = 2;
+  string program = 1;
+  string name = 2;
 }
 
 message QueryThoughtResponse {
-    Thought thought = 1 [(gogoproto.nullable) = false];
+  Thought thought = 1 [ (gogoproto.nullable) = false ];
 }
 
 message QueryThoughtStatsResponse {
-    ThoughtStats thought_stats = 1 [(gogoproto.nullable) = false];
+  ThoughtStats thought_stats = 1 [ (gogoproto.nullable) = false ];
 }
 
-message QueryThoughtsRequest{}
+message QueryThoughtsRequest {}
 
 message QueryThoughtsResponse {
-    repeated Thought thoughts = 1 [
-        (gogoproto.nullable) = false,
-        (gogoproto.castrepeated) = "Thoughts"
-    ];
+  repeated Thought thoughts = 1
+      [ (gogoproto.nullable) = false, (gogoproto.castrepeated) = "Thoughts" ];
 }
 
-message QueryThoughtsStatsRequest{}
+message QueryThoughtsStatsRequest {}
 
-message QueryThoughtsStatsResponse{
-    repeated ThoughtStats thoughts_stats = 1 [
-        (gogoproto.nullable) = false,
-        (gogoproto.castrepeated) = "ThoughtsStats"
-    ];
+message QueryThoughtsStatsResponse {
+  repeated ThoughtStats thoughts_stats = 1 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "ThoughtsStats"
+  ];
 }

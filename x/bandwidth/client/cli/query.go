@@ -3,14 +3,13 @@ package cli
 import (
 	"context"
 
+	"github.com/cybercongress/go-cyber/x/bandwidth/types"
+	// sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/spf13/cobra"
+
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	//sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/spf13/cobra"
-
-	"github.com/cybercongress/go-cyber/x/bandwidth/types"
 )
 
 func GetQueryCmd() *cobra.Command {
@@ -23,11 +22,11 @@ func GetQueryCmd() *cobra.Command {
 	}
 
 	bandwidthQueryCmd.AddCommand(
-			GetCmdQueryParams(),
-			GetCmdQueryPrice(),
-			GetCmdQueryLoad(),
-			GetCmdQueryTotalBandwidth(),
-			GetCmdQueryNeuron(),
+		GetCmdQueryParams(),
+		GetCmdQueryPrice(),
+		GetCmdQueryLoad(),
+		GetCmdQueryTotalBandwidth(),
+		GetCmdQueryNeuron(),
 	)
 
 	return bandwidthQueryCmd

@@ -5,9 +5,9 @@ import (
 )
 
 const (
-	ModuleName 			= "bandwidth"
-	StoreKey			= ModuleName
-	QuerierRoute 		= ModuleName
+	ModuleName   = "bandwidth"
+	StoreKey     = ModuleName
+	QuerierRoute = ModuleName
 )
 
 var (

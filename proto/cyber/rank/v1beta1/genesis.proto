@@ -6,6 +6,4 @@ import "cyber/rank/v1beta1/types.proto";
 
 option go_package = "github.com/cybercongress/go-cyber/x/rank/types";
 
-message GenesisState {
-    Params params = 1 [(gogoproto.nullable) = false];
-}
+message GenesisState { Params params = 1 [ (gogoproto.nullable) = false ]; }

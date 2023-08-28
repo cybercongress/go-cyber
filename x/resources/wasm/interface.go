@@ -4,12 +4,11 @@ import (
 	"encoding/json"
 
 	"github.com/CosmWasm/wasmd/x/wasm"
+	wasmTypes "github.com/CosmWasm/wasmvm/types"
+	"github.com/cybercongress/go-cyber/x/resources/types"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-
-	wasmTypes "github.com/CosmWasm/wasmvm/types"
-
-	"github.com/cybercongress/go-cyber/x/resources/types"
 )
 
 var _ WasmMsgParserInterface = WasmMsgParser{}
@@ -25,10 +24,12 @@ func NewWasmMsgParser() WasmMsgParser {
 	return WasmMsgParser{}
 }
 
-func (WasmMsgParser) Parse(_ sdk.AccAddress, _ wasmTypes.CosmosMsg) ([]sdk.Msg, error) { return nil, nil }
+func (WasmMsgParser) Parse(_ sdk.AccAddress, _ wasmTypes.CosmosMsg) ([]sdk.Msg, error) {
+	return nil, nil
+}
 
 type CosmosMsg struct {
-	Investmint 			  *types.MsgInvestmint `json:"investmint,omitempty"`
+	Investmint *types.MsgInvestmint `json:"investmint,omitempty"`
 }
 
 func (WasmMsgParser) ParseCustom(contractAddr sdk.AccAddress, data json.RawMessage) ([]sdk.Msg, error) {

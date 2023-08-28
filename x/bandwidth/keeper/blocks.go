@@ -1,12 +1,12 @@
 package keeper
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	"github.com/cybercongress/go-cyber/x/bandwidth/types"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (bm BandwidthMeter) SetBlockBandwidth(ctx sdk.Context, blockNumber uint64, value uint64) {
+func (bm BandwidthMeter) SetBlockBandwidth(ctx sdk.Context, blockNumber, value uint64) {
 	store := ctx.KVStore(bm.storeKey)
 	store.Set(types.BlockStoreKey(blockNumber), sdk.Uint64ToBigEndian(value))
 }
