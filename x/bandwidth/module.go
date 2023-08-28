@@ -1,6 +1,7 @@
 package bandwidth
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 
@@ -18,8 +19,6 @@ import (
 	"github.com/cybercongress/go-cyber/x/bandwidth/keeper"
 	"github.com/cybercongress/go-cyber/x/bandwidth/types"
 
-	"context"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	abci "github.com/tendermint/tendermint/abci/types"
 )
@@ -29,8 +28,7 @@ var (
 	_ module.AppModuleBasic = AppModuleBasic{}
 )
 
-
-type AppModuleBasic struct{
+type AppModuleBasic struct {
 	cdc codec.Codec
 }
 
@@ -71,8 +69,8 @@ func (AppModuleBasic) RegisterInterfaces(_ codectypes.InterfaceRegistry) {}
 type AppModule struct {
 	AppModuleBasic
 
-	ak             authkeeper.AccountKeeper
-	bm			   *keeper.BandwidthMeter
+	ak authkeeper.AccountKeeper
+	bm *keeper.BandwidthMeter
 }
 
 func NewAppModule(
@@ -82,8 +80,8 @@ func NewAppModule(
 ) AppModule {
 	return AppModule{
 		AppModuleBasic: AppModuleBasic{cdc: cdc},
-		ak:		  ak,
-		bm:		  bm,
+		ak:             ak,
+		bm:             bm,
 	}
 }
 

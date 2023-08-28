@@ -32,7 +32,6 @@ func NewTree(hashF hash.Hash, full bool) *Tree {
 }
 
 func (t *Tree) joinAllSubtrees() {
-
 	for t.subTree.left != nil && t.subTree.height == t.subTree.left.height {
 
 		newSubtreeRoot := &Node{
@@ -102,12 +101,10 @@ func (t *Tree) BuildNew(data [][]byte) {
 	}
 
 	t.lastIndex = int(endIndex)
-
 }
 
 // n*log(n)
 func (t *Tree) Push(data []byte) {
-
 	newSubtreeRoot := &Node{
 		hash:       sum(t.hashF, data),
 		parent:     nil,
@@ -137,7 +134,6 @@ func (t *Tree) Push(data []byte) {
 
 // going from right trees to left
 func (t *Tree) GetIndexProofs(i int) []Proof {
-
 	// we cannot build proofs with not full tree
 	if !t.full {
 		return nil
@@ -167,7 +163,6 @@ func (t *Tree) ValidateIndex(i int, data []byte) bool {
 }
 
 func (t *Tree) ValidateIndexByProofs(i int, data []byte, proofs []Proof) bool {
-
 	rootHash := sum(t.hashF, data)
 	for _, proof := range proofs {
 		rootHash = proof.SumWith(t.hashF, rootHash)
@@ -178,7 +173,6 @@ func (t *Tree) ValidateIndexByProofs(i int, data []byte, proofs []Proof) bool {
 
 // root hash calculates from right to left by summing subtrees root hashes.
 func (t *Tree) RootHash() []byte {
-
 	if t.subTree == nil {
 		return sum(t.hashF) // zero hash
 	}

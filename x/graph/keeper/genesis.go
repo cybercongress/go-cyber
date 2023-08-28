@@ -47,7 +47,6 @@ func InitGenesis(
 func WriteGenesis(
 	ctx sdk.Context, gk GraphKeeper, ik *IndexKeeper,
 ) (err error) {
-
 	linksFilePath := utils.RootifyPath(LinksExportFileName)
 	dirName := filepath.Dir(linksFilePath)
 	if _, err := os.Stat(dirName); err != nil {

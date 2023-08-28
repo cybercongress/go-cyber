@@ -1,4 +1,3 @@
-
 package staking
 
 import (
@@ -11,9 +10,7 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 )
 
-var (
-	_ module.AppModule = AppModule{}
-)
+var _ module.AppModule = AppModule{}
 
 type AppModule struct {
 	staking.AppModule
@@ -29,10 +26,10 @@ func NewAppModule(
 	bankKeeper bankkeeper.Keeper,
 ) AppModule {
 	return AppModule{
-		AppModule:     staking.NewAppModule(cdc, stakingKeeper, accountKeeper, bankKeeper),
-		sk: stakingKeeper,
-		bk: bankKeeper,
-		ak: accountKeeper,
+		AppModule: staking.NewAppModule(cdc, stakingKeeper, accountKeeper, bankKeeper),
+		sk:        stakingKeeper,
+		bk:        bankKeeper,
+		ak:        accountKeeper,
 	}
 }
 

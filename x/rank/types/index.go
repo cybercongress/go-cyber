@@ -13,17 +13,17 @@ import (
 )
 
 type BaseSearchIndex struct {
-	links 	   []cidLinks
-	backlinks  []cidLinks
-	rank  	   Rank
+	links     []cidLinks
+	backlinks []cidLinks
+	rank      Rank
 
-	linksChan  chan graphtypes.CompactLink
-	rankChan   chan Rank
-	errChan    chan error
+	linksChan chan graphtypes.CompactLink
+	rankChan  chan Rank
+	errChan   chan error
 
-	locked     bool
+	locked bool
 
-	logger     log.Logger
+	logger log.Logger
 }
 
 func NewBaseSearchIndex(log log.Logger) *BaseSearchIndex {
@@ -45,7 +45,6 @@ func (i *BaseSearchIndex) Run() GetError {
 
 // LoadState links with zero rank values. No sorting. Index should be unavailable for read
 func (i *BaseSearchIndex) Load(links graphtypes.Links) {
-
 	startTime := time.Now()
 	i.lock() // lock index for read
 
@@ -55,7 +54,7 @@ func (i *BaseSearchIndex) Load(links graphtypes.Links) {
 	for from, toCids := range links {
 		i.extendIndex(uint64(from))
 
-		for to, _ := range toCids {
+		for to := range toCids {
 			i.putLinkIntoIndex(from, to)
 
 			i.extendReverseIndex(uint64(to))
@@ -77,7 +76,6 @@ func (i *BaseSearchIndex) PutNewRank(rank Rank) {
 }
 
 func (i *BaseSearchIndex) Search(cidNumber graphtypes.CidNumber, page, perPage uint32) ([]RankedCidNumber, uint32, error) {
-
 	i.logger.Info("Search query", "particle", cidNumber, "page", page, "perPage", perPage)
 
 	if i.locked {
@@ -110,7 +108,6 @@ func (i *BaseSearchIndex) Search(cidNumber graphtypes.CidNumber, page, perPage u
 }
 
 func (i *BaseSearchIndex) Backlinks(cidNumber graphtypes.CidNumber, page, perPage uint32) ([]RankedCidNumber, uint32, error) {
-
 	i.logger.Info("Backlinks query", "cid", cidNumber, "page", page, "perPage", perPage)
 
 	if i.locked {
@@ -165,7 +162,6 @@ func (i *BaseSearchIndex) Top(page, perPage uint32) ([]RankedCidNumber, uint32, 
 
 // make sure that this link (from-to) is new
 func (i *BaseSearchIndex) handleLink(link graphtypes.CompactLink) {
-
 	i.extendIndex(uint64(link.From))
 
 	fromIndex := i.links[link.From]
@@ -181,7 +177,6 @@ func (i *BaseSearchIndex) handleLink(link graphtypes.CompactLink) {
 }
 
 func (i *BaseSearchIndex) handleBacklink(link graphtypes.CompactLink) {
-
 	i.extendReverseIndex(uint64(link.To))
 
 	toIndex := i.backlinks[link.To]
@@ -253,7 +248,7 @@ func (i *BaseSearchIndex) startListenNewLinks() {
 		}
 	}()
 
-	//i.logger.Info("The search index is starting to listen to new links")
+	// i.logger.Info("The search index is starting to listen to new links")
 	for {
 		link := <-i.linksChan
 		i.handleLink(link)
@@ -269,7 +264,7 @@ func (i *BaseSearchIndex) startListenNewRank() {
 		}
 	}()
 
-	//i.logger.Info("The search index is starting to listen to new rank")
+	// i.logger.Info("The search index is starting to listen to new rank")
 	for {
 		rank := <-i.rankChan // TODO could be problems if recalculation lasts more than rank period
 		i.rank = rank

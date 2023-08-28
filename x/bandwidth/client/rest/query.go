@@ -33,7 +33,6 @@ func registerQueryRoutes(cliCtx client.Context, r *mux.Router) {
 
 func queryParamsHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-
 		route := fmt.Sprintf("custom/%s/%s", types.QuerierRoute, types.QueryParameters)
 
 		res, height, err := cliCtx.QueryWithData(route, nil)
@@ -54,7 +53,6 @@ func queryParamsHandlerFn(cliCtx client.Context) http.HandlerFunc {
 
 func networkLoadHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-
 		route := fmt.Sprintf("custom/%s/%s", types.QuerierRoute, types.QueryLoad)
 
 		res, height, err := cliCtx.QueryWithData(route, nil)
@@ -75,7 +73,6 @@ func networkLoadHandlerFn(cliCtx client.Context) http.HandlerFunc {
 
 func priceHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-
 		route := fmt.Sprintf("custom/%s/%s", types.QuerierRoute, types.QueryPrice)
 
 		res, height, err := cliCtx.QueryWithData(route, nil)
@@ -96,7 +93,6 @@ func priceHandlerFn(cliCtx client.Context) http.HandlerFunc {
 
 func totalBandwidthHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-
 		route := fmt.Sprintf("custom/%s/%s", types.QuerierRoute, types.QueryDesirableBandwidth)
 
 		res, height, err := cliCtx.QueryWithData(route, nil)
@@ -148,4 +144,3 @@ func neuronBandwidthHandlerFn(cliCtx client.Context) http.HandlerFunc {
 		rest.PostProcessResponse(w, cliCtx, res)
 	}
 }
-

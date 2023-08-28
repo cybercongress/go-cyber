@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -11,7 +12,7 @@ import (
 	bandwidthtypes "github.com/cybercongress/go-cyber/x/bandwidth/types"
 	cyberbankkeeper "github.com/cybercongress/go-cyber/x/cyberbank/keeper"
 
-	//sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	// sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cybercongress/go-cyber/x/graph/types"
 )
 
@@ -51,7 +52,8 @@ func (k msgServer) Cyberlink(goCtx context.Context, msg *types.MsgCyberlink) (*t
 	if err != nil {
 		return nil, err
 	}
-	acc := k.GetAccount(ctx, addr); if (acc != nil) {
+	acc := k.GetAccount(ctx, addr)
+	if acc != nil {
 		accNumber = ctypes.AccNumber(acc.GetAccountNumber())
 	} else {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "Invalid neuron address")
@@ -79,7 +81,8 @@ func (k msgServer) Cyberlink(goCtx context.Context, msg *types.MsgCyberlink) (*t
 		} else if (cost + currentBlockSpentBandwidth) > maxBlockBandwidth {
 			return nil, bandwidthtypes.ErrExceededMaxBlockBandwidth
 		} else {
-			err = k.ConsumeAccountBandwidth(ctx, accountBandwidth, cost); if err != nil {
+			err = k.ConsumeAccountBandwidth(ctx, accountBandwidth, cost)
+			if err != nil {
 				return nil, bandwidthtypes.ErrNotEnoughBandwidth
 			}
 			k.AddToBlockBandwidth(cost)
@@ -88,8 +91,14 @@ func (k msgServer) Cyberlink(goCtx context.Context, msg *types.MsgCyberlink) (*t
 
 	for _, link := range msg.Links {
 		// if cid not exists it automatically means that this is new link
-		fromCidNumber, exists := k.GetCidNumber(ctx, types.Cid(link.From)); if !exists { continue }
-		toCidNumber, exists := k.GetCidNumber(ctx, types.Cid(link.To)); if !exists { continue }
+		fromCidNumber, exists := k.GetCidNumber(ctx, types.Cid(link.From))
+		if !exists {
+			continue
+		}
+		toCidNumber, exists := k.GetCidNumber(ctx, types.Cid(link.To))
+		if !exists {
+			continue
+		}
 
 		compactLink := types.NewLink(fromCidNumber, toCidNumber, accNumber)
 

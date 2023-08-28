@@ -34,7 +34,7 @@ const (
 	FlagSearchAPI  = "search-api"
 )
 
-type AppModuleBasic struct{
+type AppModuleBasic struct {
 	cdc codec.Codec
 }
 

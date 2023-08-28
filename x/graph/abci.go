@@ -18,5 +18,5 @@ func EndBlocker(ctx sdk.Context, gk *keeper.GraphKeeper, ik *keeper.IndexKeeper)
 	defer telemetry.ModuleSetGauge(types.ModuleName, float32(amountParticles), "total_particles")
 
 	gk.UpdateMemNeudegs(ctx)
-	//ik.MergeContextLinks(ctx)
+	// ik.MergeContextLinks(ctx)
 }
