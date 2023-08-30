@@ -12,106 +12,93 @@ option (gogoproto.goproto_getters_all) = false;
 option (gogoproto.equal_all) = false;
 
 service Query {
-    rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-        option (google.api.http).get = "/cyber/rank/v1beta1/rank/params";
-    }
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/cyber/rank/v1beta1/rank/params";
+  }
 
-    rpc Rank(QueryRankRequest) returns (QueryRankResponse) {
-        option (google.api.http).get = "/cyber/rank/v1beta1/rank/rank/{particle}";
-    }
+  rpc Rank(QueryRankRequest) returns (QueryRankResponse) {
+    option (google.api.http).get = "/cyber/rank/v1beta1/rank/rank/{particle}";
+  }
 
-    rpc Search(QuerySearchRequest) returns (QuerySearchResponse) {
-        option (google.api.http).get = "/cyber/rank/v1beta1/rank/search/{particle}";
-    }
+  rpc Search(QuerySearchRequest) returns (QuerySearchResponse) {
+    option (google.api.http).get = "/cyber/rank/v1beta1/rank/search/{particle}";
+  }
 
-    rpc Backlinks(QuerySearchRequest) returns (QuerySearchResponse) {
-        option (google.api.http).get = "/cyber/rank/v1beta1/rank/backlinks/{particle}";
-    }
+  rpc Backlinks(QuerySearchRequest) returns (QuerySearchResponse) {
+    option (google.api.http).get =
+        "/cyber/rank/v1beta1/rank/backlinks/{particle}";
+  }
 
-    rpc Top(cyber.base.query.v1beta1.PageRequest) returns (QuerySearchResponse) {
-        option (google.api.http).get = "/cyber/rank/v1beta1/rank/top";
-    }
+  rpc Top(cyber.base.query.v1beta1.PageRequest) returns (QuerySearchResponse) {
+    option (google.api.http).get = "/cyber/rank/v1beta1/rank/top";
+  }
 
-    rpc IsLinkExist(QueryIsLinkExistRequest) returns (QueryLinkExistResponse) {
-        option (google.api.http).get = "/cyber/rank/v1beta1/is_link_exist";
-    }
+  rpc IsLinkExist(QueryIsLinkExistRequest) returns (QueryLinkExistResponse) {
+    option (google.api.http).get = "/cyber/rank/v1beta1/is_link_exist";
+  }
 
-    rpc IsAnyLinkExist(QueryIsAnyLinkExistRequest) returns (QueryLinkExistResponse) {
-        option (google.api.http).get = "/cyber/rank/v1beta1/is_any_link_exist";
-    }
+  rpc IsAnyLinkExist(QueryIsAnyLinkExistRequest)
+      returns (QueryLinkExistResponse) {
+    option (google.api.http).get = "/cyber/rank/v1beta1/is_any_link_exist";
+  }
 
-    rpc ParticleNegentropy(QueryNegentropyPartilceRequest) returns (QueryNegentropyParticleResponse) {
-        option (google.api.http).get = "/cyber/rank/v1beta1/negentropy/{particle}";
-    }
+  rpc ParticleNegentropy(QueryNegentropyPartilceRequest)
+      returns (QueryNegentropyParticleResponse) {
+    option (google.api.http).get = "/cyber/rank/v1beta1/negentropy/{particle}";
+  }
 
-    rpc Negentropy(QueryNegentropyRequest) returns (QueryNegentropyResponse) {
-        option (google.api.http).get = "/cyber/rank/v1beta1/negentropy";
-    }
+  rpc Negentropy(QueryNegentropyRequest) returns (QueryNegentropyResponse) {
+    option (google.api.http).get = "/cyber/rank/v1beta1/negentropy";
+  }
 
-    rpc Karma(QueryKarmaRequest) returns (QueryKarmaResponse) {
-        option (google.api.http).get = "/cyber/rank/v1beta1/karma/{neuron}";
-    }
+  rpc Karma(QueryKarmaRequest) returns (QueryKarmaResponse) {
+    option (google.api.http).get = "/cyber/rank/v1beta1/karma/{neuron}";
+  }
 }
 
 message QueryParamsRequest {}
 
-message QueryParamsResponse{
-    cyber.rank.v1beta1.Params params = 1 [(gogoproto.nullable) = false ];
+message QueryParamsResponse {
+  cyber.rank.v1beta1.Params params = 1 [ (gogoproto.nullable) = false ];
 }
 
-message QueryRankRequest {
-    string particle = 1;
-}
+message QueryRankRequest { string particle = 1; }
 
-message QueryRankResponse{
-    uint64 rank = 1;
-}
+message QueryRankResponse { uint64 rank = 1; }
 
 message QuerySearchRequest {
-    string particle                                 = 1;
-    cyber.base.query.v1beta1.PageRequest pagination = 2;
+  string particle = 1;
+  cyber.base.query.v1beta1.PageRequest pagination = 2;
 }
 
 message QuerySearchResponse {
-    repeated RankedParticle result                   = 1 [(gogoproto.nullable) = false];
-    cyber.base.query.v1beta1.PageResponse pagination = 2;
+  repeated RankedParticle result = 1 [ (gogoproto.nullable) = false ];
+  cyber.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 message QueryTopRequest {}
 
 message QueryIsLinkExistRequest {
-    string from    = 1;
-    string to      = 2;
-    string address = 3;
+  string from = 1;
+  string to = 2;
+  string address = 3;
 }
 
 message QueryIsAnyLinkExistRequest {
-    string from = 1;
-    string to   = 2;
+  string from = 1;
+  string to = 2;
 }
 
-message QueryLinkExistResponse {
-    bool exist = 1;
-}
+message QueryLinkExistResponse { bool exist = 1; }
 
-message QueryNegentropyPartilceRequest {
-    string particle = 1;
-}
+message QueryNegentropyPartilceRequest { string particle = 1; }
 
-message QueryNegentropyParticleResponse {
-    uint64 entropy = 1;
-}
+message QueryNegentropyParticleResponse { uint64 entropy = 1; }
 
 message QueryNegentropyRequest {}
 
-message QueryNegentropyResponse {
-    uint64 negentropy = 1;
-}
+message QueryNegentropyResponse { uint64 negentropy = 1; }
 
-message QueryKarmaRequest {
-    string neuron = 1;
-}
+message QueryKarmaRequest { string neuron = 1; }
 
-message QueryKarmaResponse {
-    uint64 karma = 1;
-}
+message QueryKarmaResponse { uint64 karma = 1; }

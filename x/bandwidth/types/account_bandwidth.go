@@ -6,14 +6,14 @@ import (
 
 func NewGenesisNeuronBandwidth(address sdk.AccAddress, bandwidth uint64) NeuronBandwidth {
 	return NeuronBandwidth{
-		Neuron:             address.String(),
-		RemainedValue:      bandwidth,
-		MaxValue:           bandwidth,
-		LastUpdatedBlock:   0,
+		Neuron:           address.String(),
+		RemainedValue:    bandwidth,
+		MaxValue:         bandwidth,
+		LastUpdatedBlock: 0,
 	}
 }
 
-func (ab *NeuronBandwidth) UpdateMax(newValue uint64, currentBlock uint64, recoveryPeriod uint64) {
+func (ab *NeuronBandwidth) UpdateMax(newValue, currentBlock, recoveryPeriod uint64) {
 	ab.Recover(currentBlock, recoveryPeriod)
 	ab.MaxValue = newValue
 	ab.LastUpdatedBlock = currentBlock
@@ -23,7 +23,7 @@ func (ab *NeuronBandwidth) UpdateMax(newValue uint64, currentBlock uint64, recov
 	}
 }
 
-func (ab *NeuronBandwidth) Recover(currentBlock uint64, recoveryPeriod uint64) {
+func (ab *NeuronBandwidth) Recover(currentBlock, recoveryPeriod uint64) {
 	recoverPerBlock := float64(ab.MaxValue) / float64(recoveryPeriod)
 	fullRecoveryAmount := float64(ab.MaxValue - ab.RemainedValue)
 
@@ -32,13 +32,13 @@ func (ab *NeuronBandwidth) Recover(currentBlock uint64, recoveryPeriod uint64) {
 		recoverAmount = fullRecoveryAmount
 	}
 
-	ab.RemainedValue = ab.RemainedValue + uint64(recoverAmount)
+	ab.RemainedValue += uint64(recoverAmount)
 	ab.LastUpdatedBlock = currentBlock
 }
 
 func (ab *NeuronBandwidth) Consume(bandwidthToConsume uint64) error {
-	ab.RemainedValue = ab.RemainedValue - bandwidthToConsume
-	if ab.RemainedValue < 0 {
+	ab.RemainedValue -= bandwidthToConsume
+	if ab.RemainedValue < 1 {
 		return ErrNotEnoughBandwidth
 	}
 	return nil
@@ -51,4 +51,3 @@ func (ab *NeuronBandwidth) ApplyCharge(bandwidthToAdd uint64) {
 func (ab NeuronBandwidth) HasEnoughRemained(bandwidthToConsume uint64) bool {
 	return ab.RemainedValue >= bandwidthToConsume
 }
-

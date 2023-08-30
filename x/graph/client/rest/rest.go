@@ -1,9 +1,9 @@
 package rest
 
 import (
-	"github.com/cosmos/cosmos-sdk/client"
-
 	"github.com/gorilla/mux"
+
+	"github.com/cosmos/cosmos-sdk/client"
 )
 
 func RegisterRoutes(cliCtx client.Context, r *mux.Router) {

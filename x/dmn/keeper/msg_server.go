@@ -2,11 +2,12 @@ package keeper
 
 import (
 	"context"
-
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"fmt"
 
 	"github.com/cybercongress/go-cyber/x/dmn/types"
 	graph "github.com/cybercongress/go-cyber/x/graph/types"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 type msgServer struct {
@@ -202,7 +203,7 @@ func (k msgServer) ChangeThoughtPeriod(goCtx context.Context, msg *types.MsgChan
 		sdk.NewEvent(
 			types.EventTypeChangeThoughtPeriod,
 			sdk.NewAttribute(types.AttributeKeyThoughtProgram, msg.Program),
-			sdk.NewAttribute(types.AttributeKeyThoughtPeriod, string(msg.Period)),
+			sdk.NewAttribute(types.AttributeKeyThoughtPeriod, fmt.Sprint(msg.Period)),
 		),
 	})
 
@@ -228,7 +229,7 @@ func (k msgServer) ChangeThoughtBlock(goCtx context.Context, msg *types.MsgChang
 		sdk.NewEvent(
 			types.EventTypeChangeThoughtBlock,
 			sdk.NewAttribute(types.AttributeKeyThoughtProgram, msg.Program),
-			sdk.NewAttribute(types.AttributeKeyThoughtBlock, string(msg.Block)),
+			sdk.NewAttribute(types.AttributeKeyThoughtBlock, fmt.Sprint(msg.Block)),
 		),
 	})
 

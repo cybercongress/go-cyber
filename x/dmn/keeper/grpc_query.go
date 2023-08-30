@@ -3,11 +3,11 @@ package keeper
 import (
 	"context"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cybercongress/go-cyber/x/dmn/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/cybercongress/go-cyber/x/dmn/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 var _ types.QueryServer = Keeper{}

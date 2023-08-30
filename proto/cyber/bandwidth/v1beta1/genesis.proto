@@ -7,6 +7,4 @@ import "cyber/bandwidth/v1beta1/types.proto";
 
 option go_package = "github.com/cybercongress/go-cyber/x/bandwidth/types";
 
-message GenesisState {
-    Params params = 1 [(gogoproto.nullable) = false];
-}
+message GenesisState { Params params = 1 [ (gogoproto.nullable) = false ]; }

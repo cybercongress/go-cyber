@@ -1,25 +1,26 @@
 #!/usr/bin/make -f
-export GO111MODULE = on
-
 CUDA_ENABLED ?= false
 LEDGER_ENABLED ?= true
-
 VERSION := $(shell echo $(shell git describe --tags) | sed 's/^v//')
 COMMIT := $(shell git log -1 --format='%H')
-
-TM_VERSION := $(shell go list -m github.com/tendermint/tendermint | sed 's:.* ::') # grab everything after the space in "github.com/tendermint/tendermint v0.34.7"
+#TM_VERSION := $(shell go list -m github.com/cometbft/cometbft | sed 's:.* ::')
 
 BINDIR ?= $(GOPATH)/bin
 BUILDDIR ?= $(CURDIR)/build/
 
-include contrib/devtools/Makefile
+# for dockerized protobuf tools
+DOCKER := $(shell which docker)
+BUF_IMAGE=bufbuild/buf@sha256:3cb1f8a4b48bd5ad8f09168f10f607ddc318af202f5c057d52a45216793d85e5 #v1.4.0
+DOCKER_BUF := $(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace $(BUF_IMAGE)
+HTTPS_GIT := https://github.com/cybercongress/go-cyber.git
+
+export GO111MODULE = on
 
 ###############################################################################
 ###                              Build Flags/Tags                           ###
 ###############################################################################
 
 build_tags = netgo
-
 ifeq ($(LEDGER_ENABLED),true)
   ifeq ($(OS),Windows_NT)
     GCCEXE = $(shell where gcc.exe 2> NUL)
@@ -55,24 +56,26 @@ endif
 
 build_tags += $(BUILD_TAGS)
 build_tags := $(strip $(build_tags))
+
 whitespace :=
-whitespace += $(whitespace)
+empty = $(whitespace) $(whitespace)
 comma := ,
-build_tags_comma_sep := $(subst $(whitespace),$(comma),$(build_tags))
+build_tags_comma_sep := $(subst $(empty),$(comma),$(build_tags))
 
 ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=cyber \
 		  -X github.com/cosmos/cosmos-sdk/version.AppName=cyber \
 		  -X github.com/cosmos/cosmos-sdk/version.Version=$(VERSION) \
 		  -X github.com/cosmos/cosmos-sdk/version.Commit=$(COMMIT) \
-		  -X "github.com/cosmos/cosmos-sdk/version.BuildTags=$(build_tags_comma_sep)" \
-		  -X github.com/tendermint/tendermint/version.TMCoreSemVer=$(TM_VERSION)
+		  -X "github.com/cosmos/cosmos-sdk/version.BuildTags=$(build_tags_comma_sep)"
+#		  -X github.com/cometbft/cometbft/version.TMCoreSemVer=$(TM_VERSION)
 
 ldflags += $(LDFLAGS)
 ldflags := $(strip $(ldflags))
-BUILD_FLAGS := -tags "$(build_tags)" -ldflags '$(ldflags)'
+BUILD_FLAGS := -tags "$(build_tags_comma_sep)" -ldflags '$(ldflags)' -trimpath
+
+include contrib/devtools/Makefile
 
 all: build format lint test
-
 .PHONY: all
 
 ###############################################################################
@@ -82,20 +85,10 @@ all: build format lint test
 build: go.sum
 	go build $(BUILD_FLAGS) -o $(BUILDDIR) ./cmd/cyber
 
-
-build-linux: go.sum
-	LEDGER_ENABLED=false GOOS=linux GOARCH=amd64 $(MAKE) build
-#	mkdir -p ./build
-#	docker build --tag cybercongress/cyber ./
-#	docker create --name temp cybercongress/cyber:latest
-#	docker cp temp:/usr/bin/cyber ./build/
-#	docker rm temp
-
 install: go.sum
 	go install $(BUILD_FLAGS) ./cmd/cyber
 
-run:
-	$(BUILDDIR)/cyber --home $(BUILDDIR)/bostrom-dev start
+.PHONY: build install
 
 ###############################################################################
 ###                           Tools / Dependencies                          ###
@@ -104,159 +97,85 @@ run:
 go-mod-cache: go.sum
 	@echo "--> Download go modules to local cache"
 	@go mod download
-.PHONY: go-mod-cache
 
 go.sum: go.mod
 	@echo "--> Ensure dependencies have not been modified"
 	@go mod verify # TODO uncomment on release
-	go mod tidy -compat=1.17
-.PHONY: go.sum
+	go mod tidy
 
-lint:
-	$(BINDIR)/golangci-lint run
-	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "*.pb.go" | xargs gofmt -d -s
-	go mod verify
-.PHONY: lint
-
-statik:
-	$(GO) get -u github.com/rakyll/statik
-	$(GO) generate ./api/...
-.PHONY: statik
-
-format:
-	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "*.pb.go" | xargs gofmt -w -s
-	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "*.pb.go" | xargs misspell -w
-	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "*.pb.go" | xargs goimports -w -local github.com/cybercongress/go-cyber
-.PHONY: format
+.PHONY: go.sum go-mod-cache
 
 ###############################################################################
 ###                                Localnet                                 ###
 ###############################################################################
 
-build-docker-cybernode: build-linux
-	$(MAKE) -C networks/local
+# TODO update localnet flow
+#build-docker-cybernode: build-linux
+#	$(MAKE) -C networks/local
+#
+## Run a 4-node testnet locally
+#localnet-start: localnet-stop
+#	@if ! [ -f build/node0/cyber/config/genesis.json ]; then docker run --rm -v $(CURDIR)/build:/cyber:Z cybercongress/cyber testnet --v 4 -o . --starting-ip-address 192.168.10.2 --keyring-backend=test --chain-id=chain-local ; fi
+#	docker-compose up -d
+#
+## Stop testnet
+#localnet-stop:
+#	docker-compose down
 
-# Run a 4-node testnet locally
-localnet-start: localnet-stop
-	@if ! [ -f build/node0/cyber/config/genesis.json ]; then docker run --rm -v $(CURDIR)/build:/cyber:Z cybercongress/cyber testnet --v 4 -o . --starting-ip-address 192.168.10.2 --keyring-backend=test --chain-id=chain-local ; fi
-	docker-compose up -d
+###############################################################################
+###                                Linting                                  ###
+###############################################################################
 
-# Stop testnet
-localnet-stop:
-	docker-compose down
+format-tools:
+	go install mvdan.cc/gofumpt@v0.4.0
+	go install github.com/client9/misspell/cmd/misspell@v0.3.4
+	go install golang.org/x/tools/cmd/goimports@latest
 
+lint: format-tools
+	golangci-lint run --tests=false
+	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "*_test.go" | xargs gofumpt -d
+
+format: format-tools
+	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "./client/docs/statik/statik.go" | xargs gofumpt -w
+	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "./client/docs/statik/statik.go" | xargs misspell -w
+	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "./client/docs/statik/statik.go" | xargs goimports -w -local github.com/cybercongress/go-cyber
 
 ###############################################################################
 ###                                Protobuf                                 ###
 ###############################################################################
 
-HTTPS_GIT := https://github.com/cybercongress/go-cyber.git
-DOCKER := $(shell which docker)
-DOCKER_BUF := $(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace bufbuild/buf
+PROTO_BUILDER_IMAGE=tendermintdev/sdk-proto-gen:v0.7
+PROTO_FORMATTER_IMAGE=tendermintdev/docker-build-proto@sha256:aabcfe2fc19c31c0f198d4cd26393f5e5ca9502d7ea3feafbfe972448fee7cae
 
-containerProtoVer=v0.2
-containerProtoImage=tendermintdev/sdk-proto-gen:$(containerProtoVer)
-containerProtoGen=cosmos-sdk-proto-gen-$(containerProtoVer)
-containerProtoGenSwagger=cosmos-sdk-proto-gen-swagger-$(containerProtoVer)
-containerProtoFmt=cosmos-sdk-proto-fmt-$(containerProtoVer)
-
-proto-all: proto-format proto-lint proto-gen proto-check-breaking proto-swagger-gen
+proto-all: proto-format proto-lint proto-gen format
 
 proto-gen:
 	@echo "Generating Protobuf files"
-	@if docker ps -a --format '{{.Names}}' | grep -Eq "^${containerProtoGen}$$"; then docker start -a $(containerProtoGen); else docker run --name $(containerProtoGen) -v $(CURDIR):/workspace --workdir /workspace $(containerProtoImage) \
-		sh ./scripts/protocgen.sh; fi
-
-# This generates the SDK's custom wrapper for google.protobuf.Any. It should only be run manually when needed
-proto-gen-any:
-	@echo "Generating Protobuf Any"
-	$(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace $(containerProtoImage) sh ./scripts/protocgen-any.sh
-
-proto-swagger-gen:
-	@echo "Generating Protobuf Swagger"
-	@if docker ps -a --format '{{.Names}}' | grep -Eq "^${containerProtoGenSwagger}$$"; then docker start -a $(containerProtoGenSwagger); else docker run --name $(containerProtoGenSwagger) -v $(CURDIR):/workspace --workdir /workspace $(containerProtoImage) \
-		sh ./scripts/protoc-swagger-gen.sh; fi
+	$(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace $(PROTO_BUILDER_IMAGE) sh ./scripts/protocgen.sh
 
 proto-format:
 	@echo "Formatting Protobuf files"
-	@if docker ps -a --format '{{.Names}}' | grep -Eq "^${containerProtoFmt}$$"; then docker start -a $(containerProtoFmt); else docker run --name $(containerProtoFmt) -v $(CURDIR):/workspace --workdir /workspace tendermintdev/docker-build-proto \
-		find ./ -not -path "./third_party/*" -name *.proto -exec clang-format -i {} \; ; fi
+	$(DOCKER) run --rm -v $(CURDIR):/workspace \
+	--workdir /workspace $(PROTO_FORMATTER_IMAGE) \
+	find ./ -name *.proto -exec clang-format -i {} \;
+
+# TODO update swagger gen
+#proto-swagger-gen:
+#	@#echo "Generating Protobuf Swagger"
+#	@./scripts/protoc-swagger-gen.sh
 
 proto-lint:
 	@$(DOCKER_BUF) lint --error-format=json
 
 proto-check-breaking:
-	@$(DOCKER_BUF) breaking --against $(HTTPS_GIT)#branch=bostrom-dev
-
-TM_URL           = https://raw.githubusercontent.com/tendermint/tendermint/v0.34.x/proto/tendermint
-GOGO_PROTO_URL   = https://raw.githubusercontent.com/regen-network/protobuf/cosmos
-COSMOS_PROTO_URL = https://raw.githubusercontent.com/regen-network/cosmos-proto/master
-COSMOS_SDK_URL   = https://raw.githubusercontent.com/cosmos/cosmos-sdk/release/v0.43.x/proto/cosmos
-CONFIO_URL       = https://raw.githubusercontent.com/confio/ics23/v0.6.3
-
-TM_CRYPTO_TYPES     = third_party/proto/tendermint/crypto
-TM_ABCI_TYPES       = third_party/proto/tendermint/abci
-TM_TYPES            = third_party/proto/tendermint/types
-TM_VERSION          = third_party/proto/tendermint/version
-TM_LIBS             = third_party/proto/tendermint/libs/bits
-
-GOGO_PROTO_TYPES     = third_party/proto/gogoproto
-COSMOS_PROTO_TYPES   = third_party/proto/cosmos_proto
-COSMOS_BASE_TYPES    = third_party/proto/cosmos/base
-CONFIO_TYPES         = third_party/proto/confio
-
-proto-update-deps:
-	@mkdir -p $(GOGO_PROTO_TYPES)
-	@curl -sSL $(GOGO_PROTO_URL)/gogoproto/gogo.proto > $(GOGO_PROTO_TYPES)/gogo.proto
-
-	@mkdir -p $(COSMOS_PROTO_TYPES)
-	@curl -sSL $(COSMOS_PROTO_URL)/cosmos.proto > $(COSMOS_PROTO_TYPES)/cosmos.proto
-
-	@mkdir -p $(COSMOS_BASE_TYPES)/v1beta1
-	@curl -sSL $(COSMOS_SDK_URL)/base/v1beta1/coin.proto > $(COSMOS_BASE_TYPES)/v1beta1/coin.proto
-
-	@mkdir -p $(COSMOS_BASE_TYPES)/query/v1beta1
-	@curl -sSL $(COSMOS_SDK_URL)/base/query/v1beta1/pagination.proto > $(COSMOS_BASE_TYPES)/query/v1beta1/pagination.proto
-
-## Importing of tendermint protobuf definitions currently requires the
-## use of `sed` in order to build properly with cosmos-sdk's proto file layout
-## (which is the standard Buf.build FILE_LAYOUT)
-## Issue link: https://github.com/tendermint/tendermint/issues/5021
-	@mkdir -p $(TM_ABCI_TYPES)
-	@curl -sSL $(TM_URL)/abci/types.proto > $(TM_ABCI_TYPES)/types.proto
-
-	@mkdir -p $(TM_VERSION)
-	@curl -sSL $(TM_URL)/version/types.proto > $(TM_VERSION)/types.proto
-
-	@mkdir -p $(TM_TYPES)
-	@curl -sSL $(TM_URL)/types/types.proto > $(TM_TYPES)/types.proto
-	@curl -sSL $(TM_URL)/types/evidence.proto > $(TM_TYPES)/evidence.proto
-	@curl -sSL $(TM_URL)/types/params.proto > $(TM_TYPES)/params.proto
-	@curl -sSL $(TM_URL)/types/validator.proto > $(TM_TYPES)/validator.proto
-
-	@mkdir -p $(TM_CRYPTO_TYPES)
-	@curl -sSL $(TM_URL)/crypto/proof.proto > $(TM_CRYPTO_TYPES)/proof.proto
-	@curl -sSL $(TM_URL)/crypto/keys.proto > $(TM_CRYPTO_TYPES)/keys.proto
-
-	@mkdir -p $(TM_LIBS)
-	@curl -sSL $(TM_URL)/libs/bits/types.proto > $(TM_LIBS)/types.proto
-
-	@mkdir -p $(CONFIO_TYPES)
-	@curl -sSL $(CONFIO_URL)/proofs.proto > $(CONFIO_TYPES)/proofs.proto.orig
-## insert go package option into proofs.proto file
-## Issue link: https://github.com/confio/ics23/issues/32
-	@head -n3 $(CONFIO_TYPES)/proofs.proto.orig > $(CONFIO_TYPES)/proofs.proto
-	@echo 'option go_package = "github.com/confio/ics23/go";' >> $(CONFIO_TYPES)/proofs.proto
-	@tail -n+4 $(CONFIO_TYPES)/proofs.proto.orig >> $(CONFIO_TYPES)/proofs.proto
-	@rm $(CONFIO_TYPES)/proofs.proto.orig
-
-.PHONY: proto-all proto-gen proto-format proto-gen-any proto-lint proto-check-breaking proto-update-deps
+	@$(DOCKER_BUF) breaking --against $(HTTPS_GIT)#branch=main
 
 ###############################################################################
 ###                                Docs                                     ###
 ###############################################################################
 
-update-swagger-docs: statik proto-swagger-gen
-	$(BINDIR)/statik -src=client/docs/swagger-ui -dest=client/docs -f -m
-
-.PHONY: update-swagger-docs
+# TODO update statik and swagger flow
+#update-swagger-docs: statik proto-swagger-gen
+#	$(BINDIR)/statik -src=client/docs/swagger-ui -dest=client/docs -f -m
+#
+#.PHONY: update-swagger-docs

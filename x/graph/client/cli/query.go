@@ -3,12 +3,11 @@ package cli
 import (
 	"context"
 
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/client/flags"
-
+	"github.com/cybercongress/go-cyber/x/graph/types"
 	"github.com/spf13/cobra"
 
-	"github.com/cybercongress/go-cyber/x/graph/types"
+	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/flags"
 )
 
 // GetQueryCmd returns
@@ -27,7 +26,7 @@ func GetQueryCmd() *cobra.Command {
 	return graphQueryCmd
 }
 
-func GetCmdGraphStats() *cobra.Command{
+func GetCmdGraphStats() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "stats",
 		Short: "Query the graph stats",

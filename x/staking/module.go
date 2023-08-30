@@ -1,4 +1,3 @@
-
 package staking
 
 import (
@@ -11,9 +10,7 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 )
 
-var (
-	_ module.AppModule = AppModule{}
-)
+var _ module.AppModule = AppModule{}
 
 type AppModule struct {
 	staking.AppModule
@@ -29,10 +26,10 @@ func NewAppModule(
 	bankKeeper bankkeeper.Keeper,
 ) AppModule {
 	return AppModule{
-		AppModule:     staking.NewAppModule(cdc, stakingKeeper, accountKeeper, bankKeeper),
-		sk: stakingKeeper,
-		bk: bankKeeper,
-		ak: accountKeeper,
+		AppModule: staking.NewAppModule(cdc, stakingKeeper, accountKeeper, bankKeeper),
+		sk:        stakingKeeper,
+		bk:        bankKeeper,
+		ak:        accountKeeper,
 	}
 }
 
@@ -42,5 +39,5 @@ func (am AppModule) RegisterServices(cfg module.Configurator) {
 	stakingtypes.RegisterQueryServer(cfg.QueryServer(), querier)
 
 	m := stakingkeeper.NewMigrator(am.sk)
-	cfg.RegisterMigration(stakingtypes.ModuleName, 1, m.Migrate1to2)
+	_ = cfg.RegisterMigration(stakingtypes.ModuleName, 1, m.Migrate1to2)
 }

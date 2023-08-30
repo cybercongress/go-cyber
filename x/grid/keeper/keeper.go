@@ -3,16 +3,15 @@ package keeper
 import (
 	"fmt"
 
-	"github.com/cosmos/cosmos-sdk/telemetry"
-	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	ctypes "github.com/cybercongress/go-cyber/types"
+	"github.com/cybercongress/go-cyber/x/grid/exported"
+	"github.com/cybercongress/go-cyber/x/grid/types"
 	"github.com/tendermint/tendermint/libs/log"
 
 	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	"github.com/cybercongress/go-cyber/x/grid/exported"
-	"github.com/cybercongress/go-cyber/x/grid/types"
+	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 )
 
 var _ = exported.EnergyKeeper(nil)
@@ -21,14 +20,14 @@ type Keeper struct {
 	storeKey      sdk.StoreKey
 	cdc           codec.BinaryCodec
 	accountKeeper types.AccountKeeper
-	proxyKeeper   types.CyberbankKeeper
+	proxyKeeper   types.BankKeeper
 	paramSpace    paramstypes.Subspace
 }
 
 func NewKeeper(
 	cdc codec.BinaryCodec,
 	key sdk.StoreKey,
-	bk types.CyberbankKeeper,
+	bk types.BankKeeper,
 	ak types.AccountKeeper,
 	paramSpace paramstypes.Subspace,
 ) Keeper {
@@ -75,7 +74,7 @@ func (k Keeper) CreateEnergyRoute(ctx sdk.Context, src, dst sdk.AccAddress, name
 
 	routes := k.GetSourceRoutes(ctx, src, k.MaxSourceRoutes(ctx))
 	if uint32(len(routes)) == k.MaxSourceRoutes(ctx) {
-		return  types.ErrMaxRoutes
+		return types.ErrMaxRoutes
 	}
 
 	acc := k.accountKeeper.GetAccount(ctx, dst)
@@ -86,7 +85,7 @@ func (k Keeper) CreateEnergyRoute(ctx sdk.Context, src, dst sdk.AccAddress, name
 
 	k.SetRoute(ctx, src, dst, types.NewRoute(src, dst, name, sdk.Coins{}))
 
-	k.proxyKeeper.OnCoinsTransfer(ctx, nil, dst)
+	k.proxyKeeper.NotifyListeners(ctx, dst)
 
 	return nil
 }
@@ -129,8 +128,8 @@ func (k Keeper) EditEnergyRoute(ctx sdk.Context, src, dst sdk.AccAddress, value 
 	}
 
 	ampers := route.Value.AmountOf(ctypes.AMPERE)
-	volts  := route.Value.AmountOf(ctypes.VOLT)
-	newValues := sdk.Coins{}
+	volts := route.Value.AmountOf(ctypes.VOLT)
+	var newValues sdk.Coins
 	if value.Denom == ctypes.VOLT {
 		newValues = sdk.NewCoins(value, sdk.NewCoin(ctypes.AMPERE, ampers))
 	} else {
@@ -139,7 +138,7 @@ func (k Keeper) EditEnergyRoute(ctx sdk.Context, src, dst sdk.AccAddress, value 
 
 	k.SetRoute(ctx, src, dst, types.NewRoute(src, dst, route.Name, newValues.Sort()))
 
-	k.proxyKeeper.OnCoinsTransfer(ctx, src, dst)
+	k.proxyKeeper.NotifyListeners(ctx, src, dst)
 
 	return nil
 }
@@ -159,7 +158,7 @@ func (k Keeper) DeleteEnergyRoute(ctx sdk.Context, src, dst sdk.AccAddress) erro
 
 	k.RemoveRoute(ctx, src, dst)
 
-	k.proxyKeeper.OnCoinsTransfer(ctx, src, dst)
+	k.proxyKeeper.NotifyListeners(ctx, src, dst)
 
 	return nil
 }
@@ -195,7 +194,7 @@ func (k Keeper) SetRoutes(ctx sdk.Context, routes types.Routes) error {
 		}
 
 		k.SetRoute(ctx, src, dst, types.NewRoute(src, dst, route.Name, route.Value))
-		k.proxyKeeper.OnCoinsTransfer(ctx, src, dst)
+		k.proxyKeeper.NotifyListeners(ctx, src, dst)
 	}
 	return nil
 }

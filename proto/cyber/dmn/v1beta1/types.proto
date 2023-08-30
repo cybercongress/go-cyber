@@ -8,51 +8,51 @@ import "cosmos/base/v1beta1/coin.proto";
 option go_package = "github.com/cybercongress/go-cyber/x/dmn/types";
 
 message Params {
-    option (gogoproto.equal)            = true;
+  option (gogoproto.equal) = true;
 
-    uint32 max_slots = 1;
-    uint32 max_gas   = 2;
-    uint32 fee_ttl   = 3;
+  uint32 max_slots = 1;
+  uint32 max_gas = 2;
+  uint32 fee_ttl = 3;
 }
 
 message Thought {
-    option (gogoproto.equal)            = false;
-    option (gogoproto.goproto_getters)  = false;
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
 
-    string  program  = 1;
-    Trigger trigger  = 2 [(gogoproto.nullable) = false];
-    Load    load     = 3 [(gogoproto.nullable) = false];
-    string  name     = 4;
-    string  particle = 5;
+  string program = 1;
+  Trigger trigger = 2 [ (gogoproto.nullable) = false ];
+  Load load = 3 [ (gogoproto.nullable) = false ];
+  string name = 4;
+  string particle = 5;
 }
 
 message Trigger {
-    option (gogoproto.equal)            = false;
-    option (gogoproto.goproto_getters)  = false;
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
 
-    uint64 period = 1;
-    uint64 block  = 2;
+  uint64 period = 1;
+  uint64 block = 2;
 }
 
 message Load {
-    option (gogoproto.equal)            = false;
-    option (gogoproto.goproto_getters)  = false;
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
 
-    string input                       = 1;
-    cosmos.base.v1beta1.Coin gas_price = 2 [
-        (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.Coin",
-        (gogoproto.nullable) = false
-    ];
+  string input = 1;
+  cosmos.base.v1beta1.Coin gas_price = 2 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message ThoughtStats {
-    option (gogoproto.equal)            = false;
-    option (gogoproto.goproto_getters)  = false;
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
 
-    string program     = 1;
-    string name        = 2;
-    uint64 calls       = 3;
-    uint64 fees        = 4;
-    uint64 gas         = 5;
-    uint64 last_block  = 6;
+  string program = 1;
+  string name = 2;
+  uint64 calls = 3;
+  uint64 fees = 4;
+  uint64 gas = 5;
+  uint64 last_block = 6;
 }

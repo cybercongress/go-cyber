@@ -7,49 +7,49 @@ import "cosmos/base/v1beta1/coin.proto";
 
 option go_package = "github.com/cybercongress/go-cyber/x/grid/types";
 
-service Msg{
-    rpc CreateRoute(MsgCreateRoute) returns (MsgCreateRouteResponse);
-    rpc EditRoute(MsgEditRoute) returns (MsgEditRouteResponse);
-    rpc DeleteRoute(MsgDeleteRoute) returns (MsgDeleteRouteResponse);
-    rpc EditRouteName(MsgEditRouteName) returns (MsgEditRouteNameResponse);
+service Msg {
+  rpc CreateRoute(MsgCreateRoute) returns (MsgCreateRouteResponse);
+  rpc EditRoute(MsgEditRoute) returns (MsgEditRouteResponse);
+  rpc DeleteRoute(MsgDeleteRoute) returns (MsgDeleteRouteResponse);
+  rpc EditRouteName(MsgEditRouteName) returns (MsgEditRouteNameResponse);
 }
 
 message MsgCreateRoute {
-    option (gogoproto.equal)           = false;
-    option (gogoproto.goproto_getters) = false;
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
 
-    string source      = 1;
-    string destination = 2;
-    string name        = 3;
+  string source = 1;
+  string destination = 2;
+  string name = 3;
 }
 
 message MsgEditRoute {
-    option (gogoproto.equal)           = false;
-    option (gogoproto.goproto_getters) = false;
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
 
-    string source                  = 1;
-    string destination             = 2;
-    cosmos.base.v1beta1.Coin value = 3 [
-           (gogoproto.nullable) = false,
-           (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.Coin"
-   ];
+  string source = 1;
+  string destination = 2;
+  cosmos.base.v1beta1.Coin value = 3 [
+    (gogoproto.nullable) = false,
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.Coin"
+  ];
 }
 
 message MsgDeleteRoute {
-    option (gogoproto.equal)           = false;
-    option (gogoproto.goproto_getters) = false;
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
 
-    string source      = 1;
-    string destination = 2;
+  string source = 1;
+  string destination = 2;
 }
 
 message MsgEditRouteName {
-    option (gogoproto.equal)           = false;
-    option (gogoproto.goproto_getters) = false;
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
 
-    string source      = 1;
-    string destination = 2;
-    string name        = 3;
+  string source = 1;
+  string destination = 2;
+  string name = 3;
 }
 
 message MsgCreateRouteResponse {}

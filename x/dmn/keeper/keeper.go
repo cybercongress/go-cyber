@@ -1,32 +1,29 @@
 package keeper
 
 import (
+	"encoding/base64"
+	"encoding/hex"
 	"fmt"
 
-	"encoding/hex"
-	"encoding/base64"
-
 	"github.com/CosmWasm/wasmd/x/wasm"
-	"github.com/cosmos/cosmos-sdk/telemetry"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
+	ctypes "github.com/cybercongress/go-cyber/types"
+	"github.com/cybercongress/go-cyber/x/dmn/types"
+	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
 	"github.com/tendermint/tendermint/libs/log"
 
 	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	ctypes "github.com/cybercongress/go-cyber/types"
-
-	"github.com/cybercongress/go-cyber/x/dmn/types"
-	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 )
 
 // Keeper of the power store
 type Keeper struct {
 	storeKey      sdk.StoreKey
 	cdc           codec.BinaryCodec
-	wasmKeeper 	  wasm.Keeper
+	wasmKeeper    wasm.Keeper
 	accountKeeper types.AccountKeeper
 	proxyKeeper   types.BankKeeper
 	paramspace    paramstypes.Subspace
@@ -35,21 +32,20 @@ type Keeper struct {
 func NewKeeper(
 	cdc codec.BinaryCodec,
 	key sdk.StoreKey,
-	bk  types.BankKeeper,
-	ak  types.AccountKeeper,
+	bk types.BankKeeper,
+	ak types.AccountKeeper,
 	paramSpace paramstypes.Subspace,
 ) *Keeper {
-
 	if !paramSpace.HasKeyTable() {
 		paramSpace = paramSpace.WithKeyTable(types.ParamKeyTable())
 	}
 
 	return &Keeper{
-		storeKey:   key,
-		cdc:        cdc,
+		storeKey:      key,
+		cdc:           cdc,
 		proxyKeeper:   bk,
 		accountKeeper: ak,
-		paramspace: paramSpace,
+		paramspace:    paramSpace,
 	}
 }
 
@@ -75,7 +71,6 @@ func (k Keeper) SaveThought(
 	trigger types.Trigger, load types.Load,
 	name string, particle graphtypes.Cid,
 ) error {
-
 	if trigger.Block != 0 && ctx.BlockHeight() > int64(trigger.Block) {
 		return types.ErrBadTrigger
 	}
@@ -103,7 +98,7 @@ func (k Keeper) SaveThought(
 	k.SetThoughtStats(ctx, program, name,
 		types.NewStats(
 			program.String(), name,
-			0,0, 0, uint64(ctx.BlockHeight()),
+			0, 0, 0, uint64(ctx.BlockHeight()),
 		),
 	)
 
@@ -169,7 +164,7 @@ func (k Keeper) UpdateThoughtName(
 		types.NewStats(
 			program.String(), nameNew,
 			thoughtStats.Calls, thoughtStats.Fees, thoughtStats.Fees, thoughtStats.LastBlock,
-	))
+		))
 
 	return nil
 }
@@ -258,9 +253,7 @@ func (k Keeper) UpdateThoughtBlock(
 	return nil
 }
 
-
-//______________________________________________________________________
-
+// ______________________________________________________________________
 
 func (k Keeper) MaxThougths(ctx sdk.Context) (res uint32) {
 	k.paramspace.Get(ctx, types.KeyMaxSlots, &res)
@@ -277,7 +270,7 @@ func (k Keeper) FeeTTL(ctx sdk.Context) (res uint32) {
 	return
 }
 
-//______________________________________________________________________
+// ______________________________________________________________________
 
 func (k Keeper) SetThought(ctx sdk.Context, thought types.Thought) {
 	store := ctx.KVStore(k.storeKey)
@@ -314,7 +307,7 @@ func (k Keeper) DeleteThoughtStats(ctx sdk.Context, program sdk.AccAddress, name
 	store.Delete(types.GetThoughtStatsKey(program, name))
 }
 
-//______________________________________________________________________
+// ______________________________________________________________________
 
 func (k Keeper) GetThought(ctx sdk.Context, program sdk.AccAddress, name string) (thought types.Thought, found bool) {
 	store := ctx.KVStore(k.storeKey)
@@ -441,7 +434,7 @@ func (k Keeper) ExecuteThoughtsQueue(ctx sdk.Context) {
 			price := thought.Load.GasPrice
 
 			k.Logger(ctx).Info("Started thought", "number", i, "gas price", price)
-			thoughtsTriggered = thoughtsTriggered +1
+			thoughtsTriggered++
 
 			cacheContext, writeFn := ctx.CacheContext()
 			cacheContext = cacheContext.WithGasMeter(sdk.NewGasMeter(sdk.Gas(maxGasPerThought)))
@@ -463,7 +456,7 @@ func (k Keeper) ExecuteThoughtsQueue(ctx sdk.Context) {
 
 			gasUsedByThought := cacheContext.GasMeter().GasConsumed()
 			ctx.GasMeter().ConsumeGas(gasUsedByThought, "thought execution")
-			if gasUsedTotal +gasUsedByThought > uint64(maxGas) {
+			if gasUsedTotal+gasUsedByThought > uint64(maxGas) {
 				break
 			} else {
 				gasUsedTotal += gasUsedByThought
@@ -472,7 +465,7 @@ func (k Keeper) ExecuteThoughtsQueue(ctx sdk.Context) {
 			js, _ := k.GetThoughtStats(ctx, program, thought.Name)
 			// TODO move to more advanced fee system, 10X fee reducer applied (min 0.1 per gas)
 			amtGasFee := price.Amount.Int64() * int64(gasUsedByThought) / 10
-			amtTTLFee := (ctx.BlockHeight() - int64(js.LastBlock))*int64(feeTTL)
+			amtTTLFee := (ctx.BlockHeight() - int64(js.LastBlock)) * int64(feeTTL)
 			amtTotalFee := amtGasFee + amtTTLFee
 
 			k.Logger(ctx).Info("Gas thought execution stats",
@@ -542,9 +535,11 @@ func (k Keeper) executeThoughtWithSudo(ctx sdk.Context, program sdk.AccAddress, 
 		telemetry.IncrCounter(1.0, types.ModuleName, "thought")
 	}()
 
-	callData, berr := base64.StdEncoding.DecodeString(msg); if berr != nil {
+	callData, berr := base64.StdEncoding.DecodeString(msg)
+	if berr != nil {
 		// TODO remove hex later as deprecated
-		_, herr := hex.DecodeString(msg); if herr != nil {
+		_, herr := hex.DecodeString(msg)
+		if herr != nil {
 			return nil, types.ErrBadCallData
 		}
 	}
