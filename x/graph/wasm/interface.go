@@ -4,38 +4,40 @@ import (
 	"encoding/json"
 
 	"github.com/CosmWasm/wasmd/x/wasm"
+	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-
-	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
-
 	"github.com/cybercongress/go-cyber/x/graph/keeper"
 	"github.com/cybercongress/go-cyber/x/graph/types"
 )
 
-var _ WasmQuerierInterface = WasmQuerier{}
-var _ WasmMsgParserInterface = WasmMsgParser{}
+var (
+	_ WasmQuerierInterface = WasmQuerier{}
+	_ MsgParserInterface   = MsgParser{}
+)
 
 //--------------------------------------------------
 
-type WasmMsgParserInterface interface {
+type MsgParserInterface interface {
 	Parse(contractAddr sdk.AccAddress, msg wasmvmtypes.CosmosMsg) ([]sdk.Msg, error)
 	ParseCustom(contractAddr sdk.AccAddress, data json.RawMessage) ([]sdk.Msg, error)
 }
 
-type WasmMsgParser struct{}
+type MsgParser struct{}
 
-func NewWasmMsgParser() WasmMsgParser {
-	return WasmMsgParser{}
+func NewMsgParser() MsgParser {
+	return MsgParser{}
 }
 
-func (WasmMsgParser) Parse(_ sdk.AccAddress, _ wasmvmtypes.CosmosMsg) ([]sdk.Msg, error) { return nil, nil }
+func (MsgParser) Parse(_ sdk.AccAddress, _ wasmvmtypes.CosmosMsg) ([]sdk.Msg, error) {
+	return nil, nil
+}
 
 type CosmosMsg struct {
 	Cyberlink *types.MsgCyberlink `json:"cyberlink,omitempty"`
 }
 
-func (WasmMsgParser) ParseCustom(contractAddr sdk.AccAddress, data json.RawMessage) ([]sdk.Msg, error) {
+func (MsgParser) ParseCustom(_ sdk.AccAddress, data json.RawMessage) ([]sdk.Msg, error) {
 	var sdkMsg CosmosMsg
 	err := json.Unmarshal(data, &sdkMsg)
 	if err != nil {
@@ -82,7 +84,6 @@ type CyberlinksAmountQueryResponse struct {
 func (querier WasmQuerier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([]byte, error) {
 	var query CosmosQuery
 	err := json.Unmarshal(data, &query)
-
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}

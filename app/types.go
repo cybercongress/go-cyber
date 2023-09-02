@@ -1,11 +1,10 @@
 package app
 
 import (
-	abci "github.com/tendermint/tendermint/abci/types"
-
 	"github.com/cosmos/cosmos-sdk/codec"
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	abci "github.com/tendermint/tendermint/abci/types"
 )
 
 // App implements the common methods for a Cosmos SDK-based application
@@ -38,4 +37,3 @@ type CosmosApp interface {
 	// All the registered module account addreses.
 	ModuleAccountAddrs() map[string]bool
 }
-

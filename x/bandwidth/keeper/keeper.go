@@ -2,14 +2,14 @@ package keeper
 
 import (
 	"fmt"
+
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
-	"github.com/tendermint/tendermint/libs/log"
-
 	"github.com/cybercongress/go-cyber/x/bandwidth/types"
 	gtypes "github.com/cybercongress/go-cyber/x/graph/types"
+	"github.com/tendermint/tendermint/libs/log"
 )
 
 type BandwidthMeter struct {
@@ -30,7 +30,6 @@ func NewBandwidthMeter(
 	asp types.AccountStakeProvider,
 	paramSpace paramstypes.Subspace,
 ) *BandwidthMeter {
-
 	if !paramSpace.HasKeyTable() {
 		paramSpace = paramSpace.WithKeyTable(types.ParamKeyTable())
 	}
@@ -115,7 +114,7 @@ func (bm *BandwidthMeter) AddToBlockBandwidth(value uint64) {
 }
 
 // Here we move bandwidth window:
-// Remove first block of window and add new block to window end
+// Remove first block of window and add new block to window end.
 func (bm *BandwidthMeter) CommitBlockBandwidth(ctx sdk.Context) {
 	params := bm.GetParams(ctx)
 	defer func() {
@@ -155,7 +154,7 @@ func (bm *BandwidthMeter) CommitBlockBandwidth(ctx sdk.Context) {
 	bm.bandwidthSpentByBlock[uint64(newWindowEnd)] = bm.currentBlockSpentBandwidth
 }
 
-func (bm *BandwidthMeter) GetCurrentBlockSpentBandwidth(ctx sdk.Context) uint64 {
+func (bm *BandwidthMeter) GetCurrentBlockSpentBandwidth(_ sdk.Context) uint64 {
 	return bm.currentBlockSpentBandwidth
 }
 
@@ -197,11 +196,11 @@ func (bm *BandwidthMeter) AdjustPrice(ctx sdk.Context) {
 	}
 }
 
-func (bm *BandwidthMeter) GetTotalCyberlinksCost(ctx sdk.Context, tx sdk.Tx) (uint64) {
+func (bm *BandwidthMeter) GetTotalCyberlinksCost(_ sdk.Context, tx sdk.Tx) uint64 {
 	bandwidthForTx := uint64(0)
 	for _, msg := range tx.GetMsgs() {
 		linkMsg := msg.(*gtypes.MsgCyberlink)
-		bandwidthForTx = bandwidthForTx + uint64(len(linkMsg.Links)) * 1000
+		bandwidthForTx = bandwidthForTx + uint64(len(linkMsg.Links))*1000
 	}
 	return bandwidthForTx
 }
@@ -211,7 +210,8 @@ func (bm *BandwidthMeter) GetPricedTotalCyberlinksCost(ctx sdk.Context, tx sdk.T
 }
 
 func (bm *BandwidthMeter) ConsumeAccountBandwidth(ctx sdk.Context, bw types.NeuronBandwidth, amt uint64) error {
-	err := bw.Consume(amt); if err != nil {
+	err := bw.Consume(amt)
+	if err != nil {
 		return err
 	}
 	bm.SetAccountBandwidth(ctx, bw)

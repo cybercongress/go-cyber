@@ -1,25 +1,24 @@
 package keeper
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
-
 	"context"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cybercongress/go-cyber/x/bandwidth/types"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 var _ types.QueryServer = &BandwidthMeter{}
 
-func (bm BandwidthMeter) Params(goCtx context.Context, request *types.QueryParamsRequest) (*types.QueryParamsResponse, error) {
+func (bm BandwidthMeter) Params(goCtx context.Context, _ *types.QueryParamsRequest) (*types.QueryParamsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	params := bm.GetParams(ctx)
 
 	return &types.QueryParamsResponse{Params: params}, nil
 }
 
-func (bm *BandwidthMeter) Load(goCtx context.Context, request *types.QueryLoadRequest) (*types.QueryLoadResponse, error) {
+func (bm *BandwidthMeter) Load(goCtx context.Context, _ *types.QueryLoadRequest) (*types.QueryLoadResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	load := bm.GetCurrentNetworkLoad(ctx)
 

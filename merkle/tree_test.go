@@ -1,15 +1,16 @@
-package merkle
+package merkle_test
 
 import (
 	"crypto/sha256"
 	"encoding/binary"
-	"github.com/stretchr/testify/require"
 	"testing"
+
+	"github.com/cybercongress/go-cyber/merkle"
+	"github.com/stretchr/testify/require"
 )
 
 func TestPushAndProofs(t *testing.T) {
-
-	tree := NewTree(sha256.New(), true)
+	tree := merkle.NewTree(sha256.New(), true)
 
 	data := make([]byte, 8)
 
@@ -24,12 +25,10 @@ func TestPushAndProofs(t *testing.T) {
 		binary.LittleEndian.PutUint64(data, uint64(i))
 		require.Equal(t, true, tree.ValidateIndexByProofs(i, data, proofs))
 	}
-
 }
 
 func TestBuildNewAndProofs(t *testing.T) {
-
-	tree := NewTree(sha256.New(), true)
+	tree := merkle.NewTree(sha256.New(), true)
 
 	allData := make([][]byte, 0, 31)
 
@@ -48,12 +47,10 @@ func TestBuildNewAndProofs(t *testing.T) {
 		binary.LittleEndian.PutUint64(data, uint64(i))
 		require.Equal(t, true, tree.ValidateIndexByProofs(i, data, proofs))
 	}
-
 }
 
 func TestEqualityOfBuildNewAndPush(t *testing.T) {
-
-	tree1 := NewTree(sha256.New(), true)
+	tree1 := merkle.NewTree(sha256.New(), true)
 
 	data := make([]byte, 8)
 
@@ -62,7 +59,7 @@ func TestEqualityOfBuildNewAndPush(t *testing.T) {
 		tree1.Push(data)
 	}
 
-	tree2 := NewTree(sha256.New(), true)
+	tree2 := merkle.NewTree(sha256.New(), true)
 
 	allData := make([][]byte, 0, 31)
 
@@ -78,7 +75,7 @@ func TestEqualityOfBuildNewAndPush(t *testing.T) {
 }
 
 func TestNotFull(t *testing.T) {
-	tree1 := NewTree(sha256.New(), true)
+	tree1 := merkle.NewTree(sha256.New(), true)
 
 	data := make([]byte, 8)
 
@@ -87,14 +84,14 @@ func TestNotFull(t *testing.T) {
 		tree1.Push(data)
 	}
 
-	tree2 := NewTree(sha256.New(), false)
+	tree2 := merkle.NewTree(sha256.New(), false)
 
 	for i := 0; i < 31; i++ {
 		binary.LittleEndian.PutUint64(data, uint64(i))
 		tree2.Push(data)
 	}
 
-	tree3 := NewTree(sha256.New(), false)
+	tree3 := merkle.NewTree(sha256.New(), false)
 
 	allData := make([][]byte, 0, 31)
 
@@ -111,7 +108,7 @@ func TestNotFull(t *testing.T) {
 }
 
 func TestExportImport(t *testing.T) {
-	tree1 := NewTree(sha256.New(), true)
+	tree1 := merkle.NewTree(sha256.New(), true)
 
 	data := make([]byte, 8)
 
@@ -122,7 +119,7 @@ func TestExportImport(t *testing.T) {
 
 	subtreeRoots := tree1.ExportSubtreesRoots()
 
-	tree2 := NewTree(sha256.New(), false)
+	tree2 := merkle.NewTree(sha256.New(), false)
 	tree2.ImportSubtreesRoots(subtreeRoots)
 
 	require.Equal(t, tree1.RootHash(), tree2.RootHash())

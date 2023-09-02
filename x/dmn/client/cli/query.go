@@ -4,13 +4,11 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/spf13/cobra"
-
-	"github.com/cosmos/cosmos-sdk/client"
-
 	"github.com/cybercongress/go-cyber/x/dmn/types"
+	"github.com/spf13/cobra"
 )
 
 func GetQueryCmd() *cobra.Command {
@@ -66,7 +64,7 @@ func GetCmdQueryThought() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "thought [program] [name]",
 		Short: "Query thought",
-		Args: cobra.ExactArgs(2),
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -85,7 +83,6 @@ func GetCmdQueryThought() *cobra.Command {
 					program.String(), args[1],
 				},
 			)
-
 			if err != nil {
 				return err
 			}
@@ -103,7 +100,7 @@ func GetCmdQueryThoughtStats() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "thought-stats [program] [name]",
 		Short: "Query thought stats",
-		Args: cobra.ExactArgs(2),
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -122,7 +119,6 @@ func GetCmdQueryThoughtStats() *cobra.Command {
 					program.String(), args[1],
 				},
 			)
-
 			if err != nil {
 				return err
 			}
@@ -137,10 +133,10 @@ func GetCmdQueryThoughtStats() *cobra.Command {
 }
 
 func GetCmdQueryThoughts() *cobra.Command {
-	cmd :=  &cobra.Command{
+	cmd := &cobra.Command{
 		Use:   "thoughts",
 		Short: "Query all thoughts",
-		Args: cobra.ExactArgs(0),
+		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -152,7 +148,6 @@ func GetCmdQueryThoughts() *cobra.Command {
 				context.Background(),
 				&types.QueryThoughtsRequest{},
 			)
-
 			if err != nil {
 				return err
 			}
@@ -167,10 +162,10 @@ func GetCmdQueryThoughts() *cobra.Command {
 }
 
 func GetCmdQueryThoughtsStats() *cobra.Command {
-	cmd :=  &cobra.Command{
+	cmd := &cobra.Command{
 		Use:   "thoughts-stats",
 		Short: "Query all thoughts stats",
-		Args: cobra.ExactArgs(0),
+		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -182,7 +177,6 @@ func GetCmdQueryThoughtsStats() *cobra.Command {
 				context.Background(),
 				&types.QueryThoughtsStatsRequest{},
 			)
-
 			if err != nil {
 				return err
 			}
@@ -195,4 +189,3 @@ func GetCmdQueryThoughtsStats() *cobra.Command {
 
 	return cmd
 }
-

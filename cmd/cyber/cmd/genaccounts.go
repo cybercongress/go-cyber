@@ -6,8 +6,6 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/spf13/cobra"
-
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
@@ -18,6 +16,7 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/cosmos/cosmos-sdk/x/genutil"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
+	"github.com/spf13/cobra"
 )
 
 const (
@@ -49,9 +48,9 @@ contain valid denominations. Accounts may optionally be supplied with vesting pa
 			if err != nil {
 				inBuf := bufio.NewReader(cmd.InOrStdin())
 				keyringBackend, err := cmd.Flags().GetString(flags.FlagKeyringBackend)
-                if err != nil {
-                    return err
-                }
+				if err != nil {
+					return err
+				}
 
 				// attempt to lookup address from Keybase if no address was provided
 				kb, err := keyring.New(sdk.KeyringServiceName(), keyringBackend, clientCtx.HomeDir, inBuf)
@@ -73,17 +72,17 @@ contain valid denominations. Accounts may optionally be supplied with vesting pa
 			}
 
 			vestingStart, err := cmd.Flags().GetInt64(flagVestingStart)
-            if err != nil {
-                return err
-            }
+			if err != nil {
+				return err
+			}
 			vestingEnd, err := cmd.Flags().GetInt64(flagVestingEnd)
-            if err != nil {
-                return err
-            }
+			if err != nil {
+				return err
+			}
 			vestingAmtStr, err := cmd.Flags().GetString(flagVestingAmt)
-            if err != nil {
-                return err
-            }
+			if err != nil {
+				return err
+			}
 
 			vestingAmt, err := sdk.ParseCoinsNormalized(vestingAmtStr)
 			if err != nil {
@@ -161,7 +160,6 @@ contain valid denominations. Accounts may optionally be supplied with vesting pa
 			bankGenState.Balances = append(bankGenState.Balances, balances)
 			bankGenState.Balances = banktypes.SanitizeGenesisBalances(bankGenState.Balances)
 			bankGenState.Supply = bankGenState.Supply.Add(balances.Coins...)
-
 
 			bankGenStateBz, err := clientCtx.Codec.MarshalJSON(bankGenState)
 			if err != nil {

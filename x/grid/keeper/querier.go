@@ -5,9 +5,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	abci "github.com/tendermint/tendermint/abci/types"
-
 	"github.com/cybercongress/go-cyber/x/grid/types"
+	abci "github.com/tendermint/tendermint/abci/types"
 )
 
 func NewQuerier(k Keeper, legacyQuerierCdc *codec.LegacyAmino) sdk.Querier {
@@ -47,7 +46,8 @@ func queryParams(ctx sdk.Context, k Keeper, legacyQuerierCdc *codec.LegacyAmino)
 func querySourceRoutes(ctx sdk.Context, req abci.RequestQuery, k Keeper, legacyQuerierCdc *codec.LegacyAmino) ([]byte, error) {
 	var params types.QuerySourceParams
 
-	err := legacyQuerierCdc.UnmarshalJSON(req.Data, &params); if err != nil {
+	err := legacyQuerierCdc.UnmarshalJSON(req.Data, &params)
+	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
 
@@ -61,11 +61,12 @@ func querySourceRoutes(ctx sdk.Context, req abci.RequestQuery, k Keeper, legacyQ
 	return res, nil
 }
 
-// queryDestinationRoutes TODO add pagination
+// queryDestinationRoutes TODO add pagination.
 func queryDestinationRoutes(ctx sdk.Context, req abci.RequestQuery, k Keeper, legacyQuerierCdc *codec.LegacyAmino) ([]byte, error) {
 	var params types.QueryDestinationParams
 
-	err := legacyQuerierCdc.UnmarshalJSON(req.Data, &params); if err != nil {
+	err := legacyQuerierCdc.UnmarshalJSON(req.Data, &params)
+	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
 
@@ -82,7 +83,8 @@ func queryDestinationRoutes(ctx sdk.Context, req abci.RequestQuery, k Keeper, le
 func queryDestinationRoutedEnergy(ctx sdk.Context, req abci.RequestQuery, k Keeper, legacyQuerierCdc *codec.LegacyAmino) ([]byte, error) {
 	var params types.QueryDestinationParams
 
-	err := legacyQuerierCdc.UnmarshalJSON(req.Data, &params); if err != nil {
+	err := legacyQuerierCdc.UnmarshalJSON(req.Data, &params)
+	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
 
@@ -99,7 +101,8 @@ func queryDestinationRoutedEnergy(ctx sdk.Context, req abci.RequestQuery, k Keep
 func querySourceRoutedEnergy(ctx sdk.Context, req abci.RequestQuery, k Keeper, legacyQuerierCdc *codec.LegacyAmino) ([]byte, error) {
 	var params types.QuerySourceParams
 
-	err := legacyQuerierCdc.UnmarshalJSON(req.Data, &params); if err != nil {
+	err := legacyQuerierCdc.UnmarshalJSON(req.Data, &params)
+	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
 
@@ -116,7 +119,8 @@ func querySourceRoutedEnergy(ctx sdk.Context, req abci.RequestQuery, k Keeper, l
 func queryRoute(ctx sdk.Context, req abci.RequestQuery, k Keeper, legacyQuerierCdc *codec.LegacyAmino) ([]byte, error) {
 	var params types.QueryRouteParams
 
-	err := legacyQuerierCdc.UnmarshalJSON(req.Data, &params); if err != nil {
+	err := legacyQuerierCdc.UnmarshalJSON(req.Data, &params)
+	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
 

@@ -7,12 +7,11 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cybercongress/go-cyber/types/query"
 	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
+	"github.com/cybercongress/go-cyber/x/rank/types"
 	"github.com/ipfs/go-cid"
 	"github.com/spf13/cobra"
-
-	"github.com/cybercongress/go-cyber/types/query"
-	"github.com/cybercongress/go-cyber/x/rank/types"
 )
 
 func GetQueryCmd() *cobra.Command {
@@ -39,7 +38,6 @@ func GetQueryCmd() *cobra.Command {
 
 	return rankingQueryCmd
 }
-
 
 func GetCmdQueryParams() *cobra.Command {
 	cmd := &cobra.Command{
@@ -70,7 +68,7 @@ func GetCmdQueryParams() *cobra.Command {
 	return cmd
 }
 
-func GetCmdQueryRank() *cobra.Command{
+func GetCmdQueryRank() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "rank [particle]",
 		Short: "Query the current rank of given particle",
@@ -103,7 +101,7 @@ func GetCmdQueryRank() *cobra.Command{
 	return cmd
 }
 
-func GetCmdQuerySearch() *cobra.Command{
+func GetCmdQuerySearch() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "search [particle] [page] [limit]",
 		Short: "Query search of given particle",
@@ -153,7 +151,7 @@ func GetCmdQuerySearch() *cobra.Command{
 	return cmd
 }
 
-func GetCmdQueryBacklinks() *cobra.Command{
+func GetCmdQueryBacklinks() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "backlinks [particle] [page] [limit]",
 		Short: "Query backlinks of given particle",
@@ -203,7 +201,7 @@ func GetCmdQueryBacklinks() *cobra.Command{
 	return cmd
 }
 
-func GetCmdQueryTop() *cobra.Command{
+func GetCmdQueryTop() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "top",
 		Short: "Query top",
@@ -249,7 +247,7 @@ func GetCmdQueryTop() *cobra.Command{
 	return cmd
 }
 
-func GetCmdQueryIsLinkExist() *cobra.Command{
+func GetCmdQueryIsLinkExist() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "is-exist [from] [to] [account]",
 		Short: "Query is link exist between particles for given account",
@@ -291,7 +289,7 @@ func GetCmdQueryIsLinkExist() *cobra.Command{
 	return cmd
 }
 
-func GetCmdQueryIsAnyLinkExist() *cobra.Command{
+func GetCmdQueryIsAnyLinkExist() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "is-exist-any [from] [to]",
 		Short: "Query is any link exist between particles",
@@ -313,7 +311,7 @@ func GetCmdQueryIsAnyLinkExist() *cobra.Command{
 
 			res, err := queryClient.IsAnyLinkExist(
 				context.Background(),
-				&types.QueryIsAnyLinkExistRequest{args[0], args[1]},
+				&types.QueryIsAnyLinkExistRequest{From: args[0], To: args[1]},
 			)
 			if err != nil {
 				return err
@@ -328,7 +326,7 @@ func GetCmdQueryIsAnyLinkExist() *cobra.Command{
 	return cmd
 }
 
-func GetCmdQueryNegentropyParticle() *cobra.Command{
+func GetCmdQueryNegentropyParticle() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "negentropy [particle]",
 		Short: "Query the current negentropy of given particle",
@@ -361,7 +359,7 @@ func GetCmdQueryNegentropyParticle() *cobra.Command{
 	return cmd
 }
 
-func GetCmdQueryNegentropy() *cobra.Command{
+func GetCmdQueryNegentropy() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "negentropy",
 		Short: "Query the current negentropy of whole graph",
@@ -390,7 +388,7 @@ func GetCmdQueryNegentropy() *cobra.Command{
 	return cmd
 }
 
-func GetCmdQueryKarma() *cobra.Command{
+func GetCmdQueryKarma() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "karma [neuron]",
 		Short: "Query the current karma of given neuron",

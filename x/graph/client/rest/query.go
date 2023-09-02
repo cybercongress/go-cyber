@@ -6,9 +6,8 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/types/rest"
-	"github.com/gorilla/mux"
-
 	"github.com/cybercongress/go-cyber/x/graph/types"
+	"github.com/gorilla/mux"
 )
 
 func registerQueryRoutes(cliCtx client.Context, r *mux.Router) {

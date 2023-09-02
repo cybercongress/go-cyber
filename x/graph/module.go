@@ -1,39 +1,33 @@
 package graph
 
 import (
-	"encoding/json"
-	//"fmt"
-
 	"context"
+	"encoding/json"
 
 	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	bandwidthkeeper "github.com/cybercongress/go-cyber/x/bandwidth/keeper"
-	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-	abci "github.com/tendermint/tendermint/abci/types"
-	//"github.com/gogo/protobuf/codec"
-	"github.com/cosmos/cosmos-sdk/codec"
-	//"github.com/cosmos/cosmos-sdk/types/module"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
-	"github.com/gorilla/mux"
-	"github.com/spf13/cobra"
-	//"github.com/tendermint/tendermint/abci/types"
-
+	bandwidthkeeper "github.com/cybercongress/go-cyber/x/bandwidth/keeper"
 	cyberbankkeeper "github.com/cybercongress/go-cyber/x/cyberbank/keeper"
 	"github.com/cybercongress/go-cyber/x/graph/client/cli"
 	"github.com/cybercongress/go-cyber/x/graph/client/rest"
 	"github.com/cybercongress/go-cyber/x/graph/keeper"
 	"github.com/cybercongress/go-cyber/x/graph/types"
+	"github.com/gorilla/mux"
+	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	"github.com/spf13/cobra"
+	abci "github.com/tendermint/tendermint/abci/types"
 )
 
 var (
-	_ module.AppModule           = AppModule{}
-	_ module.AppModuleBasic      = AppModuleBasic{}
+	_ module.AppModule      = AppModule{}
+	_ module.AppModuleBasic = AppModuleBasic{}
 )
 
-type AppModuleBasic struct{
+type AppModuleBasic struct {
 	cdc codec.Codec
 }
 
@@ -45,7 +39,9 @@ func (AppModuleBasic) RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 
 func (AppModuleBasic) DefaultGenesis(_ codec.JSONCodec) json.RawMessage { return nil }
 
-func (AppModuleBasic) ValidateGenesis(_ codec.JSONCodec, _ client.TxEncodingConfig, _ json.RawMessage) error { return nil }
+func (AppModuleBasic) ValidateGenesis(_ codec.JSONCodec, _ client.TxEncodingConfig, _ json.RawMessage) error {
+	return nil
+}
 
 func (AppModuleBasic) RegisterRESTRoutes(clientCtx client.Context, rtr *mux.Router) {
 	rest.RegisterRoutes(clientCtx, rtr)
@@ -80,11 +76,11 @@ type AppModule struct {
 }
 
 func NewAppModule(
-	cdc 			codec.Codec,
-	graphKeeper     *keeper.GraphKeeper,
-	indexKeeper 	*keeper.IndexKeeper,
-	accountKeeper 	authkeeper.AccountKeeper,
-	bankKeeper      *cyberbankkeeper.IndexedKeeper,
+	cdc codec.Codec,
+	graphKeeper *keeper.GraphKeeper,
+	indexKeeper *keeper.IndexKeeper,
+	accountKeeper authkeeper.AccountKeeper,
+	bankKeeper *cyberbankkeeper.IndexedKeeper,
 	bandwidthKeeper *bandwidthkeeper.BandwidthMeter,
 ) AppModule {
 	return AppModule{
@@ -92,8 +88,8 @@ func NewAppModule(
 		gk:             graphKeeper,
 		ik:             indexKeeper,
 		ak:             accountKeeper,
-		bk:				bankKeeper,
-		bm: 			bandwidthKeeper,
+		bk:             bankKeeper,
+		bm:             bandwidthKeeper,
 	}
 }
 
@@ -118,7 +114,7 @@ func (am AppModule) LegacyQuerierHandler(legacyQuerierCdc *codec.LegacyAmino) sd
 	return keeper.NewQuerier(*am.gk, legacyQuerierCdc)
 }
 
-func (am AppModule) InitGenesis(ctx sdk.Context, _ codec.JSONCodec, _ json.RawMessage) []abci.ValidatorUpdate {
+func (am AppModule) InitGenesis(_ sdk.Context, _ codec.JSONCodec, _ json.RawMessage) []abci.ValidatorUpdate {
 	return []abci.ValidatorUpdate{}
 }
 
@@ -140,4 +136,3 @@ func (am AppModule) EndBlock(ctx sdk.Context, _ abci.RequestEndBlock) []abci.Val
 	EndBlocker(ctx, am.gk, am.ik)
 	return []abci.ValidatorUpdate{}
 }
-

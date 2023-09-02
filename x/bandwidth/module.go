@@ -1,26 +1,23 @@
 package bandwidth
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
-	"github.com/gorilla/mux"
-	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-	"github.com/spf13/cobra"
-
 	"github.com/cybercongress/go-cyber/x/bandwidth/client/cli"
 	"github.com/cybercongress/go-cyber/x/bandwidth/client/rest"
 	"github.com/cybercongress/go-cyber/x/bandwidth/keeper"
 	"github.com/cybercongress/go-cyber/x/bandwidth/types"
-
-	"context"
-
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/gorilla/mux"
+	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	"github.com/spf13/cobra"
 	abci "github.com/tendermint/tendermint/abci/types"
 )
 
@@ -29,8 +26,7 @@ var (
 	_ module.AppModuleBasic = AppModuleBasic{}
 )
 
-
-type AppModuleBasic struct{
+type AppModuleBasic struct {
 	cdc codec.Codec
 }
 
@@ -71,8 +67,8 @@ func (AppModuleBasic) RegisterInterfaces(_ codectypes.InterfaceRegistry) {}
 type AppModule struct {
 	AppModuleBasic
 
-	ak             authkeeper.AccountKeeper
-	bm			   *keeper.BandwidthMeter
+	ak authkeeper.AccountKeeper
+	bm *keeper.BandwidthMeter
 }
 
 func NewAppModule(
@@ -82,8 +78,8 @@ func NewAppModule(
 ) AppModule {
 	return AppModule{
 		AppModuleBasic: AppModuleBasic{cdc: cdc},
-		ak:		  ak,
-		bm:		  bm,
+		ak:             ak,
+		bm:             bm,
 	}
 }
 

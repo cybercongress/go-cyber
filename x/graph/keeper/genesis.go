@@ -6,7 +6,6 @@ import (
 	"path/filepath"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	"github.com/cybercongress/go-cyber/utils"
 )
 
@@ -15,7 +14,7 @@ const (
 	LinksExportFileName = "export/graph"
 )
 
-// TODO make refactoring of initial rank calculation on graph load from binary
+// TODO make refactoring of initial rank calculation on graph load from binary.
 func InitGenesis(
 	ctx sdk.Context, gk GraphKeeper, ik *IndexKeeper,
 ) (err error) {
@@ -47,7 +46,6 @@ func InitGenesis(
 func WriteGenesis(
 	ctx sdk.Context, gk GraphKeeper, ik *IndexKeeper,
 ) (err error) {
-
 	linksFilePath := utils.RootifyPath(LinksExportFileName)
 	dirName := filepath.Dir(linksFilePath)
 	if _, err := os.Stat(dirName); err != nil {

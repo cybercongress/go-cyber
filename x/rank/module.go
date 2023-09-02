@@ -6,22 +6,18 @@ import (
 	"fmt"
 
 	"github.com/cosmos/cosmos-sdk/client"
-	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
-	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-
-	//"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/codec"
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	"github.com/gorilla/mux"
-	"github.com/spf13/cobra"
-	abci "github.com/tendermint/tendermint/abci/types"
-
 	"github.com/cybercongress/go-cyber/x/rank/client/cli"
 	"github.com/cybercongress/go-cyber/x/rank/client/rest"
-
 	"github.com/cybercongress/go-cyber/x/rank/keeper"
 	"github.com/cybercongress/go-cyber/x/rank/types"
+	"github.com/gorilla/mux"
+	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	"github.com/spf13/cobra"
+	abci "github.com/tendermint/tendermint/abci/types"
 )
 
 var (
@@ -34,13 +30,13 @@ const (
 	FlagSearchAPI  = "search-api"
 )
 
-type AppModuleBasic struct{
+type AppModuleBasic struct {
 	cdc codec.Codec
 }
 
 func (AppModuleBasic) Name() string { return types.ModuleName }
 
-func (AppModuleBasic) RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {}
+func (AppModuleBasic) RegisterLegacyAminoCodec(_ *codec.LegacyAmino) {}
 
 func (AppModuleBasic) DefaultGenesis(cdc codec.JSONCodec) json.RawMessage {
 	return cdc.MustMarshalJSON(types.DefaultGenesisState())
