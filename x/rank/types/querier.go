@@ -3,18 +3,17 @@ package types
 import sdk "github.com/cosmos/cosmos-sdk/types"
 
 const (
-	QueryParameters  	= "params"
-	QueryRank		 	= "rank"
-	QuerySearch      	= "search"
-	QueryBacklinks   	= "backlinks"
-	QueryTop		 	= "top"
-	QueryIsLinkExist 	= "is_link_exist"
+	QueryParameters     = "params"
+	QueryRank           = "rank"
+	QuerySearch         = "search"
+	QueryBacklinks      = "backlinks"
+	QueryTop            = "top"
+	QueryIsLinkExist    = "is_link_exist"
 	QueryIsAnyLinkExist = "is_any_link_exist"
-	QueryKarma 	 		= "karma"
-	QueryEntropy 	 	= "entropy"
-	QueryNegentropy 	= "negentropy"
+	QueryKarma          = "karma"
+	QueryEntropy        = "entropy"
+	QueryNegentropy     = "negentropy"
 )
-
 
 type QueryRankParams struct {
 	Cid string
@@ -25,7 +24,7 @@ func NewQueryRankParams(cid string) QueryRankParams {
 }
 
 type QuerySearchParams struct {
-	Cid string
+	Cid           string
 	Page, PerPage uint32
 }
 
@@ -41,10 +40,9 @@ func NewQueryTopParams(page, perPage uint32) QueryTopParams {
 	return QueryTopParams{page, perPage}
 }
 
-
 type QueryIsLinkExistParams struct {
 	From, To string
-	Address sdk.AccAddress
+	Address  sdk.AccAddress
 }
 
 func NewQueryIsLinkExistParams(from, to string, account sdk.AccAddress) QueryIsLinkExistParams {

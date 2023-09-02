@@ -3,7 +3,7 @@ package app
 import (
 	simappparams "github.com/cosmos/cosmos-sdk/simapp/params"
 	"github.com/cosmos/cosmos-sdk/std"
-	"github.com/cybercongress/go-cyber/app/params"
+	"github.com/cybercongress/go-cyber/v2/app/params"
 )
 
 func MakeEncodingConfig() params.EncodingConfig {
@@ -19,7 +19,6 @@ func MakeEncodingConfig() params.EncodingConfig {
 }
 
 func MakeTestEncodingConfig() simappparams.EncodingConfig {
-
 	encodingConfig := params.MakeEncodingConfig()
 	std.RegisterLegacyAminoCodec(encodingConfig.Amino)
 	std.RegisterInterfaces(encodingConfig.InterfaceRegistry)

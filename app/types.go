@@ -1,7 +1,7 @@
 package app
 
 import (
-	abci "github.com/tendermint/tendermint/abci/types"
+	abci "github.com/cometbft/cometbft/abci/types"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
@@ -38,4 +38,3 @@ type CosmosApp interface {
 	// All the registered module account addreses.
 	ModuleAccountAddrs() map[string]bool
 }
-

@@ -5,7 +5,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/cybercongress/go-cyber/x/grid/types"
+	"github.com/cybercongress/go-cyber/v2/x/grid/types"
 )
 
 type msgServer struct {

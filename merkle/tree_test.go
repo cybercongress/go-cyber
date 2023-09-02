@@ -3,12 +3,12 @@ package merkle
 import (
 	"crypto/sha256"
 	"encoding/binary"
-	"github.com/stretchr/testify/require"
 	"testing"
+
+	"github.com/stretchr/testify/require"
 )
 
 func TestPushAndProofs(t *testing.T) {
-
 	tree := NewTree(sha256.New(), true)
 
 	data := make([]byte, 8)
@@ -24,11 +24,9 @@ func TestPushAndProofs(t *testing.T) {
 		binary.LittleEndian.PutUint64(data, uint64(i))
 		require.Equal(t, true, tree.ValidateIndexByProofs(i, data, proofs))
 	}
-
 }
 
 func TestBuildNewAndProofs(t *testing.T) {
-
 	tree := NewTree(sha256.New(), true)
 
 	allData := make([][]byte, 0, 31)
@@ -48,11 +46,9 @@ func TestBuildNewAndProofs(t *testing.T) {
 		binary.LittleEndian.PutUint64(data, uint64(i))
 		require.Equal(t, true, tree.ValidateIndexByProofs(i, data, proofs))
 	}
-
 }
 
 func TestEqualityOfBuildNewAndPush(t *testing.T) {
-
 	tree1 := NewTree(sha256.New(), true)
 
 	data := make([]byte, 8)

@@ -2,8 +2,8 @@ package types
 
 func NewGenesisState(params Params, routes []Route) *GenesisState {
 	return &GenesisState{
-		Params: 	 params,
-		Routes: 	 routes,
+		Params: params,
+		Routes: routes,
 	}
 }
 

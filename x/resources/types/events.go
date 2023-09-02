@@ -1,13 +1,13 @@
 package types
 
 const (
-	EventTypeInvestmint             = "investmint"
+	EventTypeInvestmint = "investmint"
 
-	AttributeKeyNeuron				= "neuron"
-	AttributeKeyAmount 				= "amount"
-	AttributeKeyResource            = "resource"
-	AttributeKeyLength              = "length"
-	AttributeKeyMinted              = "minted"
+	AttributeKeyNeuron   = "neuron"
+	AttributeKeyAmount   = "amount"
+	AttributeKeyResource = "resource"
+	AttributeKeyLength   = "length"
+	AttributeKeyMinted   = "minted"
 
-	AttributeValueCategory   		= ModuleName
+	AttributeValueCategory = ModuleName
 )

@@ -17,16 +17,13 @@ func sum(h hash.Hash, data ...[]byte) []byte {
 // number of data elements should be power of 2
 // not suitable for parallel calculations cause using same hash.Hash
 func buildSubTree(h hash.Hash, full bool, startIndex int, data [][]byte) *Subtree {
-
 	nodes := make([]*Node, len(data))
 	for i := 0; i < len(data); i++ {
-
 		nodes[i] = &Node{
 			hash:       sum(h, data[i]),
 			firstIndex: startIndex + i,
 			lastIndex:  startIndex + i,
 		}
-
 	}
 
 	root := sumNodes(h, full, nodes)[0]
@@ -41,7 +38,6 @@ func buildSubTree(h hash.Hash, full bool, startIndex int, data [][]byte) *Subtre
 }
 
 func sumNodes(h hash.Hash, full bool, nodes []*Node) []*Node {
-
 	if len(nodes) == 1 {
 		return nodes
 	}
