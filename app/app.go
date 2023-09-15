@@ -2,7 +2,7 @@ package app
 
 import (
 	"fmt"
-	v2 "github.com/cybercongress/go-cyber/app/upgrades/v2"
+	v3 "github.com/cybercongress/go-cyber/app/upgrades/v3"
 	"github.com/cybercongress/go-cyber/utils"
 	"io"
 	"os"
@@ -80,7 +80,7 @@ var (
 	ProposalsEnabled        = "true"
 	EnableSpecificProposals = ""
 
-	Upgrades = []upgrades.Upgrade{v2.Upgrade}
+	Upgrades = []upgrades.Upgrade{v3.Upgrade}
 )
 
 // These constants are derived from the above variables.
