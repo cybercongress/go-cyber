@@ -2,6 +2,8 @@ package app
 
 import (
 	"fmt"
+	v2 "github.com/cybercongress/go-cyber/app/upgrades/v2"
+	"github.com/cybercongress/go-cyber/utils"
 	"io"
 	"os"
 	"strings"
@@ -55,7 +57,6 @@ import (
 	tmjson "github.com/tendermint/tendermint/libs/json"
 
 	"github.com/cybercongress/go-cyber/app/params"
-	"github.com/cybercongress/go-cyber/utils"
 	cyberbanktypes "github.com/cybercongress/go-cyber/x/cyberbank/types"
 
 	"github.com/cosmos/cosmos-sdk/simapp"
@@ -79,7 +80,7 @@ var (
 	ProposalsEnabled        = "true"
 	EnableSpecificProposals = ""
 
-	Upgrades = []upgrades.Upgrade{}
+	Upgrades = []upgrades.Upgrade{v2.Upgrade}
 )
 
 // These constants are derived from the above variables.
@@ -319,11 +320,11 @@ func NewApp(
 		if err := app.LoadLatestVersion(); err != nil {
 			tmos.Exit(fmt.Sprintf("failed to load latest version: %s", err))
 		}
-		ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+		ctx := app.BaseApp.NewUncachedContext(true, tmproto.Header{})
 
 		// TODO refactor context load flow
 		// NOTE custom implementation
-		app.loadContexts(db)
+		app.loadContexts(db, ctx)
 
 		if err := app.WasmKeeper.InitializePinnedCodes(ctx); err != nil {
 			tmos.Exit(fmt.Sprintf("failed initialize pinned codes %s", err))
@@ -479,9 +480,10 @@ func (app *App) setupUpgradeStoreLoaders() {
 	}
 
 	for _, upgrade := range Upgrades {
+		storeUpgrades := upgrade.StoreUpgrades
 		if upgradeInfo.Name == upgrade.UpgradeName {
 			app.SetStoreLoader(
-				upgradetypes.UpgradeStoreLoader(upgradeInfo.Height, &upgrade.StoreUpgrades),
+				upgradetypes.UpgradeStoreLoader(upgradeInfo.Height, &storeUpgrades),
 			)
 		}
 	}
@@ -522,9 +524,8 @@ func MakeCodecs() (codec.Codec, *codec.LegacyAmino) {
 	return config.Marshaler, config.Amino
 }
 
-func (app *App) loadContexts(db dbm.DB) {
-	freshCtx := app.BaseApp.NewContext(true, tmproto.Header{})
-	freshCtx = freshCtx.WithBlockHeight(int64(app.RankKeeper.GetLatestBlockNumber(freshCtx)))
+func (app *App) loadContexts(db dbm.DB, fCtx sdk.Context) {
+	freshCtx := fCtx.WithBlockHeight(int64(app.RankKeeper.GetLatestBlockNumber(fCtx)))
 	start := time.Now()
 	app.BaseApp.Logger().Info("Loading the brain state")
 

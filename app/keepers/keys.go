@@ -48,6 +48,14 @@ func (appKeepers *AppKeepers) GenerateKeys() {
 		ibcfeetypes.StoreKey,
 	)
 
+	appKeepers.loadKeys = sdk.NewKVStoreKeys(
+		authtypes.StoreKey,
+		banktypes.StoreKey,
+		upgradetypes.StoreKey,
+		graphtypes.StoreKey,
+		gridtypes.StoreKey,
+	)
+
 	appKeepers.tkeys = sdk.NewTransientStoreKeys(
 		paramstypes.TStoreKey,
 		graphtypes.TStoreKey,
@@ -57,6 +65,11 @@ func (appKeepers *AppKeepers) GenerateKeys() {
 
 func (appKeepers *AppKeepers) GetKVStoreKey() map[string]*storetypes.KVStoreKey {
 	return appKeepers.keys
+}
+
+// TODO check this with upgrade, not used for now
+func (appKeepers *AppKeepers) GetLoadKVStoreKey() map[string]*storetypes.KVStoreKey {
+	return appKeepers.loadKeys
 }
 
 func (appKeepers *AppKeepers) GetTransientStoreKey() map[string]*storetypes.TransientStoreKey {

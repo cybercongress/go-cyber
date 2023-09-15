@@ -76,9 +76,10 @@ import (
 
 type AppKeepers struct {
 	// keys to access the substores
-	keys    map[string]*sdk.KVStoreKey
-	tkeys   map[string]*sdk.TransientStoreKey
-	memKeys map[string]*sdk.MemoryStoreKey
+	keys     map[string]*sdk.KVStoreKey
+	tkeys    map[string]*sdk.TransientStoreKey
+	memKeys  map[string]*sdk.MemoryStoreKey
+	loadKeys map[string]*sdk.KVStoreKey
 
 	// keepers
 	AccountKeeper    authkeeper.AccountKeeper
@@ -379,6 +380,8 @@ func NewAppKeepers(
 	// If evidence needs to be handled for the app, set routes in router here and seal
 	appKeepers.EvidenceKeeper = *evidenceKeeper
 
+	// TODO remove before release wasmDir := filepath.Join(homePath, "wasm")
+	// so directory is changed, before it was in homepath (with wasm/wasm), need to change to /data/wasm
 	wasmDir := filepath.Join(homePath, "data")
 
 	wasmConfig, err := wasm.ReadWasmConfig(appOpts)
