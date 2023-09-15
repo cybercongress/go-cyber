@@ -9,7 +9,7 @@ require (
 	github.com/cosmos/cosmos-sdk v0.45.16
 	github.com/cosmos/gogoproto v1.4.6
 	github.com/cosmos/iavl v0.19.5
-	github.com/cosmos/ibc-go/v4 v4.3.0
+	github.com/cosmos/ibc-go/v4 v4.4.2
 	github.com/gogo/protobuf v1.3.3
 	github.com/golang/protobuf v1.5.3
 	github.com/gorilla/mux v1.8.0
@@ -23,7 +23,7 @@ require (
 	github.com/spf13/viper v1.14.0
 	github.com/stretchr/testify v1.8.2
 	github.com/syndtr/goleveldb v1.0.1-0.20210819022825-2ae1ddf74ef7
-	github.com/tendermint/tendermint v0.34.27
+	github.com/tendermint/tendermint v0.34.29
 	github.com/tendermint/tm-db v0.6.7
 	google.golang.org/genproto v0.0.0-20230209215440-0dfe4f8abfcc
 	google.golang.org/grpc v1.53.0
@@ -174,13 +174,13 @@ replace (
 
 	// Cosmos SDK & IBC
 	github.com/cosmos/cosmos-sdk => github.com/cosmos/cosmos-sdk v0.45.16
-	github.com/cosmos/ibc-go/v4 => github.com/cosmos/ibc-go/v4 v4.3.0
+	github.com/cosmos/ibc-go/v4 => github.com/cosmos/ibc-go/v4 v4.4.2
 
 	// use cosmos style protobufs
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
 
 	// use informal system fork of tendermint
-	github.com/tendermint/tendermint => github.com/cometbft/cometbft v0.34.28
+	github.com/tendermint/tendermint => github.com/cometbft/cometbft v0.34.29
 
 	// latest grpc doesn't work with with our modified proto compiler, so we need to enforce
 	// the following version across all dependencies.
