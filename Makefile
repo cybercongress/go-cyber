@@ -101,6 +101,11 @@ run:
 ###                           Tools / Dependencies                          ###
 ###############################################################################
 
+format-tools:
+	go install mvdan.cc/gofumpt@v0.4.0
+	go install github.com/client9/misspell/cmd/misspell@v0.3.4
+	go install golang.org/x/tools/cmd/goimports@latest
+
 go-mod-cache: go.sum
 	@echo "--> Download go modules to local cache"
 	@go mod download
@@ -123,10 +128,10 @@ statik:
 	$(GO) generate ./api/...
 .PHONY: statik
 
-format:
-	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "*.pb.go" | xargs gofmt -w -s
-	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "*.pb.go" | xargs misspell -w
-	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "*.pb.go" | xargs goimports -w -local github.com/cybercongress/go-cyber
+format: format-tools
+	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "./client/docs/statik/statik.go" | xargs gofumpt -w
+	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "./client/docs/statik/statik.go" | xargs misspell -w
+	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "./client/docs/statik/statik.go" | xargs goimports -w -local github.com/cybercongress/go-cyber
 .PHONY: format
 
 ###############################################################################

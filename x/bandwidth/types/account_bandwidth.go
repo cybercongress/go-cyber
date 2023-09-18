@@ -6,10 +6,10 @@ import (
 
 func NewGenesisNeuronBandwidth(address sdk.AccAddress, bandwidth uint64) NeuronBandwidth {
 	return NeuronBandwidth{
-		Neuron:             address.String(),
-		RemainedValue:      bandwidth,
-		MaxValue:           bandwidth,
-		LastUpdatedBlock:   0,
+		Neuron:           address.String(),
+		RemainedValue:    bandwidth,
+		MaxValue:         bandwidth,
+		LastUpdatedBlock: 0,
 	}
 }
 
@@ -51,4 +51,3 @@ func (ab *NeuronBandwidth) ApplyCharge(bandwidthToAdd uint64) {
 func (ab NeuronBandwidth) HasEnoughRemained(bandwidthToConsume uint64) bool {
 	return ab.RemainedValue >= bandwidthToConsume
 }
-
