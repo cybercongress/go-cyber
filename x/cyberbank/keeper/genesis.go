@@ -8,7 +8,7 @@ func (k *IndexedKeeper) InitGenesis(ctx sdk.Context) {
 	for _, account := range k.accountKeeper.GetAllAccounts(ctx) {
 		k.InitializeStakeAmpere(
 			account.GetAccountNumber(),
-			uint64(k.Proxy.GetAccountTotalStakeAmper(ctx, account.GetAddress())),
+			uint64(k.GetAccountTotalStakeAmper(ctx, account.GetAddress())),
 		)
 	}
 }

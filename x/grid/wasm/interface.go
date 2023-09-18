@@ -7,8 +7,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
+	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
-	wasmplugins "github.com/cybercongress/go-cyber/plugins"
 	"github.com/cybercongress/go-cyber/x/grid/keeper"
 	"github.com/cybercongress/go-cyber/x/grid/types"
 )
@@ -141,14 +141,14 @@ func (querier WasmQuerier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([
 		value := querier.Keeper.GetRoutedFromEnergy(ctx, source)
 
 		bz, err = json.Marshal(RoutedEnergyResponse{
-			Value: wasmplugins.ConvertSdkCoinsToWasmCoins(value),
+			Value: wasmkeeper.ConvertSdkCoinsToWasmCoins(value),
 		})
 	} else if query.DestinationRoutedEnergy != nil {
 		destination, _ := sdk.AccAddressFromBech32(query.DestinationRoutedEnergy.Destination)
 		value := querier.Keeper.GetRoutedToEnergy(ctx, destination)
 
 		bz, err = json.Marshal(RoutedEnergyResponse{
-			Value: wasmplugins.ConvertSdkCoinsToWasmCoins(value),
+			Value: wasmkeeper.ConvertSdkCoinsToWasmCoins(value),
 		})
 	} else if query.Route != nil {
 		source, _ := sdk.AccAddressFromBech32(query.Route.Source)
@@ -183,6 +183,6 @@ func convertCyberRouteToWasmRoute(route types.Route) Route {
 		route.Source,
 		route.Destination,
 		route.Name,
-		wasmplugins.ConvertSdkCoinsToWasmCoins(route.Value),
+		wasmkeeper.ConvertSdkCoinsToWasmCoins(route.Value),
 	}
 }

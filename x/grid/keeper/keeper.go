@@ -21,14 +21,14 @@ type Keeper struct {
 	storeKey      sdk.StoreKey
 	cdc           codec.BinaryCodec
 	accountKeeper types.AccountKeeper
-	proxyKeeper   types.CyberbankKeeper
+	proxyKeeper   types.BankKeeper
 	paramSpace    paramstypes.Subspace
 }
 
 func NewKeeper(
 	cdc codec.BinaryCodec,
 	key sdk.StoreKey,
-	bk types.CyberbankKeeper,
+	bk types.BankKeeper,
 	ak types.AccountKeeper,
 	paramSpace paramstypes.Subspace,
 ) Keeper {
@@ -86,7 +86,7 @@ func (k Keeper) CreateEnergyRoute(ctx sdk.Context, src, dst sdk.AccAddress, name
 
 	k.SetRoute(ctx, src, dst, types.NewRoute(src, dst, name, sdk.Coins{}))
 
-	k.proxyKeeper.OnCoinsTransfer(ctx, nil, dst)
+	k.proxyKeeper.NotifyListeners(ctx, dst)
 
 	return nil
 }
@@ -139,7 +139,7 @@ func (k Keeper) EditEnergyRoute(ctx sdk.Context, src, dst sdk.AccAddress, value 
 
 	k.SetRoute(ctx, src, dst, types.NewRoute(src, dst, route.Name, newValues.Sort()))
 
-	k.proxyKeeper.OnCoinsTransfer(ctx, src, dst)
+	k.proxyKeeper.NotifyListeners(ctx, src, dst)
 
 	return nil
 }
@@ -159,7 +159,7 @@ func (k Keeper) DeleteEnergyRoute(ctx sdk.Context, src, dst sdk.AccAddress) erro
 
 	k.RemoveRoute(ctx, src, dst)
 
-	k.proxyKeeper.OnCoinsTransfer(ctx, src, dst)
+	k.proxyKeeper.NotifyListeners(ctx, src, dst)
 
 	return nil
 }
@@ -195,7 +195,7 @@ func (k Keeper) SetRoutes(ctx sdk.Context, routes types.Routes) error {
 		}
 
 		k.SetRoute(ctx, src, dst, types.NewRoute(src, dst, route.Name, route.Value))
-		k.proxyKeeper.OnCoinsTransfer(ctx, src, dst)
+		k.proxyKeeper.NotifyListeners(ctx, src, dst)
 	}
 	return nil
 }

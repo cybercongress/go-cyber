@@ -4,15 +4,15 @@ import (
 	"encoding/json"
 
 	"github.com/CosmWasm/wasmd/x/wasm"
+	wasmTypes "github.com/CosmWasm/wasmvm/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	wasmplugins "github.com/cybercongress/go-cyber/plugins"
-
-	wasmTypes "github.com/CosmWasm/wasmvm/types"
 
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 	"github.com/cybercongress/go-cyber/x/dmn/keeper"
 	"github.com/cybercongress/go-cyber/x/dmn/types"
+
+	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 )
 
 var _ WasmQuerierInterface = WasmQuerier{}
@@ -175,7 +175,7 @@ func (querier WasmQuerier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([
 		lowestFee := querier.Keeper.GetLowestFee(ctx)
 		bz, err = json.Marshal(
 			LowestFeeResponse{
-				Fee: wasmplugins.ConvertSdkCoinToWasmCoin(lowestFee),
+				Fee: wasmkeeper.ConvertSdkCoinToWasmCoin(lowestFee),
 			},
 		)
 	} else {
@@ -191,6 +191,6 @@ func (querier WasmQuerier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([
 func convertLoadToWasmLoad(load types.Load) Load {
 	return Load{
 		load.Input,
-		wasmplugins.ConvertSdkCoinToWasmCoin(load.GasPrice),
+		wasmkeeper.ConvertSdkCoinToWasmCoin(load.GasPrice),
 	}
 }
