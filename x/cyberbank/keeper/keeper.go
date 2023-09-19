@@ -19,7 +19,6 @@ import (
 	"github.com/cybercongress/go-cyber/x/cyberbank/types"
 )
 
-
 type IndexedKeeper struct {
 	*BankProxyKeeper
 	accountKeeper types.AccountKeeper
@@ -53,39 +52,39 @@ func NewIndexedKeeper(
 	return indexedKeeper
 }
 
-func (p *IndexedKeeper) SetGridKeeper(ek types.EnergyKeeper) {
-	p.energyKeeper = ek
+func (ik *IndexedKeeper) SetGridKeeper(ek types.EnergyKeeper) {
+	ik.energyKeeper = ek
 }
 
-func (p *IndexedKeeper) SetAccountKeeper(ak authkeeper.AccountKeeper) {
-	p.accountKeeper = ak
+func (ik *IndexedKeeper) SetAccountKeeper(ak authkeeper.AccountKeeper) {
+	ik.accountKeeper = ak
 }
 
-func (k IndexedKeeper) Logger(ctx sdk.Context) log.Logger {
+func (ik IndexedKeeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
 
-func (k *IndexedKeeper) LoadState(rankCtx sdk.Context, freshCtx sdk.Context) {
-	k.userTotalStakeAmpere = make(map[uint64]uint64)
-	k.accountKeeper.IterateAccounts(rankCtx, k.getCollectFunc(rankCtx, k.userTotalStakeAmpere))
+func (ik *IndexedKeeper) LoadState(rankCtx sdk.Context, freshCtx sdk.Context) {
+	ik.userTotalStakeAmpere = make(map[uint64]uint64)
+	ik.accountKeeper.IterateAccounts(rankCtx, ik.getCollectFunc(rankCtx, ik.userTotalStakeAmpere))
 
-	k.userNewTotalStakeAmpere = make(map[uint64]uint64)
-	k.accountKeeper.IterateAccounts(freshCtx, k.getCollectFunc(freshCtx, k.userNewTotalStakeAmpere))
+	ik.userNewTotalStakeAmpere = make(map[uint64]uint64)
+	ik.accountKeeper.IterateAccounts(freshCtx, ik.getCollectFunc(freshCtx, ik.userNewTotalStakeAmpere))
 }
 
-func (p IndexedKeeper) GetTotalSupplyVolt(ctx sdk.Context) int64 {
-	return p.BankProxyKeeper.GetSupply(ctx, ctypes.VOLT).Amount.Int64()
+func (ik IndexedKeeper) GetTotalSupplyVolt(ctx sdk.Context) int64 {
+	return ik.BankProxyKeeper.GetSupply(ctx, ctypes.VOLT).Amount.Int64()
 }
 
-func (p IndexedKeeper) GetTotalSupplyAmper(ctx sdk.Context) int64 {
-	return p.BankProxyKeeper.GetSupply(ctx, ctypes.AMPERE).Amount.Int64()
+func (ik IndexedKeeper) GetTotalSupplyAmper(ctx sdk.Context) int64 {
+	return ik.BankProxyKeeper.GetSupply(ctx, ctypes.AMPERE).Amount.Int64()
 }
 
-func (p IndexedKeeper) GetAccountStakePercentageVolt(ctx sdk.Context, addr sdk.AccAddress) float64 {
-	a := p.GetAccountTotalStakeVolt(ctx, addr)
+func (ik IndexedKeeper) GetAccountStakePercentageVolt(ctx sdk.Context, addr sdk.AccAddress) float64 {
+	a := ik.GetAccountTotalStakeVolt(ctx, addr)
 	aFloat := float64(a)
 
-	b := p.GetTotalSupplyVolt(ctx)
+	b := ik.GetTotalSupplyVolt(ctx)
 	bFloat := float64(b)
 
 	c := aFloat / bFloat
@@ -96,87 +95,87 @@ func (p IndexedKeeper) GetAccountStakePercentageVolt(ctx sdk.Context, addr sdk.A
 	return c
 }
 
-func (p IndexedKeeper) GetAccountTotalStakeVolt(ctx sdk.Context, addr sdk.AccAddress) int64 {
-	return p.BankProxyKeeper.GetBalance(ctx, addr, ctypes.VOLT).Amount.Int64() + p.GetRoutedTo(ctx, addr).AmountOf(ctypes.VOLT).Int64()
+func (ik IndexedKeeper) GetAccountTotalStakeVolt(ctx sdk.Context, addr sdk.AccAddress) int64 {
+	return ik.BankProxyKeeper.GetBalance(ctx, addr, ctypes.VOLT).Amount.Int64() + ik.GetRoutedTo(ctx, addr).AmountOf(ctypes.VOLT).Int64()
 }
 
-func (p IndexedKeeper) GetAccountTotalStakeAmper(ctx sdk.Context, addr sdk.AccAddress) int64 {
-	return p.BankProxyKeeper.GetBalance(ctx, addr, ctypes.AMPERE).Amount.Int64() + p.GetRoutedTo(ctx, addr).AmountOf(ctypes.AMPERE).Int64()
+func (ik IndexedKeeper) GetAccountTotalStakeAmper(ctx sdk.Context, addr sdk.AccAddress) int64 {
+	return ik.BankProxyKeeper.GetBalance(ctx, addr, ctypes.AMPERE).Amount.Int64() + ik.GetRoutedTo(ctx, addr).AmountOf(ctypes.AMPERE).Int64()
 }
 
-func (p IndexedKeeper) GetRoutedTo(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins {
-	return p.energyKeeper.GetRoutedToEnergy(ctx, addr)
+func (ik IndexedKeeper) GetRoutedTo(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins {
+	return ik.energyKeeper.GetRoutedToEnergy(ctx, addr)
 }
 
-func (k *IndexedKeeper) getCollectFunc(ctx sdk.Context, userStake map[uint64]uint64) func(account authtypes.AccountI) bool {
+func (ik *IndexedKeeper) getCollectFunc(ctx sdk.Context, userStake map[uint64]uint64) func(account authtypes.AccountI) bool {
 	return func(account authtypes.AccountI) bool {
-		balance := k.GetAccountTotalStakeAmper(ctx, account.GetAddress())
+		balance := ik.GetAccountTotalStakeAmper(ctx, account.GetAddress())
 		userStake[account.GetAccountNumber()] = uint64(balance)
 		return false
 	}
 }
 
-func  (k *IndexedKeeper) InitializeStakeAmpere(account uint64, stake uint64) {
-	k.userTotalStakeAmpere[account] = stake
-	k.userNewTotalStakeAmpere[account] = stake
+func (ik *IndexedKeeper) InitializeStakeAmpere(account uint64, stake uint64) {
+	ik.userTotalStakeAmpere[account] = stake
+	ik.userNewTotalStakeAmpere[account] = stake
 }
 
-func (k *IndexedKeeper) GetTotalStakesAmpere() map[uint64]uint64 {
-	return k.userTotalStakeAmpere
+func (ik *IndexedKeeper) GetTotalStakesAmpere() map[uint64]uint64 {
+	return ik.userTotalStakeAmpere
 }
 
-func (k *IndexedKeeper) DetectUsersStakeAmpereChange(ctx sdk.Context) bool {
+func (ik *IndexedKeeper) DetectUsersStakeAmpereChange(ctx sdk.Context) bool {
 	stakeChanged := false
-	for o, n := range k.userNewTotalStakeAmpere {
-		if _, ok := k.userTotalStakeAmpere[o]; ok {
-			if k.userTotalStakeAmpere[o] != n {
+	for o, n := range ik.userNewTotalStakeAmpere {
+		if _, ok := ik.userTotalStakeAmpere[o]; ok {
+			if ik.userTotalStakeAmpere[o] != n {
 				stakeChanged = true
-				k.userTotalStakeAmpere[o] = n
+				ik.userTotalStakeAmpere[o] = n
 			}
 		} else {
-			k.userTotalStakeAmpere[o] = n
+			ik.userTotalStakeAmpere[o] = n
 		}
 	}
 
 	return stakeChanged
 }
 
-func (k *IndexedKeeper) UpdateAccountsStakeAmpere(ctx sdk.Context) {
-	for _, addr := range k.accountToUpdate {
-		k.Logger(ctx).Debug("account to update:", "address", addr.String())
-		stake := k.GetAccountTotalStakeAmper(ctx, addr)
-		if k.accountKeeper.GetAccount(ctx, addr) == nil {
-			k.Logger(ctx).Info("skipped account:", "address", addr.String())
+func (ik *IndexedKeeper) UpdateAccountsStakeAmpere(ctx sdk.Context) {
+	for _, addr := range ik.accountToUpdate {
+		ik.Logger(ctx).Debug("account to update:", "address", addr.String())
+		stake := ik.GetAccountTotalStakeAmper(ctx, addr)
+		if ik.accountKeeper.GetAccount(ctx, addr) == nil {
+			ik.Logger(ctx).Info("skipped account:", "address", addr.String())
 			continue
 		}
-		accountNumber := k.accountKeeper.GetAccount(ctx, addr).GetAccountNumber()
-		k.userNewTotalStakeAmpere[accountNumber] = uint64(stake)
+		accountNumber := ik.accountKeeper.GetAccount(ctx, addr).GetAccountNumber()
+		ik.userNewTotalStakeAmpere[accountNumber] = uint64(stake)
 	}
 
 	// trigger full account map rebuild in case of account' missing (and if new contract deployed)
 	// TODO migrate logic to storage listener in sdk 46?
 	// NOTE returns last not applied yet next! account number
 	// equal to current length of accounts ids array, but last id is equal to next-1
-	nextAccountNumber := k.GetNextAccountNumber(ctx)
-	if uint64(len(k.userNewTotalStakeAmpere)) != nextAccountNumber {
+	nextAccountNumber := ik.GetNextAccountNumber(ctx)
+	if uint64(len(ik.userNewTotalStakeAmpere)) != nextAccountNumber {
 		startTime := time.Now()
-		for i := nextAccountNumber-1; i > 0; i-- {
-			if _, ok := k.userNewTotalStakeAmpere[i]; !ok {
-				k.Logger(ctx).Info("added to stake index:", "account", i)
+		for i := nextAccountNumber - 1; i > 0; i-- {
+			if _, ok := ik.userNewTotalStakeAmpere[i]; !ok {
+				ik.Logger(ctx).Info("added to stake index:", "account", i)
 				// TODO update in next release
-				//stake := k.GetAccountTotalStakeAmper(ctx, addr)
-				k.userNewTotalStakeAmpere[i] = 0
+				// stake := ik.GetAccountTotalStakeAmper(ctx, addr)
+				ik.userNewTotalStakeAmpere[i] = 0
 			}
 		}
-		k.Logger(ctx).Info("rebuild stake index:", "duration", time.Since(startTime).String())
+		ik.Logger(ctx).Info("rebuild stake index:", "duration", time.Since(startTime).String())
 	}
 
-	k.accountToUpdate = make([]sdk.AccAddress, 0)
+	ik.accountToUpdate = make([]sdk.AccAddress, 0)
 }
 
-func (k IndexedKeeper) GetNextAccountNumber(ctx sdk.Context) uint64 {
+func (ik IndexedKeeper) GetNextAccountNumber(ctx sdk.Context) uint64 {
 	var accNumber uint64
-	store := ctx.KVStore(k.authKey)
+	store := ctx.KVStore(ik.authKey)
 	bz := store.Get([]byte("globalAccountNumber"))
 
 	if bz == nil {
@@ -184,7 +183,7 @@ func (k IndexedKeeper) GetNextAccountNumber(ctx sdk.Context) uint64 {
 	} else {
 		val := gogotypes.UInt64Value{}
 
-		err := k.cdc.Unmarshal(bz, &val)
+		err := ik.cdc.Unmarshal(bz, &val)
 		if err != nil {
 			panic(err)
 		}

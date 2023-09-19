@@ -2,11 +2,12 @@ package app
 
 import (
 	"fmt"
-	"github.com/cybercongress/go-cyber/app/upgrades"
 	"io"
 	"os"
 	"strings"
 	"time"
+
+	"github.com/cybercongress/go-cyber/app/upgrades"
 
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	"github.com/cosmos/cosmos-sdk/x/bank"
@@ -15,8 +16,6 @@ import (
 	ibcclientclient "github.com/cosmos/ibc-go/v3/modules/core/02-client/client"
 
 	"github.com/cybercongress/go-cyber/app/keepers"
-
-	_ "github.com/cybercongress/go-cyber/client/docs/statik"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/grpc/tmservice"

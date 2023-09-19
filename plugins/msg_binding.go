@@ -6,7 +6,7 @@ import (
 	liquiditytypes "github.com/gravity-devs/liquidity/x/liquidity/types"
 
 	"github.com/CosmWasm/wasmd/x/wasm"
-	wasmTypes "github.com/CosmWasm/wasmvm/types"
+	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -18,12 +18,12 @@ import (
 )
 
 type WasmMsgParserInterface interface {
-	Parse(contractAddr sdk.AccAddress, msg wasmTypes.CosmosMsg) ([]sdk.Msg, error)
+	Parse(contractAddr sdk.AccAddress, msg wasmvmtypes.CosmosMsg) ([]sdk.Msg, error)
 	ParseCustom(contractAddr sdk.AccAddress, data json.RawMessage) ([]sdk.Msg, error)
 }
 
 type MsgParser struct {
- 	Parsers map[string]WasmMsgParserInterface
+	Parsers map[string]WasmMsgParserInterface
 }
 
 func NewMsgParser() MsgParser {

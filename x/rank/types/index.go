@@ -5,25 +5,23 @@ import (
 	"sort"
 	"time"
 
-	//"time"
-
 	"github.com/tendermint/tendermint/libs/log"
 
 	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
 )
 
 type BaseSearchIndex struct {
-	links 	   []cidLinks
-	backlinks  []cidLinks
-	rank  	   Rank
+	links     []CidLinks
+	backlinks []CidLinks
+	rank      Rank
 
-	linksChan  chan graphtypes.CompactLink
-	rankChan   chan Rank
-	errChan    chan error
+	linksChan chan graphtypes.CompactLink
+	rankChan  chan Rank
+	errChan   chan error
 
-	locked     bool
+	locked bool
 
-	logger     log.Logger
+	logger log.Logger
 }
 
 func NewBaseSearchIndex(log log.Logger) *BaseSearchIndex {
@@ -45,17 +43,16 @@ func (i *BaseSearchIndex) Run() GetError {
 
 // LoadState links with zero rank values. No sorting. Index should be unavailable for read
 func (i *BaseSearchIndex) Load(links graphtypes.Links) {
-
 	startTime := time.Now()
 	i.lock() // lock index for read
 
-	i.links = make([]cidLinks, 0, 1000000)
-	i.backlinks = make([]cidLinks, 0, 1000000)
+	i.links = make([]CidLinks, 0, 1000000)
+	i.backlinks = make([]CidLinks, 0, 1000000)
 
 	for from, toCids := range links {
 		i.extendIndex(uint64(from))
 
-		for to, _ := range toCids {
+		for to := range toCids {
 			i.putLinkIntoIndex(from, to)
 
 			i.extendReverseIndex(uint64(to))
@@ -77,7 +74,6 @@ func (i *BaseSearchIndex) PutNewRank(rank Rank) {
 }
 
 func (i *BaseSearchIndex) Search(cidNumber graphtypes.CidNumber, page, perPage uint32) ([]RankedCidNumber, uint32, error) {
-
 	i.logger.Info("Search query", "particle", cidNumber, "page", page, "perPage", perPage)
 
 	if i.locked {
@@ -110,11 +106,10 @@ func (i *BaseSearchIndex) Search(cidNumber graphtypes.CidNumber, page, perPage u
 }
 
 func (i *BaseSearchIndex) Backlinks(cidNumber graphtypes.CidNumber, page, perPage uint32) ([]RankedCidNumber, uint32, error) {
-
 	i.logger.Info("Backlinks query", "cid", cidNumber, "page", page, "perPage", perPage)
 
 	if i.locked {
-		return nil, 0, errors.New("The search index is currently unavailable after node restart")
+		return nil, 0, errors.New("the search index is currently unavailable after node restart")
 	}
 
 	if uint64(cidNumber) >= uint64(len(i.backlinks)) {
@@ -144,7 +139,7 @@ func (i *BaseSearchIndex) Backlinks(cidNumber graphtypes.CidNumber, page, perPag
 
 func (i *BaseSearchIndex) Top(page, perPage uint32) ([]RankedCidNumber, uint32, error) {
 	if i.locked {
-		return nil, 0, errors.New("The search index is currently unavailable after node restart")
+		return nil, 0, errors.New("the search index is currently unavailable after node restart")
 	}
 
 	totalSize := uint32(len(i.rank.TopCIDs))
@@ -165,13 +160,12 @@ func (i *BaseSearchIndex) Top(page, perPage uint32) ([]RankedCidNumber, uint32, 
 
 // make sure that this link (from-to) is new
 func (i *BaseSearchIndex) handleLink(link graphtypes.CompactLink) {
-
-	i.extendIndex(uint64(link.From))
+	i.extendIndex(link.From)
 
 	fromIndex := i.links[link.From]
 	// in case unlock signal received we could operate on this index otherwise put link in the end of queue and finish
 	select {
-	case _ = <-fromIndex.unlockSignal:
+	case <-fromIndex.unlockSignal:
 		i.putLinkIntoIndex(graphtypes.CidNumber(link.From), graphtypes.CidNumber(link.To))
 		fromIndex.Unlock()
 		break
@@ -181,13 +175,12 @@ func (i *BaseSearchIndex) handleLink(link graphtypes.CompactLink) {
 }
 
 func (i *BaseSearchIndex) handleBacklink(link graphtypes.CompactLink) {
-
-	i.extendReverseIndex(uint64(link.To))
+	i.extendReverseIndex(link.To)
 
 	toIndex := i.backlinks[link.To]
 	// in case unlock signal received we could operate on this index otherwise put link in the end of queue and finish
 	select {
-	case _ = <-toIndex.unlockSignal:
+	case <-toIndex.unlockSignal:
 		i.putBacklinkIntoIndex(graphtypes.CidNumber(link.From), graphtypes.CidNumber(link.To))
 		toIndex.Unlock()
 		break
@@ -253,7 +246,7 @@ func (i *BaseSearchIndex) startListenNewLinks() {
 		}
 	}()
 
-	//i.logger.Info("The search index is starting to listen to new links")
+	// i.logger.Info("The search index is starting to listen to new links")
 	for {
 		link := <-i.linksChan
 		i.handleLink(link)
@@ -269,7 +262,7 @@ func (i *BaseSearchIndex) startListenNewRank() {
 		}
 	}()
 
-	//i.logger.Info("The search index is starting to listen to new rank")
+	// i.logger.Info("The search index is starting to listen to new rank")
 	for {
 		rank := <-i.rankChan // TODO could be problems if recalculation lasts more than rank period
 		i.rank = rank

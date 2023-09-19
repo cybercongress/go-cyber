@@ -2,9 +2,11 @@ package plugins
 
 import (
 	"encoding/json"
+
+	"github.com/CosmWasm/wasmd/x/wasm"
+
 	liquiditytypes "github.com/gravity-devs/liquidity/x/liquidity/types"
 
-	wasm "github.com/CosmWasm/wasmd/x/wasm"
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -48,14 +50,12 @@ const (
 func (q Querier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([]byte, error) {
 	var customQuery WasmCustomQuery
 	err := json.Unmarshal(data, &customQuery)
-
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
 
 	if querier, ok := q.Queriers[customQuery.Route]; ok {
 		return querier.QueryCustom(ctx, customQuery.QueryData)
-	} else {
-		return nil, sdkerrors.Wrap(wasm.ErrQueryFailed, customQuery.Route)
 	}
+	return nil, sdkerrors.Wrap(wasm.ErrQueryFailed, customQuery.Route)
 }

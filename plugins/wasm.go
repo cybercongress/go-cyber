@@ -34,7 +34,7 @@ func RegisterCustomPlugins(
 		WasmQueryRouteDmn:       dmnwasm.NewWasmQuerier(*dmn),
 		WasmQueryRouteGrid:      gridwasm.NewWasmQuerier(grid),
 		WasmQueryRouteBandwidth: bandwidthwasm.NewWasmQuerier(bandwidth),
-		WasmQueryRouteLiquidity: NewLiquidityWasmQuerier(liquidity),
+		WasmQueryRouteLiquidity: NewWasmQuerier(liquidity),
 	}
 	querier.Queriers = queries
 
@@ -49,7 +49,7 @@ func RegisterCustomPlugins(
 		WasmMsgParserRouteDmn:       dmnwasm.NewWasmMsgParser(),
 		WasmMsgParserRouteGrid:      gridwasm.NewWasmMsgParser(),
 		WasmMsgParserRouteResources: resourceswasm.NewWasmMsgParser(),
-		WasmMsgParserLiquidity:      NewLiquidityWasmMsgParser(),
+		WasmMsgParserLiquidity:      NewWasmMsgParser(),
 	}
 	parser.Parsers = parsers
 

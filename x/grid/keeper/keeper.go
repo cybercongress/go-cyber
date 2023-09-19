@@ -5,8 +5,9 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
-	ctypes "github.com/cybercongress/go-cyber/types"
 	"github.com/tendermint/tendermint/libs/log"
+
+	ctypes "github.com/cybercongress/go-cyber/types"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -75,7 +76,7 @@ func (k Keeper) CreateEnergyRoute(ctx sdk.Context, src, dst sdk.AccAddress, name
 
 	routes := k.GetSourceRoutes(ctx, src, k.MaxSourceRoutes(ctx))
 	if uint32(len(routes)) == k.MaxSourceRoutes(ctx) {
-		return  types.ErrMaxRoutes
+		return types.ErrMaxRoutes
 	}
 
 	acc := k.accountKeeper.GetAccount(ctx, dst)
@@ -129,8 +130,9 @@ func (k Keeper) EditEnergyRoute(ctx sdk.Context, src, dst sdk.AccAddress, value 
 	}
 
 	ampers := route.Value.AmountOf(ctypes.AMPERE)
-	volts  := route.Value.AmountOf(ctypes.VOLT)
-	newValues := sdk.Coins{}
+	volts := route.Value.AmountOf(ctypes.VOLT)
+
+	var newValues sdk.Coins
 	if value.Denom == ctypes.VOLT {
 		newValues = sdk.NewCoins(value, sdk.NewCoin(ctypes.AMPERE, ampers))
 	} else {
