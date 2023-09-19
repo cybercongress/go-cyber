@@ -75,18 +75,22 @@ func NewRootCmd() (*cobra.Command, params.EncodingConfig) {
 			if err != nil {
 				return err
 			}
+
 			initClientCtx, err = config.ReadFromClientConfig(initClientCtx)
 			if err != nil {
 				return err
 			}
+
 			if err = client.SetCmdClientContextHandler(initClientCtx, cmd); err != nil {
 				return err
 			}
 
 			customTemplate, customGaiaConfig := initAppConfig()
+
 			return server.InterceptConfigsPreRunHandler(cmd, customTemplate, customGaiaConfig)
 		},
 	}
+
 	initRootCmd(rootCmd, encodingConfig)
 
 	return rootCmd, encodingConfig

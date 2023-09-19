@@ -7,13 +7,16 @@ import (
 	"strings"
 	"time"
 
-	"github.com/cybercongress/go-cyber/app/upgrades"
+	v2 "github.com/cybercongress/go-cyber/app/upgrades/v2"
+
+	v3 "github.com/cybercongress/go-cyber/app/upgrades/v3"
+	"github.com/cybercongress/go-cyber/utils"
 
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	"github.com/cosmos/cosmos-sdk/x/bank"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
-	ibcclientclient "github.com/cosmos/ibc-go/v3/modules/core/02-client/client"
+	ibcclientclient "github.com/cosmos/ibc-go/v4/modules/core/02-client/client"
 
 	"github.com/cybercongress/go-cyber/app/keepers"
 
@@ -55,14 +58,13 @@ import (
 	tmjson "github.com/tendermint/tendermint/libs/json"
 
 	"github.com/cybercongress/go-cyber/app/params"
-	"github.com/cybercongress/go-cyber/utils"
 	cyberbanktypes "github.com/cybercongress/go-cyber/x/cyberbank/types"
 
 	"github.com/cosmos/cosmos-sdk/simapp"
 
 	govclient "github.com/cosmos/cosmos-sdk/x/gov/client"
 
-	v2 "github.com/cybercongress/go-cyber/app/upgrades/v2"
+	upgrades "github.com/cybercongress/go-cyber/app/upgrades"
 )
 
 const (
@@ -79,7 +81,7 @@ var (
 	ProposalsEnabled        = "true"
 	EnableSpecificProposals = ""
 
-	Upgrades = []upgrades.Upgrade{v2.Upgrade}
+	Upgrades = []upgrades.Upgrade{v2.Upgrade, v3.Upgrade}
 )
 
 // These constants are derived from the above variables.
@@ -263,6 +265,7 @@ func NewApp(
 				SignModeHandler: encodingConfig.TxConfig.SignModeHandler(),
 				SigGasConsumer:  ante.DefaultSigVerificationGasConsumer,
 			},
+			BandwidthMeter:    app.BandwidthMeter,
 			IBCKeeper:         app.IBCKeeper,
 			TXCounterStoreKey: app.GetKey(wasm.StoreKey),
 			WasmConfig:        &wasmConfig,
@@ -293,11 +296,11 @@ func NewApp(
 		if err := app.LoadLatestVersion(); err != nil {
 			tmos.Exit(fmt.Sprintf("failed to load latest version: %s", err))
 		}
-		ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+		ctx := app.BaseApp.NewUncachedContext(true, tmproto.Header{})
 
 		// TODO refactor context load flow
 		// NOTE custom implementation
-		app.loadContexts(db)
+		app.loadContexts(db, ctx)
 
 		if err := app.WasmKeeper.InitializePinnedCodes(ctx); err != nil {
 			tmos.Exit(fmt.Sprintf("failed initialize pinned codes %s", err))
@@ -453,9 +456,10 @@ func (app *App) setupUpgradeStoreLoaders() {
 	}
 
 	for _, upgrade := range Upgrades {
+		storeUpgrades := upgrade.StoreUpgrades
 		if upgradeInfo.Name == upgrade.UpgradeName {
 			app.SetStoreLoader(
-				upgradetypes.UpgradeStoreLoader(upgradeInfo.Height, &upgrade.StoreUpgrades),
+				upgradetypes.UpgradeStoreLoader(upgradeInfo.Height, &storeUpgrades),
 			)
 		}
 	}
@@ -496,9 +500,8 @@ func MakeCodecs() (codec.Codec, *codec.LegacyAmino) {
 	return config.Marshaler, config.Amino
 }
 
-func (app *App) loadContexts(db dbm.DB) {
-	freshCtx := app.BaseApp.NewContext(true, tmproto.Header{})
-	freshCtx = freshCtx.WithBlockHeight(int64(app.RankKeeper.GetLatestBlockNumber(freshCtx)))
+func (app *App) loadContexts(db dbm.DB, fCtx sdk.Context) {
+	freshCtx := fCtx.WithBlockHeight(int64(app.RankKeeper.GetLatestBlockNumber(fCtx)))
 	start := time.Now()
 	app.BaseApp.Logger().Info("Loading the brain state")
 

@@ -17,8 +17,9 @@ import (
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
-	ibctransfertypes "github.com/cosmos/ibc-go/v3/modules/apps/transfer/types"
-	ibchost "github.com/cosmos/ibc-go/v3/modules/core/24-host"
+	ibcfeetypes "github.com/cosmos/ibc-go/v4/modules/apps/29-fee/types"
+	ibctransfertypes "github.com/cosmos/ibc-go/v4/modules/apps/transfer/types"
+	ibchost "github.com/cosmos/ibc-go/v4/modules/core/24-host"
 	liquiditytypes "github.com/gravity-devs/liquidity/x/liquidity/types"
 
 	bandwidthtypes "github.com/cybercongress/go-cyber/x/bandwidth/types"
@@ -44,6 +45,15 @@ func (appKeepers *AppKeepers) GenerateKeys() {
 		gridtypes.StoreKey,
 		dmntypes.StoreKey,
 		wasm.StoreKey,
+		ibcfeetypes.StoreKey,
+	)
+
+	appKeepers.loadKeys = sdk.NewKVStoreKeys(
+		authtypes.StoreKey,
+		banktypes.StoreKey,
+		upgradetypes.StoreKey,
+		graphtypes.StoreKey,
+		gridtypes.StoreKey,
 	)
 
 	appKeepers.tkeys = sdk.NewTransientStoreKeys(
@@ -55,6 +65,11 @@ func (appKeepers *AppKeepers) GenerateKeys() {
 
 func (appKeepers *AppKeepers) GetKVStoreKey() map[string]*storetypes.KVStoreKey {
 	return appKeepers.keys
+}
+
+// TODO check this with upgrade, not used for now
+func (appKeepers *AppKeepers) GetLoadKVStoreKey() map[string]*storetypes.KVStoreKey {
+	return appKeepers.loadKeys
 }
 
 func (appKeepers *AppKeepers) GetTransientStoreKey() map[string]*storetypes.TransientStoreKey {

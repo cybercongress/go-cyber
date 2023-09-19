@@ -8,6 +8,7 @@ import "cyber/grid/v1beta1/types.proto";
 option go_package = "github.com/cybercongress/go-cyber/x/grid/types";
 
 message GenesisState {
-    Params params = 1 [(gogoproto.nullable) = false];
-    repeated Route routes = 2 [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "Routes"];
+  Params params = 1 [ (gogoproto.nullable) = false ];
+  repeated Route routes = 2
+      [ (gogoproto.nullable) = false, (gogoproto.castrepeated) = "Routes" ];
 }

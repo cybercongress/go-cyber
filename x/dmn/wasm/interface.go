@@ -3,6 +3,8 @@ package wasm
 import (
 	"encoding/json"
 
+	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
+
 	"github.com/CosmWasm/wasmd/x/wasm"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -11,8 +13,6 @@ import (
 
 	"github.com/cybercongress/go-cyber/x/dmn/keeper"
 	"github.com/cybercongress/go-cyber/x/dmn/types"
-
-	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 )
 
 var (
