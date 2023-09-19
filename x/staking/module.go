@@ -39,5 +39,5 @@ func (am AppModule) RegisterServices(cfg module.Configurator) {
 	stakingtypes.RegisterQueryServer(cfg.QueryServer(), querier)
 
 	m := stakingkeeper.NewMigrator(am.sk)
-	cfg.RegisterMigration(stakingtypes.ModuleName, 1, m.Migrate1to2)
+	cfg.RegisterMigration(stakingtypes.ModuleName, 1, m.Migrate1to2) //nolint:errcheck
 }

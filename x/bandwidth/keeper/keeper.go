@@ -201,7 +201,7 @@ func (bm *BandwidthMeter) GetTotalCyberlinksCost(ctx sdk.Context, tx sdk.Tx) uin
 	bandwidthForTx := uint64(0)
 	for _, msg := range tx.GetMsgs() {
 		linkMsg := msg.(*gtypes.MsgCyberlink)
-		bandwidthForTx = bandwidthForTx + uint64(len(linkMsg.Links))*1000
+		bandwidthForTx += uint64(len(linkMsg.Links)) * 1000
 	}
 	return bandwidthForTx
 }

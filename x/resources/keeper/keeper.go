@@ -70,30 +70,31 @@ func (k Keeper) ConvertResource(
 	amount sdk.Coin,
 	resource string,
 	length uint64,
-) (error, sdk.Coin) {
-	periodAvailableFlag := k.CheckAvailablePeriod(ctx, length, resource)
-	if periodAvailableFlag == false {
-		return types.ErrNotAvailablePeriod, sdk.Coin{}
+) (sdk.Coin, error) {
+	periodAvailable := k.CheckAvailablePeriod(ctx, length, resource)
+	if !periodAvailable {
+		return sdk.Coin{}, types.ErrNotAvailablePeriod
 	}
 
 	if k.bankKeeper.SpendableCoins(ctx, neuron).AmountOf(ctypes.SCYB).LT(amount.Amount) {
-		return sdkerrors.ErrInsufficientFunds, sdk.Coin{}
+		return sdk.Coin{}, sdkerrors.ErrInsufficientFunds
 	}
 
 	// comment this for local dev
 	if uint32(length) < k.MinInvestmintPeriodSec(ctx) {
-		return types.ErrNotAvailablePeriod, sdk.Coin{}
+		return sdk.Coin{}, types.ErrNotAvailablePeriod
 	}
 
 	err := k.AddTimeLockedCoinsToAccount(ctx, neuron, sdk.NewCoins(amount), int64(length))
 	if err != nil {
-		return sdkerrors.Wrapf(types.ErrTimeLockCoins, err.Error()), sdk.Coin{}
+		return sdk.Coin{}, sdkerrors.Wrapf(types.ErrTimeLockCoins, err.Error())
 	}
-	err, minted := k.Mint(ctx, neuron, amount, resource, length)
+	minted, err := k.Mint(ctx, neuron, amount, resource, length)
 	if err != nil {
-		return sdkerrors.Wrapf(types.ErrIssueCoins, err.Error()), sdk.Coin{}
+		return sdk.Coin{}, sdkerrors.Wrapf(types.ErrIssueCoins, err.Error())
 	}
-	return err, minted
+
+	return minted, err
 }
 
 func (k Keeper) AddTimeLockedCoinsToAccount(ctx sdk.Context, recipientAddr sdk.AccAddress, amt sdk.Coins, length int64) error {
@@ -185,7 +186,7 @@ func (k Keeper) addCoinsToVestingSchedule(ctx sdk.Context, addr sdk.AccAddress, 
 		// case when there are already filled slots and no one already passed
 		if vacc.StartTime+vacc.VestingPeriods[0].Length > ctx.BlockTime().Unix() {
 			return types.ErrFullSlots
-		} else {
+		} else { //nolint:revive
 			// TODO refactor next code blocks
 			// case when there are passed slots and we are clean them to free space to new ones
 			activePeriods := vestingtypes.Periods{}
@@ -208,7 +209,7 @@ func (k Keeper) addCoinsToVestingSchedule(ctx sdk.Context, addr sdk.AccAddress, 
 			}
 			vacc.OriginalVesting = updatedOriginalVesting.Add(amt...)
 			vacc.VestingPeriods = updatedPeriods
-			vacc.StartTime = vacc.StartTime + shiftStartTime
+			vacc.StartTime += shiftStartTime
 		}
 	}
 
@@ -253,7 +254,7 @@ func (k Keeper) addCoinsToVestingSchedule(ctx sdk.Context, addr sdk.AccAddress, 
 				continue
 			}
 			lengthCounter += period.Length
-			if lengthCounter < elapsedTime+length { // 1
+			if lengthCounter < elapsedTime+length { //nolint:gocritic
 				newPeriods = append(newPeriods, period)
 			} else if lengthCounter == elapsedTime+length {
 				newPeriod := types.NewPeriod(period.Amount.Add(amt...), period.Length)
@@ -272,30 +273,30 @@ func (k Keeper) addCoinsToVestingSchedule(ctx sdk.Context, addr sdk.AccAddress, 
 	return nil
 }
 
-func (k Keeper) Mint(ctx sdk.Context, recipientAddr sdk.AccAddress, amt sdk.Coin, resource string, length uint64) (error, sdk.Coin) {
+func (k Keeper) Mint(ctx sdk.Context, recipientAddr sdk.AccAddress, amt sdk.Coin, resource string, length uint64) (sdk.Coin, error) {
 	acc := k.accountKeeper.GetAccount(ctx, recipientAddr)
 	if acc == nil {
-		return sdkerrors.Wrapf(types.ErrAccountNotFound, recipientAddr.String()), sdk.Coin{}
+		return sdk.Coin{}, sdkerrors.Wrapf(types.ErrAccountNotFound, recipientAddr.String())
 	}
 
 	toMint := k.CalculateInvestmint(ctx, amt, resource, length)
 
 	if toMint.Amount.LT(sdk.NewInt(1000)) {
-		return sdkerrors.Wrapf(types.ErrSmallReturn, recipientAddr.String()), sdk.Coin{}
+		return sdk.Coin{}, sdkerrors.Wrapf(types.ErrSmallReturn, recipientAddr.String())
 	}
 
 	err := k.bankKeeper.MintCoins(ctx, types.ResourcesName, sdk.NewCoins(toMint))
 	if err != nil {
-		return sdkerrors.Wrapf(types.ErrMintCoins, recipientAddr.String()), sdk.Coin{}
+		return sdk.Coin{}, sdkerrors.Wrapf(types.ErrMintCoins, recipientAddr.String())
 	}
 	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ResourcesName, recipientAddr, sdk.NewCoins(toMint))
 	if err != nil {
-		return sdkerrors.Wrapf(types.ErrSendMintedCoins, recipientAddr.String()), sdk.Coin{}
+		return sdk.Coin{}, sdkerrors.Wrapf(types.ErrSendMintedCoins, recipientAddr.String())
 	}
 	// adding converted resources to vesting schedule
 	err = k.AddTimeLockedCoinsToPeriodicVestingAccount(ctx, recipientAddr, sdk.NewCoins(toMint), int64(length), true)
 	if err != nil {
-		return sdkerrors.Wrapf(types.ErrTimeLockCoins, err.Error()), sdk.Coin{}
+		return sdk.Coin{}, sdkerrors.Wrapf(types.ErrTimeLockCoins, err.Error())
 	}
 
 	if resource == ctypes.VOLT {
@@ -304,7 +305,7 @@ func (k Keeper) Mint(ctx sdk.Context, recipientAddr sdk.AccAddress, amt sdk.Coin
 		k.bandwidthMeter.ChargeAccountBandwidth(ctx, neuronBandwidth, 1000)
 	}
 
-	return nil, toMint
+	return toMint, nil
 }
 
 func (k Keeper) CalculateInvestmint(ctx sdk.Context, amt sdk.Coin, resource string, length uint64) sdk.Coin {

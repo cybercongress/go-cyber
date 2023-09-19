@@ -55,9 +55,8 @@ func (q Querier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([]byte, err
 
 	if querier, ok := q.Queriers[customQuery.Route]; ok {
 		return querier.QueryCustom(ctx, customQuery.QueryData)
-	} else {
-		return nil, sdkerrors.Wrap(wasm.ErrQueryFailed, customQuery.Route)
 	}
+	return nil, sdkerrors.Wrap(wasm.ErrQueryFailed, customQuery.Route)
 }
 
 func ConvertSdkCoinsToWasmCoins(coins []sdk.Coin) wasmvmtypes.Coins {

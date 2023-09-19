@@ -4,8 +4,6 @@ import (
 	"context"
 	"encoding/json"
 
-	//"fmt"
-
 	"github.com/cosmos/cosmos-sdk/client"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -15,14 +13,10 @@ import (
 
 	bandwidthkeeper "github.com/cybercongress/go-cyber/x/bandwidth/keeper"
 
-	//"github.com/gogo/protobuf/codec"
 	"github.com/cosmos/cosmos-sdk/codec"
-	//"github.com/cosmos/cosmos-sdk/types/module"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
-
-	//"github.com/tendermint/tendermint/abci/types"
 
 	cyberbankkeeper "github.com/cybercongress/go-cyber/x/cyberbank/keeper"
 	"github.com/cybercongress/go-cyber/x/graph/client/cli"

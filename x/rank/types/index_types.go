@@ -15,14 +15,14 @@ func (c RankedCidNumber) GetNumber() graphtypes.CidNumber { return c.number }
 func (c RankedCidNumber) GetRank() uint64                 { return c.rank }
 
 // Local type for sorting
-type cidLinks struct {
+type CidLinks struct {
 	sortedLinks sortableCidNumbers
 
 	unlockSignal chan struct{}
 }
 
-func NewCidLinks() cidLinks {
-	return cidLinks{
+func NewCidLinks() CidLinks {
+	return CidLinks{
 		sortedLinks:  make(sortableCidNumbers, 0),
 		unlockSignal: make(chan struct{}, 1),
 	}
@@ -38,7 +38,7 @@ func (links sortableCidNumbers) Less(i, j int) bool { return links[i].rank < lin
 func (links sortableCidNumbers) Swap(i, j int) { links[i], links[j] = links[j], links[i] }
 
 // Send unlock signal so others could operate on this index
-func (links cidLinks) Unlock() {
+func (links CidLinks) Unlock() {
 	links.unlockSignal <- struct{}{}
 }
 
@@ -65,15 +65,15 @@ func (i NoopSearchIndex) Run() GetError {
 
 func (i NoopSearchIndex) Load(links graphtypes.Links) {}
 func (i NoopSearchIndex) Search(cidNumber graphtypes.CidNumber, page, perPage uint32) ([]RankedCidNumber, uint32, error) {
-	return nil, 0, errors.New("The search API is not enabled on this node")
+	return nil, 0, errors.New("the search API is not enabled on this node")
 }
 
 func (i NoopSearchIndex) Backlinks(cidNumber graphtypes.CidNumber, page, perPage uint32) ([]RankedCidNumber, uint32, error) {
-	return nil, 0, errors.New("The search API is not enabled on this node")
+	return nil, 0, errors.New("the search API is not enabled on this node")
 }
 
 func (i NoopSearchIndex) Top(page, perPage uint32) ([]RankedCidNumber, uint32, error) {
-	return nil, 0, errors.New("The search API is not enabled on this node")
+	return nil, 0, errors.New("the search API is not enabled on this node")
 }
 func (i NoopSearchIndex) PutNewLinks(links []graphtypes.CompactLink) {}
 func (i NoopSearchIndex) PutNewRank(rank Rank)                       {}

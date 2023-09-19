@@ -10,7 +10,6 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/ipfs/go-cid"
 
-	//"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/types/rest"
 
 	"github.com/cybercongress/go-cyber/x/rank/types"

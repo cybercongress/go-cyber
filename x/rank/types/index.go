@@ -5,16 +5,14 @@ import (
 	"sort"
 	"time"
 
-	//"time"
-
 	"github.com/tendermint/tendermint/libs/log"
 
 	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
 )
 
 type BaseSearchIndex struct {
-	links     []cidLinks
-	backlinks []cidLinks
+	links     []CidLinks
+	backlinks []CidLinks
 	rank      Rank
 
 	linksChan chan graphtypes.CompactLink
@@ -48,8 +46,8 @@ func (i *BaseSearchIndex) Load(links graphtypes.Links) {
 	startTime := time.Now()
 	i.lock() // lock index for read
 
-	i.links = make([]cidLinks, 0, 1000000)
-	i.backlinks = make([]cidLinks, 0, 1000000)
+	i.links = make([]CidLinks, 0, 1000000)
+	i.backlinks = make([]CidLinks, 0, 1000000)
 
 	for from, toCids := range links {
 		i.extendIndex(uint64(from))
@@ -111,7 +109,7 @@ func (i *BaseSearchIndex) Backlinks(cidNumber graphtypes.CidNumber, page, perPag
 	i.logger.Info("Backlinks query", "cid", cidNumber, "page", page, "perPage", perPage)
 
 	if i.locked {
-		return nil, 0, errors.New("The search index is currently unavailable after node restart")
+		return nil, 0, errors.New("the search index is currently unavailable after node restart")
 	}
 
 	if uint64(cidNumber) >= uint64(len(i.backlinks)) {
@@ -141,7 +139,7 @@ func (i *BaseSearchIndex) Backlinks(cidNumber graphtypes.CidNumber, page, perPag
 
 func (i *BaseSearchIndex) Top(page, perPage uint32) ([]RankedCidNumber, uint32, error) {
 	if i.locked {
-		return nil, 0, errors.New("The search index is currently unavailable after node restart")
+		return nil, 0, errors.New("the search index is currently unavailable after node restart")
 	}
 
 	totalSize := uint32(len(i.rank.TopCIDs))
@@ -162,12 +160,12 @@ func (i *BaseSearchIndex) Top(page, perPage uint32) ([]RankedCidNumber, uint32, 
 
 // make sure that this link (from-to) is new
 func (i *BaseSearchIndex) handleLink(link graphtypes.CompactLink) {
-	i.extendIndex(uint64(link.From))
+	i.extendIndex(link.From)
 
 	fromIndex := i.links[link.From]
 	// in case unlock signal received we could operate on this index otherwise put link in the end of queue and finish
 	select {
-	case _ = <-fromIndex.unlockSignal:
+	case <-fromIndex.unlockSignal:
 		i.putLinkIntoIndex(graphtypes.CidNumber(link.From), graphtypes.CidNumber(link.To))
 		fromIndex.Unlock()
 		break
@@ -177,12 +175,12 @@ func (i *BaseSearchIndex) handleLink(link graphtypes.CompactLink) {
 }
 
 func (i *BaseSearchIndex) handleBacklink(link graphtypes.CompactLink) {
-	i.extendReverseIndex(uint64(link.To))
+	i.extendReverseIndex(link.To)
 
 	toIndex := i.backlinks[link.To]
 	// in case unlock signal received we could operate on this index otherwise put link in the end of queue and finish
 	select {
-	case _ = <-toIndex.unlockSignal:
+	case <-toIndex.unlockSignal:
 		i.putBacklinkIntoIndex(graphtypes.CidNumber(link.From), graphtypes.CidNumber(link.To))
 		toIndex.Unlock()
 		break

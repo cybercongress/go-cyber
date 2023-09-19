@@ -46,40 +46,40 @@ func NewCalcContext(
 	}
 }
 
-func (c *CalculationContext) GetInLinks() map[graphtypes.CidNumber]graphtypes.CidLinks {
-	return c.inLinks
+func (calctx *CalculationContext) GetInLinks() map[graphtypes.CidNumber]graphtypes.CidLinks {
+	return calctx.inLinks
 }
 
-func (c *CalculationContext) GetOutLinks() map[graphtypes.CidNumber]graphtypes.CidLinks {
-	return c.outLinks
+func (calctx *CalculationContext) GetOutLinks() map[graphtypes.CidNumber]graphtypes.CidLinks {
+	return calctx.outLinks
 }
 
-func (c *CalculationContext) GetCidsCount() int64 {
-	return c.CidsCount
+func (calctx *CalculationContext) GetCidsCount() int64 {
+	return calctx.CidsCount
 }
 
-func (c *CalculationContext) GetNeuronsCount() int64 {
-	return c.NeuronsCount
+func (calctx *CalculationContext) GetNeuronsCount() int64 {
+	return calctx.NeuronsCount
 }
 
-func (c *CalculationContext) GetStakes() map[uint64]uint64 {
-	return c.stakes
+func (calctx *CalculationContext) GetStakes() map[uint64]uint64 {
+	return calctx.stakes
 }
 
-func (c *CalculationContext) GetNeudegs() map[uint64]uint64 {
-	return c.neudegs
+func (calctx *CalculationContext) GetNeudegs() map[uint64]uint64 {
+	return calctx.neudegs
 }
 
-func (c *CalculationContext) GetTolerance() float64 {
-	return c.Tolerance
+func (calctx *CalculationContext) GetTolerance() float64 {
+	return calctx.Tolerance
 }
 
-func (c *CalculationContext) GetDampingFactor() float64 {
-	return c.DampingFactor
+func (calctx *CalculationContext) GetDampingFactor() float64 {
+	return calctx.DampingFactor
 }
 
-func (с *CalculationContext) GetSortedInLinks(cid graphtypes.CidNumber) (graphtypes.CidLinks, []graphtypes.CidNumber, bool) {
-	links := с.inLinks[cid]
+func (calctx *CalculationContext) GetSortedInLinks(cid graphtypes.CidNumber) (graphtypes.CidLinks, []graphtypes.CidNumber, bool) {
+	links := calctx.inLinks[cid]
 
 	if len(links) == 0 {
 		return nil, nil, false
@@ -95,8 +95,8 @@ func (с *CalculationContext) GetSortedInLinks(cid graphtypes.CidNumber) (grapht
 	return links, numbers, true
 }
 
-func (с *CalculationContext) GetSortedOutLinks(cid graphtypes.CidNumber) (graphtypes.CidLinks, []graphtypes.CidNumber, bool) {
-	links := с.outLinks[cid]
+func (calctx *CalculationContext) GetSortedOutLinks(cid graphtypes.CidNumber) (graphtypes.CidLinks, []graphtypes.CidNumber, bool) {
+	links := calctx.outLinks[cid]
 
 	if len(links) == 0 {
 		return nil, nil, false

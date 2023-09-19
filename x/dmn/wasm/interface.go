@@ -9,8 +9,6 @@ import (
 
 	wasmplugins "github.com/cybercongress/go-cyber/plugins"
 
-	wasmTypes "github.com/CosmWasm/wasmvm/types"
-
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 
 	"github.com/cybercongress/go-cyber/x/dmn/keeper"
@@ -18,24 +16,24 @@ import (
 )
 
 var (
-	_ WasmQuerierInterface   = WasmQuerier{}
-	_ WasmMsgParserInterface = WasmMsgParser{}
+	_ QuerierInterface   = Querier{}
+	_ MsgParserInterface = MsgParser{}
 )
 
 //--------------------------------------------------
 
-type WasmMsgParserInterface interface {
-	Parse(contractAddr sdk.AccAddress, msg wasmTypes.CosmosMsg) ([]sdk.Msg, error)
+type MsgParserInterface interface {
+	Parse(contractAddr sdk.AccAddress, msg wasmvmtypes.CosmosMsg) ([]sdk.Msg, error)
 	ParseCustom(contractAddr sdk.AccAddress, data json.RawMessage) ([]sdk.Msg, error)
 }
 
-type WasmMsgParser struct{}
+type MsgParser struct{}
 
-func NewWasmMsgParser() WasmMsgParser {
-	return WasmMsgParser{}
+func NewWasmMsgParser() MsgParser {
+	return MsgParser{}
 }
 
-func (WasmMsgParser) Parse(_ sdk.AccAddress, _ wasmTypes.CosmosMsg) ([]sdk.Msg, error) {
+func (MsgParser) Parse(_ sdk.AccAddress, _ wasmvmtypes.CosmosMsg) ([]sdk.Msg, error) {
 	return nil, nil
 }
 
@@ -50,50 +48,51 @@ type CosmosMsg struct {
 	ChangeThoughtName     *types.MsgChangeThoughtName     `json:"change_thought_name,omitempty"`
 }
 
-func (WasmMsgParser) ParseCustom(contractAddr sdk.AccAddress, data json.RawMessage) ([]sdk.Msg, error) {
+func (MsgParser) ParseCustom(contractAddr sdk.AccAddress, data json.RawMessage) ([]sdk.Msg, error) {
 	var sdkMsg CosmosMsg
 	err := json.Unmarshal(data, &sdkMsg)
 	if err != nil {
 		return nil, sdkerrors.Wrap(err, "failed to parse link custom msg")
 	}
 
-	if sdkMsg.CreateThought != nil {
+	switch {
+	case sdkMsg.CreateThought != nil:
 		return []sdk.Msg{sdkMsg.CreateThought}, sdkMsg.CreateThought.ValidateBasic()
-	} else if sdkMsg.ForgetThought != nil {
+	case sdkMsg.ForgetThought != nil:
 		return []sdk.Msg{sdkMsg.ForgetThought}, sdkMsg.ForgetThought.ValidateBasic()
-	} else if sdkMsg.ChangeThoughtInput != nil {
+	case sdkMsg.ChangeThoughtInput != nil:
 		return []sdk.Msg{sdkMsg.ChangeThoughtInput}, sdkMsg.ChangeThoughtInput.ValidateBasic()
-	} else if sdkMsg.ChangeThoughtPeriod != nil {
+	case sdkMsg.ChangeThoughtPeriod != nil:
 		return []sdk.Msg{sdkMsg.ChangeThoughtPeriod}, sdkMsg.ChangeThoughtPeriod.ValidateBasic()
-	} else if sdkMsg.ChangeThoughtBlock != nil {
+	case sdkMsg.ChangeThoughtBlock != nil:
 		return []sdk.Msg{sdkMsg.ChangeThoughtBlock}, sdkMsg.ChangeThoughtBlock.ValidateBasic()
-	} else if sdkMsg.ChangeThoughtGasPrice != nil {
+	case sdkMsg.ChangeThoughtGasPrice != nil:
 		return []sdk.Msg{sdkMsg.ChangeThoughtGasPrice}, sdkMsg.ChangeThoughtGasPrice.ValidateBasic()
-	} else if sdkMsg.ChangeThoughtParticle != nil {
+	case sdkMsg.ChangeThoughtParticle != nil:
 		return []sdk.Msg{sdkMsg.ChangeThoughtParticle}, sdkMsg.ChangeThoughtParticle.ValidateBasic()
-	} else if sdkMsg.ChangeThoughtName != nil {
+	case sdkMsg.ChangeThoughtName != nil:
 		return []sdk.Msg{sdkMsg.ChangeThoughtName}, sdkMsg.ChangeThoughtName.ValidateBasic()
+	default:
+		return nil, sdkerrors.Wrap(wasm.ErrInvalidMsg, "Unknown variant of DMN")
 	}
-
-	return nil, sdkerrors.Wrap(wasm.ErrInvalidMsg, "Unknown variant of DMN")
 }
 
 //--------------------------------------------------
 
-type WasmQuerierInterface interface {
-	Query(ctx sdk.Context, request wasmTypes.QueryRequest) ([]byte, error)
+type QuerierInterface interface {
+	Query(ctx sdk.Context, request wasmvmtypes.QueryRequest) ([]byte, error)
 	QueryCustom(ctx sdk.Context, data json.RawMessage) ([]byte, error)
 }
 
-type WasmQuerier struct {
+type Querier struct {
 	keeper.Keeper
 }
 
-func NewWasmQuerier(keeper keeper.Keeper) WasmQuerier {
-	return WasmQuerier{keeper}
+func NewWasmQuerier(keeper keeper.Keeper) Querier {
+	return Querier{keeper}
 }
 
-func (WasmQuerier) Query(_ sdk.Context, _ wasmTypes.QueryRequest) ([]byte, error) { return nil, nil }
+func (Querier) Query(_ sdk.Context, _ wasmvmtypes.QueryRequest) ([]byte, error) { return nil, nil }
 
 type CosmosQuery struct {
 	Thought      *QueryThoughtParams `json:"thought,omitempty"`
@@ -137,7 +136,7 @@ type LowestFeeResponse struct {
 	Fee wasmvmtypes.Coin `json:"fee"`
 }
 
-func (querier WasmQuerier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([]byte, error) {
+func (querier Querier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([]byte, error) {
 	var query CosmosQuery
 	err := json.Unmarshal(data, &query)
 	if err != nil {
@@ -146,11 +145,12 @@ func (querier WasmQuerier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([
 
 	var bz []byte
 
-	if query.Thought != nil {
+	switch {
+	case query.Thought != nil:
 
 		program, _ := sdk.AccAddressFromBech32(query.Thought.Program)
 		thought, found := querier.Keeper.GetThought(ctx, program, query.Thought.Name)
-		if found != true {
+		if !found {
 			return nil, sdkerrors.ErrInvalidRequest
 		}
 
@@ -162,10 +162,10 @@ func (querier WasmQuerier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([
 				Name:     thought.Name,
 				Particle: thought.Particle,
 			})
-	} else if query.ThoughtStats != nil {
+	case query.ThoughtStats != nil:
 		program, _ := sdk.AccAddressFromBech32(query.ThoughtStats.Program)
 		thoughtStats, found := querier.Keeper.GetThoughtStats(ctx, program, query.ThoughtStats.Name)
-		if found != true {
+		if !found {
 			return nil, sdkerrors.ErrInvalidRequest
 		}
 
@@ -178,16 +178,17 @@ func (querier WasmQuerier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([
 				Gas:       thoughtStats.Gas,
 				LastBlock: thoughtStats.LastBlock,
 			})
-	} else if query.LowestFee != nil {
+	case query.LowestFee != nil:
 		lowestFee := querier.Keeper.GetLowestFee(ctx)
 		bz, err = json.Marshal(
 			LowestFeeResponse{
 				Fee: wasmplugins.ConvertSdkCoinToWasmCoin(lowestFee),
 			},
 		)
-	} else {
-		return nil, sdkerrors.ErrInvalidRequest
+	default:
+		return nil, wasmvmtypes.UnsupportedRequest{Kind: "unknown DMN variant"}
 	}
+
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
 	}

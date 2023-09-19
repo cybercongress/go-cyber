@@ -9,6 +9,8 @@ import (
 	"strings"
 	"time"
 
+	liquidityplugin "github.com/cybercongress/go-cyber/plugins/liquidity"
+
 	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
 	"github.com/cosmos/cosmos-sdk/x/authz"
 	authzkeeper "github.com/cosmos/cosmos-sdk/x/authz/keeper"
@@ -26,9 +28,6 @@ import (
 	porttypes "github.com/cosmos/ibc-go/v3/modules/core/05-port/types"
 	ibchost "github.com/cosmos/ibc-go/v3/modules/core/24-host"
 	ibckeeper "github.com/cosmos/ibc-go/v3/modules/core/keeper"
-
-	_ "github.com/cybercongress/go-cyber/client/docs/statik"
-	"github.com/cybercongress/go-cyber/plugins/liquidity_plugin"
 
 	"github.com/cosmos/cosmos-sdk/client/grpc/tmservice"
 	"github.com/gorilla/mux"
@@ -608,7 +607,7 @@ func NewApp(
 		wasmplugins.WasmQueryRouteDmn:       dmnwasm.NewWasmQuerier(*app.DmnKeeper),
 		wasmplugins.WasmQueryRouteGrid:      gridwasm.NewWasmQuerier(app.GridKeeper),
 		wasmplugins.WasmQueryRouteBandwidth: bandwidthwasm.NewWasmQuerier(app.BandwidthMeter),
-		wasmplugins.WasmQueryRouteLiquidity: liquidity_plugin.NewWasmQuerier(app.LiquidityKeeper),
+		wasmplugins.WasmQueryRouteLiquidity: liquidityplugin.NewWasmQuerier(app.LiquidityKeeper),
 	}
 	querier.Queriers = queries
 	queryPlugins := &wasm.QueryPlugins{
@@ -622,7 +621,7 @@ func NewApp(
 		wasmplugins.WasmMsgParserRouteDmn:       dmnwasm.NewWasmMsgParser(),
 		wasmplugins.WasmMsgParserRouteGrid:      gridwasm.NewWasmMsgParser(),
 		wasmplugins.WasmMsgParserRouteResources: resourceswasm.NewWasmMsgParser(),
-		wasmplugins.WasmMsgParserLiquidity:      liquidity_plugin.NewWasmMsgParser(),
+		wasmplugins.WasmMsgParserLiquidity:      liquidityplugin.NewWasmMsgParser(),
 	}
 	parser.Parsers = parsers
 	customEncoders := &wasm.MessageEncoders{
@@ -867,7 +866,7 @@ func NewApp(
 	// migration wouldn't be called because bank's consensus version is 2
 	m := bankkeeper.NewMigrator(app.BankKeeper.(bankkeeper.BaseKeeper))
 	// TODO check current bank migrations
-	app.configurator.RegisterMigration(banktypes.ModuleName, 1, m.Migrate1to2)
+	app.configurator.RegisterMigration(banktypes.ModuleName, 1, m.Migrate1to2) //nolint:errcheck
 
 	// initialize stores
 	app.MountKVStores(keys)

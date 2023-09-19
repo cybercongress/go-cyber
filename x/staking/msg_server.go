@@ -40,7 +40,7 @@ func (k msgServer) CreateValidator(goCtx context.Context, msg *types.MsgCreateVa
 	if err != nil {
 		return nil, err
 	}
-	if result == false {
+	if !result {
 		return nil, sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "unauthorized message: %T", msg)
 	}
 
@@ -110,7 +110,7 @@ func (k msgServer) CreateValidator(goCtx context.Context, msg *types.MsgCreateVa
 	validator.MinSelfDelegation = msg.MinSelfDelegation
 
 	k.SetValidator(ctx, validator)
-	k.SetValidatorByConsAddr(ctx, validator)
+	_ = k.SetValidatorByConsAddr(ctx, validator)
 	k.SetNewValidatorByPowerIndex(ctx, validator)
 
 	// call the after-creation hook
@@ -209,7 +209,8 @@ func (k msgServer) Delegate(goCtx context.Context, msg *types.MsgDelegate) (*typ
 	if err != nil {
 		return nil, err
 	}
-	if result == false {
+
+	if !result {
 		return nil, sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "unauthorized message: %T", msg)
 	}
 
@@ -346,7 +347,7 @@ func (k msgServer) Undelegate(goCtx context.Context, msg *types.MsgUndelegate) (
 	if err != nil {
 		return nil, err
 	}
-	if result == false {
+	if !result {
 		return nil, sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "unauthorized message: %T", msg)
 	}
 

@@ -11,22 +11,22 @@ import (
 	"github.com/cybercongress/go-cyber/x/bandwidth/keeper"
 )
 
-var _ WasmQuerierInterface = WasmQuerier{}
+var _ QuerierInterface = Querier{}
 
-type WasmQuerierInterface interface {
+type QuerierInterface interface {
 	Query(ctx sdk.Context, request wasmvmtypes.QueryRequest) ([]byte, error)
 	QueryCustom(ctx sdk.Context, data json.RawMessage) ([]byte, error)
 }
 
-type WasmQuerier struct {
+type Querier struct {
 	*keeper.BandwidthMeter
 }
 
-func NewWasmQuerier(keeper *keeper.BandwidthMeter) WasmQuerier {
-	return WasmQuerier{keeper}
+func NewWasmQuerier(keeper *keeper.BandwidthMeter) Querier {
+	return Querier{keeper}
 }
 
-func (WasmQuerier) Query(_ sdk.Context, _ wasmvmtypes.QueryRequest) ([]byte, error) { return nil, nil }
+func (Querier) Query(_ sdk.Context, _ wasmvmtypes.QueryRequest) ([]byte, error) { return nil, nil }
 
 type CosmosQuery struct {
 	BandwidthPrice  *struct{}                   `json:"bandwidth_price,omitempty"`
@@ -58,7 +58,7 @@ type NeuronBandwidthResponse struct {
 	MaxValue         uint64 `json:"max_value"`
 }
 
-func (querier WasmQuerier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([]byte, error) {
+func (querier Querier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([]byte, error) {
 	var query CosmosQuery
 	err := json.Unmarshal(data, &query)
 	if err != nil {
@@ -67,25 +67,26 @@ func (querier WasmQuerier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([
 
 	var bz []byte
 
-	if query.BandwidthPrice != nil {
+	switch {
+	case query.BandwidthPrice != nil:
 		price := querier.BandwidthMeter.GetCurrentCreditPrice()
 
 		bz, err = json.Marshal(BandwidthPriceResponse{
 			Price: price.String(),
 		})
-	} else if query.BandwidthLoad != nil {
+	case query.BandwidthLoad != nil:
 		load := querier.BandwidthMeter.GetCurrentNetworkLoad(ctx)
 
 		bz, err = json.Marshal(BandwidthLoadResponse{
 			Load: load.String(),
 		})
-	} else if query.BandwidthTotal != nil {
+	case query.BandwidthTotal != nil:
 		desirableBandwidth := querier.BandwidthMeter.GetDesirableBandwidth(ctx)
 
 		bz, err = json.Marshal(BandwidthTotalResponse{
 			Total: desirableBandwidth,
 		})
-	} else if query.NeuronBandwidth != nil {
+	case query.NeuronBandwidth != nil:
 		address, _ := sdk.AccAddressFromBech32(query.NeuronBandwidth.Neuron)
 		accountBandwidth := querier.BandwidthMeter.GetCurrentAccountBandwidth(ctx, address)
 
@@ -95,7 +96,7 @@ func (querier WasmQuerier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([
 			LastUpdatedBlock: accountBandwidth.LastUpdatedBlock,
 			MaxValue:         accountBandwidth.MaxValue,
 		})
-	} else {
+	default:
 		return nil, wasmvmtypes.UnsupportedRequest{Kind: "unknown Bandwidth variant"}
 	}
 

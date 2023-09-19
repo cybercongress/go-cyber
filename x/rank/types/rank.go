@@ -3,8 +3,6 @@ package types
 import (
 	"crypto/sha256"
 	"encoding/binary"
-
-	//"fmt"
 	"sort"
 	"time"
 
@@ -71,7 +69,7 @@ func NewRank(state EMState, logger log.Logger, fullTree bool) Rank {
 	// NOTE fulltree true if search index enabled
 	start = time.Now()
 	var newSortedCIDs []RankedCidNumber
-	if fullTree == true {
+	if fullTree {
 		newSortedCIDs = BuildTop(rankValues, 1000)
 		logger.Info("Build top", "duration", time.Since(start).String())
 	}
@@ -140,12 +138,21 @@ func (r *Rank) CopyWithoutTree() Rank {
 
 	copiedEntropyValues := make([]uint64, r.CidCount)
 	n = copy(copiedEntropyValues, r.EntropyValues)
+	if n != len(r.EntropyValues) {
+		panic("Not all entropy values have been copied")
+	}
 
 	copiedKarmaValues := make([]uint64, len(r.KarmaValues))
 	n = copy(copiedKarmaValues, r.KarmaValues)
+	if n != len(r.KarmaValues) {
+		panic("Not all karma values have been copied")
+	}
 
 	copiedTopCIDs := make([]RankedCidNumber, len(r.TopCIDs))
 	n = copy(copiedTopCIDs, r.TopCIDs)
+	if n != len(r.TopCIDs) {
+		panic("Not all sorted particles have been copied")
+	}
 
 	return Rank{
 		RankValues:    copiedRankValues,

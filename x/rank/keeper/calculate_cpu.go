@@ -1,10 +1,8 @@
 package keeper
 
 import (
-	//"fmt"
-	//"encoding/binary"
 	"math"
-	//"math/big"
+
 	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
 	"github.com/cybercongress/go-cyber/x/rank/types"
 )
@@ -17,9 +15,9 @@ func calculateRankCPU(ctx *types.CalculationContext) types.EMState {
 	size := ctx.GetCidsCount()
 	if size == 0 || len(ctx.GetStakes()) == 0 {
 		return types.EMState{
-			[]float64{},
-			[]float64{},
-			[]float64{},
+			RankValues:    []float64{},
+			EntropyValues: []float64{},
+			KarmaValues:   []float64{},
 		}
 	}
 
@@ -37,7 +35,7 @@ func calculateRankCPU(ctx *types.CalculationContext) types.EMState {
 	}
 
 	innerProductOverSize := defaultRank * (float64(danglingNodesSize) / float64(size))
-	defaultRankWithCorrection := float64(dampingFactor*innerProductOverSize) + defaultRank
+	defaultRankWithCorrection := dampingFactor*innerProductOverSize + defaultRank
 
 	change := tolerance + 1
 
@@ -56,9 +54,9 @@ func calculateRankCPU(ctx *types.CalculationContext) types.EMState {
 	karmaCalc(ctx, rank, entropy, karma)
 
 	return types.EMState{
-		rank,
-		entropy,
-		karma,
+		RankValues:    rank,
+		EntropyValues: entropy,
+		KarmaValues:   karma,
 	}
 }
 
@@ -192,7 +190,7 @@ func karmaCalc(ctx *types.CalculationContext, rank []float64, entropy []float64,
 					w = float64(0)
 				}
 				luminosity := rank[from] * entropy[from]
-				karma[user] += w * float64(luminosity)
+				karma[user] += w * luminosity
 			}
 		}
 	}

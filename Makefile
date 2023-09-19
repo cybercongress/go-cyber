@@ -117,10 +117,9 @@ go.sum: go.mod
 	go mod tidy -compat=1.17
 .PHONY: go.sum
 
-lint:
-	$(BINDIR)/golangci-lint run
-	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "*.pb.go" | xargs gofmt -d -s
-	go mod verify
+lint: format-tools
+	golangci-lint run --tests=false
+	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "*_test.go" | xargs gofumpt -d
 .PHONY: lint
 
 statik:

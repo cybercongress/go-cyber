@@ -42,7 +42,7 @@ func (k msgServer) Investmint(goCtx context.Context, msg *types.MsgInvestmint) (
 		}
 	}
 
-	err, minted := k.ConvertResource(ctx, neuron, msg.Amount, msg.Resource, msg.Length)
+	minted, err := k.ConvertResource(ctx, neuron, msg.Amount, msg.Resource, msg.Length)
 	if err != nil {
 		return nil, err
 	}

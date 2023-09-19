@@ -10,13 +10,11 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/types/tx/signing"
 	"github.com/cosmos/cosmos-sdk/x/auth/ante"
-	"github.com/cosmos/cosmos-sdk/x/auth/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 
 	ctypes "github.com/cybercongress/go-cyber/types"
 
-	wasmTypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
 	ibcante "github.com/cosmos/ibc-go/v3/modules/core/ante"
 	"github.com/cosmos/ibc-go/v3/modules/core/keeper"
@@ -33,7 +31,7 @@ type HandlerBaseOptions struct {
 	FeegrantKeeper  ante.FeegrantKeeper
 	BandwidthMeter  *bandwidthkeeper.BandwidthMeter
 	SignModeHandler authsigning.SignModeHandler
-	SigGasConsumer  func(meter sdk.GasMeter, sig signing.SignatureV2, params types.Params) error
+	SigGasConsumer  func(meter sdk.GasMeter, sig signing.SignatureV2, params authtypes.Params) error
 }
 
 // HandlerOptions extend the SDK's AnteHandler options by requiring the IBC
@@ -42,7 +40,7 @@ type HandlerOptions struct {
 	HandlerBaseOptions
 
 	IBCKeeper         *keeper.Keeper
-	WasmConfig        *wasmTypes.WasmConfig
+	WasmConfig        *wasmtypes.WasmConfig
 	TXCounterStoreKey sdk.StoreKey
 }
 
@@ -152,8 +150,8 @@ func (drd DeductFeeBandDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulat
 		return ctx, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "Tx must be a FeeTx")
 	}
 
-	if addr := drd.ak.GetModuleAddress(types.FeeCollectorName); addr == nil {
-		panic(fmt.Sprintf("%s module account has not been set", types.FeeCollectorName))
+	if addr := drd.ak.GetModuleAddress(authtypes.FeeCollectorName); addr == nil {
+		panic(fmt.Sprintf("%s module account has not been set", authtypes.FeeCollectorName))
 	}
 
 	fee := feeTx.GetFee()
@@ -219,20 +217,19 @@ func (drd DeductFeeBandDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulat
 	currentBlockSpentBandwidth := drd.bandMeter.GetCurrentBlockSpentBandwidth(ctx)
 	maxBlockBandwidth := drd.bandMeter.GetMaxBlockBandwidth(ctx)
 
+	//nolint:gocritic
 	if !simulate {
 		if !accountBandwidth.HasEnoughRemained(txCost) {
 			return ctx, bandwidthtypes.ErrNotEnoughBandwidth
 		} else if (txCost + currentBlockSpentBandwidth) > maxBlockBandwidth {
 			return ctx, bandwidthtypes.ErrExceededMaxBlockBandwidth
-		} else {
-			if !ctx.IsCheckTx() && !ctx.IsReCheckTx() {
-				err = drd.bandMeter.ConsumeAccountBandwidth(ctx, accountBandwidth, txCost)
-				if err != nil {
-					return ctx, err
-				}
-				// TODO think to add to transient store
-				drd.bandMeter.AddToBlockBandwidth(txCost)
+		} else if !ctx.IsCheckTx() && !ctx.IsReCheckTx() {
+			err = drd.bandMeter.ConsumeAccountBandwidth(ctx, accountBandwidth, txCost)
+			if err != nil {
+				return ctx, err
 			}
+			// TODO think to add to transient store
+			drd.bandMeter.AddToBlockBandwidth(txCost)
 		}
 	}
 	return next(ctx, tx, simulate)
@@ -248,7 +245,7 @@ func DeductFees(bankKeeper bankkeeper.Keeper, ctx sdk.Context, acc authtypes.Acc
 	}
 
 	if program2pay == nil {
-		err := bankKeeper.SendCoinsFromAccountToModule(ctx, acc.GetAddress(), types.FeeCollectorName, fees)
+		err := bankKeeper.SendCoinsFromAccountToModule(ctx, acc.GetAddress(), authtypes.FeeCollectorName, fees)
 		if err != nil {
 			return sdkerrors.Wrapf(sdkerrors.ErrInsufficientFunds, err.Error())
 		}
@@ -265,7 +262,7 @@ func DeductFees(bankKeeper bankkeeper.Keeper, ctx sdk.Context, acc authtypes.Acc
 			return sdkerrors.Wrapf(sdkerrors.ErrInsufficientFunds, err.Error())
 		}
 
-		err = bankKeeper.SendCoinsFromAccountToModule(ctx, acc.GetAddress(), types.FeeCollectorName, toValidatorsAmount)
+		err = bankKeeper.SendCoinsFromAccountToModule(ctx, acc.GetAddress(), authtypes.FeeCollectorName, toValidatorsAmount)
 		if err != nil {
 			return sdkerrors.Wrapf(sdkerrors.ErrInsufficientFunds, err.Error())
 		}

@@ -71,7 +71,7 @@ var dataCmd = &cobra.Command{
 	Short: "Print data of given stores at given block",
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
-		db, err := OpenDb(home)
+		db, err := OpenDB(home)
 		if err != nil {
 			fmt.Println("ERROR DB OPEN:", err)
 		}
@@ -116,7 +116,7 @@ var shapeCmd = &cobra.Command{
 	Short: "Print shape of given stores at given block",
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
-		db, err := OpenDb(home)
+		db, err := OpenDB(home)
 		if err != nil {
 			fmt.Println("ERROR DB OPEN:", err)
 		}
@@ -145,7 +145,7 @@ var versionsCmd = &cobra.Command{
 	Short: "Print shape of given stores at given block",
 	Args:  cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		db, err := OpenDb(home)
+		db, err := OpenDB(home)
 		if err != nil {
 			fmt.Println("ERROR DB OPEN:", err)
 		}
@@ -164,7 +164,7 @@ var deleteCmd = &cobra.Command{
 	Short: "Delete versions range for given stores",
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
-		db, err := OpenDb(home)
+		db, err := OpenDB(home)
 		if err != nil {
 			fmt.Println("ERROR DB OPEN:", err)
 		}
@@ -206,12 +206,12 @@ var statsCmd = &cobra.Command{
 	Short: "Print shape of given stores at given block",
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
-		db, err := OpenDb(home)
+		db, err := OpenDB(home)
 		if err != nil {
 			fmt.Println("ERROR DB OPEN:", err)
 		}
 
-		PrintDbStats(db)
+		PrintDBStats(db)
 	},
 }
 
@@ -222,16 +222,16 @@ var pruneCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		db, _ := goleveldb.OpenFile(home+"/application.db", nil)
 		defer db.Close()
-		_ = db.CompactRange(util.Range{nil, nil})
+		_ = db.CompactRange(util.Range{Start: nil, Limit: nil})
 	},
 }
 
-func OpenDb(dir string) (dbm.DB, error) {
+func OpenDB(dir string) (dbm.DB, error) {
 	db, err := dbm.NewDB("application", dbm.GoLevelDBBackend, dir)
 	return db, err
 }
 
-func PrintDbStats(db dbm.DB) {
+func PrintDBStats(db dbm.DB) {
 	count := 0
 	prefix := map[string]int{}
 	iter, err := db.Iterator(nil, nil)
