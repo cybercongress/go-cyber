@@ -10,67 +10,73 @@ option go_package = "github.com/cybercongress/go-cyber/x/dmn/types";
 option (gogoproto.goproto_getters_all) = false;
 option (gogoproto.equal_all) = false;
 
-service Msg{
-    rpc CreateThought(MsgCreateThought) returns (MsgCreateThoughtResponse);
-    rpc ForgetThought(MsgForgetThought) returns (MsgForgetThoughtResponse);
-    rpc ChangeThoughtParticle(MsgChangeThoughtParticle) returns (MsgChangeThoughtParticleResponse);
-    rpc ChangeThoughtName(MsgChangeThoughtName) returns (MsgChangeThoughtNameResponse);
-    rpc ChangeThoughtInput(MsgChangeThoughtInput) returns (MsgChangeThoughtInputResponse);
-    rpc ChangeThoughtGasPrice(MsgChangeThoughtGasPrice) returns (MsgChangeThoughtGasPriceResponse);
-    rpc ChangeThoughtPeriod(MsgChangeThoughtPeriod) returns (MsgChangeThoughtPeriodResponse);
-    rpc ChangeThoughtBlock(MsgChangeThoughtBlock) returns (MsgChangeThoughtBlockResponse);
+service Msg {
+  rpc CreateThought(MsgCreateThought) returns (MsgCreateThoughtResponse);
+  rpc ForgetThought(MsgForgetThought) returns (MsgForgetThoughtResponse);
+  rpc ChangeThoughtParticle(MsgChangeThoughtParticle)
+      returns (MsgChangeThoughtParticleResponse);
+  rpc ChangeThoughtName(MsgChangeThoughtName)
+      returns (MsgChangeThoughtNameResponse);
+  rpc ChangeThoughtInput(MsgChangeThoughtInput)
+      returns (MsgChangeThoughtInputResponse);
+  rpc ChangeThoughtGasPrice(MsgChangeThoughtGasPrice)
+      returns (MsgChangeThoughtGasPriceResponse);
+  rpc ChangeThoughtPeriod(MsgChangeThoughtPeriod)
+      returns (MsgChangeThoughtPeriodResponse);
+  rpc ChangeThoughtBlock(MsgChangeThoughtBlock)
+      returns (MsgChangeThoughtBlockResponse);
 }
 
 message MsgCreateThought {
-    string  program  = 1;
-    Trigger trigger  = 2 [(gogoproto.nullable) = false];
-    Load    load     = 3 [(gogoproto.nullable) = false];
-    string  name     = 4;
-    string  particle = 5;
+  string program = 1;
+  Trigger trigger = 2 [ (gogoproto.nullable) = false ];
+  Load load = 3 [ (gogoproto.nullable) = false ];
+  string name = 4;
+  string particle = 5;
 }
 
 message MsgForgetThought {
-    string program  = 1;
-    string name     = 2;
+  string program = 1;
+  string name = 2;
 }
 
 message MsgChangeThoughtParticle {
-    string program  = 1;
-    string name     = 2;
-    string particle = 3;
+  string program = 1;
+  string name = 2;
+  string particle = 3;
 }
 
 message MsgChangeThoughtName {
-    string program   = 1;
-    string name      = 2;
-    string new_name  = 3;
+  string program = 1;
+  string name = 2;
+  string new_name = 3;
 }
 
 message MsgChangeThoughtInput {
-    string program   = 1;
-    string name      = 2;
-    string input     = 3;
+  string program = 1;
+  string name = 2;
+  string input = 3;
 }
 
 message MsgChangeThoughtGasPrice {
-    string program   = 1;
-    string name      = 2;
-    cosmos.base.v1beta1.Coin gas_price = 3 [
-        (gogoproto.nullable) = false,
-        (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.Coin"
-    ];
+  string program = 1;
+  string name = 2;
+  cosmos.base.v1beta1.Coin gas_price = 3 [
+    (gogoproto.nullable) = false,
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.Coin"
+  ];
 }
 
 message MsgChangeThoughtPeriod {
-    string program   = 1;
-    string name      = 2;
-    uint64 period    = 3;
+  string program = 1;
+  string name = 2;
+  uint64 period = 3;
 }
 
 message MsgChangeThoughtBlock {
-    string program   = 1;
-    string name      = 2;
-    uint64 block     = 3;
+  string program = 1;
+  string name = 2;
+  uint64 block = 3;
 }
 
 message MsgCreateThoughtResponse {}
