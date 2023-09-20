@@ -13,67 +13,64 @@ option (gogoproto.goproto_getters_all) = false;
 option (gogoproto.equal_all) = false;
 
 service Query {
-    rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-        option (google.api.http).get = "/cyber/grid/v1beta1/grid/params";
-    }
-    rpc SourceRoutes(QuerySourceRequest) returns (QueryRoutesResponse) {
-        option (google.api.http).get = "/cyber/grid/v1beta1/grid/source_routes";
-    }
-    rpc DestinationRoutes (QueryDestinationRequest) returns (QueryRoutesResponse) {
-        option (google.api.http).get = "/cyber/grid/v1beta1/grid/destination_routes";
-    }
-    rpc DestinationRoutedEnergy (QueryDestinationRequest) returns (QueryRoutedEnergyResponse) {
-        option (google.api.http).get = "/cyber/grid/v1beta1/grid/destination_routed_energy";
-    }
-    rpc SourceRoutedEnergy (QuerySourceRequest) returns (QueryRoutedEnergyResponse) {
-        option (google.api.http).get = "/cyber/grid/v1beta1/grid/source_routed_energy";
-    }
-    rpc Route (QueryRouteRequest) returns (QueryRouteResponse) {
-        option (google.api.http).get = "/cyber/grid/v1beta1/grid/route";
-    }
-    rpc Routes(QueryRoutesRequest) returns (QueryRoutesResponse) {
-        option (google.api.http).get = "/cyber/grid/v1beta1/grid/routes";
-    }
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/cyber/grid/v1beta1/grid/params";
+  }
+  rpc SourceRoutes(QuerySourceRequest) returns (QueryRoutesResponse) {
+    option (google.api.http).get = "/cyber/grid/v1beta1/grid/source_routes";
+  }
+  rpc DestinationRoutes(QueryDestinationRequest) returns (QueryRoutesResponse) {
+    option (google.api.http).get =
+        "/cyber/grid/v1beta1/grid/destination_routes";
+  }
+  rpc DestinationRoutedEnergy(QueryDestinationRequest)
+      returns (QueryRoutedEnergyResponse) {
+    option (google.api.http).get =
+        "/cyber/grid/v1beta1/grid/destination_routed_energy";
+  }
+  rpc SourceRoutedEnergy(QuerySourceRequest)
+      returns (QueryRoutedEnergyResponse) {
+    option (google.api.http).get =
+        "/cyber/grid/v1beta1/grid/source_routed_energy";
+  }
+  rpc Route(QueryRouteRequest) returns (QueryRouteResponse) {
+    option (google.api.http).get = "/cyber/grid/v1beta1/grid/route";
+  }
+  rpc Routes(QueryRoutesRequest) returns (QueryRoutesResponse) {
+    option (google.api.http).get = "/cyber/grid/v1beta1/grid/routes";
+  }
 }
 
 message QueryParamsRequest {}
 
-message QueryParamsResponse{
-    Params params = 1 [(gogoproto.nullable) = false];
+message QueryParamsResponse {
+  Params params = 1 [ (gogoproto.nullable) = false ];
 }
 
-message QuerySourceRequest {
-    string source = 1;
-}
+message QuerySourceRequest { string source = 1; }
 
-message QueryDestinationRequest {
-    string destination = 1;
-}
+message QueryDestinationRequest { string destination = 1; }
 
 message QueryRoutedEnergyResponse {
-    repeated cosmos.base.v1beta1.Coin value = 1 [
-        (gogoproto.nullable) = false,
-        (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
-    ];
+  repeated cosmos.base.v1beta1.Coin value = 1 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
 }
 
 message QueryRouteRequest {
-    string source = 1;
-    string destination = 2;
+  string source = 1;
+  string destination = 2;
 }
 
-message QueryRouteResponse {
-    Route route = 1 [(gogoproto.nullable) = false];
-}
+message QueryRouteResponse { Route route = 1 [ (gogoproto.nullable) = false ]; }
 
 message QueryRoutesRequest {
-    cosmos.base.query.v1beta1.PageRequest pagination = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
 }
 
 message QueryRoutesResponse {
-    repeated Route routes = 1 [
-        (gogoproto.nullable) = false,
-        (gogoproto.castrepeated) = "Routes"
-    ];
-    cosmos.base.query.v1beta1.PageResponse pagination = 2;
+  repeated Route routes = 1
+      [ (gogoproto.nullable) = false, (gogoproto.castrepeated) = "Routes" ];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }

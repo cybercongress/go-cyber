@@ -8,20 +8,20 @@ import "cosmos/base/v1beta1/coin.proto";
 option go_package = "github.com/cybercongress/go-cyber/x/resources/types";
 
 message Params {
-    option (gogoproto.equal)            = true;
+  option (gogoproto.equal) = true;
 
-    uint32 max_slots = 1;
-    uint32 halving_period_volt_blocks = 2;
-    uint32 halving_period_ampere_blocks = 3;
-    uint32 base_investmint_period_volt = 4;
-    uint32 base_investmint_period_ampere = 5;
-    uint32 min_investmint_period = 6;
-    cosmos.base.v1beta1.Coin base_investmint_amount_volt = 7 [
-        (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.Coin",
-        (gogoproto.nullable) = false
-    ];
-    cosmos.base.v1beta1.Coin base_investmint_amount_ampere = 8 [
-        (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.Coin",
-        (gogoproto.nullable) = false
-    ];
+  uint32 max_slots = 1;
+  uint32 halving_period_volt_blocks = 2;
+  uint32 halving_period_ampere_blocks = 3;
+  uint32 base_investmint_period_volt = 4;
+  uint32 base_investmint_period_ampere = 5;
+  uint32 min_investmint_period = 6;
+  cosmos.base.v1beta1.Coin base_investmint_amount_volt = 7 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ];
+  cosmos.base.v1beta1.Coin base_investmint_amount_ampere = 8 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ];
 }
