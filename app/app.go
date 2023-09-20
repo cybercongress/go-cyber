@@ -258,6 +258,7 @@ func NewApp(
 		HandlerOptions{
 			HandlerBaseOptions: HandlerBaseOptions{
 				AccountKeeper:   app.AccountKeeper,
+				BandwidthMeter:  app.BandwidthMeter,
 				BankKeeper:      app.BankKeeper,
 				FeegrantKeeper:  app.FeeGrantKeeper,
 				SignModeHandler: encodingConfig.TxConfig.SignModeHandler(),
