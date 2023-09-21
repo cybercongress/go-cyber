@@ -2,11 +2,11 @@ package keeper
 
 import (
 	"context"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
+	"github.com/cybercongress/go-cyber/x/cyberbank/types"
 )
 
 var _ bankkeeper.Keeper = (*BankProxyKeeper)(nil)
@@ -17,13 +17,15 @@ type (
 	CoinsTransferHook = func(sdk.Context, []sdk.AccAddress)
 	BankProxyKeeper   struct {
 		bk        bankkeeper.Keeper
+		ak        types.AccountKeeper
 		listeners []CoinsTransferHook
 	}
 )
 
-func WrapBank(bk bankkeeper.Keeper) *BankProxyKeeper {
+func WrapBank(bk bankkeeper.Keeper, ak types.AccountKeeper) *BankProxyKeeper {
 	return &BankProxyKeeper{
 		bk:        bk,
+		ak:        ak,
 		listeners: make([]CoinsTransferHook, 0),
 	}
 }
@@ -200,7 +202,8 @@ func (pk *BankProxyKeeper) SendCoinsFromModuleToAccount(ctx sdk.Context, senderM
 	if err != nil {
 		return err
 	}
-	pk.NotifyListeners(ctx, recipientAddr)
+	// TODO remove notification about module balance change, state breaking because of bandwidth updates
+	pk.NotifyListeners(ctx, recipientAddr, pk.ak.GetModuleAddress(senderModule))
 	return nil
 }
 
@@ -213,7 +216,8 @@ func (pk *BankProxyKeeper) SendCoinsFromAccountToModule(ctx sdk.Context, senderA
 	if err != nil {
 		return err
 	}
-	pk.NotifyListeners(ctx, senderAddr)
+	// TODO remove notification about module balance change, state breaking because of bandwidth updates
+	pk.NotifyListeners(ctx, senderAddr, pk.ak.GetModuleAddress(recipientModule))
 	return nil
 }
 
@@ -222,7 +226,7 @@ func (pk *BankProxyKeeper) DelegateCoinsFromAccountToModule(ctx sdk.Context, sen
 	if err != nil {
 		return err
 	}
-	pk.NotifyListeners(ctx, senderAddr)
+	//pk.NotifyListeners(ctx, senderAddr)
 	return nil
 }
 
@@ -231,7 +235,7 @@ func (pk *BankProxyKeeper) UndelegateCoinsFromModuleToAccount(ctx sdk.Context, s
 	if err != nil {
 		return err
 	}
-	pk.NotifyListeners(ctx, recipientAddr)
+	//pk.NotifyListeners(ctx, recipientAddr)
 	return nil
 }
 
@@ -244,7 +248,7 @@ func (pk *BankProxyKeeper) DelegateCoins(ctx sdk.Context, delegatorAddr, moduleA
 	if err != nil {
 		return err
 	}
-	pk.NotifyListeners(ctx, delegatorAddr)
+	//pk.NotifyListeners(ctx, delegatorAddr)
 	return nil
 }
 
@@ -253,7 +257,7 @@ func (pk *BankProxyKeeper) UndelegateCoins(ctx sdk.Context, moduleAccAddr, deleg
 	if err != nil {
 		return err
 	}
-	pk.NotifyListeners(ctx, delegatorAddr)
+	//pk.NotifyListeners(ctx, delegatorAddr)
 	return nil
 }
 

@@ -166,7 +166,7 @@ func NewAppKeepers(
 		appKeepers.AccountKeeper,
 		appKeepers.GetSubspace(banktypes.ModuleName),
 		blockedAddress,
-	))
+	), appKeepers.AccountKeeper)
 
 	// Cyber uses custom bank module wrapped around SDK's bank module
 	appKeepers.CyberbankKeeper = cyberbankkeeper.NewIndexedKeeper(
@@ -364,7 +364,8 @@ func NewAppKeepers(
 	// If evidence needs to be handled for the app, set routes in router here and seal
 	appKeepers.EvidenceKeeper = *evidenceKeeper
 
-	wasmDir := filepath.Join(homePath, "data")
+	// TODO update later to data (move wasm dir inside data directory)
+	wasmDir := filepath.Join(homePath, "wasm")
 
 	wasmConfig, err := wasm.ReadWasmConfig(appOpts)
 	if err != nil {

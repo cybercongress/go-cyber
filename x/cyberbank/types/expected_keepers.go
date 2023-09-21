@@ -9,6 +9,7 @@ type AccountKeeper interface {
 	IterateAccounts(ctx sdk.Context, process func(i authtypes.AccountI) (stop bool))
 	GetAccount(ctx sdk.Context, addr sdk.AccAddress) authtypes.AccountI
 	GetAllAccounts(ctx sdk.Context) (accounts []authtypes.AccountI)
+	GetModuleAddress(name string) sdk.AccAddress
 }
 
 type EnergyKeeper interface {
