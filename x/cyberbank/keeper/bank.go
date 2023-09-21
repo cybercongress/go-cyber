@@ -34,7 +34,7 @@ func (pk *BankProxyKeeper) AddBalanceListener(l func(sdk.Context, []sdk.AccAddre
 	pk.listeners = append(pk.listeners, l)
 }
 
-func (pk BankProxyKeeper) NotifyListeners(ctx sdk.Context, accounts ...sdk.AccAddress) {
+func (pk *BankProxyKeeper) NotifyListeners(ctx sdk.Context, accounts ...sdk.AccAddress) {
 	accounts = deduplicate(accounts)
 	for _, l := range pk.listeners {
 		l(ctx, accounts)
@@ -54,7 +54,7 @@ func deduplicate(accounts []sdk.AccAddress) []sdk.AccAddress {
 	return r
 }
 
-func (pk BankProxyKeeper) InputOutputCoins(ctx sdk.Context, inputs []banktypes.Input, outputs []banktypes.Output) error {
+func (pk *BankProxyKeeper) InputOutputCoins(ctx sdk.Context, inputs []banktypes.Input, outputs []banktypes.Output) error {
 	err := pk.bk.InputOutputCoins(ctx, inputs, outputs)
 	if err != nil {
 		return err
@@ -75,7 +75,7 @@ func (pk BankProxyKeeper) InputOutputCoins(ctx sdk.Context, inputs []banktypes.I
 	return nil
 }
 
-func (pk BankProxyKeeper) SendCoins(ctx sdk.Context, fromAddr sdk.AccAddress, toAddr sdk.AccAddress, amt sdk.Coins) error {
+func (pk *BankProxyKeeper) SendCoins(ctx sdk.Context, fromAddr sdk.AccAddress, toAddr sdk.AccAddress, amt sdk.Coins) error {
 	err := pk.bk.SendCoins(ctx, fromAddr, toAddr, amt)
 	if err != nil {
 		return err
@@ -93,63 +93,63 @@ func (pk *BankProxyKeeper) IterateTotalSupply(ctx sdk.Context, cb func(sdk.Coin)
 	pk.bk.IterateTotalSupply(ctx, cb)
 }
 
-func (pk BankProxyKeeper) ValidateBalance(ctx sdk.Context, addr sdk.AccAddress) error {
+func (pk *BankProxyKeeper) ValidateBalance(ctx sdk.Context, addr sdk.AccAddress) error {
 	return pk.bk.ValidateBalance(ctx, addr)
 }
 
-func (pk BankProxyKeeper) HasBalance(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coin) bool {
+func (pk *BankProxyKeeper) HasBalance(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coin) bool {
 	return pk.bk.HasBalance(ctx, addr, amt)
 }
 
-func (pk BankProxyKeeper) GetAllBalances(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins {
+func (pk *BankProxyKeeper) GetAllBalances(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins {
 	return pk.bk.GetAllBalances(ctx, addr)
 }
 
-func (pk BankProxyKeeper) GetAccountsBalances(ctx sdk.Context) []banktypes.Balance {
+func (pk *BankProxyKeeper) GetAccountsBalances(ctx sdk.Context) []banktypes.Balance {
 	return pk.bk.GetAccountsBalances(ctx)
 }
 
-func (pk BankProxyKeeper) GetBalance(ctx sdk.Context, addr sdk.AccAddress, denom string) sdk.Coin {
+func (pk *BankProxyKeeper) GetBalance(ctx sdk.Context, addr sdk.AccAddress, denom string) sdk.Coin {
 	return pk.bk.GetBalance(ctx, addr, denom)
 }
 
-func (pk BankProxyKeeper) LockedCoins(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins {
+func (pk *BankProxyKeeper) LockedCoins(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins {
 	return pk.bk.LockedCoins(ctx, addr)
 }
 
-func (pk BankProxyKeeper) SpendableCoins(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins {
+func (pk *BankProxyKeeper) SpendableCoins(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins {
 	return pk.bk.SpendableCoins(ctx, addr)
 }
 
-func (pk BankProxyKeeper) IterateAccountBalances(ctx sdk.Context, addr sdk.AccAddress, cb func(coin sdk.Coin) (stop bool)) {
+func (pk *BankProxyKeeper) IterateAccountBalances(ctx sdk.Context, addr sdk.AccAddress, cb func(coin sdk.Coin) (stop bool)) {
 	pk.bk.IterateAccountBalances(ctx, addr, cb)
 }
 
-func (pk BankProxyKeeper) IterateAllBalances(ctx sdk.Context, cb func(address sdk.AccAddress, coin sdk.Coin) (stop bool)) {
+func (pk *BankProxyKeeper) IterateAllBalances(ctx sdk.Context, cb func(address sdk.AccAddress, coin sdk.Coin) (stop bool)) {
 	pk.bk.IterateAllBalances(ctx, cb)
 }
 
-func (pk BankProxyKeeper) GetParams(ctx sdk.Context) banktypes.Params {
+func (pk *BankProxyKeeper) GetParams(ctx sdk.Context) banktypes.Params {
 	return pk.bk.GetParams(ctx)
 }
 
-func (pk BankProxyKeeper) IsSendEnabledCoin(ctx sdk.Context, coin sdk.Coin) bool {
+func (pk *BankProxyKeeper) IsSendEnabledCoin(ctx sdk.Context, coin sdk.Coin) bool {
 	return pk.bk.IsSendEnabledCoin(ctx, coin)
 }
 
-func (pk BankProxyKeeper) IsSendEnabledCoins(ctx sdk.Context, coins ...sdk.Coin) error {
+func (pk *BankProxyKeeper) IsSendEnabledCoins(ctx sdk.Context, coins ...sdk.Coin) error {
 	return pk.bk.IsSendEnabledCoins(ctx, coins...)
 }
 
-func (pk BankProxyKeeper) BlockedAddr(addr sdk.AccAddress) bool {
+func (pk *BankProxyKeeper) BlockedAddr(addr sdk.AccAddress) bool {
 	return pk.bk.BlockedAddr(addr)
 }
 
-func (pk BankProxyKeeper) SetParams(ctx sdk.Context, params banktypes.Params) {
+func (pk *BankProxyKeeper) SetParams(ctx sdk.Context, params banktypes.Params) {
 	pk.bk.SetParams(ctx, params)
 }
 
-func (pk BankProxyKeeper) GetSupply(ctx sdk.Context, denom string) sdk.Coin {
+func (pk *BankProxyKeeper) GetSupply(ctx sdk.Context, denom string) sdk.Coin {
 	return pk.bk.GetSupply(ctx, denom)
 }
 
@@ -287,8 +287,4 @@ func (pk *BankProxyKeeper) DenomMetadata(ctx context.Context, request *banktypes
 
 func (pk *BankProxyKeeper) DenomsMetadata(ctx context.Context, request *banktypes.QueryDenomsMetadataRequest) (*banktypes.QueryDenomsMetadataResponse, error) {
 	return pk.bk.DenomsMetadata(ctx, request)
-}
-
-func (pk *BankProxyKeeper) GetBankKeeper() *bankkeeper.Keeper {
-	return &pk.bk
 }
