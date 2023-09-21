@@ -2,6 +2,8 @@ package app
 
 import (
 	"fmt"
+	"github.com/cosmos/cosmos-sdk/x/bank"
+	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	"io"
 	"os"
 	"strings"
@@ -10,7 +12,6 @@ import (
 	"github.com/cybercongress/go-cyber/app/upgrades"
 
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
-	"github.com/cosmos/cosmos-sdk/x/bank"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 	ibcclientclient "github.com/cosmos/ibc-go/v3/modules/core/02-client/client"
@@ -228,18 +229,17 @@ func NewApp(
 	app.mm.RegisterInvariants(&app.CrisisKeeper)
 	app.mm.RegisterRoutes(app.Router(), app.QueryRouter(), encodingConfig.Amino)
 
-	// TODO hack to initialize application
+	// NOTE hack to register bank's module services because of custom wrapper
 	// from sdk.bank/module.go: AppModule RegisterServices
 	// 	m := keeper.NewMigrator(am.keeper.(keeper.BaseKeeper))
-	bankMigModule := bank.NewAppModule(appCodec, *app.BankKeeper.GetBankKeeper(), app.AccountKeeper)
-	proxy := app.mm.Modules[banktypes.ModuleName]
-	app.mm.Modules[banktypes.ModuleName] = bankMigModule
-	app.mm.RegisterServices(cfg)
-	app.mm.Modules[banktypes.ModuleName] = proxy
 
-	// TODO refactor bank reinitialization flow
-	// NOTE custom implementation
-	// reinitializeBank(app, cfg)
+	// NOTE skip bank module from native services registration then initialize manually
+	delete(app.mm.Modules, banktypes.ModuleName)
+	app.mm.RegisterServices(cfg)
+	app.mm.Modules[banktypes.ModuleName] = bank.NewAppModule(encodingConfig.Marshaler, app.BankKeeper, app.AccountKeeper)
+
+	banktypes.RegisterMsgServer(cfg.MsgServer(), bankkeeper.NewMsgServerImpl(app.BankKeeper))
+	banktypes.RegisterQueryServer(cfg.QueryServer(), app.BankKeeper)
 
 	// initialize stores
 	app.MountKVStores(app.GetKVStoreKey())
