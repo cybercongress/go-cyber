@@ -35,7 +35,7 @@ func (pk *BankProxyKeeper) AddBalanceListener(l func(sdk.Context, []sdk.AccAddre
 }
 
 func (pk *BankProxyKeeper) NotifyListeners(ctx sdk.Context, accounts ...sdk.AccAddress) {
-	accounts = deduplicate(accounts)
+	//accounts = deduplicate(accounts)
 	for _, l := range pk.listeners {
 		l(ctx, accounts)
 	}
@@ -60,18 +60,28 @@ func (pk *BankProxyKeeper) InputOutputCoins(ctx sdk.Context, inputs []banktypes.
 		return err
 	}
 
-	accounts := make([]sdk.AccAddress, 0, len(inputs)+len(outputs))
-	for _, a := range inputs {
-		// invalid addresses were handled before in the wrapped keeper
-		addr, _ := sdk.AccAddressFromBech32(a.Address)
-		accounts = append(accounts, addr)
-	}
-	for _, a := range outputs {
-		addr, _ := sdk.AccAddressFromBech32(a.Address)
-		accounts = append(accounts, addr)
-	}
+	//NOTE this refactoring can be state breaking
+	//accounts := make([]sdk.AccAddress, 0, len(inputs)+len(outputs))
+	//for _, a := range inputs {
+	//	// invalid addresses were handled before in the wrapped keeper
+	//	addr, _ := sdk.AccAddressFromBech32(a.Address)
+	//	accounts = append(accounts, addr)
+	//}
+	//for _, a := range outputs {
+	//	addr, _ := sdk.AccAddressFromBech32(a.Address)
+	//	accounts = append(accounts, addr)
+	//}
+	//
+	//pk.NotifyListeners(ctx, accounts...)
 
-	pk.NotifyListeners(ctx, accounts...)
+	for _, i := range inputs {
+		inAddress, _ := sdk.AccAddressFromBech32(i.Address)
+		pk.NotifyListeners(ctx, inAddress)
+	}
+	for _, j := range outputs {
+		outAddress, _ := sdk.AccAddressFromBech32(j.Address)
+		pk.NotifyListeners(ctx, outAddress)
+	}
 	return nil
 }
 
@@ -203,7 +213,7 @@ func (pk *BankProxyKeeper) SendCoinsFromModuleToAccount(ctx sdk.Context, senderM
 		return err
 	}
 	// TODO remove notification about module balance change, state breaking because of bandwidth updates
-	pk.NotifyListeners(ctx, recipientAddr, pk.ak.GetModuleAddress(senderModule))
+	pk.NotifyListeners(ctx, pk.ak.GetModuleAddress(senderModule), recipientAddr)
 	return nil
 }
 
