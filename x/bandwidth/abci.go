@@ -21,12 +21,17 @@ func updateAccountsMaxBandwidth(ctx sdk.Context, meter *keeper.BandwidthMeter) {
 }
 
 // collect all addresses with updated stake
-func CollectAddressesWithStakeChange() func(ctx sdk.Context, addresses []sdk.AccAddress) {
-	return func(ctx sdk.Context, addresses []sdk.AccAddress) {
+func CollectAddressesWithStakeChange() func(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress) {
+	return func(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress) {
 		if ctx.IsCheckTx() {
 			return
 		}
-		accountsToUpdate = append(accountsToUpdate, addresses...)
+		if from != nil {
+			accountsToUpdate = append(accountsToUpdate, from)
+		}
+		if to != nil {
+			accountsToUpdate = append(accountsToUpdate, to)
+		}
 	}
 }
 

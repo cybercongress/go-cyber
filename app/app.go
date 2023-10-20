@@ -2,12 +2,13 @@ package app
 
 import (
 	"fmt"
-	"github.com/cosmos/cosmos-sdk/x/bank"
-	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	"io"
 	"os"
 	"strings"
 	"time"
+
+	"github.com/cosmos/cosmos-sdk/x/bank"
+	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 
 	"github.com/cybercongress/go-cyber/app/upgrades"
 

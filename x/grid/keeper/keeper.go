@@ -87,7 +87,7 @@ func (k Keeper) CreateEnergyRoute(ctx sdk.Context, src, dst sdk.AccAddress, name
 
 	k.SetRoute(ctx, src, dst, types.NewRoute(src, dst, name, sdk.Coins{}))
 
-	k.proxyKeeper.NotifyListeners(ctx, dst)
+	k.proxyKeeper.OnCoinsTransfer(ctx, nil, dst)
 
 	return nil
 }
@@ -141,7 +141,7 @@ func (k Keeper) EditEnergyRoute(ctx sdk.Context, src, dst sdk.AccAddress, value 
 
 	k.SetRoute(ctx, src, dst, types.NewRoute(src, dst, route.Name, newValues.Sort()))
 
-	k.proxyKeeper.NotifyListeners(ctx, src, dst)
+	k.proxyKeeper.OnCoinsTransfer(ctx, src, dst)
 
 	return nil
 }
@@ -161,7 +161,7 @@ func (k Keeper) DeleteEnergyRoute(ctx sdk.Context, src, dst sdk.AccAddress) erro
 
 	k.RemoveRoute(ctx, src, dst)
 
-	k.proxyKeeper.NotifyListeners(ctx, src, dst)
+	k.proxyKeeper.OnCoinsTransfer(ctx, src, dst)
 
 	return nil
 }
@@ -197,7 +197,7 @@ func (k Keeper) SetRoutes(ctx sdk.Context, routes types.Routes) error {
 		}
 
 		k.SetRoute(ctx, src, dst, types.NewRoute(src, dst, route.Name, route.Value))
-		k.proxyKeeper.NotifyListeners(ctx, src, dst)
+		k.proxyKeeper.OnCoinsTransfer(ctx, src, dst)
 	}
 	return nil
 }

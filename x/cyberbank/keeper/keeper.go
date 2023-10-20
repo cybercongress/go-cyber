@@ -2,12 +2,7 @@ package keeper
 
 import (
 	"fmt"
-	"math"
 	"time"
-
-	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
-
-	ctypes "github.com/cybercongress/go-cyber/types"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -22,9 +17,8 @@ import (
 type IndexedKeeper struct {
 	*BankProxyKeeper
 	accountKeeper types.AccountKeeper
-	energyKeeper  types.EnergyKeeper
-	authKey       sdk.StoreKey
 	cdc           codec.BinaryCodec
+	authKey       sdk.StoreKey
 
 	userTotalStakeAmpere    map[uint64]uint64
 	userNewTotalStakeAmpere map[uint64]uint64
@@ -33,31 +27,28 @@ type IndexedKeeper struct {
 
 func NewIndexedKeeper(
 	cdc codec.BinaryCodec,
+	authKey sdk.StoreKey,
 	pbk *BankProxyKeeper,
 	ak types.AccountKeeper,
-	authKey sdk.StoreKey,
 ) *IndexedKeeper {
 	indexedKeeper := &IndexedKeeper{
 		BankProxyKeeper: pbk,
-		accountKeeper:   ak,
-		authKey:         authKey,
 		cdc:             cdc,
+		authKey:         authKey,
+		accountKeeper:   ak,
 		accountToUpdate: make([]sdk.AccAddress, 0),
 	}
-	hook := func(ctx sdk.Context, accounts []sdk.AccAddress) {
-		indexedKeeper.accountToUpdate = append(indexedKeeper.accountToUpdate, accounts...)
+	hook := func(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress) {
+		if from != nil {
+			indexedKeeper.accountToUpdate = append(indexedKeeper.accountToUpdate, from)
+		}
+		if to != nil {
+			indexedKeeper.accountToUpdate = append(indexedKeeper.accountToUpdate, to)
+		}
 	}
 	pbk.AddBalanceListener(hook)
 
 	return indexedKeeper
-}
-
-func (ik *IndexedKeeper) SetGridKeeper(ek types.EnergyKeeper) {
-	ik.energyKeeper = ek
-}
-
-func (ik *IndexedKeeper) SetAccountKeeper(ak authkeeper.AccountKeeper) {
-	ik.accountKeeper = ak
 }
 
 func (ik IndexedKeeper) Logger(ctx sdk.Context) log.Logger {
@@ -72,44 +63,9 @@ func (ik *IndexedKeeper) LoadState(rankCtx sdk.Context, freshCtx sdk.Context) {
 	ik.accountKeeper.IterateAccounts(freshCtx, ik.getCollectFunc(freshCtx, ik.userNewTotalStakeAmpere))
 }
 
-func (ik IndexedKeeper) GetTotalSupplyVolt(ctx sdk.Context) int64 {
-	return ik.BankProxyKeeper.GetSupply(ctx, ctypes.VOLT).Amount.Int64()
-}
-
-func (ik IndexedKeeper) GetTotalSupplyAmper(ctx sdk.Context) int64 {
-	return ik.BankProxyKeeper.GetSupply(ctx, ctypes.AMPERE).Amount.Int64()
-}
-
-func (ik IndexedKeeper) GetAccountStakePercentageVolt(ctx sdk.Context, addr sdk.AccAddress) float64 {
-	a := ik.GetAccountTotalStakeVolt(ctx, addr)
-	aFloat := float64(a)
-
-	b := ik.GetTotalSupplyVolt(ctx)
-	bFloat := float64(b)
-
-	c := aFloat / bFloat
-
-	if math.IsNaN(c) {
-		return 0
-	}
-	return c
-}
-
-func (ik IndexedKeeper) GetAccountTotalStakeVolt(ctx sdk.Context, addr sdk.AccAddress) int64 {
-	return ik.BankProxyKeeper.GetBalance(ctx, addr, ctypes.VOLT).Amount.Int64() + ik.GetRoutedTo(ctx, addr).AmountOf(ctypes.VOLT).Int64()
-}
-
-func (ik IndexedKeeper) GetAccountTotalStakeAmper(ctx sdk.Context, addr sdk.AccAddress) int64 {
-	return ik.BankProxyKeeper.GetBalance(ctx, addr, ctypes.AMPERE).Amount.Int64() + ik.GetRoutedTo(ctx, addr).AmountOf(ctypes.AMPERE).Int64()
-}
-
-func (ik IndexedKeeper) GetRoutedTo(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins {
-	return ik.energyKeeper.GetRoutedToEnergy(ctx, addr)
-}
-
 func (ik *IndexedKeeper) getCollectFunc(ctx sdk.Context, userStake map[uint64]uint64) func(account authtypes.AccountI) bool {
 	return func(account authtypes.AccountI) bool {
-		balance := ik.GetAccountTotalStakeAmper(ctx, account.GetAddress())
+		balance := ik.BankProxyKeeper.GetAccountTotalStakeAmper(ctx, account.GetAddress())
 		userStake[account.GetAccountNumber()] = uint64(balance)
 		return false
 	}

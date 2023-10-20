@@ -166,14 +166,14 @@ func NewAppKeepers(
 		appKeepers.AccountKeeper,
 		appKeepers.GetSubspace(banktypes.ModuleName),
 		blockedAddress,
-	), appKeepers.AccountKeeper)
+	))
 
 	// Cyber uses custom bank module wrapped around SDK's bank module
 	appKeepers.CyberbankKeeper = cyberbankkeeper.NewIndexedKeeper(
 		appCodec,
+		appKeepers.keys[authtypes.StoreKey],
 		appKeepers.BankKeeper,
 		appKeepers.AccountKeeper,
-		appKeepers.keys[authtypes.StoreKey],
 	)
 
 	stakingKeeper := stakingkeeper.NewKeeper(

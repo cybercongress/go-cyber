@@ -6,7 +6,7 @@ import (
 )
 
 type BankKeeper interface {
-	NotifyListeners(ctx sdk.Context, accounts ...sdk.AccAddress)
+	OnCoinsTransfer(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress)
 	SendCoinsFromModuleToAccount(ctx sdk.Context, senderModule string, recipientAddr sdk.AccAddress, amt sdk.Coins) error
 	SendCoinsFromAccountToModule(ctx sdk.Context, senderAddr sdk.AccAddress, recipientModule string, amt sdk.Coins) error
 }
