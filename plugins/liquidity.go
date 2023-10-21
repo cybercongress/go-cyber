@@ -1,12 +1,11 @@
-package liquidity
+package plugins
 
 import (
 	"encoding/json"
 
+	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 	liquiditytypes "github.com/tendermint/liquidity/x/liquidity/types"
-
-	"github.com/cybercongress/go-cyber/v2/plugins"
 
 	"github.com/CosmWasm/wasmd/x/wasm"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -16,8 +15,8 @@ import (
 )
 
 var (
-	_ plugins.WasmQuerierInterface   = WasmQuerier{}
-	_ plugins.WasmMsgParserInterface = WasmMsgParser{}
+	_ WasmQuerierInterface   = WasmQuerier{}
+	_ WasmMsgParserInterface = WasmMsgParser{}
 )
 
 //--------------------------------------------------
@@ -141,7 +140,7 @@ func (querier WasmQuerier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([
 
 		bz, err = json.Marshal(
 			PoolLiquidityResponse{
-				Liquidity: plugins.ConvertSdkCoinsToWasmCoins(reserveCoins),
+				Liquidity: wasmkeeper.ConvertSdkCoinsToWasmCoins(reserveCoins),
 			},
 		)
 	case query.PoolSupply != nil:
@@ -154,7 +153,7 @@ func (querier WasmQuerier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([
 
 		bz, err = json.Marshal(
 			PoolSupplyResponse{
-				Supply: plugins.ConvertSdkCoinToWasmCoin(poolSupply),
+				Supply: wasmkeeper.ConvertSdkCoinToWasmCoin(poolSupply),
 			},
 		)
 	case query.PoolPrice != nil:
