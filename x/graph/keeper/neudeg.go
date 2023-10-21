@@ -3,7 +3,7 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/cybercongress/go-cyber/x/graph/types"
+	"github.com/cybercongress/go-cyber/v2/x/graph/types"
 )
 
 // In order to calculate the flow of amperes through cyberlinks created by given agents than need to compute neurons out-degree

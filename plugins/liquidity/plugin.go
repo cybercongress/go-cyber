@@ -6,7 +6,7 @@ import (
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 	liquiditytypes "github.com/tendermint/liquidity/x/liquidity/types"
 
-	"github.com/cybercongress/go-cyber/plugins"
+	"github.com/cybercongress/go-cyber/v2/plugins"
 
 	"github.com/CosmWasm/wasmd/x/wasm"
 	sdk "github.com/cosmos/cosmos-sdk/types"

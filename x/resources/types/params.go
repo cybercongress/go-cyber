@@ -7,7 +7,7 @@ import (
 
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
-	ctypes "github.com/cybercongress/go-cyber/types"
+	ctypes "github.com/cybercongress/go-cyber/v2/types"
 )
 
 const (

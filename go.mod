@@ -1,4 +1,4 @@
-module github.com/cybercongress/go-cyber
+module github.com/cybercongress/go-cyber/v2
 
 go 1.17
 
