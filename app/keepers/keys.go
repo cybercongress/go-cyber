@@ -19,7 +19,7 @@ import (
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 	ibctransfertypes "github.com/cosmos/ibc-go/v3/modules/apps/transfer/types"
 	ibchost "github.com/cosmos/ibc-go/v3/modules/core/24-host"
-	liquiditytypes "github.com/tendermint/liquidity/x/liquidity/types"
+	liquiditytypes "github.com/gravity-devs/liquidity/x/liquidity/types"
 
 	bandwidthtypes "github.com/cybercongress/go-cyber/v2/x/bandwidth/types"
 	dmntypes "github.com/cybercongress/go-cyber/v2/x/dmn/types"

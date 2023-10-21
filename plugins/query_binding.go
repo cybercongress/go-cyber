@@ -5,7 +5,7 @@ import (
 
 	"github.com/CosmWasm/wasmd/x/wasm"
 
-	liquiditytypes "github.com/tendermint/liquidity/x/liquidity/types"
+	liquiditytypes "github.com/gravity-devs/liquidity/x/liquidity/types"
 
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"

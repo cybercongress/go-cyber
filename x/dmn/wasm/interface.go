@@ -2,6 +2,7 @@ package wasm
 
 import (
 	"encoding/json"
+
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 
 	"github.com/CosmWasm/wasmd/x/wasm"

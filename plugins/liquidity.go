@@ -5,13 +5,13 @@ import (
 
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
-	liquiditytypes "github.com/tendermint/liquidity/x/liquidity/types"
+	liquiditytypes "github.com/gravity-devs/liquidity/x/liquidity/types"
 
 	"github.com/CosmWasm/wasmd/x/wasm"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	"github.com/tendermint/liquidity/x/liquidity/keeper"
+	"github.com/gravity-devs/liquidity/x/liquidity/keeper"
 )
 
 var (
