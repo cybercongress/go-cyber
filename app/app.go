@@ -234,7 +234,7 @@ func NewApp(
 	// NOTE skip bank module from native services registration then initialize manually
 	delete(app.mm.Modules, banktypes.ModuleName)
 	app.mm.RegisterServices(cfg)
-	app.mm.Modules[banktypes.ModuleName] = bank.NewAppModule(encodingConfig.Marshaler, app.BankKeeper, app.AccountKeeper)
+	app.mm.Modules[banktypes.ModuleName] = bank.NewAppModule(encodingConfig.Marshaler, app.CyberbankKeeper.Proxy, app.AccountKeeper)
 
 	banktypes.RegisterMsgServer(cfg.MsgServer(), bankkeeper.NewMsgServerImpl(app.BankKeeper))
 	banktypes.RegisterQueryServer(cfg.QueryServer(), app.BankKeeper)
