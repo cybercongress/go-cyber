@@ -186,6 +186,10 @@ func GetEnabledProposals() []wasm.ProposalType {
 	return proposals
 }
 
+func overrideWasmVariables() {
+	wasmtypes.MaxWasmSize = 2 * 1024 * 1024
+}
+
 // These constants are derived from the above variables.
 // These are the ones we will want to use in the code, based on
 // any overrides above
@@ -346,7 +350,7 @@ func NewApp(
 	// TODO clean
 	//config := sdk.NewConfig()
 	//config.Seal()
-
+	overrideWasmVariables()
 	appCodec, legacyAmino := encodingConfig.Marshaler, encodingConfig.Amino
 	interfaceRegistry := encodingConfig.InterfaceRegistry
 
