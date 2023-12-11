@@ -49,15 +49,15 @@ RUN apt-get -y install --no-install-recommends \
 && apt-get update \
 && apt-get install cuda=${CUDA_VER} -y --no-install-recommends \
 && mkdir -p /pussy/cosmovisor/genesis/bin \
+&& mkdir -p /pussy/cosmovisor/upgrades/v0.0.3/bin/ \
 # Compile pussy for genesis version
 ###########################################################################################
-&& git checkout v0.0.3 \
+&& git checkout v0.0.1 \
 && cd /sources/x/rank/cuda \
 && make build \
 && cd /sources \
 && make build CUDA_ENABLED=true \
 && cp ./build/pussy /pussy/cosmovisor/genesis/bin/ \
-&& cp ./build/pussy /usr/local/bin \ 
 && rm -rf ./build \
 # Compile pussy for upgrade version
 ###########################################################################################
@@ -66,7 +66,8 @@ RUN apt-get -y install --no-install-recommends \
 && make build \
 && cd  /sources \
 && make build CUDA_ENABLED=true \
-&& cp ./build/cyber /cyber/cosmovisor/upgrades/v0.0.3/bin/ \
+&& cp ./build/pussy /pussy/cosmovisor/upgrades/v0.0.3/bin/ \
+&& cp ./build/pussy /usr/local/bin \
 && rm -rf ./build \
 # Cleanup 
 ###########################################################################################
