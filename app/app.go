@@ -502,6 +502,7 @@ func NewApp(
 	app.BandwidthMeter = bandwidthkeeper.NewBandwidthMeter(
 		app.appCodec,
 		keys[bandwidthtypes.StoreKey],
+		tkeys[bandwidthtypes.TStoreKey],
 		app.CyberbankKeeper.Proxy,
 		app.GetSubspace(bandwidthtypes.ModuleName),
 	)
@@ -957,7 +958,7 @@ func NewApp(
 			app.CyberbankKeeper.LoadState(freshCtx, freshCtx)
 			// TODO update index state load to one context as we store cyberlink' block now
 			app.IndexKeeper.LoadState(freshCtx, freshCtx)
-			app.BandwidthMeter.InitState()
+			app.BandwidthMeter.InitState(freshCtx)
 			app.GraphKeeper.LoadNeudeg(freshCtx, freshCtx)
 			app.RankKeeper.LoadState(freshCtx)
 		}
