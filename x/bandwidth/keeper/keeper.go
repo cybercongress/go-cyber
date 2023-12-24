@@ -16,9 +16,9 @@ type BandwidthMeter struct {
 	stakeProvider types.AccountStakeProvider
 	cdc           codec.BinaryCodec
 	storeKey      sdk.StoreKey
+	tkey          sdk.StoreKey
 	paramSpace    paramstypes.Subspace
 
-	currentBlockSpentBandwidth uint64
 	currentCreditPrice         sdk.Dec
 	bandwidthSpentByBlock      map[uint64]uint64
 	totalSpentForSlidingWindow uint64
@@ -27,6 +27,7 @@ type BandwidthMeter struct {
 func NewBandwidthMeter(
 	cdc codec.BinaryCodec,
 	key sdk.StoreKey,
+	tkey sdk.StoreKey,
 	asp types.AccountStakeProvider,
 	paramSpace paramstypes.Subspace,
 ) *BandwidthMeter {
@@ -38,6 +39,7 @@ func NewBandwidthMeter(
 	return &BandwidthMeter{
 		cdc:                   cdc,
 		storeKey:              key,
+		tkey:                  tkey,
 		stakeProvider:         asp,
 		paramSpace:            paramSpace,
 		bandwidthSpentByBlock: make(map[uint64]uint64),
@@ -66,17 +68,20 @@ func (bm *BandwidthMeter) LoadState(ctx sdk.Context) {
 		bm.totalSpentForSlidingWindow += spentBandwidth
 	}
 	bm.currentCreditPrice = bm.GetBandwidthPrice(ctx, params.BasePrice)
-	bm.currentBlockSpentBandwidth = 0
+
+	store := ctx.TransientStore(bm.tkey)
+	store.Set(types.BlockBandwidth, sdk.Uint64ToBigEndian(0))
 }
 
-func (bm *BandwidthMeter) InitState() {
+func (bm *BandwidthMeter) InitState(ctx sdk.Context) {
 	bm.totalSpentForSlidingWindow = 0
 
 	window := make(map[uint64]uint64)
 	window[1] = 0
 	bm.bandwidthSpentByBlock = window
 
-	bm.currentBlockSpentBandwidth = 0
+	store := ctx.TransientStore(bm.tkey)
+	store.Set(types.BlockBandwidth, sdk.Uint64ToBigEndian(0))
 }
 
 func (bm BandwidthMeter) GetBandwidthPrice(ctx sdk.Context, basePrice sdk.Dec) sdk.Dec {
@@ -110,26 +115,32 @@ func (bm BandwidthMeter) AddToDesirableBandwidth(ctx sdk.Context, toAdd uint64) 
 	store.Set(types.TotalBandwidth, sdk.Uint64ToBigEndian(current+toAdd))
 }
 
-func (bm *BandwidthMeter) AddToBlockBandwidth(value uint64) {
-	bm.currentBlockSpentBandwidth += value
+func (bm *BandwidthMeter) AddToBlockBandwidth(ctx sdk.Context, value uint64) {
+	store := ctx.TransientStore(bm.tkey)
+	current := sdk.BigEndianToUint64(store.Get(types.BlockBandwidth))
+	store.Set(types.BlockBandwidth, sdk.Uint64ToBigEndian(current+value))
 }
 
 // Here we move bandwidth window:
 // Remove first block of window and add new block to window end
 func (bm *BandwidthMeter) CommitBlockBandwidth(ctx sdk.Context) {
 	params := bm.GetParams(ctx)
+
+	tr_store := ctx.TransientStore(bm.tkey)
+	currentBlockSpentBandwidth := sdk.BigEndianToUint64(tr_store.Get(types.BlockBandwidth))
+
 	defer func() {
-		if bm.currentBlockSpentBandwidth > 0 {
-			bm.Logger(ctx).Info("Block", "bandwidth", bm.currentBlockSpentBandwidth)
+		if currentBlockSpentBandwidth > 0 {
+			bm.Logger(ctx).Info("Block", "bandwidth", currentBlockSpentBandwidth)
 			bm.Logger(ctx).Info("Window", "bandwidth", bm.totalSpentForSlidingWindow)
 		}
 
-		telemetry.SetGauge(float32(bm.currentBlockSpentBandwidth), types.ModuleName, "block_bandwidth")
+		telemetry.SetGauge(float32(currentBlockSpentBandwidth), types.ModuleName, "block_bandwidth")
 		telemetry.SetGauge(float32(bm.totalSpentForSlidingWindow), types.ModuleName, "window_bandwidth")
-		bm.currentBlockSpentBandwidth = 0
+		tr_store.Set(types.BlockBandwidth, sdk.Uint64ToBigEndian(0))
 	}()
 
-	bm.totalSpentForSlidingWindow += bm.currentBlockSpentBandwidth
+	bm.totalSpentForSlidingWindow += currentBlockSpentBandwidth
 
 	newWindowEnd := ctx.BlockHeight()
 	windowStart := newWindowEnd - int64(params.RecoveryPeriod)
@@ -151,12 +162,13 @@ func (bm *BandwidthMeter) CommitBlockBandwidth(ctx sdk.Context) {
 		store.Delete(types.BlockStoreKey(uint64(windowStart)))
 	}
 
-	bm.SetBlockBandwidth(ctx, uint64(ctx.BlockHeight()), bm.currentBlockSpentBandwidth)
-	bm.bandwidthSpentByBlock[uint64(newWindowEnd)] = bm.currentBlockSpentBandwidth
+	bm.SetBlockBandwidth(ctx, uint64(ctx.BlockHeight()), currentBlockSpentBandwidth)
+	bm.bandwidthSpentByBlock[uint64(newWindowEnd)] = currentBlockSpentBandwidth
 }
 
 func (bm *BandwidthMeter) GetCurrentBlockSpentBandwidth(ctx sdk.Context) uint64 {
-	return bm.currentBlockSpentBandwidth
+	tr_store := ctx.TransientStore(bm.tkey)
+	return sdk.BigEndianToUint64(tr_store.Get(types.BlockBandwidth))
 }
 
 func (bm *BandwidthMeter) GetCurrentNetworkLoad(ctx sdk.Context) sdk.Dec {

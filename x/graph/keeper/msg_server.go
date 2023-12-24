@@ -82,7 +82,7 @@ func (k msgServer) Cyberlink(goCtx context.Context, msg *types.MsgCyberlink) (*t
 			err = k.ConsumeAccountBandwidth(ctx, accountBandwidth, cost); if err != nil {
 				return nil, bandwidthtypes.ErrNotEnoughBandwidth
 			}
-			k.AddToBlockBandwidth(cost)
+			k.AddToBlockBandwidth(ctx, cost)
 		}
 	}
 
