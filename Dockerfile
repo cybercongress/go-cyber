@@ -34,7 +34,7 @@ WORKDIR /sources
 
 # Install CUDA, build tools and compile cyber
 ###########################################################################################
-RUN apt-get -y install --no-install-recommends \
+RUN apt-get update && apt-get -y install --no-install-recommends \
     make gcc g++ \
     curl \
     gnupg \
