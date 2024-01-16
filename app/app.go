@@ -2,6 +2,7 @@ package app
 
 import (
 	"fmt"
+	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"io"
 	"net/http"
 	"os"
@@ -163,6 +164,10 @@ var (
 	ProposalsEnabled        = "true"
 	EnableSpecificProposals = ""
 )
+
+func overrideWasmVariables() {
+	wasmtypes.MaxWasmSize = 2 * 1024 * 1024
+}
 
 // GetEnabledProposals parses the ProposalsEnabled / EnableSpecificProposals values to
 // produce a list of enabled proposals to pass into deepchain app.
@@ -331,7 +336,7 @@ func NewApp(
 	// TODO clean
 	// config := sdk.NewConfig()
 	// config.Seal()
-
+	overrideWasmVariables()
 	appCodec, legacyAmino := encodingConfig.Marshaler, encodingConfig.Amino
 	interfaceRegistry := encodingConfig.InterfaceRegistry
 
