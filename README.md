@@ -1,3 +1,7 @@
+# DEEPCHAIN
+# DEEP CYBER HACKATHON January 2024
+
+
 # Semantic non-deterministic Superintelligence consensus computer
 # Cyber - SuperIntelligence for The Great Web
 
