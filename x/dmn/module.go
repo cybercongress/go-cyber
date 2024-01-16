@@ -17,10 +17,10 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 
-	"github.com/cybercongress/go-cyber/x/dmn/client/cli"
-	"github.com/cybercongress/go-cyber/x/dmn/client/rest"
-	"github.com/cybercongress/go-cyber/x/dmn/keeper"
-	"github.com/cybercongress/go-cyber/x/dmn/types"
+	"github.com/deep-foundation/deep-chain/x/dmn/client/cli"
+	"github.com/deep-foundation/deep-chain/x/dmn/client/rest"
+	"github.com/deep-foundation/deep-chain/x/dmn/keeper"
+	"github.com/deep-foundation/deep-chain/x/dmn/types"
 )
 
 var (

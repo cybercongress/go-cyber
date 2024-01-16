@@ -9,8 +9,8 @@ import (
 
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 
-	"github.com/cybercongress/go-cyber/x/graph/keeper"
-	"github.com/cybercongress/go-cyber/x/graph/types"
+	"github.com/deep-foundation/deep-chain/x/graph/keeper"
+	"github.com/deep-foundation/deep-chain/x/graph/types"
 )
 
 var (

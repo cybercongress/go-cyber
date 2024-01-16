@@ -16,10 +16,10 @@ import (
 	"github.com/spf13/cobra"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/cybercongress/go-cyber/x/resources/client/cli"
-	"github.com/cybercongress/go-cyber/x/resources/client/rest"
-	"github.com/cybercongress/go-cyber/x/resources/keeper"
-	"github.com/cybercongress/go-cyber/x/resources/types"
+	"github.com/deep-foundation/deep-chain/x/resources/client/cli"
+	"github.com/deep-foundation/deep-chain/x/resources/client/rest"
+	"github.com/deep-foundation/deep-chain/x/resources/keeper"
+	"github.com/deep-foundation/deep-chain/x/resources/types"
 )
 
 var (

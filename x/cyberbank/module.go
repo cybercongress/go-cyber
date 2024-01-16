@@ -15,8 +15,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 
-	"github.com/cybercongress/go-cyber/x/cyberbank/keeper"
-	"github.com/cybercongress/go-cyber/x/cyberbank/types"
+	"github.com/deep-foundation/deep-chain/x/cyberbank/keeper"
+	"github.com/deep-foundation/deep-chain/x/cyberbank/types"
 )
 
 var (

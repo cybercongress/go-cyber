@@ -10,8 +10,8 @@ import (
 	bank "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
-	ctypes "github.com/cybercongress/go-cyber/types"
-	"github.com/cybercongress/go-cyber/x/cyberbank/types"
+	ctypes "github.com/deep-foundation/deep-chain/types"
+	"github.com/deep-foundation/deep-chain/x/cyberbank/types"
 )
 
 var _ bank.Keeper = (*Proxy)(nil)

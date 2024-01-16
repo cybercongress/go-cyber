@@ -11,18 +11,18 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	bandwidthkeeper "github.com/cybercongress/go-cyber/x/bandwidth/keeper"
+	bandwidthkeeper "github.com/deep-foundation/deep-chain/x/bandwidth/keeper"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
 
-	cyberbankkeeper "github.com/cybercongress/go-cyber/x/cyberbank/keeper"
-	"github.com/cybercongress/go-cyber/x/graph/client/cli"
-	"github.com/cybercongress/go-cyber/x/graph/client/rest"
-	"github.com/cybercongress/go-cyber/x/graph/keeper"
-	"github.com/cybercongress/go-cyber/x/graph/types"
+	cyberbankkeeper "github.com/deep-foundation/deep-chain/x/cyberbank/keeper"
+	"github.com/deep-foundation/deep-chain/x/graph/client/cli"
+	"github.com/deep-foundation/deep-chain/x/graph/client/rest"
+	"github.com/deep-foundation/deep-chain/x/graph/keeper"
+	"github.com/deep-foundation/deep-chain/x/graph/types"
 )
 
 var (

@@ -6,9 +6,9 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	ctypes "github.com/cybercongress/go-cyber/types"
+	ctypes "github.com/deep-foundation/deep-chain/types"
 
-	"github.com/cybercongress/go-cyber/x/resources/types"
+	"github.com/deep-foundation/deep-chain/x/resources/types"
 )
 
 func NewQuerier(k Keeper, legacyQuerierCdc *codec.LegacyAmino) sdk.Querier {

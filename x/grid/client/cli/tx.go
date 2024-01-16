@@ -10,7 +10,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 
-	"github.com/cybercongress/go-cyber/x/grid/types"
+	"github.com/deep-foundation/deep-chain/x/grid/types"
 )
 
 // GetTxCmd returns the transaction commands for this module

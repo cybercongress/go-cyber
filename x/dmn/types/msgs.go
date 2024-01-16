@@ -7,8 +7,8 @@ import (
 
 	// sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	"github.com/cybercongress/go-cyber/types"
-	graph "github.com/cybercongress/go-cyber/x/graph/types"
+	"github.com/deep-foundation/deep-chain/types"
+	graph "github.com/deep-foundation/deep-chain/x/graph/types"
 )
 
 const (

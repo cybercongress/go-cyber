@@ -11,10 +11,10 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	dmntypes "github.com/cybercongress/go-cyber/x/dmn/types"
-	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
-	gridtypes "github.com/cybercongress/go-cyber/x/grid/types"
-	resourcestypes "github.com/cybercongress/go-cyber/x/resources/types"
+	dmntypes "github.com/deep-foundation/deep-chain/x/dmn/types"
+	graphtypes "github.com/deep-foundation/deep-chain/x/graph/types"
+	gridtypes "github.com/deep-foundation/deep-chain/x/grid/types"
+	resourcestypes "github.com/deep-foundation/deep-chain/x/resources/types"
 )
 
 type WasmMsgParserInterface interface {

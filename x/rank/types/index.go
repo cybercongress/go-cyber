@@ -7,7 +7,7 @@ import (
 
 	"github.com/tendermint/tendermint/libs/log"
 
-	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
+	graphtypes "github.com/deep-foundation/deep-chain/x/graph/types"
 )
 
 type BaseSearchIndex struct {

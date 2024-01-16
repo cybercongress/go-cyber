@@ -9,9 +9,9 @@ import (
 
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 
-	wasmplugins "github.com/cybercongress/go-cyber/plugins"
-	"github.com/cybercongress/go-cyber/x/grid/keeper"
-	"github.com/cybercongress/go-cyber/x/grid/types"
+	wasmplugins "github.com/deep-foundation/deep-chain/plugins"
+	"github.com/deep-foundation/deep-chain/x/grid/keeper"
+	"github.com/deep-foundation/deep-chain/x/grid/types"
 )
 
 var _ MsgParserInterface = MsgParser{}

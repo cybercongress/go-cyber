@@ -5,8 +5,8 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/cybercongress/go-cyber/x/dmn/types"
-	graph "github.com/cybercongress/go-cyber/x/graph/types"
+	"github.com/deep-foundation/deep-chain/x/dmn/types"
+	graph "github.com/deep-foundation/deep-chain/x/graph/types"
 )
 
 type msgServer struct {

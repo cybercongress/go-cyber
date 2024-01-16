@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	liquidityplugin "github.com/cybercongress/go-cyber/plugins/liquidity"
+	liquidityplugin "github.com/deep-foundation/deep-chain/plugins/liquidity"
 
 	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
 	"github.com/cosmos/cosmos-sdk/x/authz"
@@ -36,11 +36,11 @@ import (
 	liquiditykeeper "github.com/tendermint/liquidity/x/liquidity/keeper"
 	liquiditytypes "github.com/tendermint/liquidity/x/liquidity/types"
 
-	ctypes "github.com/cybercongress/go-cyber/types"
+	ctypes "github.com/deep-foundation/deep-chain/types"
 
-	wasmplugins "github.com/cybercongress/go-cyber/plugins"
-	"github.com/cybercongress/go-cyber/x/dmn"
-	"github.com/cybercongress/go-cyber/x/resources"
+	wasmplugins "github.com/deep-foundation/deep-chain/plugins"
+	"github.com/deep-foundation/deep-chain/x/dmn"
+	"github.com/deep-foundation/deep-chain/x/resources"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec/types"
@@ -108,46 +108,46 @@ import (
 
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/cybercongress/go-cyber/utils"
-	"github.com/cybercongress/go-cyber/x/bandwidth"
-	"github.com/cybercongress/go-cyber/x/cyberbank"
-	cyberbankkeeper "github.com/cybercongress/go-cyber/x/cyberbank/keeper"
-	cyberbanktypes "github.com/cybercongress/go-cyber/x/cyberbank/types"
-	"github.com/cybercongress/go-cyber/x/graph"
+	"github.com/deep-foundation/deep-chain/utils"
+	"github.com/deep-foundation/deep-chain/x/bandwidth"
+	"github.com/deep-foundation/deep-chain/x/cyberbank"
+	cyberbankkeeper "github.com/deep-foundation/deep-chain/x/cyberbank/keeper"
+	cyberbanktypes "github.com/deep-foundation/deep-chain/x/cyberbank/types"
+	"github.com/deep-foundation/deep-chain/x/graph"
 
-	bandwidthkeeper "github.com/cybercongress/go-cyber/x/bandwidth/keeper"
-	bandwidthtypes "github.com/cybercongress/go-cyber/x/bandwidth/types"
-	graphkeeper "github.com/cybercongress/go-cyber/x/graph/keeper"
-	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
-	"github.com/cybercongress/go-cyber/x/rank"
-	rankkeeper "github.com/cybercongress/go-cyber/x/rank/keeper"
-	ranktypes "github.com/cybercongress/go-cyber/x/rank/types"
+	bandwidthkeeper "github.com/deep-foundation/deep-chain/x/bandwidth/keeper"
+	bandwidthtypes "github.com/deep-foundation/deep-chain/x/bandwidth/types"
+	graphkeeper "github.com/deep-foundation/deep-chain/x/graph/keeper"
+	graphtypes "github.com/deep-foundation/deep-chain/x/graph/types"
+	"github.com/deep-foundation/deep-chain/x/rank"
+	rankkeeper "github.com/deep-foundation/deep-chain/x/rank/keeper"
+	ranktypes "github.com/deep-foundation/deep-chain/x/rank/types"
 
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmclient "github.com/CosmWasm/wasmd/x/wasm/client"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 
-	bandwidthwasm "github.com/cybercongress/go-cyber/x/bandwidth/wasm"
-	dmnwasm "github.com/cybercongress/go-cyber/x/dmn/wasm"
-	graphwasm "github.com/cybercongress/go-cyber/x/graph/wasm"
-	gridwasm "github.com/cybercongress/go-cyber/x/grid/wasm"
-	rankwasm "github.com/cybercongress/go-cyber/x/rank/wasm"
-	resourceswasm "github.com/cybercongress/go-cyber/x/resources/wasm"
+	bandwidthwasm "github.com/deep-foundation/deep-chain/x/bandwidth/wasm"
+	dmnwasm "github.com/deep-foundation/deep-chain/x/dmn/wasm"
+	graphwasm "github.com/deep-foundation/deep-chain/x/graph/wasm"
+	gridwasm "github.com/deep-foundation/deep-chain/x/grid/wasm"
+	rankwasm "github.com/deep-foundation/deep-chain/x/rank/wasm"
+	resourceswasm "github.com/deep-foundation/deep-chain/x/resources/wasm"
 
-	grid "github.com/cybercongress/go-cyber/x/grid"
-	gridkeeper "github.com/cybercongress/go-cyber/x/grid/keeper"
-	gridtypes "github.com/cybercongress/go-cyber/x/grid/types"
+	grid "github.com/deep-foundation/deep-chain/x/grid"
+	gridkeeper "github.com/deep-foundation/deep-chain/x/grid/keeper"
+	gridtypes "github.com/deep-foundation/deep-chain/x/grid/types"
 
-	dmnkeeper "github.com/cybercongress/go-cyber/x/dmn/keeper"
-	dmntypes "github.com/cybercongress/go-cyber/x/dmn/types"
+	dmnkeeper "github.com/deep-foundation/deep-chain/x/dmn/keeper"
+	dmntypes "github.com/deep-foundation/deep-chain/x/dmn/types"
 
-	resourceskeeper "github.com/cybercongress/go-cyber/x/resources/keeper"
-	resourcestypes "github.com/cybercongress/go-cyber/x/resources/types"
-	stakingwrap "github.com/cybercongress/go-cyber/x/staking"
+	resourceskeeper "github.com/deep-foundation/deep-chain/x/resources/keeper"
+	resourcestypes "github.com/deep-foundation/deep-chain/x/resources/types"
+	stakingwrap "github.com/deep-foundation/deep-chain/x/staking"
 
 	tmjson "github.com/tendermint/tendermint/libs/json"
 
-	"github.com/cybercongress/go-cyber/app/params"
+	"github.com/deep-foundation/deep-chain/app/params"
 )
 
 const (

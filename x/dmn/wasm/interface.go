@@ -7,12 +7,12 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	wasmplugins "github.com/cybercongress/go-cyber/plugins"
+	wasmplugins "github.com/deep-foundation/deep-chain/plugins"
 
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 
-	"github.com/cybercongress/go-cyber/x/dmn/keeper"
-	"github.com/cybercongress/go-cyber/x/dmn/types"
+	"github.com/deep-foundation/deep-chain/x/dmn/keeper"
+	"github.com/deep-foundation/deep-chain/x/dmn/types"
 )
 
 var (

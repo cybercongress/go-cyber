@@ -17,10 +17,10 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 
-	"github.com/cybercongress/go-cyber/x/grid/client/cli"
-	"github.com/cybercongress/go-cyber/x/grid/client/rest"
-	"github.com/cybercongress/go-cyber/x/grid/keeper"
-	"github.com/cybercongress/go-cyber/x/grid/types"
+	"github.com/deep-foundation/deep-chain/x/grid/client/cli"
+	"github.com/deep-foundation/deep-chain/x/grid/client/rest"
+	"github.com/deep-foundation/deep-chain/x/grid/keeper"
+	"github.com/deep-foundation/deep-chain/x/grid/types"
 )
 
 var (

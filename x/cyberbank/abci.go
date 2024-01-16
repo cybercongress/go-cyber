@@ -6,8 +6,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/cybercongress/go-cyber/x/cyberbank/keeper"
-	"github.com/cybercongress/go-cyber/x/cyberbank/types"
+	"github.com/deep-foundation/deep-chain/x/cyberbank/keeper"
+	"github.com/deep-foundation/deep-chain/x/cyberbank/types"
 )
 
 func EndBlocker(ctx sdk.Context, k *keeper.IndexedKeeper) {

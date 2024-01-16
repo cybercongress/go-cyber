@@ -18,7 +18,7 @@ import (
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
 
-	query "github.com/cybercongress/go-cyber/types/query"
+	query "github.com/deep-foundation/deep-chain/types/query"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.

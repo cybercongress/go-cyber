@@ -8,7 +8,7 @@ import (
 
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 
-	"github.com/cybercongress/go-cyber/x/bandwidth/keeper"
+	"github.com/deep-foundation/deep-chain/x/bandwidth/keeper"
 )
 
 var _ QuerierInterface = Querier{}

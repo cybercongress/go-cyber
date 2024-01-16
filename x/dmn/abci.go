@@ -6,8 +6,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/cybercongress/go-cyber/x/dmn/keeper"
-	"github.com/cybercongress/go-cyber/x/dmn/types"
+	"github.com/deep-foundation/deep-chain/x/dmn/keeper"
+	"github.com/deep-foundation/deep-chain/x/dmn/types"
 )
 
 func BeginBlock(ctx sdk.Context, k keeper.Keeper) {

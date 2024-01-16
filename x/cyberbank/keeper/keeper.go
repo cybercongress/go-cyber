@@ -11,7 +11,7 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/tendermint/tendermint/libs/log"
 
-	"github.com/cybercongress/go-cyber/x/cyberbank/types"
+	"github.com/deep-foundation/deep-chain/x/cyberbank/types"
 )
 
 type IndexedKeeper struct {

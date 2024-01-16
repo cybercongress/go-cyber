@@ -14,10 +14,10 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
 
-	"github.com/cybercongress/go-cyber/x/bandwidth/client/cli"
-	"github.com/cybercongress/go-cyber/x/bandwidth/client/rest"
-	"github.com/cybercongress/go-cyber/x/bandwidth/keeper"
-	"github.com/cybercongress/go-cyber/x/bandwidth/types"
+	"github.com/deep-foundation/deep-chain/x/bandwidth/client/cli"
+	"github.com/deep-foundation/deep-chain/x/bandwidth/client/rest"
+	"github.com/deep-foundation/deep-chain/x/bandwidth/keeper"
+	"github.com/deep-foundation/deep-chain/x/bandwidth/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	abci "github.com/tendermint/tendermint/abci/types"

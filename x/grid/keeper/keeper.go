@@ -7,13 +7,13 @@ import (
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"github.com/tendermint/tendermint/libs/log"
 
-	ctypes "github.com/cybercongress/go-cyber/types"
+	ctypes "github.com/deep-foundation/deep-chain/types"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/cybercongress/go-cyber/x/grid/exported"
-	"github.com/cybercongress/go-cyber/x/grid/types"
+	"github.com/deep-foundation/deep-chain/x/grid/exported"
+	"github.com/deep-foundation/deep-chain/x/grid/types"
 )
 
 var _ = exported.EnergyKeeper(nil)

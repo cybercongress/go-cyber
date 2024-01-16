@@ -4,9 +4,9 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	querytypes "github.com/cybercongress/go-cyber/types/query"
-	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
-	"github.com/cybercongress/go-cyber/x/rank/types"
+	querytypes "github.com/deep-foundation/deep-chain/types/query"
+	graphtypes "github.com/deep-foundation/deep-chain/x/graph/types"
+	"github.com/deep-foundation/deep-chain/x/rank/types"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"

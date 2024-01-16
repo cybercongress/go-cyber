@@ -1,6 +1,6 @@
 package types
 
-import "github.com/cybercongress/go-cyber/types"
+import "github.com/deep-foundation/deep-chain/types"
 
 // map of map, where first key is cid, second key is account.String()
 // second map is used as set for fast contains check

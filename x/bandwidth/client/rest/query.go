@@ -10,7 +10,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/types/rest"
 
-	"github.com/cybercongress/go-cyber/x/bandwidth/types"
+	"github.com/deep-foundation/deep-chain/x/bandwidth/types"
 )
 
 func registerQueryRoutes(cliCtx client.Context, r *mux.Router) {

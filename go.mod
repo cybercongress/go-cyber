@@ -1,4 +1,4 @@
-module github.com/cybercongress/go-cyber
+module github.com/deep-foundation/deep-chain
 
 go 1.17
 
