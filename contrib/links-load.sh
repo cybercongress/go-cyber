@@ -33,7 +33,7 @@ if [ -z "$5" ]; then
 fi
 
 #MNEMONIC=""
-#echo $MNEMONIC | cyber keys add $ADDR --recover --keyring-backend test
+#echo $MNEMONIC | deepchain keys add $ADDR --recover --keyring-backend test
 
 while [ ${CNT} -lt $ITER ]; do
   curr_block=$(curl -s $NODEADDR:26657/status | jq -r '.result.sync_info.latest_block_height')

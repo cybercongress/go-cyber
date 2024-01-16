@@ -37,7 +37,7 @@ nfpm:
   description: Distributed search engine
   maintainer: Cyber Admin <cybercongress42@gmail.com>
   license: MIT
-  vendor: cyber.Congress
+  vendor: deepchain
   formats:
     - deb
     - rpm

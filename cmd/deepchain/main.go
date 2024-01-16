@@ -7,7 +7,7 @@ import (
 	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
 
 	"github.com/deep-foundation/deep-chain/app"
-	"github.com/deep-foundation/deep-chain/cmd/cyber/cmd"
+	"github.com/deep-foundation/deep-chain/cmd/deepchain/cmd"
 )
 
 func main() {

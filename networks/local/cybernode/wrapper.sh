@@ -3,9 +3,9 @@
 ##
 ## Input parameters
 ##
-BINARY=/cyber/${BINARY:-cyber}
+BINARY=/deepchain/${BINARY:-deepchain}
 ID=${ID:-0}
-LOG=${LOG:-cyber.log}
+LOG=${LOG:-deepchain.log}
 
 ##
 ## Assert linux binary

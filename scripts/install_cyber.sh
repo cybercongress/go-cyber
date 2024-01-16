@@ -1,5 +1,5 @@
 #!/bin/sh
-# Installation script for cyber. It tries to move $bin in one of the
+# Installation script for deepchain. It tries to move $bin in one of the
 # directories stored in $binpaths.
 
 binpaths="/usr/local/bin /usr/bin"
@@ -10,15 +10,15 @@ libpaths="/usr/lib /usr/local/lib"
 # because of missing write permissions.
 is_write_perm_missing=""
 
-# Download archive with cyber binaries according to platform type
+# Download archive with deepchain binaries according to platform type
 PLATFORM=$(uname)
 case "$PLATFORM" in
   "Darwin")
     # macOS
-    curl -OL  https://github.com/cybercongress/go-cyber/releases/download/v0.2.0/cyber_v0.2.0_darwin-amd64.tar.gz
-    tar -xzf cyber_v0.2.0_darwin-amd64.tar.gz
+    curl -OL  https://github.com/deep-foundaiton/deep-chain/releases/download/v0.2.0/deep_chain_v0.2.0_darwin-amd64.tar.gz
+    tar -xzf deep_chain_v0.2.0_darwin-amd64.tar.gz
     for binpath in $binpaths; do
-      if cp build_v0.2.0_darwin_amd64/cyber "$binpath"; then
+      if cp build_v0.2.0_darwin_amd64/deepchain "$binpath"; then
         for libpath in $libpaths; do
           if cp build_v0.2.0_darwin_amd64/libwasmvm.dylib  "$libpath"; then
             cp build_v0.2.0_darwin_amd64/libwasmvm.so  "$libpath"
@@ -31,14 +31,14 @@ case "$PLATFORM" in
           fi
         done
         echo "Moved $bin to $binpath"
-        echo "Enjoy your cyber experience!"
-        rm cyber_v0.2.0_darwin-amd64.tar.gz
+        echo "Enjoy your deepchain experience!"
+        rm deep_chain_v0.2.0_darwin-amd64.tar.gz
         rm -rf build_v0.2.0_darwin_amd64
         exit 0
       else
       if [ -d "$binpath" ] && [ ! -w "$binpath" ]; then
         is_write_perm_missing=1
-        rm cyber_v0.2.0_darwin-amd64.tar.gz
+        rm deep_chain_v0.2.0_darwin-amd64.tar.gz
         rm -rf build_v0.2.0_darwin_amd64
       fi
       fi
@@ -46,10 +46,10 @@ case "$PLATFORM" in
     ;;
       "Linux")
     # Linux distro,
-    curl -OL https://github.com/cybercongress/go-cyber/releases/download/v0.2.0/cyber_v0.2.0_linux-amd64.tar.gz
-    tar -xzf cyber_v0.2.0_linux-amd64.tar.gz -C ./
+    curl -OL https://github.com/deep-foundaiton/deep-chain/releases/download/v0.2.0/deep-chain_v0.2.0_linux-amd64.tar.gz
+    tar -xzf deep_chain_v0.2.0_linux-amd64.tar.gz -C ./
     for binpath in $binpaths; do
-      if cp build_v0.2.0_linux_amd64/cyber "$binpath"; then
+      if cp build_v0.2.0_linux_amd64/deepchain "$binpath"; then
         for libpath in $libpaths; do
           if cp build_v0.2.0_linux_amd64/libwasmvm.dylib  "$libpath"; then
             cp build_v0.2.0_linux_amd64/libwasmvm.so  "$libpath"
@@ -62,14 +62,14 @@ case "$PLATFORM" in
           fi
         done
         echo "Moved $bin to $binpath"
-        echo "Enjoy your cyber experience!"
-        rm cyber_v0.2.0_linux-amd64.tar.gz
+        echo "Enjoy your deepchain experience!"
+        rm deep_chain_v0.2.0_linux-amd64.tar.gz
         rm -rf build_v0.2.0_linux_amd64
         exit 0
       else
       if [ -d "$binpath" ] && [ ! -w "$binpath" ]; then
         is_write_perm_missing=1
-        rm cyber_v0.2.0_linux-amd64.tar.gz
+        rm deep_chain_v0.2.0_linux-amd64.tar.gz
         rm -rf build_v0.2.0_linux_amd64
       fi
       fi

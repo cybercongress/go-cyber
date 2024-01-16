@@ -165,7 +165,7 @@ var (
 )
 
 // GetEnabledProposals parses the ProposalsEnabled / EnableSpecificProposals values to
-// produce a list of enabled proposals to pass into cyber app.
+// produce a list of enabled proposals to pass into deepchain app.
 func GetEnabledProposals() []wasm.ProposalType {
 	if EnableSpecificProposals == "" {
 		if ProposalsEnabled == "true" {

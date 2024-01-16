@@ -15,7 +15,7 @@ if [ -z "$2" ]; then
   exit 1
 fi
 
-# validator and dev accounts should be added to .cyber dir in user's root with keyring-backend test
+# validator and dev accounts should be added to .deepchain dir in user's root with keyring-backend test
 coins="1000000000000boot"
 cyber init --chain-id "$CHAINID" "$CHAINID" --home "$HMDIR"
 sed -i '' 's#"stake"#"boot"#g' "$HMDIR"/config/genesis.json

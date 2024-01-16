@@ -69,7 +69,7 @@ jobs:
             cd ~/workdir
             git clone -q --depth 1 https://${DOCS_GITHUB_TOKEN}@github.com/cybercongress/congress.git
       - deploy:
-          name: Update docs from go-cyber repo
+          name: Update docs from deepchain repo
           working_directory: ~/workdir/congress
           command: |
             # We need to remove current files in folder to avoid duplicating renamed files

@@ -22,7 +22,7 @@ const (
 )
 
 var (
-	DefaultHome = os.ExpandEnv("$HOME/") + ".cyber/data"
+	DefaultHome = os.ExpandEnv("$HOME/") + ".deepchain/data"
 	rootCmd     = &cobra.Command{Use: "iavltool"}
 	home        string
 )
@@ -57,7 +57,7 @@ func Execute() error {
 }
 
 func init() {
-	rootCmd.PersistentFlags().StringVar(&home, "home", DefaultHome, "path to cyber data")
+	rootCmd.PersistentFlags().StringVar(&home, "home", DefaultHome, "path to deepchain data")
 	rootCmd.AddCommand(dataCmd)
 	rootCmd.AddCommand(shapeCmd)
 	rootCmd.AddCommand(versionsCmd)

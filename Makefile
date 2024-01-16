@@ -86,9 +86,9 @@ build: go.sum
 build-linux: go.sum
 	LEDGER_ENABLED=false GOOS=linux GOARCH=amd64 $(MAKE) build
 #	mkdir -p ./build
-#	docker build --tag cybercongress/cyber ./
-#	docker create --name temp cybercongress/cyber:latest
-#	docker cp temp:/usr/bin/cyber ./build/
+#	docker build --tag cybercongress/deepchain ./
+#	docker create --name temp cybercongress/deepchain:latest
+#	docker cp temp:/usr/bin/deepchain ./build/
 #	docker rm temp
 
 install: go.sum

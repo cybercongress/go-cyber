@@ -1,7 +1,7 @@
 # Simple usage with a mounted data directory:
-# > docker build -t cyber .
-# > docker run -it -p 46657:46657 -p 46656:46656 -v ~/.cyber:/root/.cyber -v ~/.cybercli:/root/.cybercli cyber cyber init
-# > docker run -it -p 46657:46657 -p 46656:46656 -v ~/.cyber:/root/.cyber -v ~/.cybercli:/root/.cybercli cyber cyber start
+# > docker build -t deepchain .
+# > docker run -it -p 46657:46657 -p 46656:46656 -v ~/.deepchain:/root/.deepchain -v ~/.cybercli:/root/.cybercli deepchain deepchain init
+# > docker run -it -p 46657:46657 -p 46656:46656 -v ~/.deepchain:/root/.deepchain -v ~/.cybercli:/root/.cybercli deepchain deepchain start
 FROM golang:1.16-alpine3.13 AS build-env
 
 # Set up dependencies
