@@ -60,8 +60,8 @@ whitespace += $(whitespace)
 comma := ,
 build_tags_comma_sep := $(subst $(whitespace),$(comma),$(build_tags))
 
-ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=cyber \
-		  -X github.com/cosmos/cosmos-sdk/version.AppName=cyber \
+ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=deepchain \
+		  -X github.com/cosmos/cosmos-sdk/version.AppName=deepchain \
 		  -X github.com/cosmos/cosmos-sdk/version.Version=$(VERSION) \
 		  -X github.com/cosmos/cosmos-sdk/version.Commit=$(COMMIT) \
 		  -X "github.com/cosmos/cosmos-sdk/version.BuildTags=$(build_tags_comma_sep)" \
@@ -80,7 +80,7 @@ all: build format lint test
 ###############################################################################
 
 build: go.sum
-	go build $(BUILD_FLAGS) -o $(BUILDDIR) ./cmd/cyber
+	go build $(BUILD_FLAGS) -o $(BUILDDIR) ./cmd/deepchain
 
 
 build-linux: go.sum
@@ -92,10 +92,10 @@ build-linux: go.sum
 #	docker rm temp
 
 install: go.sum
-	go install $(BUILD_FLAGS) ./cmd/cyber
+	go install $(BUILD_FLAGS) ./cmd/deepchain
 
 run:
-	$(BUILDDIR)/cyber --home $(BUILDDIR)/bostrom-dev start
+	$(BUILDDIR)/cyber --home $(BUILDDIR)/deepchain-dev start
 
 ###############################################################################
 ###                           Tools / Dependencies                          ###
@@ -130,7 +130,7 @@ statik:
 format: format-tools
 	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "./client/docs/statik/statik.go" | xargs gofumpt -w
 	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "./client/docs/statik/statik.go" | xargs misspell -w
-	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "./client/docs/statik/statik.go" | xargs goimports -w -local github.com/cybercongress/go-cyber
+	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "./client/docs/statik/statik.go" | xargs goimports -w -local github.com/deep-foundation/deep-chain
 .PHONY: format
 
 ###############################################################################
@@ -154,7 +154,7 @@ localnet-stop:
 ###                                Protobuf                                 ###
 ###############################################################################
 
-HTTPS_GIT := https://github.com/cybercongress/go-cyber.git
+HTTPS_GIT := https://github.com/deep-foundation/deep-chain.git
 DOCKER := $(shell which docker)
 DOCKER_BUF := $(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace bufbuild/buf
 

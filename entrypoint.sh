@@ -1,38 +1,38 @@
 #!/bin/sh
 
-if [ ! -d "/root/.cyber/" ]
+if [ ! -d "/root/.deepchain/" ]
 then
-  mkdir /root/.cyber/
-  mkdir /root/.cyber/config/
-  /cyber/cosmovisor/genesis/bin/cyber init ${NODE_MONIKER}
-  cp -r /cyber/cosmovisor/  /root/.cyber
+  mkdir /root/.deepchain/
+  mkdir /root/.deepchain/config/
+  /deepchain/cosmovisor/genesis/bin/deepchain init ${NODE_MONIKER}
+  cp -r /deepchain/cosmovisor/  /root/.deepchain
 fi
 
-if [ ! -f "/root/.cyber/config/node_key.json" ]
+if [ ! -f "/root/.deepchain/config/node_key.json" ]
 then
-  /cyber/cosmovisor/genesis/bin/cyber init ${NODE_MONIKER}
-  cp /genesis.json /root/.cyber/config/
-  cp -r /cyber/cosmovisor/  /root/.cyber
+  /deepchain/cosmovisor/genesis/bin/deepchain init ${NODE_MONIKER}
+  cp /genesis.json /root/.deepchain/config/
+  cp -r /deepchain/cosmovisor/  /root/.deepchain
 fi
 
-if [ ! -d "/root/.cyber/cosmovisor" ]
+if [ ! -d "/root/.deepchain/cosmovisor" ]
 then
-  cp -r /cyber/cosmovisor/  /root/.cyber/
+  cp -r /deepchain/cosmovisor/  /root/.deepchain/
 fi
 
-if [ ! -d "/root/.cyber/cosmovisor/updgrades" ]
+if [ ! -d "/root/.deepchain/cosmovisor/updgrades" ]
 then
-  cp -r /cyber/cosmovisor/upgrades  /root/.cyber/cosmovisor/
+  cp -r /deepchain/cosmovisor/upgrades  /root/.deepchain/cosmovisor/
 fi
 
-if [  -f "/root/.cyber/cosmovisor/genesis/bin/cyber" ]
+if [  -f "/root/.deepchain/cosmovisor/genesis/bin/deepchain" ]
 then
-  cp /cyber/cosmovisor/genesis/bin/cyber  /root/.cyber/cosmovisor/genesis/bin/cyber
+  cp /deepchain/cosmovisor/genesis/bin/deepchain  /root/.deepchain/cosmovisor/genesis/bin/deepchain
 fi
 
-if [ ! -f "/root/.cyber/config/genesis.json" ]
+if [ ! -f "/root/.deepchain/config/genesis.json" ]
 then
-  cp /genesis.json /root/.cyber/config/
+  cp /genesis.json /root/.deepchain/config/
 fi
 
 if [ "$2" = 'init' ]
