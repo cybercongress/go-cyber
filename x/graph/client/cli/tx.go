@@ -1,23 +1,14 @@
-
 package cli
 
 import (
-	//"bufio"
-	//"bytes"
 	"fmt"
 	"strings"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 
-	//"github.com/cosmos/cosmos-sdk/client/context"
-	//"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
-	//"github.com/cosmos/cosmos-sdk/codec"
-	//sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/version"
-	//"github.com/cosmos/cosmos-sdk/x/auth"
-	//authclient "github.com/cosmos/cosmos-sdk/x/auth/client/utils"
 	"github.com/ipfs/go-cid"
 	"github.com/spf13/cobra"
 
@@ -59,7 +50,7 @@ $ %s tx link cyberlink QmWZYRj344JSLShtBnrMS4vw5DQ2zsGqrytYKMqcQgEneB QmfZwbahFL
 			}
 
 			cidFrom := types.Cid(args[0])
-			cidTo   := types.Cid(args[1])
+			cidTo := types.Cid(args[1])
 
 			if _, err := cid.Decode(string(cidFrom)); err != nil {
 				return types.ErrInvalidParticle
@@ -86,7 +77,6 @@ $ %s tx link cyberlink QmWZYRj344JSLShtBnrMS4vw5DQ2zsGqrytYKMqcQgEneB QmfZwbahFL
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
-
 
 	return cmd
 }

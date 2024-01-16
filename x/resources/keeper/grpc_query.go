@@ -5,9 +5,10 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	ctypes "github.com/cybercongress/go-cyber/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+
+	ctypes "github.com/cybercongress/go-cyber/types"
 
 	"github.com/cybercongress/go-cyber/x/resources/types"
 )

@@ -2,6 +2,7 @@ package plugins
 
 import (
 	"encoding/json"
+
 	liquiditytypes "github.com/tendermint/liquidity/x/liquidity/types"
 
 	wasm "github.com/CosmWasm/wasmd/x/wasm"
@@ -48,16 +49,14 @@ const (
 func (q Querier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([]byte, error) {
 	var customQuery WasmCustomQuery
 	err := json.Unmarshal(data, &customQuery)
-
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
 
 	if querier, ok := q.Queriers[customQuery.Route]; ok {
 		return querier.QueryCustom(ctx, customQuery.QueryData)
-	} else {
-		return nil, sdkerrors.Wrap(wasm.ErrQueryFailed, customQuery.Route)
 	}
+	return nil, sdkerrors.Wrap(wasm.ErrQueryFailed, customQuery.Route)
 }
 
 func ConvertSdkCoinsToWasmCoins(coins []sdk.Coin) wasmvmtypes.Coins {

@@ -2,13 +2,9 @@ package keeper
 
 import (
 	"context"
-	//"sort"
 
-	//"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	//"github.com/cosmos/cosmos-sdk/types/query"
-	//"google.golang.org/grpc/codes"
-	//"google.golang.org/grpc/status"
+
 	"github.com/cybercongress/go-cyber/x/graph/types"
 )
 
@@ -19,5 +15,6 @@ func (gk GraphKeeper) GraphStats(goCtx context.Context, _ *types.QueryGraphStats
 
 	links := gk.GetLinksCount(ctx)
 	cids := gk.GetCidsCount(ctx)
-	return &types.QueryGraphStatsResponse{links, cids}, nil
+
+	return &types.QueryGraphStatsResponse{Cyberlinks: links, Particles: cids}, nil
 }

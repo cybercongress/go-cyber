@@ -6,6 +6,10 @@ package types
 import (
 	context "context"
 	fmt "fmt"
+	io "io"
+	math "math"
+	math_bits "math/bits"
+
 	_ "github.com/gogo/protobuf/gogoproto"
 	grpc1 "github.com/gogo/protobuf/grpc"
 	proto "github.com/gogo/protobuf/proto"
@@ -13,15 +17,14 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-	io "io"
-	math "math"
-	math_bits "math/bits"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
-var _ = proto.Marshal
-var _ = fmt.Errorf
-var _ = math.Inf
+var (
+	_ = proto.Marshal
+	_ = fmt.Errorf
+	_ = math.Inf
+)
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -29,8 +32,7 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-type QueryGraphStatsRequest struct {
-}
+type QueryGraphStatsRequest struct{}
 
 func (m *QueryGraphStatsRequest) Reset()         { *m = QueryGraphStatsRequest{} }
 func (m *QueryGraphStatsRequest) String() string { return proto.CompactTextString(m) }
@@ -38,9 +40,11 @@ func (*QueryGraphStatsRequest) ProtoMessage()    {}
 func (*QueryGraphStatsRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_1588f994db3ad35c, []int{0}
 }
+
 func (m *QueryGraphStatsRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *QueryGraphStatsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryGraphStatsRequest.Marshal(b, m, deterministic)
@@ -53,12 +57,15 @@ func (m *QueryGraphStatsRequest) XXX_Marshal(b []byte, deterministic bool) ([]by
 		return b[:n], nil
 	}
 }
+
 func (m *QueryGraphStatsRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryGraphStatsRequest.Merge(m, src)
 }
+
 func (m *QueryGraphStatsRequest) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *QueryGraphStatsRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryGraphStatsRequest.DiscardUnknown(m)
 }
@@ -76,9 +83,11 @@ func (*QueryGraphStatsResponse) ProtoMessage()    {}
 func (*QueryGraphStatsResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_1588f994db3ad35c, []int{1}
 }
+
 func (m *QueryGraphStatsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *QueryGraphStatsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryGraphStatsResponse.Marshal(b, m, deterministic)
@@ -91,12 +100,15 @@ func (m *QueryGraphStatsResponse) XXX_Marshal(b []byte, deterministic bool) ([]b
 		return b[:n], nil
 	}
 }
+
 func (m *QueryGraphStatsResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryGraphStatsResponse.Merge(m, src)
 }
+
 func (m *QueryGraphStatsResponse) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *QueryGraphStatsResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryGraphStatsResponse.DiscardUnknown(m)
 }
@@ -148,8 +160,10 @@ var fileDescriptor_1588f994db3ad35c = []byte{
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
-var _ context.Context
-var _ grpc.ClientConn
+var (
+	_ context.Context
+	_ grpc.ClientConn
+)
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
@@ -185,8 +199,7 @@ type QueryServer interface {
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
-type UnimplementedQueryServer struct {
-}
+type UnimplementedQueryServer struct{}
 
 func (*UnimplementedQueryServer) GraphStats(ctx context.Context, req *QueryGraphStatsRequest) (*QueryGraphStatsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GraphStats not implemented")
@@ -294,6 +307,7 @@ func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
+
 func (m *QueryGraphStatsRequest) Size() (n int) {
 	if m == nil {
 		return 0
@@ -321,9 +335,11 @@ func (m *QueryGraphStatsResponse) Size() (n int) {
 func sovQuery(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
+
 func sozQuery(x uint64) (n int) {
 	return sovQuery(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
+
 func (m *QueryGraphStatsRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -374,6 +390,7 @@ func (m *QueryGraphStatsRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *QueryGraphStatsResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -462,6 +479,7 @@ func (m *QueryGraphStatsResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func skipQuery(dAtA []byte) (n int, err error) {
 	l := len(dAtA)
 	iNdEx := 0

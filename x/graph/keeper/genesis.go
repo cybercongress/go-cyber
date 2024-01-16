@@ -47,7 +47,6 @@ func InitGenesis(
 func WriteGenesis(
 	ctx sdk.Context, gk GraphKeeper, ik *IndexKeeper,
 ) (err error) {
-
 	linksFilePath := utils.RootifyPath(LinksExportFileName)
 	dirName := filepath.Dir(linksFilePath)
 	if _, err := os.Stat(dirName); err != nil {
@@ -75,8 +74,7 @@ func WriteGenesis(
 	if err != nil {
 		return
 	}
-	err = linksFile.Close()
 
 	gk.Logger(ctx).Info("Particles and cyberlinks exported. File created.", "path", linksFilePath)
-	return
+	return //nolint:nakedret
 }

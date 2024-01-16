@@ -2,12 +2,11 @@ package cmd
 
 import (
 	"bytes"
-	"strconv"
-
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -24,8 +23,8 @@ const (
 
 var (
 	DefaultHome = os.ExpandEnv("$HOME/") + ".cyber/data"
-	rootCmd = &cobra.Command{Use: "iavltool"}
-	home string
+	rootCmd     = &cobra.Command{Use: "iavltool"}
+	home        string
 )
 
 // TODO autoconf stores
@@ -70,9 +69,9 @@ func init() {
 var dataCmd = &cobra.Command{
 	Use:   "data [store] [version] [kv] [hash]",
 	Short: "Print data of given stores at given block",
-	Args: cobra.MinimumNArgs(0),
+	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
-		db, err := OpenDb(home)
+		db, err := OpenDB(home)
 		if err != nil {
 			fmt.Println("ERROR DB OPEN:", err)
 		}
@@ -92,7 +91,9 @@ var dataCmd = &cobra.Command{
 			fallthrough
 		case 1:
 			var a []string
-			if args[0] != "all" { stores = append(a, args[0]) }
+			if args[0] != "all" {
+				stores = append(a, args[0])
+			}
 		}
 
 		for _, name := range stores {
@@ -113,9 +114,9 @@ var dataCmd = &cobra.Command{
 var shapeCmd = &cobra.Command{
 	Use:   "shape [store] [version]",
 	Short: "Print shape of given stores at given block",
-	Args: cobra.MinimumNArgs(0),
+	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
-		db, err := OpenDb(home)
+		db, err := OpenDB(home)
 		if err != nil {
 			fmt.Println("ERROR DB OPEN:", err)
 		}
@@ -142,9 +143,9 @@ var shapeCmd = &cobra.Command{
 var versionsCmd = &cobra.Command{
 	Use:   "versions [store]",
 	Short: "Print shape of given stores at given block",
-	Args: cobra.MinimumNArgs(1),
+	Args:  cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		db, err := OpenDb(home)
+		db, err := OpenDB(home)
 		if err != nil {
 			fmt.Println("ERROR DB OPEN:", err)
 		}
@@ -161,9 +162,9 @@ var versionsCmd = &cobra.Command{
 var deleteCmd = &cobra.Command{
 	Use:   "delete [store] [from] [to]",
 	Short: "Delete versions range for given stores",
-	Args: cobra.MinimumNArgs(0),
+	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
-		db, err := OpenDb(home)
+		db, err := OpenDB(home)
 		if err != nil {
 			fmt.Println("ERROR DB OPEN:", err)
 		}
@@ -179,7 +180,9 @@ var deleteCmd = &cobra.Command{
 			fallthrough
 		case 1:
 			var a []string
-			if args[0] != "all" { stores = append(a, args[0]) }
+			if args[0] != "all" {
+				stores = append(a, args[0])
+			}
 		}
 
 		for _, name := range stores {
@@ -201,34 +204,34 @@ var deleteCmd = &cobra.Command{
 var statsCmd = &cobra.Command{
 	Use:   "stats [store] [version]",
 	Short: "Print shape of given stores at given block",
-	Args: cobra.MinimumNArgs(0),
+	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
-		db, err := OpenDb(home)
+		db, err := OpenDB(home)
 		if err != nil {
 			fmt.Println("ERROR DB OPEN:", err)
 		}
 
-		PrintDbStats(db)
+		PrintDBStats(db)
 	},
 }
 
 var pruneCmd = &cobra.Command{
 	Use:   "prune",
 	Short: "Prune leveldb",
-	Args: cobra.NoArgs,
+	Args:  cobra.NoArgs,
 	Run: func(cmd *cobra.Command, args []string) {
 		db, _ := goleveldb.OpenFile(home+"/application.db", nil)
 		defer db.Close()
-		_ = db.CompactRange(util.Range{nil,nil})
+		_ = db.CompactRange(util.Range{Start: nil, Limit: nil})
 	},
 }
 
-func OpenDb(dir string) (dbm.DB, error) {
+func OpenDB(dir string) (dbm.DB, error) {
 	db, err := dbm.NewDB("application", dbm.GoLevelDBBackend, dir)
 	return db, err
 }
 
-func PrintDbStats(db dbm.DB) {
+func PrintDBStats(db dbm.DB) {
 	count := 0
 	prefix := map[string]int{}
 	iter, err := db.Iterator(nil, nil)

@@ -1,10 +1,10 @@
 package bandwidth
 
 import (
+	"time"
+
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	"time"
 
 	"github.com/cybercongress/go-cyber/x/bandwidth/keeper"
 	"github.com/cybercongress/go-cyber/x/bandwidth/types"

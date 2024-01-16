@@ -13,29 +13,33 @@ import (
 	"github.com/cybercongress/go-cyber/x/graph/types"
 )
 
-var _ WasmQuerierInterface = WasmQuerier{}
-var _ WasmMsgParserInterface = WasmMsgParser{}
+var (
+	_ QuerierInterface   = Querier{}
+	_ MsgParserInterface = MsgParser{}
+)
 
 //--------------------------------------------------
 
-type WasmMsgParserInterface interface {
+type MsgParserInterface interface {
 	Parse(contractAddr sdk.AccAddress, msg wasmvmtypes.CosmosMsg) ([]sdk.Msg, error)
 	ParseCustom(contractAddr sdk.AccAddress, data json.RawMessage) ([]sdk.Msg, error)
 }
 
-type WasmMsgParser struct{}
+type MsgParser struct{}
 
-func NewWasmMsgParser() WasmMsgParser {
-	return WasmMsgParser{}
+func NewWasmMsgParser() MsgParser {
+	return MsgParser{}
 }
 
-func (WasmMsgParser) Parse(_ sdk.AccAddress, _ wasmvmtypes.CosmosMsg) ([]sdk.Msg, error) { return nil, nil }
+func (MsgParser) Parse(_ sdk.AccAddress, _ wasmvmtypes.CosmosMsg) ([]sdk.Msg, error) {
+	return nil, nil
+}
 
 type CosmosMsg struct {
 	Cyberlink *types.MsgCyberlink `json:"cyberlink,omitempty"`
 }
 
-func (WasmMsgParser) ParseCustom(contractAddr sdk.AccAddress, data json.RawMessage) ([]sdk.Msg, error) {
+func (MsgParser) ParseCustom(contractAddr sdk.AccAddress, data json.RawMessage) ([]sdk.Msg, error) {
 	var sdkMsg CosmosMsg
 	err := json.Unmarshal(data, &sdkMsg)
 	if err != nil {
@@ -51,20 +55,20 @@ func (WasmMsgParser) ParseCustom(contractAddr sdk.AccAddress, data json.RawMessa
 
 //--------------------------------------------------
 
-type WasmQuerierInterface interface {
+type QuerierInterface interface {
 	Query(ctx sdk.Context, request wasmvmtypes.QueryRequest) ([]byte, error)
 	QueryCustom(ctx sdk.Context, data json.RawMessage) ([]byte, error)
 }
 
-type WasmQuerier struct {
+type Querier struct {
 	keeper.GraphKeeper
 }
 
-func NewWasmQuerier(keeper keeper.GraphKeeper) WasmQuerier {
-	return WasmQuerier{keeper}
+func NewWasmQuerier(keeper keeper.GraphKeeper) Querier {
+	return Querier{keeper}
 }
 
-func (WasmQuerier) Query(_ sdk.Context, _ wasmvmtypes.QueryRequest) ([]byte, error) { return nil, nil }
+func (Querier) Query(_ sdk.Context, _ wasmvmtypes.QueryRequest) ([]byte, error) { return nil, nil }
 
 type CosmosQuery struct {
 	ParticlesAmount  *struct{} `json:"particles_amount,omitempty"`
@@ -79,23 +83,23 @@ type CyberlinksAmountQueryResponse struct {
 	CyberlinksAmount uint64 `json:"cyberlinks_amount"`
 }
 
-func (querier WasmQuerier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([]byte, error) {
+func (querier Querier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([]byte, error) {
 	var query CosmosQuery
 	err := json.Unmarshal(data, &query)
-
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
 
 	var bz []byte
 
-	if query.ParticlesAmount != nil {
+	switch {
+	case query.ParticlesAmount != nil:
 		amount := querier.GraphKeeper.GetCidsCount(ctx)
 		bz, err = json.Marshal(ParticlesAmountQueryResponse{ParticlesAmount: amount})
-	} else if query.CyberlinksAmount != nil {
+	case query.CyberlinksAmount != nil:
 		amount := querier.GraphKeeper.GetLinksCount(ctx)
 		bz, err = json.Marshal(CyberlinksAmountQueryResponse{CyberlinksAmount: amount})
-	} else {
+	default:
 		return nil, wasmvmtypes.UnsupportedRequest{Kind: "unknown Graph variant"}
 	}
 

@@ -17,7 +17,6 @@ import (
 	"github.com/cybercongress/go-cyber/x/resources/types"
 )
 
-
 func NewTxCmd() *cobra.Command {
 	resourcesTxCmd := &cobra.Command{
 		Use:                        types.ModuleName,
@@ -85,7 +84,6 @@ $ %s tx resources investmint 1000000000hydrogen millivolt 2500000 --from <key>
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
-
 
 	return cmd
 }

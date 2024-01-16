@@ -26,7 +26,7 @@ type Proxy struct {
 
 func Wrap(bk bank.Keeper) *Proxy {
 	return &Proxy{
-		bk: bk,
+		bk:                 bk,
 		coinsTransferHooks: make([]types.CoinsTransferHook, 0),
 	}
 }
@@ -66,7 +66,9 @@ func (p Proxy) GetAccountStakePercentageVolt(ctx sdk.Context, addr sdk.AccAddres
 
 	c := aFloat / bFloat
 
-	if math.IsNaN(c) { return 0 }
+	if math.IsNaN(c) {
+		return 0
+	}
 	return c
 }
 
@@ -126,10 +128,6 @@ func (p *Proxy) SendCoinsFromModuleToAccount(ctx sdk.Context, senderModule strin
 
 func (p *Proxy) SendCoinsFromModuleToModule(ctx sdk.Context, senderModule, recipientModule string, amt sdk.Coins) error {
 	err := p.bk.SendCoinsFromModuleToModule(ctx, senderModule, recipientModule, amt)
-
-	//if err == nil {
-	//	p.OnCoinsTransfer(ctx, p.ak.GetModuleAddress(senderModule), p.ak.GetModuleAddress(recipientModule))
-	//}
 	return err
 }
 
@@ -273,7 +271,6 @@ func (p *Proxy) SupplyOf(ctx context.Context, request *banktypes.QuerySupplyOfRe
 func (p *Proxy) Params(ctx context.Context, request *banktypes.QueryParamsRequest) (*banktypes.QueryParamsResponse, error) {
 	return p.bk.Params(ctx, request)
 }
-
 
 func (p *Proxy) SpendableBalances(ctx context.Context, request *banktypes.QuerySpendableBalancesRequest) (*banktypes.QuerySpendableBalancesResponse, error) {
 	return p.bk.SpendableBalances(ctx, request)

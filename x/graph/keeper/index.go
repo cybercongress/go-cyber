@@ -2,11 +2,9 @@ package keeper
 
 import (
 	"encoding/binary"
-	//"fmt"
-
 	"io"
 
-	. "github.com/cybercongress/go-cyber/types"
+	ctypes "github.com/cybercongress/go-cyber/types"
 	"github.com/cybercongress/go-cyber/utils"
 	"github.com/cybercongress/go-cyber/x/graph/types"
 
@@ -26,9 +24,9 @@ type IndexKeeper struct {
 	nextRankOutLinks types.Links
 
 	// Inter-block cache for cyberlinks, reset on every block during Commit
-	tkey        sdk.StoreKey
+	tkey sdk.StoreKey
 
-	currentBlockLinks []types.CompactLink
+	// currentBlockLinks []types.CompactLink
 }
 
 func NewIndexKeeper(gk GraphKeeper, tkey sdk.StoreKey) *IndexKeeper {
@@ -48,9 +46,8 @@ func (i *IndexKeeper) LoadState(rankCtx sdk.Context, freshCtx sdk.Context) {
 	i.currentRankOutLinks = outLinks
 
 	newInLinks, newOutLinks, err := i.GraphKeeper.GetAllLinksFiltered(freshCtx, func(l types.CompactLink) bool {
-		return !i.currentRankOutLinks.IsLinkExist(types.CidNumber(l.From), types.CidNumber(l.To), AccNumber(l.Account))
+		return !i.currentRankOutLinks.IsLinkExist(types.CidNumber(l.From), types.CidNumber(l.To), ctypes.AccNumber(l.Account))
 	})
-
 	if err != nil {
 		tmos.Exit(err.Error())
 	}
@@ -74,8 +71,8 @@ func (i *IndexKeeper) MergeContextLinks(ctx sdk.Context) {
 	defer iterator.Close()
 	for ; iterator.Valid(); iterator.Next() {
 		link := types.UnmarshalBinaryLink(iterator.Key()[1:])
-		i.nextRankOutLinks.Put(types.CidNumber(link.From), types.CidNumber(link.To), AccNumber(link.Account))
-		i.nextRankInLinks.Put(types.CidNumber(link.To), types.CidNumber(link.From), AccNumber(link.Account))
+		i.nextRankOutLinks.Put(types.CidNumber(link.From), types.CidNumber(link.To), ctypes.AccNumber(link.Account))
+		i.nextRankInLinks.Put(types.CidNumber(link.To), types.CidNumber(link.From), ctypes.AccNumber(link.Account))
 		lenLinks++
 	}
 
@@ -88,7 +85,9 @@ func (i *IndexKeeper) MergeContextLinks(ctx sdk.Context) {
 func (i *IndexKeeper) HasNewLinks(ctx sdk.Context) bool {
 	store := ctx.TransientStore(i.tkey)
 	hasLinks := store.Get(types.HasNewLinks)
-	if hasLinks == nil { return false }
+	if hasLinks == nil {
+		return false
+	}
 	return sdk.BigEndianToUint64(hasLinks) > 0
 }
 
@@ -131,8 +130,8 @@ func (i *IndexKeeper) IsAnyLinkExist(from types.CidNumber, to types.CidNumber) b
 }
 
 func (i *IndexKeeper) IsLinkExist(link types.CompactLink) bool {
-	return i.currentRankOutLinks.IsLinkExist(types.CidNumber(link.From), types.CidNumber(link.To), AccNumber(link.Account)) ||
-		i.nextRankOutLinks.IsLinkExist(types.CidNumber(link.From), types.CidNumber(link.To), AccNumber(link.Account))
+	return i.currentRankOutLinks.IsLinkExist(types.CidNumber(link.From), types.CidNumber(link.To), ctypes.AccNumber(link.Account)) ||
+		i.nextRankOutLinks.IsLinkExist(types.CidNumber(link.From), types.CidNumber(link.To), ctypes.AccNumber(link.Account))
 }
 
 func (i *IndexKeeper) IsLinkExistInCache(ctx sdk.Context, link types.CompactLink) bool {
@@ -158,5 +157,3 @@ func (i *IndexKeeper) LoadFromReader(ctx sdk.Context, reader io.Reader) (err err
 	}
 	return
 }
-
-
