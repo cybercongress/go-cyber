@@ -422,7 +422,7 @@ Please check the latest snapshot [here](https://jupiter.cybernode.ai/shared/).
 
 Download snapshot
 ```bash
-wget https://jupiter.cybernode.ai/shared/bostrom_pruned_<*>.tar
+wget https://snapshot.cybernode.ai/bostrom_pruned_<*>.tar
 ```
 
 Stop your node
