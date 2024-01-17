@@ -418,7 +418,7 @@ Finally, in case you want to keep your cyber node ID consistent during networks 
 ### Rebase to snapshot
 
 You can use a snapshot to start a node from scratch, as well as to reduce its disk space.  
-Please check the latest snapshot [here](https://jupiter.cybernode.ai/shared/).  
+Please check the latest snapshot [here](https://snapshot.cybernode.ai/).  
 
 Download snapshot
 ```bash
