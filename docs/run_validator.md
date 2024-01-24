@@ -282,7 +282,7 @@ mkdir $HOME/.pussy/config
 (This will pull and extract the image from cyberd/cyber)
 
 ```bash
-docker run -d --gpus all --name=space-pussy --restart always -p 26656:26656 -p 26657:26657 -p 1317:1317 -e ALLOW_SEARCH=true -e COMPUTE_GPU=true -v $HOME/.pussy:/root/.pussy  cyberd/space-pussy:v0.0.1-cuda11.4
+docker run -d --gpus all --name=space-pussy --restart always -p 26656:26656 -p 26657:26657 -p 1317:1317 -e ALLOW_SEARCH=true -e COMPUTE_GPU=true -v $HOME/.pussy:/root/.pussy  cyberd/space-pussy:v0.0.3-cuda11.4
 ```
 
 3. Setup some peers to `persistent_peers` and `seeds` to $HOME/.pussy/config/config.toml line 184:
