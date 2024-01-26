@@ -383,7 +383,7 @@ docker exec -ti space-pussy pussy tx staking create-validator \
   --commission-rate="0.10" \
   --commission-max-rate="0.20" \
   --commission-max-change-rate="0.01" \
-  --chain-id=bostrom \
+  --chain-id=space-pussy \
   --gas-prices 0.01pussy \
   --gas 600000
 ```
