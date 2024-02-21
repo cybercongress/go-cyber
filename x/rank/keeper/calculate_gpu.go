@@ -34,6 +34,7 @@ func calculateRankGPU(ctx *types.CalculationContext, logger log.Logger) types.EM
 
 	cidsCount := ctx.GetCidsCount()
 	stakesCount := ctx.GetNeuronsCount()
+	linksCount := ctx.LinksCount
 
 	rank := make([]float64, cidsCount)
 	entropy := make([]float64, cidsCount)
@@ -42,10 +43,15 @@ func calculateRankGPU(ctx *types.CalculationContext, logger log.Logger) types.EM
 
 	inLinksCount := make([]uint32, cidsCount)
 	outLinksCount := make([]uint32, cidsCount)
-	outLinksIns := make([]uint64, 0)
-	inLinksOuts := make([]uint64, 0)
-	inLinksUsers := make([]uint64, 0)
-	outLinksUsers := make([]uint64, 0)
+	//outLinksIns := make([]uint64, 0)
+	//inLinksOuts := make([]uint64, 0)
+	//inLinksUsers := make([]uint64, 0)
+	//outLinksUsers := make([]uint64, 0)
+	outLinksIns := make([]uint64, linksCount)
+	inLinksOuts := make([]uint64, linksCount)
+	inLinksUsers := make([]uint64, linksCount)
+	outLinksUsers := make([]uint64, linksCount)
+
 	// will fail if amount of indexed accounts will not equal all accounts
 	// distribute current flow through all neuron's cyberlinks
 	stakes := make([]uint64, stakesCount)
@@ -58,14 +64,19 @@ func calculateRankGPU(ctx *types.CalculationContext, logger log.Logger) types.EM
 		}
 	}
 
+	var pointer1 uint32 = 0
+	var pointer2 uint32 = 0
 	for i := int64(0); i < cidsCount; i++ {
 
 		if inLinks, sortedCids, ok := ctx.GetSortedInLinks(graphtypes.CidNumber(i)); ok {
 			for _, cid := range sortedCids {
 				inLinksCount[i] += uint32(len(inLinks[cid]))
 				for acc := range inLinks[cid] {
-					inLinksOuts = append(inLinksOuts, uint64(cid))
-					inLinksUsers = append(inLinksUsers, uint64(acc))
+					//inLinksOuts = append(inLinksOuts, uint64(cid))
+					//inLinksUsers = append(inLinksUsers, uint64(acc))
+					inLinksOuts[pointer1] = uint64(cid)
+					inLinksUsers[pointer1] = uint64(acc)
+					pointer1++
 				}
 			}
 		}
@@ -74,8 +85,11 @@ func calculateRankGPU(ctx *types.CalculationContext, logger log.Logger) types.EM
 			for _, cid := range sortedCids {
 				outLinksCount[i] += uint32(len(outLinks[cid]))
 				for acc := range outLinks[cid] {
-					outLinksIns = append(outLinksIns, uint64(cid))
-					outLinksUsers = append(outLinksUsers, uint64(acc))
+					//outLinksIns = append(outLinksIns, uint64(cid))
+					//outLinksUsers = append(outLinksUsers, uint64(acc))
+					outLinksIns[pointer2] = uint64(cid)
+					outLinksUsers[pointer2] = uint64(acc)
+					pointer2++
 				}
 			}
 		}
