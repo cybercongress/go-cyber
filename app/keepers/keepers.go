@@ -424,7 +424,7 @@ func NewAppKeepers(
 		appKeepers.keys[govtypes.StoreKey],
 		appKeepers.GetSubspace(govtypes.ModuleName),
 		appKeepers.AccountKeeper,
-		appKeepers.BankKeeper,
+		appKeepers.CyberbankKeeper.Proxy,
 		&stakingKeeper,
 		govRouter,
 	)

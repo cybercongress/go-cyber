@@ -236,8 +236,8 @@ func NewApp(
 	app.mm.RegisterServices(cfg)
 	app.mm.Modules[banktypes.ModuleName] = bank.NewAppModule(encodingConfig.Marshaler, app.CyberbankKeeper.Proxy, app.AccountKeeper)
 
-	banktypes.RegisterMsgServer(cfg.MsgServer(), bankkeeper.NewMsgServerImpl(app.BankKeeper))
-	banktypes.RegisterQueryServer(cfg.QueryServer(), app.BankKeeper)
+	banktypes.RegisterMsgServer(cfg.MsgServer(), bankkeeper.NewMsgServerImpl(app.CyberbankKeeper.Proxy))
+	banktypes.RegisterQueryServer(cfg.QueryServer(), app.CyberbankKeeper.Proxy)
 
 	// initialize stores
 	app.MountKVStores(app.GetKVStoreKey())
