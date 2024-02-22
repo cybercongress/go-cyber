@@ -10,13 +10,13 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/config"
 	"github.com/prometheus/client_golang/prometheus"
 
-	"github.com/cybercongress/go-cyber/app"
+	"github.com/cybercongress/go-cyber/v2/app"
 
 	"github.com/CosmWasm/wasmd/x/wasm"
 	"github.com/cosmos/cosmos-sdk/snapshots"
 	"github.com/cosmos/cosmos-sdk/x/crisis"
 
-	"github.com/cybercongress/go-cyber/x/rank"
+	"github.com/cybercongress/go-cyber/v2/x/rank"
 
 	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
@@ -41,7 +41,7 @@ import (
 
 	serverconfig "github.com/cosmos/cosmos-sdk/server/config"
 
-	"github.com/cybercongress/go-cyber/app/params"
+	"github.com/cybercongress/go-cyber/v2/app/params"
 )
 
 // NewRootCmd creates a new root command for simd. It is called once in the

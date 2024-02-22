@@ -13,15 +13,15 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 
-	ctypes "github.com/cybercongress/go-cyber/types"
+	ctypes "github.com/cybercongress/go-cyber/v2/types"
 
 	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
 	ibcante "github.com/cosmos/ibc-go/v3/modules/core/ante"
 	"github.com/cosmos/ibc-go/v3/modules/core/keeper"
 
-	bandwidthkeeper "github.com/cybercongress/go-cyber/x/bandwidth/keeper"
-	bandwidthtypes "github.com/cybercongress/go-cyber/x/bandwidth/types"
-	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
+	bandwidthkeeper "github.com/cybercongress/go-cyber/v2/x/bandwidth/keeper"
+	bandwidthtypes "github.com/cybercongress/go-cyber/v2/x/bandwidth/types"
+	graphtypes "github.com/cybercongress/go-cyber/v2/x/graph/types"
 )
 
 // HandlerOptions are the options required for constructing a default SDK AnteHandler.

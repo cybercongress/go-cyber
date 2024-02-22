@@ -9,9 +9,9 @@ import (
 
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 
-	wasmplugins "github.com/cybercongress/go-cyber/plugins"
-	"github.com/cybercongress/go-cyber/x/grid/keeper"
-	"github.com/cybercongress/go-cyber/x/grid/types"
+	wasmplugins "github.com/cybercongress/go-cyber/v2/plugins"
+	"github.com/cybercongress/go-cyber/v2/x/grid/keeper"
+	"github.com/cybercongress/go-cyber/v2/x/grid/types"
 )
 
 var _ MsgParserInterface = MsgParser{}

@@ -14,8 +14,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/staking/types"
 	tmstrings "github.com/tendermint/tendermint/libs/strings"
 
-	ctypes "github.com/cybercongress/go-cyber/types"
-	resourcestypes "github.com/cybercongress/go-cyber/x/resources/types"
+	ctypes "github.com/cybercongress/go-cyber/v2/types"
+	resourcestypes "github.com/cybercongress/go-cyber/v2/x/resources/types"
 )
 
 type msgServer struct {

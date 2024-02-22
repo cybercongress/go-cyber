@@ -10,9 +10,9 @@ import (
 
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 
-	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
+	graphtypes "github.com/cybercongress/go-cyber/v2/x/graph/types"
 
-	"github.com/cybercongress/go-cyber/x/rank/keeper"
+	"github.com/cybercongress/go-cyber/v2/x/rank/keeper"
 )
 
 type QuerierInterface interface {

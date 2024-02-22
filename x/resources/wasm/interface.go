@@ -9,7 +9,7 @@ import (
 
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 
-	"github.com/cybercongress/go-cyber/x/resources/types"
+	"github.com/cybercongress/go-cyber/v2/x/resources/types"
 )
 
 var _ MsgParserInterface = MsgParser{}
