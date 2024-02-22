@@ -7,13 +7,14 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ctypes "github.com/cybercongress/go-cyber/types"
 	"github.com/gorilla/mux"
+
+	ctypes "github.com/cybercongress/go-cyber/v2/types"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/types/rest"
 
-	"github.com/cybercongress/go-cyber/x/resources/types"
+	"github.com/cybercongress/go-cyber/v2/x/resources/types"
 )
 
 func registerQueryRoutes(cliCtx client.Context, r *mux.Router) {
@@ -22,13 +23,12 @@ func registerQueryRoutes(cliCtx client.Context, r *mux.Router) {
 		queryParamsHandlerFn(cliCtx)).Methods("GET")
 
 	r.HandleFunc(
-		fmt.Sprintf("/resources/investmint"),
+		"/resources/investmint",
 		queryInvestmintHandlerFn(cliCtx)).Methods("GET")
 }
 
 func queryParamsHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-
 		route := fmt.Sprintf("custom/%s/%s", types.QuerierRoute, types.QueryParams)
 
 		res, _, err := cliCtx.QueryWithData(route, nil)

@@ -25,6 +25,7 @@ baseapp/data/*
 client/lcd/keys/*
 mytestnet
 testnet
+testnets
 
 # Testing
 coverage.txt

@@ -7,18 +7,19 @@ import "cosmos/base/v1beta1/coin.proto";
 
 option go_package = "github.com/cybercongress/go-cyber/x/resources/types";
 
-service Msg{
-    rpc Investmint(MsgInvestmint) returns (MsgInvestmintResponse);
-}
+service Msg { rpc Investmint(MsgInvestmint) returns (MsgInvestmintResponse); }
 
 message MsgInvestmint {
-    option (gogoproto.equal)           = false;
-    option (gogoproto.goproto_getters) = false;
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
 
-    string neuron                   = 1;
-    cosmos.base.v1beta1.Coin amount = 2 [(gogoproto.nullable) = false, (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.Coin"];
-    string resource                 = 3;
-    uint64 length                   = 4;
+  string neuron = 1;
+  cosmos.base.v1beta1.Coin amount = 2 [
+    (gogoproto.nullable) = false,
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.Coin"
+  ];
+  string resource = 3;
+  uint64 length = 4;
 }
 
 message MsgInvestmintResponse {}

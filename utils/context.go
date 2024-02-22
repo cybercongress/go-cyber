@@ -4,11 +4,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/store"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-	"github.com/tendermint/tm-db"
+	db "github.com/tendermint/tm-db"
 )
 
 func NewContextWithMSVersion(db db.DB, version int64, keys map[string]*sdk.KVStoreKey) (sdk.Context, error) {
-
 	ms := store.NewCommitMultiStore(db)
 
 	for _, key := range keys {
@@ -16,7 +15,6 @@ func NewContextWithMSVersion(db db.DB, version int64, keys map[string]*sdk.KVSto
 	}
 
 	err := ms.LoadVersion(version)
-
 	if err != nil {
 		return sdk.Context{}, err
 	}

@@ -2,6 +2,7 @@ package app
 
 import (
 	"fmt"
+
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
@@ -9,19 +10,18 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/types/tx/signing"
 	"github.com/cosmos/cosmos-sdk/x/auth/ante"
-	"github.com/cosmos/cosmos-sdk/x/auth/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 
-	ctypes "github.com/cybercongress/go-cyber/types"
+	ctypes "github.com/cybercongress/go-cyber/v2/types"
 
 	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
 	ibcante "github.com/cosmos/ibc-go/v3/modules/core/ante"
 	"github.com/cosmos/ibc-go/v3/modules/core/keeper"
-	bandwidthkeeper "github.com/cybercongress/go-cyber/x/bandwidth/keeper"
-	bandwidthtypes "github.com/cybercongress/go-cyber/x/bandwidth/types"
-	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
-	wasmTypes "github.com/CosmWasm/wasmd/x/wasm/types"
+
+	bandwidthkeeper "github.com/cybercongress/go-cyber/v2/x/bandwidth/keeper"
+	bandwidthtypes "github.com/cybercongress/go-cyber/v2/x/bandwidth/types"
+	graphtypes "github.com/cybercongress/go-cyber/v2/x/graph/types"
 )
 
 // HandlerOptions are the options required for constructing a default SDK AnteHandler.
@@ -31,7 +31,7 @@ type HandlerBaseOptions struct {
 	FeegrantKeeper  ante.FeegrantKeeper
 	BandwidthMeter  *bandwidthkeeper.BandwidthMeter
 	SignModeHandler authsigning.SignModeHandler
-	SigGasConsumer  func(meter sdk.GasMeter, sig signing.SignatureV2, params types.Params) error
+	SigGasConsumer  func(meter sdk.GasMeter, sig signing.SignatureV2, params authtypes.Params) error
 }
 
 // HandlerOptions extend the SDK's AnteHandler options by requiring the IBC
@@ -39,8 +39,8 @@ type HandlerBaseOptions struct {
 type HandlerOptions struct {
 	HandlerBaseOptions
 
-	IBCKeeper 		  *keeper.Keeper
-	WasmConfig        *wasmTypes.WasmConfig
+	IBCKeeper         *keeper.Keeper
+	WasmConfig        *wasmtypes.WasmConfig
 	TXCounterStoreKey sdk.StoreKey
 }
 
@@ -64,7 +64,7 @@ func NewAnteHandler(options HandlerOptions) (sdk.AnteHandler, error) {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrLogic, "tx counter key is required for ante builder")
 	}
 
-	var sigGasConsumer = options.SigGasConsumer
+	sigGasConsumer := options.SigGasConsumer
 	if sigGasConsumer == nil {
 		sigGasConsumer = ante.DefaultSigVerificationGasConsumer
 	}
@@ -94,11 +94,10 @@ func NewAnteHandler(options HandlerOptions) (sdk.AnteHandler, error) {
 }
 
 type DeductFeeBandDecorator struct {
-	ak  			ante.AccountKeeper
-	bankKeeper 		bankkeeper.Keeper
-	bandMeter	 	*bandwidthkeeper.BandwidthMeter
-	feegrantKeeper  ante.FeegrantKeeper
-
+	ak             ante.AccountKeeper
+	bankKeeper     bankkeeper.Keeper
+	bandMeter      *bandwidthkeeper.BandwidthMeter
+	feegrantKeeper ante.FeegrantKeeper
 }
 
 func NewDeductFeeBandRouterDecorator(
@@ -116,7 +115,6 @@ func NewDeductFeeBandRouterDecorator(
 }
 
 func (drd DeductFeeBandDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
-
 	feeFlag := false
 	feeSplitFlag := false
 	bandwidthFlag := false
@@ -152,8 +150,8 @@ func (drd DeductFeeBandDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulat
 		return ctx, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "Tx must be a FeeTx")
 	}
 
-	if addr := drd.ak.GetModuleAddress(types.FeeCollectorName); addr == nil {
-		panic(fmt.Sprintf("%s module account has not been set", types.FeeCollectorName))
+	if addr := drd.ak.GetModuleAddress(authtypes.FeeCollectorName); addr == nil {
+		panic(fmt.Sprintf("%s module account has not been set", authtypes.FeeCollectorName))
 	}
 
 	fee := feeTx.GetFee()
@@ -168,7 +166,6 @@ func (drd DeductFeeBandDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulat
 			return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "fee grants are not enabled")
 		} else if !feeGranter.Equals(feePayer) {
 			err := drd.feegrantKeeper.UseGrantedFees(ctx, feeGranter, feePayer, fee, tx.GetMsgs())
-
 			if err != nil {
 				return ctx, sdkerrors.Wrapf(err, "%s not allowed to pay fees from %s", feeGranter, feePayer)
 			}
@@ -220,19 +217,19 @@ func (drd DeductFeeBandDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulat
 	currentBlockSpentBandwidth := drd.bandMeter.GetCurrentBlockSpentBandwidth(ctx)
 	maxBlockBandwidth := drd.bandMeter.GetMaxBlockBandwidth(ctx)
 
+	//nolint:gocritic
 	if !simulate {
 		if !accountBandwidth.HasEnoughRemained(txCost) {
 			return ctx, bandwidthtypes.ErrNotEnoughBandwidth
-		} else if (txCost + currentBlockSpentBandwidth) > maxBlockBandwidth  {
+		} else if (txCost + currentBlockSpentBandwidth) > maxBlockBandwidth {
 			return ctx, bandwidthtypes.ErrExceededMaxBlockBandwidth
-		} else {
-			if !ctx.IsCheckTx() && !ctx.IsReCheckTx() {
-				err = drd.bandMeter.ConsumeAccountBandwidth(ctx, accountBandwidth, txCost); if err != nil {
-					return ctx, err
-				}
-				// TODO think to add to transient store
-				drd.bandMeter.AddToBlockBandwidth(txCost)
+		} else if !ctx.IsCheckTx() && !ctx.IsReCheckTx() {
+			err = drd.bandMeter.ConsumeAccountBandwidth(ctx, accountBandwidth, txCost)
+			if err != nil {
+				return ctx, err
 			}
+			// TODO think to add to transient store
+			drd.bandMeter.AddToBlockBandwidth(txCost)
 		}
 	}
 	return next(ctx, tx, simulate)
@@ -248,13 +245,13 @@ func DeductFees(bankKeeper bankkeeper.Keeper, ctx sdk.Context, acc authtypes.Acc
 	}
 
 	if program2pay == nil {
-		err := bankKeeper.SendCoinsFromAccountToModule(ctx, acc.GetAddress(), types.FeeCollectorName, fees)
+		err := bankKeeper.SendCoinsFromAccountToModule(ctx, acc.GetAddress(), authtypes.FeeCollectorName, fees)
 		if err != nil {
 			return sdkerrors.Wrapf(sdkerrors.ErrInsufficientFunds, err.Error())
 		}
 	} else {
 		feeInCYB := sdk.NewDec(fees.AmountOf(ctypes.CYB).Int64())
-		toProgram := feeInCYB.Mul(sdk.NewDecWithPrec(80,2))
+		toProgram := feeInCYB.Mul(sdk.NewDecWithPrec(80, 2))
 		toValidators := feeInCYB.Sub(toProgram)
 
 		toValidatorsAmount := sdk.NewCoins(sdk.NewCoin(ctypes.CYB, toValidators.RoundInt()))
@@ -265,7 +262,7 @@ func DeductFees(bankKeeper bankkeeper.Keeper, ctx sdk.Context, acc authtypes.Acc
 			return sdkerrors.Wrapf(sdkerrors.ErrInsufficientFunds, err.Error())
 		}
 
-		err = bankKeeper.SendCoinsFromAccountToModule(ctx, acc.GetAddress(), types.FeeCollectorName, toValidatorsAmount)
+		err = bankKeeper.SendCoinsFromAccountToModule(ctx, acc.GetAddress(), authtypes.FeeCollectorName, toValidatorsAmount)
 		if err != nil {
 			return sdkerrors.Wrapf(sdkerrors.ErrInsufficientFunds, err.Error())
 		}

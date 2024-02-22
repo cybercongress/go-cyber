@@ -12,11 +12,11 @@ const (
 )
 
 var (
-	KeyRecoveryPeriod     = []byte("RecoveryPeriod")
-	KeyAdjustPricePeriod  = []byte("AdjustPricePeriod")
-	KeyBasePrice          = []byte("BasePrice")
-	KeyBaseLoad           = []byte("BaseLoad")
-	KeyMaxBlockBandwidth  = []byte("MaxBlockBandwidth")
+	KeyRecoveryPeriod    = []byte("RecoveryPeriod")
+	KeyAdjustPricePeriod = []byte("AdjustPricePeriod")
+	KeyBasePrice         = []byte("BasePrice")
+	KeyBaseLoad          = []byte("BaseLoad")
+	KeyMaxBlockBandwidth = []byte("MaxBlockBandwidth")
 )
 
 func ParamKeyTable() paramstypes.KeyTable {
@@ -25,11 +25,11 @@ func ParamKeyTable() paramstypes.KeyTable {
 
 func DefaultParams() Params {
 	return Params{
-		RecoveryPeriod:     uint64(100),
-		AdjustPricePeriod:  uint64(5),
-		BasePrice:          sdk.NewDecWithPrec(25,2),
-		BaseLoad:           sdk.NewDecWithPrec(10,2),
-		MaxBlockBandwidth:  uint64(10000),
+		RecoveryPeriod:    uint64(100),
+		AdjustPricePeriod: uint64(5),
+		BasePrice:         sdk.NewDecWithPrec(25, 2),
+		BaseLoad:          sdk.NewDecWithPrec(10, 2),
+		MaxBlockBandwidth: uint64(10000),
 	}
 }
 
@@ -124,7 +124,7 @@ func validateBaseLoad(i interface{}) error {
 		return fmt.Errorf("base load is more than one: %s", v)
 	}
 
-	if v.LT(sdk.NewDecWithPrec(1,1)) {
+	if v.LT(sdk.NewDecWithPrec(1, 1)) {
 		return fmt.Errorf("base price is less than one tenth: %s", v)
 	}
 
