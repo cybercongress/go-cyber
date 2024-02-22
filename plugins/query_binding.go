@@ -3,9 +3,10 @@ package plugins
 import (
 	"encoding/json"
 
-	liquiditytypes "github.com/tendermint/liquidity/x/liquidity/types"
+	"github.com/CosmWasm/wasmd/x/wasm"
 
-	wasm "github.com/CosmWasm/wasmd/x/wasm"
+	liquiditytypes "github.com/gravity-devs/liquidity/x/liquidity/types"
+
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -57,19 +58,4 @@ func (q Querier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([]byte, err
 		return querier.QueryCustom(ctx, customQuery.QueryData)
 	}
 	return nil, sdkerrors.Wrap(wasm.ErrQueryFailed, customQuery.Route)
-}
-
-func ConvertSdkCoinsToWasmCoins(coins []sdk.Coin) wasmvmtypes.Coins {
-	converted := make(wasmvmtypes.Coins, len(coins))
-	for i, c := range coins {
-		converted[i] = ConvertSdkCoinToWasmCoin(c)
-	}
-	return converted
-}
-
-func ConvertSdkCoinToWasmCoin(coin sdk.Coin) wasmvmtypes.Coin {
-	return wasmvmtypes.Coin{
-		Denom:  coin.Denom,
-		Amount: coin.Amount.String(),
-	}
 }

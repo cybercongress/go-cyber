@@ -9,12 +9,11 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/cosmos/iavl"
 	"github.com/spf13/cobra"
 	goleveldb "github.com/syndtr/goleveldb/leveldb"
 	"github.com/syndtr/goleveldb/leveldb/util"
 	dbm "github.com/tendermint/tm-db"
-
-	"github.com/cosmos/iavl"
 )
 
 const (
@@ -105,7 +104,12 @@ var dataCmd = &cobra.Command{
 			if keysOpt {
 				PrintKeys(tree, hashingOpt)
 			}
-			fmt.Printf("Hash: %X\n", tree.Hash())
+			hash, err := tree.Hash()
+			if err != nil {
+				_, _ = fmt.Fprintf(os.Stderr, "Error reading data: %s\n", err)
+				os.Exit(1)
+			}
+			fmt.Printf("Hash: %X\n", hash)
 			fmt.Printf("Size: %X\n", tree.Size())
 		}
 	},
@@ -254,7 +258,7 @@ func PrintDBStats(db dbm.DB) {
 // If version is 0, load latest, otherwise, load named version
 func ReadTree(db dbm.DB, version int64, name string) (*iavl.MutableTree, error) {
 	fmt.Println("--------------[", name, "]--------------")
-	tree, err := iavl.NewMutableTree(dbm.NewPrefixDB(db, []byte("s/k:"+name+"/")), DefaultCacheSize)
+	tree, err := iavl.NewMutableTree(dbm.NewPrefixDB(db, []byte("s/k:"+name+"/")), DefaultCacheSize, false)
 	if err != nil {
 		return nil, err
 	}
@@ -264,7 +268,7 @@ func ReadTree(db dbm.DB, version int64, name string) (*iavl.MutableTree, error) 
 }
 
 func GetTree(db dbm.DB, name string) (*iavl.MutableTree, error) {
-	tree, err := iavl.NewMutableTree(dbm.NewPrefixDB(db, []byte("s/k:"+name+"/")), DefaultCacheSize)
+	tree, err := iavl.NewMutableTree(dbm.NewPrefixDB(db, []byte("s/k:"+name+"/")), DefaultCacheSize, false)
 	if err != nil {
 		return nil, err
 	}
@@ -277,7 +281,7 @@ func GetTree(db dbm.DB, name string) (*iavl.MutableTree, error) {
 
 func PrintKeys(tree *iavl.MutableTree, hashing bool) {
 	fmt.Println("Printing all keys with hashed values (to detect diff)")
-	tree.Iterate(func(key []byte, value []byte) bool {
+	_, err := tree.Iterate(func(key, value []byte) bool {
 		if hashing {
 			printKey := parseWeaveKey(key)
 			digest := sha256.Sum256(value)
@@ -287,6 +291,9 @@ func PrintKeys(tree *iavl.MutableTree, hashing bool) {
 		}
 		return false
 	})
+	if err != nil {
+		panic(err)
+	}
 }
 
 // parseWeaveKey assumes a separating : where all in front should be ascii,
@@ -313,7 +320,7 @@ func encodeID(id []byte) string {
 
 func PrintShape(tree *iavl.MutableTree) {
 	// shape := tree.RenderShape("  ", nil)
-	shape := tree.RenderShape("  ", nodeEncoder)
+	shape, _ := tree.RenderShape("  ", nodeEncoder)
 	fmt.Println(strings.Join(shape, "\n"))
 }
 
