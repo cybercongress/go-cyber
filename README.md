@@ -14,7 +14,7 @@
 </div>
 
 <div align="center">
- <h3>Whitepaper - <a href="computing-the-knowledge/computing-the-knowledge.md">cyber: Computing the knowledge of the Great Web</a></h3>
+ <h3>Whitepaper - <a href="https://github.com/cybercongress/cyber/blob/master/computing-the-knowledge/computing-the-knowledge.md">cyber: Computing the knowledge of the Great Web</a></h3>
 </div>
 
 <div align="center">
