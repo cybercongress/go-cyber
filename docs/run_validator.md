@@ -431,7 +431,7 @@ docker stop bostrom
 ```
 Replace data folder to snapshot
 ```bash 
-sudo -H rm -r ~/.cyber/data/
+sudo -H rm -r ~/.cyber/data/ ~/.cyber/wasm/
 tar -xf bostrom_pruned_<*>.tar -C ~/.cyber/
 ```
 Start node
