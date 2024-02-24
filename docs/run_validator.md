@@ -435,3 +435,32 @@ Your identity as a validator consists of two things:
 Please back up `$HOME/.cyber/config/priv_validator_key.json` along with your seed phrase. In case of occasional node loss you would be able to restore your validator operation with this file and another full node.
 
 Finally, in case you want to keep your cyber node ID consistent during networks please backup `$HOME/.cyber/config/node_key.json`.
+
+### Rebase to snapshot
+
+You can use a snapshot to start a node from scratch, as well as to reduce its disk space.  
+Please check the latest snapshot [here](https://snapshot.cybernode.ai/).  
+
+Download snapshot
+```bash
+wget https://snapshot.cybernode.ai/bostrom_pruned_<*>.tar
+```
+
+Stop your node
+```bash
+docker stop bostrom
+```
+Replace data folder to snapshot
+```bash 
+sudo -H rm -r ~/.cyber/data/ ~/.cyber/wasm/
+tar -xf bostrom_pruned_<*>.tar -C ~/.cyber/
+```
+Start node
+```bash
+docker start bostrom
+```
+Check node status and logs after startup
+```bash
+docker exec -ti bostrom cyber status
+docker logs bostrom -f --tail 20
+```

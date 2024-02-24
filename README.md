@@ -17,7 +17,7 @@
 </div>
 
 <div align="center">
- <h3>Join us, Hero - <a href="https://github.com/cybercongress/go-cyber/blob/main/docs/run_validator.md">Setup validator guide</a></h3>
+ <h3>Join us, Hero - <a href="docs/run_validator.md">Setup validator guide</a></h3>
 </div>
 
 <div align="center">
