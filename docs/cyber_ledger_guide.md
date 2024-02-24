@@ -1,4 +1,4 @@
-# Ledger nano Support
+# Ledger Support
 
 It is possible to use your Ledger device with cyber to store keys and sign transactions.
 
