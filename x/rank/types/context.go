@@ -3,24 +3,24 @@ package types
 import (
 	"sort"
 
-	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
+	graphtypes "github.com/cybercongress/go-cyber/v2/x/graph/types"
 )
 
 type CalculationContext struct {
-	CidsCount  int64
-	LinksCount int64
+	CidsCount    int64
+	LinksCount   int64
 	NeuronsCount int64
 
 	inLinks  map[graphtypes.CidNumber]graphtypes.CidLinks
 	outLinks map[graphtypes.CidNumber]graphtypes.CidLinks
 
-	stakes map[uint64]uint64
+	stakes  map[uint64]uint64
 	neudegs map[uint64]uint64
 
 	FullTree bool
 
 	DampingFactor float64
-	Tolerance 	  float64
+	Tolerance     float64
 }
 
 func NewCalcContext(
@@ -28,60 +28,58 @@ func NewCalcContext(
 	stakeKeeper StakeKeeper, fullTree bool, dampingFactor float64, tolerance float64,
 	cidsCount, linksCount, neuronsCount uint64,
 ) *CalculationContext {
-
 	return &CalculationContext{
-
-		CidsCount:  int64(cidsCount),
-		LinksCount: int64(linksCount),
+		CidsCount:    int64(cidsCount),
+		LinksCount:   int64(linksCount),
 		NeuronsCount: int64(neuronsCount),
 
 		inLinks:  linkIndex.GetInLinks(),
 		outLinks: linkIndex.GetOutLinks(),
 
-		stakes: stakeKeeper.GetTotalStakesAmpere(),
+		stakes:  stakeKeeper.GetTotalStakesAmpere(),
 		neudegs: graphKeeper.GetNeudegs(),
 
 		FullTree: fullTree,
 
 		DampingFactor: dampingFactor,
-		Tolerance: tolerance,
+		Tolerance:     tolerance,
 	}
 }
 
-func (c *CalculationContext) GetInLinks() map[graphtypes.CidNumber]graphtypes.CidLinks {
-	return c.inLinks
+func (calctx *CalculationContext) GetInLinks() map[graphtypes.CidNumber]graphtypes.CidLinks {
+	return calctx.inLinks
 }
 
-func (c *CalculationContext) GetOutLinks() map[graphtypes.CidNumber]graphtypes.CidLinks {
-	return c.outLinks
+func (calctx *CalculationContext) GetOutLinks() map[graphtypes.CidNumber]graphtypes.CidLinks {
+	return calctx.outLinks
 }
 
-func (c *CalculationContext) GetCidsCount() int64 {
-	return c.CidsCount
+func (calctx *CalculationContext) GetCidsCount() int64 {
+	return calctx.CidsCount
 }
 
-func (c *CalculationContext) GetNeuronsCount() int64 {
-	return c.NeuronsCount
+func (calctx *CalculationContext) GetNeuronsCount() int64 {
+	return calctx.NeuronsCount
 }
 
-func (c *CalculationContext) GetStakes() map[uint64]uint64 {
-	return c.stakes
+func (calctx *CalculationContext) GetStakes() map[uint64]uint64 {
+	return calctx.stakes
 }
 
-func (c *CalculationContext) GetNeudegs() map[uint64]uint64 {
-	return c.neudegs
+func (calctx *CalculationContext) GetNeudegs() map[uint64]uint64 {
+	return calctx.neudegs
 }
 
-func (c *CalculationContext) GetTolerance() float64 {
-	return c.Tolerance
+func (calctx *CalculationContext) GetTolerance() float64 {
+	return calctx.Tolerance
 }
 
-func (c *CalculationContext) GetDampingFactor() float64 {
-	return c.DampingFactor
+func (calctx *CalculationContext) GetDampingFactor() float64 {
+	return calctx.DampingFactor
 }
 
-func (с *CalculationContext) GetSortedInLinks(cid graphtypes.CidNumber) (graphtypes.CidLinks, []graphtypes.CidNumber, bool) {
-	links := с.inLinks[cid]
+func (calctx *CalculationContext) GetSortedInLinks(cid graphtypes.CidNumber) (graphtypes.CidLinks, []graphtypes.CidNumber, bool) {
+	links := calctx.inLinks[cid]
 
 	if len(links) == 0 {
 		return nil, nil, false
@@ -97,8 +95,8 @@ func (с *CalculationContext) GetSortedInLinks(cid graphtypes.CidNumber) (grapht
 	return links, numbers, true
 }
 
-func (с *CalculationContext) GetSortedOutLinks(cid graphtypes.CidNumber) (graphtypes.CidLinks, []graphtypes.CidNumber, bool) {
-	links := с.outLinks[cid]
+func (calctx *CalculationContext) GetSortedOutLinks(cid graphtypes.CidNumber) (graphtypes.CidLinks, []graphtypes.CidNumber, bool) {
+	links := calctx.outLinks[cid]
 
 	if len(links) == 0 {
 		return nil, nil, false

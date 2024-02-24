@@ -3,7 +3,7 @@ package types
 import (
 	"encoding/binary"
 
-	. "github.com/cybercongress/go-cyber/types"
+	"github.com/cybercongress/go-cyber/v2/types"
 )
 
 type CompactLink struct {
@@ -14,11 +14,11 @@ type CompactLink struct {
 
 type LinkFilter func(CompactLink) bool
 
-func NewLink(from CidNumber, to CidNumber, acc AccNumber) CompactLink {
+func NewLink(from CidNumber, to CidNumber, acc types.AccNumber) CompactLink {
 	return CompactLink{
-		From:     uint64(from),
-		To:       uint64(to),
-		Account:  uint64(acc),
+		From:    uint64(from),
+		To:      uint64(to),
+		Account: uint64(acc),
 	}
 }
 
@@ -26,7 +26,7 @@ func UnmarshalBinaryLink(b []byte) CompactLink {
 	return NewLink(
 		CidNumber(binary.LittleEndian.Uint64(b[0:8])),
 		CidNumber(binary.LittleEndian.Uint64(b[8:16])),
-		AccNumber(binary.LittleEndian.Uint64(b[16:24])),
+		types.AccNumber(binary.LittleEndian.Uint64(b[16:24])),
 	)
 }
 
@@ -37,5 +37,3 @@ func (l CompactLink) MarshalBinaryLink() []byte {
 	binary.LittleEndian.PutUint64(b[16:24], l.Account)
 	return b
 }
-
-

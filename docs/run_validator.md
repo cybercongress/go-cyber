@@ -225,13 +225,13 @@ sudo systemctl restart docker
 3. Test nvidia-smi with the latest official CUDA image
 
 ```bash
-docker run --gpus all nvidia/cuda:11.2.0-base-ubuntu20.04 nvidia-smi
+docker run --gpus all nvidia/cuda:11.4.0-base nvidia-smi
 ```
 
 Output logs should coincide as earlier:
 
 ```bash
-Unable to find image 'nvidia/cuda:11.2.0-base-ubuntu20.04' locally
+Unable to find image 'nvidia/cuda:11.4.0-base' locally
 11.1-base: Pulling from nvidia/cuda
 54ee1f796a1e: Pull complete 
 f7bfea53ad12: Pull complete 
@@ -244,7 +244,7 @@ Digest: sha256:774ca3d612de15213102c2dbbba55df44dc5cf9870ca2be6c6e9c627fa63d67a
 Status: Downloaded newer image for nvidia/cuda:11.2.0-base-ubuntu20.04
 Mon Jun 21 14:07:52 2021 
 +------------------------------------------------------------------------+
-|NVIDIA-SMI 460.84      Driver Version:460.84      CUDA Version: 11.2    |
+|NVIDIA-SMI 460.84      Driver Version:460.84      CUDA Version: 11.4    |
 |-----------------------------+--------------------+---------------------+
 |GPU  Name       Persistence-M| Bus-Id       Disp.A| Volatile Uncorr. ECC|
 |Fan  Temp  Perf Pwr:Usage/Cap|        Memory-Usage| GPU-Util  Compute M.|
@@ -282,8 +282,10 @@ mkdir $HOME/.cyber/config
 (This will pull and extract the image from cyberd/cyber of latest version, containing all upgrades binaries)
 
 ```bash
-docker run -d --gpus all --name=bostrom --restart always -p 26656:26656 -p 26657:26657 -p 1317:1317 -p 26660:26660 -e ALLOW_SEARCH=true -v $HOME/.cyber:/root/.cyber  cyberd/cyber:bostrom-2.1
+docker run --log-opt max-size=2g --log-opt max-file=1 -d --gpus all --name=bostrom --restart always -p 26656:26656 -p 26657:26657 -p 26660:26660 -p 1317:1317 -e ALLOW_SEARCH=true -v $HOME/.cyber:/root/.cyber  cyberd/bostrom:dragonberry-cuda11.4
 ```
+
+Docker image already contain all binaries to either sync from 0 or start form snapshot.
 
 3. Setup some peers to `persistent_peers` and `seeds` to $HOME/.cyber/config/config.toml line 184:
 
@@ -399,8 +401,8 @@ docker exec -ti bostrom cyber tx staking create-validator \
   --commission-max-rate="0.20" \
   --commission-max-change-rate="0.01" \
   --chain-id=bostrom \
-  --gas-prices 0.01boot \
-  --gas 600000
+  --gas-prices=0.01boot \
+  --gas=600000
 ```
 
 ### Verify that you are validating
@@ -420,7 +422,7 @@ If your validator got under slashing conditions, it will be jailed.
 After such an event an operator must unjail the validator manually:
 
 ```bash
-docker exec -ti bostrom cyber tx slashing unjail --from=<your_key_name> --chain-id bostrom --gas-prices 0.01boot --gas 300000
+docker exec -ti bostrom cyber tx slashing unjail --from=<your_key_name> --chain-id=bostrom --gas-prices=0.01boot --gas=300000
 ```
 
 ### Back-up validator keys (!)

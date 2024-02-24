@@ -10,7 +10,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/types/rest"
 
-	"github.com/cybercongress/go-cyber/x/grid/types"
+	"github.com/cybercongress/go-cyber/v2/x/grid/types"
 )
 
 // RegisterRoutes defines routes that get registered by the main application.
@@ -46,7 +46,6 @@ func registerQueryRoutes(cliCtx client.Context, r *mux.Router) {
 
 func queryParamsHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-
 		route := fmt.Sprintf("custom/%s/%s", types.QuerierRoute, types.QueryParams)
 
 		res, _, err := cliCtx.QueryWithData(route, nil)
@@ -61,7 +60,6 @@ func queryParamsHandlerFn(cliCtx client.Context) http.HandlerFunc {
 
 func querySourceRoutesHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-
 		vars := mux.Vars(r)
 
 		src, err := sdk.AccAddressFromBech32(vars[Source])
@@ -96,7 +94,6 @@ func querySourceRoutesHandlerFn(cliCtx client.Context) http.HandlerFunc {
 
 func queryDestinationRoutesHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-
 		vars := mux.Vars(r)
 
 		dst, err := sdk.AccAddressFromBech32(vars[Destination])
@@ -131,7 +128,6 @@ func queryDestinationRoutesHandlerFn(cliCtx client.Context) http.HandlerFunc {
 
 func querySourceRoutedEnergyHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-
 		vars := mux.Vars(r)
 
 		src, err := sdk.AccAddressFromBech32(vars[Source])
@@ -166,7 +162,6 @@ func querySourceRoutedEnergyHandlerFn(cliCtx client.Context) http.HandlerFunc {
 
 func queryDestinationRoutedEnergyHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-
 		vars := mux.Vars(r)
 
 		dst, err := sdk.AccAddressFromBech32(vars[Destination])
@@ -201,10 +196,13 @@ func queryDestinationRoutedEnergyHandlerFn(cliCtx client.Context) http.HandlerFu
 
 func queryRouteHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-
 		vars := mux.Vars(r)
 
 		src, err := sdk.AccAddressFromBech32(vars[Source])
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
+			return
+		}
 		dst, err := sdk.AccAddressFromBech32(vars[Destination])
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())

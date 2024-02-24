@@ -2,7 +2,8 @@ package keeper
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cybercongress/go-cyber/x/graph/types"
+
+	"github.com/cybercongress/go-cyber/v2/x/graph/types"
 )
 
 // In order to calculate the flow of amperes through cyberlinks created by given agents than need to compute neurons out-degree
@@ -36,14 +37,18 @@ func (gk GraphKeeper) IncrementNeudeg(ctx sdk.Context, accNumber uint64) {
 func (gk GraphKeeper) GetNeudeg(ctx sdk.Context, accNumber uint64) uint64 {
 	store := ctx.KVStore(gk.key)
 	neudeg := store.Get(types.NeudegStoreKey(accNumber))
-	if neudeg == nil { return 0 }
+	if neudeg == nil {
+		return 0
+	}
 	return sdk.BigEndianToUint64(neudeg)
 }
 
 func (gk GraphKeeper) GetTNeudeg(ctx sdk.Context, accNumber uint64) uint64 {
 	store := ctx.TransientStore(gk.tkey)
 	neudeg := store.Get(types.NeudegTStoreKey(accNumber))
-	if neudeg == nil { return 0 }
+	if neudeg == nil {
+		return 0
+	}
 	return sdk.BigEndianToUint64(neudeg)
 }
 
@@ -57,7 +62,7 @@ func (gk *GraphKeeper) UpdateMemNeudegs(ctx sdk.Context) {
 	defer iterator.Close()
 	for ; iterator.Valid(); iterator.Next() {
 		acc := sdk.BigEndianToUint64(iterator.Key()[1:])
-		gk.neudeg[acc] = gk.neudeg[acc] + sdk.BigEndianToUint64(iterator.Value())
+		gk.neudeg[acc] += sdk.BigEndianToUint64(iterator.Value())
 	}
 }
 

@@ -8,15 +8,15 @@ It is possible to interact with cyber even if you don't have your own node. All 
 bash < <(curl -s https://raw.githubusercontent.com/cybercongress/go-cyber/main/scripts/install_cyber.sh)
 ```
 
-After installation you will be able to use `cyber` to [import accounts](#account-management), create links or swap tokens.
+After installation, you will be able to use `cyber` to [import accounts](#account-management), create links or swap tokens.
 
-I case when you have your own node, which already running inside Docker container, please add `docker exec -ti container-name` before every cyber command:
+In case you have your own node, which is already running inside Docker container, please add `docker exec -ti container-name` before every cyber command:
 
 ```bash
 docker exec -ti bostrom cyber --help
 ```
 
-First of all, I would like to encourage you to use the  `--help` feature if you want to get a better experience of using cyber. This is a really easy way to find all the necessary commands with the appropriate options and flags.
+First of all, I would like to encourage you to use the  `--help` feature if you want to have a better experience using cyber. This is a really easy way to find all the necessary commands with the appropriate options and flags.
 
 For example, you can enter:
 
@@ -123,7 +123,7 @@ Let's explore the `bank` subcommand:
 cyber query bank --help
 ```
 
-We can see all of the options available for this subcommands, namely and account address:
+We can see all of the options available for these subcommands, names and account address:
 
 ```bash
 Usage:
@@ -139,25 +139,26 @@ Available Commands:
 In most cases you will need just two extra flags:
 
 ```bash
---from <your_key_name> \
---chain-id bostrom
+--from=<your_key_name> \
+--chain-id=bostrom \
+--node=<rpc_node_path>
 ```
 
 That's it. This is a very useful tool for using cyber and troubleshooting.
 
 ## Glossary
 
-**Bonded tokens** - Tokens that are nominated on validator, non transferable.
+**Bonded tokens** - Tokens that are nominated to a validator, non transferable.
 
 **Commission** -  The tokens that you've earned via validating from delegators.
 
 **Dyson Sphere** - Construct in cyber responsible for energy transformation and routing.
 
-**Investminting** - Process of convertation Hydrogen to Volts or Amperes, locking certain ammount of H for certain ammount of time produce some V or A.
+**Investminting** - Process of convertation Hydrogen to Volts or Amperes, locking a certain amount of H for a certain amount of time produces some V or A.
 
 **Hero** - A validator.
 
-**Hydrogen** - Token issued after boot delegation, 1:1 H to boot. Used to generate enery through Dyson sphere(investminting process).
+**Hydrogen** - Token issued after boot delegation, 1:1 H to boot. Used to generate enery through the Dyson sphere (investminting process).
 
 **Unbonding** - The process of taking back your share (delegated tokens + any rewards). 4 days for `bostrom` chain.
 
@@ -168,7 +169,7 @@ That's it. This is a very useful tool for using cyber and troubleshooting.
 
 **local keystore** - A store with keys on your local machine.
 
-**rewards** - Tokens that hero earned via delegation. To reduce network load all the rewards are stored in a pool. You can take your part of the bounty at any time with commands from the **delegator** section.
+**rewards** - Tokens that a hero earned via delegation. To reduce network load all the rewards are stored in a pool. You can take your part of the bounty at any time with commands from the **delegator** section.
 
 **<comission_rate_percentage>** - The commission that a validator gets for their work. Must be a fraction >0 and <=1
 
@@ -289,7 +290,7 @@ github.com/cosmos/cosmos-sdk/client/keys.RunAddCmd(0xc000f0b400, 0xc000f125f0, 0
 
 You will have to use another keyring backend to keep your keys. 
 
-In that case you'll have to use file based keyring by adding `--keyring-backend file` option to every key manipulation command:
+In that case you'll have to use file based keyring by adding the `--keyring-backend file` option to every key manipulation command:
 
 ```bash
 cyber keys add key_name --keyring-backend file
@@ -305,7 +306,9 @@ cyber keys list --home=/<unique_path_to_key_folder>/
 ### Send tokens
 
 ```bash
-cyber tx bank send [from_key_or_address] [to_address] [amount] --chain-id bostrom
+cyber tx bank send [from_key_or_address] [to_address] [amount] \
+--from=<your_key_name> \
+--chain-id=bostrom
 ```
 
 ### Linking content
@@ -313,7 +316,9 @@ cyber tx bank send [from_key_or_address] [to_address] [amount] --chain-id bostro
 Only IPFS hashes are available to use as CIDs
 
 ```bash
-cyber tx graph cyberlink [cid-from] [cid-to] [flags] --chain-id=bostrom
+cyber tx graph cyberlink [cid-from] [cid-to] [flags] \
+--from=<your_key_name> \
+--chain-id=bostrom
 ```
 
 Real command example:
@@ -354,10 +359,9 @@ cyber query staking validator <operator_address>
 ### Withdraw the commission for any delegation
 
 ```bash
- cyber tx distribution withdraw-rewards <operator_address> \
+ cyber tx distribution withdraw-rewards <operator_address> --commission \
   --from=<your_key_name> \
-  --chain-id=bostrom \
-  --commission
+  --chain-id=bostrom
 ```
 
 ### Edit the site and description for an existing validator account
@@ -396,7 +400,7 @@ cyber query staking validator <operator_address>
  cyber query staking delegation <delegator_address> <operator_address>
 ```
 
-### Return all of the delegations made from a delegator
+### Return all delegations made from a delegator
 
 ```bash
  cyber query staking delegations <delegator_address>
@@ -435,17 +439,19 @@ cyber query staking validator <operator_address>
 ### Delegate liquid tokens to a validator
 
 ```bash
- cyber tx staking delegate <operator_address> <amount_cyb> \
+ cyber tx staking delegate <operator_address> <amount_boot> \
   --from=<your_key_name> \
   --chain-id=bostrom
 ```
 
-### Redelegate illiquid tokens from one validator to another in absolute cyb value
+### Redelegate illiquid tokens from one validator to another in absolute BOOT value
 
 > There is a 4-day unbonding period
 
 ```bash
- cyber tx staking redelegate <old_operator_address> <new_operator_address> <amount_cyb> --from=<your_key_name> --chain-id=bostrom
+ cyber tx staking redelegate <old_operator_address> <new_operator_address> <amount_boot> \
+ --from=<your_key_name> \
+ --chain-id=bostrom
 ```
 
 ### Redelegate illiquid tokens from one validator to another in percentages
@@ -456,19 +462,19 @@ cyber query staking validator <operator_address>
   --chain-id=bostrom
 ```
 
-### Unbond shares from a validator in absolute cyb value
+### Unbond shares from a validator in absolute BOOT value
 
-> 4 days for unbonding
+> 8 days for unbonding
 
 ```bash
- cyber tx staking unbond <operator_address> <amount_cyb>
+ cyber tx staking unbond <operator_address> <amount_boot>
   --from=<your_key_name> \
   --chain-id=bostrom
 ```
 
 ### Unbond shares from a validator in percentages
 
-> 4 days for unbonding
+> 8 days for unbonding
 
 ```bash
  cyber tx staking unbond <operator_address> <shares_percentage>
@@ -529,19 +535,25 @@ cyber q gov params
 ### Vote for specific proposal
 
 ```bash
-cyber tx gov vote <proposal_id> <vote_option:_yes_no_abstain> --from <your_key_name> --chain-id bostrom
+cyber tx gov vote <proposal_id> <vote_option:_yes_no_abstain> \
+--from=<your_key_name> \
+--chain-id=bostrom
 ```
 
 ### Submit text proposal
 
 ```bash
-cyber tx gov submit-proposal --title="Test Proposal" --description="My awesome proposal" --type="Text" --deposit="10boot" --from <your_key_name> --chain-id bostrom
+cyber tx gov submit-proposal --title="Test Proposal" --description="My awesome proposal" --type="Text" --deposit="10boot" \
+--from=<your_key_name> \
+--chain-id=bostrom
 ```
 
 ### Submit community spend proposal
 
 ```bash
-cyber tx gov submit-proposal community-pool-spend <path/to/proposal.json> --from <key_or_address> --chain-id bostrom
+cyber tx gov submit-proposal community-pool-spend <path/to/proposal.json> \
+--from=<key_or_address> \
+--chain-id=bostrom
 ```
 
 Where `proposal.json` is a file, structured in following way:
@@ -569,7 +581,9 @@ Where `proposal.json` is a file, structured in following way:
 ### Submit chain parameters change proposal
 
 ```bash
-cyber tx gov submit-proposal param-change <path/to/proposal.json> --from=<key_or_address> --chain-id bostrom
+cyber tx gov submit-proposal param-change <path/to/proposal.json> \
+--from=<key_or_address> \
+--chain-id=bostrom
 ```
 
 Where `proposal.json` is a file, structured in following way:
@@ -673,8 +687,13 @@ New liquidity pools can be created only for coin combinations that do not alread
 [pool-type]: The id of the liquidity pool-type. The only supported pool type is 1
 [deposit-coins]: The amount of coins to deposit to the liquidity pool. The number of deposit coins must be 2 in pool type 1.
 
-```json
-cyber tx liquidity create-pool 1 2000000milliampere,200000000000boot --from fuckgoogle --chain-id bostrom  --yes
+Example:
+
+```bash
+cyber tx liquidity create-pool 1 2000000milliampere,200000000000boot \
+--from=mykey \
+--chain-id=bostrom  \
+--yes
 ```
 
 ### Deposit tokens to liquidity pool
@@ -687,7 +706,9 @@ All requests in a batch are treated equally and executed at the same swap price.
 Example:
 
 ```bash
-cyber tx liquidity deposit 1 100000000milliampere,50000000000boot --from mykey
+cyber tx liquidity deposit 1 100000000milliampere,50000000000boot \
+--from=mykey \
+--chain-id=bostrom
 ```
 
 This example request deposits 100000000milliampere and 50000000000boot to pool-id 1.
@@ -710,7 +731,9 @@ Swap orders are executed only when the execution swap price is equal to or great
 Example:
 
 ```bash
-cyber tx liquidity swap 1 1 50000000boot hydrogen 0.019 0.003 --from mykey
+cyber tx liquidity swap 1 1 50000000boot hydrogen 0.019 0.003 \
+--from=mykey \
+--chain-id=bostrom
 ```
 
 For this example, imagine that an existing liquidity pool has with 1000000000hydrogen and 50000000000boot.
@@ -720,7 +743,7 @@ A sufficient balance of half of the swap-fee-rate of the offer coin is required 
 The order price is the exchange ratio of X/Y, where X is the amount of the first coin and Y is the amount of the second coin when their denoms are sorted alphabetically.
 Increasing order price reduces the possibility for your request to be processed and results in buying hydrogen at a lower price than the pool price.
 
-For explicit calculations, The swap fee rate must be the value that set as liquidity parameter in the current network.
+For explicit calculations, The swap fee rate must be the value that is set as liquidity parameter in the current network.
 The only supported swap-type is 1. For the detailed swap algorithm, see https://github.com/tendermint/liquidity
 
 [pool-id]: The pool id of the liquidity pool
@@ -728,7 +751,7 @@ The only supported swap-type is 1. For the detailed swap algorithm, see https://
 [offer-coin]: The amount of offer coin to swap
 [demand-coin-denom]: The denomination of the coin to exchange with offer coin
 [order-price]: The limit order price for the swap order. The price is the exchange ratio of X/Y where X is the amount of the first coin and Y is the amount of the second coin when their denoms are sorted alphabetically
-[swap-fee-rate]: The swap fee rate to pay for swap that is proportional to swap amount. The swap fee rate must be the value that set as liquidity parameter in the current network.
+[swap-fee-rate]: The swap fee rate to pay for swap that is proportional to swap amount. The swap fee rate must be the value that is set as liquidity parameter in the current network.
 
 Usage:
 
@@ -746,7 +769,9 @@ All requests in a batch are treated equally and executed at the same swap price.
 Example:
 
 ```bash
- cyber tx liquidity withdraw 1 10000pool96EF6EA6E5AC828ED87E8D07E7AE2A8180570ADD212117B2DA6F0B75D17A6295 --from mykey
+ cyber tx liquidity withdraw 1 10000pool96EF6EA6E5AC828ED87E8D07E7AE2A8180570ADD212117B2DA6F0B75D17A6295 \
+ --from=mykey \
+ --chain-id=bostrom
 ```
 
 This example request withdraws 10000 pool coin from the specified liquidity pool.
@@ -758,7 +783,9 @@ The appropriate pool coin must be requested from the specified pool.
 Usage:
 
 ```bash
-  cyber tx liquidity withdraw [pool-id] [pool-coin] [flags]
+  cyber tx liquidity withdraw [pool-id] [pool-coin] [flags]\
+  --from=<key_or_address> \
+  --chain-id=bostrom
 ```
 
 ### Query existing pools

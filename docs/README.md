@@ -1,7 +1,8 @@
-# concepts
+# Concepts (WIP)
 
 ## soft2 and soft3
 
+- [soft2 and soft3](soft2-soft3-concepts.md)
 - content from presentation
 - knowledge graph
 - content oracle
@@ -11,16 +12,16 @@
 
 ## consensus computer
 
-- cyber-sdk: list of modules + docs from cosmos-sdk https://docs.cosmos.network/
+## consensus computer  
+- [cyber-sdk](#cyber-sdk-modules-documentation)
 - resources
-- tendermint: docs from tendermint https://docs.tendermint.com/
+- tendermint
 - abci
-- ibc: docs from https://ibc.cosmos.network/
+- ibc
 - ikp
 
-## sequential computation
-
-- wasm: docs from wasm https://docs.cosmwasm.com/docs/1.0/
+## sequential computation  
+- cosmwasm
 - dmn
 - bindings
 - cw-cyber
@@ -35,23 +36,43 @@
 - cyb and sparks
 - superintellgience
 
-# tutorials
+# Tutorials (WIP)
 
 - install cyber cli
 - run node
-- send tx from dapp
-- cyberlink content in dapp
-- deploy contract
+- [send transactions](send_txs.md) in your dapp
+- [cyberlink content](cyberlink_content.md) in dapp
+- [deploy contract](deploy_contract.md)
+- [run local bostrom](local_bostrom.md) network for development
 
-# how-to
+# How-To (WIP)
 
-- run validator
-- network upgrade guide
-- setup local environment
-- daemon configuration
-- ultimate cli guide
-- managing multisig
+- [run validator](run_validator.md) guide
+- [network upgrade](upgra) guide
+- setup local environment  
+- [daemon configuration](setup_cyber_configuration.md) guide
+- [ultimate cli](ultimate_commands_guide.md) guide
+- [managing multisig](multisig_guide.md) guide
+- [ledger](cyber_ledger_guide) guide
 
-# reference
+# Reference
+- [swagger](https://lcd.bostrom.cybernode.ai/swagger/)
 
-- swagger
+
+---
+
+
+### Extras
+- [supported GPUs](supported_gpu_list.md) list
+- [Tendermint KMS](validator_launch_with_tendermintKMS_and_ledger.md) guide
+- [keystore](keystore.md) guide
+
+### cyber-sdk modules documentation
+- **[graph](../x/graph/spec/README.md)**
+- **[rank](../x/rank/spec/README.md)**
+- **[bandwidth](../x/bandwidth/spec/README.md)**
+- **[cyberbank](../x/cyberbank/spec/README.md)**
+- **[energy](../x/energy/spec/README.md)**
+- **[resources](../x/resources/spec/README.md)**
+- **[dmn](../x/dmn/spec/README.md)**
+- **[staking](../x/staking/spec/README.md)**
