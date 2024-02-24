@@ -13,10 +13,9 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client"
 
-	ctypes "github.com/cybercongress/go-cyber/types"
-	"github.com/cybercongress/go-cyber/x/resources/types"
+	ctypes "github.com/cybercongress/go-cyber/v2/types"
+	"github.com/cybercongress/go-cyber/v2/x/resources/types"
 )
-
 
 func NewTxCmd() *cobra.Command {
 	resourcesTxCmd := &cobra.Command{
@@ -85,7 +84,6 @@ $ %s tx resources investmint 1000000000hydrogen millivolt 2500000 --from <key>
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
-
 
 	return cmd
 }

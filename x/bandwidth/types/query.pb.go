@@ -6,6 +6,10 @@ package types
 import (
 	context "context"
 	fmt "fmt"
+	io "io"
+	math "math"
+	math_bits "math/bits"
+
 	_ "github.com/cosmos/cosmos-sdk/types"
 	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/gogo/protobuf/gogoproto"
@@ -15,15 +19,14 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-	io "io"
-	math "math"
-	math_bits "math/bits"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
-var _ = proto.Marshal
-var _ = fmt.Errorf
-var _ = math.Inf
+var (
+	_ = proto.Marshal
+	_ = fmt.Errorf
+	_ = math.Inf
+)
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -31,8 +34,7 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-type QueryLoadRequest struct {
-}
+type QueryLoadRequest struct{}
 
 func (m *QueryLoadRequest) Reset()         { *m = QueryLoadRequest{} }
 func (m *QueryLoadRequest) String() string { return proto.CompactTextString(m) }
@@ -40,9 +42,11 @@ func (*QueryLoadRequest) ProtoMessage()    {}
 func (*QueryLoadRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_bccaa873af5af46c, []int{0}
 }
+
 func (m *QueryLoadRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *QueryLoadRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryLoadRequest.Marshal(b, m, deterministic)
@@ -55,12 +59,15 @@ func (m *QueryLoadRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, er
 		return b[:n], nil
 	}
 }
+
 func (m *QueryLoadRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryLoadRequest.Merge(m, src)
 }
+
 func (m *QueryLoadRequest) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *QueryLoadRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryLoadRequest.DiscardUnknown(m)
 }
@@ -77,9 +84,11 @@ func (*QueryLoadResponse) ProtoMessage()    {}
 func (*QueryLoadResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_bccaa873af5af46c, []int{1}
 }
+
 func (m *QueryLoadResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *QueryLoadResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryLoadResponse.Marshal(b, m, deterministic)
@@ -92,20 +101,22 @@ func (m *QueryLoadResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, e
 		return b[:n], nil
 	}
 }
+
 func (m *QueryLoadResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryLoadResponse.Merge(m, src)
 }
+
 func (m *QueryLoadResponse) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *QueryLoadResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryLoadResponse.DiscardUnknown(m)
 }
 
 var xxx_messageInfo_QueryLoadResponse proto.InternalMessageInfo
 
-type QueryPriceRequest struct {
-}
+type QueryPriceRequest struct{}
 
 func (m *QueryPriceRequest) Reset()         { *m = QueryPriceRequest{} }
 func (m *QueryPriceRequest) String() string { return proto.CompactTextString(m) }
@@ -113,9 +124,11 @@ func (*QueryPriceRequest) ProtoMessage()    {}
 func (*QueryPriceRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_bccaa873af5af46c, []int{2}
 }
+
 func (m *QueryPriceRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *QueryPriceRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryPriceRequest.Marshal(b, m, deterministic)
@@ -128,12 +141,15 @@ func (m *QueryPriceRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, e
 		return b[:n], nil
 	}
 }
+
 func (m *QueryPriceRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryPriceRequest.Merge(m, src)
 }
+
 func (m *QueryPriceRequest) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *QueryPriceRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryPriceRequest.DiscardUnknown(m)
 }
@@ -150,9 +166,11 @@ func (*QueryPriceResponse) ProtoMessage()    {}
 func (*QueryPriceResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_bccaa873af5af46c, []int{3}
 }
+
 func (m *QueryPriceResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *QueryPriceResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryPriceResponse.Marshal(b, m, deterministic)
@@ -165,20 +183,22 @@ func (m *QueryPriceResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, 
 		return b[:n], nil
 	}
 }
+
 func (m *QueryPriceResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryPriceResponse.Merge(m, src)
 }
+
 func (m *QueryPriceResponse) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *QueryPriceResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryPriceResponse.DiscardUnknown(m)
 }
 
 var xxx_messageInfo_QueryPriceResponse proto.InternalMessageInfo
 
-type QueryTotalBandwidthRequest struct {
-}
+type QueryTotalBandwidthRequest struct{}
 
 func (m *QueryTotalBandwidthRequest) Reset()         { *m = QueryTotalBandwidthRequest{} }
 func (m *QueryTotalBandwidthRequest) String() string { return proto.CompactTextString(m) }
@@ -186,9 +206,11 @@ func (*QueryTotalBandwidthRequest) ProtoMessage()    {}
 func (*QueryTotalBandwidthRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_bccaa873af5af46c, []int{4}
 }
+
 func (m *QueryTotalBandwidthRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *QueryTotalBandwidthRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryTotalBandwidthRequest.Marshal(b, m, deterministic)
@@ -201,12 +223,15 @@ func (m *QueryTotalBandwidthRequest) XXX_Marshal(b []byte, deterministic bool) (
 		return b[:n], nil
 	}
 }
+
 func (m *QueryTotalBandwidthRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryTotalBandwidthRequest.Merge(m, src)
 }
+
 func (m *QueryTotalBandwidthRequest) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *QueryTotalBandwidthRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryTotalBandwidthRequest.DiscardUnknown(m)
 }
@@ -223,9 +248,11 @@ func (*QueryTotalBandwidthResponse) ProtoMessage()    {}
 func (*QueryTotalBandwidthResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_bccaa873af5af46c, []int{5}
 }
+
 func (m *QueryTotalBandwidthResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *QueryTotalBandwidthResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryTotalBandwidthResponse.Marshal(b, m, deterministic)
@@ -238,12 +265,15 @@ func (m *QueryTotalBandwidthResponse) XXX_Marshal(b []byte, deterministic bool) 
 		return b[:n], nil
 	}
 }
+
 func (m *QueryTotalBandwidthResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryTotalBandwidthResponse.Merge(m, src)
 }
+
 func (m *QueryTotalBandwidthResponse) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *QueryTotalBandwidthResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryTotalBandwidthResponse.DiscardUnknown(m)
 }
@@ -260,9 +290,11 @@ func (*QueryNeuronBandwidthRequest) ProtoMessage()    {}
 func (*QueryNeuronBandwidthRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_bccaa873af5af46c, []int{6}
 }
+
 func (m *QueryNeuronBandwidthRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *QueryNeuronBandwidthRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryNeuronBandwidthRequest.Marshal(b, m, deterministic)
@@ -275,12 +307,15 @@ func (m *QueryNeuronBandwidthRequest) XXX_Marshal(b []byte, deterministic bool) 
 		return b[:n], nil
 	}
 }
+
 func (m *QueryNeuronBandwidthRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryNeuronBandwidthRequest.Merge(m, src)
 }
+
 func (m *QueryNeuronBandwidthRequest) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *QueryNeuronBandwidthRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryNeuronBandwidthRequest.DiscardUnknown(m)
 }
@@ -297,9 +332,11 @@ func (*QueryNeuronBandwidthResponse) ProtoMessage()    {}
 func (*QueryNeuronBandwidthResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_bccaa873af5af46c, []int{7}
 }
+
 func (m *QueryNeuronBandwidthResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *QueryNeuronBandwidthResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryNeuronBandwidthResponse.Marshal(b, m, deterministic)
@@ -312,20 +349,22 @@ func (m *QueryNeuronBandwidthResponse) XXX_Marshal(b []byte, deterministic bool)
 		return b[:n], nil
 	}
 }
+
 func (m *QueryNeuronBandwidthResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryNeuronBandwidthResponse.Merge(m, src)
 }
+
 func (m *QueryNeuronBandwidthResponse) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *QueryNeuronBandwidthResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryNeuronBandwidthResponse.DiscardUnknown(m)
 }
 
 var xxx_messageInfo_QueryNeuronBandwidthResponse proto.InternalMessageInfo
 
-type QueryParamsRequest struct {
-}
+type QueryParamsRequest struct{}
 
 func (m *QueryParamsRequest) Reset()         { *m = QueryParamsRequest{} }
 func (m *QueryParamsRequest) String() string { return proto.CompactTextString(m) }
@@ -333,9 +372,11 @@ func (*QueryParamsRequest) ProtoMessage()    {}
 func (*QueryParamsRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_bccaa873af5af46c, []int{8}
 }
+
 func (m *QueryParamsRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *QueryParamsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryParamsRequest.Marshal(b, m, deterministic)
@@ -348,12 +389,15 @@ func (m *QueryParamsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, 
 		return b[:n], nil
 	}
 }
+
 func (m *QueryParamsRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryParamsRequest.Merge(m, src)
 }
+
 func (m *QueryParamsRequest) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *QueryParamsRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryParamsRequest.DiscardUnknown(m)
 }
@@ -370,9 +414,11 @@ func (*QueryParamsResponse) ProtoMessage()    {}
 func (*QueryParamsResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_bccaa873af5af46c, []int{9}
 }
+
 func (m *QueryParamsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
+
 func (m *QueryParamsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_QueryParamsResponse.Marshal(b, m, deterministic)
@@ -385,12 +431,15 @@ func (m *QueryParamsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte,
 		return b[:n], nil
 	}
 }
+
 func (m *QueryParamsResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_QueryParamsResponse.Merge(m, src)
 }
+
 func (m *QueryParamsResponse) XXX_Size() int {
 	return m.Size()
 }
+
 func (m *QueryParamsResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_QueryParamsResponse.DiscardUnknown(m)
 }
@@ -458,8 +507,10 @@ var fileDescriptor_bccaa873af5af46c = []byte{
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
-var _ context.Context
-var _ grpc.ClientConn
+var (
+	_ context.Context
+	_ grpc.ClientConn
+)
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
@@ -539,21 +590,24 @@ type QueryServer interface {
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
-type UnimplementedQueryServer struct {
-}
+type UnimplementedQueryServer struct{}
 
 func (*UnimplementedQueryServer) Load(ctx context.Context, req *QueryLoadRequest) (*QueryLoadResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Load not implemented")
 }
+
 func (*UnimplementedQueryServer) Price(ctx context.Context, req *QueryPriceRequest) (*QueryPriceResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Price not implemented")
 }
+
 func (*UnimplementedQueryServer) TotalBandwidth(ctx context.Context, req *QueryTotalBandwidthRequest) (*QueryTotalBandwidthResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TotalBandwidth not implemented")
 }
+
 func (*UnimplementedQueryServer) NeuronBandwidth(ctx context.Context, req *QueryNeuronBandwidthRequest) (*QueryNeuronBandwidthResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method NeuronBandwidth not implemented")
 }
+
 func (*UnimplementedQueryServer) Params(ctx context.Context, req *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
 }
@@ -974,6 +1028,7 @@ func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
+
 func (m *QueryLoadRequest) Size() (n int) {
 	if m == nil {
 		return 0
@@ -1082,9 +1137,11 @@ func (m *QueryParamsResponse) Size() (n int) {
 func sovQuery(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
+
 func sozQuery(x uint64) (n int) {
 	return sovQuery(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
+
 func (m *QueryLoadRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1135,6 +1192,7 @@ func (m *QueryLoadRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *QueryLoadResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1218,6 +1276,7 @@ func (m *QueryLoadResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *QueryPriceRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1268,6 +1327,7 @@ func (m *QueryPriceRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *QueryPriceResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1351,6 +1411,7 @@ func (m *QueryPriceResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *QueryTotalBandwidthRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1401,6 +1462,7 @@ func (m *QueryTotalBandwidthRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *QueryTotalBandwidthResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1470,6 +1532,7 @@ func (m *QueryTotalBandwidthResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *QueryNeuronBandwidthRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1552,6 +1615,7 @@ func (m *QueryNeuronBandwidthRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *QueryNeuronBandwidthResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1635,6 +1699,7 @@ func (m *QueryNeuronBandwidthResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *QueryParamsRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1685,6 +1750,7 @@ func (m *QueryParamsRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func (m *QueryParamsResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1768,6 +1834,7 @@ func (m *QueryParamsResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+
 func skipQuery(dAtA []byte) (n int, err error) {
 	l := len(dAtA)
 	iNdEx := 0

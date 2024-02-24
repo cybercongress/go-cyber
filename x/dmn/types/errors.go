@@ -8,7 +8,7 @@ var (
 	ErrBadCallData         = sdkerrors.Register(ModuleName, 4, "bad call data")
 	ErrBadGasPrice         = sdkerrors.Register(ModuleName, 5, "bad gas price")
 	ErrBadTrigger          = sdkerrors.Register(ModuleName, 6, "bad trigger")
-	ErrBadName         	   = sdkerrors.Register(ModuleName, 7, "bad name")
+	ErrBadName             = sdkerrors.Register(ModuleName, 7, "bad name")
 	ErrThoughtNotExist     = sdkerrors.Register(ModuleName, 8, "thought does not exist")
 	ErrConvertTrigger      = sdkerrors.Register(ModuleName, 9, "cannot convert trigger")
 )

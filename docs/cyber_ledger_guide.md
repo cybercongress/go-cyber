@@ -6,7 +6,7 @@ It is possible to use your Ledger device with cyber to store keys and sign trans
 
 How to get started. First of all, you'll need a couple of things to be done:
 
-+ A running and synced cyber node (how to: [here](https://github.com/cybercongress/go-cyber/blob/bostrom-dev/docs/run_validator.md) and [here](https://github.com/cybercongress/cyber/blob/master/docs/ultimate-commands-guide_v2.md))
++ A running and synced cyber node (how to: [here](https://github.com/cybercongress/go-cyber/blob/bostrom-dev/docs/run_validator.md) and [here](https://github.com/cybercongress/go-cyber/blob/main/docs/ultimate-commands-guide.md))
 
 + [Setup](https://support.ledger.com/hc/en-us/articles/360000613793-Set-up-as-new-device) your Ledger device and [install Cosmos app on it](https://github.com/cosmos/ledger-cosmos/blob/master/README.md#installing) (the latest firmware for Ledger and Cosmos app required)
 

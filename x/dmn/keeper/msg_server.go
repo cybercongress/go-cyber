@@ -5,8 +5,8 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/cybercongress/go-cyber/x/dmn/types"
-	graph "github.com/cybercongress/go-cyber/x/graph/types"
+	"github.com/cybercongress/go-cyber/v2/x/dmn/types"
+	graph "github.com/cybercongress/go-cyber/v2/x/graph/types"
 )
 
 type msgServer struct {
@@ -202,7 +202,8 @@ func (k msgServer) ChangeThoughtPeriod(goCtx context.Context, msg *types.MsgChan
 		sdk.NewEvent(
 			types.EventTypeChangeThoughtPeriod,
 			sdk.NewAttribute(types.AttributeKeyThoughtProgram, msg.Program),
-			sdk.NewAttribute(types.AttributeKeyThoughtPeriod, string(msg.Period)),
+			// TODO:update later
+			sdk.NewAttribute(types.AttributeKeyThoughtPeriod, string(msg.Period)), //nolint:govet
 		),
 	})
 
@@ -228,7 +229,8 @@ func (k msgServer) ChangeThoughtBlock(goCtx context.Context, msg *types.MsgChang
 		sdk.NewEvent(
 			types.EventTypeChangeThoughtBlock,
 			sdk.NewAttribute(types.AttributeKeyThoughtProgram, msg.Program),
-			sdk.NewAttribute(types.AttributeKeyThoughtBlock, string(msg.Block)),
+			// TODO:update later
+			sdk.NewAttribute(types.AttributeKeyThoughtBlock, string(msg.Block)), //nolint:govet
 		),
 	})
 

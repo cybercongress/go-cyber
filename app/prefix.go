@@ -1,8 +1,7 @@
 package app
 
 import (
-	"fmt"
-
+	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -20,9 +19,9 @@ var (
 func SetConfig() {
 	config := sdk.GetConfig()
 	config.SetCoinType(uint32(CoinType))
-	config.SetFullFundraiserPath(fmt.Sprintf("m/44'/%d'/0'/0/0", CoinType))
 	config.SetBech32PrefixForAccount(AccountAddressPrefix, AccountPubKeyPrefix)
 	config.SetBech32PrefixForValidator(ValidatorAddressPrefix, ValidatorPubKeyPrefix)
 	config.SetBech32PrefixForConsensusNode(ConsNodeAddressPrefix, ConsNodePubKeyPrefix)
+	config.SetAddressVerifier(wasmtypes.VerifyAddressLen())
 	config.Seal()
 }

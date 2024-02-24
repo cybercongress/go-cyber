@@ -2,27 +2,28 @@ package plugins
 
 import (
 	"encoding/json"
-	liquiditytypes "github.com/tendermint/liquidity/x/liquidity/types"
+
+	liquiditytypes "github.com/gravity-devs/liquidity/x/liquidity/types"
 
 	"github.com/CosmWasm/wasmd/x/wasm"
-	wasmTypes "github.com/CosmWasm/wasmvm/types"
+	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	dmntypes "github.com/cybercongress/go-cyber/x/dmn/types"
-	graphtypes "github.com/cybercongress/go-cyber/x/graph/types"
-	gridtypes "github.com/cybercongress/go-cyber/x/grid/types"
-	resourcestypes "github.com/cybercongress/go-cyber/x/resources/types"
+	dmntypes "github.com/cybercongress/go-cyber/v2/x/dmn/types"
+	graphtypes "github.com/cybercongress/go-cyber/v2/x/graph/types"
+	gridtypes "github.com/cybercongress/go-cyber/v2/x/grid/types"
+	resourcestypes "github.com/cybercongress/go-cyber/v2/x/resources/types"
 )
 
 type WasmMsgParserInterface interface {
-	Parse(contractAddr sdk.AccAddress, msg wasmTypes.CosmosMsg) ([]sdk.Msg, error)
+	Parse(contractAddr sdk.AccAddress, msg wasmvmtypes.CosmosMsg) ([]sdk.Msg, error)
 	ParseCustom(contractAddr sdk.AccAddress, data json.RawMessage) ([]sdk.Msg, error)
 }
 
 type MsgParser struct {
- 	Parsers map[string]WasmMsgParserInterface
+	Parsers map[string]WasmMsgParserInterface
 }
 
 func NewMsgParser() MsgParser {
