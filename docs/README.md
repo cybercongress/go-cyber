@@ -1,12 +1,13 @@
 # Concepts (WIP)
 
 ## soft2 and soft3
+- [soft2 and soft3](soft2-soft3-concepts.md)
 - content from presentation
 - knowledge graph
 - content oracle
-- particle  
-- cyberlink  
-- neuron  
+- particle
+- cyberlink
+- neuron
 
 ## consensus computer  
 - [cyber-sdk](#cyber-sdk-modules-documentation)
@@ -32,7 +33,6 @@
 - superintellgience
 
 # Tutorials (WIP)
-
 - install cyber cli
 - run node
 - [send transactions](send_txs.md) in your dapp
@@ -41,7 +41,6 @@
 - [run local bostrom](local_bostrom.md) network for development
 
 # How-To (WIP)
-
 - [run validator](run_validator.md) guide
 - [network upgrade](upgra) guide
 - setup local environment  
