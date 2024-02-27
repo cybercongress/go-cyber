@@ -21,7 +21,7 @@ RAM: 32 GB
 SSD: 1 TB
 Connection: 50+Mbps, Stable and low-latency connection
 GPU: Nvidia GeForce (or Tesla/Titan/Quadro) with CUDA-cores; 4+ Gb of video memory*
-Software: Ubuntu 18.04 LTS / 20.04 LTS
+Software: Ubuntu  20.04 LTS / 22.04 LTS
 ```
 
 *Cyber runs well on consumer-grade cards like Geforce GTX 1070, but we expect load growth and advise you use Error Correction compatible cards from Tesla or Quadro families. Also, make sure your card is compatible with >= v.410 of NVIDIA driver.*
@@ -122,7 +122,7 @@ driver   : nvidia-driver-460 - third-party free recommended
 driver   : xserver-xorg-video-nouveau - distro free builtin
 ```
 
-4. We need the **410+** drivers release. As you can see the v460 is recommended. The command below will install the recommended version of the drivers:
+4. We need the **410+** drivers release, *up to v515 is tested*. As you can see the v460 is recommended. The command below will install the recommended version of the drivers:
 
 ```bash
 sudo ubuntu-drivers autoinstall
@@ -241,7 +241,7 @@ b66c17bbf772: Pull complete
 e5ce55b8b4b9: Pull complete 
 155bc0332b0a: Pull complete 
 Digest: sha256:774ca3d612de15213102c2dbbba55df44dc5cf9870ca2be6c6e9c627fa63d67a
-Status: Downloaded newer image for nvidia/cuda:11.1-base
+Status: Downloaded newer image for nvidia/cuda:11.2.0-base-ubuntu20.04
 Mon Jun 21 14:07:52 2021 
 +------------------------------------------------------------------------+
 |NVIDIA-SMI 460.84      Driver Version:460.84      CUDA Version: 11.4    |
@@ -279,10 +279,10 @@ mkdir $HOME/.cyber/config
 
 
 2. Run the full node:
-(This will pull and extract the image from cyberd/cyber)
+(This will pull and extract the image from cyberd/cyber of latest version, containing all upgrades binaries)
 
 ```bash
-docker run -d --gpus all --name=bostrom --restart always -p 26656:26656 -p 26657:26657 -p 1317:1317 -e ALLOW_SEARCH=true -v $HOME/.cyber:/root/.cyber  cyberd/bostrom:dragonberry-cuda11.4
+docker run --log-opt max-size=2g --log-opt max-file=1 -d --gpus all --name=bostrom --restart always -p 26656:26656 -p 26657:26657 -p 26660:26660 -p 1317:1317 -e ALLOW_SEARCH=true -v $HOME/.cyber:/root/.cyber  cyberd/bostrom:dragonberry-cuda11.4
 ```
 
 Docker image already contain all binaries to either sync from 0 or start form snapshot.
@@ -299,15 +299,34 @@ persistent_peers = ""
 ```
 
 For peers addresses please refer to appropriate section of the [networks](https://github.com/cybercongress/networks) repo.
-When done, please restart container using:
 
-4. To apply config changes restart the container:
+4. To speed-up sync use chain snapshot (check for most recent pinned snap in [Hall of Fame](https://t.me/fameofcyber)). Download the snapshot, unpack it and replace your node `.cyber/data` and `.cyber/wasm` folders to one's from snapshot.
+
+```bash
+wget https://link_to_actual_snapshot:bostrom_pruned_4302990.tar.gz
+tar -I pigz -xf bostrom_pruned_4302990.tar.gz -C $HOME/.cyber
+rm -rf $HOME/.cyber/data $HOME/.cyber/wasm
+cp bostrom_pruned_4302990/* $HOME/.cyber
+```
+
+Also adjust your config `.cyber/config/app.toml` pruning stratege to be similar with snapshot you've selected (`pruning = "everything"` for pruned snapshot, `pruning = "nothing"` for archive)
+
+```bash
+nano $HOME/.cyber/config/app.toml
+set line 17 `pruning = "everything"`
+```
+
+If you would like to sync all the way from the bottom - you may just fill the peers and let thing spin, upgrade block would be handled automatically.
+
+
+
+5. To apply config changes restart the container:
 
 ```bash
 docker restart bostrom
 ```
 
-5. Then check the status of your node:
+6. Then check the status of your node:
 
 ```bash
 docker exec bostrom cyber status
@@ -416,3 +435,32 @@ Your identity as a validator consists of two things:
 Please back up `$HOME/.cyber/config/priv_validator_key.json` along with your seed phrase. In case of occasional node loss you would be able to restore your validator operation with this file and another full node.
 
 Finally, in case you want to keep your cyber node ID consistent during networks please backup `$HOME/.cyber/config/node_key.json`.
+
+### Rebase to snapshot
+
+You can use a snapshot to start a node from scratch, as well as to reduce its disk space.  
+Please check the latest snapshot [here](https://snapshot.cybernode.ai/).  
+
+Download snapshot
+```bash
+wget https://snapshot.cybernode.ai/bostrom_pruned_<*>.tar
+```
+
+Stop your node
+```bash
+docker stop bostrom
+```
+Replace data folder to snapshot
+```bash 
+sudo -H rm -r ~/.cyber/data/ ~/.cyber/wasm/
+tar -xf bostrom_pruned_<*>.tar -C ~/.cyber/
+```
+Start node
+```bash
+docker start bostrom
+```
+Check node status and logs after startup
+```bash
+docker exec -ti bostrom cyber status
+docker logs bostrom -f --tail 20
+```

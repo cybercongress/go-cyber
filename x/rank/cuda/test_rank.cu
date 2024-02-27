@@ -7,7 +7,7 @@ void test_getCompressedInLinksStartIndex() {
 
     uint32_t compressedInLinksCount [6] = { 0, 2, 0, 40, 13, 0 };
     uint64_t compressedInLinksStartIndex [6] = { };
-    uint64_t size = getCompressedInLinksStartIndex(6, compressedInLinksCount, compressedInLinksStartIndex);
+    uint64_t size = get_links_start_index(6, compressedInLinksCount, compressedInLinksStartIndex);
 
     if (size != 55) {
         printf("getCompressedInLinksStartIndex() wrong composed in links size!\n");
@@ -46,7 +46,7 @@ void test_getCompressedInLinksCount() {
     cudaMemcpy(dev_inLinksOuts, inLinksOuts, outSize*sizeof(uint64_t), cudaMemcpyHostToDevice);
 
     cudaDeviceSynchronize();
-    getCompressedInLinksCount<<<2,3>>>(
+    get_compressed_in_links_count<<<2,3>>>(
         cidsSize,
         dev_inLinksStartIndex, dev_inLinksCount,
         dev_inLinksOuts, dev_compressedInLinksCount
@@ -95,7 +95,8 @@ void test_calculateCidTotalOutStake() {
     cudaMemcpy(dev_stakes, stakes, usersSize*sizeof(uint64_t), cudaMemcpyHostToDevice);
 
     cudaDeviceSynchronize();
-    calculateCidTotalOutStake<<<2,3>>>(
+
+    get_particle_stake_by_links<<<2,3>>>(
         cidsSize, dev_stakes,
         dev_outLinksStartIndex, dev_outLinksCount,
         dev_outLinksUsers, dev_cidsTotalOutStakes
@@ -182,7 +183,7 @@ void test_getCompressedInLinks() {
     cudaMemcpy(dev_compressedInLinksCount, compressedInLinksCount, cidsSize*sizeof(uint32_t), cudaMemcpyHostToDevice);
 
     cudaDeviceSynchronize();
-    getCompressedInLinks<<<4,2>>>(
+    get_compressed_in_links<<<4,2>>>(
         cidsSize,
         dev_inLinksStartIndex, dev_inLinksCount, dev_cidsTotalOutStakes,
         dev_inLinksOuts, dev_inLinksUsers,
