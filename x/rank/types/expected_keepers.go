@@ -3,7 +3,7 @@ package types
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	graphtypes "github.com/cybercongress/go-cyber/v2/x/graph/types"
+	graphtypes "github.com/cybercongress/go-cyber/v3/x/graph/types"
 )
 
 type StakeKeeper interface {

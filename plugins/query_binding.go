@@ -11,11 +11,11 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	bandwidthtypes "github.com/cybercongress/go-cyber/v2/x/bandwidth/types"
-	dmntypes "github.com/cybercongress/go-cyber/v2/x/dmn/types"
-	graphtypes "github.com/cybercongress/go-cyber/v2/x/graph/types"
-	gridtypes "github.com/cybercongress/go-cyber/v2/x/grid/types"
-	ranktypes "github.com/cybercongress/go-cyber/v2/x/rank/types"
+	bandwidthtypes "github.com/cybercongress/go-cyber/v3/x/bandwidth/types"
+	dmntypes "github.com/cybercongress/go-cyber/v3/x/dmn/types"
+	graphtypes "github.com/cybercongress/go-cyber/v3/x/graph/types"
+	gridtypes "github.com/cybercongress/go-cyber/v3/x/grid/types"
+	ranktypes "github.com/cybercongress/go-cyber/v3/x/rank/types"
 )
 
 type WasmQuerierInterface interface {

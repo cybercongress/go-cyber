@@ -5,17 +5,17 @@ import (
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	liquiditykeeper "github.com/gravity-devs/liquidity/x/liquidity/keeper"
 
-	bandwidthkeeper "github.com/cybercongress/go-cyber/v2/x/bandwidth/keeper"
-	bandwidthwasm "github.com/cybercongress/go-cyber/v2/x/bandwidth/wasm"
-	dmnkeeper "github.com/cybercongress/go-cyber/v2/x/dmn/keeper"
-	dmnwasm "github.com/cybercongress/go-cyber/v2/x/dmn/wasm"
-	graphkeeper "github.com/cybercongress/go-cyber/v2/x/graph/keeper"
-	graphwasm "github.com/cybercongress/go-cyber/v2/x/graph/wasm"
-	gridkeeper "github.com/cybercongress/go-cyber/v2/x/grid/keeper"
-	gridwasm "github.com/cybercongress/go-cyber/v2/x/grid/wasm"
-	rankkeeper "github.com/cybercongress/go-cyber/v2/x/rank/keeper"
-	rankwasm "github.com/cybercongress/go-cyber/v2/x/rank/wasm"
-	resourceswasm "github.com/cybercongress/go-cyber/v2/x/resources/wasm"
+	bandwidthkeeper "github.com/cybercongress/go-cyber/v3/x/bandwidth/keeper"
+	bandwidthwasm "github.com/cybercongress/go-cyber/v3/x/bandwidth/wasm"
+	dmnkeeper "github.com/cybercongress/go-cyber/v3/x/dmn/keeper"
+	dmnwasm "github.com/cybercongress/go-cyber/v3/x/dmn/wasm"
+	graphkeeper "github.com/cybercongress/go-cyber/v3/x/graph/keeper"
+	graphwasm "github.com/cybercongress/go-cyber/v3/x/graph/wasm"
+	gridkeeper "github.com/cybercongress/go-cyber/v3/x/grid/keeper"
+	gridwasm "github.com/cybercongress/go-cyber/v3/x/grid/wasm"
+	rankkeeper "github.com/cybercongress/go-cyber/v3/x/rank/keeper"
+	rankwasm "github.com/cybercongress/go-cyber/v3/x/rank/wasm"
+	resourceswasm "github.com/cybercongress/go-cyber/v3/x/resources/wasm"
 )
 
 func RegisterCustomPlugins(

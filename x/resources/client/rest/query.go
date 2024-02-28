@@ -9,12 +9,12 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/gorilla/mux"
 
-	ctypes "github.com/cybercongress/go-cyber/v2/types"
+	ctypes "github.com/cybercongress/go-cyber/v3/types"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/types/rest"
 
-	"github.com/cybercongress/go-cyber/v2/x/resources/types"
+	"github.com/cybercongress/go-cyber/v3/x/resources/types"
 )
 
 func registerQueryRoutes(cliCtx client.Context, r *mux.Router) {

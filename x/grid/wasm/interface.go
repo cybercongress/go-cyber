@@ -10,8 +10,8 @@ import (
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 
-	"github.com/cybercongress/go-cyber/v2/x/grid/keeper"
-	"github.com/cybercongress/go-cyber/v2/x/grid/types"
+	"github.com/cybercongress/go-cyber/v3/x/grid/keeper"
+	"github.com/cybercongress/go-cyber/v3/x/grid/types"
 )
 
 var _ MsgParserInterface = MsgParser{}

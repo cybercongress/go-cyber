@@ -12,10 +12,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
-	"github.com/cybercongress/go-cyber/v2/merkle"
-	graphkeeper "github.com/cybercongress/go-cyber/v2/x/graph/keeper"
-	graphtypes "github.com/cybercongress/go-cyber/v2/x/graph/types"
-	"github.com/cybercongress/go-cyber/v2/x/rank/types"
+	"github.com/cybercongress/go-cyber/v3/merkle"
+	graphkeeper "github.com/cybercongress/go-cyber/v3/x/graph/keeper"
+	graphtypes "github.com/cybercongress/go-cyber/v3/x/graph/types"
+	"github.com/cybercongress/go-cyber/v3/x/rank/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
