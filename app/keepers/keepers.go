@@ -249,6 +249,7 @@ func NewAppKeepers(
 	appKeepers.BandwidthMeter = bandwidthkeeper.NewBandwidthMeter(
 		appCodec,
 		appKeepers.keys[bandwidthtypes.StoreKey],
+		appKeepers.tkeys[bandwidthtypes.TStoreKey],
 		appKeepers.CyberbankKeeper.Proxy,
 		appKeepers.GetSubspace(bandwidthtypes.ModuleName),
 	)

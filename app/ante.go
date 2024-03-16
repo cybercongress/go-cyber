@@ -217,21 +217,23 @@ func (drd DeductFeeBandDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulat
 	currentBlockSpentBandwidth := drd.bandMeter.GetCurrentBlockSpentBandwidth(ctx)
 	maxBlockBandwidth := drd.bandMeter.GetMaxBlockBandwidth(ctx)
 
-	//nolint:gocritic
-	if !simulate {
-		if !accountBandwidth.HasEnoughRemained(txCost) {
-			return ctx, bandwidthtypes.ErrNotEnoughBandwidth
-		} else if (txCost + currentBlockSpentBandwidth) > maxBlockBandwidth {
-			return ctx, bandwidthtypes.ErrExceededMaxBlockBandwidth
-		} else if !ctx.IsCheckTx() && !ctx.IsReCheckTx() {
-			err = drd.bandMeter.ConsumeAccountBandwidth(ctx, accountBandwidth, txCost)
-			if err != nil {
-				return ctx, err
-			}
-			// TODO think to add to transient store
-			drd.bandMeter.AddToBlockBandwidth(txCost)
-		}
+	if !accountBandwidth.HasEnoughRemained(txCost) {
+		return ctx, bandwidthtypes.ErrNotEnoughBandwidth
 	}
+
+	if (txCost + currentBlockSpentBandwidth) > maxBlockBandwidth {
+		return ctx, bandwidthtypes.ErrExceededMaxBlockBandwidth
+	}
+
+	isDeliverTx := !ctx.IsCheckTx() && !ctx.IsReCheckTx() && !simulate
+	if isDeliverTx {
+		err = drd.bandMeter.ConsumeAccountBandwidth(ctx, accountBandwidth, txCost)
+		if err != nil {
+			return ctx, err
+		}
+		drd.bandMeter.AddToBlockBandwidth(ctx, txCost)
+	}
+
 	return next(ctx, tx, simulate)
 }
 

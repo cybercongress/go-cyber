@@ -8,6 +8,7 @@ const (
 	ModuleName   = "bandwidth"
 	StoreKey     = ModuleName
 	QuerierRoute = ModuleName
+	TStoreKey    = "transient_bandwidth"
 )
 
 var (
@@ -17,6 +18,7 @@ var (
 
 	LastBandwidthPrice = append(GlobalStoreKeyPrefix, []byte("lastBandwidthPrice")...)
 	TotalBandwidth     = append(GlobalStoreKeyPrefix, []byte("totalBandwidth")...)
+	BlockBandwidth     = append(GlobalStoreKeyPrefix, []byte("blockBandwidth")...)
 )
 
 func AccountStoreKey(addr string) []byte {
