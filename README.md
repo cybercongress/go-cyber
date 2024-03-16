@@ -21,7 +21,7 @@
 </div>
 
 <div align="center">
- <h3><a href="https://t.me/fuckgoogle">#fuckgoogle</a> and <a href="https://t.me/cyber_russian_community">cyber~Russian</a> communities </h3>
+ <h3><a href="https://t.me/fuckgoogle">#fuckgoogle</a> and <a href="https://t.me/CyberGlobalHub">Cyber & Bostrom</a> communities </h3>
 </div>
 
 <div align="center">
