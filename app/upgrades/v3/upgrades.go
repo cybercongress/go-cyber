@@ -2,26 +2,35 @@ package v3
 
 import (
 	"fmt"
+	"time"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 	ibcfeetypes "github.com/cosmos/ibc-go/v4/modules/apps/29-fee/types"
+
 	"github.com/cybercongress/go-cyber/v3/app/keepers"
 )
 
 func CreateV3UpgradeHandler(
 	mm *module.Manager,
 	cfg module.Configurator,
-	keepers *keepers.AppKeepers,
+	_ *keepers.AppKeepers,
 ) upgradetypes.UpgradeHandler {
-	return func(ctx sdk.Context, _ upgradetypes.Plan, vm module.VersionMap) (module.VersionMap, error) {
+	return func(ctx sdk.Context, _ upgradetypes.Plan, fromVM module.VersionMap) (module.VersionMap, error) {
+		before := time.Now()
+
 		logger := ctx.Logger().With("upgrade", UpgradeName)
 
-		vm[ibcfeetypes.ModuleName] = mm.Modules[ibcfeetypes.ModuleName].ConsensusVersion()
-		logger.Info(fmt.Sprintf("ibcfee module version %s set", fmt.Sprint(vm[ibcfeetypes.ModuleName])))
+		fromVM[ibcfeetypes.ModuleName] = mm.Modules[ibcfeetypes.ModuleName].ConsensusVersion()
+		logger.Info(fmt.Sprintf("ibcfee module version %s set", fmt.Sprint(fromVM[ibcfeetypes.ModuleName])))
 
 		// Run migrations
-		versionMap, err := mm.RunMigrations(ctx, cfg, vm)
+		versionMap, err := mm.RunMigrations(ctx, cfg, fromVM)
+
+		after := time.Now()
+
+		ctx.Logger().Info("migration time", "duration_ms", after.Sub(before).Milliseconds())
 
 		return versionMap, err
 	}

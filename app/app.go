@@ -2,20 +2,22 @@ package app
 
 import (
 	"fmt"
-	v2 "github.com/cybercongress/go-cyber/v3/app/upgrades/v2"
-	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
-	v2 "github.com/cybercongress/go-cyber/v3/app/upgrades/v2"
-	v3 "github.com/cybercongress/go-cyber/v3/app/upgrades/v3"
 	"io"
 	"os"
 	"strings"
 	"time"
+
+	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
+
+	v2 "github.com/cybercongress/go-cyber/v3/app/upgrades/v2"
+	v3 "github.com/cybercongress/go-cyber/v3/app/upgrades/v3"
 
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	"github.com/cosmos/cosmos-sdk/simapp"
 
 	"github.com/cosmos/cosmos-sdk/client/grpc/tmservice"
 	ibcclientclient "github.com/cosmos/ibc-go/v4/modules/core/02-client/client"
+
 	"github.com/cybercongress/go-cyber/v3/app/keepers"
 	"github.com/cybercongress/go-cyber/v3/app/upgrades"
 
