@@ -4,6 +4,8 @@ import (
 	"fmt"
 	v2 "github.com/cybercongress/go-cyber/v3/app/upgrades/v2"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
+	v2 "github.com/cybercongress/go-cyber/v3/app/upgrades/v2"
+	v3 "github.com/cybercongress/go-cyber/v3/app/upgrades/v3"
 	"io"
 	"os"
 	"strings"
@@ -78,7 +80,7 @@ var (
 	ProposalsEnabled        = "true"
 	EnableSpecificProposals = ""
 
-	Upgrades = []upgrades.Upgrade{v2.Upgrade}
+	Upgrades = []upgrades.Upgrade{v2.Upgrade, v3.Upgrade}
 )
 
 // GetEnabledProposals parses the ProposalsEnabled / EnableSpecificProposals values to
@@ -297,11 +299,11 @@ func NewApp(
 		if err := app.LoadLatestVersion(); err != nil {
 			tmos.Exit(fmt.Sprintf("failed to load latest version: %s", err))
 		}
-		ctx := app.BaseApp.NewContext(true, tmproto.Header{})
+		ctx := app.BaseApp.NewUncachedContext(true, tmproto.Header{})
 
 		// TODO refactor context load flow
 		// NOTE custom implementation
-		app.loadContexts(db)
+		app.loadContexts(db, ctx)
 
 		if err := app.WasmKeeper.InitializePinnedCodes(ctx); err != nil {
 			tmos.Exit(fmt.Sprintf("failed initialize pinned codes %s", err))
@@ -457,9 +459,10 @@ func (app *App) setupUpgradeStoreLoaders() {
 	}
 
 	for _, upgrade := range Upgrades {
+		storeUpgrades := upgrade.StoreUpgrades
 		if upgradeInfo.Name == upgrade.UpgradeName {
 			app.SetStoreLoader(
-				upgradetypes.UpgradeStoreLoader(upgradeInfo.Height, &upgrade.StoreUpgrades),
+				upgradetypes.UpgradeStoreLoader(upgradeInfo.Height, &storeUpgrades),
 			)
 		}
 	}
@@ -500,9 +503,8 @@ func MakeCodecs() (codec.Codec, *codec.LegacyAmino) {
 	return config.Marshaler, config.Amino
 }
 
-func (app *App) loadContexts(db dbm.DB) {
-	freshCtx := app.BaseApp.NewContext(true, tmproto.Header{})
-	freshCtx = freshCtx.WithBlockHeight(int64(app.RankKeeper.GetLatestBlockNumber(freshCtx)))
+func (app *App) loadContexts(db dbm.DB, ctx sdk.Context) {
+	freshCtx := ctx.WithBlockHeight(int64(app.RankKeeper.GetLatestBlockNumber(ctx)))
 	start := time.Now()
 	app.BaseApp.Logger().Info("Loading the brain state")
 
