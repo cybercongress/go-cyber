@@ -10,8 +10,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/spf13/cobra"
 
-	ctypes "github.com/cybercongress/go-cyber/v2/types"
-	"github.com/cybercongress/go-cyber/v2/x/resources/types"
+	ctypes "github.com/cybercongress/go-cyber/v3/types"
+	"github.com/cybercongress/go-cyber/v3/x/resources/types"
 )
 
 func GetQueryCmd() *cobra.Command {

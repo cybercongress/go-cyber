@@ -5,7 +5,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
-	"github.com/cybercongress/go-cyber/v2/app/keepers"
+	"github.com/cybercongress/go-cyber/v3/app/keepers"
 )
 
 func CreateV2UpgradeHandler(

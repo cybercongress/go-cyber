@@ -8,11 +8,11 @@ import (
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	ctypes "github.com/cybercongress/go-cyber/v2/types"
+	ctypes "github.com/cybercongress/go-cyber/v3/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/cybercongress/go-cyber/v2/x/resources/types"
+	"github.com/cybercongress/go-cyber/v3/x/resources/types"
 )
 
 type msgServer struct {

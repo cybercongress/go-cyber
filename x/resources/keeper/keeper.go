@@ -13,9 +13,9 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/tendermint/tendermint/libs/log"
 
-	ctypes "github.com/cybercongress/go-cyber/v2/types"
-	bandwithkeeper "github.com/cybercongress/go-cyber/v2/x/bandwidth/keeper"
-	"github.com/cybercongress/go-cyber/v2/x/resources/types"
+	ctypes "github.com/cybercongress/go-cyber/v3/types"
+	bandwithkeeper "github.com/cybercongress/go-cyber/v3/x/bandwidth/keeper"
+	"github.com/cybercongress/go-cyber/v3/x/resources/types"
 )
 
 type Keeper struct {

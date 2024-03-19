@@ -10,8 +10,8 @@ import (
 
 	"github.com/tendermint/tendermint/libs/log"
 
-	ctypes "github.com/cybercongress/go-cyber/v2/types"
-	"github.com/cybercongress/go-cyber/v2/x/graph/types"
+	ctypes "github.com/cybercongress/go-cyber/v3/types"
+	"github.com/cybercongress/go-cyber/v3/x/graph/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )

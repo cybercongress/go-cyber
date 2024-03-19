@@ -3,7 +3,7 @@ package types
 import (
 	"encoding/binary"
 
-	"github.com/cybercongress/go-cyber/v2/types"
+	"github.com/cybercongress/go-cyber/v3/types"
 )
 
 type CompactLink struct {

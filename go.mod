@@ -1,4 +1,4 @@
-module github.com/cybercongress/go-cyber/v2
+module github.com/cybercongress/go-cyber/v3
 
 go 1.19
 
@@ -28,6 +28,8 @@ require (
 	google.golang.org/genproto v0.0.0-20220725144611-272f38e5d71b
 	google.golang.org/grpc v1.48.0
 )
+
+require github.com/cybercongress/go-cyber/v2 v2.0.0
 
 require (
 	filippo.io/edwards25519 v1.0.0-beta.2 // indirect

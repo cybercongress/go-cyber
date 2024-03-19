@@ -10,7 +10,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 
-	"github.com/cybercongress/go-cyber/v2/x/grid/types"
+	"github.com/cybercongress/go-cyber/v3/x/grid/types"
 )
 
 func GetQueryCmd() *cobra.Command {
