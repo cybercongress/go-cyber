@@ -3,8 +3,8 @@ package keeper
 import (
 	"math"
 
-	graphtypes "github.com/cybercongress/go-cyber/v2/x/graph/types"
-	"github.com/cybercongress/go-cyber/v2/x/rank/types"
+	graphtypes "github.com/cybercongress/go-cyber/v3/x/graph/types"
+	"github.com/cybercongress/go-cyber/v3/x/rank/types"
 )
 
 func calculateRankCPU(ctx *types.CalculationContext) types.EMState {

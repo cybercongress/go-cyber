@@ -4,7 +4,7 @@ import (
 	simappparams "github.com/cosmos/cosmos-sdk/simapp/params"
 	"github.com/cosmos/cosmos-sdk/std"
 
-	"github.com/cybercongress/go-cyber/v2/app/params"
+	"github.com/cybercongress/go-cyber/v3/app/params"
 )
 
 func MakeEncodingConfig() params.EncodingConfig {
