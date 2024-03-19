@@ -51,6 +51,7 @@ func (appKeepers *AppKeepers) GenerateKeys() {
 	appKeepers.tkeys = sdk.NewTransientStoreKeys(
 		paramstypes.TStoreKey,
 		graphtypes.TStoreKey,
+		bandwidthtypes.TStoreKey,
 	)
 	appKeepers.memKeys = sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey)
 }
