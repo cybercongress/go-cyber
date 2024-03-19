@@ -15,7 +15,7 @@ import (
 	v2 "github.com/cybercongress/go-cyber/v3/app/upgrades/v2"
 
 	"github.com/cosmos/cosmos-sdk/client/grpc/tmservice"
-	ibcclientclient "github.com/cosmos/ibc-go/v3/modules/core/02-client/client"
+	ibcclientclient "github.com/cosmos/ibc-go/v4/modules/core/02-client/client"
 
 	ctypes "github.com/cybercongress/go-cyber/v3/types"
 
