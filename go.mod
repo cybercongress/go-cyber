@@ -29,8 +29,6 @@ require (
 	google.golang.org/grpc v1.48.0
 )
 
-require github.com/cybercongress/go-cyber/v2 v2.0.0
-
 require (
 	filippo.io/edwards25519 v1.0.0-beta.2 // indirect
 	github.com/99designs/go-keychain v0.0.0-20191008050251-8e49817e8af4 // indirect
