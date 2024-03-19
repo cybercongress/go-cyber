@@ -17,8 +17,9 @@ import (
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
-	ibctransfertypes "github.com/cosmos/ibc-go/v3/modules/apps/transfer/types"
-	ibchost "github.com/cosmos/ibc-go/v3/modules/core/24-host"
+	ibcfeetypes "github.com/cosmos/ibc-go/v4/modules/apps/29-fee/types"
+	ibctransfertypes "github.com/cosmos/ibc-go/v4/modules/apps/transfer/types"
+	ibchost "github.com/cosmos/ibc-go/v4/modules/core/24-host"
 	liquiditytypes "github.com/gravity-devs/liquidity/x/liquidity/types"
 
 	bandwidthtypes "github.com/cybercongress/go-cyber/v3/x/bandwidth/types"
@@ -44,6 +45,7 @@ func (appKeepers *AppKeepers) GenerateKeys() {
 		gridtypes.StoreKey,
 		dmntypes.StoreKey,
 		wasm.StoreKey,
+		ibcfeetypes.StoreKey,
 	)
 
 	appKeepers.tkeys = sdk.NewTransientStoreKeys(
