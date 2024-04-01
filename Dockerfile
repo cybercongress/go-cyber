@@ -94,7 +94,7 @@ RUN apt-get update && apt-get -y install --no-install-recommends \
 
 # Install cosmovisor
 ###########################################################################################
- RUN wget -O cosmovisor.tgz https://github.com/cosmos/cosmos-sdk/releases/download/cosmovisor%2Fv1.1.0/cosmovisor-v1.1.0-linux-amd64.tar.gz \
+ RUN wget -O cosmovisor.tgz https://github.com/cosmos/cosmos-sdk/releases/download/cosmovisor%2Fv1.5.0/cosmovisor-v1.5.0-linux-amd64.tar.gz \
  && tar -xzf cosmovisor.tgz \
  && cp cosmovisor /usr/bin/cosmovisor \
  && chmod +x /usr/bin/cosmovisor \
