@@ -1,5 +1,7 @@
 #!/bin/sh
 
+ln -s /root/.cyber/cosmovisor/current/bin/cyber /usr/bin/cyber
+
 if [ ! -d "/root/.cyber/" ]
 then
   mkdir /root/.cyber/
