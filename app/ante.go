@@ -17,7 +17,7 @@ import (
 
 	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
 	ibcante "github.com/cosmos/ibc-go/v4/modules/core/ante"
-	"github.com/cosmos/ibc-go/v4/modules/core/keeper"
+	ibckeeper "github.com/cosmos/ibc-go/v4/modules/core/keeper"
 
 	bandwidthkeeper "github.com/cybercongress/go-cyber/v3/x/bandwidth/keeper"
 	bandwidthtypes "github.com/cybercongress/go-cyber/v3/x/bandwidth/types"
@@ -29,7 +29,6 @@ type HandlerBaseOptions struct {
 	AccountKeeper   ante.AccountKeeper
 	BankKeeper      bankkeeper.Keeper
 	FeegrantKeeper  ante.FeegrantKeeper
-	BandwidthMeter  *bandwidthkeeper.BandwidthMeter
 	SignModeHandler authsigning.SignModeHandler
 	SigGasConsumer  func(meter sdk.GasMeter, sig signing.SignatureV2, params authtypes.Params) error
 }
@@ -39,7 +38,8 @@ type HandlerBaseOptions struct {
 type HandlerOptions struct {
 	HandlerBaseOptions
 
-	IBCKeeper         *keeper.Keeper
+	BandwidthMeter    *bandwidthkeeper.BandwidthMeter
+	IBCKeeper         *ibckeeper.Keeper
 	WasmConfig        *wasmtypes.WasmConfig
 	TXCounterStoreKey sdk.StoreKey
 }
@@ -48,20 +48,25 @@ func NewAnteHandler(options HandlerOptions) (sdk.AnteHandler, error) {
 	if options.AccountKeeper == nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrLogic, "account keeper is required for AnteHandler")
 	}
+
 	if options.BankKeeper == nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrLogic, "bank keeper is required for AnteHandler")
 	}
-	if options.BandwidthMeter == nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrLogic, "bandwidth meter is required for AnteHandler")
-	}
+
 	if options.SignModeHandler == nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrLogic, "sign mode handler is required for ante builder")
 	}
+
 	if options.WasmConfig == nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrLogic, "wasm config is required for ante builder")
 	}
+
 	if options.TXCounterStoreKey == nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrLogic, "tx counter key is required for ante builder")
+	}
+
+	if options.BandwidthMeter == nil {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrLogic, "bandwidth meter is required for AnteHandler")
 	}
 
 	sigGasConsumer := options.SigGasConsumer

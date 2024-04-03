@@ -23,7 +23,7 @@ var (
 
 type WasmMsgParser struct{}
 
-func NewWasmMsgParser() WasmMsgParser {
+func NewLiquidityWasmMsgParser() WasmMsgParser {
 	return WasmMsgParser{}
 }
 
@@ -65,7 +65,7 @@ type WasmQuerier struct {
 	keeper.Keeper
 }
 
-func NewWasmQuerier(keeper keeper.Keeper) WasmQuerier {
+func NewLiquidityWasmQuerier(keeper keeper.Keeper) WasmQuerier {
 	return WasmQuerier{keeper}
 }
 
