@@ -50,6 +50,7 @@ RUN apt-get update && apt-get -y install --no-install-recommends \
 && apt-get install cuda=${CUDA_VER} -y --no-install-recommends \
 && mkdir -p /cyber/cosmovisor/genesis/bin \
 && mkdir -p /cyber/cosmovisor/upgrades/cyberfrey/bin \
+&& mkdir -p /cyber/cosmovisor/upgrades/v3/bin \
 # Compile cyber for genesis version
 ###########################################################################################
 && git checkout v0.2.0 \
@@ -58,7 +59,6 @@ RUN apt-get update && apt-get -y install --no-install-recommends \
 && cd /sources \
 && make build CUDA_ENABLED=true \
 && cp ./build/cyber /cyber/cosmovisor/genesis/bin/ \
-&& cp ./build/cyber /usr/local/bin \ 
 && rm -rf ./build \
  # Compile cyber for cyberfrey version
 ###########################################################################################
@@ -68,6 +68,15 @@ RUN apt-get update && apt-get -y install --no-install-recommends \
 && cd  /sources \
 && make build CUDA_ENABLED=true \
 && cp ./build/cyber /cyber/cosmovisor/upgrades/cyberfrey/bin/ \
+&& rm -rf ./build \
+ # Compile cyber for v3 version
+###########################################################################################
+&& git checkout v3.0.0 \
+&& cd /sources/x/rank/cuda \
+&& make build \
+&& cd  /sources \
+&& make build CUDA_ENABLED=true \
+&& cp ./build/cyber /cyber/cosmovisor/upgrades/v3/bin/ \
 && rm -rf ./build \
 # Cleanup 
 ###########################################################################################
@@ -85,7 +94,7 @@ RUN apt-get update && apt-get -y install --no-install-recommends \
 
 # Install cosmovisor
 ###########################################################################################
- RUN wget -O cosmovisor.tgz https://github.com/cosmos/cosmos-sdk/releases/download/cosmovisor%2Fv1.1.0/cosmovisor-v1.1.0-linux-amd64.tar.gz \
+ RUN wget -O cosmovisor.tgz https://github.com/cosmos/cosmos-sdk/releases/download/cosmovisor%2Fv1.5.0/cosmovisor-v1.5.0-linux-amd64.tar.gz \
  && tar -xzf cosmovisor.tgz \
  && cp cosmovisor /usr/bin/cosmovisor \
  && chmod +x /usr/bin/cosmovisor \
@@ -98,9 +107,7 @@ COPY start_script.sh start_script.sh
 COPY entrypoint.sh /entrypoint.sh
 RUN wget -O /genesis.json https://gateway.ipfs.cybernode.ai/ipfs/QmYubyVNfghD4xCrTFj26zBwrF9s5GJhi1TmxvrwmJCipr \
 && chmod +x start_script.sh \
-&& chmod +x /entrypoint.sh \
-&& cyber version
-
+&& chmod +x /entrypoint.sh 
 
 #  Start
 ###############################################################################
