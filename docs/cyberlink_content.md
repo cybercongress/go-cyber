@@ -238,7 +238,7 @@ The volt's stake of the given neuron are easy to understand as the size of his b
 
 ## Get Bandwidth
 
-Alise need to [`investmint`](https://github.com/cybercongress/soft3.js/blob/main/src/signingcyberclient.ts#L370) `HYDROGEN(stake token)` to `VOLT` and `AMPERE` of  get `Bandwidth`
+Alise needs to [`investmint`](https://github.com/cybercongress/soft3.js/blob/main/src/signingcyberclient.ts#L370) `HYDROGEN(stake token)` to `VOLT` and `AMPERE` of  get `Bandwidth`
 
 Alise would like to investmint 1000000000 BOOT (1 GBOOT) to VOLT resource with lock for 30 DAYS (no spendable) and Alise will get newly minted 1 VOLT to my account locked for 30 DAYS (no spendable).
 
