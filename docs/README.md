@@ -30,7 +30,7 @@
 - motif
 - blas
 - cyb and sparks
-- superintellgience
+- superintelligence
 
 # Tutorials (WIP)
 - install cyber cli
