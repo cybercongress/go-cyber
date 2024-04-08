@@ -21,7 +21,11 @@
 </div>
 
 <div align="center">
- <h3><a href="https://t.me/fuckgoogle">#fuckgoogle</a> and <a href="https://t.me/CyberGlobalHub">Cyber & Bostrom</a> communities </h3>
+ <h3><a href="https://t.me/fuckgoogle">#fuckgoogle</a> and <a href="https://t.me/CyberGlobalHub">Cyber & Bostrom</a> communities in TG </h3>
+</div>
+
+<div align="center">
+ <h3> Welcome to <a href="https://discord.gg/cyber-bostrom-spacepussy">Discord server</a></h3>
 </div>
 
 <div align="center">
@@ -39,14 +43,13 @@ _____________
 [![CircleCI](https://img.shields.io/circleci/build/github/cybercongress/go-cyber/master?style=flat-square)](https://circleci.com/gh/cybercongress/workflows/go-cyber/tree/master)
 [![license](https://img.shields.io/badge/License-Cyber-brightgreen.svg?style=flat-square)](https://github.com/cybercongress/cyberd/blob/master/LICENSE)
 ![Cosmos-SDK](https://img.shields.io/static/v1.svg?label=cosmos-sdk&message=0.45.16&color=blue&style=flat-square)
-![Tendermint](https://img.shields.io/static/v1.svg?label=tendermint&message=0.34.29&color=blue&style=flat-square)
-![IBC](https://img.shields.io/static/v1.svg?label=ibc-go&message=3.1.0&color=blue&style=flat-square)
-![CosmWasm](https://img.shields.io/static/v1.svg?label=cosmwasm&message=1.0.0&color=blue&style=flat-square)
-![WASMD](https://img.shields.io/static/v1.svg?label=wasmd&message=0.28.0&color=blue&style=flat-square)
+![Tendermint](https://img.shields.io/static/v1.svg?label=tendermint&message=0.34.27&color=blue&style=flat-square)
+![IBC](https://img.shields.io/static/v1.svg?label=ibc-go&message=4.6.0&color=blue&style=flat-square)
+![CosmWasm](https://img.shields.io/static/v1.svg?label=cosmwasm&message=1.3.1&color=blue&style=flat-square)
+![WASMD](https://img.shields.io/static/v1.svg?label=wasmd&message=0.33.0&color=blue&style=flat-square)
 ![Liquidity](https://img.shields.io/static/v1.svg?label=liquidity&message=1.5.3&color=blue&style=flat-square)
-[![LoC](https://tokei.rs/b1/github/cybercongress/cyberd?style=flat)](https://github.com/cybercongress/cyberd)
-[![contributors](https://img.shields.io/github/contributors/cybercongress/cyberd.svg?style=flat-square)](https://github.com/cybercongress/cyberd/graphs/contributors)
-[![Coverage Status](https://img.shields.io/coveralls/github/cybercongress/cyberd/master?style=flat-square)](https://coveralls.io/github/cybercongress/cyberd?branch=master)
+[![LoC](https://tokei.rs/b1/github/cybercongress/go-cyber?style=flat)](https://github.com/cybercongress/go-cyber)
+[![contributors](https://img.shields.io/github/contributors/cybercongress/go-cyber.svg?style=flat-square)](https://github.com/cybercongress/go-cyber/graphs/contributors)
 
 ## Blockchain
 
@@ -59,10 +62,12 @@ _____________
 _________________________________________________________
 
 ## Networks
-|Network|Cosmos|Hub|Launch|Security Token| Resources Token|Bandwidth Token| Power Token | Supported Tokens |
-|---|---|---|---|---|---|---|---|---|
-|Bostrom|🟢|Bootloader Hub|2021|BOOT |HYDROGEN|VOLT|AMPERE|ICS20|
-|Cyber|🔵|Cyber Hub|TBA|CYB|HYDROGEN|VOLT|AMPERE|ICS20|
+| Network                              |Cosmos| Hub                                               | Launch | Token  |
+|--------------------------------------|---|---------------------------------------------------|--------|--------|
+| [Bostrom](https://cyb.ai)            |🟢| Bootloader Hub                                    | 2021   | BOOT   |
+| [Space Pussy](https://spacepussy.ai) |🟣| Meme Community Network                            | 2022   | PUSSY  |
+| [Deepchain](https://deepchain.dev)   |⚫| [Deep Community](https://deep.foundation) Network | 2024   | ENERGY |
+| Cyber                                |🔵| Superintelligence Hub                             | TBA    | CYB    |
 _________________________________________________________
 
 ## Computer Specification 🛠
