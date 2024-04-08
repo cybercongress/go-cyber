@@ -14,7 +14,7 @@ It is necessary to verify that cyber is built with netgo and Ledger tags. To che
 
 ## Add your Ledger key
 
-If you have set up your Ledger device on a different machine then the one running cyber, it is necessary to make sure that the Ledger device is generally working on this machine. A great way to do so is installing [Ledger Live](https://shop.ledger.com/pages/ledger-live) on the machine and trying to connect your Ledger device to it. This will show possible issues and error codes to work with ([Fix connection issues](https://support.ledger.com/hc/en-us/articles/115005165269-Fix-connection-issues) guide from Ledger).
+If you have set up your Ledger device on a different machine than the one running cyber, it is necessary to make sure that the Ledger device is generally working on this machine. A great way to do so is installing [Ledger Live](https://shop.ledger.com/pages/ledger-live) on the machine and trying to connect your Ledger device to it. This will show possible issues and error codes to work with ([Fix connection issues](https://support.ledger.com/hc/en-us/articles/115005165269-Fix-connection-issues) guide from Ledger).
 When you made sure that your Ledger device is successfully interacting with your machine do the following:
 
 + Connect and unlock your Ledger device

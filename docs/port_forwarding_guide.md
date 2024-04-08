@@ -48,7 +48,7 @@ Then reboot your computer to ensure it gets assigned the address you selected an
 
 ## Port Forwarding
 
-An easiest way to find some detailed instructions for you router is check [here](https://portforward.com/router.htm) or [here](https://setuprouter.com/).
+An easiest way to find some detailed instructions for your router is to check [here](https://portforward.com/router.htm) or [here](https://setuprouter.com/).
 
 Here we'll provide you general idea of what has to be done.
 
@@ -80,4 +80,4 @@ Restart cyber service.
 
 ---
 
-We call to you, validators, with a proposal to open port `26656` and make you validator-nodes available to the incoming connection.
+We call to you, validators, with a proposal to open port `26656` and make your validator-nodes available to the incoming connection.
