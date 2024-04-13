@@ -4,64 +4,82 @@ import (
 	"fmt"
 	"math"
 
+	errorsmod "cosmossdk.io/errors"
+
+	storetypes "github.com/cosmos/cosmos-sdk/store/types"
+
+	"github.com/cometbft/cometbft/libs/log"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
-	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
-
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	"github.com/tendermint/tendermint/libs/log"
+	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
 
-	ctypes "github.com/cybercongress/go-cyber/v3/types"
-	bandwithkeeper "github.com/cybercongress/go-cyber/v3/x/bandwidth/keeper"
-	"github.com/cybercongress/go-cyber/v3/x/resources/types"
+	ctypes "github.com/cybercongress/go-cyber/v4/types"
+	bandwithkeeper "github.com/cybercongress/go-cyber/v4/x/bandwidth/keeper"
+	"github.com/cybercongress/go-cyber/v4/x/resources/types"
 )
 
 type Keeper struct {
 	cdc            codec.BinaryCodec
+	storeKey       storetypes.StoreKey
 	accountKeeper  types.AccountKeeper
 	bankKeeper     types.BankKeeper
 	bandwidthMeter *bandwithkeeper.BandwidthMeter
-	paramSpace     paramstypes.Subspace
+
+	authority string
 }
 
 func NewKeeper(
 	cdc codec.BinaryCodec,
+	key storetypes.StoreKey,
 	ak types.AccountKeeper,
 	bk types.BankKeeper,
 	bm *bandwithkeeper.BandwidthMeter,
-	paramSpace paramstypes.Subspace,
+	authority string,
 ) Keeper {
 	if addr := ak.GetModuleAddress(types.ResourcesName); addr == nil {
 		panic(fmt.Sprintf("%s module account has not been set", types.ResourcesName))
 	}
 
-	if !paramSpace.HasKeyTable() {
-		paramSpace = paramSpace.WithKeyTable(types.ParamKeyTable())
-	}
-
 	keeper := Keeper{
 		cdc:            cdc,
+		storeKey:       key,
 		accountKeeper:  ak,
 		bankKeeper:     bk,
 		bandwidthMeter: bm,
-		paramSpace:     paramSpace,
+		authority:      authority,
 	}
 	return keeper
 }
+
+func (k Keeper) GetAuthority() string { return k.authority }
 
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
 
-func (k Keeper) GetParams(ctx sdk.Context) (params types.Params) {
-	k.paramSpace.GetParamSet(ctx, &params)
-	return params
+func (k Keeper) SetParams(ctx sdk.Context, p types.Params) error {
+	if err := p.Validate(); err != nil {
+		return err
+	}
+
+	store := ctx.KVStore(k.storeKey)
+	bz := k.cdc.MustMarshal(&p)
+	store.Set(types.ParamsKey, bz)
+
+	return nil
 }
 
-func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
-	k.paramSpace.SetParamSet(ctx, &params)
+func (k Keeper) GetParams(ctx sdk.Context) (p types.Params) {
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get(types.ParamsKey)
+	if bz == nil {
+		return p
+	}
+
+	k.cdc.MustUnmarshal(bz, &p)
+	return p
 }
 
 func (k Keeper) ConvertResource(
@@ -81,17 +99,17 @@ func (k Keeper) ConvertResource(
 	}
 
 	// comment this for local dev
-	if uint32(length) < k.MinInvestmintPeriodSec(ctx) {
-		return sdk.Coin{}, types.ErrNotAvailablePeriod
-	}
+	//if uint32(length) < k.GetParams(ctx).MinInvestmintPeriod {
+	//	return sdk.Coin{}, types.ErrNotAvailablePeriod
+	//}
 
 	err := k.AddTimeLockedCoinsToAccount(ctx, neuron, sdk.NewCoins(amount), int64(length))
 	if err != nil {
-		return sdk.Coin{}, sdkerrors.Wrapf(types.ErrTimeLockCoins, err.Error())
+		return sdk.Coin{}, errorsmod.Wrapf(types.ErrTimeLockCoins, err.Error())
 	}
 	minted, err := k.Mint(ctx, neuron, amount, resource, length)
 	if err != nil {
-		return sdk.Coin{}, sdkerrors.Wrapf(types.ErrIssueCoins, err.Error())
+		return sdk.Coin{}, errorsmod.Wrapf(types.ErrIssueCoins, err.Error())
 	}
 
 	return minted, err
@@ -100,7 +118,7 @@ func (k Keeper) ConvertResource(
 func (k Keeper) AddTimeLockedCoinsToAccount(ctx sdk.Context, recipientAddr sdk.AccAddress, amt sdk.Coins, length int64) error {
 	acc := k.accountKeeper.GetAccount(ctx, recipientAddr)
 	if acc == nil {
-		return sdkerrors.Wrapf(types.ErrAccountNotFound, recipientAddr.String())
+		return errorsmod.Wrapf(types.ErrAccountNotFound, recipientAddr.String())
 	}
 
 	switch acc.(type) {
@@ -109,7 +127,7 @@ func (k Keeper) AddTimeLockedCoinsToAccount(ctx sdk.Context, recipientAddr sdk.A
 	case *authtypes.BaseAccount:
 		return k.AddTimeLockedCoinsToBaseAccount(ctx, recipientAddr, amt, length)
 	default:
-		return sdkerrors.Wrapf(types.ErrInvalidAccountType, "%T", acc)
+		return errorsmod.Wrapf(types.ErrInvalidAccountType, "%T", acc)
 	}
 }
 
@@ -182,7 +200,7 @@ func (k Keeper) addCoinsToVestingSchedule(ctx sdk.Context, addr sdk.AccAddress, 
 		vacc.StartTime = ctx.BlockTime().Unix()
 	}
 
-	if len(vacc.VestingPeriods) == int(k.MaxSlots(ctx)) && !mergeSlot {
+	if len(vacc.VestingPeriods) == int(k.GetParams(ctx).MaxSlots) && !mergeSlot {
 		// case when there are already filled slots and no one already passed
 		if vacc.StartTime+vacc.VestingPeriods[0].Length > ctx.BlockTime().Unix() {
 			return types.ErrFullSlots
@@ -276,27 +294,27 @@ func (k Keeper) addCoinsToVestingSchedule(ctx sdk.Context, addr sdk.AccAddress, 
 func (k Keeper) Mint(ctx sdk.Context, recipientAddr sdk.AccAddress, amt sdk.Coin, resource string, length uint64) (sdk.Coin, error) {
 	acc := k.accountKeeper.GetAccount(ctx, recipientAddr)
 	if acc == nil {
-		return sdk.Coin{}, sdkerrors.Wrapf(types.ErrAccountNotFound, recipientAddr.String())
+		return sdk.Coin{}, errorsmod.Wrapf(types.ErrAccountNotFound, recipientAddr.String())
 	}
 
 	toMint := k.CalculateInvestmint(ctx, amt, resource, length)
 
 	if toMint.Amount.LT(sdk.NewInt(1000)) {
-		return sdk.Coin{}, sdkerrors.Wrapf(types.ErrSmallReturn, recipientAddr.String())
+		return sdk.Coin{}, errorsmod.Wrapf(types.ErrSmallReturn, recipientAddr.String())
 	}
 
 	err := k.bankKeeper.MintCoins(ctx, types.ResourcesName, sdk.NewCoins(toMint))
 	if err != nil {
-		return sdk.Coin{}, sdkerrors.Wrapf(types.ErrMintCoins, recipientAddr.String())
+		return sdk.Coin{}, errorsmod.Wrapf(types.ErrMintCoins, recipientAddr.String())
 	}
 	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ResourcesName, recipientAddr, sdk.NewCoins(toMint))
 	if err != nil {
-		return sdk.Coin{}, sdkerrors.Wrapf(types.ErrSendMintedCoins, recipientAddr.String())
+		return sdk.Coin{}, errorsmod.Wrapf(types.ErrSendMintedCoins, recipientAddr.String())
 	}
 	// adding converted resources to vesting schedule
 	err = k.AddTimeLockedCoinsToPeriodicVestingAccount(ctx, recipientAddr, sdk.NewCoins(toMint), int64(length), true)
 	if err != nil {
-		return sdk.Coin{}, sdkerrors.Wrapf(types.ErrTimeLockCoins, err.Error())
+		return sdk.Coin{}, errorsmod.Wrapf(types.ErrTimeLockCoins, err.Error())
 	}
 
 	if resource == ctypes.VOLT {
@@ -311,15 +329,18 @@ func (k Keeper) Mint(ctx sdk.Context, recipientAddr sdk.AccAddress, amt sdk.Coin
 func (k Keeper) CalculateInvestmint(ctx sdk.Context, amt sdk.Coin, resource string, length uint64) sdk.Coin {
 	var toMint sdk.Coin
 	var halving sdk.Dec
+	params := k.GetParams(ctx)
+
 	switch resource {
 	case ctypes.VOLT:
-		// cycles := sdk.NewDec(int64(length)).QuoInt64(int64(10)) // for local dev
-		cycles := sdk.NewDec(int64(length)).QuoInt64(int64(k.BaseInvestmintPeriodVolt(ctx)))
-		base := sdk.NewDec(amt.Amount.Int64()).QuoInt64(k.BaseInvestmintAmountVolt(ctx).Amount.Int64())
+		cycles := sdk.NewDec(int64(length)).QuoInt64(int64(10)) // for local dev
+		// cycles := sdk.NewDec(int64(length)).QuoInt64(int64(params.BaseInvestmintPeriodVolt))
+		base := sdk.NewDec(amt.Amount.Int64()).QuoInt64(params.BaseInvestmintAmountVolt.Amount.Int64())
 
+		// TODO double check when third halving will be applied?
 		// NOTE out of parametrization custom code is applied here in order to shift the FIRST HALVING 6M BLOCKS LATER but keep base halving parameter same
 		if ctx.BlockHeight() > 15000000 {
-			halving = sdk.NewDecWithPrec(int64(math.Pow(0.5, float64((ctx.BlockHeight()-600000)/int64(k.BaseHalvingPeriodVolt(ctx))))*10000), 4)
+			halving = sdk.NewDecWithPrec(int64(math.Pow(0.5, float64((ctx.BlockHeight()-600000)/int64(params.HalvingPeriodVoltBlocks)))*10000), 4)
 		} else {
 			halving = sdk.OneDec()
 		}
@@ -332,13 +353,14 @@ func (k Keeper) CalculateInvestmint(ctx sdk.Context, amt sdk.Coin, resource stri
 
 		k.Logger(ctx).Info("Investmint", "cycles", cycles.String(), "base", base.String(), "halving", halving.String(), "mint", toMint.String())
 	case ctypes.AMPERE:
-		// cycles := sdk.NewDec(int64(length)).QuoInt64(int64(10)) // for local dev
-		cycles := sdk.NewDec(int64(length)).QuoInt64(int64(k.BaseInvestmintPeriodAmpere(ctx)))
-		base := sdk.NewDec(amt.Amount.Int64()).QuoInt64(k.BaseInvestmintAmountAmpere(ctx).Amount.Int64())
+		cycles := sdk.NewDec(int64(length)).QuoInt64(int64(10)) // for local dev
+		// cycles := sdk.NewDec(int64(length)).QuoInt64(int64(params.BaseInvestmintPeriodAmpere))
+		base := sdk.NewDec(amt.Amount.Int64()).QuoInt64(params.BaseInvestmintAmountAmpere.Amount.Int64())
 
+		// TODO double check when third halving will be applied?
 		// NOTE out of parametrization custom code is applied here in order to shift the FIRST HALVING 6M BLOCKS LATER but keep base halving parameter same
 		if ctx.BlockHeight() > 15000000 {
-			halving = sdk.NewDecWithPrec(int64(math.Pow(0.5, float64((ctx.BlockHeight()-600000)/int64(k.BaseHalvingPeriodAmpere(ctx))))*10000), 4)
+			halving = sdk.NewDecWithPrec(int64(math.Pow(0.5, float64((ctx.BlockHeight()-600000)/int64(params.HalvingPeriodAmpereBlocks)))*10000), 4)
 		} else {
 			halving = sdk.OneDec()
 		}
@@ -357,59 +379,20 @@ func (k Keeper) CalculateInvestmint(ctx sdk.Context, amt sdk.Coin, resource stri
 func (k Keeper) CheckAvailablePeriod(ctx sdk.Context, length uint64, resource string) bool {
 	var availableLength uint64
 	passed := ctx.BlockHeight()
+	params := k.GetParams(ctx)
 
-	// assuming 5 seconds block
+	// assuming 6 seconds block
 	switch resource {
 	case ctypes.VOLT:
-		halvingVolt := k.BaseHalvingPeriodVolt(ctx)
+		halvingVolt := params.HalvingPeriodVoltBlocks
 		doubling := uint32(math.Pow(2, float64(passed/int64(halvingVolt))))
-		availableLength = uint64(doubling * halvingVolt * 5)
+		availableLength = uint64(doubling * halvingVolt * 6)
 
 	case ctypes.AMPERE:
-		halvingAmpere := k.BaseHalvingPeriodAmpere(ctx)
+		halvingAmpere := params.HalvingPeriodAmpereBlocks
 		doubling := uint32(math.Pow(2, float64(passed/int64(halvingAmpere))))
-		availableLength = uint64(doubling * halvingAmpere * 5)
+		availableLength = uint64(doubling * halvingAmpere * 6)
 	}
 
 	return length <= availableLength
-}
-
-func (k Keeper) MaxSlots(ctx sdk.Context) (res uint32) {
-	k.paramSpace.Get(ctx, types.KeyMaxSlots, &res)
-	return
-}
-
-func (k Keeper) BaseHalvingPeriodVolt(ctx sdk.Context) (res uint32) {
-	k.paramSpace.Get(ctx, types.KeyHalvingPeriodVoltBlocks, &res)
-	return
-}
-
-func (k Keeper) BaseHalvingPeriodAmpere(ctx sdk.Context) (res uint32) {
-	k.paramSpace.Get(ctx, types.KeyHalvingPeriodAmpereBlocks, &res)
-	return
-}
-
-func (k Keeper) BaseInvestmintPeriodVolt(ctx sdk.Context) (res uint32) {
-	k.paramSpace.Get(ctx, types.KeyBaseInvestmintPeriodVolt, &res)
-	return
-}
-
-func (k Keeper) BaseInvestmintPeriodAmpere(ctx sdk.Context) (res uint32) {
-	k.paramSpace.Get(ctx, types.KeyBaseInvestmintPeriodAmpere, &res)
-	return
-}
-
-func (k Keeper) BaseInvestmintAmountVolt(ctx sdk.Context) (res sdk.Coin) {
-	k.paramSpace.Get(ctx, types.KeyBaseInvestmintAmountVolt, &res)
-	return
-}
-
-func (k Keeper) BaseInvestmintAmountAmpere(ctx sdk.Context) (res sdk.Coin) {
-	k.paramSpace.Get(ctx, types.KeyBaseInvestmintAmountAmpere, &res)
-	return
-}
-
-func (k Keeper) MinInvestmintPeriodSec(ctx sdk.Context) (res uint32) {
-	k.paramSpace.Get(ctx, types.KeyMinInvestmintPeriod, &res)
-	return
 }

@@ -11,8 +11,8 @@ import (
 
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 
-	"github.com/cybercongress/go-cyber/v3/x/dmn/keeper"
-	"github.com/cybercongress/go-cyber/v3/x/dmn/types"
+	"github.com/cybercongress/go-cyber/v4/x/dmn/keeper"
+	"github.com/cybercongress/go-cyber/v4/x/dmn/types"
 )
 
 var (

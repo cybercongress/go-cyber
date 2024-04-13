@@ -4,21 +4,23 @@ import (
 	"fmt"
 	"time"
 
+	storetypes "github.com/cosmos/cosmos-sdk/store/types"
+
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	gogotypes "github.com/gogo/protobuf/types"
 
+	"github.com/cometbft/cometbft/libs/log"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	"github.com/tendermint/tendermint/libs/log"
 
-	"github.com/cybercongress/go-cyber/v3/x/cyberbank/types"
+	"github.com/cybercongress/go-cyber/v4/x/cyberbank/types"
 )
 
 type IndexedKeeper struct {
 	*Proxy
 	accountKeeper types.AccountKeeper
 	cdc           codec.BinaryCodec
-	authKey       sdk.StoreKey
+	authKey       storetypes.StoreKey
 
 	userTotalStakeAmpere    map[uint64]uint64
 	userNewTotalStakeAmpere map[uint64]uint64
@@ -27,7 +29,7 @@ type IndexedKeeper struct {
 
 func NewIndexedKeeper(
 	cdc codec.BinaryCodec,
-	authKey sdk.StoreKey,
+	authKey storetypes.StoreKey,
 	pbk *Proxy,
 	ak types.AccountKeeper,
 ) *IndexedKeeper {

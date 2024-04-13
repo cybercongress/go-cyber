@@ -2,7 +2,9 @@ syntax = "proto3";
 package cyber.grid.v1beta1;
 
 import "gogoproto/gogo.proto";
-
+import "cosmos/msg/v1/msg.proto";
+import "cosmos_proto/cosmos.proto";
+import "cyber/grid/v1beta1/types.proto";
 import "cosmos/base/v1beta1/coin.proto";
 
 option go_package = "github.com/cybercongress/go-cyber/x/grid/types";
@@ -12,21 +14,16 @@ service Msg {
   rpc EditRoute(MsgEditRoute) returns (MsgEditRouteResponse);
   rpc DeleteRoute(MsgDeleteRoute) returns (MsgDeleteRouteResponse);
   rpc EditRouteName(MsgEditRouteName) returns (MsgEditRouteNameResponse);
+  rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
 }
 
 message MsgCreateRoute {
-  option (gogoproto.equal) = false;
-  option (gogoproto.goproto_getters) = false;
-
   string source = 1;
   string destination = 2;
   string name = 3;
 }
 
 message MsgEditRoute {
-  option (gogoproto.equal) = false;
-  option (gogoproto.goproto_getters) = false;
-
   string source = 1;
   string destination = 2;
   cosmos.base.v1beta1.Coin value = 3 [
@@ -36,23 +33,26 @@ message MsgEditRoute {
 }
 
 message MsgDeleteRoute {
-  option (gogoproto.equal) = false;
-  option (gogoproto.goproto_getters) = false;
-
   string source = 1;
   string destination = 2;
 }
 
 message MsgEditRouteName {
-  option (gogoproto.equal) = false;
-  option (gogoproto.goproto_getters) = false;
-
   string source = 1;
   string destination = 2;
   string name = 3;
+}
+
+message MsgUpdateParams {
+  option (cosmos.msg.v1.signer) = "authority";
+
+  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  Params params = 2 [ (gogoproto.nullable) = false ];
 }
 
 message MsgCreateRouteResponse {}
 message MsgEditRouteResponse {}
 message MsgDeleteRouteResponse {}
 message MsgEditRouteNameResponse {}
+message MsgUpdateParamsResponse {}

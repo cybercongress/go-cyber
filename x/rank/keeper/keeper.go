@@ -7,22 +7,27 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/cosmos/cosmos-sdk/codec"
+	storetypes "github.com/cosmos/cosmos-sdk/store/types"
+
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/cosmos/cosmos-sdk/x/auth/keeper"
-	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
-	"github.com/cybercongress/go-cyber/v3/merkle"
-	graphkeeper "github.com/cybercongress/go-cyber/v3/x/graph/keeper"
-	graphtypes "github.com/cybercongress/go-cyber/v3/x/graph/types"
-	"github.com/cybercongress/go-cyber/v3/x/rank/types"
+	"github.com/cybercongress/go-cyber/v4/merkle"
+	graphkeeper "github.com/cybercongress/go-cyber/v4/x/graph/keeper"
+	graphtypes "github.com/cybercongress/go-cyber/v4/x/graph/types"
+	"github.com/cybercongress/go-cyber/v4/x/rank/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/tendermint/tendermint/libs/log"
+	"github.com/cometbft/cometbft/libs/log"
 )
 
 type StateKeeper struct {
+	cdc      codec.BinaryCodec
+	storeKey storetypes.StoreKey
+
 	networkCidRank types.Rank
 	nextCidRank    types.Rank
 
@@ -41,30 +46,26 @@ type StateKeeper struct {
 	graphIndexedKeeper *graphkeeper.IndexKeeper
 	accountKeeper      keeper.AccountKeeper
 
-	storeKey   sdk.StoreKey
-	paramSpace paramstypes.Subspace
-
 	index         types.SearchIndex
 	getIndexError types.GetError
+
+	authority string
 }
 
 func NewKeeper(
-	key sdk.StoreKey,
-	paramSpace paramstypes.Subspace,
+	cdc codec.BinaryCodec,
+	key storetypes.StoreKey,
 	allowSearch bool,
 	stakeIndex types.StakeKeeper,
 	graphIndexedKeeper *graphkeeper.IndexKeeper,
 	graphKeeper types.GraphKeeper,
 	accountKeeper keeper.AccountKeeper,
 	unit types.ComputeUnit,
+	authority string,
 ) *StateKeeper {
-	if !paramSpace.HasKeyTable() {
-		paramSpace = paramSpace.WithKeyTable(types.ParamKeyTable())
-	}
-
 	return &StateKeeper{
 		storeKey:                key,
-		paramSpace:              paramSpace,
+		cdc:                     cdc,
 		allowSearch:             allowSearch,
 		rankCalcChan:            make(chan types.Rank, 1),
 		rankErrChan:             make(chan error),
@@ -75,7 +76,37 @@ func NewKeeper(
 		accountKeeper:           accountKeeper,
 		computeUnit:             unit,
 		hasNewLinksForPeriod:    true,
+		authority:               authority,
 	}
+}
+
+func (sk *StateKeeper) GetAuthority() string { return sk.authority }
+
+func (sk *StateKeeper) Logger(ctx sdk.Context) log.Logger {
+	return ctx.Logger().With("module", "x/"+types.ModuleName)
+}
+
+func (k *StateKeeper) SetParams(ctx sdk.Context, p types.Params) error {
+	if err := p.Validate(); err != nil {
+		return err
+	}
+
+	store := ctx.KVStore(k.storeKey)
+	bz := k.cdc.MustMarshal(&p)
+	store.Set(types.ParamsKey, bz)
+
+	return nil
+}
+
+func (k *StateKeeper) GetParams(ctx sdk.Context) (p types.Params) {
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get(types.ParamsKey)
+	if bz == nil {
+		return p
+	}
+
+	k.cdc.MustUnmarshal(bz, &p)
+	return p
 }
 
 func (sk *StateKeeper) LoadState(ctx sdk.Context) {
@@ -90,6 +121,15 @@ func (sk *StateKeeper) LoadState(ctx sdk.Context) {
 
 func (sk *StateKeeper) StartRankCalculation(ctx sdk.Context) {
 	params := sk.GetParams(ctx)
+
+	// TODO remove this after upgrade to v4 because on network upgrade block cannot access rank params
+	if params.CalculationPeriod == 0 {
+		params = types.Params{
+			CalculationPeriod: 5,
+			DampingFactor:     sdk.NewDecWithPrec(85, 2),
+			Tolerance:         sdk.NewDecWithPrec(1, 3),
+		}
+	}
 
 	dampingFactor, err := strconv.ParseFloat(params.DampingFactor.String(), 64)
 	if err != nil {
@@ -269,19 +309,6 @@ func (sk *StateKeeper) GetNegEntropy() uint64 {
 
 func (sk *StateKeeper) GetIndexError() error {
 	return sk.getIndexError()
-}
-
-func (sk *StateKeeper) GetParams(ctx sdk.Context) (params types.Params) {
-	sk.paramSpace.GetParamSet(ctx, &params)
-	return params
-}
-
-func (sk *StateKeeper) SetParams(ctx sdk.Context, params types.Params) {
-	sk.paramSpace.SetParamSet(ctx, &params)
-}
-
-func (sk *StateKeeper) Logger(ctx sdk.Context) log.Logger {
-	return ctx.Logger().With("module", "x/"+types.ModuleName)
 }
 
 func (sk StateKeeper) GetLatestBlockNumber(ctx sdk.Context) uint64 {

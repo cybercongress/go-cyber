@@ -14,6 +14,7 @@ const (
 var (
 	RouteKey                     = []byte{0x00}
 	RoutedEnergyByDestinationKey = []byte{0x01}
+	ParamsKey                    = []byte{0x02}
 )
 
 func GetRoutedEnergyByDestinationKey(dst sdk.AccAddress) []byte {

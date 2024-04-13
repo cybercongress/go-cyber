@@ -12,22 +12,22 @@ import (
 	"github.com/ipfs/go-cid"
 	"github.com/spf13/cobra"
 
-	"github.com/cybercongress/go-cyber/v3/x/graph/types"
+	"github.com/cybercongress/go-cyber/v4/x/graph/types"
 )
 
 func NewTxCmd() *cobra.Command {
-	linkCmd := &cobra.Command{
+	txCmd := &cobra.Command{
 		Use:                        types.ModuleName,
 		Short:                      "Graph transaction subcommands",
 		DisableFlagParsing:         true,
 		SuggestionsMinimumDistance: 2,
 		RunE:                       client.ValidateCmd,
 	}
-	linkCmd.AddCommand(
+	txCmd.AddCommand(
 		GetCmdLink(),
 	)
 
-	return linkCmd
+	return txCmd
 }
 
 func GetCmdLink() *cobra.Command {

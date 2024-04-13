@@ -7,9 +7,9 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/telemetry"
 
-	"github.com/cybercongress/go-cyber/v3/x/rank/types"
+	"github.com/cybercongress/go-cyber/v4/x/rank/types"
 
-	"github.com/tendermint/tendermint/libs/log"
+	"github.com/cometbft/cometbft/libs/log"
 )
 
 func CalculateRank(ctx *types.CalculationContext, unit types.ComputeUnit, logger log.Logger) (rank types.Rank) {

@@ -1,10 +1,11 @@
 package types
 
 import (
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	ctypes "github.com/cybercongress/go-cyber/v3/types"
+	ctypes "github.com/cybercongress/go-cyber/v4/types"
 )
 
 const (
@@ -19,6 +20,7 @@ var (
 	_ sdk.Msg = &MsgEditRoute{}
 	_ sdk.Msg = &MsgDeleteRoute{}
 	_ sdk.Msg = &MsgEditRouteName{}
+	_ sdk.Msg = &MsgUpdateParams{}
 )
 
 func NewMsgCreateRoute(src sdk.AccAddress, dst sdk.AccAddress, name string) *MsgCreateRoute {
@@ -179,4 +181,24 @@ func (msg MsgEditRouteName) GetSigners() []sdk.AccAddress {
 		panic(err)
 	}
 	return []sdk.AccAddress{addr}
+}
+
+// GetSignBytes implements the LegacyMsg interface.
+func (m MsgUpdateParams) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
+}
+
+// GetSigners returns the expected signers for a MsgUpdateParams message.
+func (m *MsgUpdateParams) GetSigners() []sdk.AccAddress {
+	addr, _ := sdk.AccAddressFromBech32(m.Authority)
+	return []sdk.AccAddress{addr}
+}
+
+// ValidateBasic does a sanity check on the provided data.
+func (m *MsgUpdateParams) ValidateBasic() error {
+	if _, err := sdk.AccAddressFromBech32(m.Authority); err != nil {
+		return errorsmod.Wrap(err, "invalid authority address")
+	}
+
+	return m.Params.Validate()
 }

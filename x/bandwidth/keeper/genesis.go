@@ -4,11 +4,13 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 
-	"github.com/cybercongress/go-cyber/v3/x/bandwidth/types"
+	"github.com/cybercongress/go-cyber/v4/x/bandwidth/types"
 )
 
 func InitGenesis(ctx sdk.Context, bm *BandwidthMeter, ak authkeeper.AccountKeeper, data types.GenesisState) {
-	bm.SetParams(ctx, data.Params)
+	if err := bm.SetParams(ctx, data.Params); err != nil {
+		panic(err)
+	}
 
 	bm.currentCreditPrice = bm.GetBandwidthPrice(ctx, data.Params.BasePrice)
 

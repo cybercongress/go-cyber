@@ -3,19 +3,20 @@ package plugins
 import (
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
-	liquiditykeeper "github.com/gravity-devs/liquidity/x/liquidity/keeper"
 
-	bandwidthkeeper "github.com/cybercongress/go-cyber/v3/x/bandwidth/keeper"
-	bandwidthwasm "github.com/cybercongress/go-cyber/v3/x/bandwidth/wasm"
-	dmnkeeper "github.com/cybercongress/go-cyber/v3/x/dmn/keeper"
-	dmnwasm "github.com/cybercongress/go-cyber/v3/x/dmn/wasm"
-	graphkeeper "github.com/cybercongress/go-cyber/v3/x/graph/keeper"
-	graphwasm "github.com/cybercongress/go-cyber/v3/x/graph/wasm"
-	gridkeeper "github.com/cybercongress/go-cyber/v3/x/grid/keeper"
-	gridwasm "github.com/cybercongress/go-cyber/v3/x/grid/wasm"
-	rankkeeper "github.com/cybercongress/go-cyber/v3/x/rank/keeper"
-	rankwasm "github.com/cybercongress/go-cyber/v3/x/rank/wasm"
-	resourceswasm "github.com/cybercongress/go-cyber/v3/x/resources/wasm"
+	// liquiditykeeper "github.com/gravity-devs/liquidity/x/liquidity/keeper"
+
+	bandwidthkeeper "github.com/cybercongress/go-cyber/v4/x/bandwidth/keeper"
+	bandwidthwasm "github.com/cybercongress/go-cyber/v4/x/bandwidth/wasm"
+	dmnkeeper "github.com/cybercongress/go-cyber/v4/x/dmn/keeper"
+	dmnwasm "github.com/cybercongress/go-cyber/v4/x/dmn/wasm"
+	graphkeeper "github.com/cybercongress/go-cyber/v4/x/graph/keeper"
+	graphwasm "github.com/cybercongress/go-cyber/v4/x/graph/wasm"
+	gridkeeper "github.com/cybercongress/go-cyber/v4/x/grid/keeper"
+	gridwasm "github.com/cybercongress/go-cyber/v4/x/grid/wasm"
+	rankkeeper "github.com/cybercongress/go-cyber/v4/x/rank/keeper"
+	rankwasm "github.com/cybercongress/go-cyber/v4/x/rank/wasm"
+	resourceswasm "github.com/cybercongress/go-cyber/v4/x/resources/wasm"
 )
 
 func RegisterCustomPlugins(
@@ -24,7 +25,7 @@ func RegisterCustomPlugins(
 	dmn *dmnkeeper.Keeper,
 	grid gridkeeper.Keeper,
 	bandwidth *bandwidthkeeper.BandwidthMeter,
-	liquidity liquiditykeeper.Keeper,
+	// liquidity liquiditykeeper.Keeper,
 ) []wasmkeeper.Option {
 	// Initialize Cyber's query integrations
 	querier := NewQuerier()
@@ -34,7 +35,7 @@ func RegisterCustomPlugins(
 		WasmQueryRouteDmn:       dmnwasm.NewWasmQuerier(*dmn),
 		WasmQueryRouteGrid:      gridwasm.NewWasmQuerier(grid),
 		WasmQueryRouteBandwidth: bandwidthwasm.NewWasmQuerier(bandwidth),
-		WasmQueryRouteLiquidity: NewLiquidityWasmQuerier(liquidity),
+		// WasmQueryRouteLiquidity: NewLiquidityWasmQuerier(liquidity),
 	}
 	querier.Queriers = queries
 
@@ -49,7 +50,7 @@ func RegisterCustomPlugins(
 		WasmMsgParserRouteDmn:       dmnwasm.NewWasmMsgParser(),
 		WasmMsgParserRouteGrid:      gridwasm.NewWasmMsgParser(),
 		WasmMsgParserRouteResources: resourceswasm.NewWasmMsgParser(),
-		WasmMsgParserLiquidity:      NewLiquidityWasmMsgParser(),
+		// WasmMsgParserLiquidity:      NewLiquidityWasmMsgParser(),
 	}
 	parser.Parsers = parsers
 

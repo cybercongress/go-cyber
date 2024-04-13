@@ -26,9 +26,11 @@
   
     - [Query](#cyber.bandwidth.v1beta1.Query)
   
-- [cyber/base/query/v1beta1/pagination.proto](#cyber/base/query/v1beta1/pagination.proto)
-    - [PageRequest](#cyber.base.query.v1beta1.PageRequest)
-    - [PageResponse](#cyber.base.query.v1beta1.PageResponse)
+- [cyber/bandwidth/v1beta1/tx.proto](#cyber/bandwidth/v1beta1/tx.proto)
+    - [MsgUpdateParams](#cyber.bandwidth.v1beta1.MsgUpdateParams)
+    - [MsgUpdateParamsResponse](#cyber.bandwidth.v1beta1.MsgUpdateParamsResponse)
+  
+    - [Msg](#cyber.bandwidth.v1beta1.Msg)
   
 - [cyber/dmn/v1beta1/types.proto](#cyber/dmn/v1beta1/types.proto)
     - [Load](#cyber.dmn.v1beta1.Load)
@@ -70,6 +72,8 @@
     - [MsgCreateThoughtResponse](#cyber.dmn.v1beta1.MsgCreateThoughtResponse)
     - [MsgForgetThought](#cyber.dmn.v1beta1.MsgForgetThought)
     - [MsgForgetThoughtResponse](#cyber.dmn.v1beta1.MsgForgetThoughtResponse)
+    - [MsgUpdateParams](#cyber.dmn.v1beta1.MsgUpdateParams)
+    - [MsgUpdateParamsResponse](#cyber.dmn.v1beta1.MsgUpdateParamsResponse)
   
     - [Msg](#cyber.dmn.v1beta1.Msg)
   
@@ -118,6 +122,8 @@
     - [MsgEditRouteName](#cyber.grid.v1beta1.MsgEditRouteName)
     - [MsgEditRouteNameResponse](#cyber.grid.v1beta1.MsgEditRouteNameResponse)
     - [MsgEditRouteResponse](#cyber.grid.v1beta1.MsgEditRouteResponse)
+    - [MsgUpdateParams](#cyber.grid.v1beta1.MsgUpdateParams)
+    - [MsgUpdateParamsResponse](#cyber.grid.v1beta1.MsgUpdateParamsResponse)
   
     - [Msg](#cyber.grid.v1beta1.Msg)
   
@@ -127,6 +133,10 @@
   
 - [cyber/rank/v1beta1/genesis.proto](#cyber/rank/v1beta1/genesis.proto)
     - [GenesisState](#cyber.rank.v1beta1.GenesisState)
+  
+- [cyber/rank/v1beta1/pagination.proto](#cyber/rank/v1beta1/pagination.proto)
+    - [PageRequest](#cyber.rank.v1beta1.PageRequest)
+    - [PageResponse](#cyber.rank.v1beta1.PageResponse)
   
 - [cyber/rank/v1beta1/query.proto](#cyber/rank/v1beta1/query.proto)
     - [QueryIsAnyLinkExistRequest](#cyber.rank.v1beta1.QueryIsAnyLinkExistRequest)
@@ -148,6 +158,12 @@
   
     - [Query](#cyber.rank.v1beta1.Query)
   
+- [cyber/rank/v1beta1/tx.proto](#cyber/rank/v1beta1/tx.proto)
+    - [MsgUpdateParams](#cyber.rank.v1beta1.MsgUpdateParams)
+    - [MsgUpdateParamsResponse](#cyber.rank.v1beta1.MsgUpdateParamsResponse)
+  
+    - [Msg](#cyber.rank.v1beta1.Msg)
+  
 - [cyber/resources/v1beta1/types.proto](#cyber/resources/v1beta1/types.proto)
     - [Params](#cyber.resources.v1beta1.Params)
   
@@ -165,6 +181,8 @@
 - [cyber/resources/v1beta1/tx.proto](#cyber/resources/v1beta1/tx.proto)
     - [MsgInvestmint](#cyber.resources.v1beta1.MsgInvestmint)
     - [MsgInvestmintResponse](#cyber.resources.v1beta1.MsgInvestmintResponse)
+    - [MsgUpdateParams](#cyber.resources.v1beta1.MsgUpdateParams)
+    - [MsgUpdateParamsResponse](#cyber.resources.v1beta1.MsgUpdateParamsResponse)
   
     - [Msg](#cyber.resources.v1beta1.Msg)
   
@@ -431,38 +449,33 @@
 
 
 
-<a name="cyber/base/query/v1beta1/pagination.proto"></a>
+<a name="cyber/bandwidth/v1beta1/tx.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## cyber/base/query/v1beta1/pagination.proto
+## cyber/bandwidth/v1beta1/tx.proto
 
 
 
-<a name="cyber.base.query.v1beta1.PageRequest"></a>
+<a name="cyber.bandwidth.v1beta1.MsgUpdateParams"></a>
 
-### PageRequest
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `page` | [uint32](#uint32) |  |  |
-| `per_page` | [uint32](#uint32) |  |  |
-
-
-
-
-
-
-<a name="cyber.base.query.v1beta1.PageResponse"></a>
-
-### PageResponse
+### MsgUpdateParams
 
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `total` | [uint32](#uint32) |  |  |
+| `authority` | [string](#string) |  |  |
+| `params` | [Params](#cyber.bandwidth.v1beta1.Params) |  |  |
+
+
+
+
+
+
+<a name="cyber.bandwidth.v1beta1.MsgUpdateParamsResponse"></a>
+
+### MsgUpdateParamsResponse
+
 
 
 
@@ -473,6 +486,16 @@
  <!-- end enums -->
 
  <!-- end HasExtensions -->
+
+
+<a name="cyber.bandwidth.v1beta1.Msg"></a>
+
+### Msg
+
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `UpdateParams` | [MsgUpdateParams](#cyber.bandwidth.v1beta1.MsgUpdateParams) | [MsgUpdateParamsResponse](#cyber.bandwidth.v1beta1.MsgUpdateParamsResponse) |  | |
 
  <!-- end services -->
 
@@ -987,6 +1010,32 @@
 
 
 
+
+<a name="cyber.dmn.v1beta1.MsgUpdateParams"></a>
+
+### MsgUpdateParams
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `authority` | [string](#string) |  |  |
+| `params` | [Params](#cyber.dmn.v1beta1.Params) |  |  |
+
+
+
+
+
+
+<a name="cyber.dmn.v1beta1.MsgUpdateParamsResponse"></a>
+
+### MsgUpdateParamsResponse
+
+
+
+
+
+
  <!-- end messages -->
 
  <!-- end enums -->
@@ -1009,6 +1058,7 @@
 | `ChangeThoughtGasPrice` | [MsgChangeThoughtGasPrice](#cyber.dmn.v1beta1.MsgChangeThoughtGasPrice) | [MsgChangeThoughtGasPriceResponse](#cyber.dmn.v1beta1.MsgChangeThoughtGasPriceResponse) |  | |
 | `ChangeThoughtPeriod` | [MsgChangeThoughtPeriod](#cyber.dmn.v1beta1.MsgChangeThoughtPeriod) | [MsgChangeThoughtPeriodResponse](#cyber.dmn.v1beta1.MsgChangeThoughtPeriodResponse) |  | |
 | `ChangeThoughtBlock` | [MsgChangeThoughtBlock](#cyber.dmn.v1beta1.MsgChangeThoughtBlock) | [MsgChangeThoughtBlockResponse](#cyber.dmn.v1beta1.MsgChangeThoughtBlockResponse) |  | |
+| `UpdateParams` | [MsgUpdateParams](#cyber.dmn.v1beta1.MsgUpdateParams) | [MsgUpdateParamsResponse](#cyber.dmn.v1beta1.MsgUpdateParamsResponse) |  | |
 
  <!-- end services -->
 
@@ -1523,6 +1573,32 @@
 
 
 
+
+<a name="cyber.grid.v1beta1.MsgUpdateParams"></a>
+
+### MsgUpdateParams
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `authority` | [string](#string) |  |  |
+| `params` | [Params](#cyber.grid.v1beta1.Params) |  |  |
+
+
+
+
+
+
+<a name="cyber.grid.v1beta1.MsgUpdateParamsResponse"></a>
+
+### MsgUpdateParamsResponse
+
+
+
+
+
+
  <!-- end messages -->
 
  <!-- end enums -->
@@ -1541,6 +1617,7 @@
 | `EditRoute` | [MsgEditRoute](#cyber.grid.v1beta1.MsgEditRoute) | [MsgEditRouteResponse](#cyber.grid.v1beta1.MsgEditRouteResponse) |  | |
 | `DeleteRoute` | [MsgDeleteRoute](#cyber.grid.v1beta1.MsgDeleteRoute) | [MsgDeleteRouteResponse](#cyber.grid.v1beta1.MsgDeleteRouteResponse) |  | |
 | `EditRouteName` | [MsgEditRouteName](#cyber.grid.v1beta1.MsgEditRouteName) | [MsgEditRouteNameResponse](#cyber.grid.v1beta1.MsgEditRouteNameResponse) |  | |
+| `UpdateParams` | [MsgUpdateParams](#cyber.grid.v1beta1.MsgUpdateParams) | [MsgUpdateParamsResponse](#cyber.grid.v1beta1.MsgUpdateParamsResponse) |  | |
 
  <!-- end services -->
 
@@ -1611,6 +1688,53 @@
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `params` | [Params](#cyber.rank.v1beta1.Params) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="cyber/rank/v1beta1/pagination.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## cyber/rank/v1beta1/pagination.proto
+
+
+
+<a name="cyber.rank.v1beta1.PageRequest"></a>
+
+### PageRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `page` | [uint32](#uint32) |  |  |
+| `per_page` | [uint32](#uint32) |  |  |
+
+
+
+
+
+
+<a name="cyber.rank.v1beta1.PageResponse"></a>
+
+### PageResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `total` | [uint32](#uint32) |  |  |
 
 
 
@@ -1830,7 +1954,7 @@
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `particle` | [string](#string) |  |  |
-| `pagination` | [cyber.base.query.v1beta1.PageRequest](#cyber.base.query.v1beta1.PageRequest) |  |  |
+| `pagination` | [PageRequest](#cyber.rank.v1beta1.PageRequest) |  |  |
 
 
 
@@ -1846,7 +1970,7 @@
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `result` | [RankedParticle](#cyber.rank.v1beta1.RankedParticle) | repeated |  |
-| `pagination` | [cyber.base.query.v1beta1.PageResponse](#cyber.base.query.v1beta1.PageResponse) |  |  |
+| `pagination` | [PageResponse](#cyber.rank.v1beta1.PageResponse) |  |  |
 
 
 
@@ -1880,12 +2004,64 @@
 | `Rank` | [QueryRankRequest](#cyber.rank.v1beta1.QueryRankRequest) | [QueryRankResponse](#cyber.rank.v1beta1.QueryRankResponse) |  | GET|/cyber/rank/v1beta1/rank/rank/{particle}|
 | `Search` | [QuerySearchRequest](#cyber.rank.v1beta1.QuerySearchRequest) | [QuerySearchResponse](#cyber.rank.v1beta1.QuerySearchResponse) |  | GET|/cyber/rank/v1beta1/rank/search/{particle}|
 | `Backlinks` | [QuerySearchRequest](#cyber.rank.v1beta1.QuerySearchRequest) | [QuerySearchResponse](#cyber.rank.v1beta1.QuerySearchResponse) |  | GET|/cyber/rank/v1beta1/rank/backlinks/{particle}|
-| `Top` | [.cyber.base.query.v1beta1.PageRequest](#cyber.base.query.v1beta1.PageRequest) | [QuerySearchResponse](#cyber.rank.v1beta1.QuerySearchResponse) |  | GET|/cyber/rank/v1beta1/rank/top|
+| `Top` | [PageRequest](#cyber.rank.v1beta1.PageRequest) | [QuerySearchResponse](#cyber.rank.v1beta1.QuerySearchResponse) |  | GET|/cyber/rank/v1beta1/rank/top|
 | `IsLinkExist` | [QueryIsLinkExistRequest](#cyber.rank.v1beta1.QueryIsLinkExistRequest) | [QueryLinkExistResponse](#cyber.rank.v1beta1.QueryLinkExistResponse) |  | GET|/cyber/rank/v1beta1/is_link_exist|
 | `IsAnyLinkExist` | [QueryIsAnyLinkExistRequest](#cyber.rank.v1beta1.QueryIsAnyLinkExistRequest) | [QueryLinkExistResponse](#cyber.rank.v1beta1.QueryLinkExistResponse) |  | GET|/cyber/rank/v1beta1/is_any_link_exist|
 | `ParticleNegentropy` | [QueryNegentropyPartilceRequest](#cyber.rank.v1beta1.QueryNegentropyPartilceRequest) | [QueryNegentropyParticleResponse](#cyber.rank.v1beta1.QueryNegentropyParticleResponse) |  | GET|/cyber/rank/v1beta1/negentropy/{particle}|
 | `Negentropy` | [QueryNegentropyRequest](#cyber.rank.v1beta1.QueryNegentropyRequest) | [QueryNegentropyResponse](#cyber.rank.v1beta1.QueryNegentropyResponse) |  | GET|/cyber/rank/v1beta1/negentropy|
 | `Karma` | [QueryKarmaRequest](#cyber.rank.v1beta1.QueryKarmaRequest) | [QueryKarmaResponse](#cyber.rank.v1beta1.QueryKarmaResponse) |  | GET|/cyber/rank/v1beta1/karma/{neuron}|
+
+ <!-- end services -->
+
+
+
+<a name="cyber/rank/v1beta1/tx.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## cyber/rank/v1beta1/tx.proto
+
+
+
+<a name="cyber.rank.v1beta1.MsgUpdateParams"></a>
+
+### MsgUpdateParams
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `authority` | [string](#string) |  |  |
+| `params` | [Params](#cyber.rank.v1beta1.Params) |  |  |
+
+
+
+
+
+
+<a name="cyber.rank.v1beta1.MsgUpdateParamsResponse"></a>
+
+### MsgUpdateParamsResponse
+
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="cyber.rank.v1beta1.Msg"></a>
+
+### Msg
+
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `UpdateParams` | [MsgUpdateParams](#cyber.rank.v1beta1.MsgUpdateParams) | [MsgUpdateParamsResponse](#cyber.rank.v1beta1.MsgUpdateParamsResponse) |  | |
 
  <!-- end services -->
 
@@ -2078,6 +2254,32 @@
 
 
 
+
+<a name="cyber.resources.v1beta1.MsgUpdateParams"></a>
+
+### MsgUpdateParams
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `authority` | [string](#string) |  |  |
+| `params` | [Params](#cyber.resources.v1beta1.Params) |  |  |
+
+
+
+
+
+
+<a name="cyber.resources.v1beta1.MsgUpdateParamsResponse"></a>
+
+### MsgUpdateParamsResponse
+
+
+
+
+
+
  <!-- end messages -->
 
  <!-- end enums -->
@@ -2093,6 +2295,7 @@
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `Investmint` | [MsgInvestmint](#cyber.resources.v1beta1.MsgInvestmint) | [MsgInvestmintResponse](#cyber.resources.v1beta1.MsgInvestmintResponse) |  | |
+| `UpdateParams` | [MsgUpdateParams](#cyber.resources.v1beta1.MsgUpdateParams) | [MsgUpdateParamsResponse](#cyber.resources.v1beta1.MsgUpdateParamsResponse) |  | |
 
  <!-- end services -->
 

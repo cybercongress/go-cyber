@@ -2,38 +2,47 @@ package types
 
 import (
 	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/cosmos/cosmos-sdk/codec/types"
+	"github.com/cosmos/cosmos-sdk/codec/legacy"
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/msgservice"
+	authzcodec "github.com/cosmos/cosmos-sdk/x/authz/codec"
+	govcodec "github.com/cosmos/cosmos-sdk/x/gov/codec"
 )
 
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(&MsgCreateRoute{}, "cyber/MsgCreateRoute", nil)
-	cdc.RegisterConcrete(&MsgEditRoute{}, "cyber/MsgEditRoute", nil)
-	cdc.RegisterConcrete(&MsgDeleteRoute{}, "cyber/MsgDeleteRoute", nil)
-	cdc.RegisterConcrete(&MsgEditRouteName{}, "cyber/MsgEditRouteName", nil)
+	legacy.RegisterAminoMsg(cdc, &MsgCreateRoute{}, "cyber/grid/MsgCreateRoute")
+	legacy.RegisterAminoMsg(cdc, &MsgEditRoute{}, "cyber/grid/MsgEditRoute")
+	legacy.RegisterAminoMsg(cdc, &MsgDeleteRoute{}, "cyber/grid/MsgDeleteRoute")
+	legacy.RegisterAminoMsg(cdc, &MsgEditRouteName{}, "cyber/grid/MsgEditRouteName")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "cyber/grid/MsgUpdateParams")
+
+	cdc.RegisterConcrete(Params{}, "cyber/grid/Params", nil)
 }
 
-func RegisterInterfaces(registry types.InterfaceRegistry) {
+func RegisterInterfaces(registry codectypes.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgCreateRoute{},
 		&MsgEditRoute{},
 		&MsgDeleteRoute{},
 		&MsgEditRouteName{},
+		&MsgUpdateParams{},
 	)
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
 }
 
 var (
-	amino = codec.NewLegacyAmino()
-
+	amino     = codec.NewLegacyAmino()
 	ModuleCdc = codec.NewAminoCodec(amino)
 )
 
 func init() {
 	RegisterLegacyAminoCodec(amino)
 	cryptocodec.RegisterCrypto(amino)
-	amino.Seal()
+	sdk.RegisterLegacyAminoCodec(amino)
+
+	RegisterLegacyAminoCodec(authzcodec.Amino)
+	RegisterLegacyAminoCodec(govcodec.Amino)
 }

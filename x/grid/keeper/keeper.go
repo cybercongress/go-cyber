@@ -3,42 +3,40 @@ package keeper
 import (
 	"fmt"
 
-	"github.com/cosmos/cosmos-sdk/telemetry"
-	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
-	"github.com/tendermint/tendermint/libs/log"
+	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 
-	ctypes "github.com/cybercongress/go-cyber/v3/types"
+	"github.com/cometbft/cometbft/libs/log"
+	"github.com/cosmos/cosmos-sdk/telemetry"
+
+	ctypes "github.com/cybercongress/go-cyber/v4/types"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/cybercongress/go-cyber/v3/x/grid/exported"
-	"github.com/cybercongress/go-cyber/v3/x/grid/types"
+	"github.com/cybercongress/go-cyber/v4/x/grid/exported"
+	"github.com/cybercongress/go-cyber/v4/x/grid/types"
 )
 
 var _ = exported.EnergyKeeper(nil)
 
 type Keeper struct {
-	storeKey      sdk.StoreKey
+	storeKey      storetypes.StoreKey
 	cdc           codec.BinaryCodec
 	accountKeeper types.AccountKeeper
 	proxyKeeper   types.CyberbankKeeper
-	paramSpace    paramstypes.Subspace
+
+	authority string
 }
 
 func NewKeeper(
 	cdc codec.BinaryCodec,
-	key sdk.StoreKey,
+	key storetypes.StoreKey,
 	bk types.CyberbankKeeper,
 	ak types.AccountKeeper,
-	paramSpace paramstypes.Subspace,
+	authority string,
 ) Keeper {
 	if addr := ak.GetModuleAddress(types.GridPoolName); addr == nil {
 		panic(fmt.Sprintf("%s module account has not been set", types.GridPoolName))
-	}
-
-	if !paramSpace.HasKeyTable() {
-		paramSpace = paramSpace.WithKeyTable(types.ParamKeyTable())
 	}
 
 	keeper := Keeper{
@@ -46,22 +44,39 @@ func NewKeeper(
 		cdc:           cdc,
 		proxyKeeper:   bk,
 		accountKeeper: ak,
-		paramSpace:    paramSpace,
+		authority:     authority,
 	}
 	return keeper
 }
+
+// GetAuthority returns the x/mint module's authority.
+func (k Keeper) GetAuthority() string { return k.authority }
 
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
 
-func (k Keeper) GetParams(ctx sdk.Context) (params types.Params) {
-	k.paramSpace.GetParamSet(ctx, &params)
-	return params
+func (k Keeper) SetParams(ctx sdk.Context, p types.Params) error {
+	if err := p.Validate(); err != nil {
+		return err
+	}
+
+	store := ctx.KVStore(k.storeKey)
+	bz := k.cdc.MustMarshal(&p)
+	store.Set(types.ParamsKey, bz)
+
+	return nil
 }
 
-func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
-	k.paramSpace.SetParamSet(ctx, &params)
+func (k Keeper) GetParams(ctx sdk.Context) (p types.Params) {
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get(types.ParamsKey)
+	if bz == nil {
+		return p
+	}
+
+	k.cdc.MustUnmarshal(bz, &p)
+	return p
 }
 
 func (k Keeper) CreateEnergyRoute(ctx sdk.Context, src, dst sdk.AccAddress, name string) error {
@@ -125,7 +140,7 @@ func (k Keeper) EditEnergyRoute(ctx sdk.Context, src, dst sdk.AccAddress, value 
 				return err // should never happen
 			}
 
-			k.SetRoutedEnergy(ctx, dst, energy.Sort().Sub(coins))
+			k.SetRoutedEnergy(ctx, dst, energy.Sort().Sub(coins...))
 		}
 	}
 
@@ -157,7 +172,7 @@ func (k Keeper) DeleteEnergyRoute(ctx sdk.Context, src, dst sdk.AccAddress) erro
 	}
 
 	energy := k.GetRoutedToEnergy(ctx, dst)
-	k.SetRoutedEnergy(ctx, dst, energy.Sub(route.Value))
+	k.SetRoutedEnergy(ctx, dst, energy.Sub(route.Value...))
 
 	k.RemoveRoute(ctx, src, dst)
 
@@ -203,8 +218,7 @@ func (k Keeper) SetRoutes(ctx sdk.Context, routes types.Routes) error {
 }
 
 func (k Keeper) MaxSourceRoutes(ctx sdk.Context) (res uint32) {
-	k.paramSpace.Get(ctx, types.KeyMaxRoutes, &res)
-	return
+	return k.GetParams(ctx).MaxRoutes
 }
 
 func (k Keeper) SetRoute(ctx sdk.Context, src, dst sdk.AccAddress, route types.Route) {

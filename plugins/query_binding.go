@@ -5,17 +5,17 @@ import (
 
 	"github.com/CosmWasm/wasmd/x/wasm"
 
-	liquiditytypes "github.com/gravity-devs/liquidity/x/liquidity/types"
+	// liquiditytypes "github.com/gravity-devs/liquidity/x/liquidity/types"
 
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	bandwidthtypes "github.com/cybercongress/go-cyber/v3/x/bandwidth/types"
-	dmntypes "github.com/cybercongress/go-cyber/v3/x/dmn/types"
-	graphtypes "github.com/cybercongress/go-cyber/v3/x/graph/types"
-	gridtypes "github.com/cybercongress/go-cyber/v3/x/grid/types"
-	ranktypes "github.com/cybercongress/go-cyber/v3/x/rank/types"
+	bandwidthtypes "github.com/cybercongress/go-cyber/v4/x/bandwidth/types"
+	dmntypes "github.com/cybercongress/go-cyber/v4/x/dmn/types"
+	graphtypes "github.com/cybercongress/go-cyber/v4/x/graph/types"
+	gridtypes "github.com/cybercongress/go-cyber/v4/x/grid/types"
+	ranktypes "github.com/cybercongress/go-cyber/v4/x/rank/types"
 )
 
 type WasmQuerierInterface interface {
@@ -44,7 +44,7 @@ const (
 	WasmQueryRouteDmn       = dmntypes.ModuleName
 	WasmQueryRouteGrid      = gridtypes.ModuleName
 	WasmQueryRouteBandwidth = bandwidthtypes.ModuleName
-	WasmQueryRouteLiquidity = liquiditytypes.ModuleName
+	// WasmQueryRouteLiquidity = liquiditytypes.ModuleName
 )
 
 func (q Querier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([]byte, error) {

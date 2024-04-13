@@ -8,23 +8,23 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/cybercongress/go-cyber/v3/x/graph/types"
+	"github.com/cybercongress/go-cyber/v4/x/graph/types"
 )
 
 // GetQueryCmd returns
 func GetQueryCmd() *cobra.Command {
-	graphQueryCmd := &cobra.Command{
+	queryCmd := &cobra.Command{
 		Use:                        types.ModuleName,
 		Short:                      "Querying commands for the graph module",
 		DisableFlagParsing:         true,
 		SuggestionsMinimumDistance: 2,
 		RunE:                       client.ValidateCmd,
 	}
-	graphQueryCmd.AddCommand(
+	queryCmd.AddCommand(
 		GetCmdGraphStats(),
 	)
 
-	return graphQueryCmd
+	return queryCmd
 }
 
 func GetCmdGraphStats() *cobra.Command {

@@ -3,7 +3,7 @@ package plugins
 import (
 	"encoding/json"
 
-	liquiditytypes "github.com/gravity-devs/liquidity/x/liquidity/types"
+	// liquiditytypes "github.com/gravity-devs/liquidity/x/liquidity/types"
 
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
@@ -11,10 +11,10 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	dmntypes "github.com/cybercongress/go-cyber/v3/x/dmn/types"
-	graphtypes "github.com/cybercongress/go-cyber/v3/x/graph/types"
-	gridtypes "github.com/cybercongress/go-cyber/v3/x/grid/types"
-	resourcestypes "github.com/cybercongress/go-cyber/v3/x/resources/types"
+	dmntypes "github.com/cybercongress/go-cyber/v4/x/dmn/types"
+	graphtypes "github.com/cybercongress/go-cyber/v4/x/graph/types"
+	gridtypes "github.com/cybercongress/go-cyber/v4/x/grid/types"
+	resourcestypes "github.com/cybercongress/go-cyber/v4/x/resources/types"
 )
 
 type WasmMsgParserInterface interface {
@@ -42,7 +42,7 @@ const (
 	WasmMsgParserRouteDmn       = dmntypes.ModuleName
 	WasmMsgParserRouteGrid      = gridtypes.ModuleName
 	WasmMsgParserRouteResources = resourcestypes.ModuleName
-	WasmMsgParserLiquidity      = liquiditytypes.ModuleName
+	// WasmMsgParserLiquidity      = liquiditytypes.ModuleName
 )
 
 func (p MsgParser) ParseCustom(contractAddr sdk.AccAddress, data json.RawMessage) ([]sdk.Msg, error) {

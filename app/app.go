@@ -4,34 +4,38 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"strings"
 	"time"
 
-	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
+	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
+	reflectionv1 "cosmossdk.io/api/cosmos/reflection/v1"
 
-	v2 "github.com/cybercongress/go-cyber/v3/app/upgrades/v2"
-	v3 "github.com/cybercongress/go-cyber/v3/app/upgrades/v3"
+	"github.com/cosmos/cosmos-sdk/runtime"
+	"github.com/cosmos/cosmos-sdk/server"
+	"github.com/cosmos/cosmos-sdk/store/streaming"
+	"github.com/cosmos/cosmos-sdk/x/auth/posthandler"
 
-	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
-	"github.com/cosmos/cosmos-sdk/simapp"
+	v2 "github.com/cybercongress/go-cyber/v4/app/upgrades/v2"
+	v3 "github.com/cybercongress/go-cyber/v4/app/upgrades/v3"
+	v4 "github.com/cybercongress/go-cyber/v4/app/upgrades/v4"
 
 	"github.com/cosmos/cosmos-sdk/client/grpc/tmservice"
-	ibcclientclient "github.com/cosmos/ibc-go/v4/modules/core/02-client/client"
+	ibcclientclient "github.com/cosmos/ibc-go/v7/modules/core/02-client/client"
 
-	"github.com/cybercongress/go-cyber/v3/app/keepers"
-	"github.com/cybercongress/go-cyber/v3/app/upgrades"
+	"github.com/cybercongress/go-cyber/v4/app/keepers"
+	"github.com/cybercongress/go-cyber/v4/app/upgrades"
 
-	ctypes "github.com/cybercongress/go-cyber/v3/types"
-
+	dbm "github.com/cometbft/cometbft-db"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec/types"
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
 	authtx "github.com/cosmos/cosmos-sdk/x/auth/tx"
 	"github.com/spf13/cast"
-	dbm "github.com/tendermint/tm-db"
 
+	abci "github.com/cometbft/cometbft/abci/types"
+	"github.com/cometbft/cometbft/libs/log"
+	tmos "github.com/cometbft/cometbft/libs/os"
 	"github.com/cosmos/cosmos-sdk/baseapp"
-	"github.com/cosmos/cosmos-sdk/client/rpc"
+	nodeservice "github.com/cosmos/cosmos-sdk/client/grpc/node"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/server/api"
 	"github.com/cosmos/cosmos-sdk/server/config"
@@ -39,34 +43,27 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/cosmos/cosmos-sdk/x/auth/ante"
-	authrest "github.com/cosmos/cosmos-sdk/x/auth/client/rest"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	"github.com/cosmos/cosmos-sdk/x/bank"
-	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/cosmos/cosmos-sdk/x/crisis"
-	distrclient "github.com/cosmos/cosmos-sdk/x/distribution/client"
-	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
+
 	paramsclient "github.com/cosmos/cosmos-sdk/x/params/client"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	upgradeclient "github.com/cosmos/cosmos-sdk/x/upgrade/client"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
-	abci "github.com/tendermint/tendermint/abci/types"
-	"github.com/tendermint/tendermint/libs/log"
-	tmos "github.com/tendermint/tendermint/libs/os"
 
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 
 	"github.com/CosmWasm/wasmd/x/wasm"
-	wasmclient "github.com/CosmWasm/wasmd/x/wasm/client"
-	tmjson "github.com/tendermint/tendermint/libs/json"
+	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
+	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 
-	"github.com/cybercongress/go-cyber/v3/utils"
-	cyberbanktypes "github.com/cybercongress/go-cyber/v3/x/cyberbank/types"
+	tmjson "github.com/cometbft/cometbft/libs/json"
 
 	govclient "github.com/cosmos/cosmos-sdk/x/gov/client"
 
-	"github.com/cybercongress/go-cyber/v3/app/params"
+	"github.com/cybercongress/go-cyber/v4/utils"
+
+	runtimeservices "github.com/cosmos/cosmos-sdk/runtime/services"
 )
 
 const (
@@ -78,33 +75,8 @@ var (
 	NodeDir      = ".cyber"
 	Bech32Prefix = "bostrom"
 
-	// If EnabledSpecificProposals is "", and this is "true", then enable all x/wasm proposals.
-	ProposalsEnabled        = "true"
-	EnableSpecificProposals = ""
-
-	Upgrades = []upgrades.Upgrade{v2.Upgrade, v3.Upgrade}
+	Upgrades = []upgrades.Upgrade{v2.Upgrade, v3.Upgrade, v4.Upgrade}
 )
-
-// GetEnabledProposals parses the ProposalsEnabled / EnableSpecificProposals values to
-// produce a list of enabled proposals to pass into wasmd app.
-func GetEnabledProposals() []wasm.ProposalType {
-	if EnableSpecificProposals == "" {
-		if ProposalsEnabled == "true" {
-			return wasm.EnableAllProposals
-		}
-		return wasm.DisableAllProposals
-	}
-	chunks := strings.Split(EnableSpecificProposals, ",")
-	proposals, err := wasm.ConvertToProposals(chunks)
-	if err != nil {
-		panic(err)
-	}
-	return proposals
-}
-
-func overrideWasmVariables() {
-	wasmtypes.MaxWasmSize = 2 * 1024 * 1024
-}
 
 // These constants are derived from the above variables.
 // These are the ones we will want to use in the code, based on
@@ -115,28 +87,22 @@ var (
 )
 
 func getGovProposalHandlers() []govclient.ProposalHandler {
-	var govProposalHandlers []govclient.ProposalHandler
-	govProposalHandlers = wasmclient.ProposalHandlers
-
-	govProposalHandlers = append(govProposalHandlers,
+	return []govclient.ProposalHandler{
 		paramsclient.ProposalHandler,
-		distrclient.ProposalHandler,
-		upgradeclient.ProposalHandler,
-		upgradeclient.CancelProposalHandler,
+		upgradeclient.LegacyProposalHandler,
+		upgradeclient.LegacyCancelProposalHandler,
 		ibcclientclient.UpdateClientProposalHandler,
 		ibcclientclient.UpgradeProposalHandler,
-	)
-
-	return govProposalHandlers
+	}
 }
 
-// module accounts that are allowed to receive tokens
-var allowedReceivingModAcc = map[string]bool{
-	distrtypes.ModuleName: true,
-}
+//// module accounts that are allowed to receive tokens
+//var allowedReceivingModAcc = map[string]bool{
+//	distrtypes.ModuleName: true,
+//}
 
 var (
-	_ simapp.App              = (*App)(nil)
+	_ runtime.AppI            = (*App)(nil)
 	_ servertypes.Application = (*App)(nil)
 )
 
@@ -149,13 +115,14 @@ type App struct {
 
 	aminoCodec        *codec.LegacyAmino
 	appCodec          codec.Codec
+	txConfig          client.TxConfig
 	interfaceRegistry types.InterfaceRegistry
 
-	invCheckPeriod uint
+	ModuleManager *module.Manager
 
-	// the module manager
-	mm *module.Manager
 	sm *module.SimulationManager
+
+	configurator module.Configurator
 }
 
 // New returns a reference to an initialized Cyber Consensus Computer.
@@ -164,30 +131,29 @@ func NewApp(
 	db dbm.DB,
 	traceStore io.Writer,
 	loadLatest bool,
-	skipUpgradeHeights map[int64]bool,
-	homePath string,
-	invCheckPeriod uint,
-	encodingConfig params.EncodingConfig,
-	enabledProposals []wasm.ProposalType,
 	appOpts servertypes.AppOptions,
-	wasmOpts []wasm.Option,
+	wasmOpts []wasmkeeper.Option,
 	baseAppOptions ...func(*baseapp.BaseApp),
 ) *App {
-	overrideWasmVariables()
+	wasmtypes.MaxWasmSize = 2 * 1024 * 1024 // 2MB
+	encodingConfig := MakeEncodingConfig()
+
 	appCodec, legacyAmino := encodingConfig.Marshaler, encodingConfig.Amino
 	interfaceRegistry := encodingConfig.InterfaceRegistry
+	txConfig := encodingConfig.TxConfig
 
-	bApp := baseapp.NewBaseApp(appName, logger, db, encodingConfig.TxConfig.TxDecoder(), baseAppOptions...)
+	bApp := baseapp.NewBaseApp(appName, logger, db, txConfig.TxDecoder(), baseAppOptions...)
 	bApp.SetCommitMultiStoreTracer(traceStore)
 	bApp.SetVersion(version.Version)
 	bApp.SetInterfaceRegistry(interfaceRegistry)
+	bApp.SetTxEncoder(txConfig.TxEncoder())
 
 	app := &App{
 		BaseApp:           bApp,
 		aminoCodec:        legacyAmino,
 		appCodec:          appCodec,
+		txConfig:          txConfig,
 		interfaceRegistry: interfaceRegistry,
-		invCheckPeriod:    invCheckPeriod,
 	}
 
 	// Setup keepers
@@ -195,18 +161,19 @@ func NewApp(
 		appCodec,
 		bApp,
 		legacyAmino,
-		maccPerms,
-		app.ModuleAccountAddrs(),
-		skipUpgradeHeights,
-		homePath,
-		invCheckPeriod,
-		enabledProposals,
+		keepers.GetMaccPerms(),
 		appOpts,
 		wasmOpts,
 	)
 
+	// load state streaming if enabled
+	if _, _, err := streaming.LoadStreamingServices(bApp, appOpts, appCodec, logger, app.GetKVStoreKey()); err != nil {
+		logger.Error("failed to load state streaming", "err", err)
+		os.Exit(1)
+	}
+
 	// upgrade handlers
-	cfg := module.NewConfigurator(appCodec, app.MsgServiceRouter(), app.GRPCQueryRouter())
+	app.configurator = module.NewConfigurator(appCodec, app.MsgServiceRouter(), app.GRPCQueryRouter())
 
 	/****  Module Options ****/
 
@@ -216,37 +183,36 @@ func NewApp(
 
 	// NOTE: Any module instantiated in the module manager that is later modified
 	// must be passed by reference here.
-	app.mm = module.NewManager(appModules(app, encodingConfig, skipGenesisInvariants)...)
+	app.ModuleManager = module.NewManager(appModules(app, encodingConfig, skipGenesisInvariants)...)
+	app.ModuleManager.RegisterServices(app.configurator)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
 	// there is nothing left over in the validator fee pool, so as to keep the
 	// CanWithdrawInvariant invariant.
 	// NOTE: staking module is required if HistoricalEntries param > 0
-	app.mm.SetOrderBeginBlockers(orderBeginBlockers()...)
+	app.ModuleManager.SetOrderBeginBlockers(orderBeginBlockers()...)
 
-	app.mm.SetOrderEndBlockers(orderEndBlockers()...)
+	app.ModuleManager.SetOrderEndBlockers(orderEndBlockers()...)
 
 	// NOTE: The genutils module must occur after staking so that pools are
 	// properly initialized with tokens from genesis accounts.
 	// NOTE: Capability module must occur first so that it can initialize any capabilities
 	// so that other modules that want to create or claim capabilities afterwards in InitChain
 	// can do so safely.
-	app.mm.SetOrderInitGenesis(orderInitBlockers()...)
+	app.ModuleManager.SetOrderInitGenesis(orderInitBlockers()...)
 
-	app.mm.RegisterInvariants(&app.CrisisKeeper)
-	app.mm.RegisterRoutes(app.Router(), app.QueryRouter(), encodingConfig.Amino)
+	app.ModuleManager.RegisterInvariants(app.CrisisKeeper)
 
 	// NOTE hack to register bank's module services because of custom wrapper
 	// from sdk.bank/module.go: AppModule RegisterServices
 	// 	m := keeper.NewMigrator(am.keeper.(keeper.BaseKeeper))
-
 	// NOTE skip bank module from native services registration then initialize manually
-	delete(app.mm.Modules, banktypes.ModuleName)
-	app.mm.RegisterServices(cfg)
-	app.mm.Modules[banktypes.ModuleName] = bank.NewAppModule(encodingConfig.Marshaler, app.CyberbankKeeper.Proxy, app.AccountKeeper)
-
-	banktypes.RegisterMsgServer(cfg.MsgServer(), bankkeeper.NewMsgServerImpl(app.CyberbankKeeper.Proxy))
-	banktypes.RegisterQueryServer(cfg.QueryServer(), app.CyberbankKeeper.Proxy)
+	//delete(app.ModuleManager.Modules, banktypes.ModuleName)
+	//app.ModuleManager.RegisterServices(cfg)
+	//app.ModuleManager.Modules[banktypes.ModuleName] = bank.NewAppModule(encodingConfig.Marshaler, app.CyberbankKeeper.Proxy, app.AccountKeeper)
+	//
+	//banktypes.RegisterMsgServer(cfg.MsgServer(), bankkeeper.NewMsgServerImpl(app.CyberbankKeeper.Proxy))
+	//banktypes.RegisterQueryServer(cfg.QueryServer(), app.CyberbankKeeper.Proxy)
 
 	// initialize stores
 	app.MountKVStores(app.GetKVStoreKey())
@@ -254,7 +220,15 @@ func NewApp(
 	app.MountMemoryStores(app.GetMemoryStoreKey())
 
 	// register upgrade
-	app.setupUpgradeHandlers(cfg)
+	app.setupUpgradeHandlers(app.configurator)
+
+	// SDK v47 - since we do not use dep inject, this gives us access to newer gRPC services.
+	autocliv1.RegisterQueryServer(app.GRPCQueryRouter(), runtimeservices.NewAutoCLIQueryService(app.ModuleManager.Modules))
+	reflectionSvc, err := runtimeservices.NewReflectionService()
+	if err != nil {
+		panic(err)
+	}
+	reflectionv1.RegisterReflectionServiceServer(app.GRPCQueryRouter(), reflectionSvc)
 
 	wasmConfig, err := wasm.ReadWasmConfig(appOpts)
 	if err != nil {
@@ -263,7 +237,7 @@ func NewApp(
 
 	anteHandler, err := NewAnteHandler(
 		HandlerOptions{
-			HandlerBaseOptions: HandlerBaseOptions{
+			HandlerOptions: ante.HandlerOptions{
 				AccountKeeper:   app.AccountKeeper,
 				BankKeeper:      app.CyberbankKeeper.Proxy,
 				FeegrantKeeper:  app.FeeGrantKeeper,
@@ -272,8 +246,9 @@ func NewApp(
 			},
 			BandwidthMeter:    app.BandwidthMeter,
 			IBCKeeper:         app.IBCKeeper,
-			TXCounterStoreKey: app.GetKey(wasm.StoreKey),
+			TXCounterStoreKey: app.GetKey(wasmtypes.StoreKey),
 			WasmConfig:        &wasmConfig,
+			WasmKeeper:        &app.WasmKeeper,
 		},
 	)
 	if err != nil {
@@ -296,6 +271,8 @@ func NewApp(
 	}
 
 	app.setupUpgradeStoreLoaders()
+
+	app.setPostHandler()
 
 	if loadLatest {
 		if err := app.LoadLatestVersion(); err != nil {
@@ -332,6 +309,17 @@ func NewApp(
 	return app
 }
 
+func (app *App) setPostHandler() {
+	postHandler, err := posthandler.NewPostHandler(
+		posthandler.HandlerOptions{},
+	)
+	if err != nil {
+		panic(err)
+	}
+
+	app.SetPostHandler(postHandler)
+}
+
 // Name returns the name of the App
 func (app *App) Name() string {
 	return app.BaseApp.Name()
@@ -339,12 +327,12 @@ func (app *App) Name() string {
 
 // BeginBlocker application updates every begin block
 func (app *App) BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock) abci.ResponseBeginBlock {
-	return app.mm.BeginBlock(ctx, req)
+	return app.ModuleManager.BeginBlock(ctx, req)
 }
 
 // EndBlocker application updates every end block
 func (app *App) EndBlocker(ctx sdk.Context, req abci.RequestEndBlock) abci.ResponseEndBlock {
-	return app.mm.EndBlock(ctx, req)
+	return app.ModuleManager.EndBlock(ctx, req)
 }
 
 // InitChainer application update at chain initialization
@@ -354,15 +342,21 @@ func (app *App) InitChainer(ctx sdk.Context, req abci.RequestInitChain) abci.Res
 		panic(err)
 	}
 
-	var bankGenesisState banktypes.GenesisState
-	app.appCodec.MustUnmarshalJSON(genesisState["bank"], &bankGenesisState)
-	app.BandwidthMeter.AddToDesirableBandwidth(ctx, bankGenesisState.Supply.AmountOf(ctypes.VOLT).Uint64())
+	// custom initialization
+	//var bankGenesisState banktypes.GenesisState
+	//app.appCodec.MustUnmarshalJSON(genesisState["bank"], &bankGenesisState)
+	//app.BandwidthMeter.AddToDesirableBandwidth(ctx, bankGenesisState.Supply.AmountOf(ctypes.VOLT).Uint64())
 
-	app.UpgradeKeeper.SetModuleVersionMap(ctx, app.mm.GetVersionMap())
-	resp := app.mm.InitGenesis(ctx, app.appCodec, genesisState)
+	app.UpgradeKeeper.SetModuleVersionMap(ctx, app.ModuleManager.GetVersionMap())
+	resp := app.ModuleManager.InitGenesis(ctx, app.appCodec, genesisState)
 
-	// because manager skips init genesis for modules with empty data (e.g null)
-	app.mm.Modules[cyberbanktypes.ModuleName].InitGenesis(ctx, app.appCodec, nil)
+	// custom initialization
+	for _, account := range app.AccountKeeper.GetAllAccounts(ctx) {
+		app.CyberbankKeeper.InitializeStakeAmpere(
+			account.GetAccountNumber(),
+			uint64(app.CyberbankKeeper.Proxy.GetAccountTotalStakeAmper(ctx, account.GetAddress())),
+		)
+	}
 
 	return resp
 }
@@ -375,22 +369,11 @@ func (app *App) LoadHeight(height int64) error {
 // ModuleAccountAddrs returns all the app's module account addresses.
 func (app *App) ModuleAccountAddrs() map[string]bool {
 	modAccAddrs := make(map[string]bool)
-	for acc := range maccPerms {
+	for acc := range keepers.GetMaccPerms() {
 		modAccAddrs[authtypes.NewModuleAddress(acc).String()] = true
 	}
 
 	return modAccAddrs
-}
-
-// BlockedAddrs returns all the app's module account addresses that are not
-// allowed to receive external tokens.
-func (app *App) BlockedAddrs() map[string]bool {
-	blockedAddrs := make(map[string]bool)
-	for acc := range maccPerms {
-		blockedAddrs[authtypes.NewModuleAddress(acc).String()] = !allowedReceivingModAcc[acc]
-	}
-
-	return blockedAddrs
 }
 
 // LegacyAmino returns SimApp's amino codec.
@@ -426,17 +409,22 @@ func (app *App) GetSubspace(moduleName string) paramstypes.Subspace {
 // API server.
 func (app *App) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APIConfig) {
 	clientCtx := apiSvr.ClientCtx
-	rpc.RegisterRoutes(clientCtx, apiSvr.Router)
-	// Register legacy tx routes.
-	authrest.RegisterTxRoutes(clientCtx, apiSvr.Router)
 	// Register new tx routes from grpc-gateway.
 	authtx.RegisterGRPCGatewayRoutes(clientCtx, apiSvr.GRPCGatewayRouter)
+
 	// Register new tendermint queries routes from grpc-gateway.
 	tmservice.RegisterGRPCGatewayRoutes(clientCtx, apiSvr.GRPCGatewayRouter)
 
-	// Register legacy and grpc-gateway routes for all modules.
-	ModuleBasics.RegisterRESTRoutes(clientCtx, apiSvr.Router)
+	// Register node gRPC service for grpc-gateway.
+	nodeservice.RegisterGRPCGatewayRoutes(clientCtx, apiSvr.GRPCGatewayRouter)
+
+	// Register grpc-gateway routes for all modules.
 	ModuleBasics.RegisterGRPCGatewayRoutes(clientCtx, apiSvr.GRPCGatewayRouter)
+
+	// register swagger API from root so that other applications can override easily
+	if err := server.RegisterSwaggerAPI(apiSvr.ClientCtx, apiSvr.Router, apiConfig.Swagger); err != nil {
+		panic(err)
+	}
 }
 
 // RegisterTxService implements the Application.RegisterTxService method.
@@ -446,7 +434,16 @@ func (app *App) RegisterTxService(clientCtx client.Context) {
 
 // RegisterTendermintService implements the Application.RegisterTendermintService method.
 func (app *App) RegisterTendermintService(clientCtx client.Context) {
-	tmservice.RegisterTendermintService(app.BaseApp.GRPCQueryRouter(), clientCtx, app.interfaceRegistry)
+	tmservice.RegisterTendermintService(
+		clientCtx,
+		app.BaseApp.GRPCQueryRouter(),
+		app.interfaceRegistry,
+		app.Query,
+	)
+}
+
+func (app *App) RegisterNodeService(clientCtx client.Context) {
+	nodeservice.RegisterNodeService(clientCtx, app.GRPCQueryRouter())
 }
 
 // configure store loader that checks if version == upgradeHeight and applies store upgrades
@@ -475,21 +472,12 @@ func (app *App) setupUpgradeHandlers(cfg module.Configurator) {
 		app.UpgradeKeeper.SetUpgradeHandler(
 			upgrade.UpgradeName,
 			upgrade.CreateUpgradeHandler(
-				app.mm,
+				app.ModuleManager,
 				cfg,
 				&app.AppKeepers,
 			),
 		)
 	}
-}
-
-// GetMaccPerms returns a copy of the module account permissions
-func GetMaccPerms() map[string][]string {
-	dupMaccPerms := make(map[string][]string)
-	for k, v := range maccPerms {
-		dupMaccPerms[k] = v
-	}
-	return dupMaccPerms
 }
 
 // SimulationManager implements the SimulationApp interface
@@ -512,6 +500,11 @@ func (app *App) loadContexts(db dbm.DB, ctx sdk.Context) {
 
 	if app.LastBlockHeight() >= 1 {
 		calculationPeriod := app.RankKeeper.GetParams(freshCtx).CalculationPeriod
+		// TODO remove this after upgrade to v4 because on network upgrade block cannot access rank params
+		if calculationPeriod == 0 {
+			calculationPeriod = int64(5)
+		}
+
 		rankRoundBlockNumber := (freshCtx.BlockHeight() / calculationPeriod) * calculationPeriod
 		if rankRoundBlockNumber == 0 && freshCtx.BlockHeight() >= 1 {
 			rankRoundBlockNumber = 1

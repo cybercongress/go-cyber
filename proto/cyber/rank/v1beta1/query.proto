@@ -5,11 +5,9 @@ import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 
 import "cyber/rank/v1beta1/types.proto";
-import "cyber/base/query/v1beta1/pagination.proto";
+import "cyber/rank/v1beta1/pagination.proto";
 
 option go_package = "github.com/cybercongress/go-cyber/x/rank/types";
-option (gogoproto.goproto_getters_all) = false;
-option (gogoproto.equal_all) = false;
 
 service Query {
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
@@ -29,7 +27,7 @@ service Query {
         "/cyber/rank/v1beta1/rank/backlinks/{particle}";
   }
 
-  rpc Top(cyber.base.query.v1beta1.PageRequest) returns (QuerySearchResponse) {
+  rpc Top(cyber.rank.v1beta1.PageRequest) returns (QuerySearchResponse) {
     option (google.api.http).get = "/cyber/rank/v1beta1/rank/top";
   }
 
@@ -68,12 +66,12 @@ message QueryRankResponse { uint64 rank = 1; }
 
 message QuerySearchRequest {
   string particle = 1;
-  cyber.base.query.v1beta1.PageRequest pagination = 2;
+  cyber.rank.v1beta1.PageRequest pagination = 2;
 }
 
 message QuerySearchResponse {
   repeated RankedParticle result = 1 [ (gogoproto.nullable) = false ];
-  cyber.base.query.v1beta1.PageResponse pagination = 2;
+  cyber.rank.v1beta1.PageResponse pagination = 2;
 }
 
 message QueryTopRequest {}
