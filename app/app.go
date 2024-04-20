@@ -343,9 +343,9 @@ func (app *App) InitChainer(ctx sdk.Context, req abci.RequestInitChain) abci.Res
 	}
 
 	// custom initialization
-	//var bankGenesisState banktypes.GenesisState
-	//app.appCodec.MustUnmarshalJSON(genesisState["bank"], &bankGenesisState)
-	//app.BandwidthMeter.AddToDesirableBandwidth(ctx, bankGenesisState.Supply.AmountOf(ctypes.VOLT).Uint64())
+	// var bankGenesisState banktypes.GenesisState
+	// app.appCodec.MustUnmarshalJSON(genesisState["bank"], &bankGenesisState)
+	// app.BandwidthMeter.AddToDesirableBandwidth(ctx, bankGenesisState.Supply.AmountOf(ctypes.VOLT).Uint64())
 
 	app.UpgradeKeeper.SetModuleVersionMap(ctx, app.ModuleManager.GetVersionMap())
 	resp := app.ModuleManager.InitGenesis(ctx, app.appCodec, genesisState)

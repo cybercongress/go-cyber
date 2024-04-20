@@ -45,8 +45,8 @@ import (
 	ibc "github.com/cosmos/ibc-go/v7/modules/core"
 	ibcexported "github.com/cosmos/ibc-go/v7/modules/core/exported"
 
-	//"github.com/gravity-devs/liquidity/x/liquidity"
-	//liquiditytypes "github.com/gravity-devs/liquidity/x/liquidity/types"
+	"github.com/cybercongress/go-cyber/v4/x/liquidity"
+	liquiditytypes "github.com/cybercongress/go-cyber/v4/x/liquidity/types"
 
 	"github.com/cybercongress/go-cyber/v4/app/params"
 	"github.com/cybercongress/go-cyber/v4/x/bandwidth"
@@ -93,7 +93,7 @@ var ModuleBasics = module.NewBasicManager(
 	ibcfee.AppModuleBasic{},
 	transfer.AppModuleBasic{},
 	consensus.AppModuleBasic{},
-	// liquidity.AppModuleBasic{},
+	liquidity.AppModuleBasic{},
 	wasm.AppModuleBasic{},
 	bandwidth.AppModuleBasic{},
 	cyberbank.AppModuleBasic{},
@@ -137,7 +137,7 @@ func appModules(
 		crisis.NewAppModule(app.AppKeepers.CrisisKeeper, skipGenesisInvariants, app.GetSubspace(crisistypes.ModuleName)),
 		wasm.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper, app.AccountKeeper, app.CyberbankKeeper.Proxy, app.MsgServiceRouter(), app.GetSubspace(wasmtypes.ModuleName)),
 		consensus.NewAppModule(appCodec, app.AppKeepers.ConsensusParamsKeeper),
-		// liquidity.NewAppModule(appCodec, app.LiquidityKeeper, app.AccountKeeper, app.CyberbankKeeper.Proxy, app.DistrKeeper),
+		liquidity.NewAppModule(appCodec, app.LiquidityKeeper, app.AccountKeeper, app.CyberbankKeeper.Proxy, app.DistrKeeper, app.GetSubspace(liquiditytypes.ModuleName)),
 		cyberbank.NewAppModule(appCodec, app.CyberbankKeeper),
 		bandwidth.NewAppModule(appCodec, app.AccountKeeper, app.BandwidthMeter, app.GetSubspace(bandwidthtypes.ModuleName)),
 		graph.NewAppModule(
@@ -189,7 +189,7 @@ func orderBeginBlockers() []string {
 		upgradetypes.ModuleName,
 		capabilitytypes.ModuleName,
 		stakingtypes.ModuleName,
-		// liquiditytypes.ModuleName,
+		liquiditytypes.ModuleName,
 		distrtypes.ModuleName,
 		slashingtypes.ModuleName,
 		minttypes.ModuleName,
@@ -223,7 +223,7 @@ func orderEndBlockers() []string {
 		crisistypes.ModuleName,
 		govtypes.ModuleName,
 		stakingtypes.ModuleName,
-		// liquiditytypes.ModuleName,
+		liquiditytypes.ModuleName,
 		cyberbanktypes.ModuleName,
 		bandwidthtypes.ModuleName,
 		graphtypes.ModuleName,
@@ -266,7 +266,7 @@ func orderInitBlockers() []string {
 		ibcexported.ModuleName,
 		evidencetypes.ModuleName,
 		consensusparamtypes.ModuleName,
-		// liquiditytypes.ModuleName,
+		liquiditytypes.ModuleName,
 		feegrant.ModuleName,
 		authz.ModuleName,
 		authtypes.ModuleName,

@@ -57,9 +57,10 @@ import (
 
 	//"github.com/cybercongress/go-cyber/v4/app"
 
-	// liquiditykeeper "github.com/gravity-devs/liquidity/x/liquidity/keeper"
-	// liquiditytypes "github.com/gravity-devs/liquidity/x/liquidity/types"
 	"github.com/spf13/cast"
+
+	liquiditykeeper "github.com/cybercongress/go-cyber/v4/x/liquidity/keeper"
+	liquiditytypes "github.com/cybercongress/go-cyber/v4/x/liquidity/types"
 
 	wasmplugins "github.com/cybercongress/go-cyber/v4/plugins"
 	"github.com/cybercongress/go-cyber/v4/x/bandwidth"
@@ -97,9 +98,9 @@ var maccPerms = map[string][]string{
 	ibctransfertypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
 	ibcfeetypes.ModuleName:         nil,
 	wasmtypes.ModuleName:           {authtypes.Burner},
-	// liquiditytypes.ModuleName:      {authtypes.Minter, authtypes.Burner},
-	gridtypes.GridPoolName:       nil,
-	resourcestypes.ResourcesName: {authtypes.Minter, authtypes.Burner},
+	liquiditytypes.ModuleName:      {authtypes.Minter, authtypes.Burner},
+	gridtypes.GridPoolName:         nil,
+	resourcestypes.ResourcesName:   {authtypes.Minter, authtypes.Burner},
 }
 
 type AppKeepers struct {
@@ -129,8 +130,8 @@ type AppKeepers struct {
 
 	ConsensusParamsKeeper consensusparamkeeper.Keeper
 
-	WasmKeeper wasmkeeper.Keeper
-	// LiquidityKeeper liquiditykeeper.Keeper
+	WasmKeeper      wasmkeeper.Keeper
+	LiquidityKeeper liquiditykeeper.Keeper
 	BandwidthMeter  *bandwidthkeeper.BandwidthMeter
 	CyberbankKeeper *cyberbankkeeper.IndexedKeeper
 	GraphKeeper     *graphkeeper.GraphKeeper
@@ -354,14 +355,14 @@ func NewAppKeepers(
 		govModAddress,
 	)
 
-	//appKeepers.LiquidityKeeper = liquiditykeeper.NewKeeper(
-	//	appCodec,
-	//	keys[liquiditytypes.StoreKey],
-	//	appKeepers.GetSubspace(liquiditytypes.ModuleName),
-	//	appKeepers.CyberbankKeeper.Proxy,
-	//	appKeepers.AccountKeeper,
-	//	appKeepers.DistrKeeper,
-	//)
+	appKeepers.LiquidityKeeper = liquiditykeeper.NewKeeper(
+		appCodec,
+		keys[liquiditytypes.StoreKey],
+		appKeepers.CyberbankKeeper.Proxy,
+		appKeepers.AccountKeeper,
+		appKeepers.DistrKeeper,
+		govModAddress,
+	)
 
 	// End cyber's keepers configuration
 
@@ -462,7 +463,7 @@ func NewAppKeepers(
 		appKeepers.DmnKeeper,
 		appKeepers.GridKeeper,
 		appKeepers.BandwidthMeter,
-		// appKeepers.LiquidityKeeper,
+		appKeepers.LiquidityKeeper,
 	)
 	wasmOpts = append(wasmOpts, cyberOpts...)
 
@@ -536,7 +537,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(gridtypes.ModuleName)
 	paramsKeeper.Subspace(dmntypes.ModuleName)
 	paramsKeeper.Subspace(resourcestypes.ModuleName)
-	// paramsKeeper.Subspace(liquiditytypes.ModuleName)
+	paramsKeeper.Subspace(liquiditytypes.ModuleName)
 
 	return paramsKeeper
 }

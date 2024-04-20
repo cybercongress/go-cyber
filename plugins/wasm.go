@@ -4,7 +4,7 @@ import (
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 
-	// liquiditykeeper "github.com/gravity-devs/liquidity/x/liquidity/keeper"
+	liquiditykeeper "github.com/cybercongress/go-cyber/v4/x/liquidity/keeper"
 
 	bandwidthkeeper "github.com/cybercongress/go-cyber/v4/x/bandwidth/keeper"
 	bandwidthwasm "github.com/cybercongress/go-cyber/v4/x/bandwidth/wasm"
@@ -25,7 +25,7 @@ func RegisterCustomPlugins(
 	dmn *dmnkeeper.Keeper,
 	grid gridkeeper.Keeper,
 	bandwidth *bandwidthkeeper.BandwidthMeter,
-	// liquidity liquiditykeeper.Keeper,
+	liquidity liquiditykeeper.Keeper,
 ) []wasmkeeper.Option {
 	// Initialize Cyber's query integrations
 	querier := NewQuerier()
@@ -35,7 +35,7 @@ func RegisterCustomPlugins(
 		WasmQueryRouteDmn:       dmnwasm.NewWasmQuerier(*dmn),
 		WasmQueryRouteGrid:      gridwasm.NewWasmQuerier(grid),
 		WasmQueryRouteBandwidth: bandwidthwasm.NewWasmQuerier(bandwidth),
-		// WasmQueryRouteLiquidity: NewLiquidityWasmQuerier(liquidity),
+		WasmQueryRouteLiquidity: NewLiquidityWasmQuerier(liquidity),
 	}
 	querier.Queriers = queries
 
@@ -50,7 +50,7 @@ func RegisterCustomPlugins(
 		WasmMsgParserRouteDmn:       dmnwasm.NewWasmMsgParser(),
 		WasmMsgParserRouteGrid:      gridwasm.NewWasmMsgParser(),
 		WasmMsgParserRouteResources: resourceswasm.NewWasmMsgParser(),
-		// WasmMsgParserLiquidity:      NewLiquidityWasmMsgParser(),
+		WasmMsgParserLiquidity:      NewLiquidityWasmMsgParser(),
 	}
 	parser.Parsers = parsers
 
