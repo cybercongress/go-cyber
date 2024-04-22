@@ -1,6 +1,7 @@
 package app
 
 import (
+	simappparams "cosmossdk.io/simapp/params"
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
@@ -48,7 +49,6 @@ import (
 	"github.com/cybercongress/go-cyber/v4/x/liquidity"
 	liquiditytypes "github.com/cybercongress/go-cyber/v4/x/liquidity/types"
 
-	"github.com/cybercongress/go-cyber/v4/app/params"
 	"github.com/cybercongress/go-cyber/v4/x/bandwidth"
 	bandwidthtypes "github.com/cybercongress/go-cyber/v4/x/bandwidth/types"
 	"github.com/cybercongress/go-cyber/v4/x/cyberbank"
@@ -106,10 +106,10 @@ var ModuleBasics = module.NewBasicManager(
 
 func appModules(
 	app *App,
-	encodingConfig params.EncodingConfig,
+	encodingConfig simappparams.EncodingConfig,
 	skipGenesisInvariants bool,
 ) []module.AppModule {
-	appCodec := encodingConfig.Marshaler
+	appCodec := encodingConfig.Codec
 
 	return []module.AppModule{
 		genutil.NewAppModule(
@@ -156,10 +156,10 @@ func appModules(
 // define the order of the modules for deterministic simulationss
 func simulationModules(
 	app *App,
-	encodingConfig params.EncodingConfig,
+	encodingConfig simappparams.EncodingConfig,
 	_ bool,
 ) []module.AppModuleSimulation {
-	appCodec := encodingConfig.Marshaler
+	appCodec := encodingConfig.Codec
 
 	return []module.AppModuleSimulation{
 		auth.NewAppModule(appCodec, app.AppKeepers.AccountKeeper, authsims.RandomGenesisAccounts, app.GetSubspace(authtypes.ModuleName)),
