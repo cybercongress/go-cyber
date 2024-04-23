@@ -3,6 +3,9 @@ package keeper
 import (
 	"context"
 
+	errorsmod "cosmossdk.io/errors"
+	"github.com/ipfs/go-cid"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"google.golang.org/grpc/codes"
@@ -23,14 +26,27 @@ func (sk StateKeeper) Params(goCtx context.Context, _ *types.QueryParamsRequest)
 }
 
 func (sk StateKeeper) Rank(goCtx context.Context, req *types.QueryRankRequest) (*types.QueryRankResponse, error) {
+	if req == nil {
+		return nil, status.Errorf(codes.InvalidArgument, "empty request")
+	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	particle, err := cid.Decode(req.Particle)
+	if err != nil {
+		return nil, graphtypes.ErrInvalidParticle
+	}
+
+	if particle.Version() != 0 {
+		return nil, graphtypes.ErrCidVersion
+	}
 
 	cidNum, exist := sk.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(req.Particle))
 	if !exist {
-		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, req.Particle)
+		return nil, errorsmod.Wrap(graphtypes.ErrCidNotFound, req.Particle)
 	}
 
-	rankValue := sk.index.GetRankValue(cidNum)
+	// rankValue := sk.index.GetRankValue(cidNum) // TODO it was the bug, test bindings
+	rankValue := sk.networkCidRank.RankValues[cidNum]
 	return &types.QueryRankResponse{Rank: rankValue}, nil
 }
 
@@ -43,7 +59,7 @@ func (sk *StateKeeper) Search(goCtx context.Context, req *types.QuerySearchReque
 
 	cidNum, exist := sk.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(req.Particle))
 	if !exist {
-		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, "")
+		return nil, errorsmod.Wrap(graphtypes.ErrCidNotFound, "")
 	}
 
 	page, limit := uint32(0), uint32(10)
@@ -72,7 +88,7 @@ func (sk *StateKeeper) Backlinks(goCtx context.Context, req *types.QuerySearchRe
 
 	cidNum, exist := sk.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(req.Particle))
 	if !exist {
-		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, req.Particle)
+		return nil, errorsmod.Wrap(graphtypes.ErrCidNotFound, req.Particle)
 	}
 
 	page, limit := uint32(0), uint32(10)
@@ -123,19 +139,19 @@ func (sk StateKeeper) IsLinkExist(goCtx context.Context, req *types.QueryIsLinkE
 
 	addr, err := sdk.AccAddressFromBech32(req.Address)
 	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, err.Error())
+		return nil, errorsmod.Wrap(sdkerrors.ErrInvalidAddress, err.Error())
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	cidNumFrom, exist := sk.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(req.From))
 	if !exist {
-		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, req.From)
+		return nil, errorsmod.Wrap(graphtypes.ErrCidNotFound, req.From)
 	}
 
 	cidNumTo, exist := sk.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(req.To))
 	if !exist {
-		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, req.To)
+		return nil, errorsmod.Wrap(graphtypes.ErrCidNotFound, req.To)
 	}
 
 	var accountNum uint64
@@ -143,7 +159,7 @@ func (sk StateKeeper) IsLinkExist(goCtx context.Context, req *types.QueryIsLinkE
 	if account != nil {
 		accountNum = account.GetAccountNumber()
 	} else {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "Invalid neuron address")
+		return nil, errorsmod.Wrap(sdkerrors.ErrInvalidAddress, "Invalid neuron address")
 	}
 
 	exists := sk.graphIndexedKeeper.IsLinkExist(graphtypes.CompactLink{
@@ -164,12 +180,12 @@ func (sk StateKeeper) IsAnyLinkExist(goCtx context.Context, req *types.QueryIsAn
 
 	cidNumFrom, exist := sk.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(req.From))
 	if !exist {
-		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, req.From)
+		return nil, errorsmod.Wrap(graphtypes.ErrCidNotFound, req.From)
 	}
 
 	cidNumTo, exist := sk.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(req.To))
 	if !exist {
-		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, req.To)
+		return nil, errorsmod.Wrap(graphtypes.ErrCidNotFound, req.To)
 	}
 
 	exists := sk.graphIndexedKeeper.IsAnyLinkExist(cidNumFrom, cidNumTo)
@@ -186,7 +202,7 @@ func (sk *StateKeeper) ParticleNegentropy(goCtx context.Context, request *types.
 
 	cidNum, exist := sk.graphKeeper.GetCidNumber(ctx, graphtypes.Cid(request.Particle))
 	if !exist {
-		return nil, sdkerrors.Wrap(graphtypes.ErrCidNotFound, request.Particle)
+		return nil, errorsmod.Wrap(graphtypes.ErrCidNotFound, request.Particle)
 	}
 
 	entropyValue := sk.GetEntropy(cidNum)
@@ -205,7 +221,7 @@ func (sk *StateKeeper) Karma(goCtx context.Context, request *types.QueryKarmaReq
 
 	addr, err := sdk.AccAddressFromBech32(request.Neuron)
 	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, err.Error())
+		return nil, errorsmod.Wrap(sdkerrors.ErrInvalidAddress, err.Error())
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
@@ -215,7 +231,7 @@ func (sk *StateKeeper) Karma(goCtx context.Context, request *types.QueryKarmaReq
 	if account != nil {
 		accountNum = account.GetAccountNumber()
 	} else {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "Invalid neuron address")
+		return nil, errorsmod.Wrap(sdkerrors.ErrInvalidAddress, "Invalid neuron address")
 	}
 
 	karma := sk.GetKarma(accountNum)

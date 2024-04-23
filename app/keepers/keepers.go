@@ -461,9 +461,12 @@ func NewAppKeepers(
 		appKeepers.RankKeeper,
 		appKeepers.GraphKeeper,
 		appKeepers.DmnKeeper,
-		appKeepers.GridKeeper,
+		&appKeepers.GridKeeper,
 		appKeepers.BandwidthMeter,
-		appKeepers.LiquidityKeeper,
+		&appKeepers.ResourcesKeeper,
+		appKeepers.IndexKeeper,
+		&appKeepers.AccountKeeper,
+		appKeepers.CyberbankKeeper,
 	)
 	wasmOpts = append(wasmOpts, cyberOpts...)
 

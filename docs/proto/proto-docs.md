@@ -48,6 +48,8 @@
     - [QueryThoughtParamsRequest](#cyber.dmn.v1beta1.QueryThoughtParamsRequest)
     - [QueryThoughtResponse](#cyber.dmn.v1beta1.QueryThoughtResponse)
     - [QueryThoughtStatsResponse](#cyber.dmn.v1beta1.QueryThoughtStatsResponse)
+    - [QueryThoughtsFeesRequest](#cyber.dmn.v1beta1.QueryThoughtsFeesRequest)
+    - [QueryThoughtsFeesResponse](#cyber.dmn.v1beta1.QueryThoughtsFeesResponse)
     - [QueryThoughtsRequest](#cyber.dmn.v1beta1.QueryThoughtsRequest)
     - [QueryThoughtsResponse](#cyber.dmn.v1beta1.QueryThoughtsResponse)
     - [QueryThoughtsStatsRequest](#cyber.dmn.v1beta1.QueryThoughtsStatsRequest)
@@ -366,7 +368,7 @@
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `load` | [cosmos.base.v1beta1.DecProto](#cosmos.base.v1beta1.DecProto) |  |  |
+| `load` | [string](#string) |  |  |
 
 
 
@@ -446,7 +448,7 @@
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `price` | [cosmos.base.v1beta1.DecProto](#cosmos.base.v1beta1.DecProto) |  |  |
+| `price` | [string](#string) |  |  |
 
 
 
@@ -766,6 +768,31 @@
 
 
 
+<a name="cyber.dmn.v1beta1.QueryThoughtsFeesRequest"></a>
+
+### QueryThoughtsFeesRequest
+
+
+
+
+
+
+
+<a name="cyber.dmn.v1beta1.QueryThoughtsFeesResponse"></a>
+
+### QueryThoughtsFeesResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `fees` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
+
+
+
+
+
+
 <a name="cyber.dmn.v1beta1.QueryThoughtsRequest"></a>
 
 ### QueryThoughtsRequest
@@ -834,6 +861,7 @@
 | `ThoughtStats` | [QueryThoughtParamsRequest](#cyber.dmn.v1beta1.QueryThoughtParamsRequest) | [QueryThoughtStatsResponse](#cyber.dmn.v1beta1.QueryThoughtStatsResponse) |  | GET|/cyber/dmn/v1beta1/dmn/thought_stats|
 | `Thoughts` | [QueryThoughtsRequest](#cyber.dmn.v1beta1.QueryThoughtsRequest) | [QueryThoughtsResponse](#cyber.dmn.v1beta1.QueryThoughtsResponse) |  | GET|/cyber/dmn/v1beta1/dmn/thoughts|
 | `ThoughtsStats` | [QueryThoughtsStatsRequest](#cyber.dmn.v1beta1.QueryThoughtsStatsRequest) | [QueryThoughtsStatsResponse](#cyber.dmn.v1beta1.QueryThoughtsStatsResponse) |  | GET|/cyber/dmn/v1beta1/dmn/thoughts_stats|
+| `ThoughtsFees` | [QueryThoughtsFeesRequest](#cyber.dmn.v1beta1.QueryThoughtsFeesRequest) | [QueryThoughtsFeesResponse](#cyber.dmn.v1beta1.QueryThoughtsFeesResponse) |  | GET|/cyber/dmn/v1beta1/dmn/thoughts_fees|
 
  <!-- end services -->
 

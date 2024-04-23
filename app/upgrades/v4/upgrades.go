@@ -2,8 +2,9 @@ package v3
 
 import (
 	"fmt"
-	liquiditytypes "github.com/cybercongress/go-cyber/v4/x/liquidity/types"
 	"time"
+
+	liquiditytypes "github.com/cybercongress/go-cyber/v4/x/liquidity/types"
 
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/cosmos/cosmos-sdk/baseapp"

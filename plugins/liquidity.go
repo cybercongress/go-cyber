@@ -16,8 +16,8 @@ import (
 )
 
 var (
-	_ WasmQuerierInterface   = WasmQuerier{}
-	_ WasmMsgParserInterface = WasmMsgParser{}
+// _ WasmQuerierInterface   = WasmQuerier{}
+// _ WasmMsgParserInterface = WasmMsgParser{}
 )
 
 //--------------------------------------------------
