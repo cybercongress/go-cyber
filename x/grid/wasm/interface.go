@@ -3,188 +3,203 @@ package wasm
 import (
 	"encoding/json"
 
-	"github.com/CosmWasm/wasmd/x/wasm"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	errorsmod "cosmossdk.io/errors"
 
-	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 
+	pluginstypes "github.com/cybercongress/go-cyber/v4/plugins/types"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
+
 	"github.com/cybercongress/go-cyber/v4/x/grid/keeper"
-	"github.com/cybercongress/go-cyber/v4/x/grid/types"
 )
 
-var _ MsgParserInterface = MsgParser{}
-
-//--------------------------------------------------
-
-type MsgParserInterface interface {
-	Parse(contractAddr sdk.AccAddress, msg wasmvmtypes.CosmosMsg) ([]sdk.Msg, error)
-	ParseCustom(contractAddr sdk.AccAddress, data json.RawMessage) ([]sdk.Msg, error)
+type Messenger struct {
+	keeper *keeper.Keeper
 }
 
-type MsgParser struct{}
-
-func NewWasmMsgParser() MsgParser {
-	return MsgParser{}
-}
-
-func (MsgParser) Parse(_ sdk.AccAddress, _ wasmvmtypes.CosmosMsg) ([]sdk.Msg, error) {
-	return nil, nil
-}
-
-type CosmosMsg struct {
-	CreateEnergyRoute   *types.MsgCreateRoute   `json:"create_energy_route,omitempty"`
-	EditEnergyRoute     *types.MsgEditRoute     `json:"edit_energy_route,omitempty"`
-	EditEnergyRouteName *types.MsgEditRouteName `json:"edit_energy_route_name,omitempty"`
-	DeleteEnergyRoute   *types.MsgDeleteRoute   `json:"delete_energy_route,omitempty"`
-}
-
-func (MsgParser) ParseCustom(contractAddr sdk.AccAddress, data json.RawMessage) ([]sdk.Msg, error) {
-	var sdkMsg CosmosMsg
-	err := json.Unmarshal(data, &sdkMsg)
-	if err != nil {
-		return nil, sdkerrors.Wrap(err, "failed to parse link custom msg")
+func NewMessenger(
+	keeper *keeper.Keeper,
+) *Messenger {
+	return &Messenger{
+		keeper: keeper,
 	}
+}
 
+func (m *Messenger) HandleMsg(ctx sdk.Context, contractAddr sdk.AccAddress, contractIBCPortID string, msg pluginstypes.CyberMsg) ([]sdk.Event, [][]byte, error) {
 	switch {
-	case sdkMsg.CreateEnergyRoute != nil:
-		return []sdk.Msg{sdkMsg.CreateEnergyRoute}, sdkMsg.CreateEnergyRoute.ValidateBasic()
-	case sdkMsg.EditEnergyRoute != nil:
-		return []sdk.Msg{sdkMsg.EditEnergyRoute}, sdkMsg.EditEnergyRoute.ValidateBasic()
-	case sdkMsg.EditEnergyRouteName != nil:
-		return []sdk.Msg{sdkMsg.EditEnergyRouteName}, sdkMsg.EditEnergyRouteName.ValidateBasic()
-	case sdkMsg.DeleteEnergyRoute != nil:
-		return []sdk.Msg{sdkMsg.DeleteEnergyRoute}, sdkMsg.DeleteEnergyRoute.ValidateBasic()
+	case msg.CreateEnergyRoute != nil:
+		if msg.CreateEnergyRoute.Source != contractAddr.String() {
+			return nil, nil, wasmvmtypes.InvalidRequest{Err: "create route wrong source"}
+		}
+
+		msgServer := keeper.NewMsgServerImpl(*m.keeper)
+
+		if err := msg.CreateEnergyRoute.ValidateBasic(); err != nil {
+			return nil, nil, errorsmod.Wrap(err, "failed validating msg")
+		}
+
+		res, err := msgServer.CreateRoute(
+			sdk.WrapSDKContext(ctx),
+			msg.CreateEnergyRoute,
+		)
+		if err != nil {
+			return nil, nil, errorsmod.Wrap(err, "create energy route msg")
+		}
+
+		responseBytes, err := json.Marshal(*res)
+		if err != nil {
+			return nil, nil, errorsmod.Wrap(err, "failed to serialize create energy route response")
+		}
+
+		resp := [][]byte{responseBytes}
+
+		return nil, resp, nil
+	case msg.EditEnergyRoute != nil:
+		if msg.EditEnergyRoute.Source != contractAddr.String() {
+			return nil, nil, wasmvmtypes.InvalidRequest{Err: "create route wrong source"}
+		}
+
+		msgServer := keeper.NewMsgServerImpl(*m.keeper)
+
+		if err := msg.EditEnergyRoute.ValidateBasic(); err != nil {
+			return nil, nil, errorsmod.Wrap(err, "failed validating msg")
+		}
+
+		res, err := msgServer.EditRoute(
+			sdk.WrapSDKContext(ctx),
+			msg.EditEnergyRoute,
+		)
+		if err != nil {
+			return nil, nil, errorsmod.Wrap(err, "edit energy route msg")
+		}
+
+		responseBytes, err := json.Marshal(*res)
+		if err != nil {
+			return nil, nil, errorsmod.Wrap(err, "failed to serialize edit energy route response")
+		}
+
+		resp := [][]byte{responseBytes}
+
+		return nil, resp, nil
+	case msg.EditEnergyRouteName != nil:
+		if msg.EditEnergyRouteName.Source != contractAddr.String() {
+			return nil, nil, wasmvmtypes.InvalidRequest{Err: "edit energy route wrong source"}
+		}
+
+		msgServer := keeper.NewMsgServerImpl(*m.keeper)
+
+		if err := msg.EditEnergyRouteName.ValidateBasic(); err != nil {
+			return nil, nil, errorsmod.Wrap(err, "failed validating msg")
+		}
+
+		res, err := msgServer.EditRouteName(
+			sdk.WrapSDKContext(ctx),
+			msg.EditEnergyRouteName,
+		)
+		if err != nil {
+			return nil, nil, errorsmod.Wrap(err, "edit energy route name msg")
+		}
+
+		responseBytes, err := json.Marshal(*res)
+		if err != nil {
+			return nil, nil, errorsmod.Wrap(err, "failed to serialize edit energy route name response")
+		}
+
+		resp := [][]byte{responseBytes}
+
+		return nil, resp, nil
+	case msg.DeleteEnergyRoute != nil:
+		if msg.DeleteEnergyRoute.Source != contractAddr.String() {
+			return nil, nil, wasmvmtypes.InvalidRequest{Err: "delete route wrong source"}
+		}
+
+		msgServer := keeper.NewMsgServerImpl(*m.keeper)
+
+		if err := msg.DeleteEnergyRoute.ValidateBasic(); err != nil {
+			return nil, nil, errorsmod.Wrap(err, "failed validating msg")
+		}
+
+		res, err := msgServer.DeleteRoute(
+			sdk.WrapSDKContext(ctx),
+			msg.DeleteEnergyRoute,
+		)
+		if err != nil {
+			return nil, nil, errorsmod.Wrap(err, "delete energy route name msg")
+		}
+
+		responseBytes, err := json.Marshal(*res)
+		if err != nil {
+			return nil, nil, errorsmod.Wrap(err, "failed to serialize delete energy route name response")
+		}
+
+		resp := [][]byte{responseBytes}
+
+		return nil, resp, nil
 	default:
-		return nil, sdkerrors.Wrap(wasm.ErrInvalidMsg, "Unknown variant of Energy")
+		return nil, nil, pluginstypes.ErrHandleMsg
 	}
-}
-
-//--------------------------------------------------
-
-type QuerierInterface interface {
-	Query(ctx sdk.Context, request wasmvmtypes.QueryRequest) ([]byte, error)
-	QueryCustom(ctx sdk.Context, data json.RawMessage) ([]byte, error)
 }
 
 type Querier struct {
-	keeper.Keeper
+	*keeper.Keeper
 }
 
-func NewWasmQuerier(keeper keeper.Keeper) Querier {
-	return Querier{keeper}
+func NewWasmQuerier(keeper *keeper.Keeper) *Querier {
+	return &Querier{keeper}
 }
 
-func (Querier) Query(_ sdk.Context, _ wasmvmtypes.QueryRequest) ([]byte, error) { return nil, nil }
-
-type CosmosQuery struct {
-	SourceRoutes            *QuerySourceParams      `json:"source_routes,omitempty"`
-	SourceRoutedEnergy      *QuerySourceParams      `json:"source_routed_energy,omitempty"`
-	DestinationRoutedEnergy *QueryDestinationParams `json:"destination_routed_energy,omitempty"`
-	Route                   *QueryRouteParams       `json:"route,omitempty"`
-}
-
-type Route struct {
-	Source      string            `json:"source"`
-	Destination string            `json:"destination"`
-	Name        string            `json:"name"`
-	Value       wasmvmtypes.Coins `json:"value"`
-}
-
-type Routes []Route
-
-type QuerySourceParams struct {
-	Source string `json:"source"`
-}
-
-type QueryDestinationParams struct {
-	Destination string `json:"destination"`
-}
-
-type QueryRouteParams struct {
-	Source      string `json:"source"`
-	Destination string `json:"destination"`
-}
-
-type RoutesResponse struct {
-	Routes Routes `json:"routes"`
-}
-
-type RoutedEnergyResponse struct {
-	Value wasmvmtypes.Coins `json:"value"`
-}
-
-type RouteResponse struct {
-	Route Route `json:"route"`
-}
-
-func (querier Querier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([]byte, error) {
-	var query CosmosQuery
-	err := json.Unmarshal(data, &query)
-	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
-	}
-
-	var bz []byte
-
+func (querier *Querier) HandleQuery(ctx sdk.Context, query pluginstypes.CyberQuery) ([]byte, error) {
 	switch {
 	case query.SourceRoutes != nil:
-		source, _ := sdk.AccAddressFromBech32(query.SourceRoutes.Source)
-		routes := querier.Keeper.GetSourceRoutes(ctx, source, 16)
-
-		bz, err = json.Marshal(RoutesResponse{
-			Routes: convertCyberRoutesToWasmRoutes(routes),
-		})
-	case query.SourceRoutedEnergy != nil:
-		source, _ := sdk.AccAddressFromBech32(query.SourceRoutedEnergy.Source)
-		value := querier.Keeper.GetRoutedFromEnergy(ctx, source)
-
-		bz, err = json.Marshal(RoutedEnergyResponse{
-			Value: wasmkeeper.ConvertSdkCoinsToWasmCoins(value),
-		})
-	case query.DestinationRoutedEnergy != nil:
-		destination, _ := sdk.AccAddressFromBech32(query.DestinationRoutedEnergy.Destination)
-		value := querier.Keeper.GetRoutedToEnergy(ctx, destination)
-
-		bz, err = json.Marshal(RoutedEnergyResponse{
-			Value: wasmkeeper.ConvertSdkCoinsToWasmCoins(value),
-		})
-	case query.Route != nil:
-		source, _ := sdk.AccAddressFromBech32(query.Route.Source)
-		destination, _ := sdk.AccAddressFromBech32(query.Route.Destination)
-		route, found := querier.Keeper.GetRoute(ctx, source, destination)
-		if !found {
-			return nil, sdkerrors.ErrInvalidRequest
+		res, err := querier.Keeper.SourceRoutes(ctx, query.SourceRoutes)
+		if err != nil {
+			return nil, errorsmod.Wrap(err, "failed to get source routes")
 		}
 
-		bz, err = json.Marshal(RouteResponse{
-			Route: convertCyberRouteToWasmRoute(route),
-		})
+		responseBytes, err := json.Marshal(res)
+		if err != nil {
+			return nil, errorsmod.Wrap(err, "failed to serialize source routes response")
+		}
+		return responseBytes, nil
+
+	case query.SourceRoutedEnergy != nil:
+		res, err := querier.Keeper.SourceRoutedEnergy(ctx, query.SourceRoutedEnergy)
+		if err != nil {
+			return nil, errorsmod.Wrap(err, "failed to get source routed energy")
+		}
+
+		responseBytes, err := json.Marshal(res)
+		if err != nil {
+			return nil, errorsmod.Wrap(err, "failed to serialize source routed energy response")
+		}
+		return responseBytes, nil
+
+	case query.DestinationRoutedEnergy != nil:
+		res, err := querier.Keeper.DestinationRoutedEnergy(ctx, query.DestinationRoutedEnergy)
+		if err != nil {
+			return nil, errorsmod.Wrap(err, "failed to get destination routed energy")
+		}
+
+		responseBytes, err := json.Marshal(res)
+		if err != nil {
+			return nil, errorsmod.Wrap(err, "failed to serialize destination routed energy response")
+		}
+		return responseBytes, nil
+
+	case query.Route != nil:
+		res, err := querier.Keeper.Route(ctx, query.Route)
+		if err != nil {
+			return nil, errorsmod.Wrap(err, "failed to get route")
+		}
+
+		responseBytes, err := json.Marshal(res)
+		if err != nil {
+			return nil, errorsmod.Wrap(err, "failed to serialize route response")
+		}
+		return responseBytes, nil
+
 	default:
-		return nil, wasmvmtypes.UnsupportedRequest{Kind: "unknown Liquidity variant"}
-	}
-
-	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
-	}
-
-	return bz, nil
-}
-
-func convertCyberRoutesToWasmRoutes(routes types.Routes) Routes {
-	converted := make(Routes, len(routes))
-	for i, c := range routes {
-		converted[i] = convertCyberRouteToWasmRoute(c)
-	}
-	return converted
-}
-
-func convertCyberRouteToWasmRoute(route types.Route) Route {
-	return Route{
-		route.Source,
-		route.Destination,
-		route.Name,
-		wasmkeeper.ConvertSdkCoinsToWasmCoins(route.Value),
+		return nil, pluginstypes.ErrHandleQuery
 	}
 }

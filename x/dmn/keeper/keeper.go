@@ -395,15 +395,6 @@ func (k Keeper) GetThoughtStats(ctx sdk.Context, program sdk.AccAddress, name st
 	return stats, true
 }
 
-func (k Keeper) GetLowestFee(ctx sdk.Context) sdk.Coin {
-	thoughts := k.GetAllThoughts(ctx)
-	if len(thoughts) == 0 {
-		return ctypes.NewCybCoin(0)
-	}
-	thoughts.Sort()
-	return thoughts[len(thoughts)-1].Load.GasPrice
-}
-
 func (k Keeper) ExecuteThoughtsQueue(ctx sdk.Context) {
 	defer func() {
 		if r := recover(); r != nil {
