@@ -14,7 +14,7 @@ for dir in $proto_dirs; do
   echo ${dir}
   for file in $(find "${dir}" -maxdepth 1 -name '*.proto'); do
     if grep "option go_package" $file &> /dev/null ; then
-      buf generate --template buf.gen.gogo.yml $file
+      buf generate --template buf.gen.gogo.yaml $file
     fi
   done
 done
@@ -22,7 +22,7 @@ done
 protoc_install_proto_gen_doc
 
 echo "Generating proto docs"
-buf generate --template buf.gen.doc.yml
+buf generate --template buf.gen.doc.yaml
 
 cd ..
 
