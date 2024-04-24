@@ -2,6 +2,7 @@ package app
 
 import (
 	"fmt"
+	"github.com/cybercongress/go-cyber/v3/client/docs"
 	"io"
 	"os"
 	"strings"
@@ -71,6 +72,7 @@ import (
 
 const (
 	appName = "BostromHub"
+	Name    = "bostrom"
 )
 
 // We pull these out so we can set them with LDFLAGS in the Makefile
@@ -437,6 +439,9 @@ func (app *App) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APIConfig
 	// Register legacy and grpc-gateway routes for all modules.
 	ModuleBasics.RegisterRESTRoutes(clientCtx, apiSvr.Router)
 	ModuleBasics.RegisterGRPCGatewayRoutes(clientCtx, apiSvr.GRPCGatewayRouter)
+
+	// register app's OpenAPI routes.
+	docs.RegisterOpenAPIService(Name, apiSvr.Router)
 }
 
 // RegisterTxService implements the Application.RegisterTxService method.
