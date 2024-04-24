@@ -160,10 +160,9 @@ proto-format:
 	--workdir /workspace $(PROTO_FORMATTER_IMAGE) \
 	find ./ -name *.proto -exec clang-format -i {} \;
 
-# TODO update swagger gen
-#proto-swagger-gen:
-#	@#echo "Generating Protobuf Swagger"
-#	@./scripts/protoc-swagger-gen.sh
+proto-swagger-gen:
+	@echo "Generating Protobuf Swagger OpenAPI"
+	@./scripts/protoc_swagger_openapi_gen.sh
 
 proto-lint:
 	@$(DOCKER_BUF) lint --error-format=json
