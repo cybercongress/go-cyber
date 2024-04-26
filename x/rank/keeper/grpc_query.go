@@ -92,17 +92,17 @@ func (sk *StateKeeper) Backlinks(goCtx context.Context, req *types.QuerySearchRe
 	return &types.QuerySearchResponse{Result: result, Pagination: &querytypes.PageResponse{Total: totalSize}}, nil
 }
 
-func (sk *StateKeeper) Top(goCtx context.Context, req *querytypes.PageRequest) (*types.QuerySearchResponse, error) {
+func (sk *StateKeeper) Top(goCtx context.Context, req *querytypes.QueryTopRequest) (*types.QuerySearchResponse, error) {
 	if req == nil {
 		return nil, status.Errorf(codes.InvalidArgument, "empty request")
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	if req.PerPage > uint32(1000) {
+	if req.Pagination.PerPage > uint32(1000) {
 		return nil, sdkerrors.ErrInvalidRequest
 	}
-	page, limit := req.Page, req.PerPage
+	page, limit := req.Pagination.Page, req.Pagination.PerPage
 	topRankedCidNumbers, totalSize, err := sk.index.Top(page, limit)
 	if err != nil {
 		panic(err)

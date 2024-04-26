@@ -233,7 +233,9 @@ func GetCmdQueryTop() *cobra.Command {
 
 			res, err := queryClient.Top(
 				context.Background(),
-				&types.PageRequest{Page: page, PerPage: limit},
+				&types.QueryTopRequest{
+					Pagination: &types.PageRequest{Page: page, PerPage: limit},
+				},
 			)
 			if err != nil {
 				return err

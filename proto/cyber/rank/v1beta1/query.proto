@@ -74,7 +74,7 @@ message QuerySearchResponse {
   cyber.rank.v1beta1.PageResponse pagination = 2;
 }
 
-message QueryTopRequest {}
+message QueryTopRequest { cyber.rank.v1beta1.PageRequest pagination = 1; }
 
 message QueryIsLinkExistRequest {
   string from = 1;
