@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"cosmossdk.io/simapp/params"
 	"errors"
 	"io"
 	"os"
@@ -38,8 +39,6 @@ import (
 
 	serverconfig "github.com/cosmos/cosmos-sdk/server/config"
 
-	"github.com/cybercongress/go-cyber/v4/app/params"
-
 	"github.com/cosmos/cosmos-sdk/version"
 
 	rosettaCmd "cosmossdk.io/tools/rosetta/cmd"
@@ -54,7 +53,7 @@ func NewRootCmd() (*cobra.Command, params.EncodingConfig) {
 	app.SetConfig()
 
 	initClientCtx := client.Context{}.
-		WithCodec(encodingConfig.Marshaler).
+		WithCodec(encodingConfig.Codec).
 		WithInterfaceRegistry(encodingConfig.InterfaceRegistry).
 		WithTxConfig(encodingConfig.TxConfig).
 		WithLegacyAmino(encodingConfig.Amino).
@@ -158,7 +157,7 @@ func initRootCmd(rootCmd *cobra.Command, encodingConfig params.EncodingConfig) {
 	)
 
 	// add rosetta
-	rootCmd.AddCommand(rosettaCmd.RosettaCommand(encodingConfig.InterfaceRegistry, encodingConfig.Marshaler))
+	rootCmd.AddCommand(rosettaCmd.RosettaCommand(encodingConfig.InterfaceRegistry, encodingConfig.Codec))
 }
 
 func addModuleInitFlags(startCmd *cobra.Command) {
