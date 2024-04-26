@@ -11,8 +11,8 @@ import (
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"github.com/tendermint/tendermint/libs/log"
 
-	"github.com/cybercongress/go-cyber/v3/x/bandwidth/types"
-	gtypes "github.com/cybercongress/go-cyber/v3/x/graph/types"
+	"github.com/cybercongress/go-cyber/v4/x/bandwidth/types"
+	gtypes "github.com/cybercongress/go-cyber/v4/x/graph/types"
 )
 
 type BandwidthMeter struct {

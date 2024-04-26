@@ -8,8 +8,8 @@ import (
 
 	"github.com/tendermint/tendermint/libs/log"
 
-	graphtypes "github.com/cybercongress/go-cyber/v3/x/graph/types"
-	"github.com/cybercongress/go-cyber/v3/x/rank/types"
+	graphtypes "github.com/cybercongress/go-cyber/v4/x/graph/types"
+	"github.com/cybercongress/go-cyber/v4/x/rank/types"
 )
 
 /*

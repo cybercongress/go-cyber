@@ -8,9 +8,9 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	ctypes "github.com/cybercongress/go-cyber/v3/types"
+	ctypes "github.com/cybercongress/go-cyber/v4/types"
 
-	"github.com/cybercongress/go-cyber/v3/x/resources/types"
+	"github.com/cybercongress/go-cyber/v4/x/resources/types"
 )
 
 var _ types.QueryServer = Keeper{}

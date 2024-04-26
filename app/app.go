@@ -2,16 +2,17 @@ package app
 
 import (
 	"fmt"
-	"github.com/cybercongress/go-cyber/v3/client/docs"
 	"io"
 	"os"
 	"strings"
 	"time"
 
+	"github.com/cybercongress/go-cyber/v4/client/docs"
+
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 
-	v2 "github.com/cybercongress/go-cyber/v3/app/upgrades/v2"
-	v3 "github.com/cybercongress/go-cyber/v3/app/upgrades/v3"
+	v2 "github.com/cybercongress/go-cyber/v4/app/upgrades/v2"
+	v3 "github.com/cybercongress/go-cyber/v4/app/upgrades/v3"
 
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	"github.com/cosmos/cosmos-sdk/simapp"
@@ -19,10 +20,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/grpc/tmservice"
 	ibcclientclient "github.com/cosmos/ibc-go/v4/modules/core/02-client/client"
 
-	"github.com/cybercongress/go-cyber/v3/app/keepers"
-	"github.com/cybercongress/go-cyber/v3/app/upgrades"
+	"github.com/cybercongress/go-cyber/v4/app/keepers"
+	"github.com/cybercongress/go-cyber/v4/app/upgrades"
 
-	ctypes "github.com/cybercongress/go-cyber/v3/types"
+	ctypes "github.com/cybercongress/go-cyber/v4/types"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec/types"
@@ -62,12 +63,12 @@ import (
 	wasmclient "github.com/CosmWasm/wasmd/x/wasm/client"
 	tmjson "github.com/tendermint/tendermint/libs/json"
 
-	"github.com/cybercongress/go-cyber/v3/utils"
-	cyberbanktypes "github.com/cybercongress/go-cyber/v3/x/cyberbank/types"
+	"github.com/cybercongress/go-cyber/v4/utils"
+	cyberbanktypes "github.com/cybercongress/go-cyber/v4/x/cyberbank/types"
 
 	govclient "github.com/cosmos/cosmos-sdk/x/gov/client"
 
-	"github.com/cybercongress/go-cyber/v3/app/params"
+	"github.com/cybercongress/go-cyber/v4/app/params"
 )
 
 const (

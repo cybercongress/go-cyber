@@ -1,4 +1,4 @@
-module github.com/cybercongress/go-cyber/v3
+module github.com/cybercongress/go-cyber/v4
 
 go 1.19
 
