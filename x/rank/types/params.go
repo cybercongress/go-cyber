@@ -4,18 +4,7 @@ import (
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 )
-
-var (
-	KeyCalculationPeriod = []byte("CalculationPeriod")
-	KeyDampingFactor     = []byte("DampingFactor")
-	KeyTolerance         = []byte("Tolerance")
-)
-
-func ParamKeyTable() paramstypes.KeyTable {
-	return paramstypes.NewKeyTable().RegisterParamSet(&Params{})
-}
 
 func DefaultParams() Params {
 	return Params{
@@ -25,15 +14,7 @@ func DefaultParams() Params {
 	}
 }
 
-func (p *Params) ParamSetPairs() paramstypes.ParamSetPairs {
-	return paramstypes.ParamSetPairs{
-		paramstypes.NewParamSetPair(KeyCalculationPeriod, &p.CalculationPeriod, validateCalculationPeriod),
-		paramstypes.NewParamSetPair(KeyDampingFactor, &p.DampingFactor, validateDampingFactor),
-		paramstypes.NewParamSetPair(KeyTolerance, &p.Tolerance, validateTolerance),
-	}
-}
-
-func (p Params) ValidateBasic() error {
+func (p Params) Validate() error {
 	if err := validateCalculationPeriod(p.CalculationPeriod); err != nil {
 		return err
 	}

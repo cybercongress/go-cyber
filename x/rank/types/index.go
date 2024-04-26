@@ -5,7 +5,7 @@ import (
 	"sort"
 	"time"
 
-	"github.com/tendermint/tendermint/libs/log"
+	"github.com/cometbft/cometbft/libs/log"
 
 	graphtypes "github.com/cybercongress/go-cyber/v4/x/graph/types"
 )

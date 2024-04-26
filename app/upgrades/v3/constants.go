@@ -2,7 +2,7 @@ package v3
 
 import (
 	store "github.com/cosmos/cosmos-sdk/store/types"
-	ibcfeetypes "github.com/cosmos/ibc-go/v4/modules/apps/29-fee/types"
+	ibcfeetypes "github.com/cosmos/ibc-go/v7/modules/apps/29-fee/types"
 
 	"github.com/cybercongress/go-cyber/v4/app/upgrades"
 )

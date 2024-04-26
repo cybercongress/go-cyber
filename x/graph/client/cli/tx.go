@@ -16,18 +16,18 @@ import (
 )
 
 func NewTxCmd() *cobra.Command {
-	linkCmd := &cobra.Command{
+	txCmd := &cobra.Command{
 		Use:                        types.ModuleName,
 		Short:                      "Graph transaction subcommands",
 		DisableFlagParsing:         true,
 		SuggestionsMinimumDistance: 2,
 		RunE:                       client.ValidateCmd,
 	}
-	linkCmd.AddCommand(
+	txCmd.AddCommand(
 		GetCmdLink(),
 	)
 
-	return linkCmd
+	return txCmd
 }
 
 func GetCmdLink() *cobra.Command {

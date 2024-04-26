@@ -20,7 +20,7 @@ coins="1000000000000boot"
 cyber init --chain-id "$CHAINID" "$CHAINID" --home "$HMDIR"
 sed -i '' 's#"stake"#"boot"#g' "$HMDIR"/config/genesis.json
 cp -R ~/.cyber/keyring-test $HMDIR
-cyber add-genesis-account "$(cyber keys show validator -a --keyring-backend="test")" $coins --home "$HMDIR"
-cyber add-genesis-account "$(cyber keys show dev -a --keyring-backend="test")" $coins --home "$HMDIR"
-cyber gentx validator 5000000000boot --keyring-backend="test" --chain-id $CHAINID --home "$HMDIR"
-cyber collect-gentxs --home "$HMDIR"
+cyber genesis add-genesis-account "$(cyber keys show validator -a --keyring-backend="test")" $coins --home "$HMDIR"
+cyber genesis add-genesis-account "$(cyber keys show dev -a --keyring-backend="test")" $coins --home "$HMDIR"
+cyber genesis gentx validator 5000000000boot --keyring-backend="test" --chain-id $CHAINID --home "$HMDIR"
+cyber genesis collect-gentxs --home "$HMDIR"

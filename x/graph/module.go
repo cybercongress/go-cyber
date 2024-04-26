@@ -4,23 +4,21 @@ import (
 	"context"
 	"encoding/json"
 
+	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-	abci "github.com/tendermint/tendermint/abci/types"
 
 	bandwidthkeeper "github.com/cybercongress/go-cyber/v4/x/bandwidth/keeper"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
-	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
 
 	cyberbankkeeper "github.com/cybercongress/go-cyber/v4/x/cyberbank/keeper"
 	"github.com/cybercongress/go-cyber/v4/x/graph/client/cli"
-	"github.com/cybercongress/go-cyber/v4/x/graph/client/rest"
 	"github.com/cybercongress/go-cyber/v4/x/graph/keeper"
 	"github.com/cybercongress/go-cyber/v4/x/graph/types"
 )
@@ -44,10 +42,6 @@ func (AppModuleBasic) DefaultGenesis(_ codec.JSONCodec) json.RawMessage { return
 
 func (AppModuleBasic) ValidateGenesis(_ codec.JSONCodec, _ client.TxEncodingConfig, _ json.RawMessage) error {
 	return nil
-}
-
-func (AppModuleBasic) RegisterRESTRoutes(clientCtx client.Context, rtr *mux.Router) {
-	rest.RegisterRoutes(clientCtx, rtr)
 }
 
 func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *runtime.ServeMux) {
@@ -100,10 +94,6 @@ func (AppModule) Name() string { return types.ModuleName }
 
 func (am AppModule) RegisterInvariants(_ sdk.InvariantRegistry) {}
 
-func (am AppModule) Route() sdk.Route {
-	return sdk.Route{}
-}
-
 func (am AppModule) QuerierRoute() string {
 	return types.QuerierRoute
 }
@@ -111,10 +101,6 @@ func (am AppModule) QuerierRoute() string {
 func (am AppModule) RegisterServices(cfg module.Configurator) {
 	types.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(am.gk, am.ik, am.ak, am.bk, am.bm))
 	types.RegisterQueryServer(cfg.QueryServer(), am.gk)
-}
-
-func (am AppModule) LegacyQuerierHandler(legacyQuerierCdc *codec.LegacyAmino) sdk.Querier {
-	return keeper.NewQuerier(*am.gk, legacyQuerierCdc)
 }
 
 func (am AppModule) InitGenesis(ctx sdk.Context, _ codec.JSONCodec, _ json.RawMessage) []abci.ValidatorUpdate {

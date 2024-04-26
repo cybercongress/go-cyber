@@ -15,7 +15,7 @@ import (
 )
 
 func GetQueryCmd() *cobra.Command {
-	energyQueryCmd := &cobra.Command{
+	queryCmd := &cobra.Command{
 		Use:                        types.ModuleName,
 		Short:                      fmt.Sprintf("Querying commands for the %s module", types.ModuleName),
 		DisableFlagParsing:         true,
@@ -23,12 +23,12 @@ func GetQueryCmd() *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
-	energyQueryCmd.AddCommand(
+	queryCmd.AddCommand(
 		GetCmdQueryParams(),
 		GetCmdQueryInvestmintAmount(),
 	)
 
-	return energyQueryCmd
+	return queryCmd
 }
 
 func GetCmdQueryParams() *cobra.Command {

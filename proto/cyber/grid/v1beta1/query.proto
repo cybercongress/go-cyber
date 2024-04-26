@@ -9,8 +9,6 @@ import "cosmos/base/v1beta1/coin.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 
 option go_package = "github.com/cybercongress/go-cyber/x/grid/types";
-option (gogoproto.goproto_getters_all) = false;
-option (gogoproto.equal_all) = false;
 
 service Query {
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {

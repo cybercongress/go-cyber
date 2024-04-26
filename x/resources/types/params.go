@@ -5,13 +5,10 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
-
 	ctypes "github.com/cybercongress/go-cyber/v4/types"
 )
 
 const (
-	DefaultParamspace             = ModuleName
 	DefaultMaxSlots               = uint32(8)
 	DefaultHalvingPeriodVolt      = uint32(9000000)
 	DefaultHalvingPeriodAmpere    = uint32(9000000)
@@ -19,21 +16,6 @@ const (
 	DefaultInvestmintPeriodAmpere = uint32(2592000)
 	DefaultMinInvestmintPeriod    = uint32(86400)
 )
-
-var (
-	KeyMaxSlots                   = []byte("MaxSlots")
-	KeyHalvingPeriodVoltBlocks    = []byte("HalvingPeriodVoltBlocks")
-	KeyHalvingPeriodAmpereBlocks  = []byte("HalvingPeriodAmpereBlocks")
-	KeyBaseInvestmintPeriodVolt   = []byte("BaseInvestmintPeriodVolt")
-	KeyBaseInvestmintPeriodAmpere = []byte("BaseInvestmintPeriodAmpere")
-	KeyBaseInvestmintAmountVolt   = []byte("BaseInvestmintAmountVolt")
-	KeyBaseInvestmintAmountAmpere = []byte("BaseInvestmintAmountAmpere")
-	KeyMinInvestmintPeriod        = []byte("MinInvestmintPeriod")
-)
-
-func ParamKeyTable() paramstypes.KeyTable {
-	return paramstypes.NewKeyTable().RegisterParamSet(&Params{})
-}
 
 func DefaultParams() Params {
 	return Params{
@@ -45,19 +27,6 @@ func DefaultParams() Params {
 		BaseInvestmintAmountVolt:   ctypes.NewSCybCoin(ctypes.Mega * 1000),
 		BaseInvestmintAmountAmpere: ctypes.NewSCybCoin(ctypes.Mega * 100),
 		MinInvestmintPeriod:        DefaultMinInvestmintPeriod,
-	}
-}
-
-func (p *Params) ParamSetPairs() paramstypes.ParamSetPairs {
-	return paramstypes.ParamSetPairs{
-		paramstypes.NewParamSetPair(KeyMaxSlots, &p.MaxSlots, validateMaxSlots),
-		paramstypes.NewParamSetPair(KeyHalvingPeriodVoltBlocks, &p.HalvingPeriodVoltBlocks, validateHalvingPeriodVoltBlocks),
-		paramstypes.NewParamSetPair(KeyHalvingPeriodAmpereBlocks, &p.HalvingPeriodAmpereBlocks, validateHalvingPeriodAmpereBlocks),
-		paramstypes.NewParamSetPair(KeyBaseInvestmintPeriodVolt, &p.BaseInvestmintPeriodVolt, validateBaseInvestmintPeriodVolt),
-		paramstypes.NewParamSetPair(KeyBaseInvestmintPeriodAmpere, &p.BaseInvestmintPeriodAmpere, validateBaseInvestmintPeriodAmpere),
-		paramstypes.NewParamSetPair(KeyBaseInvestmintAmountVolt, &p.BaseInvestmintAmountVolt, validateBaseInvestmintAmountVolt),
-		paramstypes.NewParamSetPair(KeyBaseInvestmintAmountAmpere, &p.BaseInvestmintAmountAmpere, validateBaseInvestmintAmountAmpere),
-		paramstypes.NewParamSetPair(KeyMinInvestmintPeriod, &p.MinInvestmintPeriod, validateMinInvestmintPeriod),
 	}
 }
 

@@ -14,7 +14,7 @@ import (
 )
 
 func GetQueryCmd() *cobra.Command {
-	bandwidthQueryCmd := &cobra.Command{
+	queryCmd := &cobra.Command{
 		Use:                        types.ModuleName,
 		Short:                      "Querying commands for the bandwidth module",
 		DisableFlagParsing:         true,
@@ -22,7 +22,7 @@ func GetQueryCmd() *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
-	bandwidthQueryCmd.AddCommand(
+	queryCmd.AddCommand(
 		GetCmdQueryParams(),
 		GetCmdQueryPrice(),
 		GetCmdQueryLoad(),
@@ -30,7 +30,7 @@ func GetQueryCmd() *cobra.Command {
 		GetCmdQueryNeuron(),
 	)
 
-	return bandwidthQueryCmd
+	return queryCmd
 }
 
 func GetCmdQueryParams() *cobra.Command {

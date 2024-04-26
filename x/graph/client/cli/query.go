@@ -13,18 +13,18 @@ import (
 
 // GetQueryCmd returns
 func GetQueryCmd() *cobra.Command {
-	graphQueryCmd := &cobra.Command{
+	queryCmd := &cobra.Command{
 		Use:                        types.ModuleName,
 		Short:                      "Querying commands for the graph module",
 		DisableFlagParsing:         true,
 		SuggestionsMinimumDistance: 2,
 		RunE:                       client.ValidateCmd,
 	}
-	graphQueryCmd.AddCommand(
+	queryCmd.AddCommand(
 		GetCmdGraphStats(),
 	)
 
-	return graphQueryCmd
+	return queryCmd
 }
 
 func GetCmdGraphStats() *cobra.Command {

@@ -5,7 +5,7 @@ import (
 
 	"github.com/CosmWasm/wasmd/x/wasm"
 
-	liquiditytypes "github.com/gravity-devs/liquidity/x/liquidity/types"
+	// liquiditytypes "github.com/gravity-devs/liquidity/x/liquidity/types"
 
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -44,7 +44,7 @@ const (
 	WasmQueryRouteDmn       = dmntypes.ModuleName
 	WasmQueryRouteGrid      = gridtypes.ModuleName
 	WasmQueryRouteBandwidth = bandwidthtypes.ModuleName
-	WasmQueryRouteLiquidity = liquiditytypes.ModuleName
+	// WasmQueryRouteLiquidity = liquiditytypes.ModuleName
 )
 
 func (q Querier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([]byte, error) {

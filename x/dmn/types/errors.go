@@ -1,14 +1,16 @@
 package types
 
-import sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+import (
+	errorsmod "cosmossdk.io/errors"
+)
 
 var (
-	ErrInvalidAddress      = sdkerrors.Register(ModuleName, 2, "invalid address")
-	ErrExceededMaxThoughts = sdkerrors.Register(ModuleName, 3, "exceeded max thoughts")
-	ErrBadCallData         = sdkerrors.Register(ModuleName, 4, "bad call data")
-	ErrBadGasPrice         = sdkerrors.Register(ModuleName, 5, "bad gas price")
-	ErrBadTrigger          = sdkerrors.Register(ModuleName, 6, "bad trigger")
-	ErrBadName             = sdkerrors.Register(ModuleName, 7, "bad name")
-	ErrThoughtNotExist     = sdkerrors.Register(ModuleName, 8, "thought does not exist")
-	ErrConvertTrigger      = sdkerrors.Register(ModuleName, 9, "cannot convert trigger")
+	ErrInvalidAddress      = errorsmod.Register(ModuleName, 2, "invalid address")
+	ErrExceededMaxThoughts = errorsmod.Register(ModuleName, 3, "exceeded max thoughts")
+	ErrBadCallData         = errorsmod.Register(ModuleName, 4, "bad call data")
+	ErrBadGasPrice         = errorsmod.Register(ModuleName, 5, "bad gas price")
+	ErrBadTrigger          = errorsmod.Register(ModuleName, 6, "bad trigger")
+	ErrBadName             = errorsmod.Register(ModuleName, 7, "bad name")
+	ErrThoughtNotExist     = errorsmod.Register(ModuleName, 8, "thought does not exist")
+	ErrConvertTrigger      = errorsmod.Register(ModuleName, 9, "cannot convert trigger")
 )
