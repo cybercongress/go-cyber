@@ -3,7 +3,7 @@ CUDA_ENABLED ?= false
 LEDGER_ENABLED ?= true
 VERSION := $(shell echo $(shell git describe --tags) | sed 's/^v//')
 COMMIT := $(shell git log -1 --format='%H')
-TM_VERSION := $(shell go list -m github.com/tendermint/tendermint | sed 's:.* ::')
+BFT_VERSION := $(shell go list -m github.com/cometbft/cometbft | sed 's:.* ::')
 
 BINDIR ?= $(GOPATH)/bin
 BUILDDIR ?= $(CURDIR)/build/
@@ -67,7 +67,7 @@ ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=cyber \
 		  -X github.com/cosmos/cosmos-sdk/version.Version=$(VERSION) \
 		  -X github.com/cosmos/cosmos-sdk/version.Commit=$(COMMIT) \
 		  -X "github.com/cosmos/cosmos-sdk/version.BuildTags=$(build_tags_comma_sep)" \
-		  -X github.com/cometbft/cometbft/version.TMCoreSemVer=$(TM_VERSION)
+		  -X github.com/cometbft/cometbft/version.BFTVer=$(BFT_VERSION)
 
 ldflags += $(LDFLAGS)
 ldflags := $(strip $(ldflags))
@@ -145,20 +145,19 @@ format: format-tools
 ###                                Protobuf                                 ###
 ###############################################################################
 
-PROTO_BUILDER_IMAGE=tendermintdev/sdk-proto-gen:v0.7
-PROTO_FORMATTER_IMAGE=tendermintdev/docker-build-proto@sha256:aabcfe2fc19c31c0f198d4cd26393f5e5ca9502d7ea3feafbfe972448fee7cae
+protoVer=0.13.1
+protoImageName=ghcr.io/cosmos/proto-builder:$(protoVer)
+protoImage=$(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace $(protoImageName)
 
 proto-all: proto-format proto-lint proto-gen format
 
 proto-gen:
 	@echo "Generating Protobuf files"
-	$(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace $(PROTO_BUILDER_IMAGE) sh ./scripts/protocgen.sh
+	@$(protoImage) sh ./scripts/protocgen.sh
 
 proto-format:
 	@echo "Formatting Protobuf files"
-	$(DOCKER) run --rm -v $(CURDIR):/workspace \
-	--workdir /workspace $(PROTO_FORMATTER_IMAGE) \
-	find ./ -name *.proto -exec clang-format -i {} \;
+	@$(protoImage) find ./ -name "*.proto" -exec clang-format -i {} \;
 
 proto-swagger-gen:
 	@echo "Generating Protobuf Swagger OpenAPI"

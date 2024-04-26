@@ -14,7 +14,7 @@ import (
 )
 
 func GetQueryCmd() *cobra.Command {
-	DmnQueryCmd := &cobra.Command{
+	queryCmd := &cobra.Command{
 		Use:                        types.ModuleName,
 		Short:                      fmt.Sprintf("Querying commands for the %s module", types.ModuleName),
 		DisableFlagParsing:         true,
@@ -22,7 +22,7 @@ func GetQueryCmd() *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
-	DmnQueryCmd.AddCommand(
+	queryCmd.AddCommand(
 		GetCmdQueryParams(),
 		GetCmdQueryThought(),
 		GetCmdQueryThoughtStats(),
@@ -30,7 +30,7 @@ func GetQueryCmd() *cobra.Command {
 		GetCmdQueryThoughtsStats(),
 	)
 
-	return DmnQueryCmd
+	return queryCmd
 }
 
 func GetCmdQueryParams() *cobra.Command {

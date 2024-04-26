@@ -8,8 +8,6 @@ import "cosmos/base/v1beta1/coin.proto";
 option go_package = "github.com/cybercongress/go-cyber/x/resources/types";
 
 message Params {
-  option (gogoproto.equal) = true;
-
   uint32 max_slots = 1;
   uint32 halving_period_volt_blocks = 2;
   uint32 halving_period_ampere_blocks = 3;

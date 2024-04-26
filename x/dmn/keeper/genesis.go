@@ -7,7 +7,10 @@ import (
 )
 
 func InitGenesis(ctx sdk.Context, k Keeper, data types.GenesisState) {
-	k.SetParams(ctx, data.Params)
+	err := k.SetParams(ctx, data.Params)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func ExportGenesis(ctx sdk.Context, k Keeper) *types.GenesisState {

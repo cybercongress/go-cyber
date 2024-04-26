@@ -10,7 +10,7 @@ func DefaultGenesisState() *GenesisState {
 	return NewGenesisState(DefaultParams())
 }
 
-func ValidateGenesis(data *GenesisState) error {
+func ValidateGenesis(data GenesisState) error {
 	if err := data.Params.Validate(); err != nil {
 		return err
 	}

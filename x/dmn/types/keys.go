@@ -12,6 +12,7 @@ const (
 var (
 	ThoughtKey      = []byte{0x00}
 	ThoughtStatsKey = []byte{0x01}
+	ParamsKey       = []byte{0x02}
 )
 
 func GetThoughtKey(program sdk.AccAddress, name string) []byte {

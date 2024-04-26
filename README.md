@@ -43,7 +43,7 @@ _____________
 [![CircleCI](https://img.shields.io/circleci/build/github/cybercongress/go-cyber/master?style=flat-square)](https://circleci.com/gh/cybercongress/workflows/go-cyber/tree/master)
 [![license](https://img.shields.io/badge/License-Cyber-brightgreen.svg?style=flat-square)](https://github.com/cybercongress/cyberd/blob/master/LICENSE)
 ![Cosmos-SDK](https://img.shields.io/static/v1.svg?label=cosmos-sdk&message=0.45.16&color=blue&style=flat-square)
-![Tendermint](https://img.shields.io/static/v1.svg?label=tendermint&message=0.34.27&color=blue&style=flat-square)
+![CometBFT](https://img.shields.io/static/v1.svg?label=tendermint&message=0.34.27&color=blue&style=flat-square)
 ![IBC](https://img.shields.io/static/v1.svg?label=ibc-go&message=4.6.0&color=blue&style=flat-square)
 ![CosmWasm](https://img.shields.io/static/v1.svg?label=cosmwasm&message=1.3.1&color=blue&style=flat-square)
 ![WASMD](https://img.shields.io/static/v1.svg?label=wasmd&message=0.33.0&color=blue&style=flat-square)
@@ -73,7 +73,7 @@ _________________________________________________________
 ## Computer Specification 🛠
 
 1. Universe - Cosmos
-2. Consensus - Tendermint | BOOT
+2. Consensus - CometBFT | BOOT
 3. Dyson Sphere - Snub Dodecahedron configuration
 4. External Communication - IBC
 5. Liquidity - InterChain AMM with MEV protection
@@ -186,37 +186,37 @@ _________________________________________________________
 
 ## Cyber vs Corps
 
-| What                               | Google                      | Cyber                     |
-|------------------------------------|-----------------------------|---------------------------|
-| Is                                 | Company                     | Protocol                  |
-| Protocol Stack                     | Web2                        | Web3                      |
-| Code                               | Closed                      | Open                      |
-| Consensus                          | USA law                     | Tendermint, Hybrid (2023) |
-| Knowledge                          | Private                     | Public                    |
-| Links                              | Hyperlinks                  | Cyberlinks                |
-| Backlinks                          | No                          | Yes                       |
-| Decentralized Marketing (DeMa)     | No                          | Yes                       |
-| Beneficiaries                      | Limited set of stakeholders | Any web3 agent            |
-| Addressing                         | URLs                        | CIDs                      |
-| Ranking                            | Blackbox                    | Sybil resistant           |
-| Knowledge Graph Proofs             | No                          | Cyberlinks and Ranks      |
-| Offline and Interplanetary         | No                          | Yes                       |
-| Internet Knowledge Protocol        | No                          | Over IBC (2022)           |
-| Smart Contracts                    | Impossible                  | WASM                      |
-| Smart Contracts on Knowledge Graph | No                          | Yes                       |
-| GPU Smart Contracts                | No                          | GraphBLAS (2023)          |
-| Software 2.0                       | No                          | Yes                       |
-| Security                           | No evidence                 | Cryptographic proofs      |
-| Privacy                            | Impossible                  | Possible (2025)           |
-| Censorship                         | Yes                         | No                        |
-| Captcha                            | Yes                         | No                        |
-| Ads beneficiary                    | Google                      | Creator                   |
-| Apps                               | Limited                     | Unlimited                 |
-| Robots/IoT                         | Limited                     | Unlimited                 |
-| Data Distribution                  | Private servers             | IPFS                      |
-| Storage guaranty                   | Impossible                  | PoRep (2024)              |
-| SuperIntelligence                  | Non-Provalbe                | Provable                  |
-| Browser                            | Chrome                      | Cyb                       |
+| What                               | Google                      | Cyber                   |
+|------------------------------------|-----------------------------|-------------------------|
+| Is                                 | Company                     | Protocol                |
+| Protocol Stack                     | Web2                        | Web3                    |
+| Code                               | Closed                      | Open                    |
+| Consensus                          | USA law                     | CometBFT, Hybrid (2023) |
+| Knowledge                          | Private                     | Public                  |
+| Links                              | Hyperlinks                  | Cyberlinks              |
+| Backlinks                          | No                          | Yes                     |
+| Decentralized Marketing (DeMa)     | No                          | Yes                     |
+| Beneficiaries                      | Limited set of stakeholders | Any web3 agent          |
+| Addressing                         | URLs                        | CIDs                    |
+| Ranking                            | Blackbox                    | Sybil resistant         |
+| Knowledge Graph Proofs             | No                          | Cyberlinks and Ranks    |
+| Offline and Interplanetary         | No                          | Yes                     |
+| Internet Knowledge Protocol        | No                          | Over IBC (2022)         |
+| Smart Contracts                    | Impossible                  | WASM                    |
+| Smart Contracts on Knowledge Graph | No                          | Yes                     |
+| GPU Smart Contracts                | No                          | GraphBLAS (2023)        |
+| Software 2.0                       | No                          | Yes                     |
+| Security                           | No evidence                 | Cryptographic proofs    |
+| Privacy                            | Impossible                  | Possible (2025)         |
+| Censorship                         | Yes                         | No                      |
+| Captcha                            | Yes                         | No                      |
+| Ads beneficiary                    | Google                      | Creator                 |
+| Apps                               | Limited                     | Unlimited               |
+| Robots/IoT                         | Limited                     | Unlimited               |
+| Data Distribution                  | Private servers             | IPFS                    |
+| Storage guaranty                   | Impossible                  | PoRep (2024)            |
+| SuperIntelligence                  | Non-Provalbe                | Provable                |
+| Browser                            | Chrome                      | Cyb                     |
 _________________________________________________________
 
 ## Cyber vs Govs
@@ -236,7 +236,7 @@ _________________________________________________________
 | Transaction tax   | 50%             | ~0.1%        |
 | Printing tax      | 100%            | ~1%          |
 | Provable voting   | No              | Yes          |
-| Consensus         | Democracy       | Tendermint   |
+| Consensus         | Democracy       | CometBFT     |
 | Currency          | Enforced        | Any          |
 | Security          | Police & Army   | Cryptography |
 | Decision makers   | They            | Us           |

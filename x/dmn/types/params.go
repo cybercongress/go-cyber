@@ -2,27 +2,13 @@ package types
 
 import (
 	"fmt"
-
-	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 )
 
 const (
-	DefaultParamspace = ModuleName
-
 	DefaultMaxSlots uint32 = 4
 	DefaultMaxGas   uint32 = 2000000
 	DefaultFeeTTL   uint32 = 50
 )
-
-var (
-	KeyMaxSlots = []byte("MaxSlots")
-	KeyMaxGas   = []byte("MaxGas")
-	KeyFeeTTL   = []byte("FeeTTL")
-)
-
-func ParamKeyTable() paramstypes.KeyTable {
-	return paramstypes.NewKeyTable().RegisterParamSet(&Params{})
-}
 
 func DefaultParams() Params {
 	return Params{
@@ -32,12 +18,30 @@ func DefaultParams() Params {
 	}
 }
 
-func (p *Params) ParamSetPairs() paramstypes.ParamSetPairs {
-	return paramstypes.ParamSetPairs{
-		paramstypes.NewParamSetPair(KeyMaxSlots, &p.MaxSlots, validateMaxSlots),
-		paramstypes.NewParamSetPair(KeyMaxGas, &p.MaxGas, validateMaxGas),
-		paramstypes.NewParamSetPair(KeyFeeTTL, &p.FeeTtl, validateFeeTTL),
+func NewParams(
+	maxSlots uint32,
+	maxGas uint32,
+	feeTtl uint32,
+) Params {
+	return Params{
+		maxSlots,
+		maxGas,
+		feeTtl,
 	}
+}
+
+func (p Params) Validate() error {
+	if err := validateMaxSlots(p.MaxSlots); err != nil {
+		return err
+	}
+	if err := validateMaxGas(p.MaxGas); err != nil {
+		return err
+	}
+	if err := validateFeeTTL(p.FeeTtl); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func validateMaxSlots(i interface{}) error {

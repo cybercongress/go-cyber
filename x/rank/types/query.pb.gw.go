@@ -22,8 +22,6 @@ import (
 	"google.golang.org/grpc/grpclog"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
-
-	"github.com/cybercongress/go-cyber/v4/types/query"
 )
 
 // Suppress "imported and not used" errors
@@ -244,7 +242,7 @@ func local_request_Query_Backlinks_0(ctx context.Context, marshaler runtime.Mars
 var filter_Query_Top_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
 
 func request_Query_Top_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq query.PageRequest
+	var protoReq PageRequest
 	var metadata runtime.ServerMetadata
 
 	if err := req.ParseForm(); err != nil {
@@ -259,7 +257,7 @@ func request_Query_Top_0(ctx context.Context, marshaler runtime.Marshaler, clien
 }
 
 func local_request_Query_Top_0(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq query.PageRequest
+	var protoReq PageRequest
 	var metadata runtime.ServerMetadata
 
 	if err := req.ParseForm(); err != nil {

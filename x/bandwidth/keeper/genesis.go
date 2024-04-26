@@ -8,7 +8,9 @@ import (
 )
 
 func InitGenesis(ctx sdk.Context, bm *BandwidthMeter, ak authkeeper.AccountKeeper, data types.GenesisState) {
-	bm.SetParams(ctx, data.Params)
+	if err := bm.SetParams(ctx, data.Params); err != nil {
+		panic(err)
+	}
 
 	bm.currentCreditPrice = bm.GetBandwidthPrice(ctx, data.Params.BasePrice)
 

@@ -14,7 +14,7 @@ import (
 )
 
 func GetQueryCmd() *cobra.Command {
-	gridQueryCmd := &cobra.Command{
+	queryCmd := &cobra.Command{
 		Use:                        types.ModuleName,
 		Short:                      fmt.Sprintf("Querying commands for the %s module", types.ModuleName),
 		DisableFlagParsing:         true,
@@ -22,7 +22,7 @@ func GetQueryCmd() *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
-	gridQueryCmd.AddCommand(
+	queryCmd.AddCommand(
 		GetCmdQueryParams(),
 		GetCmdQuerySourceRoutes(),
 		GetCmdQueryDestinationRoutes(),
@@ -32,7 +32,7 @@ func GetQueryCmd() *cobra.Command {
 		GetCmdQueryRoutes(),
 	)
 
-	return gridQueryCmd
+	return queryCmd
 }
 
 func GetCmdQueryParams() *cobra.Command {

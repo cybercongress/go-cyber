@@ -9,11 +9,11 @@ import (
 	"strconv"
 	"strings"
 
+	dbm "github.com/cometbft/cometbft-db"
 	"github.com/cosmos/iavl"
 	"github.com/spf13/cobra"
 	goleveldb "github.com/syndtr/goleveldb/leveldb"
 	"github.com/syndtr/goleveldb/leveldb/util"
-	dbm "github.com/tendermint/tm-db"
 )
 
 const (

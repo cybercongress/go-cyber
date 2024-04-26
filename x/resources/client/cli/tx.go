@@ -18,7 +18,7 @@ import (
 )
 
 func NewTxCmd() *cobra.Command {
-	resourcesTxCmd := &cobra.Command{
+	txCmd := &cobra.Command{
 		Use:                        types.ModuleName,
 		Short:                      fmt.Sprintf("%s transactions subcommands", types.ModuleName),
 		DisableFlagParsing:         true,
@@ -26,11 +26,11 @@ func NewTxCmd() *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
-	resourcesTxCmd.AddCommand(
+	txCmd.AddCommand(
 		GetCmdInvestmint(),
 	)
 
-	return resourcesTxCmd
+	return txCmd
 }
 
 func GetCmdInvestmint() *cobra.Command {

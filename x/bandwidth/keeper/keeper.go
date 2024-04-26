@@ -5,11 +5,10 @@ import (
 
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 
+	"github.com/cometbft/cometbft/libs/log"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
-	"github.com/tendermint/tendermint/libs/log"
 
 	"github.com/cybercongress/go-cyber/v4/x/bandwidth/types"
 	gtypes "github.com/cybercongress/go-cyber/v4/x/graph/types"
@@ -18,47 +17,60 @@ import (
 type BandwidthMeter struct {
 	stakeProvider types.AccountStakeProvider
 	cdc           codec.BinaryCodec
-	storeKey      sdk.StoreKey
+	storeKey      storetypes.StoreKey
 	tkey          *storetypes.TransientStoreKey
-	paramSpace    paramstypes.Subspace
 
 	currentCreditPrice         sdk.Dec
 	bandwidthSpentByBlock      map[uint64]uint64
 	totalSpentForSlidingWindow uint64
+
+	authority string
 }
 
 func NewBandwidthMeter(
 	cdc codec.BinaryCodec,
-	key sdk.StoreKey,
+	key storetypes.StoreKey,
 	tkey *storetypes.TransientStoreKey,
 	asp types.AccountStakeProvider,
-	paramSpace paramstypes.Subspace,
+	authority string,
 ) *BandwidthMeter {
-	if !paramSpace.HasKeyTable() {
-		paramSpace = paramSpace.WithKeyTable(types.ParamKeyTable())
-	}
-
 	return &BandwidthMeter{
 		cdc:                   cdc,
 		storeKey:              key,
 		tkey:                  tkey,
 		stakeProvider:         asp,
-		paramSpace:            paramSpace,
 		bandwidthSpentByBlock: make(map[uint64]uint64),
+		authority:             authority,
 	}
 }
+
+func (bm BandwidthMeter) GetAuthority() string { return bm.authority }
 
 func (bm BandwidthMeter) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
 
-func (bm BandwidthMeter) GetParams(ctx sdk.Context) (params types.Params) {
-	bm.paramSpace.GetParamSet(ctx, &params)
-	return params
+func (bm BandwidthMeter) SetParams(ctx sdk.Context, p types.Params) error {
+	if err := p.Validate(); err != nil {
+		return err
+	}
+
+	store := ctx.KVStore(bm.storeKey)
+	bz := bm.cdc.MustMarshal(&p)
+	store.Set(types.ParamsKey, bz)
+
+	return nil
 }
 
-func (bm BandwidthMeter) SetParams(ctx sdk.Context, params types.Params) {
-	bm.paramSpace.SetParamSet(ctx, &params)
+func (bm BandwidthMeter) GetParams(ctx sdk.Context) (p types.Params) {
+	store := ctx.KVStore(bm.storeKey)
+	bz := store.Get(types.ParamsKey)
+	if bz == nil {
+		return p
+	}
+
+	bm.cdc.MustUnmarshal(bz, &p)
+	return p
 }
 
 func (bm *BandwidthMeter) LoadState(ctx sdk.Context) {
