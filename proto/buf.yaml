@@ -17,7 +17,6 @@ breaking:
 lint:
   use:
     - DEFAULT
-    - COMMENTS
     - FILE_LOWER_SNAKE_CASE
   except:
     - UNARY_RPC
@@ -25,5 +24,7 @@ lint:
     - SERVICE_SUFFIX
     - PACKAGE_VERSION_SUFFIX
     - RPC_REQUEST_STANDARD_NAME
-  ignore:
-    - tendermint
+    - PACKAGE_DIRECTORY_MATCH
+    - RPC_REQUEST_RESPONSE_UNIQUE
+    - COMMENTS
+    - RPC_RESPONSE_STANDARD_NAME

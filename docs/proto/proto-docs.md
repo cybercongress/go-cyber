@@ -2004,7 +2004,7 @@
 | `Rank` | [QueryRankRequest](#cyber.rank.v1beta1.QueryRankRequest) | [QueryRankResponse](#cyber.rank.v1beta1.QueryRankResponse) |  | GET|/cyber/rank/v1beta1/rank/rank/{particle}|
 | `Search` | [QuerySearchRequest](#cyber.rank.v1beta1.QuerySearchRequest) | [QuerySearchResponse](#cyber.rank.v1beta1.QuerySearchResponse) |  | GET|/cyber/rank/v1beta1/rank/search/{particle}|
 | `Backlinks` | [QuerySearchRequest](#cyber.rank.v1beta1.QuerySearchRequest) | [QuerySearchResponse](#cyber.rank.v1beta1.QuerySearchResponse) |  | GET|/cyber/rank/v1beta1/rank/backlinks/{particle}|
-| `Top` | [PageRequest](#cyber.rank.v1beta1.PageRequest) | [QuerySearchResponse](#cyber.rank.v1beta1.QuerySearchResponse) |  | GET|/cyber/rank/v1beta1/rank/top|
+| `Top` | [QueryTopRequest](#cyber.rank.v1beta1.QueryTopRequest) | [QuerySearchResponse](#cyber.rank.v1beta1.QuerySearchResponse) |  | GET|/cyber/rank/v1beta1/rank/top|
 | `IsLinkExist` | [QueryIsLinkExistRequest](#cyber.rank.v1beta1.QueryIsLinkExistRequest) | [QueryLinkExistResponse](#cyber.rank.v1beta1.QueryLinkExistResponse) |  | GET|/cyber/rank/v1beta1/is_link_exist|
 | `IsAnyLinkExist` | [QueryIsAnyLinkExistRequest](#cyber.rank.v1beta1.QueryIsAnyLinkExistRequest) | [QueryLinkExistResponse](#cyber.rank.v1beta1.QueryLinkExistResponse) |  | GET|/cyber/rank/v1beta1/is_any_link_exist|
 | `ParticleNegentropy` | [QueryNegentropyPartilceRequest](#cyber.rank.v1beta1.QueryNegentropyPartilceRequest) | [QueryNegentropyParticleResponse](#cyber.rank.v1beta1.QueryNegentropyParticleResponse) |  | GET|/cyber/rank/v1beta1/negentropy/{particle}|
