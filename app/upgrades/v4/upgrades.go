@@ -2,6 +2,7 @@ package v3
 
 import (
 	"fmt"
+	liquiditytypes "github.com/cybercongress/go-cyber/v4/x/liquidity/types"
 	"time"
 
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
@@ -83,8 +84,9 @@ func CreateV4UpgradeHandler(
 				keyTable = ranktypes.ParamKeyTable() //nolint:staticcheck
 			case resourcestypes.ModuleName:
 				keyTable = resourcestypes.ParamKeyTable() //nolint:staticcheck
+			case liquiditytypes.ModuleName:
+				keyTable = liquiditytypes.ParamKeyTable()
 			}
-
 			if !subspace.HasKeyTable() {
 				subspace.WithKeyTable(keyTable)
 			}

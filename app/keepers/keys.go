@@ -23,7 +23,7 @@ import (
 	ibctransfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
 	ibcexported "github.com/cosmos/ibc-go/v7/modules/core/exported"
 
-	// liquiditytypes "github.com/gravity-devs/liquidity/x/liquidity/types"
+	liquiditytypes "github.com/cybercongress/go-cyber/v4/x/liquidity/types"
 
 	bandwidthtypes "github.com/cybercongress/go-cyber/v4/x/bandwidth/types"
 	dmntypes "github.com/cybercongress/go-cyber/v4/x/dmn/types"
@@ -48,7 +48,7 @@ func (appKeepers *AppKeepers) GenerateKeys() {
 		ibcfeetypes.StoreKey,
 		wasmtypes.StoreKey,
 		// our additions
-		// liquiditytypes.StoreKey,
+		liquiditytypes.StoreKey,
 		bandwidthtypes.StoreKey,
 		graphtypes.StoreKey,
 		ranktypes.StoreKey,
