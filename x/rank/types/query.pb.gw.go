@@ -23,7 +23,7 @@ import (
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 
-	"github.com/cybercongress/go-cyber/v3/types/query"
+	"github.com/cybercongress/go-cyber/v4/types/query"
 )
 
 // Suppress "imported and not used" errors

@@ -4,7 +4,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	ctypes "github.com/cybercongress/go-cyber/v3/types"
+	ctypes "github.com/cybercongress/go-cyber/v4/types"
 )
 
 const (

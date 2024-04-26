@@ -13,8 +13,8 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client"
 
-	ctypes "github.com/cybercongress/go-cyber/v3/types"
-	"github.com/cybercongress/go-cyber/v3/x/resources/types"
+	ctypes "github.com/cybercongress/go-cyber/v4/types"
+	"github.com/cybercongress/go-cyber/v4/x/resources/types"
 )
 
 func NewTxCmd() *cobra.Command {

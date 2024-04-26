@@ -22,11 +22,11 @@ import (
 	ibchost "github.com/cosmos/ibc-go/v4/modules/core/24-host"
 	liquiditytypes "github.com/gravity-devs/liquidity/x/liquidity/types"
 
-	bandwidthtypes "github.com/cybercongress/go-cyber/v3/x/bandwidth/types"
-	dmntypes "github.com/cybercongress/go-cyber/v3/x/dmn/types"
-	graphtypes "github.com/cybercongress/go-cyber/v3/x/graph/types"
-	gridtypes "github.com/cybercongress/go-cyber/v3/x/grid/types"
-	ranktypes "github.com/cybercongress/go-cyber/v3/x/rank/types"
+	bandwidthtypes "github.com/cybercongress/go-cyber/v4/x/bandwidth/types"
+	dmntypes "github.com/cybercongress/go-cyber/v4/x/dmn/types"
+	graphtypes "github.com/cybercongress/go-cyber/v4/x/graph/types"
+	gridtypes "github.com/cybercongress/go-cyber/v4/x/grid/types"
+	ranktypes "github.com/cybercongress/go-cyber/v4/x/rank/types"
 )
 
 func (appKeepers *AppKeepers) GenerateKeys() {

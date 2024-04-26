@@ -10,7 +10,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/types/rest"
 
-	"github.com/cybercongress/go-cyber/v3/x/grid/types"
+	"github.com/cybercongress/go-cyber/v4/x/grid/types"
 )
 
 // RegisterRoutes defines routes that get registered by the main application.

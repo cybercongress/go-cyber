@@ -12,13 +12,13 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/config"
 	"github.com/prometheus/client_golang/prometheus"
 
-	"github.com/cybercongress/go-cyber/v3/app"
+	"github.com/cybercongress/go-cyber/v4/app"
 
 	"github.com/CosmWasm/wasmd/x/wasm"
 	"github.com/cosmos/cosmos-sdk/snapshots"
 	"github.com/cosmos/cosmos-sdk/x/crisis"
 
-	"github.com/cybercongress/go-cyber/v3/x/rank"
+	"github.com/cybercongress/go-cyber/v4/x/rank"
 
 	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
@@ -43,7 +43,7 @@ import (
 
 	serverconfig "github.com/cosmos/cosmos-sdk/server/config"
 
-	"github.com/cybercongress/go-cyber/v3/app/params"
+	"github.com/cybercongress/go-cyber/v4/app/params"
 
 	"github.com/cosmos/cosmos-sdk/version"
 )

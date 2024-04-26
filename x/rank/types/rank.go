@@ -6,8 +6,8 @@ import (
 	"sort"
 	"time"
 
-	"github.com/cybercongress/go-cyber/v3/merkle"
-	graphtypes "github.com/cybercongress/go-cyber/v3/x/graph/types"
+	"github.com/cybercongress/go-cyber/v4/merkle"
+	graphtypes "github.com/cybercongress/go-cyber/v4/x/graph/types"
 
 	"github.com/tendermint/tendermint/libs/log"
 )

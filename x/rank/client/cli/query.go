@@ -10,10 +10,10 @@ import (
 	"github.com/ipfs/go-cid"
 	"github.com/spf13/cobra"
 
-	graphtypes "github.com/cybercongress/go-cyber/v3/x/graph/types"
+	graphtypes "github.com/cybercongress/go-cyber/v4/x/graph/types"
 
-	"github.com/cybercongress/go-cyber/v3/types/query"
-	"github.com/cybercongress/go-cyber/v3/x/rank/types"
+	"github.com/cybercongress/go-cyber/v4/types/query"
+	"github.com/cybercongress/go-cyber/v4/x/rank/types"
 )
 
 func GetQueryCmd() *cobra.Command {
