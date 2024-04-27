@@ -2,6 +2,11 @@ package types
 
 import (
 	"encoding/json"
+	"errors"
+	dmnkeeper "github.com/cybercongress/go-cyber/v4/x/dmn/keeper"
+	graphkeeper "github.com/cybercongress/go-cyber/v4/x/graph/keeper"
+	gridkeeper "github.com/cybercongress/go-cyber/v4/x/grid/keeper"
+	resourceskeeper "github.com/cybercongress/go-cyber/v4/x/resources/keeper"
 
 	errorsmod "cosmossdk.io/errors"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
@@ -11,6 +16,40 @@ import (
 )
 
 var _ wasmkeeper.Messenger = (*CustomMessenger)(nil)
+
+var ErrHandleMsg = errors.New("error handle message")
+
+type ModuleMessenger interface {
+	HandleMsg(ctx sdk.Context, contractAddr sdk.AccAddress, contractIBCPortID string, msg CyberMsg) ([]sdk.Event, [][]byte, error)
+}
+
+type CustomMessenger struct {
+	wrapped          wasmkeeper.Messenger
+	moduleMessengers []ModuleMessenger
+	graphKeeper      *graphkeeper.GraphKeeper
+	dmnKeeper        *dmnkeeper.Keeper
+	gridKeeper       *gridkeeper.Keeper
+	resourcesKeeper  *resourceskeeper.Keeper
+}
+
+func CustomMessageDecorator(
+	moduleMessengers []ModuleMessenger,
+	graph *graphkeeper.GraphKeeper,
+	dmn *dmnkeeper.Keeper,
+	grid *gridkeeper.Keeper,
+	resources *resourceskeeper.Keeper,
+) func(wasmkeeper.Messenger) wasmkeeper.Messenger {
+	return func(old wasmkeeper.Messenger) wasmkeeper.Messenger {
+		return &CustomMessenger{
+			wrapped:          old,
+			moduleMessengers: moduleMessengers,
+			graphKeeper:      graph,
+			dmnKeeper:        dmn,
+			gridKeeper:       grid,
+			resourcesKeeper:  resources,
+		}
+	}
+}
 
 func (m *CustomMessenger) DispatchMsg(ctx sdk.Context, contractAddr sdk.AccAddress, contractIBCPortID string, msg wasmvmtypes.CosmosMsg) ([]sdk.Event, [][]byte, error) {
 	if msg.Custom != nil {

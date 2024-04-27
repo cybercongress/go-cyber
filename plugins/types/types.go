@@ -1,63 +1,13 @@
 package types
 
 import (
-	"errors"
-
-	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	bandwidthkeeper "github.com/cybercongress/go-cyber/v4/x/bandwidth/keeper"
 	bandwidthtypes "github.com/cybercongress/go-cyber/v4/x/bandwidth/types"
-	dmnkeeper "github.com/cybercongress/go-cyber/v4/x/dmn/keeper"
 	dmntypes "github.com/cybercongress/go-cyber/v4/x/dmn/types"
-	graphkeeper "github.com/cybercongress/go-cyber/v4/x/graph/keeper"
 	graphtypes "github.com/cybercongress/go-cyber/v4/x/graph/types"
-	gridkeeper "github.com/cybercongress/go-cyber/v4/x/grid/keeper"
 	gridtypes "github.com/cybercongress/go-cyber/v4/x/grid/types"
-	rankkeeper "github.com/cybercongress/go-cyber/v4/x/rank/keeper"
 	ranktypes "github.com/cybercongress/go-cyber/v4/x/rank/types"
-	resourceskeeper "github.com/cybercongress/go-cyber/v4/x/resources/keeper"
 	resourcestypes "github.com/cybercongress/go-cyber/v4/x/resources/types"
 )
-
-type ModuleQuerier interface {
-	HandleQuery(ctx sdk.Context, query CyberQuery) ([]byte, error)
-}
-
-type ModuleMessenger interface {
-	HandleMsg(ctx sdk.Context, contractAddr sdk.AccAddress, contractIBCPortID string, msg CyberMsg) ([]sdk.Event, [][]byte, error)
-}
-
-var ErrHandleQuery = errors.New("error handle query")
-
-var ErrHandleMsg = errors.New("error handle message")
-
-type QueryPlugin struct {
-	moduleQueriers []ModuleQuerier
-	rankKeeper     *rankkeeper.StateKeeper
-	graphKeeper    *graphkeeper.GraphKeeper
-	dmnKeeper      *dmnkeeper.Keeper
-	gridKeeper     *gridkeeper.Keeper
-	bandwidthMeter *bandwidthkeeper.BandwidthMeter
-}
-
-func NewQueryPlugin(
-	moduleQueriers []ModuleQuerier,
-	rank *rankkeeper.StateKeeper,
-	graph *graphkeeper.GraphKeeper,
-	dmn *dmnkeeper.Keeper,
-	grid *gridkeeper.Keeper,
-	bandwidth *bandwidthkeeper.BandwidthMeter,
-) *QueryPlugin {
-	return &QueryPlugin{
-		moduleQueriers: moduleQueriers,
-		rankKeeper:     rank,
-		graphKeeper:    graph,
-		dmnKeeper:      dmn,
-		gridKeeper:     grid,
-		bandwidthMeter: bandwidth,
-	}
-}
 
 type CyberQuery struct {
 	// rankKeeper queries
@@ -83,34 +33,6 @@ type CyberQuery struct {
 	BandwidthPrice  *bandwidthtypes.QueryPriceRequest           `json:"bandwidth_price,omitempty"`
 	TotalBandwidth  *bandwidthtypes.QueryTotalBandwidthRequest  `json:"total_bandwidth,omitempty"`
 	NeuronBandwidth *bandwidthtypes.QueryNeuronBandwidthRequest `json:"neuron_bandwidth,omitempty"`
-}
-
-type CustomMessenger struct {
-	wrapped          wasmkeeper.Messenger
-	moduleMessengers []ModuleMessenger
-	graphKeeper      *graphkeeper.GraphKeeper
-	dmnKeeper        *dmnkeeper.Keeper
-	gridKeeper       *gridkeeper.Keeper
-	resourcesKeeper  *resourceskeeper.Keeper
-}
-
-func CustomMessageDecorator(
-	moduleMessengers []ModuleMessenger,
-	graph *graphkeeper.GraphKeeper,
-	dmn *dmnkeeper.Keeper,
-	grid *gridkeeper.Keeper,
-	resources *resourceskeeper.Keeper,
-) func(wasmkeeper.Messenger) wasmkeeper.Messenger {
-	return func(old wasmkeeper.Messenger) wasmkeeper.Messenger {
-		return &CustomMessenger{
-			wrapped:          old,
-			moduleMessengers: moduleMessengers,
-			graphKeeper:      graph,
-			dmnKeeper:        dmn,
-			gridKeeper:       grid,
-			resourcesKeeper:  resources,
-		}
-	}
 }
 
 type CyberMsg struct {
