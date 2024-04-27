@@ -4,6 +4,7 @@ import (
 	store "github.com/cosmos/cosmos-sdk/store/types"
 	consensustypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
 	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
+	tokenfactorytypes "github.com/cybercongress/go-cyber/v4/x/tokenfactory/types"
 
 	resourcestypes "github.com/cybercongress/go-cyber/v4/x/resources/types"
 
@@ -20,6 +21,7 @@ var Upgrade = upgrades.Upgrade{
 			crisistypes.ModuleName,
 			consensustypes.ModuleName,
 			resourcestypes.ModuleName,
+			tokenfactorytypes.ModuleName,
 		},
 	},
 }

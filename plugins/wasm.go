@@ -4,6 +4,8 @@ import (
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
+	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
+	tokenfactorykeeper "github.com/cybercongress/go-cyber/v4/x/tokenfactory/keeper"
 
 	"github.com/cybercongress/go-cyber/v4/plugins/types"
 	cyberbankkeeper "github.com/cybercongress/go-cyber/v4/x/cyberbank/keeper"
@@ -32,6 +34,8 @@ func RegisterCustomPlugins(
 	graphIndex *graphkeeper.IndexKeeper,
 	account *authkeeper.AccountKeeper,
 	cyberbank *cyberbankkeeper.IndexedKeeper,
+	bank *bankkeeper.Keeper,
+	tokenFactory *tokenfactorykeeper.Keeper,
 ) []wasmkeeper.Option {
 	rankQuerier := rankwasm.NewWasmQuerier(rank)
 	graphQuerier := graphwasm.NewWasmQuerier(graph)
@@ -59,6 +63,8 @@ func RegisterCustomPlugins(
 		dmn,
 		grid,
 		bandwidth,
+		bank,
+		tokenFactory,
 	)
 
 	queryPluginOpt := wasmkeeper.WithQueryPlugins(&wasmkeeper.QueryPlugins{
@@ -79,6 +85,8 @@ func RegisterCustomPlugins(
 			dmn,
 			grid,
 			resources,
+			bank,
+			tokenFactory,
 		),
 	)
 

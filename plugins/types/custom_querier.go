@@ -3,11 +3,13 @@ package types
 import (
 	"encoding/json"
 	"errors"
+	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	bandwidthkeeper "github.com/cybercongress/go-cyber/v4/x/bandwidth/keeper"
 	dmnkeeper "github.com/cybercongress/go-cyber/v4/x/dmn/keeper"
 	graphkeeper "github.com/cybercongress/go-cyber/v4/x/graph/keeper"
 	gridkeeper "github.com/cybercongress/go-cyber/v4/x/grid/keeper"
 	rankkeeper "github.com/cybercongress/go-cyber/v4/x/rank/keeper"
+	tokenfactorykeeper "github.com/cybercongress/go-cyber/v4/x/tokenfactory/keeper"
 
 	errorsmod "cosmossdk.io/errors"
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
@@ -21,12 +23,14 @@ type ModuleQuerier interface {
 var ErrHandleQuery = errors.New("error handle query")
 
 type QueryPlugin struct {
-	moduleQueriers []ModuleQuerier
-	rankKeeper     *rankkeeper.StateKeeper
-	graphKeeper    *graphkeeper.GraphKeeper
-	dmnKeeper      *dmnkeeper.Keeper
-	gridKeeper     *gridkeeper.Keeper
-	bandwidthMeter *bandwidthkeeper.BandwidthMeter
+	moduleQueriers     []ModuleQuerier
+	rankKeeper         *rankkeeper.StateKeeper
+	graphKeeper        *graphkeeper.GraphKeeper
+	dmnKeeper          *dmnkeeper.Keeper
+	gridKeeper         *gridkeeper.Keeper
+	bandwidthMeter     *bandwidthkeeper.BandwidthMeter
+	bankKeeper         *bankkeeper.Keeper
+	tokenFactoryKeeper *tokenfactorykeeper.Keeper
 }
 
 func NewQueryPlugin(
@@ -36,14 +40,18 @@ func NewQueryPlugin(
 	dmn *dmnkeeper.Keeper,
 	grid *gridkeeper.Keeper,
 	bandwidth *bandwidthkeeper.BandwidthMeter,
+	bank *bankkeeper.Keeper,
+	tokenFactory *tokenfactorykeeper.Keeper,
 ) *QueryPlugin {
 	return &QueryPlugin{
-		moduleQueriers: moduleQueriers,
-		rankKeeper:     rank,
-		graphKeeper:    graph,
-		dmnKeeper:      dmn,
-		gridKeeper:     grid,
-		bandwidthMeter: bandwidth,
+		moduleQueriers:     moduleQueriers,
+		rankKeeper:         rank,
+		graphKeeper:        graph,
+		dmnKeeper:          dmn,
+		gridKeeper:         grid,
+		bandwidthMeter:     bandwidth,
+		bankKeeper:         bank,
+		tokenFactoryKeeper: tokenFactory,
 	}
 }
 

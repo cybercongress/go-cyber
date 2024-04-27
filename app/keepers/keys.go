@@ -22,6 +22,7 @@ import (
 	ibcfeetypes "github.com/cosmos/ibc-go/v7/modules/apps/29-fee/types"
 	ibctransfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
 	ibcexported "github.com/cosmos/ibc-go/v7/modules/core/exported"
+	tokenfactorytypes "github.com/cybercongress/go-cyber/v4/x/tokenfactory/types"
 
 	liquiditytypes "github.com/cybercongress/go-cyber/v4/x/liquidity/types"
 
@@ -55,6 +56,7 @@ func (appKeepers *AppKeepers) GenerateKeys() {
 		gridtypes.StoreKey,
 		dmntypes.StoreKey,
 		resourcestypes.StoreKey,
+		tokenfactorytypes.StoreKey,
 	)
 
 	appKeepers.tkeys = sdk.NewTransientStoreKeys(

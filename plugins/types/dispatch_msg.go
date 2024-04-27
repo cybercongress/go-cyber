@@ -3,10 +3,12 @@ package types
 import (
 	"encoding/json"
 	"errors"
+	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	dmnkeeper "github.com/cybercongress/go-cyber/v4/x/dmn/keeper"
 	graphkeeper "github.com/cybercongress/go-cyber/v4/x/graph/keeper"
 	gridkeeper "github.com/cybercongress/go-cyber/v4/x/grid/keeper"
 	resourceskeeper "github.com/cybercongress/go-cyber/v4/x/resources/keeper"
+	tokenfactorykeeper "github.com/cybercongress/go-cyber/v4/x/tokenfactory/keeper"
 
 	errorsmod "cosmossdk.io/errors"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
@@ -24,12 +26,14 @@ type ModuleMessenger interface {
 }
 
 type CustomMessenger struct {
-	wrapped          wasmkeeper.Messenger
-	moduleMessengers []ModuleMessenger
-	graphKeeper      *graphkeeper.GraphKeeper
-	dmnKeeper        *dmnkeeper.Keeper
-	gridKeeper       *gridkeeper.Keeper
-	resourcesKeeper  *resourceskeeper.Keeper
+	wrapped            wasmkeeper.Messenger
+	moduleMessengers   []ModuleMessenger
+	graphKeeper        *graphkeeper.GraphKeeper
+	dmnKeeper          *dmnkeeper.Keeper
+	gridKeeper         *gridkeeper.Keeper
+	resourcesKeeper    *resourceskeeper.Keeper
+	bankKeeper         *bankkeeper.Keeper
+	tokenFactoryKeeper *tokenfactorykeeper.Keeper
 }
 
 func CustomMessageDecorator(
@@ -38,15 +42,19 @@ func CustomMessageDecorator(
 	dmn *dmnkeeper.Keeper,
 	grid *gridkeeper.Keeper,
 	resources *resourceskeeper.Keeper,
+	bank *bankkeeper.Keeper,
+	tokenFactory *tokenfactorykeeper.Keeper,
 ) func(wasmkeeper.Messenger) wasmkeeper.Messenger {
 	return func(old wasmkeeper.Messenger) wasmkeeper.Messenger {
 		return &CustomMessenger{
-			wrapped:          old,
-			moduleMessengers: moduleMessengers,
-			graphKeeper:      graph,
-			dmnKeeper:        dmn,
-			gridKeeper:       grid,
-			resourcesKeeper:  resources,
+			wrapped:            old,
+			moduleMessengers:   moduleMessengers,
+			graphKeeper:        graph,
+			dmnKeeper:          dmn,
+			gridKeeper:         grid,
+			resourcesKeeper:    resources,
+			bankKeeper:         bank,
+			tokenFactoryKeeper: tokenFactory,
 		}
 	}
 }

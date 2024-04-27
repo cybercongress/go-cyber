@@ -2,6 +2,8 @@ package keepers
 
 import (
 	"fmt"
+	tokenfactorykeeper "github.com/cybercongress/go-cyber/v4/x/tokenfactory/keeper"
+	tokenfactorytypes "github.com/cybercongress/go-cyber/v4/x/tokenfactory/types"
 	"path/filepath"
 
 	"github.com/CosmWasm/wasmd/x/wasm"
@@ -85,7 +87,15 @@ import (
 	govv1beta "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 )
 
-var wasmCapabilities = "iterator,staking,stargate,cyber,cosmwasm_1_1,cosmwasm_1_2,cosmwasm_1_3"
+var (
+	wasmCapabilities = "iterator,staking,stargate,cyber,cosmwasm_1_1,cosmwasm_1_2,cosmwasm_1_3"
+
+	tokenFactoryCapabilities = []string{
+		tokenfactorytypes.EnableBurnFrom,
+		tokenfactorytypes.EnableForceTransfer,
+		tokenfactorytypes.EnableSetMetadata,
+	}
+)
 
 // module account permissions
 var maccPerms = map[string][]string{
@@ -101,6 +111,7 @@ var maccPerms = map[string][]string{
 	liquiditytypes.ModuleName:      {authtypes.Minter, authtypes.Burner},
 	gridtypes.GridPoolName:         nil,
 	resourcestypes.ResourcesName:   {authtypes.Minter, authtypes.Burner},
+	tokenfactorytypes.ModuleName:   {authtypes.Minter, authtypes.Burner},
 }
 
 type AppKeepers struct {
@@ -130,16 +141,17 @@ type AppKeepers struct {
 
 	ConsensusParamsKeeper consensusparamkeeper.Keeper
 
-	WasmKeeper      wasmkeeper.Keeper
-	LiquidityKeeper liquiditykeeper.Keeper
-	BandwidthMeter  *bandwidthkeeper.BandwidthMeter
-	CyberbankKeeper *cyberbankkeeper.IndexedKeeper
-	GraphKeeper     *graphkeeper.GraphKeeper
-	IndexKeeper     *graphkeeper.IndexKeeper
-	RankKeeper      *rankkeeper.StateKeeper
-	GridKeeper      gridkeeper.Keeper
-	DmnKeeper       *dmnkeeper.Keeper
-	ResourcesKeeper resourceskeeper.Keeper
+	TokenFactoryKeeper tokenfactorykeeper.Keeper
+	WasmKeeper         wasmkeeper.Keeper
+	LiquidityKeeper    liquiditykeeper.Keeper
+	BandwidthMeter     *bandwidthkeeper.BandwidthMeter
+	CyberbankKeeper    *cyberbankkeeper.IndexedKeeper
+	GraphKeeper        *graphkeeper.GraphKeeper
+	IndexKeeper        *graphkeeper.IndexKeeper
+	RankKeeper         *rankkeeper.StateKeeper
+	GridKeeper         gridkeeper.Keeper
+	DmnKeeper          *dmnkeeper.Keeper
+	ResourcesKeeper    resourceskeeper.Keeper
 
 	ScopedIBCKeeper      capabilitykeeper.ScopedKeeper
 	ScopedTransferKeeper capabilitykeeper.ScopedKeeper
@@ -449,6 +461,17 @@ func NewAppKeepers(
 	// If evidence needs to be handled for the app, set routes in router here and seal
 	appKeepers.EvidenceKeeper = *evidenceKeeper
 
+	appKeepers.TokenFactoryKeeper = tokenfactorykeeper.NewKeeper(
+		appCodec,
+		appKeepers.keys[tokenfactorytypes.StoreKey],
+		maccPerms,
+		appKeepers.AccountKeeper,
+		appKeepers.CyberbankKeeper.Proxy,
+		appKeepers.DistrKeeper,
+		tokenFactoryCapabilities,
+		govModAddress,
+	)
+
 	// TODO update later to data (move wasm dir inside data directory)
 	wasmDir := filepath.Join(homePath, "wasm")
 
@@ -467,6 +490,8 @@ func NewAppKeepers(
 		appKeepers.IndexKeeper,
 		&appKeepers.AccountKeeper,
 		appKeepers.CyberbankKeeper,
+		&appKeepers.BankKeeper,
+		&appKeepers.TokenFactoryKeeper,
 	)
 	wasmOpts = append(wasmOpts, cyberOpts...)
 
@@ -541,6 +566,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(dmntypes.ModuleName)
 	paramsKeeper.Subspace(resourcestypes.ModuleName)
 	paramsKeeper.Subspace(liquiditytypes.ModuleName)
+	paramsKeeper.Subspace(tokenfactorytypes.ModuleName)
 
 	return paramsKeeper
 }
