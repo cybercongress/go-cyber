@@ -45,6 +45,8 @@ import (
 	ibctransfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
 	ibc "github.com/cosmos/ibc-go/v7/modules/core"
 	ibcexported "github.com/cosmos/ibc-go/v7/modules/core/exported"
+	"github.com/cybercongress/go-cyber/v4/x/tokenfactory"
+	tokenfactorytypes "github.com/cybercongress/go-cyber/v4/x/tokenfactory/types"
 
 	"github.com/cybercongress/go-cyber/v4/x/liquidity"
 	liquiditytypes "github.com/cybercongress/go-cyber/v4/x/liquidity/types"
@@ -102,7 +104,7 @@ var ModuleBasics = module.NewBasicManager(
 	grid.AppModuleBasic{},
 	dmn.AppModuleBasic{},
 	resources.AppModuleBasic{},
-)
+	tokenfactory.AppModuleBasic{})
 
 func appModules(
 	app *App,
@@ -149,6 +151,7 @@ func appModules(
 		dmn.NewAppModule(appCodec, *app.DmnKeeper, app.GetSubspace(dmntypes.ModuleName)),
 		resources.NewAppModule(appCodec, app.ResourcesKeeper, app.GetSubspace(resourcestypes.ModuleName)),
 		stakingwrap.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.CyberbankKeeper.Proxy, app.GetSubspace(stakingtypes.ModuleName)),
+		tokenfactory.NewAppModule(app.AppKeepers.TokenFactoryKeeper, app.AppKeepers.AccountKeeper, app.AppKeepers.BankKeeper, app.GetSubspace(tokenfactorytypes.ModuleName)),
 	}
 }
 
@@ -214,6 +217,7 @@ func orderBeginBlockers() []string {
 		resourcestypes.ModuleName,
 		vestingtypes.ModuleName,
 		ibcfeetypes.ModuleName,
+		tokenfactorytypes.ModuleName,
 		wasm.ModuleName,
 	}
 }
@@ -248,6 +252,7 @@ func orderEndBlockers() []string {
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 		ibcfeetypes.ModuleName,
+		tokenfactorytypes.ModuleName,
 		wasm.ModuleName,
 	}
 }
@@ -275,6 +280,8 @@ func orderInitBlockers() []string {
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 		ibcfeetypes.ModuleName,
+		tokenfactorytypes.ModuleName,
+
 		wasm.ModuleName,
 		bandwidthtypes.ModuleName,
 		ranktypes.ModuleName,
