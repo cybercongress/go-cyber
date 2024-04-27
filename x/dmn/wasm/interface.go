@@ -3,202 +3,300 @@ package wasm
 import (
 	"encoding/json"
 
-	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
-
-	"github.com/CosmWasm/wasmd/x/wasm"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	errorsmod "cosmossdk.io/errors"
 
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 
+	pluginstypes "github.com/cybercongress/go-cyber/v4/plugins/types"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
+
 	"github.com/cybercongress/go-cyber/v4/x/dmn/keeper"
-	"github.com/cybercongress/go-cyber/v4/x/dmn/types"
 )
 
-var (
-	_ QuerierInterface   = Querier{}
-	_ MsgParserInterface = MsgParser{}
-)
-
-//--------------------------------------------------
-
-type MsgParserInterface interface {
-	Parse(contractAddr sdk.AccAddress, msg wasmvmtypes.CosmosMsg) ([]sdk.Msg, error)
-	ParseCustom(contractAddr sdk.AccAddress, data json.RawMessage) ([]sdk.Msg, error)
+type Messenger struct {
+	keeper *keeper.Keeper
 }
 
-type MsgParser struct{}
-
-func NewWasmMsgParser() MsgParser {
-	return MsgParser{}
-}
-
-func (MsgParser) Parse(_ sdk.AccAddress, _ wasmvmtypes.CosmosMsg) ([]sdk.Msg, error) {
-	return nil, nil
-}
-
-type CosmosMsg struct {
-	CreateThought         *types.MsgCreateThought         `json:"create_thought,omitempty"`
-	ForgetThought         *types.MsgForgetThought         `json:"forget_thought,omitempty"`
-	ChangeThoughtInput    *types.MsgChangeThoughtInput    `json:"change_thought_input,omitempty"`
-	ChangeThoughtPeriod   *types.MsgChangeThoughtPeriod   `json:"change_thought_period,omitempty"`
-	ChangeThoughtBlock    *types.MsgChangeThoughtBlock    `json:"change_thought_block,omitempty"`
-	ChangeThoughtGasPrice *types.MsgChangeThoughtGasPrice `json:"change_thought_gas_price,omitempty"`
-	ChangeThoughtParticle *types.MsgChangeThoughtParticle `json:"change_thought_particle,omitempty"`
-	ChangeThoughtName     *types.MsgChangeThoughtName     `json:"change_thought_name,omitempty"`
-}
-
-func (MsgParser) ParseCustom(contractAddr sdk.AccAddress, data json.RawMessage) ([]sdk.Msg, error) {
-	var sdkMsg CosmosMsg
-	err := json.Unmarshal(data, &sdkMsg)
-	if err != nil {
-		return nil, sdkerrors.Wrap(err, "failed to parse link custom msg")
+func NewMessenger(
+	keeper *keeper.Keeper,
+) *Messenger {
+	return &Messenger{
+		keeper: keeper,
 	}
+}
 
+func (m *Messenger) HandleMsg(ctx sdk.Context, contractAddr sdk.AccAddress, contractIBCPortID string, msg pluginstypes.CyberMsg) ([]sdk.Event, [][]byte, error) {
 	switch {
-	case sdkMsg.CreateThought != nil:
-		return []sdk.Msg{sdkMsg.CreateThought}, sdkMsg.CreateThought.ValidateBasic()
-	case sdkMsg.ForgetThought != nil:
-		return []sdk.Msg{sdkMsg.ForgetThought}, sdkMsg.ForgetThought.ValidateBasic()
-	case sdkMsg.ChangeThoughtInput != nil:
-		return []sdk.Msg{sdkMsg.ChangeThoughtInput}, sdkMsg.ChangeThoughtInput.ValidateBasic()
-	case sdkMsg.ChangeThoughtPeriod != nil:
-		return []sdk.Msg{sdkMsg.ChangeThoughtPeriod}, sdkMsg.ChangeThoughtPeriod.ValidateBasic()
-	case sdkMsg.ChangeThoughtBlock != nil:
-		return []sdk.Msg{sdkMsg.ChangeThoughtBlock}, sdkMsg.ChangeThoughtBlock.ValidateBasic()
-	case sdkMsg.ChangeThoughtGasPrice != nil:
-		return []sdk.Msg{sdkMsg.ChangeThoughtGasPrice}, sdkMsg.ChangeThoughtGasPrice.ValidateBasic()
-	case sdkMsg.ChangeThoughtParticle != nil:
-		return []sdk.Msg{sdkMsg.ChangeThoughtParticle}, sdkMsg.ChangeThoughtParticle.ValidateBasic()
-	case sdkMsg.ChangeThoughtName != nil:
-		return []sdk.Msg{sdkMsg.ChangeThoughtName}, sdkMsg.ChangeThoughtName.ValidateBasic()
+	case msg.CreateThought != nil:
+		if msg.CreateThought.Program != contractAddr.String() {
+			return nil, nil, wasmvmtypes.InvalidRequest{Err: "create thought wrong program"}
+		}
+
+		msgServer := keeper.NewMsgServerImpl(*m.keeper)
+
+		if err := msg.CreateThought.ValidateBasic(); err != nil {
+			return nil, nil, errorsmod.Wrap(err, "failed validating msg")
+		}
+
+		res, err := msgServer.CreateThought(
+			sdk.WrapSDKContext(ctx),
+			msg.CreateThought,
+		)
+		if err != nil {
+			return nil, nil, errorsmod.Wrap(err, "create thought msg")
+		}
+
+		responseBytes, err := json.Marshal(*res)
+		if err != nil {
+			return nil, nil, errorsmod.Wrap(err, "failed to serialize create thought response")
+		}
+
+		resp := [][]byte{responseBytes}
+
+		return nil, resp, nil
+	case msg.ForgetThought != nil:
+		if msg.ForgetThought.Program != contractAddr.String() {
+			return nil, nil, wasmvmtypes.InvalidRequest{Err: "forget thought wrong program"}
+		}
+
+		msgServer := keeper.NewMsgServerImpl(*m.keeper)
+
+		if err := msg.ForgetThought.ValidateBasic(); err != nil {
+			return nil, nil, errorsmod.Wrap(err, "failed validating msg")
+		}
+
+		res, err := msgServer.ForgetThought(
+			sdk.WrapSDKContext(ctx),
+			msg.ForgetThought,
+		)
+		if err != nil {
+			return nil, nil, errorsmod.Wrap(err, "forget thought msg")
+		}
+
+		responseBytes, err := json.Marshal(*res)
+		if err != nil {
+			return nil, nil, errorsmod.Wrap(err, "failed to serialize forget thought response")
+		}
+
+		resp := [][]byte{responseBytes}
+
+		return nil, resp, nil
+	case msg.ChangeThoughtInput != nil:
+		if msg.ChangeThoughtInput.Program != contractAddr.String() {
+			return nil, nil, wasmvmtypes.InvalidRequest{Err: "change thought wrong program"}
+		}
+
+		msgServer := keeper.NewMsgServerImpl(*m.keeper)
+
+		if err := msg.ChangeThoughtInput.ValidateBasic(); err != nil {
+			return nil, nil, errorsmod.Wrap(err, "failed validating msg")
+		}
+
+		res, err := msgServer.ChangeThoughtInput(
+			sdk.WrapSDKContext(ctx),
+			msg.ChangeThoughtInput,
+		)
+		if err != nil {
+			return nil, nil, errorsmod.Wrap(err, "change thought input msg")
+		}
+
+		responseBytes, err := json.Marshal(*res)
+		if err != nil {
+			return nil, nil, errorsmod.Wrap(err, "failed to serialize change thought input response")
+		}
+
+		resp := [][]byte{responseBytes}
+
+		return nil, resp, nil
+	case msg.ChangeThoughtPeriod != nil:
+		if msg.ChangeThoughtPeriod.Program != contractAddr.String() {
+			return nil, nil, wasmvmtypes.InvalidRequest{Err: "change thought wrong program"}
+		}
+
+		msgServer := keeper.NewMsgServerImpl(*m.keeper)
+
+		if err := msg.ChangeThoughtPeriod.ValidateBasic(); err != nil {
+			return nil, nil, errorsmod.Wrap(err, "failed validating msg")
+		}
+
+		res, err := msgServer.ChangeThoughtPeriod(
+			sdk.WrapSDKContext(ctx),
+			msg.ChangeThoughtPeriod,
+		)
+		if err != nil {
+			return nil, nil, errorsmod.Wrap(err, "change thought period msg")
+		}
+
+		responseBytes, err := json.Marshal(*res)
+		if err != nil {
+			return nil, nil, errorsmod.Wrap(err, "failed to serialize change thought period response")
+		}
+
+		resp := [][]byte{responseBytes}
+
+		return nil, resp, nil
+
+	case msg.ChangeThoughtBlock != nil:
+		if msg.ChangeThoughtBlock.Program != contractAddr.String() {
+			return nil, nil, wasmvmtypes.InvalidRequest{Err: "change thought wrong program"}
+		}
+
+		msgServer := keeper.NewMsgServerImpl(*m.keeper)
+
+		if err := msg.ChangeThoughtBlock.ValidateBasic(); err != nil {
+			return nil, nil, errorsmod.Wrap(err, "failed validating msg")
+		}
+
+		res, err := msgServer.ChangeThoughtBlock(
+			sdk.WrapSDKContext(ctx),
+			msg.ChangeThoughtBlock,
+		)
+		if err != nil {
+			return nil, nil, errorsmod.Wrap(err, "change thought block msg")
+		}
+
+		responseBytes, err := json.Marshal(*res)
+		if err != nil {
+			return nil, nil, errorsmod.Wrap(err, "failed to serialize change thought block response")
+		}
+
+		resp := [][]byte{responseBytes}
+
+		return nil, resp, nil
+
+	case msg.ChangeThoughtGasPrice != nil:
+		if msg.ChangeThoughtGasPrice.Program != contractAddr.String() {
+			return nil, nil, wasmvmtypes.InvalidRequest{Err: "change thought wrong program"}
+		}
+
+		msgServer := keeper.NewMsgServerImpl(*m.keeper)
+
+		if err := msg.ChangeThoughtGasPrice.ValidateBasic(); err != nil {
+			return nil, nil, errorsmod.Wrap(err, "failed validating msg")
+		}
+
+		res, err := msgServer.ChangeThoughtGasPrice(
+			sdk.WrapSDKContext(ctx),
+			msg.ChangeThoughtGasPrice,
+		)
+		if err != nil {
+			return nil, nil, errorsmod.Wrap(err, "change thought gas price msg")
+		}
+
+		responseBytes, err := json.Marshal(*res)
+		if err != nil {
+			return nil, nil, errorsmod.Wrap(err, "failed to serialize change thought gas price response")
+		}
+
+		resp := [][]byte{responseBytes}
+
+		return nil, resp, nil
+
+	case msg.ChangeThoughtParticle != nil:
+		if msg.ChangeThoughtParticle.Program != contractAddr.String() {
+			return nil, nil, wasmvmtypes.InvalidRequest{Err: "change thought wrong program"}
+		}
+
+		msgServer := keeper.NewMsgServerImpl(*m.keeper)
+
+		if err := msg.ChangeThoughtParticle.ValidateBasic(); err != nil {
+			return nil, nil, errorsmod.Wrap(err, "failed validating msg")
+		}
+
+		res, err := msgServer.ChangeThoughtParticle(
+			sdk.WrapSDKContext(ctx),
+			msg.ChangeThoughtParticle,
+		)
+		if err != nil {
+			return nil, nil, errorsmod.Wrap(err, "change thought particle msg")
+		}
+
+		responseBytes, err := json.Marshal(*res)
+		if err != nil {
+			return nil, nil, errorsmod.Wrap(err, "failed to serialize change thought particle response")
+		}
+
+		resp := [][]byte{responseBytes}
+
+		return nil, resp, nil
+
+	case msg.ChangeThoughtName != nil:
+		if msg.ChangeThoughtName.Program != contractAddr.String() {
+			return nil, nil, wasmvmtypes.InvalidRequest{Err: "change thought wrong program"}
+		}
+
+		msgServer := keeper.NewMsgServerImpl(*m.keeper)
+
+		if err := msg.ChangeThoughtName.ValidateBasic(); err != nil {
+			return nil, nil, errorsmod.Wrap(err, "failed validating msg")
+		}
+
+		res, err := msgServer.ChangeThoughtName(
+			sdk.WrapSDKContext(ctx),
+			msg.ChangeThoughtName,
+		)
+		if err != nil {
+			return nil, nil, errorsmod.Wrap(err, "change thought name msg")
+		}
+
+		responseBytes, err := json.Marshal(*res)
+		if err != nil {
+			return nil, nil, errorsmod.Wrap(err, "failed to serialize change thought name response")
+		}
+
+		resp := [][]byte{responseBytes}
+
+		return nil, resp, nil
 	default:
-		return nil, sdkerrors.Wrap(wasm.ErrInvalidMsg, "Unknown variant of DMN")
+		return nil, nil, pluginstypes.ErrHandleMsg
 	}
-}
-
-//--------------------------------------------------
-
-type QuerierInterface interface {
-	Query(ctx sdk.Context, request wasmvmtypes.QueryRequest) ([]byte, error)
-	QueryCustom(ctx sdk.Context, data json.RawMessage) ([]byte, error)
 }
 
 type Querier struct {
-	keeper.Keeper
+	*keeper.Keeper
 }
 
-func NewWasmQuerier(keeper keeper.Keeper) Querier {
-	return Querier{keeper}
+func NewWasmQuerier(keeper *keeper.Keeper) *Querier {
+	return &Querier{keeper}
 }
 
-func (Querier) Query(_ sdk.Context, _ wasmvmtypes.QueryRequest) ([]byte, error) { return nil, nil }
-
-type CosmosQuery struct {
-	Thought      *QueryThoughtParams `json:"thought,omitempty"`
-	ThoughtStats *QueryThoughtParams `json:"thought_stats,omitempty"`
-	LowestFee    *struct{}           `json:"lowest_fee,omitempty"`
-}
-
-type Trigger struct {
-	Period uint64 `json:"period"`
-	Block  uint64 `json:"block"`
-}
-
-type Load struct {
-	Input    string           `json:"input"`
-	GasPrice wasmvmtypes.Coin `json:"gas_price"`
-}
-
-type QueryThoughtParams struct {
-	Program string `json:"program"`
-	Name    string `json:"name"`
-}
-
-type ThoughtQueryResponse struct {
-	Program  string  `json:"program"`
-	Trigger  Trigger `json:"trigger"`
-	Load     Load    `json:"load"`
-	Name     string  `json:"name"`
-	Particle string  `json:"particle"`
-}
-
-type ThoughtStatsQueryResponse struct {
-	Program   string `json:"program"`
-	Name      string `json:"name"`
-	Calls     uint64 `json:"calls"`
-	Fees      uint64 `json:"fees"`
-	Gas       uint64 `json:"gas"`
-	LastBlock uint64 `json:"last_block"`
-}
-
-type LowestFeeResponse struct {
-	Fee wasmvmtypes.Coin `json:"fee"`
-}
-
-func (querier Querier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([]byte, error) {
-	var query CosmosQuery
-	err := json.Unmarshal(data, &query)
-	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
-	}
-
-	var bz []byte
-
+func (querier *Querier) HandleQuery(ctx sdk.Context, query pluginstypes.CyberQuery) ([]byte, error) {
 	switch {
 	case query.Thought != nil:
-
-		program, _ := sdk.AccAddressFromBech32(query.Thought.Program)
-		thought, found := querier.Keeper.GetThought(ctx, program, query.Thought.Name)
-		if !found {
-			return nil, sdkerrors.ErrInvalidRequest
+		res, err := querier.Keeper.Thought(ctx, query.Thought)
+		if err != nil {
+			return nil, errorsmod.Wrap(err, "failed to get dmn thought")
 		}
 
-		bz, err = json.Marshal(
-			ThoughtQueryResponse{
-				Program:  thought.Program,
-				Trigger:  Trigger(thought.Trigger),
-				Load:     convertLoadToWasmLoad(thought.Load),
-				Name:     thought.Name,
-				Particle: thought.Particle,
-			})
+		responseBytes, err := json.Marshal(res)
+		if err != nil {
+			return nil, errorsmod.Wrap(err, "failed to serialize dmn thought response")
+		}
+		return responseBytes, nil
 	case query.ThoughtStats != nil:
-		program, _ := sdk.AccAddressFromBech32(query.ThoughtStats.Program)
-		thoughtStats, found := querier.Keeper.GetThoughtStats(ctx, program, query.ThoughtStats.Name)
-		if !found {
-			return nil, sdkerrors.ErrInvalidRequest
+		res, err := querier.Keeper.ThoughtStats(ctx, query.ThoughtStats)
+		if err != nil {
+			return nil, errorsmod.Wrap(err, "failed to get dmn thought stats")
 		}
 
-		bz, err = json.Marshal(
-			ThoughtStatsQueryResponse{
-				Program:   thoughtStats.Program,
-				Name:      thoughtStats.Name,
-				Calls:     thoughtStats.Calls,
-				Fees:      thoughtStats.Fees,
-				Gas:       thoughtStats.Gas,
-				LastBlock: thoughtStats.LastBlock,
-			})
-	case query.LowestFee != nil:
-		lowestFee := querier.Keeper.GetLowestFee(ctx)
-		bz, err = json.Marshal(
-			LowestFeeResponse{
-				Fee: wasmkeeper.ConvertSdkCoinToWasmCoin(lowestFee),
-			},
-		)
+		responseBytes, err := json.Marshal(res)
+		if err != nil {
+			return nil, errorsmod.Wrap(err, "failed to serialize dmn thought stats response")
+		}
+		return responseBytes, nil
+	case query.ThoughtsFees != nil:
+		res, err := querier.Keeper.ThoughtsFees(ctx, query.ThoughtsFees)
+		if err != nil {
+			return nil, errorsmod.Wrap(err, "failed to get dmn thoughts fees")
+		}
+
+		responseBytes, err := json.Marshal(res)
+		if err != nil {
+			return nil, errorsmod.Wrap(err, "failed to serialize dmn thoughts fees response")
+		}
+		return responseBytes, nil
 	default:
-		return nil, wasmvmtypes.UnsupportedRequest{Kind: "unknown DMN variant"}
-	}
-
-	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
-	}
-
-	return bz, nil
-}
-
-func convertLoadToWasmLoad(load types.Load) Load {
-	return Load{
-		load.Input,
-		wasmkeeper.ConvertSdkCoinToWasmCoin(load.GasPrice),
+		return nil, pluginstypes.ErrHandleQuery
 	}
 }

@@ -1,4 +1,4 @@
-package plugins
+package wasm
 
 import (
 	"encoding/json"
@@ -15,9 +15,11 @@ import (
 	"github.com/cybercongress/go-cyber/v4/x/liquidity/keeper"
 )
 
+// TODO refactor to the new query and message handler or remove
+
 var (
-	_ WasmQuerierInterface   = WasmQuerier{}
-	_ WasmMsgParserInterface = WasmMsgParser{}
+// _ WasmQuerierInterface   = WasmQuerier{}
+// _ WasmMsgParserInterface = WasmMsgParser{}
 )
 
 //--------------------------------------------------
@@ -39,6 +41,7 @@ type CosmosMsg struct {
 	SwapWithinBatch     *liquiditytypes.MsgSwapWithinBatch     `json:"swap_within_batch,omitempty"`
 }
 
+// Deprecated
 func (WasmMsgParser) ParseCustom(contractAddr sdk.AccAddress, data json.RawMessage) ([]sdk.Msg, error) {
 	var sdkMsg CosmosMsg
 	err := json.Unmarshal(data, &sdkMsg)
@@ -107,6 +110,7 @@ type PoolAddressResponse struct {
 	Address string `json:"address"`
 }
 
+// Deprecated
 func (querier WasmQuerier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([]byte, error) {
 	var query CosmosQuery
 	err := json.Unmarshal(data, &query)

@@ -1,10 +1,11 @@
 package cmd
 
 import (
-	"cosmossdk.io/simapp/params"
 	"errors"
 	"io"
 	"os"
+
+	"cosmossdk.io/simapp/params"
 
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
