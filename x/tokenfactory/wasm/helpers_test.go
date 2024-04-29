@@ -1,4 +1,4 @@
-package bindings_test
+package wasm_test
 
 import (
 	"os"

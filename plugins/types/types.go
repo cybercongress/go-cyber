@@ -7,6 +7,7 @@ import (
 	gridtypes "github.com/cybercongress/go-cyber/v4/x/grid/types"
 	ranktypes "github.com/cybercongress/go-cyber/v4/x/rank/types"
 	resourcestypes "github.com/cybercongress/go-cyber/v4/x/resources/types"
+	"github.com/cybercongress/go-cyber/v4/x/tokenfactory/wasm/types"
 )
 
 type CyberQuery struct {
@@ -33,6 +34,9 @@ type CyberQuery struct {
 	BandwidthPrice  *bandwidthtypes.QueryPriceRequest           `json:"bandwidth_price,omitempty"`
 	TotalBandwidth  *bandwidthtypes.QueryTotalBandwidthRequest  `json:"total_bandwidth,omitempty"`
 	NeuronBandwidth *bandwidthtypes.QueryNeuronBandwidthRequest `json:"neuron_bandwidth,omitempty"`
+
+	// token factory queries
+	TokenFactory *types.TokenFactoryQuery `json:"token_factory,omitempty"`
 }
 
 type CyberMsg struct {
@@ -57,4 +61,7 @@ type CyberMsg struct {
 
 	// resources messages
 	Investmint *resourcestypes.MsgInvestmint `json:"investmint,omitempty"`
+
+	// token factory messages
+	TokenFactory *types.TokenFactoryMsg `json:"token_factory,omitempty"`
 }
