@@ -1,5 +1,6 @@
 package params
 
 const (
-	BondDenom = "boot"
+	DefaultDenom = "boot"
+	BondDenom    = "boot"
 )
