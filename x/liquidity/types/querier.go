@@ -21,7 +21,7 @@ func NewQueryLiquidityPoolParams(poolID uint64) QueryLiquidityPoolParams {
 	}
 }
 
-// QueryValidatorsParams defines the params for the following queries:
+// QueryLiquidityPoolsParams defines the params for the following queries:
 // - 'custom/liquidity/liquidityPools'
 type QueryLiquidityPoolsParams struct {
 	Page, Limit int
