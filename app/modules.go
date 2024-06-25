@@ -45,6 +45,8 @@ import (
 	ibctransfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
 	ibc "github.com/cosmos/ibc-go/v7/modules/core"
 	ibcexported "github.com/cosmos/ibc-go/v7/modules/core/exported"
+	solomachine "github.com/cosmos/ibc-go/v7/modules/light-clients/06-solomachine"
+	ibctm "github.com/cosmos/ibc-go/v7/modules/light-clients/07-tendermint"
 
 	"github.com/cybercongress/go-cyber/v4/x/liquidity"
 	liquiditytypes "github.com/cybercongress/go-cyber/v4/x/liquidity/types"
@@ -102,6 +104,9 @@ var ModuleBasics = module.NewBasicManager(
 	grid.AppModuleBasic{},
 	dmn.AppModuleBasic{},
 	resources.AppModuleBasic{},
+	// https://github.com/cosmos/ibc-go/blob/main/docs/docs/05-migrations/08-v6-to-v7.md
+	ibctm.AppModuleBasic{},
+	solomachine.AppModuleBasic{},
 )
 
 func appModules(
