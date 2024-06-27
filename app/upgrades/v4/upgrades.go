@@ -2,6 +2,7 @@ package v3
 
 import (
 	"fmt"
+	"github.com/cosmos/ibc-go/v7/modules/core/exported"
 	"time"
 
 	liquiditytypes "github.com/cybercongress/go-cyber/v4/x/liquidity/types"
@@ -109,9 +110,9 @@ func CreateV4UpgradeHandler(
 		// TODO check ibc-go state after migration
 		// https://github.com/cosmos/ibc-go/blob/v7.1.0/docs/migrations/v7-to-v7_1.md
 		// explicitly update the IBC 02-client params, adding the localhost client type
-		// params := keepers.IBCKeeper.ClientKeeper.GetParams(ctx)
-		// params.AllowedClients = append(params.AllowedClients, exported.Localhost)
-		// keepers.IBCKeeper.ClientKeeper.SetParams(ctx, params)
+		params := keepers.IBCKeeper.ClientKeeper.GetParams(ctx)
+		params.AllowedClients = append(params.AllowedClients, exported.Localhost)
+		keepers.IBCKeeper.ClientKeeper.SetParams(ctx, params)
 
 		after := time.Now()
 
