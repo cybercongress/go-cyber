@@ -4,6 +4,7 @@ LEDGER_ENABLED ?= true
 VERSION := $(shell echo $(shell git describe --tags) | sed 's/^v//')
 COMMIT := $(shell git log -1 --format='%H')
 BFT_VERSION := $(shell go list -m github.com/cometbft/cometbft | sed 's:.* ::')
+LINK_STATICALLY ?= false
 
 BINDIR ?= $(GOPATH)/bin
 BUILDDIR ?= $(CURDIR)/build/
@@ -68,6 +69,10 @@ ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=cyber \
 		  -X github.com/cosmos/cosmos-sdk/version.Commit=$(COMMIT) \
 		  -X "github.com/cosmos/cosmos-sdk/version.BuildTags=$(build_tags_comma_sep)" \
 		  -X github.com/cometbft/cometbft/version.BFTVer=$(BFT_VERSION)
+
+ifeq ($(LINK_STATICALLY),true)
+	ldflags += -linkmode=external -extldflags "-Wl,-z,muldefs -static"
+endif
 
 ldflags += $(LDFLAGS)
 ldflags := $(strip $(ldflags))
