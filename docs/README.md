@@ -50,7 +50,7 @@
 - [ledger](cyber_ledger_guide) guide
 
 # Reference
-- [swagger](https://lcd.bostrom.cybernode.ai/swagger/)
+- [swagger](https://lcd.bostrom.cybernode.ai/)
 
 
 ---
