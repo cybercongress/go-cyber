@@ -7,7 +7,7 @@ import (
 	gridtypes "github.com/cybercongress/go-cyber/v4/x/grid/types"
 	ranktypes "github.com/cybercongress/go-cyber/v4/x/rank/types"
 	resourcestypes "github.com/cybercongress/go-cyber/v4/x/resources/types"
-	"github.com/cybercongress/go-cyber/v4/x/tokenfactory/wasm/types"
+	tokenfactorytypes "github.com/cybercongress/go-cyber/v4/x/tokenfactory/wasm/types"
 )
 
 type CyberQuery struct {
@@ -36,7 +36,13 @@ type CyberQuery struct {
 	NeuronBandwidth *bandwidthtypes.QueryNeuronBandwidthRequest `json:"neuron_bandwidth,omitempty"`
 
 	// token factory queries
-	TokenFactory *types.TokenFactoryQuery `json:"token_factory,omitempty"`
+	//TokenFactory *types.TokenFactoryQuery `json:"token_factory,omitempty"`
+
+	FullDenom       *tokenfactorytypes.FullDenom       `json:"full_denom,omitempty"`
+	Admin           *tokenfactorytypes.DenomAdmin      `json:"admin,omitempty"`
+	Metadata        *tokenfactorytypes.GetMetadata     `json:"metadata,omitempty"`
+	DenomsByCreator *tokenfactorytypes.DenomsByCreator `json:"denoms_by_creator,omitempty"`
+	Params          *tokenfactorytypes.GetParams       `json:"params,omitempty"`
 }
 
 type CyberMsg struct {
@@ -63,5 +69,5 @@ type CyberMsg struct {
 	Investmint *resourcestypes.MsgInvestmint `json:"investmint,omitempty"`
 
 	// token factory messages
-	TokenFactory *types.TokenFactoryMsg `json:"token_factory,omitempty"`
+	TokenFactory *tokenfactorytypes.TokenFactoryMsg `json:"token_factory,omitempty"`
 }

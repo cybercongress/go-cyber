@@ -151,7 +151,9 @@ func appModules(
 		dmn.NewAppModule(appCodec, *app.DmnKeeper, app.GetSubspace(dmntypes.ModuleName)),
 		resources.NewAppModule(appCodec, app.ResourcesKeeper, app.GetSubspace(resourcestypes.ModuleName)),
 		stakingwrap.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.CyberbankKeeper.Proxy, app.GetSubspace(stakingtypes.ModuleName)),
-		tokenfactory.NewAppModule(app.AppKeepers.TokenFactoryKeeper, app.AppKeepers.AccountKeeper, app.AppKeepers.BankKeeper, app.GetSubspace(tokenfactorytypes.ModuleName)),
+		// NOTE add Bank Proxy here to resolve issue when new neuron is created during token-factory token transfer
+		// TODO add storage listener to update neurons memory index out of cyberbank proxy
+		tokenfactory.NewAppModule(app.AppKeepers.TokenFactoryKeeper, app.AppKeepers.AccountKeeper, app.CyberbankKeeper.Proxy, app.GetSubspace(tokenfactorytypes.ModuleName)),
 	}
 }
 

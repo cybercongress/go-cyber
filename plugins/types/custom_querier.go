@@ -1,24 +1,24 @@
 package types
 
 import (
+	errorsmod "cosmossdk.io/errors"
 	"encoding/json"
 	"errors"
+	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	bandwidthkeeper "github.com/cybercongress/go-cyber/v4/x/bandwidth/keeper"
 	bandwidthtypes "github.com/cybercongress/go-cyber/v4/x/bandwidth/types"
 	dmnkeeper "github.com/cybercongress/go-cyber/v4/x/dmn/keeper"
 	dmntypes "github.com/cybercongress/go-cyber/v4/x/dmn/types"
 	graphkeeper "github.com/cybercongress/go-cyber/v4/x/graph/keeper"
+	graphtypes "github.com/cybercongress/go-cyber/v4/x/graph/types"
 	gridkeeper "github.com/cybercongress/go-cyber/v4/x/grid/keeper"
 	gridtypes "github.com/cybercongress/go-cyber/v4/x/grid/types"
 	rankkeeper "github.com/cybercongress/go-cyber/v4/x/rank/keeper"
 	ranktypes "github.com/cybercongress/go-cyber/v4/x/rank/types"
 	tokenfactorykeeper "github.com/cybercongress/go-cyber/v4/x/tokenfactory/keeper"
 	tokenfactorytypes "github.com/cybercongress/go-cyber/v4/x/tokenfactory/types"
-
-	errorsmod "cosmossdk.io/errors"
-	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 type ModuleQuerier interface {
@@ -71,7 +71,7 @@ func CustomQuerier(qp *QueryPlugin) func(ctx sdk.Context, request json.RawMessag
 		case contractQuery.ParticleRank != nil:
 			return qp.moduleQueriers[ranktypes.ModuleName].HandleQuery(ctx, contractQuery)
 		case contractQuery.GraphStats != nil:
-			return qp.moduleQueriers[ranktypes.ModuleName].HandleQuery(ctx, contractQuery)
+			return qp.moduleQueriers[graphtypes.ModuleName].HandleQuery(ctx, contractQuery)
 		case contractQuery.Thought != nil:
 			return qp.moduleQueriers[dmntypes.ModuleName].HandleQuery(ctx, contractQuery)
 		case contractQuery.ThoughtStats != nil:
@@ -94,7 +94,17 @@ func CustomQuerier(qp *QueryPlugin) func(ctx sdk.Context, request json.RawMessag
 			return qp.moduleQueriers[bandwidthtypes.ModuleName].HandleQuery(ctx, contractQuery)
 		case contractQuery.NeuronBandwidth != nil:
 			return qp.moduleQueriers[bandwidthtypes.ModuleName].HandleQuery(ctx, contractQuery)
-		case contractQuery.TokenFactory != nil:
+		//case contractQuery.TokenFactory != nil:
+		//	return qp.moduleQueriers[tokenfactorytypes.ModuleName].HandleQuery(ctx, contractQuery)
+		case contractQuery.FullDenom != nil:
+			return qp.moduleQueriers[tokenfactorytypes.ModuleName].HandleQuery(ctx, contractQuery)
+		case contractQuery.Admin != nil:
+			return qp.moduleQueriers[tokenfactorytypes.ModuleName].HandleQuery(ctx, contractQuery)
+		case contractQuery.Metadata != nil:
+			return qp.moduleQueriers[tokenfactorytypes.ModuleName].HandleQuery(ctx, contractQuery)
+		case contractQuery.DenomsByCreator != nil:
+			return qp.moduleQueriers[tokenfactorytypes.ModuleName].HandleQuery(ctx, contractQuery)
+		case contractQuery.Params != nil:
 			return qp.moduleQueriers[tokenfactorytypes.ModuleName].HandleQuery(ctx, contractQuery)
 		default:
 			return nil, wasmvmtypes.UnsupportedRequest{Kind: "unknown cyber query variant"}

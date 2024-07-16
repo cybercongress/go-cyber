@@ -16,12 +16,12 @@ import (
 
 // CustomQuerier dispatches custom CosmWasm wasm queries.
 func (querier *Querier) HandleQuery(ctx sdk.Context, query pluginstypes.CyberQuery) ([]byte, error) {
-	var contractQuery = query.TokenFactory
+	//var contractQuery = query.TokenFactory
 
 	switch {
-	case contractQuery.FullDenom != nil:
-		creator := contractQuery.FullDenom.CreatorAddr
-		subdenom := contractQuery.FullDenom.Subdenom
+	case query.FullDenom != nil:
+		creator := query.FullDenom.CreatorAddr
+		subdenom := query.FullDenom.Subdenom
 
 		fullDenom, err := GetFullDenom(creator, subdenom)
 		if err != nil {
@@ -39,8 +39,8 @@ func (querier *Querier) HandleQuery(ctx sdk.Context, query pluginstypes.CyberQue
 
 		return bz, nil
 
-	case contractQuery.Admin != nil:
-		res, err := querier.GetDenomAdmin(ctx, contractQuery.Admin.Denom)
+	case query.Admin != nil:
+		res, err := querier.GetDenomAdmin(ctx, query.Admin.Denom)
 		if err != nil {
 			return nil, err
 		}
@@ -52,8 +52,8 @@ func (querier *Querier) HandleQuery(ctx sdk.Context, query pluginstypes.CyberQue
 
 		return bz, nil
 
-	case contractQuery.Metadata != nil:
-		res, err := querier.GetMetadata(ctx, contractQuery.Metadata.Denom)
+	case query.Metadata != nil:
+		res, err := querier.GetMetadata(ctx, query.Metadata.Denom)
 		if err != nil {
 			return nil, err
 		}
@@ -65,8 +65,8 @@ func (querier *Querier) HandleQuery(ctx sdk.Context, query pluginstypes.CyberQue
 
 		return bz, nil
 
-	case contractQuery.DenomsByCreator != nil:
-		res, err := querier.GetDenomsByCreator(ctx, contractQuery.DenomsByCreator.Creator)
+	case query.DenomsByCreator != nil:
+		res, err := querier.GetDenomsByCreator(ctx, query.DenomsByCreator.Creator)
 		if err != nil {
 			return nil, err
 		}
@@ -78,7 +78,7 @@ func (querier *Querier) HandleQuery(ctx sdk.Context, query pluginstypes.CyberQue
 
 		return bz, nil
 
-	case contractQuery.Params != nil:
+	case query.Params != nil:
 		res, err := querier.GetParams(ctx)
 		if err != nil {
 			return nil, err
