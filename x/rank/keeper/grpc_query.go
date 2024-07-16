@@ -45,7 +45,7 @@ func (sk StateKeeper) Rank(goCtx context.Context, req *types.QueryRankRequest) (
 		return nil, errorsmod.Wrap(graphtypes.ErrCidNotFound, req.Particle)
 	}
 
-	// rankValue := sk.index.GetRankValue(cidNum) // TODO it was the bug, test bindings
+	// rankValue := sk.index.GetRankValue(cidNum) // TODO it was the bug, test wasm
 	rankValue := sk.networkCidRank.RankValues[cidNum]
 	return &types.QueryRankResponse{Rank: rankValue}, nil
 }

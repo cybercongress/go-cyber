@@ -47,6 +47,8 @@ import (
 	ibcexported "github.com/cosmos/ibc-go/v7/modules/core/exported"
 	solomachine "github.com/cosmos/ibc-go/v7/modules/light-clients/06-solomachine"
 	ibctm "github.com/cosmos/ibc-go/v7/modules/light-clients/07-tendermint"
+	"github.com/cybercongress/go-cyber/v4/x/tokenfactory"
+	tokenfactorytypes "github.com/cybercongress/go-cyber/v4/x/tokenfactory/types"
 
 	"github.com/cybercongress/go-cyber/v4/x/liquidity"
 	liquiditytypes "github.com/cybercongress/go-cyber/v4/x/liquidity/types"
@@ -104,6 +106,7 @@ var ModuleBasics = module.NewBasicManager(
 	grid.AppModuleBasic{},
 	dmn.AppModuleBasic{},
 	resources.AppModuleBasic{},
+	tokenfactory.AppModuleBasic{},
 	// https://github.com/cosmos/ibc-go/blob/main/docs/docs/05-migrations/08-v6-to-v7.md
 	ibctm.AppModuleBasic{},
 	solomachine.AppModuleBasic{},
@@ -154,6 +157,9 @@ func appModules(
 		dmn.NewAppModule(appCodec, *app.DmnKeeper, app.GetSubspace(dmntypes.ModuleName)),
 		resources.NewAppModule(appCodec, app.ResourcesKeeper, app.GetSubspace(resourcestypes.ModuleName)),
 		stakingwrap.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.CyberbankKeeper.Proxy, app.GetSubspace(stakingtypes.ModuleName)),
+		// NOTE add Bank Proxy here to resolve issue when new neuron is created during token-factory token transfer
+		// TODO add storage listener to update neurons memory index out of cyberbank proxy
+		tokenfactory.NewAppModule(app.AppKeepers.TokenFactoryKeeper, app.AppKeepers.AccountKeeper, app.CyberbankKeeper.Proxy, app.GetSubspace(tokenfactorytypes.ModuleName)),
 	}
 }
 
@@ -219,6 +225,7 @@ func orderBeginBlockers() []string {
 		resourcestypes.ModuleName,
 		vestingtypes.ModuleName,
 		ibcfeetypes.ModuleName,
+		tokenfactorytypes.ModuleName,
 		wasm.ModuleName,
 	}
 }
@@ -253,6 +260,7 @@ func orderEndBlockers() []string {
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 		ibcfeetypes.ModuleName,
+		tokenfactorytypes.ModuleName,
 		wasm.ModuleName,
 	}
 }
@@ -280,6 +288,8 @@ func orderInitBlockers() []string {
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 		ibcfeetypes.ModuleName,
+		tokenfactorytypes.ModuleName,
+
 		wasm.ModuleName,
 		bandwidthtypes.ModuleName,
 		ranktypes.ModuleName,
