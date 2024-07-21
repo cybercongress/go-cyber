@@ -21,14 +21,14 @@ case "$PLATFORM" in
       if cp build/pussy "$binpath"; then
         echo "Moved pussy to $binpath"
         echo "Enjoy your space-pussy experience!"
-        rm ../v0.0.3.zip
-        rm -rf ../space-pussy-0.0.3
+        rm ~/v0.0.3.zip
+        rm -rf ~/space-pussy-0.0.3
         exit 0
       else
         if [ -d "$binpath" ] && [ ! -w "$binpath" ]; then
           is_write_perm_missing=1
-          rm ../v0.0.3.zip
-          rm -rf ../space-pussy-0.0.3
+          rm ~/v0.0.3.zip
+          rm -rf ~/space-pussy-0.0.3
         fi
       fi
     done
