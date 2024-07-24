@@ -15,6 +15,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/feegrant"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
+	nftkeeper "github.com/cosmos/cosmos-sdk/x/nft/keeper"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
@@ -41,7 +42,7 @@ func (appKeepers *AppKeepers) GenerateKeys() {
 		minttypes.StoreKey, distrtypes.StoreKey, slashingtypes.StoreKey,
 		govtypes.StoreKey, paramstypes.StoreKey, upgradetypes.StoreKey,
 		evidencetypes.StoreKey, capabilitytypes.StoreKey,
-		authzkeeper.StoreKey, feegrant.StoreKey,
+		authzkeeper.StoreKey, feegrant.StoreKey, nftkeeper.StoreKey,
 		consensusparamtypes.StoreKey, crisistypes.StoreKey,
 
 		ibcexported.StoreKey,
