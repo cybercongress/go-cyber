@@ -2,6 +2,8 @@ package keepers
 
 import (
 	"fmt"
+	"github.com/cosmos/cosmos-sdk/x/nft"
+	nftkeeper "github.com/cosmos/cosmos-sdk/x/nft/keeper"
 	tokenfactorykeeper "github.com/cybercongress/go-cyber/v4/x/tokenfactory/keeper"
 	tokenfactorytypes "github.com/cybercongress/go-cyber/v4/x/tokenfactory/types"
 	"path/filepath"
@@ -105,6 +107,7 @@ var maccPerms = map[string][]string{
 	stakingtypes.BondedPoolName:    {authtypes.Burner, authtypes.Staking},
 	stakingtypes.NotBondedPoolName: {authtypes.Burner, authtypes.Staking},
 	govtypes.ModuleName:            {authtypes.Burner},
+	nft.ModuleName:                 nil,
 	ibctransfertypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
 	ibcfeetypes.ModuleName:         nil,
 	wasmtypes.ModuleName:           {authtypes.Burner},
@@ -137,6 +140,7 @@ type AppKeepers struct {
 	EvidenceKeeper   evidencekeeper.Keeper
 	TransferKeeper   ibctransferkeeper.Keeper
 	FeeGrantKeeper   feegrantkeeper.Keeper
+	NFTKeeper        nftkeeper.Keeper
 	AuthzKeeper      authzkeeper.Keeper
 
 	ConsensusParamsKeeper consensusparamkeeper.Keeper
@@ -422,6 +426,9 @@ func NewAppKeepers(
 		govtypes.DefaultConfig(),
 		govModAddress,
 	)
+
+	appKeepers.NFTKeeper = nftkeeper.NewKeeper(keys[nftkeeper.StoreKey], appCodec, appKeepers.AccountKeeper, appKeepers.CyberbankKeeper.Proxy)
+
 	appKeepers.GovKeeper = *govKeeper.SetHooks(
 		govtypes.NewMultiGovHooks(
 		// register governance hooks

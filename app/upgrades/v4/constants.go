@@ -4,6 +4,7 @@ import (
 	store "github.com/cosmos/cosmos-sdk/store/types"
 	consensustypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
 	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
+	"github.com/cosmos/cosmos-sdk/x/nft"
 	tokenfactorytypes "github.com/cybercongress/go-cyber/v4/x/tokenfactory/types"
 
 	resourcestypes "github.com/cybercongress/go-cyber/v4/x/resources/types"
@@ -22,6 +23,7 @@ var Upgrade = upgrades.Upgrade{
 			consensustypes.ModuleName,
 			resourcestypes.ModuleName,
 			tokenfactorytypes.ModuleName,
+			nft.ModuleName,
 		},
 	},
 }
