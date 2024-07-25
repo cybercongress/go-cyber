@@ -1,0 +1,13 @@
+syntax = "proto3";
+package juno.clock.v1;
+
+option go_package = "github.com/CosmosContracts/juno/x/clock/types";
+
+// This object is used to store the contract address and the
+// jail status of the contract.
+message ClockContract {
+    // The address of the contract.
+    string contract_address = 1;
+    // The jail status of the contract.
+    bool is_jailed = 2;
+}
