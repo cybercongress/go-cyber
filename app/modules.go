@@ -49,6 +49,7 @@ import (
 	ibcexported "github.com/cosmos/ibc-go/v7/modules/core/exported"
 	solomachine "github.com/cosmos/ibc-go/v7/modules/light-clients/06-solomachine"
 	ibctm "github.com/cosmos/ibc-go/v7/modules/light-clients/07-tendermint"
+	"github.com/cybercongress/go-cyber/v4/x/clock"
 	"github.com/cybercongress/go-cyber/v4/x/tokenfactory"
 	tokenfactorytypes "github.com/cybercongress/go-cyber/v4/x/tokenfactory/types"
 
@@ -72,6 +73,7 @@ import (
 	stakingwrap "github.com/cybercongress/go-cyber/v4/x/staking"
 
 	authsims "github.com/cosmos/cosmos-sdk/x/auth/simulation"
+	clocktypes "github.com/cybercongress/go-cyber/v4/x/clock/types"
 )
 
 // ModuleBasics TODO add notes which modules have functional blockers
@@ -110,6 +112,7 @@ var ModuleBasics = module.NewBasicManager(
 	dmn.AppModuleBasic{},
 	resources.AppModuleBasic{},
 	tokenfactory.AppModuleBasic{},
+	clock.AppModuleBasic{},
 	// https://github.com/cosmos/ibc-go/blob/main/docs/docs/05-migrations/08-v6-to-v7.md
 	ibctm.AppModuleBasic{},
 	solomachine.AppModuleBasic{},
@@ -164,6 +167,7 @@ func appModules(
 		// NOTE add Bank Proxy here to resolve issue when new neuron is created during token-factory token transfer
 		// TODO add storage listener to update neurons memory index out of cyberbank proxy
 		tokenfactory.NewAppModule(app.AppKeepers.TokenFactoryKeeper, app.AppKeepers.AccountKeeper, app.CyberbankKeeper.Proxy, app.GetSubspace(tokenfactorytypes.ModuleName)),
+		clock.NewAppModule(appCodec, app.AppKeepers.ClockKeeper),
 	}
 }
 
@@ -220,14 +224,15 @@ func orderBeginBlockers() []string {
 		nft.ModuleName,
 		consensusparamtypes.ModuleName,
 		// additional modules
+		ibctransfertypes.ModuleName,
+		ibcexported.ModuleName,
 		liquiditytypes.ModuleName,
 		dmntypes.ModuleName,
+		clocktypes.ModuleName,
 		bandwidthtypes.ModuleName,
 		cyberbanktypes.ModuleName,
 		graphtypes.ModuleName,
 		gridtypes.ModuleName,
-		ibctransfertypes.ModuleName,
-		ibcexported.ModuleName,
 		ranktypes.ModuleName,
 		resourcestypes.ModuleName,
 		ibcfeetypes.ModuleName,
@@ -260,8 +265,8 @@ func orderEndBlockers() []string {
 		ibctransfertypes.ModuleName,
 		ibcexported.ModuleName,
 		ibcfeetypes.ModuleName,
+		clocktypes.ModuleName,
 		tokenfactorytypes.ModuleName,
-		graphtypes.ModuleName,
 		dmntypes.ModuleName,
 		gridtypes.ModuleName,
 		resourcestypes.ModuleName,
@@ -269,6 +274,7 @@ func orderEndBlockers() []string {
 		wasm.ModuleName,
 		cyberbanktypes.ModuleName,
 		bandwidthtypes.ModuleName,
+		graphtypes.ModuleName,
 		ranktypes.ModuleName,
 	}
 }
@@ -298,6 +304,7 @@ func orderInitBlockers() []string {
 		ibcexported.ModuleName,
 		liquiditytypes.ModuleName,
 		ibcfeetypes.ModuleName,
+		clocktypes.ModuleName,
 		tokenfactorytypes.ModuleName,
 		wasm.ModuleName,
 		bandwidthtypes.ModuleName,

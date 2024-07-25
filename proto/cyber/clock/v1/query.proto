@@ -1,0 +1,68 @@
+syntax = "proto3";
+package cyber.clock.v1;
+
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cyber/clock/v1/genesis.proto";
+import "cyber/clock/v1/clock.proto";
+
+option go_package = "github.com/cybercongress/go-cyber/x/clock/types";
+
+// Query defines the gRPC querier service.
+service Query {
+  // ClockContracts
+  rpc ClockContracts(QueryClockContracts)
+      returns (QueryClockContractsResponse) {
+    option (google.api.http).get = "/cyber/clock/v1/contracts";
+  }
+  // ClockContract
+  rpc ClockContract(QueryClockContract) returns (QueryClockContractResponse) {
+    option (google.api.http).get =
+        "/cyber/clock/v1/contracts/{contract_address}";
+  }
+  // Params
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/cyber/clock/v1/params";
+  }
+}
+
+// QueryClockContracts is the request type to get all contracts.
+message QueryClockContracts {
+  // pagination defines an optional pagination for the request.
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+// QueryClockContractsResponse is the response type for the Query/ClockContracts
+// RPC method.
+message QueryClockContractsResponse {
+  // clock_contracts are the clock contracts.
+  repeated ClockContract clock_contracts = 1 [ (gogoproto.nullable) = false ];
+  // pagination defines the pagination in the response.
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryClockContract is the request type to get a single contract.
+message QueryClockContract {
+  // contract_address is the address of the contract to query.
+  string contract_address = 1;
+}
+
+// QueryClockContractResponse is the response type for the Query/ClockContract
+// RPC method.
+message QueryClockContractResponse {
+  // contract is the clock contract.
+  ClockContract clock_contract = 1 [ (gogoproto.nullable) = false ];
+}
+
+// QueryParams is the request type to get all module params.
+message QueryParamsRequest {}
+
+// QueryClockContractsResponse is the response type for the Query/ClockContracts
+// RPC method.
+message QueryParamsResponse {
+  Params params = 1 [
+    (gogoproto.jsontag) = "params",
+    (gogoproto.moretags) = "yaml:\"params\""
+  ];
+}

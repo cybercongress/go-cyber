@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/cosmos/cosmos-sdk/x/nft"
 	nftkeeper "github.com/cosmos/cosmos-sdk/x/nft/keeper"
+	clocktypes "github.com/cybercongress/go-cyber/v4/x/clock/types"
 	tokenfactorykeeper "github.com/cybercongress/go-cyber/v4/x/tokenfactory/keeper"
 	tokenfactorytypes "github.com/cybercongress/go-cyber/v4/x/tokenfactory/types"
 	"path/filepath"
@@ -87,6 +88,8 @@ import (
 	consensusparamtypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
 
 	govv1beta "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
+
+	clockkeeper "github.com/cybercongress/go-cyber/v4/x/clock/keeper"
 )
 
 var (
@@ -156,6 +159,8 @@ type AppKeepers struct {
 	GridKeeper         gridkeeper.Keeper
 	DmnKeeper          *dmnkeeper.Keeper
 	ResourcesKeeper    resourceskeeper.Keeper
+	ContractKeeper     wasmtypes.ContractOpsKeeper
+	ClockKeeper        clockkeeper.Keeper
 
 	ScopedIBCKeeper      capabilitykeeper.ScopedKeeper
 	ScopedTransferKeeper capabilitykeeper.ScopedKeeper
@@ -521,6 +526,15 @@ func NewAppKeepers(
 		wasmCapabilities,
 		govModAddress,
 		wasmOpts...,
+	)
+
+	appKeepers.ContractKeeper = wasmkeeper.NewDefaultPermissionKeeper(&appKeepers.WasmKeeper)
+	appKeepers.ClockKeeper = clockkeeper.NewKeeper(
+		appKeepers.keys[clocktypes.StoreKey],
+		appCodec,
+		appKeepers.WasmKeeper,
+		appKeepers.ContractKeeper,
+		govModAddress,
 	)
 
 	appKeepers.DmnKeeper.SetWasmKeeper(appKeepers.WasmKeeper)

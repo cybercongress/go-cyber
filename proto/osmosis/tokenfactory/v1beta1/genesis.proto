@@ -2,7 +2,7 @@ syntax = "proto3";
 package osmosis.tokenfactory.v1beta1;
 
 import "gogoproto/gogo.proto";
-import "osmosis/tokenfactory/v1beta1/authorityMetadata.proto";
+import "osmosis/tokenfactory/v1beta1/authority_metadata.proto";
 import "osmosis/tokenfactory/v1beta1/params.proto";
 
 option go_package = "github.com/CosmosContracts/juno/x/tokenfactory/types";

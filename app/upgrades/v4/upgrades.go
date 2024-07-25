@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/cosmos/ibc-go/v7/modules/core/exported"
 	generaltypes "github.com/cybercongress/go-cyber/v4/types"
+	clocktypes "github.com/cybercongress/go-cyber/v4/x/clock/types"
 	tokenfactorytypes "github.com/cybercongress/go-cyber/v4/x/tokenfactory/types"
 	"time"
 
@@ -128,6 +129,14 @@ func CreateV4UpgradeHandler(
 			return nil, err
 		}
 		logger.Info("set tokenfactory params")
+
+		// x/clock
+		if err := keepers.ClockKeeper.SetParams(ctx, clocktypes.Params{
+			ContractGasLimit: 250_000, // TODO update
+		}); err != nil {
+			return nil, err
+		}
+		logger.Info("set clock params")
 
 		after := time.Now()
 
