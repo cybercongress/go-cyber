@@ -1,11 +1,11 @@
 syntax = "proto3";
-package juno.clock.v1;
+package cyber.clock.v1;
 
 option go_package = "github.com/CosmosContracts/juno/x/clock/types";
 
 import "google/api/annotations.proto";
 import "cosmos/msg/v1/msg.proto";
-import "juno/clock/v1/genesis.proto";
+import "cyber/clock/v1/genesis.proto";
 import "gogoproto/gogo.proto";
 import "cosmos_proto/cosmos.proto";
 import "amino/amino.proto";
@@ -17,21 +17,21 @@ service Msg {
   // registering a new clock contract.
   rpc RegisterClockContract(MsgRegisterClockContract) 
       returns (MsgRegisterClockContractResponse) {
-    option (google.api.http).post = "/juno/clock/v1/tx/register";
+    option (google.api.http).post = "/cyber/clock/v1/tx/register";
   };
 
   // UnregisterClockContract defines the endpoint for
   // unregistering a clock contract.
   rpc UnregisterClockContract(MsgUnregisterClockContract) 
       returns (MsgUnregisterClockContractResponse) {
-    option (google.api.http).post = "/juno/clock/v1/tx/unregister";
+    option (google.api.http).post = "/cyber/clock/v1/tx/unregister";
   };
 
   // UnjailClockContract defines the endpoint for
   // unjailing a clock contract.
   rpc UnjailClockContract(MsgUnjailClockContract) 
       returns (MsgUnjailClockContractResponse) {
-    option (google.api.http).post = "/juno/clock/v1/tx/unjail";
+    option (google.api.http).post = "/cyber/clock/v1/tx/unjail";
   };
 
   // UpdateParams defines a governance operation for updating the x/clock module

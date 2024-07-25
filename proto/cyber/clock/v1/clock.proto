@@ -1,7 +1,7 @@
 syntax = "proto3";
-package juno.clock.v1;
+package cyber.clock.v1;
 
-option go_package = "github.com/CosmosContracts/juno/x/clock/types";
+option go_package = "github.com/cybercongress/go-cyber/x/clock/types";
 
 // This object is used to store the contract address and the
 // jail status of the contract.

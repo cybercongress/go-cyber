@@ -1,14 +1,14 @@
 syntax = "proto3";
-package juno.clock.v1;
+package cyber.clock.v1;
 
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/v1beta1/coin.proto";
-import "juno/clock/v1/genesis.proto";
-import "juno/clock/v1/clock.proto";
+import "cyber/clock/v1/genesis.proto";
+import "cyber/clock/v1/clock.proto";
 
-option go_package = "github.com/CosmosContracts/juno/x/clock/types";
+option go_package = "github.com/cybercongress/go-cyber/x/clock/types";
 
 // Query defines the gRPC querier service.
 service Query {
@@ -16,17 +16,17 @@ service Query {
   rpc ClockContracts(QueryClockContracts)
       returns (QueryClockContractsResponse) {
     option (google.api.http).get =
-        "/juno/clock/v1/contracts";
+        "/cyber/clock/v1/contracts";
   }
   // ClockContract
   rpc ClockContract(QueryClockContract)
       returns (QueryClockContractResponse) {
     option (google.api.http).get =
-        "/juno/clock/v1/contracts/{contract_address}";
+        "/cyber/clock/v1/contracts/{contract_address}";
   }
   // Params
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/juno/clock/v1/params";
+    option (google.api.http).get = "/cyber/clock/v1/params";
   }
 }
 
