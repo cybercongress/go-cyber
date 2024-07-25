@@ -269,7 +269,7 @@
   
     - [Msg](#cyber.resources.v1beta1.Msg)
   
-- [osmosis/tokenfactory/v1beta1/authorityMetadata.proto](#osmosis/tokenfactory/v1beta1/authorityMetadata.proto)
+- [osmosis/tokenfactory/v1beta1/authority_metadata.proto](#osmosis/tokenfactory/v1beta1/authority_metadata.proto)
     - [DenomAuthorityMetadata](#osmosis.tokenfactory.v1beta1.DenomAuthorityMetadata)
   
 - [osmosis/tokenfactory/v1beta1/params.proto](#osmosis/tokenfactory/v1beta1/params.proto)
@@ -3608,10 +3608,10 @@ Query defines the gRPC query service for the liquidity module.
 
 
 
-<a name="osmosis/tokenfactory/v1beta1/authorityMetadata.proto"></a>
+<a name="osmosis/tokenfactory/v1beta1/authority_metadata.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## osmosis/tokenfactory/v1beta1/authorityMetadata.proto
+## osmosis/tokenfactory/v1beta1/authority_metadata.proto
 
 
 

@@ -17,7 +17,6 @@ breaking:
 lint:
   use:
     - DEFAULT
-    - FILE_LOWER_SNAKE_CASE
   except:
     - UNARY_RPC
     - COMMENT_FIELD
@@ -31,3 +30,4 @@ lint:
     - RPC_REQUEST_RESPONSE_UNIQUE
     - COMMENTS
     - RPC_RESPONSE_STANDARD_NAME
+    - FIELD_LOWER_SNAKE_CASE
