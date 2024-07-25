@@ -25,9 +25,9 @@ func (suite *CodecTestSuite) TestRegisterInterfaces() {
 	impls := registry.ListImplementations(sdk.MsgInterfaceProtoName)
 	suite.Require().Equal(4, len(impls))
 	suite.Require().ElementsMatch([]string{
-		"/juno.clock.v1.MsgUpdateParams",
-		"/juno.clock.v1.MsgRegisterClockContract",
-		"/juno.clock.v1.MsgUnregisterClockContract",
-		"/juno.clock.v1.MsgUnjailClockContract",
+		"/cyber.clock.v1.MsgUpdateParams",
+		"/cyber.clock.v1.MsgRegisterClockContract",
+		"/cyber.clock.v1.MsgUnregisterClockContract",
+		"/cyber.clock.v1.MsgUnjailClockContract",
 	}, impls)
 }
