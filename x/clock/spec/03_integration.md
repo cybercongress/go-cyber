@@ -16,14 +16,16 @@ To satisfy the module's requirements, add the following message and entry point 
 // msg.rs
 #[cw_serde]
 pub enum SudoMsg {    
-    ClockEndBlock { },
+    BeginBlock { },
+    EndBlock { },
 }
 
 // contract.rs
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn sudo(deps: DepsMut, _env: Env, msg: SudoMsg) -> Result<Response, ContractError> {
     match msg {        
-        SudoMsg::ClockEndBlock { } => {
+        SudoMsg::BeginBlock { } => {}
+        SudoMsg::EndBlock { } => {
             
             // TODO: PERFORM LOGIC HERE
 
@@ -42,15 +44,17 @@ In the example below, at the end of every block the `val` Config variable will i
 ```rust
 // msg.rs
 #[cw_serde]
-pub enum SudoMsg {    
-    ClockEndBlock { },
+pub enum SudoMsg {   
+    BeginBlock { }, 
+    EndBlock { },
 }
 
 // contract.rs
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn sudo(deps: DepsMut, _env: Env, msg: SudoMsg) -> Result<Response, ContractError> {
     match msg {        
-        SudoMsg::ClockEndBlock { } => {
+        SudoMsg::BeginBlock { } => {}
+        SudoMsg::EndBlock { } => {
             let mut config = CONFIG.load(deps.storage)?;
             config.val += 1;
             CONFIG.save(deps.storage, &config)?;
@@ -66,15 +70,17 @@ To perform an action occasionally rather than every block, use the `env` variabl
 ```rust
 // msg.rs
 #[cw_serde]
-pub enum SudoMsg {    
-    ClockEndBlock { },
+pub enum SudoMsg {
+    BeginBlock { },    
+    EndBlock { },
 }
 
 // contract.rs
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn sudo(deps: DepsMut, env: Env, msg: SudoMsg) -> Result<Response, ContractError> {
     match msg {        
-        SudoMsg::ClockEndBlock { } => {    
+        SudoMsg::BeginBlock { } => {}
+        SudoMsg::EndBlock { } => {    
             // If the block is not divisible by ten, do nothing.      
             if env.block.height % 10 != 0 {
                 return Ok(Response::new());

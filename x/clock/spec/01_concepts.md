@@ -6,14 +6,14 @@ order: 1
 
 ## Clock
 
-The Clock module allows registered contracts to be executed at the end of every block. This allows the smart contract to perform regular and routine actions without the need for external bots. Developers can setup their contract with x/Clock by registering their contract with the module. Once registered, the contract will be executed at the end of every block. If the contract throws an error during execution or exceeds the gas limit defined in the module's parameters, the contract will be jailed and no longer executed. The contract can be unjailed by the contract admin.
+The Clock module allows registered contracts to be executed at the start and the end of every block. This allows the smart contract to perform regular and routine actions without the need for external bots. Developers can setup their contract with x/Clock by registering their contract with the module. Once registered, the contract will be executed at the end of every block. If the contract throws an error during execution or exceeds the gas limit defined in the module's parameters, the contract will be jailed and no longer executed. The contract can be unjailed by the contract admin.
 
 ## Registering a Contract
 
 Register a contract with x/Clock by executing the following transaction:
 
 ```bash
-junod tx clock register [contract_address]
+cyber tx clock register [contract_address]
 ```
 
 > Note: the sender of this transaction must be the contract admin, if exists, or else the contract creator.
@@ -25,7 +25,7 @@ The `contract_address` is the bech32 address of the contract to be executed at t
 A contract can be unjailed by executing the following transaction:
 
 ```bash
-junod tx clock unjail [contract_address]
+cyber tx clock unjail [contract_address]
 ```
 
 > Note: the sender of this transaction must be the contract admin, if exists, or else the contract creator.
@@ -37,7 +37,7 @@ The `contract_address` is the bech32 address of the contract to be unjailed. Unj
 A contract can be unregistered by executing the following transaction:
 
 ```bash
-junod tx clock unregister [contract_address]
+cyber tx clock unregister [contract_address]
 ```
 
 > Note: the sender of this transaction must be the contract admin, if exists, or else the contract creator.
