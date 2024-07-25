@@ -2,8 +2,6 @@ syntax = "proto3";
 package cyber.clock.v1;
 
 import "gogoproto/gogo.proto";
-import "cosmos/base/v1beta1/coin.proto";
-import "cyber/clock/v1/clock.proto";
 
 option go_package = "github.com/cybercongress/go-cyber/x/clock/types";
 
@@ -18,7 +16,8 @@ message GenesisState {
 
 // Params defines the set of module parameters.
 message Params {
-  // contract_gas_limit defines the maximum amount of gas that can be used by a contract.
+  // contract_gas_limit defines the maximum amount of gas that can be used by a
+  // contract.
   uint64 contract_gas_limit = 1 [
     (gogoproto.jsontag) = "contract_gas_limit,omitempty",
     (gogoproto.moretags) = "yaml:\"contract_gas_limit\""

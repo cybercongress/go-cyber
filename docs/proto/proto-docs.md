@@ -32,6 +32,35 @@
   
     - [Msg](#cyber.bandwidth.v1beta1.Msg)
   
+- [cyber/clock/v1/clock.proto](#cyber/clock/v1/clock.proto)
+    - [ClockContract](#cyber.clock.v1.ClockContract)
+  
+- [cyber/clock/v1/genesis.proto](#cyber/clock/v1/genesis.proto)
+    - [GenesisState](#cyber.clock.v1.GenesisState)
+    - [Params](#cyber.clock.v1.Params)
+  
+- [cyber/clock/v1/query.proto](#cyber/clock/v1/query.proto)
+    - [QueryClockContract](#cyber.clock.v1.QueryClockContract)
+    - [QueryClockContractResponse](#cyber.clock.v1.QueryClockContractResponse)
+    - [QueryClockContracts](#cyber.clock.v1.QueryClockContracts)
+    - [QueryClockContractsResponse](#cyber.clock.v1.QueryClockContractsResponse)
+    - [QueryParamsRequest](#cyber.clock.v1.QueryParamsRequest)
+    - [QueryParamsResponse](#cyber.clock.v1.QueryParamsResponse)
+  
+    - [Query](#cyber.clock.v1.Query)
+  
+- [cyber/clock/v1/tx.proto](#cyber/clock/v1/tx.proto)
+    - [MsgRegisterClockContract](#cyber.clock.v1.MsgRegisterClockContract)
+    - [MsgRegisterClockContractResponse](#cyber.clock.v1.MsgRegisterClockContractResponse)
+    - [MsgUnjailClockContract](#cyber.clock.v1.MsgUnjailClockContract)
+    - [MsgUnjailClockContractResponse](#cyber.clock.v1.MsgUnjailClockContractResponse)
+    - [MsgUnregisterClockContract](#cyber.clock.v1.MsgUnregisterClockContract)
+    - [MsgUnregisterClockContractResponse](#cyber.clock.v1.MsgUnregisterClockContractResponse)
+    - [MsgUpdateParams](#cyber.clock.v1.MsgUpdateParams)
+    - [MsgUpdateParamsResponse](#cyber.clock.v1.MsgUpdateParamsResponse)
+  
+    - [Msg](#cyber.clock.v1.Msg)
+  
 - [cyber/dmn/v1beta1/types.proto](#cyber/dmn/v1beta1/types.proto)
     - [Load](#cyber.dmn.v1beta1.Load)
     - [Params](#cyber.dmn.v1beta1.Params)
@@ -239,6 +268,44 @@
     - [MsgUpdateParamsResponse](#cyber.resources.v1beta1.MsgUpdateParamsResponse)
   
     - [Msg](#cyber.resources.v1beta1.Msg)
+  
+- [osmosis/tokenfactory/v1beta1/authorityMetadata.proto](#osmosis/tokenfactory/v1beta1/authorityMetadata.proto)
+    - [DenomAuthorityMetadata](#osmosis.tokenfactory.v1beta1.DenomAuthorityMetadata)
+  
+- [osmosis/tokenfactory/v1beta1/params.proto](#osmosis/tokenfactory/v1beta1/params.proto)
+    - [Params](#osmosis.tokenfactory.v1beta1.Params)
+  
+- [osmosis/tokenfactory/v1beta1/genesis.proto](#osmosis/tokenfactory/v1beta1/genesis.proto)
+    - [GenesisDenom](#osmosis.tokenfactory.v1beta1.GenesisDenom)
+    - [GenesisState](#osmosis.tokenfactory.v1beta1.GenesisState)
+  
+- [osmosis/tokenfactory/v1beta1/query.proto](#osmosis/tokenfactory/v1beta1/query.proto)
+    - [QueryDenomAuthorityMetadataRequest](#osmosis.tokenfactory.v1beta1.QueryDenomAuthorityMetadataRequest)
+    - [QueryDenomAuthorityMetadataResponse](#osmosis.tokenfactory.v1beta1.QueryDenomAuthorityMetadataResponse)
+    - [QueryDenomsFromCreatorRequest](#osmosis.tokenfactory.v1beta1.QueryDenomsFromCreatorRequest)
+    - [QueryDenomsFromCreatorResponse](#osmosis.tokenfactory.v1beta1.QueryDenomsFromCreatorResponse)
+    - [QueryParamsRequest](#osmosis.tokenfactory.v1beta1.QueryParamsRequest)
+    - [QueryParamsResponse](#osmosis.tokenfactory.v1beta1.QueryParamsResponse)
+  
+    - [Query](#osmosis.tokenfactory.v1beta1.Query)
+  
+- [osmosis/tokenfactory/v1beta1/tx.proto](#osmosis/tokenfactory/v1beta1/tx.proto)
+    - [MsgBurn](#osmosis.tokenfactory.v1beta1.MsgBurn)
+    - [MsgBurnResponse](#osmosis.tokenfactory.v1beta1.MsgBurnResponse)
+    - [MsgChangeAdmin](#osmosis.tokenfactory.v1beta1.MsgChangeAdmin)
+    - [MsgChangeAdminResponse](#osmosis.tokenfactory.v1beta1.MsgChangeAdminResponse)
+    - [MsgCreateDenom](#osmosis.tokenfactory.v1beta1.MsgCreateDenom)
+    - [MsgCreateDenomResponse](#osmosis.tokenfactory.v1beta1.MsgCreateDenomResponse)
+    - [MsgForceTransfer](#osmosis.tokenfactory.v1beta1.MsgForceTransfer)
+    - [MsgForceTransferResponse](#osmosis.tokenfactory.v1beta1.MsgForceTransferResponse)
+    - [MsgMint](#osmosis.tokenfactory.v1beta1.MsgMint)
+    - [MsgMintResponse](#osmosis.tokenfactory.v1beta1.MsgMintResponse)
+    - [MsgSetDenomMetadata](#osmosis.tokenfactory.v1beta1.MsgSetDenomMetadata)
+    - [MsgSetDenomMetadataResponse](#osmosis.tokenfactory.v1beta1.MsgSetDenomMetadataResponse)
+    - [MsgUpdateParams](#osmosis.tokenfactory.v1beta1.MsgUpdateParams)
+    - [MsgUpdateParamsResponse](#osmosis.tokenfactory.v1beta1.MsgUpdateParamsResponse)
+  
+    - [Msg](#osmosis.tokenfactory.v1beta1.Msg)
   
 - [Scalar Value Types](#scalar-value-types)
 
@@ -550,6 +617,347 @@
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `UpdateParams` | [MsgUpdateParams](#cyber.bandwidth.v1beta1.MsgUpdateParams) | [MsgUpdateParamsResponse](#cyber.bandwidth.v1beta1.MsgUpdateParamsResponse) |  | |
+
+ <!-- end services -->
+
+
+
+<a name="cyber/clock/v1/clock.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## cyber/clock/v1/clock.proto
+
+
+
+<a name="cyber.clock.v1.ClockContract"></a>
+
+### ClockContract
+This object is used to store the contract address and the
+jail status of the contract.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_address` | [string](#string) |  | The address of the contract. |
+| `is_jailed` | [bool](#bool) |  | The jail status of the contract. |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="cyber/clock/v1/genesis.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## cyber/clock/v1/genesis.proto
+
+
+
+<a name="cyber.clock.v1.GenesisState"></a>
+
+### GenesisState
+GenesisState - initial state of module
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#cyber.clock.v1.Params) |  | Params of this module |
+
+
+
+
+
+
+<a name="cyber.clock.v1.Params"></a>
+
+### Params
+Params defines the set of module parameters.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_gas_limit` | [uint64](#uint64) |  | contract_gas_limit defines the maximum amount of gas that can be used by a contract. |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="cyber/clock/v1/query.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## cyber/clock/v1/query.proto
+
+
+
+<a name="cyber.clock.v1.QueryClockContract"></a>
+
+### QueryClockContract
+QueryClockContract is the request type to get a single contract.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_address` | [string](#string) |  | contract_address is the address of the contract to query. |
+
+
+
+
+
+
+<a name="cyber.clock.v1.QueryClockContractResponse"></a>
+
+### QueryClockContractResponse
+QueryClockContractResponse is the response type for the Query/ClockContract
+RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `clock_contract` | [ClockContract](#cyber.clock.v1.ClockContract) |  | contract is the clock contract. |
+
+
+
+
+
+
+<a name="cyber.clock.v1.QueryClockContracts"></a>
+
+### QueryClockContracts
+QueryClockContracts is the request type to get all contracts.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
+
+
+
+
+
+
+<a name="cyber.clock.v1.QueryClockContractsResponse"></a>
+
+### QueryClockContractsResponse
+QueryClockContractsResponse is the response type for the Query/ClockContracts
+RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `clock_contracts` | [ClockContract](#cyber.clock.v1.ClockContract) | repeated | clock_contracts are the clock contracts. |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
+
+
+
+
+
+
+<a name="cyber.clock.v1.QueryParamsRequest"></a>
+
+### QueryParamsRequest
+QueryParams is the request type to get all module params.
+
+
+
+
+
+
+<a name="cyber.clock.v1.QueryParamsResponse"></a>
+
+### QueryParamsResponse
+QueryClockContractsResponse is the response type for the Query/ClockContracts
+RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#cyber.clock.v1.Params) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="cyber.clock.v1.Query"></a>
+
+### Query
+Query defines the gRPC querier service.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `ClockContracts` | [QueryClockContracts](#cyber.clock.v1.QueryClockContracts) | [QueryClockContractsResponse](#cyber.clock.v1.QueryClockContractsResponse) | ClockContracts | GET|/cyber/clock/v1/contracts|
+| `ClockContract` | [QueryClockContract](#cyber.clock.v1.QueryClockContract) | [QueryClockContractResponse](#cyber.clock.v1.QueryClockContractResponse) | ClockContract | GET|/cyber/clock/v1/contracts/{contract_address}|
+| `Params` | [QueryParamsRequest](#cyber.clock.v1.QueryParamsRequest) | [QueryParamsResponse](#cyber.clock.v1.QueryParamsResponse) | Params | GET|/cyber/clock/v1/params|
+
+ <!-- end services -->
+
+
+
+<a name="cyber/clock/v1/tx.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## cyber/clock/v1/tx.proto
+
+
+
+<a name="cyber.clock.v1.MsgRegisterClockContract"></a>
+
+### MsgRegisterClockContract
+MsgRegisterClockContract is the Msg/RegisterClockContract request type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender_address` | [string](#string) |  | The address of the sender. |
+| `contract_address` | [string](#string) |  | The address of the contract to register. |
+
+
+
+
+
+
+<a name="cyber.clock.v1.MsgRegisterClockContractResponse"></a>
+
+### MsgRegisterClockContractResponse
+MsgRegisterClockContractResponse defines the response structure for executing
+a MsgRegisterClockContract message.
+
+
+
+
+
+
+<a name="cyber.clock.v1.MsgUnjailClockContract"></a>
+
+### MsgUnjailClockContract
+MsgUnjailClockContract is the Msg/UnjailClockContract request type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender_address` | [string](#string) |  | The address of the sender. |
+| `contract_address` | [string](#string) |  | The address of the contract to unjail. |
+
+
+
+
+
+
+<a name="cyber.clock.v1.MsgUnjailClockContractResponse"></a>
+
+### MsgUnjailClockContractResponse
+MsgUnjailClockContractResponse defines the response structure for executing a
+MsgUnjailClockContract message.
+
+
+
+
+
+
+<a name="cyber.clock.v1.MsgUnregisterClockContract"></a>
+
+### MsgUnregisterClockContract
+MsgUnregisterClockContract is the Msg/UnregisterClockContract request type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender_address` | [string](#string) |  | The address of the sender. |
+| `contract_address` | [string](#string) |  | The address of the contract to unregister. |
+
+
+
+
+
+
+<a name="cyber.clock.v1.MsgUnregisterClockContractResponse"></a>
+
+### MsgUnregisterClockContractResponse
+MsgUnregisterClockContractResponse defines the response structure for
+executing a MsgUnregisterClockContract message.
+
+
+
+
+
+
+<a name="cyber.clock.v1.MsgUpdateParams"></a>
+
+### MsgUpdateParams
+MsgUpdateParams is the Msg/UpdateParams request type.
+
+Since: cosmos-sdk 0.47
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `authority` | [string](#string) |  | authority is the address of the governance account. |
+| `params` | [Params](#cyber.clock.v1.Params) |  | params defines the x/clock parameters to update.
+
+NOTE: All parameters must be supplied. |
+
+
+
+
+
+
+<a name="cyber.clock.v1.MsgUpdateParamsResponse"></a>
+
+### MsgUpdateParamsResponse
+MsgUpdateParamsResponse defines the response structure for executing a
+MsgUpdateParams message.
+
+Since: cosmos-sdk 0.47
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="cyber.clock.v1.Msg"></a>
+
+### Msg
+Msg defines the Msg service.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `RegisterClockContract` | [MsgRegisterClockContract](#cyber.clock.v1.MsgRegisterClockContract) | [MsgRegisterClockContractResponse](#cyber.clock.v1.MsgRegisterClockContractResponse) | RegisterClockContract defines the endpoint for registering a new clock contract. | POST|/cyber/clock/v1/tx/register|
+| `UnregisterClockContract` | [MsgUnregisterClockContract](#cyber.clock.v1.MsgUnregisterClockContract) | [MsgUnregisterClockContractResponse](#cyber.clock.v1.MsgUnregisterClockContractResponse) | UnregisterClockContract defines the endpoint for unregistering a clock contract. | POST|/cyber/clock/v1/tx/unregister|
+| `UnjailClockContract` | [MsgUnjailClockContract](#cyber.clock.v1.MsgUnjailClockContract) | [MsgUnjailClockContractResponse](#cyber.clock.v1.MsgUnjailClockContractResponse) | UnjailClockContract defines the endpoint for unjailing a clock contract. | POST|/cyber/clock/v1/tx/unjail|
+| `UpdateParams` | [MsgUpdateParams](#cyber.clock.v1.MsgUpdateParams) | [MsgUpdateParamsResponse](#cyber.clock.v1.MsgUpdateParamsResponse) | UpdateParams defines a governance operation for updating the x/clock module parameters. The authority is hard-coded to the x/gov module account.
+
+Since: cosmos-sdk 0.47 | |
 
  <!-- end services -->
 
@@ -3195,6 +3603,486 @@ Query defines the gRPC query service for the liquidity module.
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `Investmint` | [MsgInvestmint](#cyber.resources.v1beta1.MsgInvestmint) | [MsgInvestmintResponse](#cyber.resources.v1beta1.MsgInvestmintResponse) |  | |
 | `UpdateParams` | [MsgUpdateParams](#cyber.resources.v1beta1.MsgUpdateParams) | [MsgUpdateParamsResponse](#cyber.resources.v1beta1.MsgUpdateParamsResponse) |  | |
+
+ <!-- end services -->
+
+
+
+<a name="osmosis/tokenfactory/v1beta1/authorityMetadata.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## osmosis/tokenfactory/v1beta1/authorityMetadata.proto
+
+
+
+<a name="osmosis.tokenfactory.v1beta1.DenomAuthorityMetadata"></a>
+
+### DenomAuthorityMetadata
+DenomAuthorityMetadata specifies metadata for addresses that have specific
+capabilities over a token factory denom. Right now there is only one Admin
+permission, but is planned to be extended to the future.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `admin` | [string](#string) |  | Can be empty for no admin, or a valid osmosis address |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="osmosis/tokenfactory/v1beta1/params.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## osmosis/tokenfactory/v1beta1/params.proto
+
+
+
+<a name="osmosis.tokenfactory.v1beta1.Params"></a>
+
+### Params
+Params defines the parameters for the tokenfactory module.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `denom_creation_fee` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
+| `denom_creation_gas_consume` | [uint64](#uint64) |  | if denom_creation_fee is an empty array, then this field is used to add more gas consumption to the base cost. https://github.com/CosmWasm/token-factory/issues/11 |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="osmosis/tokenfactory/v1beta1/genesis.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## osmosis/tokenfactory/v1beta1/genesis.proto
+
+
+
+<a name="osmosis.tokenfactory.v1beta1.GenesisDenom"></a>
+
+### GenesisDenom
+GenesisDenom defines a tokenfactory denom that is defined within genesis
+state. The structure contains DenomAuthorityMetadata which defines the
+denom's admin.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `denom` | [string](#string) |  |  |
+| `authority_metadata` | [DenomAuthorityMetadata](#osmosis.tokenfactory.v1beta1.DenomAuthorityMetadata) |  |  |
+
+
+
+
+
+
+<a name="osmosis.tokenfactory.v1beta1.GenesisState"></a>
+
+### GenesisState
+GenesisState defines the tokenfactory module's genesis state.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#osmosis.tokenfactory.v1beta1.Params) |  | params defines the parameters of the module. |
+| `factory_denoms` | [GenesisDenom](#osmosis.tokenfactory.v1beta1.GenesisDenom) | repeated |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="osmosis/tokenfactory/v1beta1/query.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## osmosis/tokenfactory/v1beta1/query.proto
+
+
+
+<a name="osmosis.tokenfactory.v1beta1.QueryDenomAuthorityMetadataRequest"></a>
+
+### QueryDenomAuthorityMetadataRequest
+QueryDenomAuthorityMetadataRequest defines the request structure for the
+DenomAuthorityMetadata gRPC query.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `denom` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="osmosis.tokenfactory.v1beta1.QueryDenomAuthorityMetadataResponse"></a>
+
+### QueryDenomAuthorityMetadataResponse
+QueryDenomAuthorityMetadataResponse defines the response structure for the
+DenomAuthorityMetadata gRPC query.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `authority_metadata` | [DenomAuthorityMetadata](#osmosis.tokenfactory.v1beta1.DenomAuthorityMetadata) |  |  |
+
+
+
+
+
+
+<a name="osmosis.tokenfactory.v1beta1.QueryDenomsFromCreatorRequest"></a>
+
+### QueryDenomsFromCreatorRequest
+QueryDenomsFromCreatorRequest defines the request structure for the
+DenomsFromCreator gRPC query.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `creator` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="osmosis.tokenfactory.v1beta1.QueryDenomsFromCreatorResponse"></a>
+
+### QueryDenomsFromCreatorResponse
+QueryDenomsFromCreatorRequest defines the response structure for the
+DenomsFromCreator gRPC query.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `denoms` | [string](#string) | repeated |  |
+
+
+
+
+
+
+<a name="osmosis.tokenfactory.v1beta1.QueryParamsRequest"></a>
+
+### QueryParamsRequest
+QueryParamsRequest is the request type for the Query/Params RPC method.
+
+
+
+
+
+
+<a name="osmosis.tokenfactory.v1beta1.QueryParamsResponse"></a>
+
+### QueryParamsResponse
+QueryParamsResponse is the response type for the Query/Params RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#osmosis.tokenfactory.v1beta1.Params) |  | params defines the parameters of the module. |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="osmosis.tokenfactory.v1beta1.Query"></a>
+
+### Query
+Query defines the gRPC querier service.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Params` | [QueryParamsRequest](#osmosis.tokenfactory.v1beta1.QueryParamsRequest) | [QueryParamsResponse](#osmosis.tokenfactory.v1beta1.QueryParamsResponse) | Params defines a gRPC query method that returns the tokenfactory module's parameters. | GET|/osmosis/tokenfactory/v1beta1/params|
+| `DenomAuthorityMetadata` | [QueryDenomAuthorityMetadataRequest](#osmosis.tokenfactory.v1beta1.QueryDenomAuthorityMetadataRequest) | [QueryDenomAuthorityMetadataResponse](#osmosis.tokenfactory.v1beta1.QueryDenomAuthorityMetadataResponse) | DenomAuthorityMetadata defines a gRPC query method for fetching DenomAuthorityMetadata for a particular denom. | GET|/osmosis/tokenfactory/v1beta1/denoms/{denom}/authority_metadata|
+| `DenomsFromCreator` | [QueryDenomsFromCreatorRequest](#osmosis.tokenfactory.v1beta1.QueryDenomsFromCreatorRequest) | [QueryDenomsFromCreatorResponse](#osmosis.tokenfactory.v1beta1.QueryDenomsFromCreatorResponse) | DenomsFromCreator defines a gRPC query method for fetching all denominations created by a specific admin/creator. | GET|/osmosis/tokenfactory/v1beta1/denoms_from_creator/{creator}|
+
+ <!-- end services -->
+
+
+
+<a name="osmosis/tokenfactory/v1beta1/tx.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## osmosis/tokenfactory/v1beta1/tx.proto
+
+
+
+<a name="osmosis.tokenfactory.v1beta1.MsgBurn"></a>
+
+### MsgBurn
+MsgBurn is the sdk.Msg type for allowing an admin account to burn
+a token.  For now, we only support burning from the sender account.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `burnFromAddress` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="osmosis.tokenfactory.v1beta1.MsgBurnResponse"></a>
+
+### MsgBurnResponse
+
+
+
+
+
+
+
+<a name="osmosis.tokenfactory.v1beta1.MsgChangeAdmin"></a>
+
+### MsgChangeAdmin
+MsgChangeAdmin is the sdk.Msg type for allowing an admin account to reassign
+adminship of a denom to a new account
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `denom` | [string](#string) |  |  |
+| `new_admin` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="osmosis.tokenfactory.v1beta1.MsgChangeAdminResponse"></a>
+
+### MsgChangeAdminResponse
+MsgChangeAdminResponse defines the response structure for an executed
+MsgChangeAdmin message.
+
+
+
+
+
+
+<a name="osmosis.tokenfactory.v1beta1.MsgCreateDenom"></a>
+
+### MsgCreateDenom
+MsgCreateDenom defines the message structure for the CreateDenom gRPC service
+method. It allows an account to create a new denom. It requires a sender
+address and a sub denomination. The (sender_address, sub_denomination) tuple
+must be unique and cannot be re-used.
+
+The resulting denom created is defined as
+<factory/{creatorAddress}/{subdenom}>. The resulting denom's admin is
+originally set to be the creator, but this can be changed later. The token
+denom does not indicate the current admin.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `subdenom` | [string](#string) |  | subdenom can be up to 44 "alphanumeric" characters long. |
+
+
+
+
+
+
+<a name="osmosis.tokenfactory.v1beta1.MsgCreateDenomResponse"></a>
+
+### MsgCreateDenomResponse
+MsgCreateDenomResponse is the return value of MsgCreateDenom
+It returns the full string of the newly created denom
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `new_token_denom` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="osmosis.tokenfactory.v1beta1.MsgForceTransfer"></a>
+
+### MsgForceTransfer
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `transferFromAddress` | [string](#string) |  |  |
+| `transferToAddress` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="osmosis.tokenfactory.v1beta1.MsgForceTransferResponse"></a>
+
+### MsgForceTransferResponse
+
+
+
+
+
+
+
+<a name="osmosis.tokenfactory.v1beta1.MsgMint"></a>
+
+### MsgMint
+MsgMint is the sdk.Msg type for allowing an admin account to mint
+more of a token.  For now, we only support minting to the sender account
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `mintToAddress` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="osmosis.tokenfactory.v1beta1.MsgMintResponse"></a>
+
+### MsgMintResponse
+
+
+
+
+
+
+
+<a name="osmosis.tokenfactory.v1beta1.MsgSetDenomMetadata"></a>
+
+### MsgSetDenomMetadata
+MsgSetDenomMetadata is the sdk.Msg type for allowing an admin account to set
+the denom's bank metadata
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `metadata` | [cosmos.bank.v1beta1.Metadata](#cosmos.bank.v1beta1.Metadata) |  |  |
+
+
+
+
+
+
+<a name="osmosis.tokenfactory.v1beta1.MsgSetDenomMetadataResponse"></a>
+
+### MsgSetDenomMetadataResponse
+MsgSetDenomMetadataResponse defines the response structure for an executed
+MsgSetDenomMetadata message.
+
+
+
+
+
+
+<a name="osmosis.tokenfactory.v1beta1.MsgUpdateParams"></a>
+
+### MsgUpdateParams
+MsgUpdateParams is the Msg/UpdateParams request type.
+
+Since: cosmos-sdk 0.47
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `authority` | [string](#string) |  | authority is the address of the governance account. |
+| `params` | [Params](#osmosis.tokenfactory.v1beta1.Params) |  | params defines the x/mint parameters to update.
+
+NOTE: All parameters must be supplied. |
+
+
+
+
+
+
+<a name="osmosis.tokenfactory.v1beta1.MsgUpdateParamsResponse"></a>
+
+### MsgUpdateParamsResponse
+MsgUpdateParamsResponse defines the response structure for executing a
+MsgUpdateParams message.
+
+Since: cosmos-sdk 0.47
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="osmosis.tokenfactory.v1beta1.Msg"></a>
+
+### Msg
+Msg defines the tokefactory module's gRPC message service.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `CreateDenom` | [MsgCreateDenom](#osmosis.tokenfactory.v1beta1.MsgCreateDenom) | [MsgCreateDenomResponse](#osmosis.tokenfactory.v1beta1.MsgCreateDenomResponse) |  | |
+| `Mint` | [MsgMint](#osmosis.tokenfactory.v1beta1.MsgMint) | [MsgMintResponse](#osmosis.tokenfactory.v1beta1.MsgMintResponse) |  | |
+| `Burn` | [MsgBurn](#osmosis.tokenfactory.v1beta1.MsgBurn) | [MsgBurnResponse](#osmosis.tokenfactory.v1beta1.MsgBurnResponse) |  | |
+| `ChangeAdmin` | [MsgChangeAdmin](#osmosis.tokenfactory.v1beta1.MsgChangeAdmin) | [MsgChangeAdminResponse](#osmosis.tokenfactory.v1beta1.MsgChangeAdminResponse) |  | |
+| `SetDenomMetadata` | [MsgSetDenomMetadata](#osmosis.tokenfactory.v1beta1.MsgSetDenomMetadata) | [MsgSetDenomMetadataResponse](#osmosis.tokenfactory.v1beta1.MsgSetDenomMetadataResponse) |  | |
+| `ForceTransfer` | [MsgForceTransfer](#osmosis.tokenfactory.v1beta1.MsgForceTransfer) | [MsgForceTransferResponse](#osmosis.tokenfactory.v1beta1.MsgForceTransferResponse) |  | |
+| `UpdateParams` | [MsgUpdateParams](#osmosis.tokenfactory.v1beta1.MsgUpdateParams) | [MsgUpdateParamsResponse](#osmosis.tokenfactory.v1beta1.MsgUpdateParamsResponse) | UpdateParams defines a governance operation for updating the x/mint module parameters. The authority is hard-coded to the x/gov module account.
+
+Since: cosmos-sdk 0.47 | |
 
  <!-- end services -->
 

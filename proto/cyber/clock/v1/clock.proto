@@ -6,8 +6,8 @@ option go_package = "github.com/cybercongress/go-cyber/x/clock/types";
 // This object is used to store the contract address and the
 // jail status of the contract.
 message ClockContract {
-    // The address of the contract.
-    string contract_address = 1;
-    // The jail status of the contract.
-    bool is_jailed = 2;
+  // The address of the contract.
+  string contract_address = 1;
+  // The jail status of the contract.
+  bool is_jailed = 2;
 }
