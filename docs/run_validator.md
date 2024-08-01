@@ -387,7 +387,7 @@ You have to refer to that name later when you use cli to sign transactions.
 Validators are actors on the network committing new blocks by submitting their votes.
 This refers to the node itself, not a single person or a single account.
 
-The next step is to to declare a validator candidate.
+The next step is to declare a validator candidate.
 To declare a validator candidate, run the following command adjusting the stake amount and the other fields:
 
 ```bash

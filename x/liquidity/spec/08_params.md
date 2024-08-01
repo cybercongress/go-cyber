@@ -49,7 +49,7 @@ The default value of zero means no limit.
 
 ## PoolCreationFee
 
-Fee paid for to create a LiquidityPool creation. This fee prevents spamming and is collected in in the community pool of the distribution module. 
+Fee paid for to create a LiquidityPool creation. This fee prevents spamming and is collected in the community pool of the distribution module. 
 
 ## SwapFeeRate
 
