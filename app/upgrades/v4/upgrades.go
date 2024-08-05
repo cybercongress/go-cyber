@@ -1,4 +1,4 @@
-package v3
+package v4
 
 import (
 	"fmt"
@@ -93,8 +93,11 @@ func CreateV4UpgradeHandler(
 				keyTable = resourcestypes.ParamKeyTable() //nolint:staticcheck
 			case liquiditytypes.ModuleName:
 				keyTable = liquiditytypes.ParamKeyTable()
+			case tokenfactorytypes.ModuleName:
+				keyTable = tokenfactorytypes.ParamKeyTable()
 			}
 			if !subspace.HasKeyTable() {
+				logger.Info(fmt.Sprintf("set key table for subspace %s", subspace.Name()))
 				subspace.WithKeyTable(keyTable)
 			}
 		}
