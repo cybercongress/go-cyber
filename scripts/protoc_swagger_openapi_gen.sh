@@ -13,7 +13,7 @@ mkdir -p ./tmp-swagger-gen
 cd proto
 
 cosmos_sdk_dir=$(go list -f '{{ .Dir }}' -m github.com/cosmos/cosmos-sdk)
-ibc_go=$(go list -f '{{ .Dir }}' -m github.com/cosmos/ibc-go/v4)
+ibc_go=$(go list -f '{{ .Dir }}' -m github.com/cosmos/ibc-go/v7)
 wasmd=$(go list -f '{{ .Dir }}' -m github.com/CosmWasm/wasmd)
 
 proto_dirs=$(find ./cyber "$cosmos_sdk_dir"/proto "$ibc_go"/proto "$wasmd"/proto -path -prune -o -name '*.proto' -print0 | xargs -0 -n1 dirname | sort | uniq)
@@ -34,6 +34,10 @@ jq 'del(.definitions["cosmos.tx.v1beta1.ModeInfo.Multi"].properties.mode_infos.i
 jq 'del(.definitions["cosmos.autocli."].properties.mode_infos.items["$ref"])' ./tmp-swagger-gen/cosmos/tx/v1beta1/fixed-service.swagger.json > ./tmp-swagger-gen/cosmos/tx/v1beta1/fixed-service2.swagger.json
 
 rm ./tmp-swagger-gen/cosmos/tx/v1beta1/service.swagger.json
+rm ./tmp-swagger-gen/cosmos/orm/query/v1alpha1/query.swagger.json
+rm ./tmp-swagger-gen/cosmos/nft/v1beta1/query.swagger.json # TODO enable later when nfts will be added
+rm ./tmp-swagger-gen/cosmos/group/v1/query.swagger.json
+rm ./tmp-swagger-gen/cosmos/autocli/v1/query.swagger.json # this one brokes the script
 rm ./tmp-swagger-gen/ibc/applications/interchain_accounts/host/v1/query.swagger.json
 rm ./tmp-swagger-gen/ibc/applications/interchain_accounts/controller/v1/query.swagger.json
 
