@@ -56,4 +56,4 @@ contracts
 # Scripts
 *.mjs
 
-std_test.wasm
+*.wasm

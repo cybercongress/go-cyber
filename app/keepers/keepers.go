@@ -2,6 +2,11 @@ package keepers
 
 import (
 	"fmt"
+	"github.com/cosmos/cosmos-sdk/x/nft"
+	nftkeeper "github.com/cosmos/cosmos-sdk/x/nft/keeper"
+	clocktypes "github.com/cybercongress/go-cyber/v4/x/clock/types"
+	tokenfactorykeeper "github.com/cybercongress/go-cyber/v4/x/tokenfactory/keeper"
+	tokenfactorytypes "github.com/cybercongress/go-cyber/v4/x/tokenfactory/types"
 	"path/filepath"
 
 	"github.com/CosmWasm/wasmd/x/wasm"
@@ -57,9 +62,10 @@ import (
 
 	//"github.com/cybercongress/go-cyber/v4/app"
 
-	// liquiditykeeper "github.com/gravity-devs/liquidity/x/liquidity/keeper"
-	// liquiditytypes "github.com/gravity-devs/liquidity/x/liquidity/types"
 	"github.com/spf13/cast"
+
+	liquiditykeeper "github.com/cybercongress/go-cyber/v4/x/liquidity/keeper"
+	liquiditytypes "github.com/cybercongress/go-cyber/v4/x/liquidity/types"
 
 	wasmplugins "github.com/cybercongress/go-cyber/v4/plugins"
 	"github.com/cybercongress/go-cyber/v4/x/bandwidth"
@@ -82,9 +88,19 @@ import (
 	consensusparamtypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
 
 	govv1beta "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
+
+	clockkeeper "github.com/cybercongress/go-cyber/v4/x/clock/keeper"
 )
 
-var wasmCapabilities = "iterator,staking,stargate,cyber,cosmwasm_1_1,cosmwasm_1_2,cosmwasm_1_3"
+var (
+	wasmCapabilities = "iterator,staking,stargate,cyber,cosmwasm_1_1,cosmwasm_1_2,cosmwasm_1_3"
+
+	tokenFactoryCapabilities = []string{
+		tokenfactorytypes.EnableBurnFrom,
+		tokenfactorytypes.EnableForceTransfer,
+		tokenfactorytypes.EnableSetMetadata,
+	}
+)
 
 // module account permissions
 var maccPerms = map[string][]string{
@@ -94,12 +110,14 @@ var maccPerms = map[string][]string{
 	stakingtypes.BondedPoolName:    {authtypes.Burner, authtypes.Staking},
 	stakingtypes.NotBondedPoolName: {authtypes.Burner, authtypes.Staking},
 	govtypes.ModuleName:            {authtypes.Burner},
+	nft.ModuleName:                 nil,
 	ibctransfertypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
 	ibcfeetypes.ModuleName:         nil,
 	wasmtypes.ModuleName:           {authtypes.Burner},
-	// liquiditytypes.ModuleName:      {authtypes.Minter, authtypes.Burner},
-	gridtypes.GridPoolName:       nil,
-	resourcestypes.ResourcesName: {authtypes.Minter, authtypes.Burner},
+	liquiditytypes.ModuleName:      {authtypes.Minter, authtypes.Burner},
+	gridtypes.GridPoolName:         nil,
+	resourcestypes.ResourcesName:   {authtypes.Minter, authtypes.Burner},
+	tokenfactorytypes.ModuleName:   {authtypes.Minter, authtypes.Burner},
 }
 
 type AppKeepers struct {
@@ -125,20 +143,24 @@ type AppKeepers struct {
 	EvidenceKeeper   evidencekeeper.Keeper
 	TransferKeeper   ibctransferkeeper.Keeper
 	FeeGrantKeeper   feegrantkeeper.Keeper
+	NFTKeeper        nftkeeper.Keeper
 	AuthzKeeper      authzkeeper.Keeper
 
 	ConsensusParamsKeeper consensusparamkeeper.Keeper
 
-	WasmKeeper wasmkeeper.Keeper
-	// LiquidityKeeper liquiditykeeper.Keeper
-	BandwidthMeter  *bandwidthkeeper.BandwidthMeter
-	CyberbankKeeper *cyberbankkeeper.IndexedKeeper
-	GraphKeeper     *graphkeeper.GraphKeeper
-	IndexKeeper     *graphkeeper.IndexKeeper
-	RankKeeper      *rankkeeper.StateKeeper
-	GridKeeper      gridkeeper.Keeper
-	DmnKeeper       *dmnkeeper.Keeper
-	ResourcesKeeper resourceskeeper.Keeper
+	TokenFactoryKeeper tokenfactorykeeper.Keeper
+	WasmKeeper         wasmkeeper.Keeper
+	LiquidityKeeper    liquiditykeeper.Keeper
+	BandwidthMeter     *bandwidthkeeper.BandwidthMeter
+	CyberbankKeeper    *cyberbankkeeper.IndexedKeeper
+	GraphKeeper        *graphkeeper.GraphKeeper
+	IndexKeeper        *graphkeeper.IndexKeeper
+	RankKeeper         *rankkeeper.StateKeeper
+	GridKeeper         gridkeeper.Keeper
+	DmnKeeper          *dmnkeeper.Keeper
+	ResourcesKeeper    resourceskeeper.Keeper
+	ContractKeeper     wasmtypes.ContractOpsKeeper
+	ClockKeeper        clockkeeper.Keeper
 
 	ScopedIBCKeeper      capabilitykeeper.ScopedKeeper
 	ScopedTransferKeeper capabilitykeeper.ScopedKeeper
@@ -354,14 +376,14 @@ func NewAppKeepers(
 		govModAddress,
 	)
 
-	//appKeepers.LiquidityKeeper = liquiditykeeper.NewKeeper(
-	//	appCodec,
-	//	keys[liquiditytypes.StoreKey],
-	//	appKeepers.GetSubspace(liquiditytypes.ModuleName),
-	//	appKeepers.CyberbankKeeper.Proxy,
-	//	appKeepers.AccountKeeper,
-	//	appKeepers.DistrKeeper,
-	//)
+	appKeepers.LiquidityKeeper = liquiditykeeper.NewKeeper(
+		appCodec,
+		keys[liquiditytypes.StoreKey],
+		appKeepers.CyberbankKeeper.Proxy,
+		appKeepers.AccountKeeper,
+		appKeepers.DistrKeeper,
+		govModAddress,
+	)
 
 	// End cyber's keepers configuration
 
@@ -409,6 +431,9 @@ func NewAppKeepers(
 		govtypes.DefaultConfig(),
 		govModAddress,
 	)
+
+	appKeepers.NFTKeeper = nftkeeper.NewKeeper(keys[nftkeeper.StoreKey], appCodec, appKeepers.AccountKeeper, appKeepers.CyberbankKeeper.Proxy)
+
 	appKeepers.GovKeeper = *govKeeper.SetHooks(
 		govtypes.NewMultiGovHooks(
 		// register governance hooks
@@ -448,6 +473,17 @@ func NewAppKeepers(
 	// If evidence needs to be handled for the app, set routes in router here and seal
 	appKeepers.EvidenceKeeper = *evidenceKeeper
 
+	appKeepers.TokenFactoryKeeper = tokenfactorykeeper.NewKeeper(
+		appCodec,
+		appKeepers.keys[tokenfactorytypes.StoreKey],
+		maccPerms,
+		appKeepers.AccountKeeper,
+		appKeepers.CyberbankKeeper.Proxy,
+		appKeepers.DistrKeeper,
+		tokenFactoryCapabilities,
+		govModAddress,
+	)
+
 	// TODO update later to data (move wasm dir inside data directory)
 	wasmDir := filepath.Join(homePath, "wasm")
 
@@ -460,9 +496,14 @@ func NewAppKeepers(
 		appKeepers.RankKeeper,
 		appKeepers.GraphKeeper,
 		appKeepers.DmnKeeper,
-		appKeepers.GridKeeper,
+		&appKeepers.GridKeeper,
 		appKeepers.BandwidthMeter,
-		// appKeepers.LiquidityKeeper,
+		&appKeepers.ResourcesKeeper,
+		appKeepers.IndexKeeper,
+		&appKeepers.AccountKeeper,
+		appKeepers.CyberbankKeeper,
+		&appKeepers.BankKeeper,
+		&appKeepers.TokenFactoryKeeper,
 	)
 	wasmOpts = append(wasmOpts, cyberOpts...)
 
@@ -485,6 +526,15 @@ func NewAppKeepers(
 		wasmCapabilities,
 		govModAddress,
 		wasmOpts...,
+	)
+
+	appKeepers.ContractKeeper = wasmkeeper.NewDefaultPermissionKeeper(&appKeepers.WasmKeeper)
+	appKeepers.ClockKeeper = clockkeeper.NewKeeper(
+		appKeepers.keys[clocktypes.StoreKey],
+		appCodec,
+		appKeepers.WasmKeeper,
+		appKeepers.ContractKeeper,
+		govModAddress,
 	)
 
 	appKeepers.DmnKeeper.SetWasmKeeper(appKeepers.WasmKeeper)
@@ -536,7 +586,8 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(gridtypes.ModuleName)
 	paramsKeeper.Subspace(dmntypes.ModuleName)
 	paramsKeeper.Subspace(resourcestypes.ModuleName)
-	// paramsKeeper.Subspace(liquiditytypes.ModuleName)
+	paramsKeeper.Subspace(liquiditytypes.ModuleName)
+	paramsKeeper.Subspace(tokenfactorytypes.ModuleName)
 
 	return paramsKeeper
 }

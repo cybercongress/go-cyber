@@ -1,0 +1,300 @@
+syntax = "proto3";
+package cyber.liquidity.v1beta1;
+
+import "cyber/liquidity/v1beta1/tx.proto";
+import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
+// import "google/api/annotations.proto";
+import "cosmos_proto/cosmos.proto";
+
+option go_package = "github.com/cybercongress/go-cyber/x/liquidity/types";
+option (gogoproto.goproto_getters_all) = false;
+
+// Structure for the pool type to distinguish the characteristics of the reserve
+// pools.
+message PoolType {
+  option (gogoproto.equal) = true;
+
+  // This is the id of the pool_type that is used as pool_type_id for pool
+  // creation. In this version, only pool-type-id 1 is supported.
+  // {"id":1,"name":"ConstantProductLiquidityPool","min_reserve_coin_num":2,"max_reserve_coin_num":2,"description":""}
+  uint32 id = 1 [ (gogoproto.moretags) = "yaml:\"id\"" ];
+
+  // name of the pool type.
+  string name = 2 [ (gogoproto.moretags) = "yaml:\"name\"" ];
+
+  // minimum number of reserveCoins for LiquidityPoolType, only 2 reserve coins
+  // are supported.
+  uint32 min_reserve_coin_num = 3
+      [ (gogoproto.moretags) = "yaml:\"min_reserve_coin_num\"" ];
+
+  // maximum number of reserveCoins for LiquidityPoolType, only 2 reserve coins
+  // are supported.
+  uint32 max_reserve_coin_num = 4
+      [ (gogoproto.moretags) = "yaml:\"max_reserve_coin_num\"" ];
+
+  // description of the pool type.
+  string description = 5 [ (gogoproto.moretags) = "yaml:\"description\"" ];
+}
+
+// Params defines the parameters for the liquidity module.
+message Params {
+  option (gogoproto.equal) = true;
+  option (gogoproto.goproto_stringer) = false;
+
+  // list of available pool types
+  repeated PoolType pool_types = 1 [
+    (gogoproto.moretags) = "yaml:\"pool_types\"",
+    (gogoproto.nullable) = false
+  ];
+
+  // Minimum number of coins to be deposited to the liquidity pool on pool
+  // creation.
+  string min_init_deposit_amount = 2 [
+    (gogoproto.moretags) = "yaml:\"min_init_deposit_amount\"",
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+
+  // Initial mint amount of pool coins upon pool creation.
+  string init_pool_coin_mint_amount = 3 [
+    (gogoproto.moretags) = "yaml:\"init_pool_coin_mint_amount\"",
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+
+  // Limit the size of each liquidity pool to minimize risk. In development, set
+  // to 0 for no limit. In production, set a limit.
+  string max_reserve_coin_amount = 4 [
+    (gogoproto.moretags) = "yaml:\"max_reserve_coin_amount\"",
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+
+  // Fee paid to create a Liquidity Pool. Set a fee to prevent spamming.
+  repeated cosmos.base.v1beta1.Coin pool_creation_fee = 5 [
+    (gogoproto.moretags) = "yaml:\"pool_creation_fee\"",
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+
+  // Swap fee rate for every executed swap.
+  string swap_fee_rate = 6 [
+    (gogoproto.moretags) = "yaml:\"swap_fee_rate\"",
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+
+  // Reserve coin withdrawal with less proportion by withdrawFeeRate.
+  string withdraw_fee_rate = 7 [
+    (gogoproto.moretags) = "yaml:\"withdraw_fee_rate\"",
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+
+  // Maximum ratio of reserve coins that can be ordered at a swap order.
+  string max_order_amount_ratio = 8 [
+    (gogoproto.moretags) = "yaml:\"max_order_amount_ratio\"",
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+
+  // The smallest unit batch height for every liquidity pool.
+  uint32 unit_batch_height = 9
+      [ (gogoproto.moretags) = "yaml:\"unit_batch_height\"" ];
+
+  // Circuit breaker enables or disables transaction messages in liquidity
+  // module.
+  bool circuit_breaker_enabled = 10
+      [ (gogoproto.moretags) = "yaml:\"circuit_breaker_enabled\"" ];
+}
+
+// Pool defines the liquidity pool that contains pool information.
+message Pool {
+  option (gogoproto.equal) = true;
+  option (gogoproto.goproto_stringer) = true;
+
+  // id of the pool
+  uint64 id = 1
+      [ (gogoproto.moretags) = "yaml:\"id\"", (gogoproto.jsontag) = "id" ];
+
+  // id of the pool_type
+  uint32 type_id = 2 [ (gogoproto.moretags) = "yaml:\"type_id\"" ];
+
+  // denoms of reserve coin pair of the pool
+  repeated string reserve_coin_denoms = 3
+      [ (gogoproto.moretags) = "yaml:\"reserve_coin_denoms\"" ];
+
+  // reserve account address of the pool
+  string reserve_account_address = 4 [
+    (gogoproto.moretags) = "yaml:\"reserve_account_address\"",
+    (cosmos_proto.scalar) = "cosmos.AddressString"
+  ];
+
+  // denom of pool coin of the pool
+  string pool_coin_denom = 5
+      [ (gogoproto.moretags) = "yaml:\"pool_coin_denom\"" ];
+}
+
+// Metadata for the state of each pool for invariant checking after genesis
+// export or import.
+message PoolMetadata {
+  option (gogoproto.equal) = true;
+  option (gogoproto.goproto_stringer) = true;
+
+  // id of the pool
+  uint64 pool_id = 1 [
+    (gogoproto.moretags) = "yaml:\"pool_id\"",
+    (gogoproto.jsontag) = "pool_id"
+  ];
+
+  // pool coin issued at the pool
+  cosmos.base.v1beta1.Coin pool_coin_total_supply = 2 [
+    (gogoproto.moretags) = "yaml:\"pool_coin\"",
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coin"
+  ];
+
+  // reserve coins deposited in the pool
+  repeated cosmos.base.v1beta1.Coin reserve_coins = 3 [
+    (gogoproto.moretags) = "yaml:\"deposit_coins\"",
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+}
+
+// PoolBatch defines the batch or batches of a given liquidity pool that
+// contains indexes of deposit, withdraw, and swap messages. Index param
+// increments by 1 if the pool id is same.
+message PoolBatch {
+  option (gogoproto.equal) = true;
+  option (gogoproto.goproto_stringer) = true;
+
+  // id of the pool
+  uint64 pool_id = 1 [
+    (gogoproto.moretags) = "yaml:\"pool_id\"",
+    (gogoproto.jsontag) = "pool_id"
+  ];
+
+  // index of this batch
+  uint64 index = 2 [ (gogoproto.moretags) = "yaml:\"index\"" ];
+
+  // height where this batch is started
+  int64 begin_height = 3 [ (gogoproto.moretags) = "yaml:\"begin_height\"" ];
+
+  // last index of DepositMsgStates
+  uint64 deposit_msg_index = 4
+      [ (gogoproto.moretags) = "yaml:\"deposit_msg_index\"" ];
+
+  // last index of WithdrawMsgStates
+  uint64 withdraw_msg_index = 5
+      [ (gogoproto.moretags) = "yaml:\"withdraw_msg_index\"" ];
+
+  // last index of SwapMsgStates
+  uint64 swap_msg_index = 6
+      [ (gogoproto.moretags) = "yaml:\"swap_msg_index\"" ];
+
+  // true if executed, false if not executed
+  bool executed = 7 [ (gogoproto.moretags) = "yaml:\"executed\"" ];
+}
+
+// DepositMsgState defines the state of deposit message that contains state
+// information as it is processed in the next batch or batches.
+message DepositMsgState {
+
+  // height where this message is appended to the batch
+  int64 msg_height = 1 [ (gogoproto.moretags) = "yaml:\"msg_height\"" ];
+
+  // index of this deposit message in this liquidity pool
+  uint64 msg_index = 2 [ (gogoproto.moretags) = "yaml:\"msg_index\"" ];
+
+  // true if executed on this batch, false if not executed
+  bool executed = 3 [ (gogoproto.moretags) = "yaml:\"executed\"" ];
+
+  // true if executed successfully on this batch, false if failed
+  bool succeeded = 4 [ (gogoproto.moretags) = "yaml:\"succeeded\"" ];
+
+  // true if ready to be deleted on kvstore, false if not ready to be deleted
+  bool to_be_deleted = 5 [ (gogoproto.moretags) = "yaml:\"to_be_deleted\"" ];
+
+  // MsgDepositWithinBatch
+  MsgDepositWithinBatch msg = 6 [ (gogoproto.moretags) = "yaml:\"msg\"" ];
+}
+
+// WithdrawMsgState defines the state of the withdraw message that contains
+// state information as the message is processed in the next batch or batches.
+message WithdrawMsgState {
+
+  // height where this message is appended to the batch
+  int64 msg_height = 1 [ (gogoproto.moretags) = "yaml:\"msg_height\"" ];
+
+  // index of this withdraw message in this liquidity pool
+  uint64 msg_index = 2 [ (gogoproto.moretags) = "yaml:\"msg_index\"" ];
+
+  // true if executed on this batch, false if not executed
+  bool executed = 3 [ (gogoproto.moretags) = "yaml:\"executed\"" ];
+
+  // true if executed successfully on this batch, false if failed
+  bool succeeded = 4 [ (gogoproto.moretags) = "yaml:\"succeeded\"" ];
+
+  // true if ready to be deleted on kvstore, false if not ready to be deleted
+  bool to_be_deleted = 5 [ (gogoproto.moretags) = "yaml:\"to_be_deleted\"" ];
+
+  // MsgWithdrawWithinBatch
+  MsgWithdrawWithinBatch msg = 6 [ (gogoproto.moretags) = "yaml:\"msg\"" ];
+}
+
+// SwapMsgState defines the state of the swap message that contains state
+// information as the message is processed in the next batch or batches.
+message SwapMsgState {
+
+  // height where this message is appended to the batch
+  int64 msg_height = 1 [ (gogoproto.moretags) = "yaml:\"msg_height\"" ];
+
+  // index of this swap message in this liquidity pool
+  uint64 msg_index = 2 [ (gogoproto.moretags) = "yaml:\"msg_index\"" ];
+
+  // true if executed on this batch, false if not executed
+  bool executed = 3 [ (gogoproto.moretags) = "yaml:\"executed\"" ];
+
+  // true if executed successfully on this batch, false if failed
+  bool succeeded = 4 [ (gogoproto.moretags) = "yaml:\"succeeded\"" ];
+
+  // true if ready to be deleted on kvstore, false if not ready to be deleted
+  bool to_be_deleted = 5 [ (gogoproto.moretags) = "yaml:\"to_be_deleted\"" ];
+
+  // swap orders are cancelled when current height is equal to or higher than
+  // ExpiryHeight
+  int64 order_expiry_height = 6
+      [ (gogoproto.moretags) = "yaml:\"order_expiry_height\"" ];
+
+  // offer coin exchanged until now
+  cosmos.base.v1beta1.Coin exchanged_offer_coin = 7 [
+    (gogoproto.moretags) = "yaml:\"exchanged_offer_coin\"",
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coin"
+  ];
+
+  // offer coin currently remaining to be exchanged
+  cosmos.base.v1beta1.Coin remaining_offer_coin = 8 [
+    (gogoproto.moretags) = "yaml:\"remaining_offer_coin\"",
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coin"
+  ];
+
+  // reserve fee for pays fee in half offer coin
+  cosmos.base.v1beta1.Coin reserved_offer_coin_fee = 9 [
+    (gogoproto.moretags) = "yaml:\"reserved_offer_coin_fee\"",
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coin"
+  ];
+
+  // MsgSwapWithinBatch
+  MsgSwapWithinBatch msg = 10 [ (gogoproto.moretags) = "yaml:\"msg\"" ];
+}

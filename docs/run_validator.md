@@ -282,7 +282,7 @@ mkdir $HOME/.cyber/config
 (This will pull and extract the image from cyberd/cyber of latest version, containing all upgrades binaries)
 
 ```bash
-docker run --log-opt max-size=2g --log-opt max-file=1 -d --gpus all --name=bostrom --restart always -p 26656:26656 -p 26657:26657 -p 26660:26660 -p 1317:1317 -e ALLOW_SEARCH=true -v $HOME/.cyber:/root/.cyber  cyberd/bostrom:dragonberry-cuda11.4
+docker run -d --gpus all --name=bostrom --restart always -p 26656:26656 -p 26657:26657 -p 1317:1317 -e ALLOW_SEARCH=true -v $HOME/.cyber:/root/.cyber  cyberd/bostrom:v3.0.0-cuda11.4
 ```
 
 Docker image already contain all binaries to either sync from 0 or start form snapshot.
@@ -387,7 +387,7 @@ You have to refer to that name later when you use cli to sign transactions.
 Validators are actors on the network committing new blocks by submitting their votes.
 This refers to the node itself, not a single person or a single account.
 
-The next step is to to declare a validator candidate.
+The next step is to declare a validator candidate.
 To declare a validator candidate, run the following command adjusting the stake amount and the other fields:
 
 ```bash

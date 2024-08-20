@@ -139,7 +139,7 @@ func NewApp(
 	wasmtypes.MaxWasmSize = 2 * 1024 * 1024 // 2MB
 	encodingConfig := MakeEncodingConfig()
 
-	appCodec, legacyAmino := encodingConfig.Marshaler, encodingConfig.Amino
+	appCodec, legacyAmino := encodingConfig.Codec, encodingConfig.Amino
 	interfaceRegistry := encodingConfig.InterfaceRegistry
 	txConfig := encodingConfig.TxConfig
 
@@ -344,9 +344,9 @@ func (app *App) InitChainer(ctx sdk.Context, req abci.RequestInitChain) abci.Res
 	}
 
 	// custom initialization
-	//var bankGenesisState banktypes.GenesisState
-	//app.appCodec.MustUnmarshalJSON(genesisState["bank"], &bankGenesisState)
-	//app.BandwidthMeter.AddToDesirableBandwidth(ctx, bankGenesisState.Supply.AmountOf(ctypes.VOLT).Uint64())
+	// var bankGenesisState banktypes.GenesisState
+	// app.appCodec.MustUnmarshalJSON(genesisState["bank"], &bankGenesisState)
+	// app.BandwidthMeter.AddToDesirableBandwidth(ctx, bankGenesisState.Supply.AmountOf(ctypes.VOLT).Uint64())
 
 	app.UpgradeKeeper.SetModuleVersionMap(ctx, app.ModuleManager.GetVersionMap())
 	resp := app.ModuleManager.InitGenesis(ctx, app.appCodec, genesisState)
@@ -489,7 +489,7 @@ func (app *App) SimulationManager() *module.SimulationManager {
 // full Cyber app
 func MakeCodecs() (codec.Codec, *codec.LegacyAmino) {
 	config := MakeEncodingConfig()
-	return config.Marshaler, config.Amino
+	return config.Codec, config.Amino
 }
 
 func (app *App) loadContexts(db dbm.DB, ctx sdk.Context) {

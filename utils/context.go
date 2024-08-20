@@ -15,6 +15,9 @@ func NewContextWithMSVersion(db db.DB, version int64, keys map[string]*storetype
 	delete(keys, "consensus")
 	delete(keys, "resources")
 	delete(keys, "crisis")
+	delete(keys, "tokenfactory")
+	delete(keys, "clock")
+	delete(keys, "nft")
 
 	for _, key := range keys {
 		ms.MountStoreWithDB(key, storetypes.StoreTypeIAVL, nil)

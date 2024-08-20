@@ -15,6 +15,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/feegrant"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
+	nftkeeper "github.com/cosmos/cosmos-sdk/x/nft/keeper"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
@@ -22,8 +23,10 @@ import (
 	ibcfeetypes "github.com/cosmos/ibc-go/v7/modules/apps/29-fee/types"
 	ibctransfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
 	ibcexported "github.com/cosmos/ibc-go/v7/modules/core/exported"
+	clocktypes "github.com/cybercongress/go-cyber/v4/x/clock/types"
+	tokenfactorytypes "github.com/cybercongress/go-cyber/v4/x/tokenfactory/types"
 
-	// liquiditytypes "github.com/gravity-devs/liquidity/x/liquidity/types"
+	liquiditytypes "github.com/cybercongress/go-cyber/v4/x/liquidity/types"
 
 	bandwidthtypes "github.com/cybercongress/go-cyber/v4/x/bandwidth/types"
 	dmntypes "github.com/cybercongress/go-cyber/v4/x/dmn/types"
@@ -40,21 +43,23 @@ func (appKeepers *AppKeepers) GenerateKeys() {
 		minttypes.StoreKey, distrtypes.StoreKey, slashingtypes.StoreKey,
 		govtypes.StoreKey, paramstypes.StoreKey, upgradetypes.StoreKey,
 		evidencetypes.StoreKey, capabilitytypes.StoreKey,
-		authzkeeper.StoreKey, feegrant.StoreKey,
+		authzkeeper.StoreKey, feegrant.StoreKey, nftkeeper.StoreKey,
 		consensusparamtypes.StoreKey, crisistypes.StoreKey,
 
 		ibcexported.StoreKey,
 		ibctransfertypes.StoreKey,
 		ibcfeetypes.StoreKey,
 		wasmtypes.StoreKey,
+		clocktypes.StoreKey,
 		// our additions
-		// liquiditytypes.StoreKey,
+		liquiditytypes.StoreKey,
 		bandwidthtypes.StoreKey,
 		graphtypes.StoreKey,
 		ranktypes.StoreKey,
 		gridtypes.StoreKey,
 		dmntypes.StoreKey,
 		resourcestypes.StoreKey,
+		tokenfactorytypes.StoreKey,
 	)
 
 	appKeepers.tkeys = sdk.NewTransientStoreKeys(

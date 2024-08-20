@@ -1,8 +1,14 @@
-package v3
+package v4
 
 import (
 	"fmt"
+	"github.com/cosmos/ibc-go/v7/modules/core/exported"
+	generaltypes "github.com/cybercongress/go-cyber/v4/types"
+	clocktypes "github.com/cybercongress/go-cyber/v4/x/clock/types"
+	tokenfactorytypes "github.com/cybercongress/go-cyber/v4/x/tokenfactory/types"
 	"time"
+
+	liquiditytypes "github.com/cybercongress/go-cyber/v4/x/liquidity/types"
 
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/cosmos/cosmos-sdk/baseapp"
@@ -30,6 +36,8 @@ import (
 
 	"github.com/cybercongress/go-cyber/v4/app/keepers"
 )
+
+const NewDenomCreationGasConsume uint64 = 2_000_000
 
 func CreateV4UpgradeHandler(
 	mm *module.Manager,
@@ -83,9 +91,13 @@ func CreateV4UpgradeHandler(
 				keyTable = ranktypes.ParamKeyTable() //nolint:staticcheck
 			case resourcestypes.ModuleName:
 				keyTable = resourcestypes.ParamKeyTable() //nolint:staticcheck
+			case liquiditytypes.ModuleName:
+				keyTable = liquiditytypes.ParamKeyTable()
+			case tokenfactorytypes.ModuleName:
+				keyTable = tokenfactorytypes.ParamKeyTable()
 			}
-
 			if !subspace.HasKeyTable() {
+				logger.Info(fmt.Sprintf("set key table for subspace %s", subspace.Name()))
 				subspace.WithKeyTable(keyTable)
 			}
 		}
@@ -106,9 +118,28 @@ func CreateV4UpgradeHandler(
 		// TODO check ibc-go state after migration
 		// https://github.com/cosmos/ibc-go/blob/v7.1.0/docs/migrations/v7-to-v7_1.md
 		// explicitly update the IBC 02-client params, adding the localhost client type
-		// params := keepers.IBCKeeper.ClientKeeper.GetParams(ctx)
-		// params.AllowedClients = append(params.AllowedClients, exported.Localhost)
-		// keepers.IBCKeeper.ClientKeeper.SetParams(ctx, params)
+		params := keepers.IBCKeeper.ClientKeeper.GetParams(ctx)
+		params.AllowedClients = append(params.AllowedClients, exported.Localhost)
+		keepers.IBCKeeper.ClientKeeper.SetParams(ctx, params)
+
+		logger.Info("set ibc params")
+
+		newTokenFactoryParams := tokenfactorytypes.Params{
+			DenomCreationFee:        sdk.NewCoins(sdk.NewCoin(generaltypes.CYB, sdk.NewInt(10*generaltypes.Giga))),
+			DenomCreationGasConsume: NewDenomCreationGasConsume,
+		}
+		if err := keepers.TokenFactoryKeeper.SetParams(ctx, newTokenFactoryParams); err != nil {
+			return nil, err
+		}
+		logger.Info("set tokenfactory params")
+
+		// x/clock
+		if err := keepers.ClockKeeper.SetParams(ctx, clocktypes.Params{
+			ContractGasLimit: 250_000, // TODO update
+		}); err != nil {
+			return nil, err
+		}
+		logger.Info("set clock params")
 
 		after := time.Now()
 
