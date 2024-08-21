@@ -141,6 +141,17 @@ func CreateV4UpgradeHandler(
 		}
 		logger.Info("set clock params")
 
+		bootDenom, exist := keepers.BankKeeper.GetDenomMetaData(ctx, "boot")
+		if exist {
+			bootDenom.DenomUnits = append(bootDenom.DenomUnits, &banktypes.DenomUnit{
+				Denom:    "root",
+				Exponent: 9,
+				Aliases:  []string{"ROOT"},
+			})
+			keepers.BankKeeper.SetDenomMetaData(ctx, bootDenom)
+			logger.Info("update boot denom metadata with root token")
+		}
+
 		after := time.Now()
 
 		ctx.Logger().Info("migration time", "duration_ms", after.Sub(before).Milliseconds())
