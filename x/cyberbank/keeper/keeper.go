@@ -8,7 +8,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	gogotypes "github.com/gogo/protobuf/types"
+	gogotypes "github.com/cosmos/gogoproto/types"
 
 	"github.com/cometbft/cometbft/libs/log"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -134,7 +134,7 @@ func (k *IndexedKeeper) UpdateAccountsStakeAmpere(ctx sdk.Context) {
 func (k IndexedKeeper) GetNextAccountNumber(ctx sdk.Context) uint64 {
 	var accNumber uint64
 	store := ctx.KVStore(k.authKey)
-	bz := store.Get([]byte("globalAccountNumber"))
+	bz := store.Get(authtypes.GlobalAccountNumberKey)
 
 	if bz == nil {
 		accNumber = 0
