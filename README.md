@@ -41,9 +41,9 @@ _____________
 
 [![version](https://img.shields.io/github/release/cybercongress/cyberd.svg?style=flat-square)](https://github.com/cybercongress/cyberd/releases/latest)
 [![CircleCI](https://img.shields.io/circleci/build/github/cybercongress/go-cyber/master?style=flat-square)](https://circleci.com/gh/cybercongress/workflows/go-cyber/tree/master)
-![Cosmos-SDK](https://img.shields.io/static/v1.svg?label=cosmos-sdk&message=0.47.11&color=blue&style=flat-square)
-![CometBFT](https://img.shields.io/static/v1.svg?label=cometbft&message=0.37.5&color=blue&style=flat-square)
-![IBC](https://img.shields.io/static/v1.svg?label=ibc-go&message=7.4.0&color=blue&style=flat-square)
+![Cosmos-SDK](https://img.shields.io/static/v1.svg?label=cosmos-sdk&message=0.47.12&color=blue&style=flat-square)
+![CometBFT](https://img.shields.io/static/v1.svg?label=cometbft&message=0.37.8&color=blue&style=flat-square)
+![IBC](https://img.shields.io/static/v1.svg?label=ibc-go&message=7.6.0&color=blue&style=flat-square)
 ![CosmWasm](https://img.shields.io/static/v1.svg?label=cosmwasm&message=1.5.2&color=blue&style=flat-square)
 ![WASMD](https://img.shields.io/static/v1.svg?label=wasmd&message=0.45.0&color=blue&style=flat-square)
 [![contributors](https://img.shields.io/github/contributors/cybercongress/go-cyber.svg?style=flat-square)](https://github.com/cybercongress/go-cyber/graphs/contributors)
@@ -64,8 +64,8 @@ _________________________________________________________
 |--------------------------------------|---|---------------------------------------------------|--------|--------|
 | [Bostrom](https://cyb.ai)            |🟢| Bootloader Hub                                    | 2021   | BOOT   |
 | [Space Pussy](https://spacepussy.ai) |🟣| Meme Community Network                            | 2022   | PUSSY  |
-| [Deepchain](https://deepchain.dev)   |⚫| [Deep Community](https://deep.foundation) Network | 2024   | ENERGY |
-| Cyber                                |🔵| Superintelligence Hub                             | TBA    | CYB    |
+| [Deepchain](https://deepchain.dev)   |⚫| [Deep Community](https://deep.foundation) Network | 2025   | ENERGY |
+| Cyber                                |🔵| Superintelligence Hub                             | 2027   | CYB    |
 _________________________________________________________
 
 ## Computer Specification 🛠
