@@ -1,4 +1,6 @@
-# Cyber - SuperIntelligence for The Great Web
+<div align="center">
+ <h1>Cyber - SuperIntelligence for The Great Web</h1>
+</div>
 
 <div align="center">
  <h1>Start to use right now - <a href="https://cyb.ai">cyb.ai</a></h1>
@@ -29,11 +31,11 @@
 </div>
 
 <div align="center">
- <h3>Network <a href="https://monitor.cybernode.ai/">monitor</a></h3>
+ <h3>Network <a href="https://cybernode.ai/">monitor</a></h3>
 </div>
 
 <div align="center">
- <h3><b>go-cyber is golang implementation of cyber <a href="https://github.com/cybercongress/cyber">protocol</a></b></h3>
+ <h3><b><a href="https://cyber.page">Metagraph</a> of cyber project</b></h3>
 </div>
 _____________
 
