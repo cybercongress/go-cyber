@@ -41,6 +41,7 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/cosmos/cosmos-sdk/x/upgrade"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
+	ica "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts"
 	ibcfee "github.com/cosmos/ibc-go/v7/modules/apps/29-fee"
 	ibcfeetypes "github.com/cosmos/ibc-go/v7/modules/apps/29-fee/types"
 	"github.com/cosmos/ibc-go/v7/modules/apps/transfer"
@@ -73,6 +74,7 @@ import (
 	stakingwrap "github.com/cybercongress/go-cyber/v4/x/staking"
 
 	authsims "github.com/cosmos/cosmos-sdk/x/auth/simulation"
+	icatypes "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/types"
 	clocktypes "github.com/cybercongress/go-cyber/v4/x/clock/types"
 )
 
@@ -100,6 +102,7 @@ var ModuleBasics = module.NewBasicManager(
 	nftmodule.AppModuleBasic{},
 	ibc.AppModuleBasic{},
 	ibcfee.AppModuleBasic{},
+	ica.AppModuleBasic{},
 	transfer.AppModuleBasic{},
 	consensus.AppModuleBasic{},
 	liquidity.AppModuleBasic{},
@@ -149,6 +152,7 @@ func appModules(
 		nftmodule.NewAppModule(appCodec, app.AppKeepers.NFTKeeper, app.AppKeepers.AccountKeeper, app.CyberbankKeeper.Proxy, app.interfaceRegistry),
 		transfer.NewAppModule(app.TransferKeeper),
 		ibcfee.NewAppModule(app.IBCFeeKeeper),
+		ica.NewAppModule(&app.ICAControllerKeeper, &app.ICAHostKeeper),
 		crisis.NewAppModule(app.AppKeepers.CrisisKeeper, skipGenesisInvariants, app.GetSubspace(crisistypes.ModuleName)),
 		wasm.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper, app.AccountKeeper, app.CyberbankKeeper.Proxy, app.MsgServiceRouter(), app.GetSubspace(wasmtypes.ModuleName)),
 		consensus.NewAppModule(appCodec, app.AppKeepers.ConsensusParamsKeeper),
@@ -202,6 +206,7 @@ func simulationModules(
 
 // orderBeginBlockers tell the app's module manager how to set the order of
 // BeginBlockers, which are run at the beginning of every block.
+// NOTE: capability module's beginblocker must come before any modules using capabilities (e.g. IBC)
 func orderBeginBlockers() []string {
 	return []string{
 		// upgrades should be run first
@@ -226,6 +231,7 @@ func orderBeginBlockers() []string {
 		// additional modules
 		ibctransfertypes.ModuleName,
 		ibcexported.ModuleName,
+		icatypes.ModuleName,
 		liquiditytypes.ModuleName,
 		dmntypes.ModuleName,
 		clocktypes.ModuleName,
@@ -264,6 +270,7 @@ func orderEndBlockers() []string {
 		// additional modules
 		ibctransfertypes.ModuleName,
 		ibcexported.ModuleName,
+		icatypes.ModuleName,
 		ibcfeetypes.ModuleName,
 		clocktypes.ModuleName,
 		tokenfactorytypes.ModuleName,
@@ -279,6 +286,14 @@ func orderEndBlockers() []string {
 	}
 }
 
+// NOTE: The genutils module must occur after staking so that pools are
+// properly initialized with tokens from genesis accounts.
+// NOTE: The genutils module must also occur after auth so that it can access the params from auth.
+// NOTE: Capability module must occur first so that it can initialize any capabilities
+// so that other modules that want to create or claim capabilities afterwards in InitChain
+// can do so safely.
+// NOTE: wasm module should be at the end as it can call other module functionality direct or via message dispatching during
+// genesis phase. For example bank transfer, auth account check, staking, ...
 func orderInitBlockers() []string {
 	return []string{
 		capabilitytypes.ModuleName,
@@ -302,11 +317,11 @@ func orderInitBlockers() []string {
 		// additional modules
 		ibctransfertypes.ModuleName,
 		ibcexported.ModuleName,
+		icatypes.ModuleName,
 		liquiditytypes.ModuleName,
 		ibcfeetypes.ModuleName,
 		clocktypes.ModuleName,
 		tokenfactorytypes.ModuleName,
-		wasm.ModuleName,
 		bandwidthtypes.ModuleName,
 		ranktypes.ModuleName,
 		gridtypes.ModuleName,
@@ -314,5 +329,6 @@ func orderInitBlockers() []string {
 		dmntypes.ModuleName,
 		graphtypes.ModuleName,
 		cyberbanktypes.ModuleName, // cyberbank will be initialized directly in InitChainer
+		wasm.ModuleName,
 	}
 }

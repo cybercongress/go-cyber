@@ -2,6 +2,7 @@ package app
 
 import (
 	"fmt"
+	"github.com/cosmos/cosmos-sdk/server"
 	"github.com/cybercongress/go-cyber/v4/client/docs"
 	"io"
 	"os"
@@ -11,7 +12,6 @@ import (
 	reflectionv1 "cosmossdk.io/api/cosmos/reflection/v1"
 
 	"github.com/cosmos/cosmos-sdk/runtime"
-	"github.com/cosmos/cosmos-sdk/store/streaming"
 	"github.com/cosmos/cosmos-sdk/x/auth/posthandler"
 
 	v2 "github.com/cybercongress/go-cyber/v4/app/upgrades/v2"
@@ -119,6 +119,8 @@ type App struct {
 	txConfig          client.TxConfig
 	interfaceRegistry types.InterfaceRegistry
 
+	invCheckPeriod uint
+
 	ModuleManager *module.Manager
 
 	sm *module.SimulationManager
@@ -143,7 +145,17 @@ func NewApp(
 	interfaceRegistry := encodingConfig.InterfaceRegistry
 	txConfig := encodingConfig.TxConfig
 
-	bApp := baseapp.NewBaseApp(appName, logger, db, txConfig.TxDecoder(), baseAppOptions...)
+	// App Opts
+	skipGenesisInvariants := cast.ToBool(appOpts.Get(crisis.FlagSkipGenesisInvariants))
+	invCheckPeriod := cast.ToUint(appOpts.Get(server.FlagInvCheckPeriod))
+
+	bApp := baseapp.NewBaseApp(
+		appName,
+		logger,
+		db,
+		txConfig.TxDecoder(),
+		baseAppOptions...)
+
 	bApp.SetCommitMultiStoreTracer(traceStore)
 	bApp.SetVersion(version.Version)
 	bApp.SetInterfaceRegistry(interfaceRegistry)
@@ -155,6 +167,7 @@ func NewApp(
 		appCodec:          appCodec,
 		txConfig:          txConfig,
 		interfaceRegistry: interfaceRegistry,
+		invCheckPeriod:    invCheckPeriod,
 	}
 
 	// Setup keepers
@@ -163,44 +176,39 @@ func NewApp(
 		bApp,
 		legacyAmino,
 		keepers.GetMaccPerms(),
+		invCheckPeriod,
+		logger,
 		appOpts,
 		wasmOpts,
 	)
 
-	// load state streaming if enabled
-	if _, _, err := streaming.LoadStreamingServices(bApp, appOpts, appCodec, logger, app.GetKVStoreKey()); err != nil {
-		logger.Error("failed to load state streaming", "err", err)
-		os.Exit(1)
-	}
-
-	// upgrade handlers
-	app.configurator = module.NewConfigurator(appCodec, app.MsgServiceRouter(), app.GRPCQueryRouter())
-
 	/****  Module Options ****/
-
-	// NOTE: we may consider parsing `appOpts` inside module constructors. For the moment
-	// we prefer to be more strict in what arguments the modules expect.
-	skipGenesisInvariants := cast.ToBool(appOpts.Get(crisis.FlagSkipGenesisInvariants))
 
 	// NOTE: Any module instantiated in the module manager that is later modified
 	// must be passed by reference here.
 	app.ModuleManager = module.NewManager(appModules(app, encodingConfig, skipGenesisInvariants)...)
-	app.ModuleManager.RegisterServices(app.configurator)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
 	// there is nothing left over in the validator fee pool, so as to keep the
 	// CanWithdrawInvariant invariant.
 	// NOTE: staking module is required if HistoricalEntries param > 0
+	// NOTE: capability module's beginblocker must come before any modules using capabilities (e.g. IBC)
+	// Tell the app's module manager how to set the order of BeginBlockers, which are run at the beginning of every block.
 	app.ModuleManager.SetOrderBeginBlockers(orderBeginBlockers()...)
 
 	app.ModuleManager.SetOrderEndBlockers(orderEndBlockers()...)
 
 	// NOTE: The genutils module must occur after staking so that pools are
 	// properly initialized with tokens from genesis accounts.
+	// NOTE: The genutils module must also occur after auth so that it can access the params from auth.
 	// NOTE: Capability module must occur first so that it can initialize any capabilities
 	// so that other modules that want to create or claim capabilities afterwards in InitChain
 	// can do so safely.
 	app.ModuleManager.SetOrderInitGenesis(orderInitBlockers()...)
+
+	// Uncomment if you want to set a custom migration order here.
+	// NOTE: can be useful for future upgrades
+	// app.mm.SetOrderMigrations(custom order)
 
 	app.ModuleManager.RegisterInvariants(app.CrisisKeeper)
 
@@ -215,21 +223,21 @@ func NewApp(
 	//banktypes.RegisterMsgServer(cfg.MsgServer(), bankkeeper.NewMsgServerImpl(app.CyberbankKeeper.Proxy))
 	//banktypes.RegisterQueryServer(cfg.QueryServer(), app.CyberbankKeeper.Proxy)
 
-	// initialize stores
-	app.MountKVStores(app.GetKVStoreKey())
-	app.MountTransientStores(app.GetTransientStoreKey())
-	app.MountMemoryStores(app.GetMemoryStoreKey())
+	app.configurator = module.NewConfigurator(appCodec, app.MsgServiceRouter(), app.GRPCQueryRouter())
+	app.ModuleManager.RegisterServices(app.configurator)
 
-	// register upgrade
-	app.setupUpgradeHandlers(app.configurator)
-
-	// SDK v47 - since we do not use dep inject, this gives us access to newer gRPC services.
 	autocliv1.RegisterQueryServer(app.GRPCQueryRouter(), runtimeservices.NewAutoCLIQueryService(app.ModuleManager.Modules))
+
 	reflectionSvc, err := runtimeservices.NewReflectionService()
 	if err != nil {
 		panic(err)
 	}
 	reflectionv1.RegisterReflectionServiceServer(app.GRPCQueryRouter(), reflectionSvc)
+
+	// initialize stores
+	app.MountKVStores(app.GetKVStoreKey())
+	app.MountTransientStores(app.GetTransientStoreKey())
+	app.MountMemoryStores(app.GetMemoryStoreKey())
 
 	wasmConfig, err := wasm.ReadWasmConfig(appOpts)
 	if err != nil {
@@ -256,21 +264,21 @@ func NewApp(
 		panic(fmt.Errorf("failed to create AnteHandler: %s", err))
 	}
 
-	// initialize BaseApp
+	// set ante and post handlers
 	app.SetAnteHandler(anteHandler)
+
 	app.SetInitChainer(app.InitChainer)
 	app.SetBeginBlocker(app.BeginBlocker)
 	app.SetEndBlocker(app.EndBlocker)
 
 	if manager := app.SnapshotManager(); manager != nil {
-		err = manager.RegisterExtensions(
-			wasmkeeper.NewWasmSnapshotter(app.CommitMultiStore(), &app.WasmKeeper),
-		)
+		err = manager.RegisterExtensions(wasmkeeper.NewWasmSnapshotter(app.CommitMultiStore(), &app.AppKeepers.WasmKeeper))
 		if err != nil {
 			panic("failed to register snapshot extension: " + err.Error())
 		}
 	}
 
+	app.setupUpgradeHandlers(app.configurator)
 	app.setupUpgradeStoreLoaders()
 
 	app.setPostHandler()
@@ -288,15 +296,6 @@ func NewApp(
 		if err := app.WasmKeeper.InitializePinnedCodes(ctx); err != nil {
 			tmos.Exit(fmt.Sprintf("failed initialize pinned codes %s", err))
 		}
-
-		// Initialize and seal the capability keeper so all persistent capabilities
-		// are loaded in-memory and prevent any further modules from creating scoped
-		// sub-keepers.
-		// This must be done during creation of baseapp rather than in InitChain so
-		// that in-memory capabilities get regenerated on app restart.
-		// Note that since this reads from the store, we can only perform it when
-		// `loadLatest` is set to true.
-		app.CapabilityKeeper.Seal()
 	}
 
 	// create the simulation manager and define the order of the modules for deterministic simulations

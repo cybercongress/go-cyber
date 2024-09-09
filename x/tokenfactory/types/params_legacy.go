@@ -16,6 +16,7 @@ var (
 )
 
 // ParamTable for tokenfactory module.
+// Deprecated: Type declaration for parameters
 func ParamKeyTable() paramtypes.KeyTable {
 	return paramtypes.NewKeyTable().RegisterParamSet(&Params{})
 }
