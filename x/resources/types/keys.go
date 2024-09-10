@@ -1,10 +1,9 @@
 package types
 
 const (
-	ModuleName   = "resources"
-	StoreKey     = ModuleName
-	RouterKey    = ModuleName
-	QuerierRoute = ModuleName
+	ModuleName = "resources"
+	StoreKey   = ModuleName
+	RouterKey  = ModuleName
 
 	ResourcesName = "resources"
 )

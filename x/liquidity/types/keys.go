@@ -15,9 +15,6 @@ const (
 	// StoreKey is the default store key for the liquidity module
 	StoreKey = ModuleName
 
-	// QuerierRoute is the querier route for the liquidity module
-	QuerierRoute = ModuleName
-
 	// PoolCoinDenomPrefix is the prefix used for liquidity pool coin representation
 	PoolCoinDenomPrefix = "pool"
 )

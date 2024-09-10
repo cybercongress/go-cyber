@@ -3,10 +3,9 @@ package types
 import sdk "github.com/cosmos/cosmos-sdk/types"
 
 const (
-	ModuleName   = "dmn"
-	StoreKey     = ModuleName
-	RouterKey    = ModuleName
-	QuerierRoute = ModuleName
+	ModuleName = "dmn"
+	StoreKey   = ModuleName
+	RouterKey  = ModuleName
 )
 
 var (

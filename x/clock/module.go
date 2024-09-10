@@ -107,10 +107,6 @@ func NewAppModule(
 	}
 }
 
-func (a AppModule) QuerierRoute() string {
-	return types.QuerierRoute
-}
-
 func (a AppModule) RegisterServices(cfg module.Configurator) {
 	types.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(a.keeper))
 	types.RegisterQueryServer(cfg.QueryServer(), keeper.NewQuerier(a.keeper))
