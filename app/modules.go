@@ -41,6 +41,8 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/cosmos/cosmos-sdk/x/upgrade"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
+	pfmrouter "github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v7/packetforward"
+	pfmroutertypes "github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v7/packetforward/types"
 	ica "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts"
 	ibcfee "github.com/cosmos/ibc-go/v7/modules/apps/29-fee"
 	ibcfeetypes "github.com/cosmos/ibc-go/v7/modules/apps/29-fee/types"
@@ -99,6 +101,7 @@ var ModuleBasics = module.NewBasicManager(
 	authzmodule.AppModuleBasic{},
 	feegrantmodule.AppModuleBasic{},
 	vesting.AppModuleBasic{},
+	pfmrouter.AppModuleBasic{},
 	nftmodule.AppModuleBasic{},
 	ibc.AppModuleBasic{},
 	ibcfee.AppModuleBasic{},
@@ -146,16 +149,13 @@ func appModules(
 		distr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.CyberbankKeeper.Proxy, app.StakingKeeper, app.GetSubspace(distrtypes.ModuleName)),
 		upgrade.NewAppModule(app.UpgradeKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),
-		ibc.NewAppModule(app.IBCKeeper),
 		sdkparams.NewAppModule(app.ParamsKeeper),
 		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, app.CyberbankKeeper.Proxy, app.interfaceRegistry),
 		nftmodule.NewAppModule(appCodec, app.AppKeepers.NFTKeeper, app.AppKeepers.AccountKeeper, app.CyberbankKeeper.Proxy, app.interfaceRegistry),
-		transfer.NewAppModule(app.TransferKeeper),
-		ibcfee.NewAppModule(app.IBCFeeKeeper),
-		ica.NewAppModule(&app.ICAControllerKeeper, &app.ICAHostKeeper),
 		crisis.NewAppModule(app.AppKeepers.CrisisKeeper, skipGenesisInvariants, app.GetSubspace(crisistypes.ModuleName)),
-		wasm.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper, app.AccountKeeper, app.CyberbankKeeper.Proxy, app.MsgServiceRouter(), app.GetSubspace(wasmtypes.ModuleName)),
 		consensus.NewAppModule(appCodec, app.AppKeepers.ConsensusParamsKeeper),
+
+		wasm.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper, app.AccountKeeper, app.CyberbankKeeper.Proxy, app.MsgServiceRouter(), app.GetSubspace(wasmtypes.ModuleName)),
 		liquidity.NewAppModule(appCodec, app.LiquidityKeeper, app.AccountKeeper, app.CyberbankKeeper.Proxy, app.DistrKeeper, app.GetSubspace(liquiditytypes.ModuleName)),
 		cyberbank.NewAppModule(appCodec, app.CyberbankKeeper),
 		bandwidth.NewAppModule(appCodec, app.AccountKeeper, app.BandwidthMeter, app.GetSubspace(bandwidthtypes.ModuleName)),
@@ -172,6 +172,12 @@ func appModules(
 		// TODO add storage listener to update neurons memory index out of cyberbank proxy
 		tokenfactory.NewAppModule(app.AppKeepers.TokenFactoryKeeper, app.AppKeepers.AccountKeeper, app.CyberbankKeeper.Proxy, app.GetSubspace(tokenfactorytypes.ModuleName)),
 		clock.NewAppModule(appCodec, app.AppKeepers.ClockKeeper),
+
+		ibc.NewAppModule(app.IBCKeeper),
+		transfer.NewAppModule(app.TransferKeeper),
+		ibcfee.NewAppModule(app.IBCFeeKeeper),
+		ica.NewAppModule(&app.ICAControllerKeeper, &app.ICAHostKeeper),
+		pfmrouter.NewAppModule(app.PacketForwardKeeper, app.GetSubspace(pfmroutertypes.ModuleName)),
 	}
 }
 
@@ -201,6 +207,7 @@ func simulationModules(
 		ibc.NewAppModule(app.AppKeepers.IBCKeeper),
 		transfer.NewAppModule(app.AppKeepers.TransferKeeper),
 		ibcfee.NewAppModule(app.IBCFeeKeeper),
+		ica.NewAppModule(&app.ICAControllerKeeper, &app.ICAHostKeeper),
 	}
 }
 
@@ -221,17 +228,19 @@ func orderBeginBlockers() []string {
 		banktypes.ModuleName,
 		govtypes.ModuleName,
 		crisistypes.ModuleName,
+		ibcexported.ModuleName,
+		ibctransfertypes.ModuleName,
+		icatypes.ModuleName,
+		pfmroutertypes.ModuleName,
+		ibcfeetypes.ModuleName,
 		genutiltypes.ModuleName,
 		authz.ModuleName,
 		feegrant.ModuleName,
 		paramstypes.ModuleName,
 		vestingtypes.ModuleName,
-		nft.ModuleName,
 		consensusparamtypes.ModuleName,
+		nft.ModuleName,
 		// additional modules
-		ibctransfertypes.ModuleName,
-		ibcexported.ModuleName,
-		icatypes.ModuleName,
 		liquiditytypes.ModuleName,
 		dmntypes.ModuleName,
 		clocktypes.ModuleName,
@@ -241,7 +250,6 @@ func orderBeginBlockers() []string {
 		gridtypes.ModuleName,
 		ranktypes.ModuleName,
 		resourcestypes.ModuleName,
-		ibcfeetypes.ModuleName,
 		tokenfactorytypes.ModuleName,
 		wasm.ModuleName,
 	}
@@ -252,7 +260,12 @@ func orderEndBlockers() []string {
 		crisistypes.ModuleName,
 		govtypes.ModuleName,
 		stakingtypes.ModuleName,
+		ibcexported.ModuleName,
+		ibctransfertypes.ModuleName,
+		icatypes.ModuleName,
+		pfmroutertypes.ModuleName,
 		capabilitytypes.ModuleName,
+		ibcfeetypes.ModuleName,
 		authtypes.ModuleName,
 		banktypes.ModuleName,
 		distrtypes.ModuleName,
@@ -265,13 +278,9 @@ func orderEndBlockers() []string {
 		paramstypes.ModuleName,
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
-		nft.ModuleName,
 		consensusparamtypes.ModuleName,
+		nft.ModuleName,
 		// additional modules
-		ibctransfertypes.ModuleName,
-		ibcexported.ModuleName,
-		icatypes.ModuleName,
-		ibcfeetypes.ModuleName,
 		clocktypes.ModuleName,
 		tokenfactorytypes.ModuleName,
 		dmntypes.ModuleName,
@@ -279,6 +288,7 @@ func orderEndBlockers() []string {
 		resourcestypes.ModuleName,
 		liquiditytypes.ModuleName,
 		wasm.ModuleName,
+		// TODO check end blocks
 		cyberbanktypes.ModuleName,
 		bandwidthtypes.ModuleName,
 		graphtypes.ModuleName,
@@ -300,24 +310,25 @@ func orderInitBlockers() []string {
 		authtypes.ModuleName,
 		banktypes.ModuleName,
 		distrtypes.ModuleName,
+		govtypes.ModuleName,
 		stakingtypes.ModuleName,
 		slashingtypes.ModuleName,
-		govtypes.ModuleName,
 		minttypes.ModuleName,
 		crisistypes.ModuleName,
 		genutiltypes.ModuleName,
-		evidencetypes.ModuleName,
-		authz.ModuleName,
-		paramstypes.ModuleName,
-		upgradetypes.ModuleName,
-		vestingtypes.ModuleName,
-		feegrant.ModuleName,
-		nft.ModuleName,
-		consensusparamtypes.ModuleName,
-		// additional modules
 		ibctransfertypes.ModuleName,
 		ibcexported.ModuleName,
 		icatypes.ModuleName,
+		evidencetypes.ModuleName,
+		authz.ModuleName,
+		feegrant.ModuleName,
+		pfmroutertypes.ModuleName,
+		paramstypes.ModuleName,
+		upgradetypes.ModuleName,
+		vestingtypes.ModuleName,
+		nft.ModuleName,
+		consensusparamtypes.ModuleName,
+		// additional modules
 		liquiditytypes.ModuleName,
 		ibcfeetypes.ModuleName,
 		clocktypes.ModuleName,
@@ -328,7 +339,8 @@ func orderInitBlockers() []string {
 		resourcestypes.ModuleName,
 		dmntypes.ModuleName,
 		graphtypes.ModuleName,
-		cyberbanktypes.ModuleName, // cyberbank will be initialized directly in InitChainer
+		// NOTE: cyberbank will be initialized directly in InitChainer
+		cyberbanktypes.ModuleName,
 		wasm.ModuleName,
 	}
 }

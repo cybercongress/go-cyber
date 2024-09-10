@@ -2,6 +2,7 @@ package v4
 
 import (
 	"fmt"
+	packetforwardtypes "github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v7/packetforward/types"
 	icacontrollertypes "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/controller/types"
 	icahosttypes "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/host/types"
 	"github.com/cosmos/ibc-go/v7/modules/core/exported"
@@ -157,6 +158,11 @@ func CreateV4UpgradeHandler(
 		}
 		keepers.ICAHostKeeper.SetParams(ctx, hostParams)
 		logger.Info("set ica host and controller params")
+
+		if err := keepers.PacketForwardKeeper.SetParams(ctx, packetforwardtypes.DefaultParams()); err != nil {
+			return nil, err
+		}
+		logger.Info("set packets forward params")
 
 		bootDenom, exist := keepers.BankKeeper.GetDenomMetaData(ctx, "boot")
 		if exist {

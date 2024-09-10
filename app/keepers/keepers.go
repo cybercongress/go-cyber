@@ -3,8 +3,11 @@ package keepers
 import (
 	"fmt"
 	"github.com/cosmos/cosmos-sdk/store/streaming"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/nft"
 	nftkeeper "github.com/cosmos/cosmos-sdk/x/nft/keeper"
+	"github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v7/packetforward"
+	packetforwardtypes "github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v7/packetforward/types"
 	icacontroller "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/controller"
 	icacontrollertypes "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/controller/types"
 	icahost "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/host"
@@ -101,6 +104,11 @@ import (
 	"github.com/cometbft/cometbft/libs/log"
 	icacontrollerkeeper "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/controller/keeper"
 	icahostkeeper "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/host/keeper"
+
+	packetforwardkeeper "github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v7/packetforward/keeper"
+	ibchooks "github.com/cosmos/ibc-apps/modules/ibc-hooks/v7"
+	ibchookskeeper "github.com/cosmos/ibc-apps/modules/ibc-hooks/v7/keeper"
+	ibchookstypes "github.com/cosmos/ibc-apps/modules/ibc-hooks/v7/types"
 )
 
 var (
@@ -139,48 +147,53 @@ type AppKeepers struct {
 	memKeys map[string]*storetypes.MemoryStoreKey
 
 	// keepers
-	AccountKeeper       authkeeper.AccountKeeper
-	BankKeeper          bankkeeper.Keeper
-	CapabilityKeeper    *capabilitykeeper.Keeper
-	StakingKeeper       *stakingkeeper.Keeper
-	SlashingKeeper      slashingkeeper.Keeper
-	MintKeeper          mintkeeper.Keeper
-	DistrKeeper         distrkeeper.Keeper
-	GovKeeper           govkeeper.Keeper
-	CrisisKeeper        *crisiskeeper.Keeper
-	UpgradeKeeper       *upgradekeeper.Keeper
-	ParamsKeeper        paramskeeper.Keeper
-	IBCKeeper           *ibckeeper.Keeper // IBC Keeper must be a pointer in the app, so we can SetRouter on it correctly
-	ICAHostKeeper       icahostkeeper.Keeper
-	ICAControllerKeeper icacontrollerkeeper.Keeper
-	IBCFeeKeeper        ibcfeekeeper.Keeper
-	EvidenceKeeper      evidencekeeper.Keeper
-	TransferKeeper      ibctransferkeeper.Keeper
-	FeeGrantKeeper      feegrantkeeper.Keeper
-	NFTKeeper           nftkeeper.Keeper
-	AuthzKeeper         authzkeeper.Keeper
-
+	AccountKeeper         authkeeper.AccountKeeper
+	BankKeeper            bankkeeper.Keeper
+	CapabilityKeeper      *capabilitykeeper.Keeper
+	StakingKeeper         *stakingkeeper.Keeper
+	SlashingKeeper        slashingkeeper.Keeper
+	MintKeeper            mintkeeper.Keeper
+	DistrKeeper           distrkeeper.Keeper
+	GovKeeper             govkeeper.Keeper
+	CrisisKeeper          *crisiskeeper.Keeper
+	UpgradeKeeper         *upgradekeeper.Keeper
+	ParamsKeeper          paramskeeper.Keeper
+	IBCKeeper             *ibckeeper.Keeper // IBC Keeper must be a pointer in the app, so we can SetRouter on it correctly
+	ICAHostKeeper         icahostkeeper.Keeper
+	ICAControllerKeeper   icacontrollerkeeper.Keeper
+	IBCFeeKeeper          ibcfeekeeper.Keeper
+	IBCHooksKeeper        *ibchookskeeper.Keeper
+	EvidenceKeeper        evidencekeeper.Keeper
+	TransferKeeper        ibctransferkeeper.Keeper
+	FeeGrantKeeper        feegrantkeeper.Keeper
+	NFTKeeper             nftkeeper.Keeper
+	AuthzKeeper           authzkeeper.Keeper
 	ConsensusParamsKeeper consensusparamkeeper.Keeper
 
-	TokenFactoryKeeper tokenfactorykeeper.Keeper
-	WasmKeeper         wasmkeeper.Keeper
-	LiquidityKeeper    liquiditykeeper.Keeper
-	BandwidthMeter     *bandwidthkeeper.BandwidthMeter
-	CyberbankKeeper    *cyberbankkeeper.IndexedKeeper
-	GraphKeeper        *graphkeeper.GraphKeeper
-	IndexKeeper        *graphkeeper.IndexKeeper
-	RankKeeper         *rankkeeper.StateKeeper
-	GridKeeper         gridkeeper.Keeper
-	DmnKeeper          *dmnkeeper.Keeper
-	ResourcesKeeper    resourceskeeper.Keeper
-	ContractKeeper     wasmtypes.ContractOpsKeeper
-	ClockKeeper        clockkeeper.Keeper
+	TokenFactoryKeeper  tokenfactorykeeper.Keeper
+	WasmKeeper          wasmkeeper.Keeper
+	LiquidityKeeper     liquiditykeeper.Keeper
+	BandwidthMeter      *bandwidthkeeper.BandwidthMeter
+	CyberbankKeeper     *cyberbankkeeper.IndexedKeeper
+	GraphKeeper         *graphkeeper.GraphKeeper
+	IndexKeeper         *graphkeeper.IndexKeeper
+	RankKeeper          *rankkeeper.StateKeeper
+	GridKeeper          gridkeeper.Keeper
+	DmnKeeper           *dmnkeeper.Keeper
+	ResourcesKeeper     resourceskeeper.Keeper
+	ContractKeeper      wasmtypes.ContractOpsKeeper
+	ClockKeeper         clockkeeper.Keeper
+	PacketForwardKeeper *packetforwardkeeper.Keeper
 
 	ScopedIBCKeeper           capabilitykeeper.ScopedKeeper
 	ScopedTransferKeeper      capabilitykeeper.ScopedKeeper
 	ScopedICAHostKeeper       capabilitykeeper.ScopedKeeper
 	ScopedICAControllerKeeper capabilitykeeper.ScopedKeeper
 	ScopedWasmKeeper          capabilitykeeper.ScopedKeeper
+
+	// Middleware wrapper
+	Ics20WasmHooks   *ibchooks.WasmHooks
+	HooksICS4Wrapper ibchooks.ICS4Middleware
 }
 
 func NewAppKeepers(
@@ -457,22 +470,51 @@ func NewAppKeepers(
 		govModAddress,
 	)
 
-	appKeepers.NFTKeeper = nftkeeper.NewKeeper(keys[nftkeeper.StoreKey], appCodec, appKeepers.AccountKeeper, appKeepers.CyberbankKeeper.Proxy)
-
 	appKeepers.GovKeeper = *govKeeper.SetHooks(
 		govtypes.NewMultiGovHooks(
 		// register governance hooks
 		),
 	)
 
+	appKeepers.NFTKeeper = nftkeeper.NewKeeper(keys[nftkeeper.StoreKey], appCodec, appKeepers.AccountKeeper, appKeepers.CyberbankKeeper.Proxy)
+
+	// Configure the hooks keeper
+	hooksKeeper := ibchookskeeper.NewKeeper(
+		appKeepers.keys[ibchookstypes.StoreKey],
+	)
+	appKeepers.IBCHooksKeeper = &hooksKeeper
+
+	cyberPrefix := sdk.GetConfig().GetBech32AccountAddrPrefix()
+	wasmHooks := ibchooks.NewWasmHooks(appKeepers.IBCHooksKeeper, &appKeepers.WasmKeeper, cyberPrefix) // The contract keeper needs to be set later
+	appKeepers.Ics20WasmHooks = &wasmHooks
+	appKeepers.HooksICS4Wrapper = ibchooks.NewICS4Middleware(
+		appKeepers.IBCKeeper.ChannelKeeper,
+		appKeepers.Ics20WasmHooks,
+	)
+
+	// Do not use this middleware for anything except x/wasm requirement.
+	// The spec currently requires new channels to be created, to use it.
+	// We need to wait for Channel Upgradability before we can use this for any other middleware.
 	appKeepers.IBCFeeKeeper = ibcfeekeeper.NewKeeper(
 		appCodec,
 		keys[ibcfeetypes.StoreKey],
-		appKeepers.IBCKeeper.ChannelKeeper, // may be replaced with IBC middleware
+		appKeepers.HooksICS4Wrapper, // replaced with IBC middleware
 		appKeepers.IBCKeeper.ChannelKeeper,
 		&appKeepers.IBCKeeper.PortKeeper,
 		appKeepers.AccountKeeper,
 		appKeepers.CyberbankKeeper.Proxy,
+	)
+
+	// PacketForwardKeeper must be created before TransferKeeper
+	appKeepers.PacketForwardKeeper = packetforwardkeeper.NewKeeper(
+		appCodec,
+		appKeepers.keys[packetforwardtypes.StoreKey],
+		nil, // Will be zero-value here. Reference is set later on with SetTransferKeeper.
+		appKeepers.IBCKeeper.ChannelKeeper,
+		appKeepers.DistrKeeper,
+		appKeepers.CyberbankKeeper.Proxy,
+		appKeepers.HooksICS4Wrapper,
+		govModAddress,
 	)
 
 	// Create Transfer Keepers
@@ -480,7 +522,8 @@ func NewAppKeepers(
 		appCodec,
 		keys[ibctransfertypes.StoreKey],
 		appKeepers.GetSubspace(ibctransfertypes.ModuleName),
-		appKeepers.IBCFeeKeeper, // ISC4 Wrapper: fee IBC middleware
+		// The ICS4Wrapper is replaced by the PacketForwardKeeper instead of the channel so that sending can be overridden by the middleware
+		appKeepers.PacketForwardKeeper,
 		appKeepers.IBCKeeper.ChannelKeeper,
 		&appKeepers.IBCKeeper.PortKeeper,
 		appKeepers.AccountKeeper,
@@ -488,17 +531,24 @@ func NewAppKeepers(
 		scopedTransferKeeper,
 	)
 
+	// Must be called on PFMRouter AFTER TransferKeeper initialized
+	appKeepers.PacketForwardKeeper.SetTransferKeeper(appKeepers.TransferKeeper)
+
 	appKeepers.ICAHostKeeper = icahostkeeper.NewKeeper(
 		appCodec,
 		keys[icahosttypes.StoreKey],
 		appKeepers.GetSubspace(icahosttypes.SubModuleName),
-		appKeepers.IBCFeeKeeper, // use ics29 fee as ics4Wrapper in middleware stack
+		appKeepers.HooksICS4Wrapper,
 		appKeepers.IBCKeeper.ChannelKeeper,
 		&appKeepers.IBCKeeper.PortKeeper,
 		appKeepers.AccountKeeper,
 		scopedICAHostKeeper,
 		bApp.MsgServiceRouter(),
 	)
+
+	// required since ibc-go v7.5.0
+	appKeepers.ICAHostKeeper.WithQueryRouter(bApp.GRPCQueryRouter())
+
 	appKeepers.ICAControllerKeeper = icacontrollerkeeper.NewKeeper(
 		appCodec,
 		keys[icacontrollertypes.StoreKey],
@@ -509,9 +559,6 @@ func NewAppKeepers(
 		scopedICAControllerKeeper,
 		bApp.MsgServiceRouter(),
 	)
-
-	// required since ibc-go v7.5.0
-	appKeepers.ICAHostKeeper.WithQueryRouter(bApp.GRPCQueryRouter())
 
 	// Create evidence Keeper for to register the IBC light client misbehaviour evidence route
 	evidenceKeeper := evidencekeeper.NewKeeper(
@@ -578,7 +625,10 @@ func NewAppKeepers(
 		wasmOpts...,
 	)
 
+	// set the contract keeper for the Ics20WasmHooks
 	appKeepers.ContractKeeper = wasmkeeper.NewDefaultPermissionKeeper(&appKeepers.WasmKeeper)
+	appKeepers.Ics20WasmHooks.ContractKeeper = &appKeepers.WasmKeeper
+
 	appKeepers.ClockKeeper = clockkeeper.NewKeeper(
 		appKeepers.keys[clocktypes.StoreKey],
 		appCodec,
@@ -598,6 +648,15 @@ func NewAppKeepers(
 	// Create Transfer Stack
 	var transferStack porttypes.IBCModule
 	transferStack = transfer.NewIBCModule(appKeepers.TransferKeeper)
+	transferStack = ibchooks.NewIBCMiddleware(transferStack, &appKeepers.HooksICS4Wrapper)
+	transferStack = packetforward.NewIBCMiddleware(
+		transferStack,
+		appKeepers.PacketForwardKeeper,
+		0,
+		packetforwardkeeper.DefaultForwardTransferPacketTimeoutTimestamp,
+		packetforwardkeeper.DefaultRefundTransferPacketTimeoutTimestamp,
+	)
+	// ibcfee must come after PFM since PFM does not understand IncentivizedAcknowlegements (ICS29)
 	transferStack = ibcfee.NewIBCMiddleware(transferStack, appKeepers.IBCFeeKeeper)
 
 	// Create Interchain Accounts Stack
@@ -640,6 +699,8 @@ func NewAppKeepers(
 func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino, key, tkey storetypes.StoreKey) paramskeeper.Keeper {
 	paramsKeeper := paramskeeper.NewKeeper(appCodec, legacyAmino, key, tkey)
 
+	// https://github.com/cosmos/ibc-go/issues/2010
+	// Will remove all of these in the future. For now we keep for legacy proposals to work properly.
 	paramsKeeper.Subspace(authtypes.ModuleName)
 	paramsKeeper.Subspace(banktypes.ModuleName)
 	paramsKeeper.Subspace(distrtypes.ModuleName)
@@ -648,8 +709,12 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(crisistypes.ModuleName)
 	paramsKeeper.Subspace(stakingtypes.ModuleName)
 	paramsKeeper.Subspace(minttypes.ModuleName)
+	// custom
 	paramsKeeper.Subspace(ibctransfertypes.ModuleName)
 	paramsKeeper.Subspace(ibcexported.ModuleName)
+	paramsKeeper.Subspace(icahosttypes.SubModuleName)
+	paramsKeeper.Subspace(icacontrollertypes.SubModuleName)
+	paramsKeeper.Subspace(packetforwardtypes.ModuleName).WithKeyTable(packetforwardtypes.ParamKeyTable())
 	paramsKeeper.Subspace(wasmtypes.ModuleName)
 	paramsKeeper.Subspace(bandwidthtypes.ModuleName)
 	paramsKeeper.Subspace(ranktypes.ModuleName)
@@ -658,8 +723,6 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(resourcestypes.ModuleName)
 	paramsKeeper.Subspace(liquiditytypes.ModuleName)
 	paramsKeeper.Subspace(tokenfactorytypes.ModuleName)
-	paramsKeeper.Subspace(icahosttypes.SubModuleName)
-	paramsKeeper.Subspace(icacontrollertypes.SubModuleName)
 
 	return paramsKeeper
 }
