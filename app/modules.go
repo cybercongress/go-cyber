@@ -41,8 +41,10 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/cosmos/cosmos-sdk/x/upgrade"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
-	pfmrouter "github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v7/packetforward"
-	pfmroutertypes "github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v7/packetforward/types"
+	packetforward "github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v7/packetforward"
+	packetforwardtypes "github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v7/packetforward/types"
+	ibchooks "github.com/cosmos/ibc-apps/modules/ibc-hooks/v7"
+	ibchookstypes "github.com/cosmos/ibc-apps/modules/ibc-hooks/v7/types"
 	ica "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts"
 	ibcfee "github.com/cosmos/ibc-go/v7/modules/apps/29-fee"
 	ibcfeetypes "github.com/cosmos/ibc-go/v7/modules/apps/29-fee/types"
@@ -78,6 +80,9 @@ import (
 	authsims "github.com/cosmos/cosmos-sdk/x/auth/simulation"
 	icatypes "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/types"
 	clocktypes "github.com/cybercongress/go-cyber/v4/x/clock/types"
+
+	icq "github.com/cosmos/ibc-apps/modules/async-icq/v7"
+	icqtypes "github.com/cosmos/ibc-apps/modules/async-icq/v7/types"
 )
 
 // ModuleBasics TODO add notes which modules have functional blockers
@@ -101,11 +106,8 @@ var ModuleBasics = module.NewBasicManager(
 	authzmodule.AppModuleBasic{},
 	feegrantmodule.AppModuleBasic{},
 	vesting.AppModuleBasic{},
-	pfmrouter.AppModuleBasic{},
 	nftmodule.AppModuleBasic{},
-	ibc.AppModuleBasic{},
-	ibcfee.AppModuleBasic{},
-	ica.AppModuleBasic{},
+
 	transfer.AppModuleBasic{},
 	consensus.AppModuleBasic{},
 	liquidity.AppModuleBasic{},
@@ -119,8 +121,14 @@ var ModuleBasics = module.NewBasicManager(
 	resources.AppModuleBasic{},
 	tokenfactory.AppModuleBasic{},
 	clock.AppModuleBasic{},
-	// https://github.com/cosmos/ibc-go/blob/main/docs/docs/05-migrations/08-v6-to-v7.md
+
 	ibctm.AppModuleBasic{},
+	ibc.AppModuleBasic{},
+	ica.AppModuleBasic{},
+	ibcfee.AppModuleBasic{},
+	icq.AppModuleBasic{},
+	ibchooks.AppModuleBasic{},
+	packetforward.AppModuleBasic{},
 	solomachine.AppModuleBasic{},
 )
 
@@ -177,7 +185,9 @@ func appModules(
 		transfer.NewAppModule(app.TransferKeeper),
 		ibcfee.NewAppModule(app.IBCFeeKeeper),
 		ica.NewAppModule(&app.ICAControllerKeeper, &app.ICAHostKeeper),
-		pfmrouter.NewAppModule(app.PacketForwardKeeper, app.GetSubspace(pfmroutertypes.ModuleName)),
+		ibchooks.NewAppModule(app.AppKeepers.AccountKeeper),
+		packetforward.NewAppModule(app.PacketForwardKeeper, app.GetSubspace(packetforwardtypes.ModuleName)),
+		icq.NewAppModule(app.AppKeepers.ICQKeeper, app.GetSubspace(icqtypes.ModuleName)),
 	}
 }
 
@@ -231,7 +241,7 @@ func orderBeginBlockers() []string {
 		ibcexported.ModuleName,
 		ibctransfertypes.ModuleName,
 		icatypes.ModuleName,
-		pfmroutertypes.ModuleName,
+		packetforwardtypes.ModuleName,
 		ibcfeetypes.ModuleName,
 		genutiltypes.ModuleName,
 		authz.ModuleName,
@@ -240,6 +250,8 @@ func orderBeginBlockers() []string {
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
 		nft.ModuleName,
+		icqtypes.ModuleName,
+		ibchookstypes.ModuleName,
 		// additional modules
 		liquiditytypes.ModuleName,
 		dmntypes.ModuleName,
@@ -263,7 +275,7 @@ func orderEndBlockers() []string {
 		ibcexported.ModuleName,
 		ibctransfertypes.ModuleName,
 		icatypes.ModuleName,
-		pfmroutertypes.ModuleName,
+		packetforwardtypes.ModuleName,
 		capabilitytypes.ModuleName,
 		ibcfeetypes.ModuleName,
 		authtypes.ModuleName,
@@ -280,6 +292,8 @@ func orderEndBlockers() []string {
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
 		nft.ModuleName,
+		icqtypes.ModuleName,
+		ibchookstypes.ModuleName,
 		// additional modules
 		clocktypes.ModuleName,
 		tokenfactorytypes.ModuleName,
@@ -322,12 +336,14 @@ func orderInitBlockers() []string {
 		evidencetypes.ModuleName,
 		authz.ModuleName,
 		feegrant.ModuleName,
-		pfmroutertypes.ModuleName,
+		packetforwardtypes.ModuleName,
 		paramstypes.ModuleName,
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 		nft.ModuleName,
 		consensusparamtypes.ModuleName,
+		icqtypes.ModuleName,
+		ibchookstypes.ModuleName,
 		// additional modules
 		liquiditytypes.ModuleName,
 		ibcfeetypes.ModuleName,

@@ -3,6 +3,7 @@ package v4
 import (
 	"fmt"
 	packetforwardtypes "github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v7/packetforward/types"
+	icqtypes "github.com/cosmos/ibc-apps/modules/async-icq/v7/types"
 	icacontrollertypes "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/controller/types"
 	icahosttypes "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/host/types"
 	"github.com/cosmos/ibc-go/v7/modules/core/exported"
@@ -102,6 +103,8 @@ func CreateV4UpgradeHandler(
 				keyTable = liquiditytypes.ParamKeyTable()
 			case tokenfactorytypes.ModuleName:
 				keyTable = tokenfactorytypes.ParamKeyTable()
+			case icqtypes.ModuleName:
+				keyTable = icqtypes.ParamKeyTable()
 			}
 			if !subspace.HasKeyTable() {
 				logger.Info(fmt.Sprintf("set key table for subspace %s", subspace.Name()))
@@ -157,12 +160,18 @@ func CreateV4UpgradeHandler(
 			AllowMessages: []string{icahosttypes.AllowAllHostMsgs},
 		}
 		keepers.ICAHostKeeper.SetParams(ctx, hostParams)
-		logger.Info("set ica host and controller params")
+		logger.Info("set interchain accounts host and controller params")
 
 		if err := keepers.PacketForwardKeeper.SetParams(ctx, packetforwardtypes.DefaultParams()); err != nil {
 			return nil, err
 		}
-		logger.Info("set packets forward params")
+		logger.Info("set ibc packets forward params")
+
+		icqParams := icqtypes.NewParams(true, nil)
+		if err := keepers.ICQKeeper.SetParams(ctx, icqParams); err != nil {
+			return nil, err
+		}
+		logger.Info("set interchain queries params")
 
 		bootDenom, exist := keepers.BankKeeper.GetDenomMetaData(ctx, "boot")
 		if exist {
