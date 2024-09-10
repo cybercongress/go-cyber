@@ -5,6 +5,8 @@ import (
 	consensustypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
 	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
 	"github.com/cosmos/cosmos-sdk/x/nft"
+	packetforwardtypes "github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v7/packetforward/types"
+	ibchookstypes "github.com/cosmos/ibc-apps/modules/ibc-hooks/v7/types"
 	icacontrollertypes "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/controller/types"
 	icahosttypes "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/host/types"
 	clocktypes "github.com/cybercongress/go-cyber/v4/x/clock/types"
@@ -30,6 +32,8 @@ var Upgrade = upgrades.Upgrade{
 			clocktypes.ModuleName,
 			icacontrollertypes.StoreKey,
 			icahosttypes.StoreKey,
+			ibchookstypes.StoreKey,
+			packetforwardtypes.StoreKey,
 		},
 	},
 }
