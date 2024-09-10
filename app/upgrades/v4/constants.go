@@ -6,6 +6,7 @@ import (
 	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
 	"github.com/cosmos/cosmos-sdk/x/nft"
 	packetforwardtypes "github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v7/packetforward/types"
+	icqtypes "github.com/cosmos/ibc-apps/modules/async-icq/v7/types"
 	ibchookstypes "github.com/cosmos/ibc-apps/modules/ibc-hooks/v7/types"
 	icacontrollertypes "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/controller/types"
 	icahosttypes "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/host/types"
@@ -33,6 +34,7 @@ var Upgrade = upgrades.Upgrade{
 			icacontrollertypes.StoreKey,
 			icahosttypes.StoreKey,
 			ibchookstypes.StoreKey,
+			icqtypes.ModuleName,
 			packetforwardtypes.StoreKey,
 		},
 	},
