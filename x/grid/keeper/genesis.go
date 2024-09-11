@@ -17,22 +17,11 @@ func InitGenesis(ctx sdk.Context, k Keeper, data types.GenesisState) {
 	}
 }
 
-// TODO fix empty case
-//"grid" : {
-//	"routes" : [{
-//		"destination" : "",
-//		"value" : [],
-//		"source" : "",
-//		"name" : ""
-//	}],
-//	"params" : {
-//		"max_routes" : 16
-//	}
-//}
-
 func ExportGenesis(ctx sdk.Context, k Keeper) *types.GenesisState {
 	params := k.GetParams(ctx)
-	routes := k.GetAllRoutes(ctx)
+	//routes := k.GetAllRoutes(ctx)
+	// Create an empty slice of types.Route
+	var routes []types.Route
 
 	return types.NewGenesisState(params, routes)
 }

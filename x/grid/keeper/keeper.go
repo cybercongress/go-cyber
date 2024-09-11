@@ -262,6 +262,7 @@ func (k Keeper) GetAllRoutes(ctx sdk.Context) (routes []types.Route) {
 	return routes
 }
 
+// Deprecated: enable after debug with empty routes
 func (k Keeper) IterateAllRoutes(ctx sdk.Context, cb func(route types.Route) (stop bool)) {
 	store := ctx.KVStore(k.storeKey)
 
@@ -271,8 +272,19 @@ func (k Keeper) IterateAllRoutes(ctx sdk.Context, cb func(route types.Route) (st
 	for ; iterator.Valid(); iterator.Next() {
 		route, err := types.UnmarshalRoute(k.cdc, iterator.Value())
 		if err != nil {
-			// TODO revisit this error handling
-			continue
+			// TODO fix empty case
+			//"grid" : {
+			//	"routes" : [{
+			//		"destination" : "",
+			//		"value" : [],
+			//		"source" : "",
+			//		"name" : ""
+			//	}],
+			//	"params" : {
+			//		"max_routes" : 16
+			//	}
+			//}
+			break
 		}
 		if cb(route) {
 			break
