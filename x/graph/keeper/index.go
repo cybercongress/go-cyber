@@ -154,8 +154,17 @@ func (i *IndexKeeper) LoadFromReader(ctx sdk.Context, reader io.Reader) (err err
 			return err
 		}
 		compactLink := types.UnmarshalBinaryLink(linkBytes)
+
+		i.GraphKeeper.neudeg[compactLink.Account] += 1
+		i.GraphKeeper.rankNeudeg[compactLink.Account] += 1
+
 		i.GraphKeeper.SaveLink(ctx, compactLink)
 		i.PutLink(ctx, compactLink)
 	}
+
+	for acc, links := range i.GraphKeeper.neudeg {
+		i.GraphKeeper.SaveNeudeg(ctx, acc, links)
+	}
+
 	return
 }

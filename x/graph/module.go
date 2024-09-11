@@ -100,6 +100,7 @@ func (am AppModule) RegisterServices(cfg module.Configurator) {
 }
 
 func (am AppModule) InitGenesis(ctx sdk.Context, _ codec.JSONCodec, _ json.RawMessage) []abci.ValidatorUpdate {
+	_ = keeper.InitGenesis(ctx, *am.gk, am.ik)
 	return []abci.ValidatorUpdate{}
 }
 
