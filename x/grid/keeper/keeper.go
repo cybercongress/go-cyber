@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"fmt"
-
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 
 	"github.com/cometbft/cometbft/libs/log"
@@ -270,7 +269,11 @@ func (k Keeper) IterateAllRoutes(ctx sdk.Context, cb func(route types.Route) (st
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-		route := types.MustUnmarshalRoute(k.cdc, iterator.Value())
+		route, err := types.UnmarshalRoute(k.cdc, iterator.Value())
+		if err != nil {
+			// TODO revisit this error handling
+			continue
+		}
 		if cb(route) {
 			break
 		}
