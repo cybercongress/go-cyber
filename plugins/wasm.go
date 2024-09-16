@@ -3,6 +3,8 @@ package plugins
 import (
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
+	"github.com/cosmos/cosmos-sdk/baseapp"
+	"github.com/cosmos/cosmos-sdk/codec"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	bandwidthtypes "github.com/cybercongress/go-cyber/v4/x/bandwidth/types"
@@ -19,6 +21,7 @@ import (
 	dmnwasm "github.com/cybercongress/go-cyber/v4/x/dmn/wasm"
 	resourceskeeper "github.com/cybercongress/go-cyber/v4/x/resources/keeper"
 
+	pluginstypes "github.com/cybercongress/go-cyber/v4/plugins/types"
 	bandwidthkeeper "github.com/cybercongress/go-cyber/v4/x/bandwidth/keeper"
 	bandwidthwasm "github.com/cybercongress/go-cyber/v4/x/bandwidth/wasm"
 	dmnkeeper "github.com/cybercongress/go-cyber/v4/x/dmn/keeper"
@@ -105,5 +108,15 @@ func RegisterCustomPlugins(
 	return []wasm.Option{
 		queryPluginOpt,
 		messengerDecoratorOpt,
+	}
+}
+
+func RegisterStargateQueries(queryRouter baseapp.GRPCQueryRouter, codec codec.Codec) []wasmkeeper.Option {
+	queryPluginOpt := wasmkeeper.WithQueryPlugins(&wasmkeeper.QueryPlugins{
+		Stargate: pluginstypes.StargateQuerier(queryRouter, codec),
+	})
+
+	return []wasmkeeper.Option{
+		queryPluginOpt,
 	}
 }

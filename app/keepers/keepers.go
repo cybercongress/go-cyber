@@ -622,6 +622,7 @@ func NewAppKeepers(
 		&appKeepers.TokenFactoryKeeper,
 	)
 	wasmOpts = append(wasmOpts, cyberOpts...)
+	wasmOpts = append(wasmplugins.RegisterStargateQueries(*bApp.GRPCQueryRouter(), appCodec), wasmOpts...)
 
 	appKeepers.WasmKeeper = wasmkeeper.NewKeeper(
 		appCodec,

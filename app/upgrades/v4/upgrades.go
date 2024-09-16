@@ -7,6 +7,7 @@ import (
 	icacontrollertypes "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/controller/types"
 	icahosttypes "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/host/types"
 	"github.com/cosmos/ibc-go/v7/modules/core/exported"
+	"github.com/cybercongress/go-cyber/v4/plugins/types"
 	generaltypes "github.com/cybercongress/go-cyber/v4/types"
 	clocktypes "github.com/cybercongress/go-cyber/v4/x/clock/types"
 	tokenfactorytypes "github.com/cybercongress/go-cyber/v4/x/tokenfactory/types"
@@ -21,7 +22,7 @@ import (
 	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	govv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
+	govtypesv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
@@ -72,7 +73,7 @@ func CreateV4UpgradeHandler(
 			case slashingtypes.ModuleName:
 				keyTable = slashingtypes.ParamKeyTable() //nolint:staticcheck
 			case govtypes.ModuleName:
-				keyTable = govv1.ParamKeyTable() //nolint:staticcheck
+				keyTable = govtypesv1.ParamKeyTable() //nolint:staticcheck
 			case crisistypes.ModuleName:
 				keyTable = crisistypes.ParamKeyTable() //nolint:staticcheck
 
@@ -100,9 +101,9 @@ func CreateV4UpgradeHandler(
 			case resourcestypes.ModuleName:
 				keyTable = resourcestypes.ParamKeyTable() //nolint:staticcheck
 			case liquiditytypes.ModuleName:
-				keyTable = liquiditytypes.ParamKeyTable()
+				keyTable = liquiditytypes.ParamKeyTable() //nolint:staticcheck
 			case tokenfactorytypes.ModuleName:
-				keyTable = tokenfactorytypes.ParamKeyTable()
+				keyTable = tokenfactorytypes.ParamKeyTable() //nolint:staticcheck
 			case icqtypes.ModuleName:
 				keyTable = icqtypes.ParamKeyTable()
 			}
@@ -148,7 +149,7 @@ func CreateV4UpgradeHandler(
 
 		// x/clock
 		if err := keepers.ClockKeeper.SetParams(ctx, clocktypes.Params{
-			ContractGasLimit: 250_000, // TODO update
+			ContractGasLimit: 10_000_000,
 		}); err != nil {
 			return nil, err
 		}
@@ -167,7 +168,8 @@ func CreateV4UpgradeHandler(
 		}
 		logger.Info("set ibc packets forward params")
 
-		icqParams := icqtypes.NewParams(true, nil)
+		icqParams := icqtypes.DefaultParams()
+		icqParams.AllowQueries = types.GetStargateWhitelistedPaths()
 		if err := keepers.ICQKeeper.SetParams(ctx, icqParams); err != nil {
 			return nil, err
 		}
