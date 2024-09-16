@@ -47,4 +47,4 @@ sdk.Uint64ToBigEndian(value) // where value is total current supply of mvolt (ui
 - Block bandwidth: `0x02 | sdk.Uint64ToBigEndian(blockNumber) -> sdk.Uint64ToBigEndian(value)`
 - Last bandwidth price: `0x00 | []byte("lastBandwidthPrice") -> ProtocolBuffer(Price)`
 - Desirable bandwidth: `0x00 | []byte("desirableBandwidth") -> sdk.Uint64ToBigEndian(value)`
-- ModuleName, StoreKey, QuerierRoute: `bandwidth`
+- ModuleName, StoreKey: `bandwidth`

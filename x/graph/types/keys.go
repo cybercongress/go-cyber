@@ -5,10 +5,9 @@ import (
 )
 
 const (
-	ModuleName   = "graph"
-	RouterKey    = ModuleName
-	StoreKey     = ModuleName
-	QuerierRoute = ModuleName
+	ModuleName = "graph"
+	RouterKey  = ModuleName
+	StoreKey   = ModuleName
 
 	TStoreKey = "transient_index"
 )

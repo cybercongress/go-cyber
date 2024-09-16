@@ -27,7 +27,7 @@ The parameters of the Pool state are:
 
 - GlobalLiquidityPoolIdKey: `[]byte("globalLiquidityPoolId")`
 
-- ModuleName, RouterKey, StoreKey, QuerierRoute: `liquidity`
+- ModuleName, RouterKey, StoreKey: `liquidity`
 
 - PoolCoinDenomPrefix: `pool`
 ## PoolBatch

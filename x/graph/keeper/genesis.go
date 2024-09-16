@@ -41,6 +41,7 @@ func InitGenesis(
 	if err != nil {
 		return err
 	}
+
 	return
 }
 

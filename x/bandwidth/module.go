@@ -97,10 +97,6 @@ func (AppModule) Name() string { return types.ModuleName }
 
 func (am AppModule) RegisterInvariants(_ sdk.InvariantRegistry) {}
 
-func (am AppModule) QuerierRoute() string {
-	return types.QuerierRoute
-}
-
 func (am AppModule) RegisterServices(cfg module.Configurator) {
 	types.RegisterQueryServer(cfg.QueryServer(), am.bm)
 	types.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(*am.bm))
