@@ -4,6 +4,10 @@ import (
 	"fmt"
 	"github.com/cosmos/cosmos-sdk/server"
 	"github.com/cybercongress/go-cyber/v4/client/docs"
+	bandwidthkeeper "github.com/cybercongress/go-cyber/v4/x/bandwidth/keeper"
+	cyberbankkeeper "github.com/cybercongress/go-cyber/v4/x/cyberbank/keeper"
+	graphkeeper "github.com/cybercongress/go-cyber/v4/x/graph/keeper"
+	rankkeeper "github.com/cybercongress/go-cyber/v4/x/rank/keeper"
 	"io"
 	"os"
 	"time"
@@ -257,7 +261,7 @@ func NewApp(
 			IBCKeeper:         app.IBCKeeper,
 			TXCounterStoreKey: app.GetKey(wasmtypes.StoreKey),
 			WasmConfig:        &wasmConfig,
-			WasmKeeper:        &app.WasmKeeper,
+			WasmKeeper:        app.WasmKeeper,
 		},
 	)
 	if err != nil {
@@ -271,8 +275,15 @@ func NewApp(
 	app.SetBeginBlocker(app.BeginBlocker)
 	app.SetEndBlocker(app.EndBlocker)
 
+	// Register snapshot extensions to enable state-sync for wasm and cyber modules
 	if manager := app.SnapshotManager(); manager != nil {
-		err = manager.RegisterExtensions(wasmkeeper.NewWasmSnapshotter(app.CommitMultiStore(), &app.AppKeepers.WasmKeeper))
+		err = manager.RegisterExtensions(
+			wasmkeeper.NewWasmSnapshotter(app.CommitMultiStore(), app.WasmKeeper),
+			cyberbankkeeper.NewCyberbankSnapshotter(app.CommitMultiStore(), app.CyberbankKeeper),
+			graphkeeper.NewGraphSnapshotter(app.CommitMultiStore(), app.AppKeepers.GraphKeeper, app.IndexKeeper),
+			bandwidthkeeper.NewBandwidthSnapshotter(app.CommitMultiStore(), app.BandwidthMeter),
+			rankkeeper.NewRankSnapshotter(app.CommitMultiStore(), app.RankKeeper),
+		)
 		if err != nil {
 			panic("failed to register snapshot extension: " + err.Error())
 		}
@@ -291,7 +302,7 @@ func NewApp(
 
 		// TODO refactor context load flow
 		// NOTE custom implementation
-		app.loadContexts(db, ctx)
+		app.loadContexts(db, ctx, appOpts)
 
 		if err := app.WasmKeeper.InitializePinnedCodes(ctx); err != nil {
 			tmos.Exit(fmt.Sprintf("failed initialize pinned codes %s", err))
@@ -491,10 +502,18 @@ func MakeCodecs() (codec.Codec, *codec.LegacyAmino) {
 	return config.Codec, config.Amino
 }
 
-func (app *App) loadContexts(db dbm.DB, ctx sdk.Context) {
+func (app *App) loadContexts(db dbm.DB, ctx sdk.Context, appOpts servertypes.AppOptions) {
 	freshCtx := ctx.WithBlockHeight(int64(app.RankKeeper.GetLatestBlockNumber(ctx)))
 	start := time.Now()
 	app.BaseApp.Logger().Info("Loading the brain state")
+
+	//if app.SnapshotManager() != nil {
+	//	app.BaseApp.Logger().Info(
+	//		"Cyber Consensus Supercomputer is loading from snapshot!",
+	//		"duration", time.Since(start).String(),
+	//	)
+	//	return
+	//}
 
 	if app.LastBlockHeight() >= 1 {
 		calculationPeriod := app.RankKeeper.GetParams(freshCtx).CalculationPeriod
@@ -522,6 +541,7 @@ func (app *App) loadContexts(db dbm.DB, ctx sdk.Context) {
 		app.RankKeeper.StartRankCalculation(freshCtx)
 	} else {
 		// genesis case
+		// NOTE this flow when starting from snapshot
 		app.CyberbankKeeper.LoadState(freshCtx, freshCtx)
 		// TODO update index state load to one context as we store cyberlink' block now
 		app.IndexKeeper.LoadState(freshCtx, freshCtx)
