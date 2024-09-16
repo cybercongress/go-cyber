@@ -159,6 +159,7 @@ proto-format:
 	@echo "Formatting Protobuf files"
 	@$(protoImage) find ./ -name "*.proto" -exec clang-format -i {} \;
 
+# npm install -g swagger2openapi swagger-merger swagger-combine
 proto-swagger-gen:
 	@echo "Generating Protobuf Swagger OpenAPI"
 	@./scripts/protoc_swagger_openapi_gen.sh
