@@ -70,8 +70,6 @@ func (AppModule) Name() string { return types.ModuleName }
 
 func (AppModule) RegisterInvariants(_ sdk.InvariantRegistry) {}
 
-func (AppModule) QuerierRoute() string { return "" }
-
 func (AppModule) RegisterServices(_ module.Configurator) {}
 
 func (am AppModule) InitGenesis(ctx sdk.Context, _ codec.JSONCodec, _ json.RawMessage) []abci.ValidatorUpdate {

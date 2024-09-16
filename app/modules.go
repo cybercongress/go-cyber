@@ -41,6 +41,11 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/cosmos/cosmos-sdk/x/upgrade"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
+	packetforward "github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v7/packetforward"
+	packetforwardtypes "github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v7/packetforward/types"
+	ibchooks "github.com/cosmos/ibc-apps/modules/ibc-hooks/v7"
+	ibchookstypes "github.com/cosmos/ibc-apps/modules/ibc-hooks/v7/types"
+	ica "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts"
 	ibcfee "github.com/cosmos/ibc-go/v7/modules/apps/29-fee"
 	ibcfeetypes "github.com/cosmos/ibc-go/v7/modules/apps/29-fee/types"
 	"github.com/cosmos/ibc-go/v7/modules/apps/transfer"
@@ -73,7 +78,11 @@ import (
 	stakingwrap "github.com/cybercongress/go-cyber/v4/x/staking"
 
 	authsims "github.com/cosmos/cosmos-sdk/x/auth/simulation"
+	icatypes "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/types"
 	clocktypes "github.com/cybercongress/go-cyber/v4/x/clock/types"
+
+	icq "github.com/cosmos/ibc-apps/modules/async-icq/v7"
+	icqtypes "github.com/cosmos/ibc-apps/modules/async-icq/v7/types"
 )
 
 // ModuleBasics TODO add notes which modules have functional blockers
@@ -98,8 +107,7 @@ var ModuleBasics = module.NewBasicManager(
 	feegrantmodule.AppModuleBasic{},
 	vesting.AppModuleBasic{},
 	nftmodule.AppModuleBasic{},
-	ibc.AppModuleBasic{},
-	ibcfee.AppModuleBasic{},
+
 	transfer.AppModuleBasic{},
 	consensus.AppModuleBasic{},
 	liquidity.AppModuleBasic{},
@@ -113,8 +121,14 @@ var ModuleBasics = module.NewBasicManager(
 	resources.AppModuleBasic{},
 	tokenfactory.AppModuleBasic{},
 	clock.AppModuleBasic{},
-	// https://github.com/cosmos/ibc-go/blob/main/docs/docs/05-migrations/08-v6-to-v7.md
+
 	ibctm.AppModuleBasic{},
+	ibc.AppModuleBasic{},
+	ica.AppModuleBasic{},
+	ibcfee.AppModuleBasic{},
+	icq.AppModuleBasic{},
+	ibchooks.AppModuleBasic{},
+	packetforward.AppModuleBasic{},
 	solomachine.AppModuleBasic{},
 )
 
@@ -143,15 +157,13 @@ func appModules(
 		distr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.CyberbankKeeper.Proxy, app.StakingKeeper, app.GetSubspace(distrtypes.ModuleName)),
 		upgrade.NewAppModule(app.UpgradeKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),
-		ibc.NewAppModule(app.IBCKeeper),
 		sdkparams.NewAppModule(app.ParamsKeeper),
 		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, app.CyberbankKeeper.Proxy, app.interfaceRegistry),
 		nftmodule.NewAppModule(appCodec, app.AppKeepers.NFTKeeper, app.AppKeepers.AccountKeeper, app.CyberbankKeeper.Proxy, app.interfaceRegistry),
-		transfer.NewAppModule(app.TransferKeeper),
-		ibcfee.NewAppModule(app.IBCFeeKeeper),
 		crisis.NewAppModule(app.AppKeepers.CrisisKeeper, skipGenesisInvariants, app.GetSubspace(crisistypes.ModuleName)),
-		wasm.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper, app.AccountKeeper, app.CyberbankKeeper.Proxy, app.MsgServiceRouter(), app.GetSubspace(wasmtypes.ModuleName)),
 		consensus.NewAppModule(appCodec, app.AppKeepers.ConsensusParamsKeeper),
+
+		wasm.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper, app.AccountKeeper, app.CyberbankKeeper.Proxy, app.MsgServiceRouter(), app.GetSubspace(wasmtypes.ModuleName)),
 		liquidity.NewAppModule(appCodec, app.LiquidityKeeper, app.AccountKeeper, app.CyberbankKeeper.Proxy, app.DistrKeeper, app.GetSubspace(liquiditytypes.ModuleName)),
 		cyberbank.NewAppModule(appCodec, app.CyberbankKeeper),
 		bandwidth.NewAppModule(appCodec, app.AccountKeeper, app.BandwidthMeter, app.GetSubspace(bandwidthtypes.ModuleName)),
@@ -168,6 +180,14 @@ func appModules(
 		// TODO add storage listener to update neurons memory index out of cyberbank proxy
 		tokenfactory.NewAppModule(app.AppKeepers.TokenFactoryKeeper, app.AppKeepers.AccountKeeper, app.CyberbankKeeper.Proxy, app.GetSubspace(tokenfactorytypes.ModuleName)),
 		clock.NewAppModule(appCodec, app.AppKeepers.ClockKeeper),
+
+		ibc.NewAppModule(app.IBCKeeper),
+		transfer.NewAppModule(app.TransferKeeper),
+		ibcfee.NewAppModule(app.IBCFeeKeeper),
+		ica.NewAppModule(&app.ICAControllerKeeper, &app.ICAHostKeeper),
+		ibchooks.NewAppModule(app.AppKeepers.AccountKeeper),
+		packetforward.NewAppModule(app.PacketForwardKeeper, app.GetSubspace(packetforwardtypes.ModuleName)),
+		icq.NewAppModule(app.AppKeepers.ICQKeeper, app.GetSubspace(icqtypes.ModuleName)),
 	}
 }
 
@@ -197,11 +217,13 @@ func simulationModules(
 		ibc.NewAppModule(app.AppKeepers.IBCKeeper),
 		transfer.NewAppModule(app.AppKeepers.TransferKeeper),
 		ibcfee.NewAppModule(app.IBCFeeKeeper),
+		ica.NewAppModule(&app.ICAControllerKeeper, &app.ICAHostKeeper),
 	}
 }
 
 // orderBeginBlockers tell the app's module manager how to set the order of
 // BeginBlockers, which are run at the beginning of every block.
+// NOTE: capability module's beginblocker must come before any modules using capabilities (e.g. IBC)
 func orderBeginBlockers() []string {
 	return []string{
 		// upgrades should be run first
@@ -216,16 +238,21 @@ func orderBeginBlockers() []string {
 		banktypes.ModuleName,
 		govtypes.ModuleName,
 		crisistypes.ModuleName,
+		ibcexported.ModuleName,
+		ibctransfertypes.ModuleName,
+		icatypes.ModuleName,
+		packetforwardtypes.ModuleName,
+		ibcfeetypes.ModuleName,
 		genutiltypes.ModuleName,
 		authz.ModuleName,
 		feegrant.ModuleName,
 		paramstypes.ModuleName,
 		vestingtypes.ModuleName,
-		nft.ModuleName,
 		consensusparamtypes.ModuleName,
+		nft.ModuleName,
+		icqtypes.ModuleName,
+		ibchookstypes.ModuleName,
 		// additional modules
-		ibctransfertypes.ModuleName,
-		ibcexported.ModuleName,
 		liquiditytypes.ModuleName,
 		dmntypes.ModuleName,
 		clocktypes.ModuleName,
@@ -235,7 +262,6 @@ func orderBeginBlockers() []string {
 		gridtypes.ModuleName,
 		ranktypes.ModuleName,
 		resourcestypes.ModuleName,
-		ibcfeetypes.ModuleName,
 		tokenfactorytypes.ModuleName,
 		wasm.ModuleName,
 	}
@@ -246,7 +272,12 @@ func orderEndBlockers() []string {
 		crisistypes.ModuleName,
 		govtypes.ModuleName,
 		stakingtypes.ModuleName,
+		ibcexported.ModuleName,
+		ibctransfertypes.ModuleName,
+		icatypes.ModuleName,
+		packetforwardtypes.ModuleName,
 		capabilitytypes.ModuleName,
+		ibcfeetypes.ModuleName,
 		authtypes.ModuleName,
 		banktypes.ModuleName,
 		distrtypes.ModuleName,
@@ -259,12 +290,11 @@ func orderEndBlockers() []string {
 		paramstypes.ModuleName,
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
-		nft.ModuleName,
 		consensusparamtypes.ModuleName,
+		nft.ModuleName,
+		icqtypes.ModuleName,
+		ibchookstypes.ModuleName,
 		// additional modules
-		ibctransfertypes.ModuleName,
-		ibcexported.ModuleName,
-		ibcfeetypes.ModuleName,
 		clocktypes.ModuleName,
 		tokenfactorytypes.ModuleName,
 		dmntypes.ModuleName,
@@ -272,6 +302,7 @@ func orderEndBlockers() []string {
 		resourcestypes.ModuleName,
 		liquiditytypes.ModuleName,
 		wasm.ModuleName,
+		// TODO check end blocks
 		cyberbanktypes.ModuleName,
 		bandwidthtypes.ModuleName,
 		graphtypes.ModuleName,
@@ -279,40 +310,53 @@ func orderEndBlockers() []string {
 	}
 }
 
+// NOTE: The genutils module must occur after staking so that pools are
+// properly initialized with tokens from genesis accounts.
+// NOTE: The genutils module must also occur after auth so that it can access the params from auth.
+// NOTE: Capability module must occur first so that it can initialize any capabilities
+// so that other modules that want to create or claim capabilities afterwards in InitChain
+// can do so safely.
+// NOTE: wasm module should be at the end as it can call other module functionality direct or via message dispatching during
+// genesis phase. For example bank transfer, auth account check, staking, ...
 func orderInitBlockers() []string {
 	return []string{
 		capabilitytypes.ModuleName,
 		authtypes.ModuleName,
 		banktypes.ModuleName,
 		distrtypes.ModuleName,
+		govtypes.ModuleName,
 		stakingtypes.ModuleName,
 		slashingtypes.ModuleName,
-		govtypes.ModuleName,
 		minttypes.ModuleName,
 		crisistypes.ModuleName,
 		genutiltypes.ModuleName,
+		ibctransfertypes.ModuleName,
+		ibcexported.ModuleName,
+		icatypes.ModuleName,
 		evidencetypes.ModuleName,
 		authz.ModuleName,
+		feegrant.ModuleName,
+		packetforwardtypes.ModuleName,
 		paramstypes.ModuleName,
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
-		feegrant.ModuleName,
 		nft.ModuleName,
 		consensusparamtypes.ModuleName,
+		icqtypes.ModuleName,
+		ibchookstypes.ModuleName,
 		// additional modules
-		ibctransfertypes.ModuleName,
-		ibcexported.ModuleName,
 		liquiditytypes.ModuleName,
 		ibcfeetypes.ModuleName,
 		clocktypes.ModuleName,
 		tokenfactorytypes.ModuleName,
-		wasm.ModuleName,
 		bandwidthtypes.ModuleName,
 		ranktypes.ModuleName,
 		gridtypes.ModuleName,
 		resourcestypes.ModuleName,
 		dmntypes.ModuleName,
 		graphtypes.ModuleName,
-		cyberbanktypes.ModuleName, // cyberbank will be initialized directly in InitChainer
+		// NOTE: cyberbank will be initialized directly in InitChainer
+		cyberbanktypes.ModuleName,
+		wasm.ModuleName,
 	}
 }

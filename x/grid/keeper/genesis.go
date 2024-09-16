@@ -19,7 +19,9 @@ func InitGenesis(ctx sdk.Context, k Keeper, data types.GenesisState) {
 
 func ExportGenesis(ctx sdk.Context, k Keeper) *types.GenesisState {
 	params := k.GetParams(ctx)
-	routes := k.GetAllRoutes(ctx)
+	//routes := k.GetAllRoutes(ctx)
+	// Create an empty slice of types.Route
+	var routes []types.Route
 
 	return types.NewGenesisState(params, routes)
 }

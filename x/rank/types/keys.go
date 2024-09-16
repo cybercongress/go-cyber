@@ -1,10 +1,8 @@
 package types
 
 const (
-	ModuleName   = "rank"
-	StoreKey     = ModuleName
-	RouterKey    = ModuleName
-	QuerierRoute = ModuleName
+	ModuleName = "rank"
+	StoreKey   = ModuleName
 )
 
 var (

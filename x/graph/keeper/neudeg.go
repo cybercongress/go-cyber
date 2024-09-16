@@ -24,6 +24,12 @@ func (gk *GraphKeeper) LoadNeudeg(rankCtx sdk.Context, freshCtx sdk.Context) {
 	iterator.Close()
 }
 
+// NOTE: used when load from exported graph with links
+func (gk GraphKeeper) SaveNeudeg(ctx sdk.Context, accNumber uint64, neudeg uint64) {
+	store := ctx.KVStore(gk.key)
+	store.Set(types.NeudegStoreKey(accNumber), sdk.Uint64ToBigEndian(neudeg))
+}
+
 func (gk GraphKeeper) IncrementNeudeg(ctx sdk.Context, accNumber uint64) {
 	store := ctx.KVStore(gk.key)
 	neudeg := gk.GetNeudeg(ctx, accNumber) + 1

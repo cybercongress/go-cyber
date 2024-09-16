@@ -20,6 +20,11 @@ import (
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
+	packetforwardtypes "github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v7/packetforward/types"
+	icqtypes "github.com/cosmos/ibc-apps/modules/async-icq/v7/types"
+	ibchookstypes "github.com/cosmos/ibc-apps/modules/ibc-hooks/v7/types"
+	icacontrollertypes "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/controller/types"
+	icahosttypes "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/host/types"
 	ibcfeetypes "github.com/cosmos/ibc-go/v7/modules/apps/29-fee/types"
 	ibctransfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
 	ibcexported "github.com/cosmos/ibc-go/v7/modules/core/exported"
@@ -45,13 +50,18 @@ func (appKeepers *AppKeepers) GenerateKeys() {
 		evidencetypes.StoreKey, capabilitytypes.StoreKey,
 		authzkeeper.StoreKey, feegrant.StoreKey, nftkeeper.StoreKey,
 		consensusparamtypes.StoreKey, crisistypes.StoreKey,
-
+		// non sdk store keys
+		icahosttypes.StoreKey,
+		icacontrollertypes.StoreKey,
 		ibcexported.StoreKey,
 		ibctransfertypes.StoreKey,
 		ibcfeetypes.StoreKey,
 		wasmtypes.StoreKey,
-		clocktypes.StoreKey,
+		packetforwardtypes.StoreKey,
+		ibchookstypes.StoreKey,
+		icqtypes.StoreKey,
 		// our additions
+		clocktypes.StoreKey,
 		liquiditytypes.StoreKey,
 		bandwidthtypes.StoreKey,
 		graphtypes.StoreKey,
