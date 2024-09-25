@@ -57,3 +57,5 @@ contracts
 *.mjs
 
 *.wasm
+
+cmd/iavltool/*.txt

@@ -7,7 +7,6 @@ import (
 	icacontrollertypes "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/controller/types"
 	icahosttypes "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/host/types"
 	"github.com/cosmos/ibc-go/v7/modules/core/exported"
-	"github.com/cybercongress/go-cyber/v4/plugins/types"
 	generaltypes "github.com/cybercongress/go-cyber/v4/types"
 	clocktypes "github.com/cybercongress/go-cyber/v4/x/clock/types"
 	tokenfactorytypes "github.com/cybercongress/go-cyber/v4/x/tokenfactory/types"
@@ -169,7 +168,8 @@ func CreateV4UpgradeHandler(
 		logger.Info("set ibc packets forward params")
 
 		icqParams := icqtypes.DefaultParams()
-		icqParams.AllowQueries = types.GetStargateWhitelistedPaths()
+		// TODO Fix this, because if enable than all nodes will go to consensus failure on next block
+		//icqParams.AllowQueries = types.GetStargateWhitelistedPaths()
 		if err := keepers.ICQKeeper.SetParams(ctx, icqParams); err != nil {
 			return nil, err
 		}
