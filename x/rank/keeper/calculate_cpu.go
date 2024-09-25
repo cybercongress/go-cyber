@@ -185,12 +185,14 @@ func karmaCalc(ctx *types.CalculationContext, rank []float64, entropy []float64,
 					continue
 				}
 				// w := float64(ctx.GetStakes()[uint64(user)]) / float64(stake)
+				// FIXME here maybe have mistake as user stake is normalized by neuron degree, but links stake is global of link
 				w := float64(getNormalizedStake(ctx, uint64(user))) / float64(stake)
 				if math.IsNaN(w) {
 					w = float64(0)
 				}
 				luminosity := rank[from] * entropy[from]
 				karma[user] += w * luminosity
+				// TODO need to update algorithm and add normalization of total stake of neurons to global stake
 			}
 		}
 	}

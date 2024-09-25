@@ -162,33 +162,33 @@ type AppKeepers struct {
 	CrisisKeeper          *crisiskeeper.Keeper
 	UpgradeKeeper         *upgradekeeper.Keeper
 	ParamsKeeper          paramskeeper.Keeper
-	IBCKeeper             *ibckeeper.Keeper // IBC Keeper must be a pointer in the app, so we can SetRouter on it correctly
-	ICQKeeper             icqkeeper.Keeper
-	ICAHostKeeper         icahostkeeper.Keeper
-	ICAControllerKeeper   icacontrollerkeeper.Keeper
-	IBCFeeKeeper          ibcfeekeeper.Keeper
-	IBCHooksKeeper        *ibchookskeeper.Keeper
 	EvidenceKeeper        evidencekeeper.Keeper
-	TransferKeeper        ibctransferkeeper.Keeper
 	FeeGrantKeeper        feegrantkeeper.Keeper
 	NFTKeeper             nftkeeper.Keeper
 	AuthzKeeper           authzkeeper.Keeper
 	ConsensusParamsKeeper consensusparamkeeper.Keeper
 
-	TokenFactoryKeeper  tokenfactorykeeper.Keeper
-	WasmKeeper          wasmkeeper.Keeper
-	LiquidityKeeper     liquiditykeeper.Keeper
-	BandwidthMeter      *bandwidthkeeper.BandwidthMeter
-	CyberbankKeeper     *cyberbankkeeper.IndexedKeeper
-	GraphKeeper         *graphkeeper.GraphKeeper
-	IndexKeeper         *graphkeeper.IndexKeeper
-	RankKeeper          *rankkeeper.StateKeeper
-	GridKeeper          gridkeeper.Keeper
-	DmnKeeper           *dmnkeeper.Keeper
-	ResourcesKeeper     resourceskeeper.Keeper
-	ContractKeeper      wasmtypes.ContractOpsKeeper
-	ClockKeeper         clockkeeper.Keeper
-	PacketForwardKeeper *packetforwardkeeper.Keeper
+	IBCKeeper           *ibckeeper.Keeper // IBC Keeper must be a pointer in the app, so we can SetRouter on it correctly
+	ICQKeeper           *icqkeeper.Keeper
+	ICAHostKeeper       *icahostkeeper.Keeper
+	ICAControllerKeeper *icacontrollerkeeper.Keeper
+	IBCFeeKeeper        ibcfeekeeper.Keeper
+	IBCHooksKeeper      *ibchookskeeper.Keeper
+	TransferKeeper      *ibctransferkeeper.Keeper
+
+	TokenFactoryKeeper tokenfactorykeeper.Keeper
+	WasmKeeper         *wasmkeeper.Keeper
+	LiquidityKeeper    liquiditykeeper.Keeper
+	BandwidthMeter     *bandwidthkeeper.BandwidthMeter
+	CyberbankKeeper    *cyberbankkeeper.IndexedKeeper
+	GraphKeeper        *graphkeeper.GraphKeeper
+	IndexKeeper        *graphkeeper.IndexKeeper
+	RankKeeper         *rankkeeper.StateKeeper
+	GridKeeper         gridkeeper.Keeper
+	DmnKeeper          *dmnkeeper.Keeper
+	ResourcesKeeper    resourceskeeper.Keeper
+	ContractKeeper     wasmtypes.ContractOpsKeeper
+	ClockKeeper        clockkeeper.Keeper
 
 	ScopedIBCKeeper           capabilitykeeper.ScopedKeeper
 	ScopedICQKeeper           capabilitykeeper.ScopedKeeper
@@ -197,9 +197,12 @@ type AppKeepers struct {
 	ScopedICAControllerKeeper capabilitykeeper.ScopedKeeper
 	ScopedWasmKeeper          capabilitykeeper.ScopedKeeper
 
+	// IBC modules
+	// transfer module
 	// Middleware wrapper
-	Ics20WasmHooks   *ibchooks.WasmHooks
-	HooksICS4Wrapper ibchooks.ICS4Middleware
+	Ics20WasmHooks      *ibchooks.WasmHooks
+	HooksICS4Wrapper    ibchooks.ICS4Middleware
+	PacketForwardKeeper *packetforwardkeeper.Keeper
 }
 
 func NewAppKeepers(
@@ -492,7 +495,7 @@ func NewAppKeepers(
 	appKeepers.IBCHooksKeeper = &hooksKeeper
 
 	cyberPrefix := sdk.GetConfig().GetBech32AccountAddrPrefix()
-	wasmHooks := ibchooks.NewWasmHooks(appKeepers.IBCHooksKeeper, &appKeepers.WasmKeeper, cyberPrefix) // The contract keeper needs to be set later
+	wasmHooks := ibchooks.NewWasmHooks(appKeepers.IBCHooksKeeper, appKeepers.WasmKeeper, cyberPrefix) // The contract keeper needs to be set later
 	appKeepers.Ics20WasmHooks = &wasmHooks
 	appKeepers.HooksICS4Wrapper = ibchooks.NewICS4Middleware(
 		appKeepers.IBCKeeper.ChannelKeeper,
@@ -525,7 +528,7 @@ func NewAppKeepers(
 	)
 
 	// Create Transfer Keepers
-	appKeepers.TransferKeeper = ibctransferkeeper.NewKeeper(
+	transferKeeper := ibctransferkeeper.NewKeeper(
 		appCodec,
 		keys[ibctransfertypes.StoreKey],
 		appKeepers.GetSubspace(ibctransfertypes.ModuleName),
@@ -537,12 +540,13 @@ func NewAppKeepers(
 		appKeepers.CyberbankKeeper.Proxy,
 		scopedTransferKeeper,
 	)
+	appKeepers.TransferKeeper = &transferKeeper
 
 	// Must be called on PFMRouter AFTER TransferKeeper initialized
 	appKeepers.PacketForwardKeeper.SetTransferKeeper(appKeepers.TransferKeeper)
 
 	// ICQ Keeper
-	appKeepers.ICQKeeper = icqkeeper.NewKeeper(
+	icqKeeper := icqkeeper.NewKeeper(
 		appCodec,
 		appKeepers.keys[icqtypes.StoreKey],
 		appKeepers.IBCKeeper.ChannelKeeper, // may be replaced with middleware
@@ -552,8 +556,9 @@ func NewAppKeepers(
 		bApp.GRPCQueryRouter(),
 		govModAddress,
 	)
+	appKeepers.ICQKeeper = &icqKeeper
 
-	appKeepers.ICAHostKeeper = icahostkeeper.NewKeeper(
+	icaHostKeeper := icahostkeeper.NewKeeper(
 		appCodec,
 		keys[icahosttypes.StoreKey],
 		appKeepers.GetSubspace(icahosttypes.SubModuleName),
@@ -564,11 +569,12 @@ func NewAppKeepers(
 		scopedICAHostKeeper,
 		bApp.MsgServiceRouter(),
 	)
+	appKeepers.ICAHostKeeper = &icaHostKeeper
 
 	// required since ibc-go v7.5.0
 	appKeepers.ICAHostKeeper.WithQueryRouter(bApp.GRPCQueryRouter())
 
-	appKeepers.ICAControllerKeeper = icacontrollerkeeper.NewKeeper(
+	icaControllerKeeper := icacontrollerkeeper.NewKeeper(
 		appCodec,
 		keys[icacontrollertypes.StoreKey],
 		appKeepers.GetSubspace(icacontrollertypes.SubModuleName),
@@ -578,6 +584,7 @@ func NewAppKeepers(
 		scopedICAControllerKeeper,
 		bApp.MsgServiceRouter(),
 	)
+	appKeepers.ICAControllerKeeper = &icaControllerKeeper
 
 	// Create evidence Keeper for to register the IBC light client misbehaviour evidence route
 	evidenceKeeper := evidencekeeper.NewKeeper(
@@ -624,7 +631,7 @@ func NewAppKeepers(
 	wasmOpts = append(wasmOpts, cyberOpts...)
 	wasmOpts = append(wasmplugins.RegisterStargateQueries(*bApp.GRPCQueryRouter(), appCodec), wasmOpts...)
 
-	appKeepers.WasmKeeper = wasmkeeper.NewKeeper(
+	wasmKeeper := wasmkeeper.NewKeeper(
 		appCodec,
 		keys[wasmtypes.StoreKey],
 		appKeepers.AccountKeeper,
@@ -644,20 +651,22 @@ func NewAppKeepers(
 		govModAddress,
 		wasmOpts...,
 	)
+	appKeepers.WasmKeeper = &wasmKeeper
 
 	// set the contract keeper for the Ics20WasmHooks
-	appKeepers.ContractKeeper = wasmkeeper.NewDefaultPermissionKeeper(&appKeepers.WasmKeeper)
-	appKeepers.Ics20WasmHooks.ContractKeeper = &appKeepers.WasmKeeper
+	appKeepers.ContractKeeper = wasmkeeper.NewDefaultPermissionKeeper(appKeepers.WasmKeeper)
+	appKeepers.Ics20WasmHooks.ContractKeeper = appKeepers.WasmKeeper
+	//appKeepers.IBCHooksKeeper.ContractKeeper = appKeepers.ContractKeeper
 
 	appKeepers.ClockKeeper = clockkeeper.NewKeeper(
 		appKeepers.keys[clocktypes.StoreKey],
 		appCodec,
-		appKeepers.WasmKeeper,
+		*appKeepers.WasmKeeper,
 		appKeepers.ContractKeeper,
 		govModAddress,
 	)
 
-	appKeepers.DmnKeeper.SetWasmKeeper(appKeepers.WasmKeeper)
+	appKeepers.DmnKeeper.SetWasmKeeper(*appKeepers.WasmKeeper)
 
 	// register wasm gov proposal types
 	// The gov proposal types can be individually enabled
@@ -667,7 +676,7 @@ func NewAppKeepers(
 
 	// Create Transfer Stack
 	var transferStack porttypes.IBCModule
-	transferStack = transfer.NewIBCModule(appKeepers.TransferKeeper)
+	transferStack = transfer.NewIBCModule(*appKeepers.TransferKeeper)
 	transferStack = ibchooks.NewIBCMiddleware(transferStack, &appKeepers.HooksICS4Wrapper)
 	transferStack = packetforward.NewIBCMiddleware(
 		transferStack,
@@ -686,13 +695,13 @@ func NewAppKeepers(
 	// integration point for custom authentication modules
 	// see https://medium.com/the-interchain-foundation/ibc-go-v6-changes-to-interchain-accounts-and-how-it-impacts-your-chain-806c185300d7
 	var noAuthzModule porttypes.IBCModule
-	icaControllerStack = icacontroller.NewIBCMiddleware(noAuthzModule, appKeepers.ICAControllerKeeper)
+	icaControllerStack = icacontroller.NewIBCMiddleware(noAuthzModule, *appKeepers.ICAControllerKeeper)
 	icaControllerStack = ibcfee.NewIBCMiddleware(icaControllerStack, appKeepers.IBCFeeKeeper)
 
 	// RecvPacket, message that originates from core IBC and goes down to app, the flow is:
 	// channel.RecvPacket -> fee.OnRecvPacket -> icaHost.OnRecvPacket
 	var icaHostStack porttypes.IBCModule
-	icaHostStack = icahost.NewIBCModule(appKeepers.ICAHostKeeper)
+	icaHostStack = icahost.NewIBCModule(*appKeepers.ICAHostKeeper)
 	icaHostStack = ibcfee.NewIBCMiddleware(icaHostStack, appKeepers.IBCFeeKeeper)
 
 	// Create fee enabled wasm ibc Stack
@@ -700,8 +709,8 @@ func NewAppKeepers(
 	wasmStack = wasm.NewIBCHandler(appKeepers.WasmKeeper, appKeepers.IBCKeeper.ChannelKeeper, appKeepers.IBCFeeKeeper)
 	wasmStack = ibcfee.NewIBCMiddleware(wasmStack, appKeepers.IBCFeeKeeper)
 
-	// create ICQ module
-	icqModule := icq.NewIBCModule(appKeepers.ICQKeeper)
+	// Create Async ICQ module
+	icqModule := icq.NewIBCModule(*appKeepers.ICQKeeper)
 
 	ibcRouter := porttypes.NewRouter().
 		AddRoute(ibctransfertypes.ModuleName, transferStack).
