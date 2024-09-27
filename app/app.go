@@ -302,7 +302,7 @@ func NewApp(
 
 		// TODO refactor context load flow
 		// NOTE custom implementation
-		app.loadContexts(db, ctx, appOpts)
+		app.loadContexts(db, ctx)
 
 		if err := app.WasmKeeper.InitializePinnedCodes(ctx); err != nil {
 			tmos.Exit(fmt.Sprintf("failed initialize pinned codes %s", err))
@@ -502,18 +502,10 @@ func MakeCodecs() (codec.Codec, *codec.LegacyAmino) {
 	return config.Codec, config.Amino
 }
 
-func (app *App) loadContexts(db dbm.DB, ctx sdk.Context, appOpts servertypes.AppOptions) {
+func (app *App) loadContexts(db dbm.DB, ctx sdk.Context) {
 	freshCtx := ctx.WithBlockHeight(int64(app.RankKeeper.GetLatestBlockNumber(ctx)))
 	start := time.Now()
 	app.BaseApp.Logger().Info("Loading the brain state")
-
-	//if app.SnapshotManager() != nil {
-	//	app.BaseApp.Logger().Info(
-	//		"Cyber Consensus Supercomputer is loading from snapshot!",
-	//		"duration", time.Since(start).String(),
-	//	)
-	//	return
-	//}
 
 	if app.LastBlockHeight() >= 1 {
 		calculationPeriod := app.RankKeeper.GetParams(freshCtx).CalculationPeriod

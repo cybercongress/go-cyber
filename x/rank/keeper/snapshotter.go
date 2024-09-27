@@ -43,28 +43,10 @@ func (rs *RankSnapshotter) SnapshotExtension(_ uint64, _ snapshot.ExtensionPaylo
 
 func (rs *RankSnapshotter) RestoreExtension(height uint64, format uint32, _ snapshot.ExtensionPayloadReader) error {
 	if format == SnapshotFormat {
-		//ctx := sdk.NewContext(rs.cms, tmproto.Header{Height: int64(height)}, false, log.NewNopLogger())
 
 		freshCtx := sdk.NewContext(rs.cms, tmproto.Header{Height: int64(height)}, false, log.NewNopLogger())
-		//calculationPeriod := gs.rankKeeper.GetParams(freshCtx).CalculationPeriod
-		//// TODO remove this after upgrade to v4 because on network upgrade block cannot access rank params
-		//if calculationPeriod == 0 {
-		//	calculationPeriod = int64(5)
-		//}
-		//calculationPeriod := int64(5)
-		//rankRoundBlockNumber := (freshCtx.BlockHeight() / calculationPeriod) * calculationPeriod
-		//if rankRoundBlockNumber == 0 && freshCtx.BlockHeight() >= 1 {
-		//	rankRoundBlockNumber = 1
-		//}
-		//
-		//store, err := rs.cms.CacheMultiStoreWithVersion(rankRoundBlockNumber)
-		//if err != nil {
-		//	println("Error: ", err)
-		//}
-		//rankCtx := sdk.NewContext(store, tmproto.Header{Height: rankRoundBlockNumber}, false, log.NewNopLogger())
-
 		rs.keeper.LoadState(freshCtx)
-		//rs.keeper.StartRankCalculation(freshCtx)
+		rs.keeper.StartRankCalculation(freshCtx)
 
 		return nil
 	}

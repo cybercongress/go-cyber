@@ -45,16 +45,9 @@ func (cs *CyberbankSnapshotter) RestoreExtension(height uint64, format uint32, _
 	if format == SnapshotFormat {
 		freshCtx := sdk.NewContext(cs.cms, tmproto.Header{Height: int64(height)}, false, log.NewNopLogger())
 
-		//calculationPeriod := cs.rankKeeper.GetParams(freshCtx).CalculationPeriod
-		//// TODO remove this after upgrade to v4 because on network upgrade block cannot access rank params
-		//if calculationPeriod == 0 {
-		//	calculationPeriod = int64(5)
-		//}
+		// TODO revisit with get params and case of increased rank computation blocks
 		calculationPeriod := int64(5)
 		rankRoundBlockNumber := (freshCtx.BlockHeight() / calculationPeriod) * calculationPeriod
-		if rankRoundBlockNumber == 0 && freshCtx.BlockHeight() >= 1 {
-			rankRoundBlockNumber = 1
-		}
 
 		store, err := cs.cms.CacheMultiStoreWithVersion(rankRoundBlockNumber)
 		if err != nil {
