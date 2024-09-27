@@ -148,7 +148,7 @@ func CreateV4UpgradeHandler(
 
 		// x/clock
 		if err := keepers.ClockKeeper.SetParams(ctx, clocktypes.Params{
-			ContractGasLimit: 10_000_000,
+			ContractGasLimit: 20_000_000,
 		}); err != nil {
 			return nil, err
 		}
