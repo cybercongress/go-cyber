@@ -210,8 +210,6 @@ replace (
 	// use cosmos fork of keyring
 	github.com/99designs/keyring => github.com/cosmos/keyring v1.2.0
 
-	github.com/cometbft/cometbft => github.com/cybercongress/cometbft v0.0.0-20240916132818-b1b2957d11a5
-
 	// support concurrency for iavl
 	github.com/cosmos/iavl => github.com/cosmos/iavl v0.20.1
 
