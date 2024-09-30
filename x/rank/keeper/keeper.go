@@ -32,7 +32,7 @@ type StateKeeper struct {
 	nextCidRank    types.Rank
 
 	rankCalculationFinished bool
-	cidCount                int64
+	//cidCount                int64
 
 	hasNewLinksForPeriod bool
 
@@ -112,7 +112,6 @@ func (k *StateKeeper) GetParams(ctx sdk.Context) (p types.Params) {
 func (sk *StateKeeper) LoadState(ctx sdk.Context) {
 	sk.networkCidRank = types.NewFromMerkle(sk.graphKeeper.GetCidsCount(ctx), sk.GetLatestMerkleTree(ctx))
 	sk.nextCidRank = types.NewFromMerkle(sk.GetNextRankCidCount(ctx), sk.GetNextMerkleTree(ctx))
-	sk.cidCount = int64(sk.graphKeeper.GetCidsCount(ctx))
 
 	sk.index = sk.BuildSearchIndex(sk.Logger(ctx))
 	sk.index.Load(sk.graphIndexedKeeper.GetOutLinks())
@@ -167,7 +166,6 @@ func (sk *StateKeeper) EndBlocker(ctx sdk.Context) {
 	params := sk.GetParams(ctx)
 
 	if ctx.BlockHeight()%params.CalculationPeriod == 0 || ctx.BlockHeight() == 1 {
-
 		dampingFactor, err := strconv.ParseFloat(params.DampingFactor.String(), 64)
 		if err != nil {
 			panic(err)
@@ -180,8 +178,6 @@ func (sk *StateKeeper) EndBlocker(ctx sdk.Context) {
 
 		sk.checkRankCalcFinished(ctx, true)
 		sk.applyNextRank()
-
-		sk.cidCount = int64(currentCidsCount)
 		stakeChanged := sk.stakeKeeper.DetectUsersStakeAmpereChange(ctx)
 
 		// start new calculation
@@ -200,6 +196,7 @@ func (sk *StateKeeper) EndBlocker(ctx sdk.Context) {
 	sk.Logger(ctx).Info(
 		"Latest Rank", "hash", fmt.Sprintf("%X", networkMerkleTreeAsBytes),
 	)
+
 	sk.StoreLatestMerkleTree(ctx, networkMerkleTreeAsBytes)
 }
 

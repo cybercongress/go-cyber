@@ -357,10 +357,9 @@ func (k Keeper) CalculateInvestmint(ctx sdk.Context, amt sdk.Coin, resource stri
 		// cycles := sdk.NewDec(int64(length)).QuoInt64(int64(params.BaseInvestmintPeriodAmpere))
 		base := sdk.NewDec(amt.Amount.Int64()).QuoInt64(params.BaseInvestmintAmountAmpere.Amount.Int64())
 
-		// TODO double check when third halving will be applied?
-		// NOTE out of parametrization custom code is applied here in order to shift the FIRST HALVING 6M BLOCKS LATER but keep base halving parameter same
+		// NOTE out of parametrization, custom code is applied here in order to shift the HALVINGS START 6M BLOCKS LATER but keep base halving parameter same
 		if ctx.BlockHeight() > 15000000 {
-			halving = sdk.NewDecWithPrec(int64(math.Pow(0.5, float64((ctx.BlockHeight()-600000)/int64(params.HalvingPeriodAmpereBlocks)))*10000), 4)
+			halving = sdk.NewDecWithPrec(int64(math.Pow(0.5, float64((ctx.BlockHeight()-6000000)/int64(params.HalvingPeriodAmpereBlocks)))*10000), 4)
 		} else {
 			halving = sdk.OneDec()
 		}
