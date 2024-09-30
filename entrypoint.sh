@@ -27,9 +27,9 @@ then
   cp -r /cyber/cosmovisor/upgrades  /root/.cyber/cosmovisor/
 fi
 
-if [  -f "/root/.cyber/cosmovisor/genesis/bin/cyber" ]
+if [ ! -d "/root/.cyber/cosmovisor/upgrades/v4/" ]
 then
-  cp /cyber/cosmovisor/genesis/bin/cyber  /root/.cyber/cosmovisor/genesis/bin/cyber
+  cp -r /cyber/cosmovisor/upgrades/v4  /root/.cyber/cosmovisor/upgrades/v4
 fi
 
 if [ ! -f "/root/.cyber/config/genesis.json" ]

@@ -3,9 +3,9 @@
 ###########################################################################################
 FROM ubuntu:20.04
 
-ENV GO_VERSION '1.19.13'
+ENV GO_VERSION '1.22.2'
 ENV GO_ARCH 'linux-amd64'
-ENV GO_BIN_SHA '4643d4c29c55f53fa0349367d7f1bb5ca554ea6ef528c146825b0f8464e2e668'
+ENV GO_BIN_SHA '5901c52b7a78002aeff14a21f93e0f064f74ce1360fce51c6ee68cd471216a17'
 ENV DEBIAN_FRONTEND=noninteractive 
 ENV DAEMON_HOME /root/.cyber
 ENV DAEMON_RESTART_AFTER_UPGRADE=true
@@ -48,35 +48,25 @@ RUN apt-get update && apt-get -y install --no-install-recommends \
 && add-apt-repository "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/ /" \
 && apt-get update \
 && apt-get install cuda=${CUDA_VER} -y --no-install-recommends \
-&& mkdir -p /cyber/cosmovisor/genesis/bin \
-&& mkdir -p /cyber/cosmovisor/upgrades/cyberfrey/bin \
 && mkdir -p /cyber/cosmovisor/upgrades/v3/bin \
-# Compile cyber for genesis version
-###########################################################################################
-&& git checkout v0.2.0 \
-&& cd /sources/x/rank/cuda \
-&& make build \
-&& cd /sources \
-&& make build CUDA_ENABLED=true \
-&& cp ./build/cyber /cyber/cosmovisor/genesis/bin/ \
-&& rm -rf ./build \
- # Compile cyber for cyberfrey version
-###########################################################################################
-&& git checkout v2.0.0 \
-&& cd /sources/x/rank/cuda \
-&& make build \
-&& cd  /sources \
-&& make build CUDA_ENABLED=true \
-&& cp ./build/cyber /cyber/cosmovisor/upgrades/cyberfrey/bin/ \
-&& rm -rf ./build \
+&& mkdir -p /cyber/cosmovisor/upgrades/v4/bin \
  # Compile cyber for v3 version
 ###########################################################################################
-&& git checkout v3.0.0 \
+&& git checkout v3.0.1 \
 && cd /sources/x/rank/cuda \
 && make build \
 && cd  /sources \
 && make build CUDA_ENABLED=true \
 && cp ./build/cyber /cyber/cosmovisor/upgrades/v3/bin/ \
+&& rm -rf ./build \
+ # Compile cyber for v4 version
+###########################################################################################
+&& git checkout v4.0.0 \
+&& cd /sources/x/rank/cuda \
+&& make build \
+&& cd  /sources \
+&& make build CUDA_ENABLED=true \
+&& cp ./build/cyber /cyber/cosmovisor/upgrades/v4/bin/ \
 && rm -rf ./build \
 # Cleanup 
 ###########################################################################################
