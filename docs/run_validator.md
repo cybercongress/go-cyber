@@ -282,7 +282,7 @@ mkdir $HOME/.cyber/config
 (This will pull and extract the image from cyberd/cyber of latest version, containing all upgrades binaries)
 
 ```bash
-docker run -d --gpus all --name=bostrom --restart always -p 26656:26656 -p 26657:26657 -p 1317:1317 -e ALLOW_SEARCH=true -v $HOME/.cyber:/root/.cyber  cyberd/bostrom:v3.0.0-cuda11.4
+docker run -d --gpus all --name=bostrom --restart always -p 26656:26656 -p 26657:26657 -p 1317:1317 -e ALLOW_SEARCH=true -v $HOME/.cyber:/root/.cyber  cyberd/bostrom:v4.0.0-cuda11.4
 ```
 
 Docker image already contain all binaries to either sync from 0 or start form snapshot.
