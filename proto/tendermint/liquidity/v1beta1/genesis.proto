@@ -1,7 +1,7 @@
 syntax = "proto3";
-package cyber.liquidity.v1beta1;
+package tendermint.liquidity.v1beta1;
 
-import "cyber/liquidity/v1beta1/liquidity.proto";
+import "tendermint/liquidity/v1beta1/liquidity.proto";
 import "gogoproto/gogo.proto";
 
 option go_package = "github.com/cybercongress/go-cyber/x/liquidity/types";

@@ -1,8 +1,8 @@
 syntax = "proto3";
-package cyber.liquidity.v1beta1;
+package tendermint.liquidity.v1beta1;
 
 import "gogoproto/gogo.proto";
-import "cyber/liquidity/v1beta1/liquidity.proto";
+import "tendermint/liquidity/v1beta1/liquidity.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 
