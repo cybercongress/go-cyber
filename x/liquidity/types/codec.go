@@ -20,6 +20,11 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 // RegisterInterfaces registers the x/liquidity interface types with the
 // interface registry
 func RegisterInterfaces(registry types.InterfaceRegistry) {
+	registry.RegisterCustomTypeURL((*sdk.Msg)(nil), "/tendermint.liquidity.v1beta1.MsgCreatePool", &MsgCreatePool{})
+	registry.RegisterCustomTypeURL((*sdk.Msg)(nil), "/tendermint.liquidity.v1beta1.MsgDepositWithinBatch", &MsgDepositWithinBatch{})
+	registry.RegisterCustomTypeURL((*sdk.Msg)(nil), "/tendermint.liquidity.v1beta1.MsgWithdrawWithinBatch", &MsgWithdrawWithinBatch{})
+	registry.RegisterCustomTypeURL((*sdk.Msg)(nil), "/tendermint.liquidity.v1beta1.MsgSwapWithinBatch", &MsgSwapWithinBatch{})
+
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgCreatePool{},
 		&MsgDepositWithinBatch{},

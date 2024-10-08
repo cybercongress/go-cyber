@@ -212,6 +212,8 @@ replace (
 
 	github.com/cometbft/cometbft => github.com/cybercongress/cometbft v0.0.0-20240916132818-b1b2957d11a5
 
+	github.com/cosmos/cosmos-sdk => github.com/cybercongress/cosmos-sdk v0.47.13-0.20241008061625-08d0bd3fa2c4
+
 	// support concurrency for iavl
 	github.com/cosmos/iavl => github.com/cosmos/iavl v0.20.1
 
