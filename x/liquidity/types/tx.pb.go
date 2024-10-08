@@ -445,15 +445,6 @@ func init() {
 	proto.RegisterType((*MsgWithdrawWithinBatchResponse)(nil), "cyber.liquidity.v1beta1.MsgWithdrawWithinBatchResponse")
 	proto.RegisterType((*MsgSwapWithinBatch)(nil), "cyber.liquidity.v1beta1.MsgSwapWithinBatch")
 	proto.RegisterType((*MsgSwapWithinBatchResponse)(nil), "cyber.liquidity.v1beta1.MsgSwapWithinBatchResponse")
-
-	proto.RegisterType((*MsgCreatePool)(nil), "tendermint.liquidity.v1beta1.MsgCreatePool")
-	proto.RegisterType((*MsgCreatePoolResponse)(nil), "tendermint.liquidity.v1beta1.MsgCreatePoolResponse")
-	proto.RegisterType((*MsgDepositWithinBatch)(nil), "tendermint.liquidity.v1beta1.MsgDepositWithinBatch")
-	proto.RegisterType((*MsgDepositWithinBatchResponse)(nil), "tendermint.liquidity.v1beta1.MsgDepositWithinBatchResponse")
-	proto.RegisterType((*MsgWithdrawWithinBatch)(nil), "tendermint.liquidity.v1beta1.MsgWithdrawWithinBatch")
-	proto.RegisterType((*MsgWithdrawWithinBatchResponse)(nil), "tendermint.liquidity.v1beta1.MsgWithdrawWithinBatchResponse")
-	proto.RegisterType((*MsgSwapWithinBatch)(nil), "tendermint.liquidity.v1beta1.MsgSwapWithinBatch")
-	proto.RegisterType((*MsgSwapWithinBatchResponse)(nil), "tendermint.liquidity.v1beta1.MsgSwapWithinBatchResponse")
 }
 
 func init() { proto.RegisterFile("cyber/liquidity/v1beta1/tx.proto", fileDescriptor_d6c6519f5f802cc0) }
