@@ -6,8 +6,6 @@ import "gogoproto/gogo.proto";
 option go_package = "github.com/cybercongress/go-cyber/x/rank/types";
 
 message Params {
-  option (gogoproto.equal) = true;
-
   int64 calculation_period = 1;
 
   string damping_factor = 2 [

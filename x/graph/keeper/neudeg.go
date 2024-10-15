@@ -3,7 +3,7 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/cybercongress/go-cyber/v2/x/graph/types"
+	"github.com/cybercongress/go-cyber/v4/x/graph/types"
 )
 
 // In order to calculate the flow of amperes through cyberlinks created by given agents than need to compute neurons out-degree
@@ -22,6 +22,12 @@ func (gk *GraphKeeper) LoadNeudeg(rankCtx sdk.Context, freshCtx sdk.Context) {
 		gk.neudeg[acc] = sdk.BigEndianToUint64(iterator.Value())
 	}
 	iterator.Close()
+}
+
+// NOTE: used when load from exported graph with links
+func (gk GraphKeeper) SaveNeudeg(ctx sdk.Context, accNumber uint64, neudeg uint64) {
+	store := ctx.KVStore(gk.key)
+	store.Set(types.NeudegStoreKey(accNumber), sdk.Uint64ToBigEndian(neudeg))
 }
 
 func (gk GraphKeeper) IncrementNeudeg(ctx sdk.Context, accNumber uint64) {

@@ -4,9 +4,9 @@
 package keeper
 
 import (
-	"github.com/cybercongress/go-cyber/v2/x/rank/types"
+	"github.com/cybercongress/go-cyber/v4/x/rank/types"
 
-	"github.com/tendermint/tendermint/libs/log"
+	"github.com/cometbft/cometbft/libs/log"
 )
 
 func calculateRankGPU(ctx *types.CalculationContext, logger log.Logger) types.EMState {

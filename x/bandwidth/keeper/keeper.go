@@ -3,58 +3,74 @@ package keeper
 import (
 	"fmt"
 
+	storetypes "github.com/cosmos/cosmos-sdk/store/types"
+
+	"github.com/cometbft/cometbft/libs/log"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
-	"github.com/tendermint/tendermint/libs/log"
 
-	"github.com/cybercongress/go-cyber/v2/x/bandwidth/types"
-	gtypes "github.com/cybercongress/go-cyber/v2/x/graph/types"
+	"github.com/cybercongress/go-cyber/v4/x/bandwidth/types"
+	gtypes "github.com/cybercongress/go-cyber/v4/x/graph/types"
 )
 
 type BandwidthMeter struct {
 	stakeProvider types.AccountStakeProvider
 	cdc           codec.BinaryCodec
-	storeKey      sdk.StoreKey
-	paramSpace    paramstypes.Subspace
+	storeKey      storetypes.StoreKey
+	tkey          *storetypes.TransientStoreKey
 
-	currentBlockSpentBandwidth uint64
 	currentCreditPrice         sdk.Dec
 	bandwidthSpentByBlock      map[uint64]uint64
 	totalSpentForSlidingWindow uint64
+
+	authority string
 }
 
 func NewBandwidthMeter(
 	cdc codec.BinaryCodec,
-	key sdk.StoreKey,
+	key storetypes.StoreKey,
+	tkey *storetypes.TransientStoreKey,
 	asp types.AccountStakeProvider,
-	paramSpace paramstypes.Subspace,
+	authority string,
 ) *BandwidthMeter {
-	if !paramSpace.HasKeyTable() {
-		paramSpace = paramSpace.WithKeyTable(types.ParamKeyTable())
-	}
-
 	return &BandwidthMeter{
 		cdc:                   cdc,
 		storeKey:              key,
+		tkey:                  tkey,
 		stakeProvider:         asp,
-		paramSpace:            paramSpace,
 		bandwidthSpentByBlock: make(map[uint64]uint64),
+		authority:             authority,
 	}
 }
+
+func (bm BandwidthMeter) GetAuthority() string { return bm.authority }
 
 func (bm BandwidthMeter) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
 
-func (bm BandwidthMeter) GetParams(ctx sdk.Context) (params types.Params) {
-	bm.paramSpace.GetParamSet(ctx, &params)
-	return params
+func (bm BandwidthMeter) SetParams(ctx sdk.Context, p types.Params) error {
+	if err := p.Validate(); err != nil {
+		return err
+	}
+
+	store := ctx.KVStore(bm.storeKey)
+	bz := bm.cdc.MustMarshal(&p)
+	store.Set(types.ParamsKey, bz)
+
+	return nil
 }
 
-func (bm BandwidthMeter) SetParams(ctx sdk.Context, params types.Params) {
-	bm.paramSpace.SetParamSet(ctx, &params)
+func (bm BandwidthMeter) GetParams(ctx sdk.Context) (p types.Params) {
+	store := ctx.KVStore(bm.storeKey)
+	bz := store.Get(types.ParamsKey)
+	if bz == nil {
+		return p
+	}
+
+	bm.cdc.MustUnmarshal(bz, &p)
+	return p
 }
 
 func (bm *BandwidthMeter) LoadState(ctx sdk.Context) {
@@ -66,7 +82,6 @@ func (bm *BandwidthMeter) LoadState(ctx sdk.Context) {
 		bm.totalSpentForSlidingWindow += spentBandwidth
 	}
 	bm.currentCreditPrice = bm.GetBandwidthPrice(ctx, params.BasePrice)
-	bm.currentBlockSpentBandwidth = 0
 }
 
 func (bm *BandwidthMeter) InitState() {
@@ -75,8 +90,6 @@ func (bm *BandwidthMeter) InitState() {
 	window := make(map[uint64]uint64)
 	window[1] = 0
 	bm.bandwidthSpentByBlock = window
-
-	bm.currentBlockSpentBandwidth = 0
 }
 
 func (bm BandwidthMeter) GetBandwidthPrice(ctx sdk.Context, basePrice sdk.Dec) sdk.Dec {
@@ -110,26 +123,38 @@ func (bm BandwidthMeter) AddToDesirableBandwidth(ctx sdk.Context, toAdd uint64) 
 	store.Set(types.TotalBandwidth, sdk.Uint64ToBigEndian(current+toAdd))
 }
 
-func (bm *BandwidthMeter) AddToBlockBandwidth(value uint64) {
-	bm.currentBlockSpentBandwidth += value
+func (bm *BandwidthMeter) AddToBlockBandwidth(ctx sdk.Context, value uint64) {
+	store := ctx.TransientStore(bm.tkey)
+
+	current := uint64(0)
+	blockBandwidth := store.Get(types.BlockBandwidth)
+	if blockBandwidth != nil {
+		current = sdk.BigEndianToUint64(blockBandwidth)
+	}
+
+	store.Set(types.BlockBandwidth, sdk.Uint64ToBigEndian(current+value))
 }
 
 // Here we move bandwidth window:
 // Remove first block of window and add new block to window end
 func (bm *BandwidthMeter) CommitBlockBandwidth(ctx sdk.Context) {
 	params := bm.GetParams(ctx)
+
+	tStore := ctx.TransientStore(bm.tkey)
+	currentBlockSpentBandwidth := sdk.BigEndianToUint64(tStore.Get(types.BlockBandwidth))
+
 	defer func() {
-		if bm.currentBlockSpentBandwidth > 0 {
-			bm.Logger(ctx).Info("Block", "bandwidth", bm.currentBlockSpentBandwidth)
+		if currentBlockSpentBandwidth > 0 {
+			bm.Logger(ctx).Info("Block", "bandwidth", currentBlockSpentBandwidth)
 			bm.Logger(ctx).Info("Window", "bandwidth", bm.totalSpentForSlidingWindow)
 		}
 
-		telemetry.SetGauge(float32(bm.currentBlockSpentBandwidth), types.ModuleName, "block_bandwidth")
+		telemetry.SetGauge(float32(currentBlockSpentBandwidth), types.ModuleName, "block_bandwidth")
 		telemetry.SetGauge(float32(bm.totalSpentForSlidingWindow), types.ModuleName, "window_bandwidth")
-		bm.currentBlockSpentBandwidth = 0
+		tStore.Set(types.BlockBandwidth, sdk.Uint64ToBigEndian(0))
 	}()
 
-	bm.totalSpentForSlidingWindow += bm.currentBlockSpentBandwidth
+	bm.totalSpentForSlidingWindow += currentBlockSpentBandwidth
 
 	newWindowEnd := ctx.BlockHeight()
 	windowStart := newWindowEnd - int64(params.RecoveryPeriod)
@@ -151,12 +176,13 @@ func (bm *BandwidthMeter) CommitBlockBandwidth(ctx sdk.Context) {
 		store.Delete(types.BlockStoreKey(uint64(windowStart)))
 	}
 
-	bm.SetBlockBandwidth(ctx, uint64(ctx.BlockHeight()), bm.currentBlockSpentBandwidth)
-	bm.bandwidthSpentByBlock[uint64(newWindowEnd)] = bm.currentBlockSpentBandwidth
+	bm.SetBlockBandwidth(ctx, uint64(ctx.BlockHeight()), currentBlockSpentBandwidth)
+	bm.bandwidthSpentByBlock[uint64(newWindowEnd)] = currentBlockSpentBandwidth
 }
 
 func (bm *BandwidthMeter) GetCurrentBlockSpentBandwidth(ctx sdk.Context) uint64 {
-	return bm.currentBlockSpentBandwidth
+	tstore := ctx.TransientStore(bm.tkey)
+	return sdk.BigEndianToUint64(tstore.Get(types.BlockBandwidth))
 }
 
 func (bm *BandwidthMeter) GetCurrentNetworkLoad(ctx sdk.Context) sdk.Dec {

@@ -10,14 +10,13 @@ import (
 	"github.com/ipfs/go-cid"
 	"github.com/spf13/cobra"
 
-	graphtypes "github.com/cybercongress/go-cyber/v2/x/graph/types"
+	graphtypes "github.com/cybercongress/go-cyber/v4/x/graph/types"
 
-	"github.com/cybercongress/go-cyber/v2/types/query"
-	"github.com/cybercongress/go-cyber/v2/x/rank/types"
+	"github.com/cybercongress/go-cyber/v4/x/rank/types"
 )
 
 func GetQueryCmd() *cobra.Command {
-	rankingQueryCmd := &cobra.Command{
+	queryCmd := &cobra.Command{
 		Use:                        types.ModuleName,
 		Short:                      "Querying commands for the rank module",
 		DisableFlagParsing:         true,
@@ -25,7 +24,7 @@ func GetQueryCmd() *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
-	rankingQueryCmd.AddCommand(
+	queryCmd.AddCommand(
 		GetCmdQueryParams(),
 		GetCmdQueryRank(),
 		GetCmdQuerySearch(),
@@ -38,7 +37,7 @@ func GetQueryCmd() *cobra.Command {
 		GetCmdQueryKarma(),
 	)
 
-	return rankingQueryCmd
+	return queryCmd
 }
 
 func GetCmdQueryParams() *cobra.Command {
@@ -138,7 +137,7 @@ func GetCmdQuerySearch() *cobra.Command {
 
 			res, err := queryClient.Search(
 				context.Background(),
-				&types.QuerySearchRequest{Particle: args[0], Pagination: &query.PageRequest{Page: page, PerPage: limit}},
+				&types.QuerySearchRequest{Particle: args[0], Pagination: &types.PageRequest{Page: page, PerPage: limit}},
 			)
 			if err != nil {
 				return err
@@ -188,7 +187,7 @@ func GetCmdQueryBacklinks() *cobra.Command {
 
 			res, err := queryClient.Backlinks(
 				context.Background(),
-				&types.QuerySearchRequest{Particle: args[0], Pagination: &query.PageRequest{Page: page, PerPage: limit}},
+				&types.QuerySearchRequest{Particle: args[0], Pagination: &types.PageRequest{Page: page, PerPage: limit}},
 			)
 			if err != nil {
 				return err
@@ -234,7 +233,9 @@ func GetCmdQueryTop() *cobra.Command {
 
 			res, err := queryClient.Top(
 				context.Background(),
-				&query.PageRequest{Page: page, PerPage: limit},
+				&types.QueryTopRequest{
+					Pagination: &types.PageRequest{Page: page, PerPage: limit},
+				},
 			)
 			if err != nil {
 				return err

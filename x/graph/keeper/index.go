@@ -4,12 +4,14 @@ import (
 	"encoding/binary"
 	"io"
 
-	ctypes "github.com/cybercongress/go-cyber/v2/types"
-	"github.com/cybercongress/go-cyber/v2/utils"
-	"github.com/cybercongress/go-cyber/v2/x/graph/types"
+	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 
+	ctypes "github.com/cybercongress/go-cyber/v4/types"
+	"github.com/cybercongress/go-cyber/v4/utils"
+	"github.com/cybercongress/go-cyber/v4/x/graph/types"
+
+	tmos "github.com/cometbft/cometbft/libs/os"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	tmos "github.com/tendermint/tendermint/libs/os"
 )
 
 type IndexKeeper struct {
@@ -24,12 +26,12 @@ type IndexKeeper struct {
 	nextRankOutLinks types.Links
 
 	// Inter-block cache for cyberlinks, reset on every block during Commit
-	tkey sdk.StoreKey
+	tkey *storetypes.TransientStoreKey
 
 	// currentBlockLinks []types.CompactLink
 }
 
-func NewIndexKeeper(gk GraphKeeper, tkey sdk.StoreKey) *IndexKeeper {
+func NewIndexKeeper(gk GraphKeeper, tkey *storetypes.TransientStoreKey) *IndexKeeper {
 	return &IndexKeeper{
 		GraphKeeper: gk,
 		tkey:        tkey,
@@ -152,8 +154,17 @@ func (i *IndexKeeper) LoadFromReader(ctx sdk.Context, reader io.Reader) (err err
 			return err
 		}
 		compactLink := types.UnmarshalBinaryLink(linkBytes)
+
+		i.GraphKeeper.neudeg[compactLink.Account] += 1
+		i.GraphKeeper.rankNeudeg[compactLink.Account] += 1
+
 		i.GraphKeeper.SaveLink(ctx, compactLink)
 		i.PutLink(ctx, compactLink)
 	}
+
+	for acc, links := range i.GraphKeeper.neudeg {
+		i.GraphKeeper.SaveNeudeg(ctx, acc, links)
+	}
+
 	return
 }

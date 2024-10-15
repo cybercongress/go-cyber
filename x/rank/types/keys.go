@@ -1,14 +1,13 @@
 package types
 
 const (
-	ModuleName   = "rank"
-	StoreKey     = ModuleName
-	RouterKey    = ModuleName
-	QuerierRoute = ModuleName
+	ModuleName = "rank"
+	StoreKey   = ModuleName
 )
 
 var (
 	GlobalStoreKeyPrefix = []byte{0x00}
+	ParamsKey            = []byte{0x01}
 
 	LatestBlockNumber = append(GlobalStoreKeyPrefix, []byte("latestBlockNumber")...)
 	LatestMerkleTree  = append(GlobalStoreKeyPrefix, []byte("latestMerkleTree")...)

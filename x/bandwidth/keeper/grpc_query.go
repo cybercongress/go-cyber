@@ -7,7 +7,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/cybercongress/go-cyber/v2/x/bandwidth/types"
+	"github.com/cybercongress/go-cyber/v4/x/bandwidth/types"
 )
 
 var _ types.QueryServer = &BandwidthMeter{}
@@ -23,13 +23,13 @@ func (bm *BandwidthMeter) Load(goCtx context.Context, request *types.QueryLoadRe
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	load := bm.GetCurrentNetworkLoad(ctx)
 
-	return &types.QueryLoadResponse{Load: sdk.DecProto{Dec: load}}, nil
+	return &types.QueryLoadResponse{Load: load}, nil
 }
 
 func (bm *BandwidthMeter) Price(_ context.Context, _ *types.QueryPriceRequest) (*types.QueryPriceResponse, error) {
 	price := bm.GetCurrentCreditPrice()
 
-	return &types.QueryPriceResponse{Price: sdk.DecProto{Dec: price}}, nil
+	return &types.QueryPriceResponse{Price: price}, nil
 }
 
 func (bm *BandwidthMeter) TotalBandwidth(goCtx context.Context, _ *types.QueryTotalBandwidthRequest) (*types.QueryTotalBandwidthResponse, error) {

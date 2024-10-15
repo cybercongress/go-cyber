@@ -3,11 +3,13 @@ package keeper
 import (
 	"context"
 
+	ctypes "github.com/cybercongress/go-cyber/v4/types"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/cybercongress/go-cyber/v2/x/dmn/types"
+	"github.com/cybercongress/go-cyber/v4/x/dmn/types"
 )
 
 var _ types.QueryServer = Keeper{}
@@ -89,4 +91,20 @@ func (k Keeper) ThoughtsStats(goCtx context.Context, _ *types.QueryThoughtsStats
 	thoughtsStats := k.GetAllThoughtsStats(ctx)
 
 	return &types.QueryThoughtsStatsResponse{ThoughtsStats: thoughtsStats}, nil
+}
+
+func (k Keeper) ThoughtsFees(goCtx context.Context, _ *types.QueryThoughtsFeesRequest) (*types.QueryThoughtsFeesResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	thoughts := k.GetAllThoughts(ctx)
+	if len(thoughts) == 0 {
+		return &types.QueryThoughtsFeesResponse{Fees: sdk.NewCoins(ctypes.NewCybCoin(0))}, nil
+	}
+	thoughts.Sort()
+
+	var fees sdk.Coins
+	for _, thought := range thoughts {
+		fees = append(fees, thought.Load.GasPrice)
+	}
+	return &types.QueryThoughtsFeesResponse{Fees: fees}, nil
 }

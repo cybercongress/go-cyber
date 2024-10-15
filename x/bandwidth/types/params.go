@@ -3,25 +3,10 @@ package types
 import (
 	"fmt"
 
+	sdkmath "cosmossdk.io/math"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 )
-
-const (
-	DefaultParamspace = ModuleName
-)
-
-var (
-	KeyRecoveryPeriod    = []byte("RecoveryPeriod")
-	KeyAdjustPricePeriod = []byte("AdjustPricePeriod")
-	KeyBasePrice         = []byte("BasePrice")
-	KeyBaseLoad          = []byte("BaseLoad")
-	KeyMaxBlockBandwidth = []byte("MaxBlockBandwidth")
-)
-
-func ParamKeyTable() paramstypes.KeyTable {
-	return paramstypes.NewKeyTable().RegisterParamSet(&Params{})
-}
 
 func DefaultParams() Params {
 	return Params{
@@ -33,13 +18,19 @@ func DefaultParams() Params {
 	}
 }
 
-func (p *Params) ParamSetPairs() paramstypes.ParamSetPairs {
-	return paramstypes.ParamSetPairs{
-		paramstypes.NewParamSetPair(KeyRecoveryPeriod, &p.RecoveryPeriod, validateRecoveryPeriod),
-		paramstypes.NewParamSetPair(KeyAdjustPricePeriod, &p.AdjustPricePeriod, validateAdjustPricePeriod),
-		paramstypes.NewParamSetPair(KeyBasePrice, &p.BasePrice, validateBasePrice),
-		paramstypes.NewParamSetPair(KeyBaseLoad, &p.BaseLoad, validateBaseLoad),
-		paramstypes.NewParamSetPair(KeyMaxBlockBandwidth, &p.MaxBlockBandwidth, validateMaxBlockBandwidth),
+func NewParams(
+	recoveryPeriod uint64,
+	adjustPricePeriod uint64,
+	basePrice sdkmath.LegacyDec,
+	baseLoad sdkmath.LegacyDec,
+	maxBlockBandwidth uint64,
+) Params {
+	return Params{
+		RecoveryPeriod:    recoveryPeriod,
+		AdjustPricePeriod: adjustPricePeriod,
+		BasePrice:         basePrice,
+		BaseLoad:          baseLoad,
+		MaxBlockBandwidth: maxBlockBandwidth,
 	}
 }
 

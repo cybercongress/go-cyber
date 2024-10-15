@@ -9,14 +9,14 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
 
-	abci "github.com/tendermint/tendermint/abci/types"
+	abci "github.com/cometbft/cometbft/abci/types"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 
-	"github.com/cybercongress/go-cyber/v2/x/cyberbank/keeper"
-	"github.com/cybercongress/go-cyber/v2/x/cyberbank/types"
+	"github.com/cybercongress/go-cyber/v4/x/cyberbank/keeper"
+	"github.com/cybercongress/go-cyber/v4/x/cyberbank/types"
 )
 
 var (
@@ -70,18 +70,11 @@ func (AppModule) Name() string { return types.ModuleName }
 
 func (AppModule) RegisterInvariants(_ sdk.InvariantRegistry) {}
 
-func (AppModule) Route() sdk.Route {
-	return sdk.Route{}
-}
-
-func (AppModule) QuerierRoute() string { return "" }
-
-func (AppModule) LegacyQuerierHandler(_ *codec.LegacyAmino) sdk.Querier { return nil }
-
 func (AppModule) RegisterServices(_ module.Configurator) {}
 
 func (am AppModule) InitGenesis(ctx sdk.Context, _ codec.JSONCodec, _ json.RawMessage) []abci.ValidatorUpdate {
-	am.keeper.InitGenesis(ctx)
+	// this will be called by the app module manager because of null module params in genesis, used direct call in InitChainer
+	// am.keeper.InitGenesis(ctx)
 	return []abci.ValidatorUpdate{}
 }
 

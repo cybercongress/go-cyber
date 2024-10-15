@@ -11,5 +11,5 @@ func DefaultGenesisState() *GenesisState {
 }
 
 func ValidateGenesis(data *GenesisState) error {
-	return data.Params.ValidateBasic()
+	return data.Params.Validate()
 }

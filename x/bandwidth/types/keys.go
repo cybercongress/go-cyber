@@ -5,18 +5,20 @@ import (
 )
 
 const (
-	ModuleName   = "bandwidth"
-	StoreKey     = ModuleName
-	QuerierRoute = ModuleName
+	ModuleName = "bandwidth"
+	StoreKey   = ModuleName
+	TStoreKey  = "transient_bandwidth"
 )
 
 var (
 	GlobalStoreKeyPrefix  = []byte{0x00}
 	AccountStoreKeyPrefix = []byte{0x01}
 	BlockStoreKeyPrefix   = []byte{0x02}
+	ParamsKey             = []byte{0x02}
 
 	LastBandwidthPrice = append(GlobalStoreKeyPrefix, []byte("lastBandwidthPrice")...)
 	TotalBandwidth     = append(GlobalStoreKeyPrefix, []byte("totalBandwidth")...)
+	BlockBandwidth     = append(GlobalStoreKeyPrefix, []byte("blockBandwidth")...)
 )
 
 func AccountStoreKey(addr string) []byte {

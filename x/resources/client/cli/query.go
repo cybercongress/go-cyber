@@ -10,12 +10,12 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/spf13/cobra"
 
-	ctypes "github.com/cybercongress/go-cyber/v2/types"
-	"github.com/cybercongress/go-cyber/v2/x/resources/types"
+	ctypes "github.com/cybercongress/go-cyber/v4/types"
+	"github.com/cybercongress/go-cyber/v4/x/resources/types"
 )
 
 func GetQueryCmd() *cobra.Command {
-	energyQueryCmd := &cobra.Command{
+	queryCmd := &cobra.Command{
 		Use:                        types.ModuleName,
 		Short:                      fmt.Sprintf("Querying commands for the %s module", types.ModuleName),
 		DisableFlagParsing:         true,
@@ -23,12 +23,12 @@ func GetQueryCmd() *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
-	energyQueryCmd.AddCommand(
+	queryCmd.AddCommand(
 		GetCmdQueryParams(),
 		GetCmdQueryInvestmintAmount(),
 	)
 
-	return energyQueryCmd
+	return queryCmd
 }
 
 func GetCmdQueryParams() *cobra.Command {

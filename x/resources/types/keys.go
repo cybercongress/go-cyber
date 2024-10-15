@@ -1,9 +1,11 @@
 package types
 
 const (
-	ModuleName   = "resources"
-	RouterKey    = ModuleName
-	QuerierRoute = ModuleName
+	ModuleName = "resources"
+	StoreKey   = ModuleName
+	RouterKey  = ModuleName
 
 	ResourcesName = "resources"
 )
+
+var ParamsKey = []byte{0x00}

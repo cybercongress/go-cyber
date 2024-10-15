@@ -8,13 +8,13 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 
-	ctypes "github.com/cybercongress/go-cyber/v2/types"
-	bandwidthkeeper "github.com/cybercongress/go-cyber/v2/x/bandwidth/keeper"
-	bandwidthtypes "github.com/cybercongress/go-cyber/v2/x/bandwidth/types"
-	cyberbankkeeper "github.com/cybercongress/go-cyber/v2/x/cyberbank/keeper"
+	ctypes "github.com/cybercongress/go-cyber/v4/types"
+	bandwidthkeeper "github.com/cybercongress/go-cyber/v4/x/bandwidth/keeper"
+	bandwidthtypes "github.com/cybercongress/go-cyber/v4/x/bandwidth/types"
+	cyberbankkeeper "github.com/cybercongress/go-cyber/v4/x/cyberbank/keeper"
 
 	// sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/cybercongress/go-cyber/v2/x/graph/types"
+	"github.com/cybercongress/go-cyber/v4/x/graph/types"
 )
 
 type msgServer struct {
@@ -79,7 +79,9 @@ func (k msgServer) Cyberlink(goCtx context.Context, msg *types.MsgCyberlink) (*t
 
 		if !accountBandwidth.HasEnoughRemained(cost) {
 			return nil, bandwidthtypes.ErrNotEnoughBandwidth
-		} else if (cost + currentBlockSpentBandwidth) > maxBlockBandwidth {
+		}
+
+		if (cost + currentBlockSpentBandwidth) > maxBlockBandwidth {
 			return nil, bandwidthtypes.ErrExceededMaxBlockBandwidth
 		}
 
@@ -87,7 +89,7 @@ func (k msgServer) Cyberlink(goCtx context.Context, msg *types.MsgCyberlink) (*t
 		if err != nil {
 			return nil, bandwidthtypes.ErrNotEnoughBandwidth
 		}
-		k.AddToBlockBandwidth(cost)
+		k.AddToBlockBandwidth(ctx, cost)
 	}
 
 	for _, link := range msg.Links {

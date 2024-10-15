@@ -3,10 +3,9 @@ package types
 import sdk "github.com/cosmos/cosmos-sdk/types"
 
 const (
-	ModuleName   = "grid"
-	StoreKey     = ModuleName
-	RouterKey    = ModuleName
-	QuerierRoute = ModuleName
+	ModuleName = "grid"
+	StoreKey   = ModuleName
+	RouterKey  = ModuleName
 
 	GridPoolName = "energy_grid"
 )
@@ -14,6 +13,7 @@ const (
 var (
 	RouteKey                     = []byte{0x00}
 	RoutedEnergyByDestinationKey = []byte{0x01}
+	ParamsKey                    = []byte{0x02}
 )
 
 func GetRoutedEnergyByDestinationKey(dst sdk.AccAddress) []byte {

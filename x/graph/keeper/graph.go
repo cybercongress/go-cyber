@@ -5,13 +5,15 @@ import (
 	"fmt"
 	"io"
 
+	storetypes "github.com/cosmos/cosmos-sdk/store/types"
+
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/telemetry"
 
-	"github.com/tendermint/tendermint/libs/log"
+	"github.com/cometbft/cometbft/libs/log"
 
-	ctypes "github.com/cybercongress/go-cyber/v2/types"
-	"github.com/cybercongress/go-cyber/v2/x/graph/types"
+	ctypes "github.com/cybercongress/go-cyber/v4/types"
+	"github.com/cybercongress/go-cyber/v4/x/graph/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -22,17 +24,17 @@ const (
 )
 
 type GraphKeeper struct {
-	key        sdk.StoreKey
+	key        storetypes.StoreKey
 	cdc        codec.BinaryCodec
 	neudeg     map[uint64]uint64
 	rankNeudeg map[uint64]uint64
-	tkey       sdk.StoreKey
+	tkey       *storetypes.TransientStoreKey
 }
 
 func NewKeeper(
 	cdc codec.BinaryCodec,
-	storeKey sdk.StoreKey,
-	tkey sdk.StoreKey,
+	storeKey storetypes.StoreKey,
+	tkey *storetypes.TransientStoreKey,
 ) *GraphKeeper {
 	return &GraphKeeper{
 		cdc:        cdc,

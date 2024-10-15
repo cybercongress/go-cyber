@@ -2,9 +2,13 @@ package staking
 
 import (
 	"context"
+	"strconv"
 	"time"
 
 	"github.com/armon/go-metrics"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	"google.golang.org/grpc/codes"
+
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -12,20 +16,20 @@ import (
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	"github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	"github.com/cosmos/cosmos-sdk/x/staking/types"
-	tmstrings "github.com/tendermint/tendermint/libs/strings"
+	"google.golang.org/grpc/status"
 
-	ctypes "github.com/cybercongress/go-cyber/v2/types"
-	resourcestypes "github.com/cybercongress/go-cyber/v2/x/resources/types"
+	ctypes "github.com/cybercongress/go-cyber/v4/types"
+	resourcestypes "github.com/cybercongress/go-cyber/v4/x/resources/types"
 )
 
 type msgServer struct {
-	keeper.Keeper
+	*keeper.Keeper
 	bk bankkeeper.Keeper
 }
 
 // NewMsgServerImpl returns an implementation of the bank MsgServer interface
 // for the provided Keeper.
-func NewMsgServerImpl(keeper keeper.Keeper, bk bankkeeper.Keeper) types.MsgServer {
+func NewMsgServerImpl(keeper *keeper.Keeper, bk bankkeeper.Keeper) types.MsgServer {
 	return &msgServer{
 		Keeper: keeper,
 		bk:     bk,
@@ -51,6 +55,10 @@ func (k msgServer) CreateValidator(goCtx context.Context, msg *types.MsgCreateVa
 	valAddr, err := sdk.ValAddressFromBech32(msg.ValidatorAddress)
 	if err != nil {
 		return nil, err
+	}
+
+	if msg.Commission.Rate.LT(k.MinCommissionRate(ctx)) {
+		return nil, sdkerrors.Wrapf(types.ErrCommissionLTMinRate, "cannot set validator commission to less than minimum rate of %s", k.MinCommissionRate(ctx))
 	}
 
 	// check to see if the pubkey or sender has been registered before
@@ -80,7 +88,15 @@ func (k msgServer) CreateValidator(goCtx context.Context, msg *types.MsgCreateVa
 
 	cp := ctx.ConsensusParams()
 	if cp != nil && cp.Validator != nil {
-		if !tmstrings.StringInSlice(pk.Type(), cp.Validator.PubKeyTypes) {
+		pkType := pk.Type()
+		hasKeyType := false
+		for _, keyType := range cp.Validator.PubKeyTypes {
+			if pkType == keyType {
+				hasKeyType = true
+				break
+			}
+		}
+		if !hasKeyType {
 			return nil, sdkerrors.Wrapf(
 				types.ErrValidatorPubKeyTypeNotSupported,
 				"got: %s, expected: %s", pk.Type(), cp.Validator.PubKeyTypes,
@@ -92,6 +108,7 @@ func (k msgServer) CreateValidator(goCtx context.Context, msg *types.MsgCreateVa
 	if err != nil {
 		return nil, err
 	}
+
 	commission := types.NewCommissionWithTime(
 		msg.Commission.Rate, msg.Commission.MaxRate,
 		msg.Commission.MaxChangeRate, ctx.BlockHeader().Time,
@@ -110,11 +127,13 @@ func (k msgServer) CreateValidator(goCtx context.Context, msg *types.MsgCreateVa
 	validator.MinSelfDelegation = msg.MinSelfDelegation
 
 	k.SetValidator(ctx, validator)
-	_ = k.SetValidatorByConsAddr(ctx, validator)
+	k.SetValidatorByConsAddr(ctx, validator)
 	k.SetNewValidatorByPowerIndex(ctx, validator)
 
 	// call the after-creation hook
-	k.AfterValidatorCreated(ctx, validator.GetOperator())
+	if err := k.Hooks().AfterValidatorCreated(ctx, validator.GetOperator()); err != nil {
+		return nil, err
+	}
 
 	// move coins from the msg.Address account to a (self-delegation) delegator account
 	// the validator account and global shares are updated within here
@@ -129,11 +148,6 @@ func (k msgServer) CreateValidator(goCtx context.Context, msg *types.MsgCreateVa
 			types.EventTypeCreateValidator,
 			sdk.NewAttribute(types.AttributeKeyValidator, msg.ValidatorAddress),
 			sdk.NewAttribute(sdk.AttributeKeyAmount, msg.Value.String()),
-		),
-		sdk.NewEvent(
-			sdk.EventTypeMessage,
-			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-			sdk.NewAttribute(sdk.AttributeKeySender, msg.DelegatorAddress),
 		),
 	})
 
@@ -168,7 +182,9 @@ func (k msgServer) EditValidator(goCtx context.Context, msg *types.MsgEditValida
 		}
 
 		// call the before-modification hook since we're about to update the commission
-		k.BeforeValidatorModified(ctx, valAddr)
+		if err := k.Hooks().BeforeValidatorModified(ctx, valAddr); err != nil {
+			return nil, err
+		}
 
 		validator.Commission = commission
 	}
@@ -182,7 +198,7 @@ func (k msgServer) EditValidator(goCtx context.Context, msg *types.MsgEditValida
 			return nil, types.ErrSelfDelegationBelowMinimum
 		}
 
-		validator.MinSelfDelegation = (*msg.MinSelfDelegation)
+		validator.MinSelfDelegation = *msg.MinSelfDelegation
 	}
 
 	k.SetValidator(ctx, validator)
@@ -192,11 +208,6 @@ func (k msgServer) EditValidator(goCtx context.Context, msg *types.MsgEditValida
 			types.EventTypeEditValidator,
 			sdk.NewAttribute(types.AttributeKeyCommissionRate, validator.Commission.String()),
 			sdk.NewAttribute(types.AttributeKeyMinSelfDelegation, validator.MinSelfDelegation.String()),
-		),
-		sdk.NewEvent(
-			sdk.EventTypeMessage,
-			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-			sdk.NewAttribute(sdk.AttributeKeySender, msg.ValidatorAddress),
 		),
 	})
 
@@ -260,13 +271,9 @@ func (k msgServer) Delegate(goCtx context.Context, msg *types.MsgDelegate) (*typ
 		sdk.NewEvent(
 			types.EventTypeDelegate,
 			sdk.NewAttribute(types.AttributeKeyValidator, msg.ValidatorAddress),
+			sdk.NewAttribute(types.AttributeKeyDelegator, msg.DelegatorAddress),
 			sdk.NewAttribute(sdk.AttributeKeyAmount, msg.Amount.String()),
 			sdk.NewAttribute(types.AttributeKeyNewShares, newShares.String()),
-		),
-		sdk.NewEvent(
-			sdk.EventTypeMessage,
-			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-			sdk.NewAttribute(sdk.AttributeKeySender, msg.DelegatorAddress),
 		),
 	})
 
@@ -328,11 +335,6 @@ func (k msgServer) BeginRedelegate(goCtx context.Context, msg *types.MsgBeginRed
 			sdk.NewAttribute(types.AttributeKeyDstValidator, msg.ValidatorDstAddress),
 			sdk.NewAttribute(sdk.AttributeKeyAmount, msg.Amount.String()),
 			sdk.NewAttribute(types.AttributeKeyCompletionTime, completionTime.Format(time.RFC3339)),
-		),
-		sdk.NewEvent(
-			sdk.EventTypeMessage,
-			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-			sdk.NewAttribute(sdk.AttributeKeySender, msg.DelegatorAddress),
 		),
 	})
 
@@ -398,18 +400,144 @@ func (k msgServer) Undelegate(goCtx context.Context, msg *types.MsgUndelegate) (
 			types.EventTypeUnbond,
 			sdk.NewAttribute(types.AttributeKeyValidator, msg.ValidatorAddress),
 			sdk.NewAttribute(sdk.AttributeKeyAmount, msg.Amount.String()),
+			sdk.NewAttribute(types.AttributeKeyDelegator, msg.DelegatorAddress),
 			sdk.NewAttribute(types.AttributeKeyCompletionTime, completionTime.Format(time.RFC3339)),
-		),
-		sdk.NewEvent(
-			sdk.EventTypeMessage,
-			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-			sdk.NewAttribute(sdk.AttributeKeySender, msg.DelegatorAddress),
 		),
 	})
 
 	return &types.MsgUndelegateResponse{
 		CompletionTime: completionTime,
 	}, nil
+}
+
+func (k msgServer) CancelUnbondingDelegation(goCtx context.Context, msg *types.MsgCancelUnbondingDelegation) (*types.MsgCancelUnbondingDelegationResponse, error) {
+	result, err := WrapCancelUnbondingDelegation(goCtx, k.bk, msg)
+	if err != nil {
+		return nil, err
+	}
+	if !result {
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "unauthorized message: %T", msg)
+	}
+
+	// ---------------------
+
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	valAddr, err := sdk.ValAddressFromBech32(msg.ValidatorAddress)
+	if err != nil {
+		return nil, err
+	}
+
+	delegatorAddress, err := sdk.AccAddressFromBech32(msg.DelegatorAddress)
+	if err != nil {
+		return nil, err
+	}
+
+	bondDenom := k.BondDenom(ctx)
+	if msg.Amount.Denom != bondDenom {
+		return nil, sdkerrors.Wrapf(
+			sdkerrors.ErrInvalidRequest, "invalid coin denomination: got %s, expected %s", msg.Amount.Denom, bondDenom,
+		)
+	}
+
+	validator, found := k.GetValidator(ctx, valAddr)
+	if !found {
+		return nil, types.ErrNoValidatorFound
+	}
+
+	// In some situations, the exchange rate becomes invalid, e.g. if
+	// Validator loses all tokens due to slashing. In this case,
+	// make all future delegations invalid.
+	if validator.InvalidExRate() {
+		return nil, types.ErrDelegatorShareExRateInvalid
+	}
+
+	if validator.IsJailed() {
+		return nil, types.ErrValidatorJailed
+	}
+
+	ubd, found := k.GetUnbondingDelegation(ctx, delegatorAddress, valAddr)
+	if !found {
+		return nil, status.Errorf(
+			codes.NotFound,
+			"unbonding delegation with delegator %s not found for validator %s",
+			msg.DelegatorAddress, msg.ValidatorAddress,
+		)
+	}
+
+	var (
+		unbondEntry      types.UnbondingDelegationEntry
+		unbondEntryIndex int64 = -1
+	)
+
+	for i, entry := range ubd.Entries {
+		if entry.CreationHeight == msg.CreationHeight {
+			unbondEntry = entry
+			unbondEntryIndex = int64(i)
+			break
+		}
+	}
+	if unbondEntryIndex == -1 {
+		return nil, sdkerrors.ErrNotFound.Wrapf("unbonding delegation entry is not found at block height %d", msg.CreationHeight)
+	}
+
+	if unbondEntry.Balance.LT(msg.Amount.Amount) {
+		return nil, sdkerrors.ErrInvalidRequest.Wrap("amount is greater than the unbonding delegation entry balance")
+	}
+
+	if unbondEntry.CompletionTime.Before(ctx.BlockTime()) {
+		return nil, sdkerrors.ErrInvalidRequest.Wrap("unbonding delegation is already processed")
+	}
+
+	// delegate back the unbonding delegation amount to the validator
+	_, err = k.Keeper.Delegate(ctx, delegatorAddress, msg.Amount.Amount, types.Unbonding, validator, false)
+	if err != nil {
+		return nil, err
+	}
+
+	amount := unbondEntry.Balance.Sub(msg.Amount.Amount)
+	if amount.IsZero() {
+		ubd.RemoveEntry(unbondEntryIndex)
+	} else {
+		// update the unbondingDelegationEntryBalance and InitialBalance for ubd entry
+		unbondEntry.Balance = amount
+		unbondEntry.InitialBalance = unbondEntry.InitialBalance.Sub(msg.Amount.Amount)
+		ubd.Entries[unbondEntryIndex] = unbondEntry
+	}
+
+	// set the unbonding delegation or remove it if there are no more entries
+	if len(ubd.Entries) == 0 {
+		k.RemoveUnbondingDelegation(ctx, ubd)
+	} else {
+		k.SetUnbondingDelegation(ctx, ubd)
+	}
+
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			types.EventTypeCancelUnbondingDelegation,
+			sdk.NewAttribute(sdk.AttributeKeyAmount, msg.Amount.String()),
+			sdk.NewAttribute(types.AttributeKeyValidator, msg.ValidatorAddress),
+			sdk.NewAttribute(types.AttributeKeyDelegator, msg.DelegatorAddress),
+			sdk.NewAttribute(types.AttributeKeyCreationHeight, strconv.FormatInt(msg.CreationHeight, 10)),
+		),
+	)
+
+	return &types.MsgCancelUnbondingDelegationResponse{}, nil
+}
+
+func (ms msgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdateParams) (*types.MsgUpdateParamsResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if ms.GetAuthority() != msg.Authority {
+		return nil, sdkerrors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", ms.GetAuthority(), msg.Authority)
+	}
+
+	// store params
+	if err := ms.SetParams(ctx, msg.Params); err != nil {
+		return nil, err
+	}
+
+	return &types.MsgUpdateParamsResponse{}, nil
 }
 
 // -------------
@@ -474,6 +602,30 @@ func WrapCreateValidator(
 		return false, err
 	}
 	toMint := sdk.NewCoin(ctypes.SCYB, msg.Value.Amount)
+	err = bk.MintCoins(ctx, resourcestypes.ResourcesName, sdk.NewCoins(toMint))
+	if err != nil {
+		return false, err
+	}
+	err = bk.SendCoinsFromModuleToAccount(ctx, resourcestypes.ResourcesName, delegator, sdk.NewCoins(toMint))
+	if err != nil {
+		return false, err
+	}
+
+	return true, nil
+}
+
+func WrapCancelUnbondingDelegation(
+	goCtx context.Context,
+	bk bankkeeper.Keeper,
+	msg *types.MsgCancelUnbondingDelegation,
+) (bool, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	delegator, err := sdk.AccAddressFromBech32(msg.DelegatorAddress)
+	if err != nil {
+		return false, err
+	}
+	toMint := sdk.NewCoin(ctypes.SCYB, msg.Amount.Amount)
 	err = bk.MintCoins(ctx, resourcestypes.ResourcesName, sdk.NewCoins(toMint))
 	if err != nil {
 		return false, err

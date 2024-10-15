@@ -4,21 +4,23 @@ import (
 	"fmt"
 	"time"
 
+	storetypes "github.com/cosmos/cosmos-sdk/store/types"
+
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	gogotypes "github.com/gogo/protobuf/types"
+	gogotypes "github.com/cosmos/gogoproto/types"
 
+	"github.com/cometbft/cometbft/libs/log"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	"github.com/tendermint/tendermint/libs/log"
 
-	"github.com/cybercongress/go-cyber/v2/x/cyberbank/types"
+	"github.com/cybercongress/go-cyber/v4/x/cyberbank/types"
 )
 
 type IndexedKeeper struct {
 	*Proxy
 	accountKeeper types.AccountKeeper
 	cdc           codec.BinaryCodec
-	authKey       sdk.StoreKey
+	authKey       storetypes.StoreKey
 
 	userTotalStakeAmpere    map[uint64]uint64
 	userNewTotalStakeAmpere map[uint64]uint64
@@ -27,7 +29,7 @@ type IndexedKeeper struct {
 
 func NewIndexedKeeper(
 	cdc codec.BinaryCodec,
-	authKey sdk.StoreKey,
+	authKey storetypes.StoreKey,
 	pbk *Proxy,
 	ak types.AccountKeeper,
 ) *IndexedKeeper {
@@ -132,7 +134,7 @@ func (k *IndexedKeeper) UpdateAccountsStakeAmpere(ctx sdk.Context) {
 func (k IndexedKeeper) GetNextAccountNumber(ctx sdk.Context) uint64 {
 	var accNumber uint64
 	store := ctx.KVStore(k.authKey)
-	bz := store.Get([]byte("globalAccountNumber"))
+	bz := store.Get(authtypes.GlobalAccountNumberKey)
 
 	if bz == nil {
 		accNumber = 0

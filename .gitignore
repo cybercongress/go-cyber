@@ -55,3 +55,7 @@ contracts
 
 # Scripts
 *.mjs
+
+*.wasm
+
+cmd/iavltool/*.txt

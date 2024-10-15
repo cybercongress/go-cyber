@@ -9,18 +9,16 @@ import (
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 
+	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
-	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/cybercongress/go-cyber/v2/x/rank/client/cli"
-	"github.com/cybercongress/go-cyber/v2/x/rank/client/rest"
-
-	"github.com/cybercongress/go-cyber/v2/x/rank/keeper"
-	"github.com/cybercongress/go-cyber/v2/x/rank/types"
+	"github.com/cybercongress/go-cyber/v4/x/rank/client/cli"
+	"github.com/cybercongress/go-cyber/v4/x/rank/exported"
+	"github.com/cybercongress/go-cyber/v4/x/rank/keeper"
+	"github.com/cybercongress/go-cyber/v4/x/rank/types"
 )
 
 var (
@@ -39,7 +37,9 @@ type AppModuleBasic struct {
 
 func (AppModuleBasic) Name() string { return types.ModuleName }
 
-func (AppModuleBasic) RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {}
+func (AppModuleBasic) RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
+	types.RegisterLegacyAminoCodec(cdc)
+}
 
 func (AppModuleBasic) DefaultGenesis(cdc codec.JSONCodec) json.RawMessage {
 	return cdc.MustMarshalJSON(types.DefaultGenesisState())
@@ -51,10 +51,6 @@ func (AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, _ client.TxEncodingCo
 		return fmt.Errorf("failed to unmarshal %s genesis state: %w", types.ModuleName, err)
 	}
 	return types.ValidateGenesis(&data)
-}
-
-func (AppModuleBasic) RegisterRESTRoutes(clientCtx client.Context, rtr *mux.Router) {
-	rest.RegisterRoutes(clientCtx, rtr)
 }
 
 func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *runtime.ServeMux) {
@@ -69,20 +65,28 @@ func (AppModuleBasic) GetQueryCmd() *cobra.Command {
 	return cli.GetQueryCmd()
 }
 
-func (AppModuleBasic) RegisterInterfaces(_ codectypes.InterfaceRegistry) {}
+func (AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegistry) {
+	types.RegisterInterfaces(registry)
+}
 
 type AppModule struct {
 	AppModuleBasic
+	cdc codec.Codec
 
-	rk *keeper.StateKeeper
+	rk             *keeper.StateKeeper
+	legacySubspace exported.Subspace
 }
 
 func NewAppModule(
-	cdc codec.Codec, rankKeeper *keeper.StateKeeper,
+	cdc codec.Codec,
+	rankKeeper *keeper.StateKeeper,
+	ss exported.Subspace,
 ) AppModule {
 	return AppModule{
 		AppModuleBasic: AppModuleBasic{cdc: cdc},
+		cdc:            cdc,
 		rk:             rankKeeper,
+		legacySubspace: ss,
 	}
 }
 
@@ -95,20 +99,14 @@ func (AppModule) Name() string { return types.ModuleName }
 
 func (am AppModule) RegisterInvariants(_ sdk.InvariantRegistry) {}
 
-func (am AppModule) Route() sdk.Route {
-	return sdk.Route{}
-}
-
-func (am AppModule) QuerierRoute() string {
-	return types.QuerierRoute
-}
-
-func (am AppModule) LegacyQuerierHandler(legacyQuerierCdc *codec.LegacyAmino) sdk.Querier {
-	return keeper.NewQuerier(am.rk, legacyQuerierCdc)
-}
-
 func (am AppModule) RegisterServices(cfg module.Configurator) {
 	types.RegisterQueryServer(cfg.QueryServer(), am.rk)
+	types.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(*am.rk))
+
+	m := keeper.NewMigrator(*am.rk, am.legacySubspace)
+	if err := cfg.RegisterMigration(types.ModuleName, 1, m.Migrate1to2); err != nil {
+		panic(fmt.Sprintf("failed to migrate x/%s from version 1 to 2: %v", types.ModuleName, err))
+	}
 }
 
 func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, data json.RawMessage) []abci.ValidatorUpdate {
@@ -124,7 +122,7 @@ func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.Raw
 }
 
 func (am AppModule) ConsensusVersion() uint64 {
-	return 1
+	return 2
 }
 
 func (am AppModule) BeginBlock(_ sdk.Context, _ abci.RequestBeginBlock) {}

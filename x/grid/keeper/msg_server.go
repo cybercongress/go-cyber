@@ -3,9 +3,12 @@ package keeper
 import (
 	"context"
 
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+
+	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/cybercongress/go-cyber/v2/x/grid/types"
+	"github.com/cybercongress/go-cyber/v4/x/grid/types"
 )
 
 type msgServer struct {
@@ -19,6 +22,8 @@ func NewMsgServerImpl(
 		keeper,
 	}
 }
+
+var _ types.MsgServer = msgServer{}
 
 func (k msgServer) CreateRoute(goCtx context.Context, msg *types.MsgCreateRoute) (*types.MsgCreateRouteResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
@@ -153,4 +158,17 @@ func (k msgServer) EditRouteName(goCtx context.Context, msg *types.MsgEditRouteN
 	})
 
 	return &types.MsgEditRouteNameResponse{}, nil
+}
+
+func (server msgServer) UpdateParams(goCtx context.Context, req *types.MsgUpdateParams) (*types.MsgUpdateParamsResponse, error) {
+	if server.authority != req.Authority {
+		return nil, errors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", server.authority, req.Authority)
+	}
+
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	if err := server.SetParams(ctx, req.Params); err != nil {
+		return nil, err
+	}
+
+	return &types.MsgUpdateParamsResponse{}, nil
 }

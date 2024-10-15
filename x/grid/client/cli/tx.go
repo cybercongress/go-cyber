@@ -10,12 +10,12 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 
-	"github.com/cybercongress/go-cyber/v2/x/grid/types"
+	"github.com/cybercongress/go-cyber/v4/x/grid/types"
 )
 
 // GetTxCmd returns the transaction commands for this module
 func NewTxCmd() *cobra.Command {
-	gridTxCmd := &cobra.Command{
+	txCmd := &cobra.Command{
 		Use:                        types.ModuleName,
 		Short:                      fmt.Sprintf("%s transactions subcommands", types.ModuleName),
 		DisableFlagParsing:         true,
@@ -23,14 +23,14 @@ func NewTxCmd() *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
-	gridTxCmd.AddCommand(
+	txCmd.AddCommand(
 		GetCmdCreateRoute(),
 		GetCmdEditRoute(),
 		GetCmdDeleteRoute(),
 		GetCmdEditRouteName(),
 	)
 
-	return gridTxCmd
+	return txCmd
 }
 
 func GetCmdCreateRoute() *cobra.Command {

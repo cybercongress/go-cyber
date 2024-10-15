@@ -13,12 +13,12 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client"
 
-	ctypes "github.com/cybercongress/go-cyber/v2/types"
-	"github.com/cybercongress/go-cyber/v2/x/resources/types"
+	ctypes "github.com/cybercongress/go-cyber/v4/types"
+	"github.com/cybercongress/go-cyber/v4/x/resources/types"
 )
 
 func NewTxCmd() *cobra.Command {
-	resourcesTxCmd := &cobra.Command{
+	txCmd := &cobra.Command{
 		Use:                        types.ModuleName,
 		Short:                      fmt.Sprintf("%s transactions subcommands", types.ModuleName),
 		DisableFlagParsing:         true,
@@ -26,11 +26,11 @@ func NewTxCmd() *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
-	resourcesTxCmd.AddCommand(
+	txCmd.AddCommand(
 		GetCmdInvestmint(),
 	)
 
-	return resourcesTxCmd
+	return txCmd
 }
 
 func GetCmdInvestmint() *cobra.Command {

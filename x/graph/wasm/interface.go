@@ -3,109 +3,101 @@ package wasm
 import (
 	"encoding/json"
 
-	"github.com/CosmWasm/wasmd/x/wasm"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	errorsmod "cosmossdk.io/errors"
 
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
+	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 
-	"github.com/cybercongress/go-cyber/v2/x/graph/keeper"
-	"github.com/cybercongress/go-cyber/v2/x/graph/types"
+	pluginstypes "github.com/cybercongress/go-cyber/v4/plugins/types"
+	bandwidthkeeper "github.com/cybercongress/go-cyber/v4/x/bandwidth/keeper"
+	cyberbankkeeper "github.com/cybercongress/go-cyber/v4/x/cyberbank/keeper"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	"github.com/cybercongress/go-cyber/v4/x/graph/keeper"
 )
 
-var (
-	_ QuerierInterface   = Querier{}
-	_ MsgParserInterface = MsgParser{}
-)
-
-//--------------------------------------------------
-
-type MsgParserInterface interface {
-	Parse(contractAddr sdk.AccAddress, msg wasmvmtypes.CosmosMsg) ([]sdk.Msg, error)
-	ParseCustom(contractAddr sdk.AccAddress, data json.RawMessage) ([]sdk.Msg, error)
+type Messenger struct {
+	gk *keeper.GraphKeeper
+	ik *keeper.IndexKeeper
+	ak *authkeeper.AccountKeeper
+	bk *cyberbankkeeper.IndexedKeeper
+	bm *bandwidthkeeper.BandwidthMeter
 }
 
-type MsgParser struct{}
-
-func NewWasmMsgParser() MsgParser {
-	return MsgParser{}
-}
-
-func (MsgParser) Parse(_ sdk.AccAddress, _ wasmvmtypes.CosmosMsg) ([]sdk.Msg, error) {
-	return nil, nil
-}
-
-type CosmosMsg struct {
-	Cyberlink *types.MsgCyberlink `json:"cyberlink,omitempty"`
-}
-
-func (MsgParser) ParseCustom(contractAddr sdk.AccAddress, data json.RawMessage) ([]sdk.Msg, error) {
-	var sdkMsg CosmosMsg
-	err := json.Unmarshal(data, &sdkMsg)
-	if err != nil {
-		return nil, sdkerrors.Wrap(err, "failed to parse graph custom msg")
+func NewMessenger(
+	gk *keeper.GraphKeeper,
+	ik *keeper.IndexKeeper,
+	ak *authkeeper.AccountKeeper,
+	bk *cyberbankkeeper.IndexedKeeper,
+	bm *bandwidthkeeper.BandwidthMeter,
+) *Messenger {
+	return &Messenger{
+		gk,
+		ik,
+		ak,
+		bk,
+		bm,
 	}
-
-	if sdkMsg.Cyberlink != nil {
-		return []sdk.Msg{sdkMsg.Cyberlink}, sdkMsg.Cyberlink.ValidateBasic()
-	}
-
-	return nil, sdkerrors.Wrap(wasm.ErrInvalidMsg, "Unknown variant of Graph")
 }
 
-//--------------------------------------------------
+func (m *Messenger) HandleMsg(ctx sdk.Context, contractAddr sdk.AccAddress, contractIBCPortID string, msg pluginstypes.CyberMsg) ([]sdk.Event, [][]byte, error) {
+	switch {
+	case msg.Cyberlink != nil:
+		if msg.Cyberlink.Neuron != contractAddr.String() {
+			return nil, nil, wasmvmtypes.InvalidRequest{Err: "cyberlink wrong neuron"}
+		}
 
-type QuerierInterface interface {
-	Query(ctx sdk.Context, request wasmvmtypes.QueryRequest) ([]byte, error)
-	QueryCustom(ctx sdk.Context, data json.RawMessage) ([]byte, error)
+		msgServer := keeper.NewMsgServerImpl(m.gk, m.ik, *m.ak, m.bk, m.bm)
+
+		if err := msg.Cyberlink.ValidateBasic(); err != nil {
+			return nil, nil, errorsmod.Wrap(err, "failed validating msg")
+		}
+
+		res, err := msgServer.Cyberlink(
+			sdk.WrapSDKContext(ctx),
+			msg.Cyberlink,
+		)
+		if err != nil {
+			return nil, nil, errorsmod.Wrap(err, "cyberlink msg")
+		}
+
+		responseBytes, err := json.Marshal(*res)
+		if err != nil {
+			return nil, nil, errorsmod.Wrap(err, "failed to serialize cyberlink response")
+		}
+
+		resp := [][]byte{responseBytes}
+
+		return nil, resp, nil
+	default:
+		return nil, nil, pluginstypes.ErrHandleMsg
+	}
 }
 
 type Querier struct {
-	keeper.GraphKeeper
+	*keeper.GraphKeeper
 }
 
-func NewWasmQuerier(keeper keeper.GraphKeeper) Querier {
-	return Querier{keeper}
+func NewWasmQuerier(keeper *keeper.GraphKeeper) *Querier {
+	return &Querier{keeper}
 }
 
-func (Querier) Query(_ sdk.Context, _ wasmvmtypes.QueryRequest) ([]byte, error) { return nil, nil }
-
-type CosmosQuery struct {
-	ParticlesAmount  *struct{} `json:"particles_amount,omitempty"`
-	CyberlinksAmount *struct{} `json:"cyberlinks_amount,omitempty"`
-}
-
-type ParticlesAmountQueryResponse struct {
-	ParticlesAmount uint64 `json:"particles_amount"`
-}
-
-type CyberlinksAmountQueryResponse struct {
-	CyberlinksAmount uint64 `json:"cyberlinks_amount"`
-}
-
-func (querier Querier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([]byte, error) {
-	var query CosmosQuery
-	err := json.Unmarshal(data, &query)
-	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
-	}
-
-	var bz []byte
-
+func (querier *Querier) HandleQuery(ctx sdk.Context, query pluginstypes.CyberQuery) ([]byte, error) {
 	switch {
-	case query.ParticlesAmount != nil:
-		amount := querier.GraphKeeper.GetCidsCount(ctx)
-		bz, err = json.Marshal(ParticlesAmountQueryResponse{ParticlesAmount: amount})
-	case query.CyberlinksAmount != nil:
-		amount := querier.GraphKeeper.GetLinksCount(ctx)
-		bz, err = json.Marshal(CyberlinksAmountQueryResponse{CyberlinksAmount: amount})
+	case query.GraphStats != nil:
+		res, err := querier.GraphKeeper.GraphStats(ctx, query.GraphStats)
+		if err != nil {
+			return nil, errorsmod.Wrap(err, "failed to get graph stats")
+		}
+
+		responseBytes, err := json.Marshal(res)
+		if err != nil {
+			return nil, errorsmod.Wrap(err, "failed to serialize graph stats response")
+		}
+		return responseBytes, nil
+
 	default:
-		return nil, wasmvmtypes.UnsupportedRequest{Kind: "unknown Graph variant"}
+		return nil, pluginstypes.ErrHandleQuery
 	}
-
-	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
-	}
-
-	return bz, nil
 }

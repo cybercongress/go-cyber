@@ -5,49 +5,49 @@ import (
 	"encoding/hex"
 	"fmt"
 
+	storetypes "github.com/cosmos/cosmos-sdk/store/types"
+
 	"github.com/CosmWasm/wasmd/x/wasm"
+	"github.com/cometbft/cometbft/libs/log"
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
-	"github.com/tendermint/tendermint/libs/log"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	ctypes "github.com/cybercongress/go-cyber/v2/types"
+	ctypes "github.com/cybercongress/go-cyber/v4/types"
 
-	"github.com/cybercongress/go-cyber/v2/x/dmn/types"
-	graphtypes "github.com/cybercongress/go-cyber/v2/x/graph/types"
+	"github.com/cybercongress/go-cyber/v4/x/dmn/types"
+	graphtypes "github.com/cybercongress/go-cyber/v4/x/graph/types"
 )
 
 // Keeper of the power store
 type Keeper struct {
-	storeKey      sdk.StoreKey
+	storeKey      storetypes.StoreKey
 	cdc           codec.BinaryCodec
 	wasmKeeper    wasm.Keeper
 	accountKeeper types.AccountKeeper
 	proxyKeeper   types.BankKeeper
 	paramspace    paramstypes.Subspace
+
+	authority string
 }
 
 func NewKeeper(
 	cdc codec.BinaryCodec,
-	key sdk.StoreKey,
+	key storetypes.StoreKey,
 	bk types.BankKeeper,
 	ak types.AccountKeeper,
-	paramSpace paramstypes.Subspace,
+	authority string,
 ) *Keeper {
-	if !paramSpace.HasKeyTable() {
-		paramSpace = paramSpace.WithKeyTable(types.ParamKeyTable())
-	}
-
 	return &Keeper{
 		storeKey:      key,
 		cdc:           cdc,
 		proxyKeeper:   bk,
 		accountKeeper: ak,
-		paramspace:    paramSpace,
+		authority:     authority,
 	}
 }
 
@@ -55,17 +55,34 @@ func (k *Keeper) SetWasmKeeper(ws wasm.Keeper) {
 	k.wasmKeeper = ws
 }
 
+// GetAuthority returns the x/mint module's authority.
+func (k Keeper) GetAuthority() string { return k.authority }
+
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
 
-func (k Keeper) GetParams(ctx sdk.Context) (params types.Params) {
-	k.paramspace.GetParamSet(ctx, &params)
-	return params
+func (k Keeper) SetParams(ctx sdk.Context, p types.Params) error {
+	if err := p.Validate(); err != nil {
+		return err
+	}
+
+	store := ctx.KVStore(k.storeKey)
+	bz := k.cdc.MustMarshal(&p)
+	store.Set(types.ParamsKey, bz)
+
+	return nil
 }
 
-func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
-	k.paramspace.SetParamSet(ctx, &params)
+func (k Keeper) GetParams(ctx sdk.Context) (p types.Params) {
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get(types.ParamsKey)
+	if bz == nil {
+		return p
+	}
+
+	k.cdc.MustUnmarshal(bz, &p)
+	return p
 }
 
 func (k Keeper) SaveThought(
@@ -256,18 +273,15 @@ func (k Keeper) UpdateThoughtBlock(
 }
 
 func (k Keeper) MaxThougths(ctx sdk.Context) (res uint32) {
-	k.paramspace.Get(ctx, types.KeyMaxSlots, &res)
-	return
+	return k.GetParams(ctx).MaxSlots
 }
 
 func (k Keeper) MaxGas(ctx sdk.Context) (res uint32) {
-	k.paramspace.Get(ctx, types.KeyMaxGas, &res)
-	return
+	return k.GetParams(ctx).MaxGas
 }
 
 func (k Keeper) FeeTTL(ctx sdk.Context) (res uint32) {
-	k.paramspace.Get(ctx, types.KeyFeeTTL, &res)
-	return
+	return k.GetParams(ctx).FeeTtl
 }
 
 func (k Keeper) SetThought(ctx sdk.Context, thought types.Thought) {
@@ -379,15 +393,6 @@ func (k Keeper) GetThoughtStats(ctx sdk.Context, program sdk.AccAddress, name st
 	k.cdc.MustUnmarshal(value, &stats)
 
 	return stats, true
-}
-
-func (k Keeper) GetLowestFee(ctx sdk.Context) sdk.Coin {
-	thoughts := k.GetAllThoughts(ctx)
-	if len(thoughts) == 0 {
-		return ctypes.NewCybCoin(0)
-	}
-	thoughts.Sort()
-	return thoughts[len(thoughts)-1].Load.GasPrice
 }
 
 func (k Keeper) ExecuteThoughtsQueue(ctx sdk.Context) {

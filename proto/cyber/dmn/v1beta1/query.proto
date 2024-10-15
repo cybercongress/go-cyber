@@ -3,12 +3,11 @@ package cyber.dmn.v1beta1;
 
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
+import "cosmos/base/v1beta1/coin.proto";
 
 import "cyber/dmn/v1beta1/types.proto";
 
 option go_package = "github.com/cybercongress/go-cyber/x/dmn/types";
-option (gogoproto.goproto_getters_all) = false;
-option (gogoproto.equal_all) = false;
 
 service Query {
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
@@ -31,6 +30,11 @@ service Query {
   rpc ThoughtsStats(QueryThoughtsStatsRequest)
       returns (QueryThoughtsStatsResponse) {
     option (google.api.http).get = "/cyber/dmn/v1beta1/dmn/thoughts_stats";
+  }
+
+  rpc ThoughtsFees(QueryThoughtsFeesRequest)
+      returns (QueryThoughtsFeesResponse) {
+    option (google.api.http).get = "/cyber/dmn/v1beta1/dmn/thoughts_fees";
   }
 }
 
@@ -66,5 +70,14 @@ message QueryThoughtsStatsResponse {
   repeated ThoughtStats thoughts_stats = 1 [
     (gogoproto.nullable) = false,
     (gogoproto.castrepeated) = "ThoughtsStats"
+  ];
+}
+
+message QueryThoughtsFeesRequest {}
+
+message QueryThoughtsFeesResponse {
+  repeated cosmos.base.v1beta1.Coin fees = 3 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
   ];
 }

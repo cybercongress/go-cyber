@@ -3,13 +3,13 @@
 ###########################################################################################
 FROM ubuntu:20.04
 
-ENV GO_VERSION '1.17.8'
+ENV GO_VERSION '1.22.2'
 ENV GO_ARCH 'linux-amd64'
-ENV GO_BIN_SHA '980e65a863377e69fd9b67df9d8395fd8e93858e7a24c9f55803421e453f4f99'
+ENV GO_BIN_SHA '5901c52b7a78002aeff14a21f93e0f064f74ce1360fce51c6ee68cd471216a17'
 ENV DEBIAN_FRONTEND=noninteractive 
 ENV DAEMON_HOME /root/.cyber
 ENV DAEMON_RESTART_AFTER_UPGRADE=true
-ENV DAEMON_ALLOW_DOWNLOAD_BINARIES=false
+ENV DAEMON_ALLOW_DOWNLOAD_BINARIES=true
 ENV DAEMON_LOG_BUFFER_SIZE=1048
 ENV UNSAFE_SKIP_BACKUP=true
 ENV DAEMON_NAME cyber
@@ -48,26 +48,25 @@ RUN apt-get update && apt-get -y install --no-install-recommends \
 && add-apt-repository "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/ /" \
 && apt-get update \
 && apt-get install cuda=${CUDA_VER} -y --no-install-recommends \
-&& mkdir -p /cyber/cosmovisor/genesis/bin \
-&& mkdir -p /cyber/cosmovisor/upgrades/cyberfrey/bin \
-# Compile cyber for genesis version
+&& mkdir -p /cyber/cosmovisor/upgrades/v3/bin \
+&& mkdir -p /cyber/cosmovisor/upgrades/v4/bin \
+ # Compile cyber for v3 version
 ###########################################################################################
-&& git checkout v0.2.0 \
-&& cd /sources/x/rank/cuda \
-&& make build \
-&& cd /sources \
-&& make build CUDA_ENABLED=true \
-&& cp ./build/cyber /cyber/cosmovisor/genesis/bin/ \
-&& cp ./build/cyber /usr/local/bin \ 
-&& rm -rf ./build \
- # Compile cyber for genesis version
-###########################################################################################
-&& git checkout v0.3.0 \
+&& git checkout v3.0.1 \
 && cd /sources/x/rank/cuda \
 && make build \
 && cd  /sources \
 && make build CUDA_ENABLED=true \
-&& cp ./build/cyber /cyber/cosmovisor/upgrades/cyberfrey/bin/ \
+&& cp ./build/cyber /cyber/cosmovisor/upgrades/v3/bin/ \
+&& rm -rf ./build \
+ # Compile cyber for v4 version
+###########################################################################################
+&& git checkout v4.0.0 \
+&& cd /sources/x/rank/cuda \
+&& make build \
+&& cd  /sources \
+&& make build CUDA_ENABLED=true \
+&& cp ./build/cyber /cyber/cosmovisor/upgrades/v4/bin/ \
 && rm -rf ./build \
 # Cleanup 
 ###########################################################################################
@@ -85,7 +84,7 @@ RUN apt-get update && apt-get -y install --no-install-recommends \
 
 # Install cosmovisor
 ###########################################################################################
- RUN wget -O cosmovisor.tgz https://github.com/cosmos/cosmos-sdk/releases/download/cosmovisor%2Fv1.1.0/cosmovisor-v1.1.0-linux-amd64.tar.gz \
+ RUN wget -O cosmovisor.tgz https://github.com/cosmos/cosmos-sdk/releases/download/cosmovisor%2Fv1.5.0/cosmovisor-v1.5.0-linux-amd64.tar.gz \
  && tar -xzf cosmovisor.tgz \
  && cp cosmovisor /usr/bin/cosmovisor \
  && chmod +x /usr/bin/cosmovisor \
@@ -98,9 +97,7 @@ COPY start_script.sh start_script.sh
 COPY entrypoint.sh /entrypoint.sh
 RUN wget -O /genesis.json https://gateway.ipfs.cybernode.ai/ipfs/QmYubyVNfghD4xCrTFj26zBwrF9s5GJhi1TmxvrwmJCipr \
 && chmod +x start_script.sh \
-&& chmod +x /entrypoint.sh \
-&& cyber version
-
+&& chmod +x /entrypoint.sh 
 
 #  Start
 ###############################################################################

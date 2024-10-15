@@ -10,8 +10,8 @@ import (
 	bank "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
-	ctypes "github.com/cybercongress/go-cyber/v2/types"
-	"github.com/cybercongress/go-cyber/v2/x/cyberbank/types"
+	ctypes "github.com/cybercongress/go-cyber/v4/types"
+	"github.com/cybercongress/go-cyber/v4/x/cyberbank/types"
 )
 
 var _ bank.Keeper = (*Proxy)(nil)
@@ -22,6 +22,70 @@ type Proxy struct {
 	ek types.EnergyKeeper
 
 	coinsTransferHooks []types.CoinsTransferHook
+}
+
+func (p *Proxy) SpendableCoin(ctx sdk.Context, addr sdk.AccAddress, denom string) sdk.Coin {
+	return p.bk.SpendableCoin(ctx, addr, denom)
+}
+
+func (p *Proxy) IsSendEnabledDenom(ctx sdk.Context, denom string) bool {
+	return p.bk.IsSendEnabledDenom(ctx, denom)
+}
+
+func (p *Proxy) GetSendEnabledEntry(ctx sdk.Context, denom string) (banktypes.SendEnabled, bool) {
+	return p.bk.GetSendEnabledEntry(ctx, denom)
+}
+
+func (p *Proxy) SetSendEnabled(ctx sdk.Context, denom string, value bool) {
+	p.bk.SetSendEnabled(ctx, denom, value)
+}
+
+func (p *Proxy) SetAllSendEnabled(ctx sdk.Context, sendEnableds []*banktypes.SendEnabled) {
+	p.bk.SetAllSendEnabled(ctx, sendEnableds)
+}
+
+func (p *Proxy) DeleteSendEnabled(ctx sdk.Context, denoms ...string) {
+	p.bk.DeleteSendEnabled(ctx, denoms...)
+}
+
+func (p *Proxy) IterateSendEnabledEntries(ctx sdk.Context, cb func(denom string, sendEnabled bool) (stop bool)) {
+	p.bk.IterateSendEnabledEntries(ctx, cb)
+}
+
+func (p *Proxy) GetAllSendEnabledEntries(ctx sdk.Context) []banktypes.SendEnabled {
+	return p.bk.GetAllSendEnabledEntries(ctx)
+}
+
+func (p *Proxy) GetBlockedAddresses() map[string]bool {
+	return p.bk.GetBlockedAddresses()
+}
+
+func (p *Proxy) GetAuthority() string {
+	return p.bk.GetAuthority()
+}
+
+func (p *Proxy) WithMintCoinsRestriction(fn bank.MintingRestrictionFn) bank.BaseKeeper {
+	return p.bk.WithMintCoinsRestriction(fn)
+}
+
+func (p *Proxy) HasDenomMetaData(ctx sdk.Context, denom string) bool {
+	return p.bk.HasDenomMetaData(ctx, denom)
+}
+
+func (p *Proxy) GetAllDenomMetaData(ctx sdk.Context) []banktypes.Metadata {
+	return p.bk.GetAllDenomMetaData(ctx)
+}
+
+func (p *Proxy) SpendableBalanceByDenom(ctx context.Context, request *banktypes.QuerySpendableBalanceByDenomRequest) (*banktypes.QuerySpendableBalanceByDenomResponse, error) {
+	return p.bk.SpendableBalanceByDenom(ctx, request)
+}
+
+func (p *Proxy) DenomOwners(ctx context.Context, request *banktypes.QueryDenomOwnersRequest) (*banktypes.QueryDenomOwnersResponse, error) {
+	return p.bk.DenomOwners(ctx, request)
+}
+
+func (p *Proxy) SendEnabled(ctx context.Context, request *banktypes.QuerySendEnabledRequest) (*banktypes.QuerySendEnabledResponse, error) {
+	return p.bk.SendEnabled(ctx, request)
 }
 
 func Wrap(bk bank.Keeper) *Proxy {
@@ -180,8 +244,8 @@ func (p *Proxy) GetParams(ctx sdk.Context) banktypes.Params {
 	return p.bk.GetParams(ctx)
 }
 
-func (p *Proxy) SetParams(ctx sdk.Context, params banktypes.Params) {
-	p.bk.SetParams(ctx, params)
+func (p *Proxy) SetParams(ctx sdk.Context, params banktypes.Params) error {
+	return p.bk.SetParams(ctx, params)
 }
 
 func (p *Proxy) BlockedAddr(addr sdk.AccAddress) bool {

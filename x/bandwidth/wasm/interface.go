@@ -3,106 +3,71 @@ package wasm
 import (
 	"encoding/json"
 
+	errorsmod "cosmossdk.io/errors"
+
+	pluginstypes "github.com/cybercongress/go-cyber/v4/plugins/types"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
-
-	"github.com/cybercongress/go-cyber/v2/x/bandwidth/keeper"
+	"github.com/cybercongress/go-cyber/v4/x/bandwidth/keeper"
 )
-
-var _ QuerierInterface = Querier{}
-
-type QuerierInterface interface {
-	Query(ctx sdk.Context, request wasmvmtypes.QueryRequest) ([]byte, error)
-	QueryCustom(ctx sdk.Context, data json.RawMessage) ([]byte, error)
-}
 
 type Querier struct {
 	*keeper.BandwidthMeter
 }
 
-func NewWasmQuerier(keeper *keeper.BandwidthMeter) Querier {
-	return Querier{keeper}
+func NewWasmQuerier(keeper *keeper.BandwidthMeter) *Querier {
+	return &Querier{keeper}
 }
 
-func (Querier) Query(_ sdk.Context, _ wasmvmtypes.QueryRequest) ([]byte, error) { return nil, nil }
-
-type CosmosQuery struct {
-	BandwidthPrice  *struct{}                   `json:"bandwidth_price,omitempty"`
-	BandwidthLoad   *struct{}                   `json:"bandwidth_load,omitempty"`
-	BandwidthTotal  *struct{}                   `json:"bandwidth_total,omitempty"`
-	NeuronBandwidth *QueryNeuronBandwidthParams `json:"neuron_bandwidth,omitempty"`
-}
-
-type QueryNeuronBandwidthParams struct {
-	Neuron string `json:"neuron"`
-}
-
-type BandwidthPriceResponse struct {
-	Price string `json:"price"`
-}
-
-type BandwidthLoadResponse struct {
-	Load string `json:"load"`
-}
-
-type BandwidthTotalResponse struct {
-	Total uint64 `json:"total"`
-}
-
-type NeuronBandwidthResponse struct {
-	Neuron           string `json:"neuron"`
-	RemainedValue    uint64 `json:"remained_value"`
-	LastUpdatedBlock uint64 `json:"last_updated_block"`
-	MaxValue         uint64 `json:"max_value"`
-}
-
-func (querier Querier) QueryCustom(ctx sdk.Context, data json.RawMessage) ([]byte, error) {
-	var query CosmosQuery
-	err := json.Unmarshal(data, &query)
-	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
-	}
-
-	var bz []byte
-
+func (querier *Querier) HandleQuery(ctx sdk.Context, query pluginstypes.CyberQuery) ([]byte, error) {
 	switch {
-	case query.BandwidthPrice != nil:
-		price := querier.BandwidthMeter.GetCurrentCreditPrice()
-
-		bz, err = json.Marshal(BandwidthPriceResponse{
-			Price: price.String(),
-		})
 	case query.BandwidthLoad != nil:
-		load := querier.BandwidthMeter.GetCurrentNetworkLoad(ctx)
+		res, err := querier.BandwidthMeter.Load(ctx, query.BandwidthLoad)
+		if err != nil {
+			return nil, errorsmod.Wrap(err, "failed to get bandwidth load")
+		}
 
-		bz, err = json.Marshal(BandwidthLoadResponse{
-			Load: load.String(),
-		})
-	case query.BandwidthTotal != nil:
-		desirableBandwidth := querier.BandwidthMeter.GetDesirableBandwidth(ctx)
+		responseBytes, err := json.Marshal(res)
+		if err != nil {
+			return nil, errorsmod.Wrap(err, "failed to serialize bandwidth load response")
+		}
+		return responseBytes, nil
 
-		bz, err = json.Marshal(BandwidthTotalResponse{
-			Total: desirableBandwidth,
-		})
+	case query.BandwidthPrice != nil:
+		res, err := querier.BandwidthMeter.Price(ctx, query.BandwidthPrice)
+		if err != nil {
+			return nil, errorsmod.Wrap(err, "failed to get bandwidth price")
+		}
+
+		responseBytes, err := json.Marshal(res)
+		if err != nil {
+			return nil, errorsmod.Wrap(err, "failed to serialize bandwidth price response")
+		}
+		return responseBytes, nil
+	case query.TotalBandwidth != nil:
+		res, err := querier.BandwidthMeter.TotalBandwidth(ctx, query.TotalBandwidth)
+		if err != nil {
+			return nil, errorsmod.Wrap(err, "failed to get total bandwidth")
+		}
+
+		responseBytes, err := json.Marshal(res)
+		if err != nil {
+			return nil, errorsmod.Wrap(err, "failed to serialize total bandwidth response")
+		}
+		return responseBytes, nil
 	case query.NeuronBandwidth != nil:
-		address, _ := sdk.AccAddressFromBech32(query.NeuronBandwidth.Neuron)
-		accountBandwidth := querier.BandwidthMeter.GetCurrentAccountBandwidth(ctx, address)
+		res, err := querier.BandwidthMeter.NeuronBandwidth(ctx, query.NeuronBandwidth)
+		if err != nil {
+			return nil, errorsmod.Wrap(err, "failed to get neuron bandwidth")
+		}
 
-		bz, err = json.Marshal(NeuronBandwidthResponse{
-			Neuron:           accountBandwidth.Neuron,
-			RemainedValue:    accountBandwidth.RemainedValue,
-			LastUpdatedBlock: accountBandwidth.LastUpdatedBlock,
-			MaxValue:         accountBandwidth.MaxValue,
-		})
+		responseBytes, err := json.Marshal(res)
+		if err != nil {
+			return nil, errorsmod.Wrap(err, "failed to serialize neuron bandwidth response")
+		}
+		return responseBytes, nil
 	default:
-		return nil, wasmvmtypes.UnsupportedRequest{Kind: "unknown Bandwidth variant"}
+		return nil, pluginstypes.ErrHandleQuery
 	}
-
-	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
-	}
-
-	return bz, nil
 }

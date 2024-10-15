@@ -1,4 +1,6 @@
-# Cyber - SuperIntelligence for The Great Web
+<div align="center">
+ <h1>Cyber - SuperIntelligence for The Great Web</h1>
+</div>
 
 <div align="center">
  <h1>Start to use right now - <a href="https://cyb.ai">cyb.ai</a></h1>
@@ -21,15 +23,19 @@
 </div>
 
 <div align="center">
- <h3><a href="https://t.me/fuckgoogle">#fuckgoogle</a> and <a href="https://t.me/cyber_russian_community">cyber~Russian</a> communities </h3>
+ <h3><a href="https://t.me/fuckgoogle">#fuckgoogle</a> and <a href="https://t.me/CyberGlobalHub">Cyber & Bostrom</a> communities in TG </h3>
 </div>
 
 <div align="center">
- <h3>Network <a href="https://monitor.cybernode.ai/">monitor</a></h3>
+ <h3> Welcome to <a href="https://discord.gg/cyber-bostrom-spacepussy">Discord server</a></h3>
 </div>
 
 <div align="center">
- <h3><b>go-cyber is golang implementation of cyber <a href="https://github.com/cybercongress/cyber">protocol</a></b></h3>
+ <h3>Network <a href="https://cybernode.ai/">monitor</a></h3>
+</div>
+
+<div align="center">
+ <h3><b><a href="https://cyber.page">Metagraph</a> of cyber project</b></h3>
 </div>
 _____________
 
@@ -37,16 +43,13 @@ _____________
 
 [![version](https://img.shields.io/github/release/cybercongress/cyberd.svg?style=flat-square)](https://github.com/cybercongress/cyberd/releases/latest)
 [![CircleCI](https://img.shields.io/circleci/build/github/cybercongress/go-cyber/master?style=flat-square)](https://circleci.com/gh/cybercongress/workflows/go-cyber/tree/master)
+![Cosmos-SDK](https://img.shields.io/static/v1.svg?label=cosmos-sdk&message=0.47.12&color=blue&style=flat-square)
+![CometBFT](https://img.shields.io/static/v1.svg?label=cometbft&message=0.37.8&color=blue&style=flat-square)
+![IBC](https://img.shields.io/static/v1.svg?label=ibc-go&message=7.6.0&color=blue&style=flat-square)
+![CosmWasm](https://img.shields.io/static/v1.svg?label=cosmwasm&message=1.5.2&color=blue&style=flat-square)
+![WASMD](https://img.shields.io/static/v1.svg?label=wasmd&message=0.45.0&color=blue&style=flat-square)
+[![contributors](https://img.shields.io/github/contributors/cybercongress/go-cyber.svg?style=flat-square)](https://github.com/cybercongress/go-cyber/graphs/contributors)
 [![license](https://img.shields.io/badge/License-Cyber-brightgreen.svg?style=flat-square)](https://github.com/cybercongress/cyberd/blob/master/LICENSE)
-![Cosmos-SDK](https://img.shields.io/static/v1.svg?label=cosmos-sdk&message=0.45.16&color=blue&style=flat-square)
-![Tendermint](https://img.shields.io/static/v1.svg?label=tendermint&message=0.34.29&color=blue&style=flat-square)
-![IBC](https://img.shields.io/static/v1.svg?label=ibc-go&message=3.1.0&color=blue&style=flat-square)
-![CosmWasm](https://img.shields.io/static/v1.svg?label=cosmwasm&message=1.0.0&color=blue&style=flat-square)
-![WASMD](https://img.shields.io/static/v1.svg?label=wasmd&message=0.28.0&color=blue&style=flat-square)
-![Liquidity](https://img.shields.io/static/v1.svg?label=liquidity&message=1.5.3&color=blue&style=flat-square)
-[![LoC](https://tokei.rs/b1/github/cybercongress/cyberd?style=flat)](https://github.com/cybercongress/cyberd)
-[![contributors](https://img.shields.io/github/contributors/cybercongress/cyberd.svg?style=flat-square)](https://github.com/cybercongress/cyberd/graphs/contributors)
-[![Coverage Status](https://img.shields.io/coveralls/github/cybercongress/cyberd/master?style=flat-square)](https://coveralls.io/github/cybercongress/cyberd?branch=master)
 
 ## Blockchain
 
@@ -59,16 +62,18 @@ _____________
 _________________________________________________________
 
 ## Networks
-|Network|Cosmos|Hub|Launch|Security Token| Resources Token|Bandwidth Token| Power Token | Supported Tokens |
-|---|---|---|---|---|---|---|---|---|
-|Bostrom|🟢|Bootloader Hub|2021|BOOT |HYDROGEN|VOLT|AMPERE|ICS20|
-|Cyber|🔵|Cyber Hub|TBA|CYB|HYDROGEN|VOLT|AMPERE|ICS20|
+| Network                              |Cosmos| Hub                                               | Launch | Token  |
+|--------------------------------------|---|---------------------------------------------------|--------|--------|
+| [Bostrom](https://cyb.ai)            |🟢| Bootloader Hub                                    | 2021   | BOOT   |
+| [Space Pussy](https://spacepussy.ai) |🟣| Meme Community Network                            | 2022   | PUSSY  |
+| [Deepchain](https://deepchain.dev)   |⚫| [Deep Community](https://deep.foundation) Network | 2025   | ENERGY |
+| Cyber                                |🔵| Superintelligence Hub                             | 2027   | CYB    |
 _________________________________________________________
 
 ## Computer Specification 🛠
 
 1. Universe - Cosmos
-2. Consensus - Tendermint | BOOT
+2. Consensus - CometBFT | BOOT
 3. Dyson Sphere - Snub Dodecahedron configuration
 4. External Communication - IBC
 5. Liquidity - InterChain AMM with MEV protection
@@ -102,26 +107,26 @@ _________________________________________________________
 _________________________________________________________
 
 ## Setup
+Build: 
 
-Chain-ID: bostrom
+```
+make install
+```
 
-Genesis: [QmYubyVNfghD4xCrTFj26zBwrF9s5GJhi1TmxvrwmJCipr](http://cloudflare-ipfs.com/ipfs/QmYubyVNfghD4xCrTFj26zBwrF9s5GJhi1TmxvrwmJCipr)
-
-Build: ```make install```
-
-Run: ```cyber start ```
-
-To use as CLI with remote node:
+To use as CLI with remote node or on:
 ```
 make install CUDA_ENABLED=false
 ```
 
-- Version - v0.2.0
+- Version - v3.0.1
 - RPC: `https://rpc.bostrom.cybernode.ai/`
 - REST: `https://lcd.bostrom.cybernode.ai/rank/parameters`
 - CLI: `... --node=https://rpc.bostrom.cybernode.ai:443`
 - Seed: `d0518ce9881a4b0c5872e5e9b7c4ea8d760dad3f@85.10.207.173:26656`
 - Peers: `5d542c0eb40ae48dc2cac0c140aedb605ded77dc@195.201.105.229:26656,a7226dce9f543a4ecd8db1da2ffd7be05d40d3ad@185.186.208.36:26656,c72de1e20beed51b779d89b1cf08d8146016eec4@185.186.208.37:26656,4c130ed1c58f6d6be981c59a748511e581969c51@93.180.175.201:36656`
+
+### Use [localbostrom](https://github.com/cybercongress/localbostrom) for local development environment
+### Join validator set using [validator guide](https://github.com/cybercongress/go-cyber/blob/main/docs/run_validator.md)
 _________________________________________________________
 
 ## IBC
@@ -181,37 +186,37 @@ _________________________________________________________
 
 ## Cyber vs Corps
 
-| What                               | Google                      | Cyber                     |
-|------------------------------------|-----------------------------|---------------------------|
-| Is                                 | Company                     | Protocol                  |
-| Protocol Stack                     | Web2                        | Web3                      |
-| Code                               | Closed                      | Open                      |
-| Consensus                          | USA law                     | Tendermint, Hybrid (2023) |
-| Knowledge                          | Private                     | Public                    |
-| Links                              | Hyperlinks                  | Cyberlinks                |
-| Backlinks                          | No                          | Yes                       |
-| Decentralized Marketing (DeMa)     | No                          | Yes                       |
-| Beneficiaries                      | Limited set of stakeholders | Any web3 agent            |
-| Addressing                         | URLs                        | CIDs                      |
-| Ranking                            | Blackbox                    | Sybil resistant           |
-| Knowledge Graph Proofs             | No                          | Cyberlinks and Ranks      |
-| Offline and Interplanetary         | No                          | Yes                       |
-| Internet Knowledge Protocol        | No                          | Over IBC (2022)           |
-| Smart Contracts                    | Impossible                  | WASM                      |
-| Smart Contracts on Knowledge Graph | No                          | Yes                       |
-| GPU Smart Contracts                | No                          | GraphBLAS (2023)          |
-| Software 2.0                       | No                          | Yes                       |
-| Security                           | No evidence                 | Cryptographic proofs      |
-| Privacy                            | Impossible                  | Possible (2025)           |
-| Censorship                         | Yes                         | No                        |
-| Captcha                            | Yes                         | No                        |
-| Ads beneficiary                    | Google                      | Creator                   |
-| Apps                               | Limited                     | Unlimited                 |
-| Robots/IoT                         | Limited                     | Unlimited                 |
-| Data Distribution                  | Private servers             | IPFS                      |
-| Storage guaranty                   | Impossible                  | PoRep (2024)              |
-| SuperIntelligence                  | Non-Provalbe                | Provable                  |
-| Browser                            | Chrome                      | Cyb                       |
+| What                               | Google                      | Cyber                |
+|------------------------------------|-----------------------------|----------------------|
+| Is                                 | Company                     | Protocol             |
+| Protocol Stack                     | Web2                        | Web3                 |
+| Code                               | Closed                      | Open                 |
+| Consensus                          | USA law                     | CometBFT             |
+| Knowledge                          | Private                     | Public               |
+| Links                              | Hyperlinks                  | Cyberlinks           |
+| Backlinks                          | No                          | Yes                  |
+| Decentralized Marketing (DeMa)     | No                          | Yes                  |
+| Beneficiaries                      | Limited set of stakeholders | Any web3 agent       |
+| Addressing                         | URLs                        | CIDs                 |
+| Ranking                            | Blackbox                    | Sybil resistant      |
+| Knowledge Graph Proofs             | No                          | Cyberlinks and Ranks |
+| Offline and Interplanetary         | No                          | Yes                  |
+| Internet Knowledge Protocol        | No                          | Over IBC (2024)      |
+| Smart Contracts                    | Impossible                  | WASM                 |
+| Smart Contracts on Knowledge Graph | No                          | Yes                  |
+| GPU Smart Contracts                | No                          | GraphBLAS (2025)     |
+| Software 2.0                       | No                          | Yes                  |
+| Security                           | No evidence                 | Cryptographic proofs |
+| Privacy                            | Impossible                  | Possible (2027)      |
+| Censorship                         | Yes                         | No                   |
+| Captcha                            | Yes                         | No                   |
+| Ads beneficiary                    | Google                      | Creator              |
+| Apps                               | Limited                     | Unlimited            |
+| Robots/IoT                         | Limited                     | Unlimited            |
+| Data Distribution                  | Private servers             | IPFS                 |
+| Storage guaranty                   | Impossible                  | PoRep (2026)         |
+| SuperIntelligence                  | Non-Provalbe                | Provable             |
+| Browser                            | Chrome                      | Cyb                  |
 _________________________________________________________
 
 ## Cyber vs Govs
@@ -231,7 +236,7 @@ _________________________________________________________
 | Transaction tax   | 50%             | ~0.1%        |
 | Printing tax      | 100%            | ~1%          |
 | Provable voting   | No              | Yes          |
-| Consensus         | Democracy       | Tendermint   |
+| Consensus         | Democracy       | CometBFT     |
 | Currency          | Enforced        | Any          |
 | Security          | Police & Army   | Cryptography |
 | Decision makers   | They            | Us           |

@@ -9,17 +9,16 @@ import (
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 
+	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
-	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/cybercongress/go-cyber/v2/x/resources/client/cli"
-	"github.com/cybercongress/go-cyber/v2/x/resources/client/rest"
-	"github.com/cybercongress/go-cyber/v2/x/resources/keeper"
-	"github.com/cybercongress/go-cyber/v2/x/resources/types"
+	"github.com/cybercongress/go-cyber/v4/x/resources/client/cli"
+	"github.com/cybercongress/go-cyber/v4/x/resources/exported"
+	"github.com/cybercongress/go-cyber/v4/x/resources/keeper"
+	"github.com/cybercongress/go-cyber/v4/x/resources/types"
 )
 
 var (
@@ -52,10 +51,6 @@ func (AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, _ client.TxEncodingCo
 	return types.ValidateGenesis(data)
 }
 
-func (AppModuleBasic) RegisterRESTRoutes(clientCtx client.Context, rtr *mux.Router) {
-	rest.RegisterRoutes(clientCtx, rtr)
-}
-
 func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *runtime.ServeMux) {
 	if err := types.RegisterQueryHandlerClient(context.Background(), mux, types.NewQueryClient(clientCtx)); err != nil {
 		panic(err)
@@ -77,37 +72,36 @@ func (AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegistry) 
 type AppModule struct {
 	AppModuleBasic
 
-	keeper keeper.Keeper
+	cdc            codec.Codec
+	keeper         keeper.Keeper
+	legacySubspace exported.Subspace
 }
 
 func NewAppModule(
-	cdc codec.Codec, k keeper.Keeper,
+	cdc codec.Codec,
+	k keeper.Keeper,
+	ss exported.Subspace,
 ) AppModule {
 	return AppModule{
 		AppModuleBasic: AppModuleBasic{cdc: cdc},
+		cdc:            cdc,
 		keeper:         k,
+		legacySubspace: ss,
 	}
 }
 
 func (AppModule) Name() string { return types.ModuleName }
 
-func (am AppModule) Route() sdk.Route {
-	return sdk.Route{}
-}
-
 func (am AppModule) RegisterInvariants(_ sdk.InvariantRegistry) {}
-
-func (AppModule) QuerierRoute() string {
-	return types.QuerierRoute
-}
-
-func (am AppModule) LegacyQuerierHandler(legacyQuerierCdc *codec.LegacyAmino) sdk.Querier {
-	return keeper.NewQuerier(am.keeper, legacyQuerierCdc)
-}
 
 func (am AppModule) RegisterServices(cfg module.Configurator) {
 	types.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(am.keeper))
 	types.RegisterQueryServer(cfg.QueryServer(), am.keeper)
+
+	m := keeper.NewMigrator(am.keeper, am.legacySubspace)
+	if err := cfg.RegisterMigration(types.ModuleName, 1, m.Migrate1to2); err != nil {
+		panic(fmt.Sprintf("failed to migrate x/%s from version 1 to 2: %v", types.ModuleName, err))
+	}
 }
 
 func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, data json.RawMessage) []abci.ValidatorUpdate {
@@ -123,7 +117,7 @@ func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.Raw
 }
 
 func (am AppModule) ConsensusVersion() uint64 {
-	return 1
+	return 2
 }
 
 func (am AppModule) BeginBlock(_ sdk.Context, _ abci.RequestBeginBlock) {}

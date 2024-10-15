@@ -28,7 +28,7 @@ All agents keypairs are stored locally in the `PATH_TO_CYBER/keys` folder.
 
 > Note: A validator's operator key is directly tied to an application key, but uses reserved prefixes solely for this purpose: `bostrom valoper`.
 
-A nodes keypair is stored in `node_key.json` and `priv_validator_key.json` at `$HOME/.cyber/config` folder. You can delete them and restart `cyber ` if you want to change this keypair. The new pair will be created automatically.
+A nodes keypair is stored in `node_key.json` and `priv_validator_key.json` at `$HOME/.cyber/config` folder. You can delete them and restart `cyber` if you want to change this keypair. The new pair will be created automatically.
 
 ## Generate keys
 
@@ -41,7 +41,7 @@ cyber keys add <account_name>
 ```
 
 Next, you will have to create a passphrase to protect the key on disk. The output of the above
-the command will contain a _seed phrase_. It is recommended to save the _seed phrase_ in a safe
+command will contain a _seed phrase_. It is recommended to save the _seed phrase_ in a safe
 place so that in case you forget the password, you could eventually regenerate the key from
 the seed phrase with the following command:
 

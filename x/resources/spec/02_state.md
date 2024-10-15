@@ -23,4 +23,4 @@ type Period struct {
 
 ## Keys
 
-- ModuleName, RouterKey, QuerierRoute: `energy`
+- ModuleName, RouterKey: `energy`

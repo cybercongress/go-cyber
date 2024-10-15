@@ -89,7 +89,7 @@ $ cyber status --node=tcp://localhost:26657
 $ cyber query account bostrom1phaxpevm5wecex2jyaqty2a4v02qj7qm5n94ug
 ```
 
-4. If you want to hard restart the netowrk (drop state and start from the genesis) you can use `hard_restart.sh` script
+4. If you want to hard restart the network (drop state and start from the genesis) you can use `hard_restart.sh` script
 
 ```sh
 chmod +x ./hard_restart.sh

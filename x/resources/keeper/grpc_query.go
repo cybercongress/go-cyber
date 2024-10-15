@@ -3,14 +3,15 @@ package keeper
 import (
 	"context"
 
+	errorsmod "cosmossdk.io/errors"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	ctypes "github.com/cybercongress/go-cyber/v2/types"
+	ctypes "github.com/cybercongress/go-cyber/v4/types"
 
-	"github.com/cybercongress/go-cyber/v2/x/resources/types"
+	"github.com/cybercongress/go-cyber/v4/x/resources/types"
 )
 
 var _ types.QueryServer = Keeper{}
@@ -28,11 +29,11 @@ func (k Keeper) Investmint(goCtx context.Context, request *types.QueryInvestmint
 	}
 
 	if request.Amount.Denom != ctypes.SCYB {
-		return nil, sdkerrors.Wrap(types.ErrInvalidBaseResource, request.Amount.String())
+		return nil, errorsmod.Wrap(types.ErrInvalidBaseResource, request.Amount.String())
 	}
 
 	if request.Resource != ctypes.VOLT && request.Resource != ctypes.AMPERE {
-		return nil, sdkerrors.Wrap(types.ErrResourceNotExist, request.Resource)
+		return nil, errorsmod.Wrap(types.ErrResourceNotExist, request.Resource)
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)

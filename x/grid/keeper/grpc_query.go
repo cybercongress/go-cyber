@@ -9,7 +9,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/cybercongress/go-cyber/v2/x/grid/types"
+	"github.com/cybercongress/go-cyber/v4/x/grid/types"
 )
 
 var _ types.QueryServer = Keeper{}

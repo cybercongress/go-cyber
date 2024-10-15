@@ -29,5 +29,5 @@ type Value struct {
 
 - Route: `0x00 | Source | Destination -> ProtocolBuffer(Route)`
 - Value: `0x01 | Destination -> ProtocolBuffer(Value)`
-- ModuleName, RouterKey, StoreKey, QuerierRoute: `energy`
+- ModuleName, RouterKey, StoreKey: `energy`
 - EnergyPoolName: `energy_grid`
