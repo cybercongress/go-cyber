@@ -9,7 +9,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
-	"github.com/cybercongress/go-cyber/v4/x/liquidity/types"
+	"github.com/cybercongress/go-cyber/v5/x/liquidity/types"
 )
 
 func (k Keeper) ValidateMsgCreatePool(ctx sdk.Context, msg *types.MsgCreatePool) error {

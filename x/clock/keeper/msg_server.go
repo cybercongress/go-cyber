@@ -8,7 +8,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
-	"github.com/cybercongress/go-cyber/v4/x/clock/types"
+	"github.com/cybercongress/go-cyber/v5/x/clock/types"
 )
 
 var _ types.MsgServer = &msgServer{}

@@ -7,7 +7,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/cybercongress/go-cyber/v4/x/bandwidth/types"
+	"github.com/cybercongress/go-cyber/v5/x/bandwidth/types"
 )
 
 var _ types.QueryServer = &BandwidthMeter{}

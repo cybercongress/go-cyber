@@ -9,10 +9,10 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	moduletestutil "github.com/cosmos/cosmos-sdk/types/module/testutil"
 
-	"github.com/cybercongress/go-cyber/v4/x/tokenfactory"
-	"github.com/cybercongress/go-cyber/v4/x/tokenfactory/exported"
-	v2 "github.com/cybercongress/go-cyber/v4/x/tokenfactory/migrations/v2"
-	"github.com/cybercongress/go-cyber/v4/x/tokenfactory/types"
+	"github.com/cybercongress/go-cyber/v5/x/tokenfactory"
+	"github.com/cybercongress/go-cyber/v5/x/tokenfactory/exported"
+	v2 "github.com/cybercongress/go-cyber/v5/x/tokenfactory/migrations/v2"
+	"github.com/cybercongress/go-cyber/v5/x/tokenfactory/types"
 )
 
 type mockSubspace struct {

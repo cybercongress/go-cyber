@@ -3,7 +3,7 @@ package wasm_test
 import (
 	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	wasmbinding "github.com/cybercongress/go-cyber/v4/x/tokenfactory/wasm"
+	wasmbinding "github.com/cybercongress/go-cyber/v5/x/tokenfactory/wasm"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"testing"

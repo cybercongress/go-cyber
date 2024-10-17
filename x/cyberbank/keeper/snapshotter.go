@@ -5,7 +5,7 @@ import (
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	snapshot "github.com/cosmos/cosmos-sdk/snapshots/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cybercongress/go-cyber/v4/x/cyberbank/types"
+	"github.com/cybercongress/go-cyber/v5/x/cyberbank/types"
 )
 
 var _ snapshot.ExtensionSnapshotter = &CyberbankSnapshotter{}

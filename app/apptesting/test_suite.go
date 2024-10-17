@@ -35,8 +35,8 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
-	"github.com/cybercongress/go-cyber/v4/app"
-	appparams "github.com/cybercongress/go-cyber/v4/app/params"
+	"github.com/cybercongress/go-cyber/v5/app"
+	appparams "github.com/cybercongress/go-cyber/v5/app/params"
 )
 
 type KeeperTestHelper struct {

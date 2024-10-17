@@ -3,7 +3,7 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/cybercongress/go-cyber/v4/x/bandwidth/types"
+	"github.com/cybercongress/go-cyber/v5/x/bandwidth/types"
 )
 
 func (bm BandwidthMeter) SetBlockBandwidth(ctx sdk.Context, blockNumber uint64, value uint64) {

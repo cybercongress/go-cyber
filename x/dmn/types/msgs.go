@@ -8,8 +8,8 @@ import (
 
 	// sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	"github.com/cybercongress/go-cyber/v4/types"
-	graph "github.com/cybercongress/go-cyber/v4/x/graph/types"
+	"github.com/cybercongress/go-cyber/v5/types"
+	graph "github.com/cybercongress/go-cyber/v5/x/graph/types"
 )
 
 const (

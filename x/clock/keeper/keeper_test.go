@@ -18,9 +18,9 @@ import (
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 
-	"github.com/cybercongress/go-cyber/v4/app"
-	"github.com/cybercongress/go-cyber/v4/x/clock/keeper"
-	"github.com/cybercongress/go-cyber/v4/x/clock/types"
+	"github.com/cybercongress/go-cyber/v5/app"
+	"github.com/cybercongress/go-cyber/v5/x/clock/keeper"
+	"github.com/cybercongress/go-cyber/v5/x/clock/types"
 )
 
 type IntegrationTestSuite struct {

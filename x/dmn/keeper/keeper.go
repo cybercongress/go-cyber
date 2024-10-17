@@ -17,10 +17,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	ctypes "github.com/cybercongress/go-cyber/v4/types"
+	ctypes "github.com/cybercongress/go-cyber/v5/types"
 
-	"github.com/cybercongress/go-cyber/v4/x/dmn/types"
-	graphtypes "github.com/cybercongress/go-cyber/v4/x/graph/types"
+	"github.com/cybercongress/go-cyber/v5/x/dmn/types"
+	graphtypes "github.com/cybercongress/go-cyber/v5/x/graph/types"
 )
 
 // Keeper of the power store

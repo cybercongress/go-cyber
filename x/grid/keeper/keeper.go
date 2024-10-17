@@ -7,13 +7,13 @@ import (
 	"github.com/cometbft/cometbft/libs/log"
 	"github.com/cosmos/cosmos-sdk/telemetry"
 
-	ctypes "github.com/cybercongress/go-cyber/v4/types"
+	ctypes "github.com/cybercongress/go-cyber/v5/types"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/cybercongress/go-cyber/v4/x/grid/exported"
-	"github.com/cybercongress/go-cyber/v4/x/grid/types"
+	"github.com/cybercongress/go-cyber/v5/x/grid/exported"
+	"github.com/cybercongress/go-cyber/v5/x/grid/types"
 )
 
 var _ = exported.EnergyKeeper(nil)

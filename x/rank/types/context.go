@@ -3,7 +3,7 @@ package types
 import (
 	"sort"
 
-	graphtypes "github.com/cybercongress/go-cyber/v4/x/graph/types"
+	graphtypes "github.com/cybercongress/go-cyber/v5/x/graph/types"
 )
 
 type CalculationContext struct {
