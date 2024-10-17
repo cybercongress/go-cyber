@@ -10,8 +10,8 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/cybercongress/go-cyber/v4/app"
-	bindings "github.com/cybercongress/go-cyber/v4/x/tokenfactory/wasm/types"
+	"github.com/cybercongress/go-cyber/v5/app"
+	bindings "github.com/cybercongress/go-cyber/v5/x/tokenfactory/wasm/types"
 )
 
 func TestQueryFullDenom(t *testing.T) {

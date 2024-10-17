@@ -7,8 +7,8 @@ import (
 
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 
-	pluginstypes "github.com/cybercongress/go-cyber/v4/plugins/types"
-	"github.com/cybercongress/go-cyber/v4/x/resources/keeper"
+	pluginstypes "github.com/cybercongress/go-cyber/v5/plugins/types"
+	"github.com/cybercongress/go-cyber/v5/x/resources/keeper"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )

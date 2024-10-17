@@ -28,17 +28,17 @@ import (
 	ibcfeetypes "github.com/cosmos/ibc-go/v7/modules/apps/29-fee/types"
 	ibctransfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
 	ibcexported "github.com/cosmos/ibc-go/v7/modules/core/exported"
-	clocktypes "github.com/cybercongress/go-cyber/v4/x/clock/types"
-	tokenfactorytypes "github.com/cybercongress/go-cyber/v4/x/tokenfactory/types"
+	clocktypes "github.com/cybercongress/go-cyber/v5/x/clock/types"
+	tokenfactorytypes "github.com/cybercongress/go-cyber/v5/x/tokenfactory/types"
 
-	liquiditytypes "github.com/cybercongress/go-cyber/v4/x/liquidity/types"
+	liquiditytypes "github.com/cybercongress/go-cyber/v5/x/liquidity/types"
 
-	bandwidthtypes "github.com/cybercongress/go-cyber/v4/x/bandwidth/types"
-	dmntypes "github.com/cybercongress/go-cyber/v4/x/dmn/types"
-	graphtypes "github.com/cybercongress/go-cyber/v4/x/graph/types"
-	gridtypes "github.com/cybercongress/go-cyber/v4/x/grid/types"
-	ranktypes "github.com/cybercongress/go-cyber/v4/x/rank/types"
-	resourcestypes "github.com/cybercongress/go-cyber/v4/x/resources/types"
+	bandwidthtypes "github.com/cybercongress/go-cyber/v5/x/bandwidth/types"
+	dmntypes "github.com/cybercongress/go-cyber/v5/x/dmn/types"
+	graphtypes "github.com/cybercongress/go-cyber/v5/x/graph/types"
+	gridtypes "github.com/cybercongress/go-cyber/v5/x/grid/types"
+	ranktypes "github.com/cybercongress/go-cyber/v5/x/rank/types"
+	resourcestypes "github.com/cybercongress/go-cyber/v5/x/resources/types"
 )
 
 func (appKeepers *AppKeepers) GenerateKeys() {

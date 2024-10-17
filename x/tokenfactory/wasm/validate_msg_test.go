@@ -2,15 +2,15 @@ package wasm_test
 
 import (
 	"fmt"
-	bindings "github.com/cybercongress/go-cyber/v4/x/tokenfactory/wasm/types"
+	bindings "github.com/cybercongress/go-cyber/v5/x/tokenfactory/wasm/types"
 	"testing"
 
 	"github.com/stretchr/testify/require"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/cybercongress/go-cyber/v4/x/tokenfactory/types"
-	wasmbinding "github.com/cybercongress/go-cyber/v4/x/tokenfactory/wasm"
+	"github.com/cybercongress/go-cyber/v5/x/tokenfactory/types"
+	wasmbinding "github.com/cybercongress/go-cyber/v5/x/tokenfactory/wasm"
 )
 
 func TestCreateDenom(t *testing.T) {

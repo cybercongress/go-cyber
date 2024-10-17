@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/cybercongress/go-cyber/v4/x/liquidity/exported"
+	"github.com/cybercongress/go-cyber/v5/x/liquidity/exported"
 
 	abci "github.com/cometbft/cometbft/abci/types"
 	sdkclient "github.com/cosmos/cosmos-sdk/client"
@@ -16,9 +16,9 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
 
-	"github.com/cybercongress/go-cyber/v4/x/liquidity/client/cli"
-	"github.com/cybercongress/go-cyber/v4/x/liquidity/keeper"
-	"github.com/cybercongress/go-cyber/v4/x/liquidity/types"
+	"github.com/cybercongress/go-cyber/v5/x/liquidity/client/cli"
+	"github.com/cybercongress/go-cyber/v5/x/liquidity/keeper"
+	"github.com/cybercongress/go-cyber/v5/x/liquidity/types"
 )
 
 var (

@@ -3,7 +3,7 @@ package wasm
 import (
 	"encoding/json"
 	"fmt"
-	pluginstypes "github.com/cybercongress/go-cyber/v4/plugins/types"
+	pluginstypes "github.com/cybercongress/go-cyber/v5/plugins/types"
 
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 
@@ -11,7 +11,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	bindingstypes "github.com/cybercongress/go-cyber/v4/x/tokenfactory/wasm/types"
+	bindingstypes "github.com/cybercongress/go-cyber/v5/x/tokenfactory/wasm/types"
 )
 
 // CustomQuerier dispatches custom CosmWasm wasm queries.

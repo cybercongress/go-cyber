@@ -3,8 +3,8 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/cybercongress/go-cyber/v4/x/bandwidth/exported"
-	v2 "github.com/cybercongress/go-cyber/v4/x/bandwidth/migrations/v2"
+	"github.com/cybercongress/go-cyber/v5/x/bandwidth/exported"
+	v2 "github.com/cybercongress/go-cyber/v5/x/bandwidth/migrations/v2"
 )
 
 // Migrator is a struct for handling in-place state migrations.

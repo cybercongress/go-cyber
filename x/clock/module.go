@@ -18,9 +18,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 
-	"github.com/cybercongress/go-cyber/v4/x/clock/client/cli"
-	"github.com/cybercongress/go-cyber/v4/x/clock/keeper"
-	"github.com/cybercongress/go-cyber/v4/x/clock/types"
+	"github.com/cybercongress/go-cyber/v5/x/clock/client/cli"
+	"github.com/cybercongress/go-cyber/v5/x/clock/keeper"
+	"github.com/cybercongress/go-cyber/v5/x/clock/types"
 )
 
 const (

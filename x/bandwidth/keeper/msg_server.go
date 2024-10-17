@@ -8,7 +8,7 @@ import (
 	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/cybercongress/go-cyber/v4/x/bandwidth/types"
+	"github.com/cybercongress/go-cyber/v5/x/bandwidth/types"
 )
 
 type msgServer struct {

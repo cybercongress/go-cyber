@@ -17,9 +17,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 
-	"github.com/cybercongress/go-cyber/v4/app"
-	clock "github.com/cybercongress/go-cyber/v4/x/clock"
-	"github.com/cybercongress/go-cyber/v4/x/clock/types"
+	"github.com/cybercongress/go-cyber/v5/app"
+	clock "github.com/cybercongress/go-cyber/v5/x/clock"
+	"github.com/cybercongress/go-cyber/v5/x/clock/types"
 )
 
 type EndBlockerTestSuite struct {

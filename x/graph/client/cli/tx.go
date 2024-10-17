@@ -12,7 +12,7 @@ import (
 	"github.com/ipfs/go-cid"
 	"github.com/spf13/cobra"
 
-	"github.com/cybercongress/go-cyber/v4/x/graph/types"
+	"github.com/cybercongress/go-cyber/v5/x/graph/types"
 )
 
 func NewTxCmd() *cobra.Command {
