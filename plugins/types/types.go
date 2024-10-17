@@ -1,13 +1,13 @@
 package types
 
 import (
-	bandwidthtypes "github.com/cybercongress/go-cyber/v4/x/bandwidth/types"
-	dmntypes "github.com/cybercongress/go-cyber/v4/x/dmn/types"
-	graphtypes "github.com/cybercongress/go-cyber/v4/x/graph/types"
-	gridtypes "github.com/cybercongress/go-cyber/v4/x/grid/types"
-	ranktypes "github.com/cybercongress/go-cyber/v4/x/rank/types"
-	resourcestypes "github.com/cybercongress/go-cyber/v4/x/resources/types"
-	tokenfactorytypes "github.com/cybercongress/go-cyber/v4/x/tokenfactory/wasm/types"
+	bandwidthtypes "github.com/cybercongress/go-cyber/v5/x/bandwidth/types"
+	dmntypes "github.com/cybercongress/go-cyber/v5/x/dmn/types"
+	graphtypes "github.com/cybercongress/go-cyber/v5/x/graph/types"
+	gridtypes "github.com/cybercongress/go-cyber/v5/x/grid/types"
+	ranktypes "github.com/cybercongress/go-cyber/v5/x/rank/types"
+	resourcestypes "github.com/cybercongress/go-cyber/v5/x/resources/types"
+	tokenfactorytypes "github.com/cybercongress/go-cyber/v5/x/tokenfactory/wasm/types"
 )
 
 type CyberQuery struct {

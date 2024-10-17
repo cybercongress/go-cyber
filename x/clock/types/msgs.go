@@ -5,7 +5,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	globalerrors "github.com/cybercongress/go-cyber/v4/app/helpers"
+	globalerrors "github.com/cybercongress/go-cyber/v5/app/helpers"
 )
 
 const (

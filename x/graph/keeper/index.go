@@ -6,9 +6,9 @@ import (
 
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 
-	ctypes "github.com/cybercongress/go-cyber/v4/types"
-	"github.com/cybercongress/go-cyber/v4/utils"
-	"github.com/cybercongress/go-cyber/v4/x/graph/types"
+	ctypes "github.com/cybercongress/go-cyber/v5/types"
+	"github.com/cybercongress/go-cyber/v5/utils"
+	"github.com/cybercongress/go-cyber/v5/x/graph/types"
 
 	tmos "github.com/cometbft/cometbft/libs/os"
 	sdk "github.com/cosmos/cosmos-sdk/types"

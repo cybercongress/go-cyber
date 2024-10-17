@@ -18,8 +18,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/staking/types"
 	"google.golang.org/grpc/status"
 
-	ctypes "github.com/cybercongress/go-cyber/v4/types"
-	resourcestypes "github.com/cybercongress/go-cyber/v4/x/resources/types"
+	ctypes "github.com/cybercongress/go-cyber/v5/types"
+	resourcestypes "github.com/cybercongress/go-cyber/v5/x/resources/types"
 )
 
 type msgServer struct {

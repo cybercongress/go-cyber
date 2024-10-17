@@ -10,8 +10,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/cybercongress/go-cyber/v4/x/bandwidth/types"
-	gtypes "github.com/cybercongress/go-cyber/v4/x/graph/types"
+	"github.com/cybercongress/go-cyber/v5/x/bandwidth/types"
+	gtypes "github.com/cybercongress/go-cyber/v5/x/graph/types"
 )
 
 type BandwidthMeter struct {

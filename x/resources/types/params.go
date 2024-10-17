@@ -5,7 +5,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	ctypes "github.com/cybercongress/go-cyber/v4/types"
+	ctypes "github.com/cybercongress/go-cyber/v5/types"
 )
 
 const (

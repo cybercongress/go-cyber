@@ -11,9 +11,9 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	graphtypes "github.com/cybercongress/go-cyber/v4/x/graph/types"
-	"github.com/cybercongress/go-cyber/v4/x/rank/types"
-	querytypes "github.com/cybercongress/go-cyber/v4/x/rank/types"
+	graphtypes "github.com/cybercongress/go-cyber/v5/x/graph/types"
+	"github.com/cybercongress/go-cyber/v5/x/rank/types"
+	querytypes "github.com/cybercongress/go-cyber/v5/x/rank/types"
 )
 
 var _ types.QueryServer = &StateKeeper{}

@@ -15,10 +15,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/spf13/cobra"
 
-	"github.com/cybercongress/go-cyber/v4/x/rank/client/cli"
-	"github.com/cybercongress/go-cyber/v4/x/rank/exported"
-	"github.com/cybercongress/go-cyber/v4/x/rank/keeper"
-	"github.com/cybercongress/go-cyber/v4/x/rank/types"
+	"github.com/cybercongress/go-cyber/v5/x/rank/client/cli"
+	"github.com/cybercongress/go-cyber/v5/x/rank/exported"
+	"github.com/cybercongress/go-cyber/v5/x/rank/keeper"
+	"github.com/cybercongress/go-cyber/v5/x/rank/types"
 )
 
 var (

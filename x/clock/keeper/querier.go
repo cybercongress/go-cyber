@@ -5,8 +5,8 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	globalerrors "github.com/cybercongress/go-cyber/v4/app/helpers"
-	"github.com/cybercongress/go-cyber/v4/x/clock/types"
+	globalerrors "github.com/cybercongress/go-cyber/v5/app/helpers"
+	"github.com/cybercongress/go-cyber/v5/x/clock/types"
 )
 
 var _ types.QueryServer = &Querier{}

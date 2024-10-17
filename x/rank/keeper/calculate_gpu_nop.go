@@ -4,7 +4,7 @@
 package keeper
 
 import (
-	"github.com/cybercongress/go-cyber/v4/x/rank/types"
+	"github.com/cybercongress/go-cyber/v5/x/rank/types"
 
 	"github.com/cometbft/cometbft/libs/log"
 )

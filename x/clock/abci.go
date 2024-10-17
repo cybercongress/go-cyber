@@ -2,7 +2,7 @@ package clock
 
 import (
 	abci "github.com/cometbft/cometbft/abci/types"
-	"github.com/cybercongress/go-cyber/v4/app/helpers"
+	"github.com/cybercongress/go-cyber/v5/app/helpers"
 	"time"
 
 	"github.com/cometbft/cometbft/libs/log"
@@ -10,8 +10,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/cybercongress/go-cyber/v4/x/clock/keeper"
-	"github.com/cybercongress/go-cyber/v4/x/clock/types"
+	"github.com/cybercongress/go-cyber/v5/x/clock/keeper"
+	"github.com/cybercongress/go-cyber/v5/x/clock/types"
 )
 
 var endBlockSudoMessage = []byte(types.EndBlockSudoMessage)

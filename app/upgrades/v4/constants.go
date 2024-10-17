@@ -10,12 +10,12 @@ import (
 	ibchookstypes "github.com/cosmos/ibc-apps/modules/ibc-hooks/v7/types"
 	icacontrollertypes "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/controller/types"
 	icahosttypes "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/host/types"
-	clocktypes "github.com/cybercongress/go-cyber/v4/x/clock/types"
-	tokenfactorytypes "github.com/cybercongress/go-cyber/v4/x/tokenfactory/types"
+	clocktypes "github.com/cybercongress/go-cyber/v5/x/clock/types"
+	tokenfactorytypes "github.com/cybercongress/go-cyber/v5/x/tokenfactory/types"
 
-	resourcestypes "github.com/cybercongress/go-cyber/v4/x/resources/types"
+	resourcestypes "github.com/cybercongress/go-cyber/v5/x/resources/types"
 
-	"github.com/cybercongress/go-cyber/v4/app/upgrades"
+	"github.com/cybercongress/go-cyber/v5/app/upgrades"
 )
 
 const UpgradeName = "v4"

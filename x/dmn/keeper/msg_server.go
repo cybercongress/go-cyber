@@ -8,8 +8,8 @@ import (
 	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/cybercongress/go-cyber/v4/x/dmn/types"
-	graph "github.com/cybercongress/go-cyber/v4/x/graph/types"
+	"github.com/cybercongress/go-cyber/v5/x/dmn/types"
+	graph "github.com/cybercongress/go-cyber/v5/x/graph/types"
 )
 
 type msgServer struct {
