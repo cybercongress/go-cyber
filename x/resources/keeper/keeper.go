@@ -333,8 +333,7 @@ func (k Keeper) CalculateInvestmint(ctx sdk.Context, amt sdk.Coin, resource stri
 
 	switch resource {
 	case ctypes.VOLT:
-		cycles := sdk.NewDec(int64(length)).QuoInt64(int64(10)) // for local dev
-		// cycles := sdk.NewDec(int64(length)).QuoInt64(int64(params.BaseInvestmintPeriodVolt))
+		cycles := sdk.NewDec(int64(length)).QuoInt64(int64(params.BaseInvestmintPeriodVolt))
 		base := sdk.NewDec(amt.Amount.Int64()).QuoInt64(params.BaseInvestmintAmountVolt.Amount.Int64())
 
 		// TODO double check when third halving will be applied?
@@ -353,8 +352,7 @@ func (k Keeper) CalculateInvestmint(ctx sdk.Context, amt sdk.Coin, resource stri
 
 		k.Logger(ctx).Info("Investmint", "cycles", cycles.String(), "base", base.String(), "halving", halving.String(), "mint", toMint.String())
 	case ctypes.AMPERE:
-		cycles := sdk.NewDec(int64(length)).QuoInt64(int64(10)) // for local dev
-		// cycles := sdk.NewDec(int64(length)).QuoInt64(int64(params.BaseInvestmintPeriodAmpere))
+		cycles := sdk.NewDec(int64(length)).QuoInt64(int64(params.BaseInvestmintPeriodAmpere))
 		base := sdk.NewDec(amt.Amount.Int64()).QuoInt64(params.BaseInvestmintAmountAmpere.Amount.Int64())
 
 		// NOTE out of parametrization, custom code is applied here in order to shift the HALVINGS START 6M BLOCKS LATER but keep base halving parameter same
