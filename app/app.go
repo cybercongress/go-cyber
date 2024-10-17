@@ -82,6 +82,7 @@ var (
 	Bech32Prefix = "bostrom"
 
 	Upgrades = []upgrades.Upgrade{v2.Upgrade, v3.Upgrade, v4.Upgrade}
+	Forks    = []upgrades.Fork{v5.Fork}
 )
 
 // These constants are derived from the above variables.
@@ -339,6 +340,7 @@ func (app *App) Name() string {
 
 // BeginBlocker application updates every begin block
 func (app *App) BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock) abci.ResponseBeginBlock {
+	BeginBlockForks(ctx, app)
 	return app.ModuleManager.BeginBlock(ctx, req)
 }
 
