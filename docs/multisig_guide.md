@@ -1,6 +1,6 @@
 # A guide for creating a 2 of 3 multisig account and sending transactions
 
-To follow this guide you'll need `cyber` installed and connected to any cyber node (refer to our cli [guide](https://github.com/cybercongress/go-cyber/blob/main/docs/ultimate-commands-guide.md)).
+To follow this guide you'll need `cyber` installed and connected to any cyber node (refer to our cli [guide](https://github.com/cybercongress/go-cyber/blob/main/docs/ultimate_commands_guide.md)).
 A reminder: this guide covers all types of transactions, not only send transactions. This guide is also relevant for Cosmos Hub Gaiacli users, except for the bandwidth params, in Cosmos we pay a fee using tokens.
 
 Do not forget about the `--chain-id` flag in `cyber`, and in the `Cosmos Hub` networks.
