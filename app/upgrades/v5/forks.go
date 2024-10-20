@@ -8,7 +8,7 @@ import (
 func RunForkLogic(ctx sdk.Context, keepers *keepers.AppKeepers) {
 	logger := ctx.Logger().With("upgrade", UpgradeName)
 
-	logger.Info("Applying emergency hard fork for v5.")
+	logger.Info("Applying emergency hard fork for v5")
 
 	liquidityParams := keepers.LiquidityKeeper.GetParams(ctx)
 	liquidityParams.CircuitBreakerEnabled = true
@@ -22,10 +22,4 @@ func RunForkLogic(ctx sdk.Context, keepers *keepers.AppKeepers) {
 	keepers.BankKeeper.SetSendEnabled(ctx, "milliampere", false)
 
 	logger.Info("set bank send disabled for millivolt and amperes")
-
-	//transferParams := keepers.TransferKeeper.GetParams(ctx)
-	//transferParams.SendEnabled = false
-	//keepers.TransferKeeper.SetParams(ctx, transferParams)
-	//
-	//logger.Info("set ibc send disabled for all tokens")
 }
