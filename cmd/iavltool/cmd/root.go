@@ -125,7 +125,7 @@ var shapeCmd = &cobra.Command{
 			fmt.Println("ERROR DB OPEN:", err)
 		}
 
-		store := "rank"
+		store := "all"
 		version := int64(0)
 		switch len(args) {
 		case 2:
@@ -135,12 +135,23 @@ var shapeCmd = &cobra.Command{
 			store = args[0]
 		}
 
-		tree, err := ReadTree(db, version, store)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error reading data: %s\n", err)
-			os.Exit(1)
+		if store == "all" {
+			for _, name := range appStores {
+				tree, err := ReadTree(db, version, name)
+				if err != nil {
+					_, _ = fmt.Fprintf(os.Stderr, "Error reading data: %s\n", err)
+					os.Exit(1)
+				}
+				PrintShape(tree)
+			}
+		} else {
+			tree, err := ReadTree(db, version, store)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Error reading data: %s\n", err)
+				os.Exit(1)
+			}
+			PrintShape(tree)
 		}
-		PrintShape(tree)
 	},
 }
 
