@@ -48,17 +48,7 @@ RUN apt-get update && apt-get -y install --no-install-recommends \
 && add-apt-repository "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/ /" \
 && apt-get update \
 && apt-get install cuda=${CUDA_VER} -y --no-install-recommends \
-&& mkdir -p /cyber/cosmovisor/upgrades/v3/bin \
 && mkdir -p /cyber/cosmovisor/upgrades/v4/bin \
- # Compile cyber for v3 version
-###########################################################################################
-&& git checkout v3.0.1 \
-&& cd /sources/x/rank/cuda \
-&& make build \
-&& cd  /sources \
-&& make build CUDA_ENABLED=true \
-&& cp ./build/cyber /cyber/cosmovisor/upgrades/v3/bin/ \
-&& rm -rf ./build \
  # Compile cyber for v4 version
 ###########################################################################################
 && git checkout v5.2.0 \

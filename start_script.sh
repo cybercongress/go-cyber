@@ -11,4 +11,4 @@ export UNSAFE_SKIP_BACKUP=true
 
 # Start cyber process
 
-/usr/bin/cosmovisor run start --compute-gpu true --search-api $ALLOW_SEARCH --home /root/.cyber
+/root/.cyber/cosmovisor/upgrades/v4/bin/cyber rollback --home /root/.cyber
