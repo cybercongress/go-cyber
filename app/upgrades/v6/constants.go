@@ -1,17 +1,16 @@
 package v6
 
 import (
+	store "github.com/cosmos/cosmos-sdk/store/types"
 	"github.com/cybercongress/go-cyber/v6/app/upgrades"
 )
 
-const (
-	UpgradeName = "v6"
+const UpgradeName = "v6"
 
-	UpgradeHeight = 42_000_000
-)
-
-var Fork = upgrades.Fork{
-	UpgradeName:    UpgradeName,
-	UpgradeHeight:  UpgradeHeight,
-	BeginForkLogic: RunForkLogic,
+var Upgrade = upgrades.Upgrade{
+	UpgradeName:          UpgradeName,
+	CreateUpgradeHandler: CreateV6UpgradeHandler,
+	StoreUpgrades: store.StoreUpgrades{
+		Added: []string{},
+	},
 }

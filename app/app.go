@@ -340,7 +340,7 @@ func (app *App) Name() string {
 
 // BeginBlocker application updates every begin block
 func (app *App) BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock) abci.ResponseBeginBlock {
-	BeginBlockForks(ctx, app)
+	//BeginBlockForks(ctx, app)
 	return app.ModuleManager.BeginBlock(ctx, req)
 }
 
