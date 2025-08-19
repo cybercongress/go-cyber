@@ -209,8 +209,8 @@ github.com/ChainSafe/go-schnorrkel v1.0.0 h1:3aDA67lAykLaG1y3AOjs88dMxC88PgUuHRr
 github.com/ChainSafe/go-schnorrkel v1.0.0/go.mod h1:dpzHYVxLZcp8pjlV+O+UR8K0Hp/z7vcchBSbMBEhCw4=
 github.com/CosmWasm/wasmd v0.45.0 h1:9zBqrturKJwC2kVsfHvbrA++EN0PS7UTXCffCGbg6JI=
 github.com/CosmWasm/wasmd v0.45.0/go.mod h1:RnSAiqbNIZu4QhO+0pd7qGZgnYAMBPGmXpzTADag944=
-github.com/CosmWasm/wasmvm v1.5.2 h1:+pKB1Mz9GZVt1vadxB+EDdD1FOz3dMNjIKq/58/lrag=
-github.com/CosmWasm/wasmvm v1.5.2/go.mod h1:Q0bSEtlktzh7W2hhEaifrFp1Erx11ckQZmjq8FLCyys=
+github.com/CosmWasm/wasmvm v1.5.4 h1:Opqy65ubJ8bMsT08dn85VjRdsLJVPIAgIXif92qOMGc=
+github.com/CosmWasm/wasmvm v1.5.4/go.mod h1:Q0bSEtlktzh7W2hhEaifrFp1Erx11ckQZmjq8FLCyys=
 github.com/DataDog/datadog-go v3.2.0+incompatible/go.mod h1:LButxg5PwREeZtORoXG3tL4fMGNddJ+vMq1mwgfaqoQ=
 github.com/DataDog/zstd v1.5.2 h1:vUG4lAyuPCXO0TLbXvPv7EB7cNK1QV/luu55UHLrrn8=
 github.com/DataDog/zstd v1.5.2/go.mod h1:g4AWEaM3yOg3HYfnJ3YIawPnVdXJh9QME85blwSAmyw=

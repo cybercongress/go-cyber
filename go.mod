@@ -9,7 +9,7 @@ require (
 	cosmossdk.io/simapp v0.0.0-20230323161446-0af178d721ff
 	cosmossdk.io/tools/rosetta v0.2.1
 	github.com/CosmWasm/wasmd v0.45.0
-	github.com/CosmWasm/wasmvm v1.5.2
+	github.com/CosmWasm/wasmvm v1.5.4
 	github.com/armon/go-metrics v0.4.1
 	github.com/cometbft/cometbft v0.37.8
 	github.com/cometbft/cometbft-db v0.12.0
