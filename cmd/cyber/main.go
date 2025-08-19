@@ -6,8 +6,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/server"
 	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
 
-	"github.com/cybercongress/go-cyber/v5/app"
-	"github.com/cybercongress/go-cyber/v5/cmd/cyber/cmd"
+	"github.com/cybercongress/go-cyber/v6/app"
+	"github.com/cybercongress/go-cyber/v6/cmd/cyber/cmd"
 )
 
 func main() {

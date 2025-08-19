@@ -8,13 +8,13 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 
-	ctypes "github.com/cybercongress/go-cyber/v5/types"
-	bandwidthkeeper "github.com/cybercongress/go-cyber/v5/x/bandwidth/keeper"
-	bandwidthtypes "github.com/cybercongress/go-cyber/v5/x/bandwidth/types"
-	cyberbankkeeper "github.com/cybercongress/go-cyber/v5/x/cyberbank/keeper"
+	ctypes "github.com/cybercongress/go-cyber/v6/types"
+	bandwidthkeeper "github.com/cybercongress/go-cyber/v6/x/bandwidth/keeper"
+	bandwidthtypes "github.com/cybercongress/go-cyber/v6/x/bandwidth/types"
+	cyberbankkeeper "github.com/cybercongress/go-cyber/v6/x/cyberbank/keeper"
 
 	// sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/cybercongress/go-cyber/v5/x/graph/types"
+	"github.com/cybercongress/go-cyber/v6/x/graph/types"
 )
 
 type msgServer struct {

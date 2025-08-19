@@ -6,8 +6,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/cybercongress/go-cyber/v5/x/liquidity/keeper"
-	"github.com/cybercongress/go-cyber/v5/x/liquidity/types"
+	"github.com/cybercongress/go-cyber/v6/x/liquidity/keeper"
+	"github.com/cybercongress/go-cyber/v6/x/liquidity/types"
 )
 
 // In the Begin blocker of the liquidity module,

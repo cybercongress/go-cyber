@@ -4,8 +4,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/cybercongress/go-cyber/v5/x/resources/exported"
-	"github.com/cybercongress/go-cyber/v5/x/resources/types"
+	"github.com/cybercongress/go-cyber/v6/x/resources/exported"
+	"github.com/cybercongress/go-cyber/v6/x/resources/types"
 )
 
 func Migrate(

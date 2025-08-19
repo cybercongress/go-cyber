@@ -14,12 +14,12 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/pruning"
 	"github.com/prometheus/client_golang/prometheus"
 
-	"github.com/cybercongress/go-cyber/v5/app"
+	"github.com/cybercongress/go-cyber/v6/app"
 
 	"github.com/CosmWasm/wasmd/x/wasm"
 	"github.com/cosmos/cosmos-sdk/x/crisis"
 
-	"github.com/cybercongress/go-cyber/v5/x/rank"
+	"github.com/cybercongress/go-cyber/v6/x/rank"
 
 	dbm "github.com/cometbft/cometbft-db"
 	tmcli "github.com/cometbft/cometbft/libs/cli"

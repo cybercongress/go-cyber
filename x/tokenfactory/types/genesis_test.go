@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/cybercongress/go-cyber/v5/x/tokenfactory/types"
+	"github.com/cybercongress/go-cyber/v6/x/tokenfactory/types"
 )
 
 func TestGenesisState_Validate(t *testing.T) {

@@ -6,13 +6,13 @@ import (
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 
-	liquiditytypes "github.com/cybercongress/go-cyber/v5/x/liquidity/types"
+	liquiditytypes "github.com/cybercongress/go-cyber/v6/x/liquidity/types"
 
 	"github.com/CosmWasm/wasmd/x/wasm"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	"github.com/cybercongress/go-cyber/v5/x/liquidity/keeper"
+	"github.com/cybercongress/go-cyber/v6/x/liquidity/keeper"
 )
 
 // TODO refactor to the new query and message handler or remove

@@ -5,8 +5,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 
-	tokenfactorykeeper "github.com/cybercongress/go-cyber/v5/x/tokenfactory/keeper"
-	bindingstypes "github.com/cybercongress/go-cyber/v5/x/tokenfactory/wasm/types"
+	tokenfactorykeeper "github.com/cybercongress/go-cyber/v6/x/tokenfactory/keeper"
+	bindingstypes "github.com/cybercongress/go-cyber/v6/x/tokenfactory/wasm/types"
 )
 
 type Querier struct {

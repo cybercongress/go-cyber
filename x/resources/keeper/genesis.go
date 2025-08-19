@@ -3,7 +3,7 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/cybercongress/go-cyber/v5/x/resources/types"
+	"github.com/cybercongress/go-cyber/v6/x/resources/types"
 )
 
 func InitGenesis(ctx sdk.Context, k Keeper, data types.GenesisState) {

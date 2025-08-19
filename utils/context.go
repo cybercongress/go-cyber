@@ -15,9 +15,9 @@ import (
 	icacontrollertypes "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/controller/types"
 	icahosttypes "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/host/types"
 	ibcfeetypes "github.com/cosmos/ibc-go/v7/modules/apps/29-fee/types"
-	clocktypes "github.com/cybercongress/go-cyber/v5/x/clock/types"
-	resourcestypes "github.com/cybercongress/go-cyber/v5/x/resources/types"
-	tokenfactorytypes "github.com/cybercongress/go-cyber/v5/x/tokenfactory/types"
+	clocktypes "github.com/cybercongress/go-cyber/v6/x/clock/types"
+	resourcestypes "github.com/cybercongress/go-cyber/v6/x/resources/types"
+	tokenfactorytypes "github.com/cybercongress/go-cyber/v6/x/tokenfactory/types"
 )
 
 func NewContextWithMSVersion(db db.DB, version int64, keys map[string]*storetypes.KVStoreKey) (sdk.Context, error) {

@@ -4,7 +4,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/testutil/testdata"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/cybercongress/go-cyber/v5/x/clock/types"
+	"github.com/cybercongress/go-cyber/v6/x/clock/types"
 )
 
 // Query Clock Params

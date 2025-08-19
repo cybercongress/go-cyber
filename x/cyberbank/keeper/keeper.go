@@ -13,7 +13,7 @@ import (
 	"github.com/cometbft/cometbft/libs/log"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	"github.com/cybercongress/go-cyber/v5/x/cyberbank/types"
+	"github.com/cybercongress/go-cyber/v6/x/cyberbank/types"
 )
 
 type IndexedKeeper struct {

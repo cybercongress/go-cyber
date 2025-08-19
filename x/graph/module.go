@@ -11,16 +11,16 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 
-	bandwidthkeeper "github.com/cybercongress/go-cyber/v5/x/bandwidth/keeper"
+	bandwidthkeeper "github.com/cybercongress/go-cyber/v6/x/bandwidth/keeper"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	"github.com/spf13/cobra"
 
-	cyberbankkeeper "github.com/cybercongress/go-cyber/v5/x/cyberbank/keeper"
-	"github.com/cybercongress/go-cyber/v5/x/graph/client/cli"
-	"github.com/cybercongress/go-cyber/v5/x/graph/keeper"
-	"github.com/cybercongress/go-cyber/v5/x/graph/types"
+	cyberbankkeeper "github.com/cybercongress/go-cyber/v6/x/cyberbank/keeper"
+	"github.com/cybercongress/go-cyber/v6/x/graph/client/cli"
+	"github.com/cybercongress/go-cyber/v6/x/graph/keeper"
+	"github.com/cybercongress/go-cyber/v6/x/graph/types"
 )
 
 var (
