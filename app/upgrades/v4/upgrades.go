@@ -2,7 +2,6 @@ package v4
 
 import (
 	"fmt"
-	packetforwardtypes "github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v7/packetforward/types"
 	icqtypes "github.com/cosmos/ibc-apps/modules/async-icq/v7/types"
 	icacontrollertypes "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/controller/types"
 	icahosttypes "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/host/types"
@@ -162,10 +161,11 @@ func CreateV4UpgradeHandler(
 		keepers.ICAHostKeeper.SetParams(ctx, hostParams)
 		logger.Info("set interchain accounts host and controller params")
 
-		if err := keepers.PacketForwardKeeper.SetParams(ctx, packetforwardtypes.DefaultParams()); err != nil {
-			return nil, err
-		}
-		logger.Info("set ibc packets forward params")
+		// commented out because there are no more SetParams for packet forward module
+		//if err := keepers.PacketForwardKeeper.SetParams(ctx, packetforwardtypes.DefaultParams()); err != nil {
+		//	return nil, err
+		//}
+		//logger.Info("set ibc packets forward params")
 
 		icqParams := icqtypes.DefaultParams()
 		// TODO Fix this, because if enable than all nodes will go to consensus failure on next block

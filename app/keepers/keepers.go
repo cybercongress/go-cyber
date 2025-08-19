@@ -482,7 +482,7 @@ func NewAppKeepers(
 
 	appKeepers.GovKeeper = *govKeeper.SetHooks(
 		govtypes.NewMultiGovHooks(
-		// register governance hooks
+			// register governance hooks
 		),
 	)
 
@@ -521,7 +521,6 @@ func NewAppKeepers(
 		appKeepers.keys[packetforwardtypes.StoreKey],
 		nil, // Will be zero-value here. Reference is set later on with SetTransferKeeper.
 		appKeepers.IBCKeeper.ChannelKeeper,
-		appKeepers.DistrKeeper,
 		appKeepers.CyberbankKeeper.Proxy,
 		appKeepers.HooksICS4Wrapper,
 		govModAddress,
@@ -749,7 +748,8 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(icahosttypes.SubModuleName)
 	paramsKeeper.Subspace(icacontrollertypes.SubModuleName)
 	paramsKeeper.Subspace(icqtypes.ModuleName)
-	paramsKeeper.Subspace(packetforwardtypes.ModuleName).WithKeyTable(packetforwardtypes.ParamKeyTable())
+	// commented out because there are no more ParamKeyTable in packer forward module
+	//paramsKeeper.Subspace(packetforwardtypes.ModuleName).WithKeyTable(packetforwardtypes.ParamKeyTable())
 	paramsKeeper.Subspace(wasmtypes.ModuleName)
 	paramsKeeper.Subspace(bandwidthtypes.ModuleName)
 	paramsKeeper.Subspace(ranktypes.ModuleName)

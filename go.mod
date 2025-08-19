@@ -5,7 +5,7 @@ go 1.22.2
 require (
 	cosmossdk.io/api v0.3.1
 	cosmossdk.io/errors v1.0.1
-	cosmossdk.io/math v1.3.0
+	cosmossdk.io/math v1.4.0
 	cosmossdk.io/simapp v0.0.0-20230323161446-0af178d721ff
 	cosmossdk.io/tools/rosetta v0.2.1
 	github.com/CosmWasm/wasmd v0.46.0
@@ -15,12 +15,12 @@ require (
 	github.com/cometbft/cometbft-db v0.12.0
 	github.com/cosmos/cosmos-proto v1.0.0-beta.5
 	github.com/cosmos/cosmos-sdk v0.47.17
-	github.com/cosmos/gogoproto v1.4.10
+	github.com/cosmos/gogoproto v1.7.0
 	github.com/cosmos/iavl v0.20.1
-	github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v7 v7.1.3
+	github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v7 v7.3.0
 	github.com/cosmos/ibc-apps/modules/async-icq/v7 v7.1.1
-	github.com/cosmos/ibc-apps/modules/ibc-hooks/v7 v7.0.0-20240522065513-ed0e92f61cfa
-	github.com/cosmos/ibc-go/v7 v7.6.0
+	github.com/cosmos/ibc-apps/modules/ibc-hooks/v7 v7.0.0
+	github.com/cosmos/ibc-go/v7 v7.10.0
 	github.com/golang/protobuf v1.5.4
 	github.com/gorilla/mux v1.8.0
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
@@ -45,7 +45,7 @@ require (
 	cloud.google.com/go/storage v1.36.0 // indirect
 	cosmossdk.io/core v0.6.1 // indirect
 	cosmossdk.io/depinject v1.0.0-alpha.4 // indirect
-	cosmossdk.io/log v1.3.1 // indirect
+	cosmossdk.io/log v1.4.1 // indirect
 	filippo.io/edwards25519 v1.0.0 // indirect
 	github.com/99designs/go-keychain v0.0.0-20191008050251-8e49817e8af4 // indirect
 	github.com/99designs/keyring v1.2.2 // indirect
@@ -123,7 +123,7 @@ require (
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/hdevalence/ed25519consensus v0.1.0 // indirect
 	github.com/huandu/skiplist v1.2.0 // indirect
-	github.com/iancoleman/orderedmap v0.2.0 // indirect
+	github.com/iancoleman/orderedmap v0.3.0 // indirect
 	github.com/improbable-eng/grpc-web v0.15.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
@@ -165,7 +165,7 @@ require (
 	github.com/rcrowley/go-metrics v0.0.0-20201227073835-cf1acfcdf475 // indirect
 	github.com/rogpeppe/go-internal v1.11.0 // indirect
 	github.com/rs/cors v1.8.3 // indirect
-	github.com/rs/zerolog v1.32.0 // indirect
+	github.com/rs/zerolog v1.33.0 // indirect
 	github.com/sagikazarmark/locafero v0.4.0 // indirect
 	github.com/sagikazarmark/slog-shim v0.1.0 // indirect
 	github.com/sasha-s/go-deadlock v0.3.1 // indirect
@@ -191,7 +191,7 @@ require (
 	golang.org/x/net v0.25.0 // indirect
 	golang.org/x/oauth2 v0.20.0 // indirect
 	golang.org/x/sync v0.7.0 // indirect
-	golang.org/x/sys v0.20.0 // indirect
+	golang.org/x/sys v0.22.0 // indirect
 	golang.org/x/term v0.20.0 // indirect
 	golang.org/x/text v0.15.0 // indirect
 	golang.org/x/time v0.5.0 // indirect
