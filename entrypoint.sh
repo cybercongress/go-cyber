@@ -27,10 +27,12 @@ then
   cp -r /cyber/cosmovisor/upgrades  /root/.cyber/cosmovisor/
 fi
 
-if [ ! -d "/root/.cyber/cosmovisor/upgrades/v4/" ]
+if [  -d "/root/.cyber/cosmovisor/upgrades/v4/" ]
 then
   cp -r /cyber/cosmovisor/upgrades/v4  /root/.cyber/cosmovisor/upgrades/v4
 fi
+
+/usr/bin/cyber rollback --home /root/.cyber
 
 if [ ! -f "/root/.cyber/config/genesis.json" ]
 then

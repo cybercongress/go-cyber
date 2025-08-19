@@ -45,5 +45,5 @@ func EndBlocker(ctx sdk.Context, bm *keeper.BandwidthMeter) {
 
 	bm.CommitBlockBandwidth(ctx) // TODO add block event for committed bandwidth
 
-	updateAccountsMaxBandwidth(ctx, bm)
+	//updateAccountsMaxBandwidth(ctx, bm)
 }

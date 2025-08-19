@@ -219,10 +219,10 @@ func (dfd DeductFeeBandDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulat
 
 	isDeliverTx := !ctx.IsCheckTx() && !ctx.IsReCheckTx() && !simulate
 	if isDeliverTx {
-		err = dfd.bandwidthMeter.ConsumeAccountBandwidth(ctx, accountBandwidth, txCost)
-		if err != nil {
-			return ctx, err
-		}
+		//err = dfd.bandwidthMeter.ConsumeAccountBandwidth(ctx, accountBandwidth, txCost)
+		//if err != nil {
+		//	return ctx, err
+		//}
 		dfd.bandwidthMeter.AddToBlockBandwidth(ctx, txCost)
 	}
 
