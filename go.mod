@@ -8,13 +8,13 @@ require (
 	cosmossdk.io/math v1.3.0
 	cosmossdk.io/simapp v0.0.0-20230323161446-0af178d721ff
 	cosmossdk.io/tools/rosetta v0.2.1
-	github.com/CosmWasm/wasmd v0.45.0
-	github.com/CosmWasm/wasmvm v1.5.2
+	github.com/CosmWasm/wasmd v0.46.0
+	github.com/CosmWasm/wasmvm v1.5.9
 	github.com/armon/go-metrics v0.4.1
-	github.com/cometbft/cometbft v0.37.8
+	github.com/cometbft/cometbft v0.37.17
 	github.com/cometbft/cometbft-db v0.12.0
 	github.com/cosmos/cosmos-proto v1.0.0-beta.5
-	github.com/cosmos/cosmos-sdk v0.47.12
+	github.com/cosmos/cosmos-sdk v0.47.17
 	github.com/cosmos/gogoproto v1.4.10
 	github.com/cosmos/iavl v0.20.1
 	github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v7 v7.1.3
