@@ -14,7 +14,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/spf13/cobra"
 
-	"github.com/cybercongress/go-cyber/v5/x/liquidity/types"
+	"github.com/cybercongress/go-cyber/v6/x/liquidity/types"
 )
 
 // GetQueryCmd returns the cli query commands for this module

@@ -5,8 +5,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 
-	globalerrors "github.com/cybercongress/go-cyber/v5/app/helpers"
-	"github.com/cybercongress/go-cyber/v5/x/clock/types"
+	globalerrors "github.com/cybercongress/go-cyber/v6/app/helpers"
+	"github.com/cybercongress/go-cyber/v6/x/clock/types"
 )
 
 // Store Keys for clock contracts (both jailed and unjailed)

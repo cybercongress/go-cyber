@@ -2,7 +2,7 @@ package v5
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cybercongress/go-cyber/v5/app/keepers"
+	"github.com/cybercongress/go-cyber/v6/app/keepers"
 )
 
 func RunForkLogic(ctx sdk.Context, keepers *keepers.AppKeepers) {

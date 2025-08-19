@@ -4,7 +4,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 
-	"github.com/cybercongress/go-cyber/v5/x/bandwidth/types"
+	"github.com/cybercongress/go-cyber/v6/x/bandwidth/types"
 )
 
 func InitGenesis(ctx sdk.Context, bm *BandwidthMeter, ak authkeeper.AccountKeeper, data types.GenesisState) {

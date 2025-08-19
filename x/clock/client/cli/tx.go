@@ -7,7 +7,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 
-	"github.com/cybercongress/go-cyber/v5/x/clock/types"
+	"github.com/cybercongress/go-cyber/v6/x/clock/types"
 )
 
 // NewTxCmd returns a root CLI command handler for certain modules/Clock

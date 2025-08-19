@@ -8,7 +8,7 @@ import (
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/cybercongress/go-cyber/v5/x/liquidity/types"
+	"github.com/cybercongress/go-cyber/v6/x/liquidity/types"
 )
 
 // Keeper of the liquidity store

@@ -7,11 +7,11 @@ import (
 
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 
-	pluginstypes "github.com/cybercongress/go-cyber/v5/plugins/types"
+	pluginstypes "github.com/cybercongress/go-cyber/v6/plugins/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/cybercongress/go-cyber/v5/x/grid/keeper"
+	"github.com/cybercongress/go-cyber/v6/x/grid/keeper"
 )
 
 type Messenger struct {

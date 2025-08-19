@@ -2,19 +2,17 @@ package v4
 
 import (
 	"fmt"
-	packetforwardtypes "github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v7/packetforward/types"
 	icqtypes "github.com/cosmos/ibc-apps/modules/async-icq/v7/types"
 	icacontrollertypes "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/controller/types"
 	icahosttypes "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/host/types"
 	"github.com/cosmos/ibc-go/v7/modules/core/exported"
-	generaltypes "github.com/cybercongress/go-cyber/v5/types"
-	clocktypes "github.com/cybercongress/go-cyber/v5/x/clock/types"
-	tokenfactorytypes "github.com/cybercongress/go-cyber/v5/x/tokenfactory/types"
+	generaltypes "github.com/cybercongress/go-cyber/v6/types"
+	clocktypes "github.com/cybercongress/go-cyber/v6/x/clock/types"
+	tokenfactorytypes "github.com/cybercongress/go-cyber/v6/x/tokenfactory/types"
 	"time"
 
-	liquiditytypes "github.com/cybercongress/go-cyber/v5/x/liquidity/types"
+	liquiditytypes "github.com/cybercongress/go-cyber/v6/x/liquidity/types"
 
-	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
@@ -28,17 +26,17 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	ibctransfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
 
-	bandwidthtypes "github.com/cybercongress/go-cyber/v5/x/bandwidth/types"
-	dmntypes "github.com/cybercongress/go-cyber/v5/x/dmn/types"
-	gridtypes "github.com/cybercongress/go-cyber/v5/x/grid/types"
-	ranktypes "github.com/cybercongress/go-cyber/v5/x/rank/types"
-	resourcestypes "github.com/cybercongress/go-cyber/v5/x/resources/types"
+	bandwidthtypes "github.com/cybercongress/go-cyber/v6/x/bandwidth/types"
+	dmntypes "github.com/cybercongress/go-cyber/v6/x/dmn/types"
+	gridtypes "github.com/cybercongress/go-cyber/v6/x/grid/types"
+	ranktypes "github.com/cybercongress/go-cyber/v6/x/rank/types"
+	resourcestypes "github.com/cybercongress/go-cyber/v6/x/resources/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
-	"github.com/cybercongress/go-cyber/v5/app/keepers"
+	"github.com/cybercongress/go-cyber/v6/app/keepers"
 )
 
 const NewDenomCreationGasConsume uint64 = 2_000_000
@@ -85,8 +83,9 @@ func CreateV4UpgradeHandler(
 				keyTable = icacontrollertypes.ParamKeyTable()
 
 			// wasm
-			case wasmtypes.ModuleName:
-				keyTable = wasmtypes.ParamKeyTable() //nolint:staticcheck
+			// commented out because in current version of wasmd there are not ParamKeyTable
+			//case wasmtypes.ModuleName:
+			//	keyTable = wasmtypes.ParamKeyTable() //nolint:staticcheck
 
 			// cyber modules
 			case bandwidthtypes.ModuleName:
@@ -162,10 +161,11 @@ func CreateV4UpgradeHandler(
 		keepers.ICAHostKeeper.SetParams(ctx, hostParams)
 		logger.Info("set interchain accounts host and controller params")
 
-		if err := keepers.PacketForwardKeeper.SetParams(ctx, packetforwardtypes.DefaultParams()); err != nil {
-			return nil, err
-		}
-		logger.Info("set ibc packets forward params")
+		// commented out because there are no more SetParams for packet forward module
+		//if err := keepers.PacketForwardKeeper.SetParams(ctx, packetforwardtypes.DefaultParams()); err != nil {
+		//	return nil, err
+		//}
+		//logger.Info("set ibc packets forward params")
 
 		icqParams := icqtypes.DefaultParams()
 		// TODO Fix this, because if enable than all nodes will go to consensus failure on next block

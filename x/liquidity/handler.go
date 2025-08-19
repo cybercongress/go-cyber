@@ -5,8 +5,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	"github.com/cybercongress/go-cyber/v5/x/liquidity/keeper"
-	"github.com/cybercongress/go-cyber/v5/x/liquidity/types"
+	"github.com/cybercongress/go-cyber/v6/x/liquidity/keeper"
+	"github.com/cybercongress/go-cyber/v6/x/liquidity/types"
 )
 
 // NewHandler returns a handler for all "liquidity" type messages.

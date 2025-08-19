@@ -9,7 +9,7 @@ import (
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 	ibcfeetypes "github.com/cosmos/ibc-go/v7/modules/apps/29-fee/types"
 
-	"github.com/cybercongress/go-cyber/v5/app/keepers"
+	"github.com/cybercongress/go-cyber/v6/app/keepers"
 )
 
 func CreateV3UpgradeHandler(

@@ -10,11 +10,11 @@ import (
 	"github.com/armon/go-metrics"
 	"github.com/cosmos/cosmos-sdk/telemetry"
 
-	ctypes "github.com/cybercongress/go-cyber/v5/types"
+	ctypes "github.com/cybercongress/go-cyber/v6/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/cybercongress/go-cyber/v5/x/resources/types"
+	"github.com/cybercongress/go-cyber/v6/x/resources/types"
 )
 
 type msgServer struct {

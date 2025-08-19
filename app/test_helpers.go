@@ -32,8 +32,8 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	apphelpers "github.com/cybercongress/go-cyber/v5/app/helpers"
-	appparams "github.com/cybercongress/go-cyber/v5/app/params"
+	apphelpers "github.com/cybercongress/go-cyber/v6/app/helpers"
+	appparams "github.com/cybercongress/go-cyber/v6/app/params"
 )
 
 // SimAppChainID hardcoded chainID for simulation

@@ -8,13 +8,13 @@ import (
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 
-	pluginstypes "github.com/cybercongress/go-cyber/v5/plugins/types"
-	bandwidthkeeper "github.com/cybercongress/go-cyber/v5/x/bandwidth/keeper"
-	cyberbankkeeper "github.com/cybercongress/go-cyber/v5/x/cyberbank/keeper"
+	pluginstypes "github.com/cybercongress/go-cyber/v6/plugins/types"
+	bandwidthkeeper "github.com/cybercongress/go-cyber/v6/x/bandwidth/keeper"
+	cyberbankkeeper "github.com/cybercongress/go-cyber/v6/x/cyberbank/keeper"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/cybercongress/go-cyber/v5/x/graph/keeper"
+	"github.com/cybercongress/go-cyber/v6/x/graph/keeper"
 )
 
 type Messenger struct {

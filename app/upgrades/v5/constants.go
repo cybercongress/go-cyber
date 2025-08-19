@@ -1,7 +1,7 @@
 package v5
 
 import (
-	"github.com/cybercongress/go-cyber/v5/app/upgrades"
+	"github.com/cybercongress/go-cyber/v6/app/upgrades"
 )
 
 const (

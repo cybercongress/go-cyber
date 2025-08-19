@@ -10,9 +10,9 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/cybercongress/go-cyber/v5/app"
-	clock "github.com/cybercongress/go-cyber/v5/x/clock"
-	"github.com/cybercongress/go-cyber/v5/x/clock/types"
+	"github.com/cybercongress/go-cyber/v6/app"
+	clock "github.com/cybercongress/go-cyber/v6/x/clock"
+	"github.com/cybercongress/go-cyber/v6/x/clock/types"
 )
 
 type GenesisTestSuite struct {

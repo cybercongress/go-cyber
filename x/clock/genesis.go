@@ -6,8 +6,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/cybercongress/go-cyber/v5/x/clock/keeper"
-	"github.com/cybercongress/go-cyber/v5/x/clock/types"
+	"github.com/cybercongress/go-cyber/v6/x/clock/keeper"
+	"github.com/cybercongress/go-cyber/v6/x/clock/types"
 )
 
 // NewGenesisState - Create a new genesis state

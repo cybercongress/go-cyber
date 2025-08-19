@@ -7,7 +7,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/telemetry"
 
-	"github.com/cybercongress/go-cyber/v5/x/rank/types"
+	"github.com/cybercongress/go-cyber/v6/x/rank/types"
 
 	"github.com/cometbft/cometbft/libs/log"
 )
