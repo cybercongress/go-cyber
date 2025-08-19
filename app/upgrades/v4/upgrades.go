@@ -14,7 +14,6 @@ import (
 
 	liquiditytypes "github.com/cybercongress/go-cyber/v6/x/liquidity/types"
 
-	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
@@ -85,8 +84,9 @@ func CreateV4UpgradeHandler(
 				keyTable = icacontrollertypes.ParamKeyTable()
 
 			// wasm
-			case wasmtypes.ModuleName:
-				keyTable = wasmtypes.ParamKeyTable() //nolint:staticcheck
+			// commented out because in current version of wasmd there are not ParamKeyTable
+			//case wasmtypes.ModuleName:
+			//	keyTable = wasmtypes.ParamKeyTable() //nolint:staticcheck
 
 			// cyber modules
 			case bandwidthtypes.ModuleName:
