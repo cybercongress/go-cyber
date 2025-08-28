@@ -1,5 +1,7 @@
 package types
 
+import "slices"
+
 const (
 	EnableSetMetadata   = "enable_metadata"
 	EnableForceTransfer = "enable_force_transfer"
@@ -11,11 +13,5 @@ func IsCapabilityEnabled(enabledCapabilities []string, capability string) bool {
 		return true
 	}
 
-	for _, v := range enabledCapabilities {
-		if v == capability {
-			return true
-		}
-	}
-
-	return false
+	return slices.Contains(enabledCapabilities, capability)
 }
