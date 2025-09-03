@@ -2,12 +2,12 @@ package v6
 
 import (
 	"fmt"
-	bandwidthtypes "github.com/cybercongress/go-cyber/v6/x/bandwidth/types"
 	"time"
+
+	bandwidthtypes "github.com/cybercongress/go-cyber/v6/x/bandwidth/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 	"github.com/cybercongress/go-cyber/v6/app/keepers"
@@ -54,17 +54,39 @@ func CreateV6UpgradeHandler(
 		for _, acc := range keepers.AccountKeeper.GetAllAccounts(ctx) {
 			switch v := acc.(type) {
 			case *vestingtypes.PeriodicVestingAccount:
-				// compute unvested (still vesting) coins at upgrade time before conversion
-				unvested := v.GetVestingCoins(ctx.BlockTime())
-				// convert to base account to make all balances spendable for burning
-				bacc := authtypes.NewBaseAccount(acc.GetAddress(), acc.GetPubKey(), acc.GetAccountNumber(), acc.GetSequence())
-				keepers.AccountKeeper.SetAccount(ctx, bacc)
-				updatedVestingAccounts++
 
+				// compute unvested (still vesting) coins at upgrade time before any conversion
+				unvested := v.GetVestingCoins(ctx.BlockTime())
+
+				// Trim all not-yet-finished periods so remaining schedule contains only fully completed periods.
+				// Also set EndTime to current block time and align OriginalVesting with kept periods.
 				if unvested.IsAllPositive() {
+					elapsed := ctx.BlockTime().Unix() - v.StartTime
+					if elapsed < 0 {
+						elapsed = 0
+					}
+					cumLength := int64(0)
+					keptPeriods := vestingtypes.Periods{}
+					keptOriginal := sdk.NewCoins()
+					for _, p := range v.VestingPeriods {
+						cumLength += p.Length
+						if cumLength <= elapsed {
+							keptPeriods = append(keptPeriods, p)
+							keptOriginal = keptOriginal.Add(p.Amount...)
+						} else {
+							break
+						}
+					}
+					v.VestingPeriods = keptPeriods
+					v.OriginalVesting = keptOriginal
+					v.EndTime = v.StartTime + cumLength // or ctx.BlockTime().Unix()
+					keepers.AccountKeeper.SetAccount(ctx, v)
+
+					updatedVestingAccounts++
+
+					// After unlocking, burn the unvested resources, limited by available balances.
 					addr := acc.GetAddress()
 					balances := keepers.BankKeeper.GetAllBalances(ctx, addr)
-					// prepare coins to burn: minimum of unvested and current balance per denom
 					coinsToBurn := sdk.NewCoins()
 					for _, c := range unvested {
 						if c.Denom == "millivolt" || c.Denom == "milliampere" {
