@@ -16,10 +16,10 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 
-	"github.com/cybercongress/go-cyber/v5/x/grid/client/cli"
-	"github.com/cybercongress/go-cyber/v5/x/grid/exported"
-	"github.com/cybercongress/go-cyber/v5/x/grid/keeper"
-	"github.com/cybercongress/go-cyber/v5/x/grid/types"
+	"github.com/cybercongress/go-cyber/v6/x/grid/client/cli"
+	"github.com/cybercongress/go-cyber/v6/x/grid/exported"
+	"github.com/cybercongress/go-cyber/v6/x/grid/keeper"
+	"github.com/cybercongress/go-cyber/v6/x/grid/types"
 )
 
 var (

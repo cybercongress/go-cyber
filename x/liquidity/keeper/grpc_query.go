@@ -12,7 +12,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/cybercongress/go-cyber/v5/x/liquidity/types"
+	"github.com/cybercongress/go-cyber/v6/x/liquidity/types"
 )
 
 // Querier is used as Keeper will have duplicate methods if used directly, and gRPC names take precedence over keeper.

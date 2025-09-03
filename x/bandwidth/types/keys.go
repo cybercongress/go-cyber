@@ -5,9 +5,10 @@ import (
 )
 
 const (
-	ModuleName = "bandwidth"
-	StoreKey   = ModuleName
-	TStoreKey  = "transient_bandwidth"
+	ModuleName    = "bandwidth"
+	StoreKey      = ModuleName
+	TStoreKey     = "transient_bandwidth"
+	BandwidthName = "bandwidth"
 )
 
 var (

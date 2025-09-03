@@ -16,9 +16,9 @@ import (
 	icahost "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/host"
 	icahosttypes "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/host/types"
 	icatypes "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/types"
-	clocktypes "github.com/cybercongress/go-cyber/v5/x/clock/types"
-	tokenfactorykeeper "github.com/cybercongress/go-cyber/v5/x/tokenfactory/keeper"
-	tokenfactorytypes "github.com/cybercongress/go-cyber/v5/x/tokenfactory/types"
+	clocktypes "github.com/cybercongress/go-cyber/v6/x/clock/types"
+	tokenfactorykeeper "github.com/cybercongress/go-cyber/v6/x/tokenfactory/keeper"
+	tokenfactorytypes "github.com/cybercongress/go-cyber/v6/x/tokenfactory/types"
 	"os"
 	"path/filepath"
 
@@ -77,32 +77,31 @@ import (
 
 	"github.com/spf13/cast"
 
-	liquiditykeeper "github.com/cybercongress/go-cyber/v5/x/liquidity/keeper"
-	liquiditytypes "github.com/cybercongress/go-cyber/v5/x/liquidity/types"
+	liquiditykeeper "github.com/cybercongress/go-cyber/v6/x/liquidity/keeper"
+	liquiditytypes "github.com/cybercongress/go-cyber/v6/x/liquidity/types"
 
-	wasmplugins "github.com/cybercongress/go-cyber/v5/plugins"
-	"github.com/cybercongress/go-cyber/v5/x/bandwidth"
-	bandwidthkeeper "github.com/cybercongress/go-cyber/v5/x/bandwidth/keeper"
-	bandwidthtypes "github.com/cybercongress/go-cyber/v5/x/bandwidth/types"
-	cyberbankkeeper "github.com/cybercongress/go-cyber/v5/x/cyberbank/keeper"
-	dmnkeeper "github.com/cybercongress/go-cyber/v5/x/dmn/keeper"
-	dmntypes "github.com/cybercongress/go-cyber/v5/x/dmn/types"
-	graphkeeper "github.com/cybercongress/go-cyber/v5/x/graph/keeper"
-	graphtypes "github.com/cybercongress/go-cyber/v5/x/graph/types"
-	gridkeeper "github.com/cybercongress/go-cyber/v5/x/grid/keeper"
-	gridtypes "github.com/cybercongress/go-cyber/v5/x/grid/types"
-	"github.com/cybercongress/go-cyber/v5/x/rank"
-	rankkeeper "github.com/cybercongress/go-cyber/v5/x/rank/keeper"
-	ranktypes "github.com/cybercongress/go-cyber/v5/x/rank/types"
-	resourceskeeper "github.com/cybercongress/go-cyber/v5/x/resources/keeper"
-	resourcestypes "github.com/cybercongress/go-cyber/v5/x/resources/types"
+	wasmplugins "github.com/cybercongress/go-cyber/v6/plugins"
+	bandwidthkeeper "github.com/cybercongress/go-cyber/v6/x/bandwidth/keeper"
+	bandwidthtypes "github.com/cybercongress/go-cyber/v6/x/bandwidth/types"
+	cyberbankkeeper "github.com/cybercongress/go-cyber/v6/x/cyberbank/keeper"
+	dmnkeeper "github.com/cybercongress/go-cyber/v6/x/dmn/keeper"
+	dmntypes "github.com/cybercongress/go-cyber/v6/x/dmn/types"
+	graphkeeper "github.com/cybercongress/go-cyber/v6/x/graph/keeper"
+	graphtypes "github.com/cybercongress/go-cyber/v6/x/graph/types"
+	gridkeeper "github.com/cybercongress/go-cyber/v6/x/grid/keeper"
+	gridtypes "github.com/cybercongress/go-cyber/v6/x/grid/types"
+	"github.com/cybercongress/go-cyber/v6/x/rank"
+	rankkeeper "github.com/cybercongress/go-cyber/v6/x/rank/keeper"
+	ranktypes "github.com/cybercongress/go-cyber/v6/x/rank/types"
+	resourceskeeper "github.com/cybercongress/go-cyber/v6/x/resources/keeper"
+	resourcestypes "github.com/cybercongress/go-cyber/v6/x/resources/types"
 
 	consensusparamkeeper "github.com/cosmos/cosmos-sdk/x/consensus/keeper"
 	consensusparamtypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
 
 	govv1beta "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 
-	clockkeeper "github.com/cybercongress/go-cyber/v5/x/clock/keeper"
+	clockkeeper "github.com/cybercongress/go-cyber/v6/x/clock/keeper"
 
 	"github.com/cometbft/cometbft/libs/log"
 	icacontrollerkeeper "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/controller/keeper"
@@ -142,6 +141,7 @@ var maccPerms = map[string][]string{
 	tokenfactorytypes.ModuleName:   {authtypes.Minter, authtypes.Burner},
 	icatypes.ModuleName:            nil,
 	icqtypes.ModuleName:            nil,
+	bandwidthtypes.ModuleName:      {authtypes.Burner},
 }
 
 type AppKeepers struct {
@@ -358,10 +358,6 @@ func NewAppKeepers(
 
 	// Start cyber's keepers configuration
 
-	appKeepers.CyberbankKeeper.Proxy.AddHook(
-		bandwidth.CollectAddressesWithStakeChange(),
-	)
-
 	appKeepers.BandwidthMeter = bandwidthkeeper.NewBandwidthMeter(
 		appCodec,
 		keys[bandwidthtypes.StoreKey],
@@ -521,7 +517,6 @@ func NewAppKeepers(
 		appKeepers.keys[packetforwardtypes.StoreKey],
 		nil, // Will be zero-value here. Reference is set later on with SetTransferKeeper.
 		appKeepers.IBCKeeper.ChannelKeeper,
-		appKeepers.DistrKeeper,
 		appKeepers.CyberbankKeeper.Proxy,
 		appKeepers.HooksICS4Wrapper,
 		govModAddress,
@@ -749,7 +744,8 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(icahosttypes.SubModuleName)
 	paramsKeeper.Subspace(icacontrollertypes.SubModuleName)
 	paramsKeeper.Subspace(icqtypes.ModuleName)
-	paramsKeeper.Subspace(packetforwardtypes.ModuleName).WithKeyTable(packetforwardtypes.ParamKeyTable())
+	// commented out because there are no more ParamKeyTable in packer forward module
+	//paramsKeeper.Subspace(packetforwardtypes.ModuleName).WithKeyTable(packetforwardtypes.ParamKeyTable())
 	paramsKeeper.Subspace(wasmtypes.ModuleName)
 	paramsKeeper.Subspace(bandwidthtypes.ModuleName)
 	paramsKeeper.Subspace(ranktypes.ModuleName)

@@ -15,7 +15,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktestutil "github.com/cosmos/cosmos-sdk/x/bank/testutil"
 
-	"github.com/cybercongress/go-cyber/v5/app"
+	"github.com/cybercongress/go-cyber/v6/app"
 )
 
 func CreateTestInput(t *testing.T) (*app.App, sdk.Context) {

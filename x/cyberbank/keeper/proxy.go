@@ -2,7 +2,6 @@ package keeper
 
 import (
 	context "context"
-	"math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
@@ -10,11 +9,14 @@ import (
 	bank "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
-	ctypes "github.com/cybercongress/go-cyber/v5/types"
-	"github.com/cybercongress/go-cyber/v5/x/cyberbank/types"
+	ctypes "github.com/cybercongress/go-cyber/v6/types"
+	"github.com/cybercongress/go-cyber/v6/x/cyberbank/types"
+	resourcestypes "github.com/cybercongress/go-cyber/v6/x/resources/types"
 )
 
 var _ bank.Keeper = (*Proxy)(nil)
+
+const ResourcesTransferBurnPercentage = int64(2)
 
 type Proxy struct {
 	bk bank.Keeper
@@ -121,26 +123,11 @@ func (p Proxy) GetTotalSupplyAmper(ctx sdk.Context) int64 {
 	return p.bk.GetSupply(ctx, ctypes.AMPERE).Amount.Int64()
 }
 
-func (p Proxy) GetAccountStakePercentageVolt(ctx sdk.Context, addr sdk.AccAddress) float64 {
-	a := p.GetAccountTotalStakeVolt(ctx, addr)
-	aFloat := float64(a)
-
-	b := p.GetTotalSupplyVolt(ctx)
-	bFloat := float64(b)
-
-	c := aFloat / bFloat
-
-	if math.IsNaN(c) {
-		return 0
-	}
-	return c
+func (p Proxy) GetAccountStakeVolt(ctx sdk.Context, addr sdk.AccAddress) int64 {
+	return p.bk.GetBalance(ctx, addr, ctypes.VOLT).Amount.Int64()
 }
 
-func (p Proxy) GetAccountTotalStakeVolt(ctx sdk.Context, addr sdk.AccAddress) int64 {
-	return p.bk.GetBalance(ctx, addr, ctypes.VOLT).Amount.Int64() + p.GetRoutedTo(ctx, addr).AmountOf(ctypes.VOLT).Int64()
-}
-
-func (p Proxy) GetAccountTotalStakeAmper(ctx sdk.Context, addr sdk.AccAddress) int64 {
+func (p Proxy) GetAccountStakeAmperPlusRouted(ctx sdk.Context, addr sdk.AccAddress) int64 {
 	return p.bk.GetBalance(ctx, addr, ctypes.AMPERE).Amount.Int64() + p.GetRoutedTo(ctx, addr).AmountOf(ctypes.AMPERE).Int64()
 }
 
@@ -166,11 +153,44 @@ func (p *Proxy) InputOutputCoins(ctx sdk.Context, inputs []banktypes.Input, outp
 }
 
 func (p *Proxy) SendCoins(ctx sdk.Context, fromAddr sdk.AccAddress, toAddr sdk.AccAddress, amt sdk.Coins) error {
-	err := p.bk.SendCoins(ctx, fromAddr, toAddr, amt)
-	if err == nil {
-		p.OnCoinsTransfer(ctx, fromAddr, toAddr)
+	// Calculate 2% burn for milliampere and millivolt denoms
+	burnCoins := sdk.NewCoins()
+	netCoins := sdk.NewCoins()
+	for _, c := range amt {
+		if c.Denom == "milliampere" || c.Denom == "millivolt" {
+			fee := c.Amount.MulRaw(ResourcesTransferBurnPercentage).QuoRaw(100)
+			if fee.IsPositive() {
+				burnCoins = burnCoins.Add(sdk.NewCoin(c.Denom, fee))
+				netAmt := c.Amount.Sub(fee)
+				if netAmt.IsPositive() {
+					netCoins = netCoins.Add(sdk.NewCoin(c.Denom, netAmt))
+				}
+				continue
+			}
+		}
+		netCoins = netCoins.Add(c)
 	}
-	return err
+
+	// Burn the fee portion via the resources module account
+	if burnCoins.IsAllPositive() {
+		if err := p.bk.SendCoinsFromAccountToModule(ctx, fromAddr, resourcestypes.ResourcesName, burnCoins); err != nil {
+			return err
+		}
+		if err := p.bk.BurnCoins(ctx, resourcestypes.ResourcesName, burnCoins); err != nil {
+			return err
+		}
+	}
+
+	// Send the net amount to the recipient
+	if netCoins.IsAllPositive() {
+		if err := p.bk.SendCoins(ctx, fromAddr, toAddr, netCoins); err != nil {
+			return err
+		}
+	}
+
+	// Fire transfer hooks once for the logical transfer
+	p.OnCoinsTransfer(ctx, fromAddr, toAddr)
+	return nil
 }
 
 func (p *Proxy) DenomMetadata(ctx context.Context, request *banktypes.QueryDenomMetadataRequest) (*banktypes.QueryDenomMetadataResponse, error) {

@@ -7,7 +7,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/cybercongress/go-cyber/v5/x/bandwidth/types"
+	"github.com/cybercongress/go-cyber/v6/x/bandwidth/types"
 )
 
 var _ types.QueryServer = &BandwidthMeter{}
@@ -55,7 +55,7 @@ func (bm *BandwidthMeter) NeuronBandwidth(goCtx context.Context, request *types.
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	neuronBandwidth := bm.GetCurrentAccountBandwidth(ctx, addr)
+	neuronBandwidth := bm.GetCurrentVoltsAccountBandwidth(ctx, addr)
 
 	return &types.QueryNeuronBandwidthResponse{NeuronBandwidth: neuronBandwidth}, nil
 }

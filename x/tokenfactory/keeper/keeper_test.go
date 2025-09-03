@@ -4,8 +4,8 @@ import (
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	"github.com/cybercongress/go-cyber/v5/app/apptesting"
-	"github.com/cybercongress/go-cyber/v5/x/tokenfactory/types"
+	"github.com/cybercongress/go-cyber/v6/app/apptesting"
+	"github.com/cybercongress/go-cyber/v6/x/tokenfactory/types"
 	"github.com/stretchr/testify/suite"
 )
 

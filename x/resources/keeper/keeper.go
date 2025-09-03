@@ -15,9 +15,9 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
 
-	ctypes "github.com/cybercongress/go-cyber/v5/types"
-	bandwithkeeper "github.com/cybercongress/go-cyber/v5/x/bandwidth/keeper"
-	"github.com/cybercongress/go-cyber/v5/x/resources/types"
+	ctypes "github.com/cybercongress/go-cyber/v6/types"
+	bandwithkeeper "github.com/cybercongress/go-cyber/v6/x/bandwidth/keeper"
+	"github.com/cybercongress/go-cyber/v6/x/resources/types"
 )
 
 type Keeper struct {
@@ -87,27 +87,28 @@ func (k Keeper) ConvertResource(
 	neuron sdk.AccAddress,
 	amount sdk.Coin,
 	resource string,
-	length uint64,
+	_ uint64,
 ) (sdk.Coin, error) {
-	periodAvailable := k.CheckAvailablePeriod(ctx, length, resource)
-	if !periodAvailable {
-		return sdk.Coin{}, types.ErrNotAvailablePeriod
-	}
+	// mint volts or amperes based on current max period and rate
+	// burn hydrogen (not vesting)
+	// put newly minted volts/amperes to vesting schedule with minimal period (1 second) for backward compatibility
+
+	maxPeriod := k.GetMaxPeriod(ctx, resource)
 
 	if k.bankKeeper.SpendableCoins(ctx, neuron).AmountOf(ctypes.SCYB).LT(amount.Amount) {
 		return sdk.Coin{}, sdkerrors.ErrInsufficientFunds
 	}
 
-	// comment this for local dev
-	//if uint32(length) < k.GetParams(ctx).MinInvestmintPeriod {
-	//	return sdk.Coin{}, types.ErrNotAvailablePeriod
-	//}
-
-	err := k.AddTimeLockedCoinsToAccount(ctx, neuron, sdk.NewCoins(amount), int64(length))
+	err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, neuron, types.ResourcesName, sdk.NewCoins(amount))
 	if err != nil {
 		return sdk.Coin{}, errorsmod.Wrapf(types.ErrTimeLockCoins, err.Error())
 	}
-	minted, err := k.Mint(ctx, neuron, amount, resource, length)
+	err = k.bankKeeper.BurnCoins(ctx, types.ResourcesName, sdk.NewCoins(amount))
+	if err != nil {
+		return sdk.Coin{}, errorsmod.Wrapf(types.ErrBurnCoins, err.Error())
+	}
+
+	minted, err := k.Mint(ctx, neuron, amount, resource, maxPeriod)
 	if err != nil {
 		return sdk.Coin{}, errorsmod.Wrapf(types.ErrIssueCoins, err.Error())
 	}
@@ -312,15 +313,13 @@ func (k Keeper) Mint(ctx sdk.Context, recipientAddr sdk.AccAddress, amt sdk.Coin
 		return sdk.Coin{}, errorsmod.Wrapf(types.ErrSendMintedCoins, recipientAddr.String())
 	}
 	// adding converted resources to vesting schedule
-	err = k.AddTimeLockedCoinsToPeriodicVestingAccount(ctx, recipientAddr, sdk.NewCoins(toMint), int64(length), true)
+	err = k.AddTimeLockedCoinsToAccount(ctx, recipientAddr, sdk.NewCoins(toMint), int64(1))
 	if err != nil {
 		return sdk.Coin{}, errorsmod.Wrapf(types.ErrTimeLockCoins, err.Error())
 	}
 
 	if resource == ctypes.VOLT {
 		k.bandwidthMeter.AddToDesirableBandwidth(ctx, toMint.Amount.Uint64())
-		neuronBandwidth := k.bandwidthMeter.GetAccountBandwidth(ctx, recipientAddr)
-		k.bandwidthMeter.ChargeAccountBandwidth(ctx, neuronBandwidth, 1000)
 	}
 
 	return toMint, nil
@@ -335,7 +334,7 @@ func (k Keeper) CalculateInvestmint(ctx sdk.Context, amt sdk.Coin, resource stri
 	case ctypes.VOLT:
 		cycles := sdk.NewDec(int64(length)).QuoInt64(int64(params.BaseInvestmintPeriodVolt))
 		base := sdk.NewDec(amt.Amount.Int64()).QuoInt64(params.BaseInvestmintAmountVolt.Amount.Int64())
-		
+
 		// NOTE out of parametrization, custom code is applied here in order to shift the HALVINGS START 6M BLOCKS LATER but keep base halving parameter same
 		if ctx.BlockHeight() > 15000000 {
 			halving = sdk.NewDecWithPrec(int64(math.Pow(0.5, float64((ctx.BlockHeight()-6000000)/int64(params.HalvingPeriodVoltBlocks)))*10000), 4)
@@ -372,12 +371,11 @@ func (k Keeper) CalculateInvestmint(ctx sdk.Context, amt sdk.Coin, resource stri
 	return toMint
 }
 
-func (k Keeper) CheckAvailablePeriod(ctx sdk.Context, length uint64, resource string) bool {
+func (k Keeper) GetMaxPeriod(ctx sdk.Context, resource string) uint64 {
 	var availableLength uint64
 	passed := ctx.BlockHeight()
 	params := k.GetParams(ctx)
 
-	// assuming 6 seconds block
 	switch resource {
 	case ctypes.VOLT:
 		halvingVolt := params.HalvingPeriodVoltBlocks
@@ -390,5 +388,5 @@ func (k Keeper) CheckAvailablePeriod(ctx sdk.Context, length uint64, resource st
 		availableLength = uint64(doubling * halvingAmpere * 6)
 	}
 
-	return length <= availableLength
+	return availableLength
 }

@@ -3,7 +3,7 @@ package types
 import (
 	"errors"
 
-	graphtypes "github.com/cybercongress/go-cyber/v5/x/graph/types"
+	graphtypes "github.com/cybercongress/go-cyber/v6/x/graph/types"
 )
 
 type RankedCidNumber struct {

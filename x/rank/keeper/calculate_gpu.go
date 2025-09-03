@@ -8,8 +8,8 @@ import (
 
 	"github.com/cometbft/cometbft/libs/log"
 
-	graphtypes "github.com/cybercongress/go-cyber/v5/x/graph/types"
-	"github.com/cybercongress/go-cyber/v5/x/rank/types"
+	graphtypes "github.com/cybercongress/go-cyber/v6/x/graph/types"
+	"github.com/cybercongress/go-cyber/v6/x/rank/types"
 )
 
 /*

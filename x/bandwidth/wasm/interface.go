@@ -5,11 +5,11 @@ import (
 
 	errorsmod "cosmossdk.io/errors"
 
-	pluginstypes "github.com/cybercongress/go-cyber/v5/plugins/types"
+	pluginstypes "github.com/cybercongress/go-cyber/v6/plugins/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/cybercongress/go-cyber/v5/x/bandwidth/keeper"
+	"github.com/cybercongress/go-cyber/v6/x/bandwidth/keeper"
 )
 
 type Querier struct {

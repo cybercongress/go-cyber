@@ -13,7 +13,7 @@ import (
 	"github.com/cometbft/cometbft/libs/log"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	"github.com/cybercongress/go-cyber/v5/x/cyberbank/types"
+	"github.com/cybercongress/go-cyber/v6/x/cyberbank/types"
 )
 
 type IndexedKeeper struct {
@@ -67,7 +67,7 @@ func (k *IndexedKeeper) LoadState(rankCtx sdk.Context, freshCtx sdk.Context) {
 
 func (k *IndexedKeeper) getCollectFunc(ctx sdk.Context, userStake map[uint64]uint64) func(account authtypes.AccountI) bool {
 	return func(account authtypes.AccountI) bool {
-		balance := k.Proxy.GetAccountTotalStakeAmper(ctx, account.GetAddress())
+		balance := k.Proxy.GetAccountStakeAmperPlusRouted(ctx, account.GetAddress())
 		userStake[account.GetAccountNumber()] = uint64(balance)
 		return false
 	}
@@ -101,7 +101,7 @@ func (k *IndexedKeeper) DetectUsersStakeAmpereChange(ctx sdk.Context) bool {
 func (k *IndexedKeeper) UpdateAccountsStakeAmpere(ctx sdk.Context) {
 	for _, addr := range k.accountToUpdate {
 		k.Logger(ctx).Debug("account to update:", "address", addr.String())
-		stake := k.GetAccountTotalStakeAmper(ctx, addr)
+		stake := k.GetAccountStakeAmperPlusRouted(ctx, addr)
 		if k.accountKeeper.GetAccount(ctx, addr) == nil {
 			k.Logger(ctx).Info("skipped account:", "address", addr.String())
 			continue
@@ -121,7 +121,7 @@ func (k *IndexedKeeper) UpdateAccountsStakeAmpere(ctx sdk.Context) {
 			if _, ok := k.userNewTotalStakeAmpere[i]; !ok {
 				k.Logger(ctx).Info("added to stake index:", "account", i)
 				// TODO update in next release
-				// stake := k.GetAccountTotalStakeAmper(ctx, addr)
+				// stake := k.GetAccountStakeAmperPlusRouted(ctx, addr)
 				k.userNewTotalStakeAmpere[i] = 0
 			}
 		}

@@ -3,12 +3,13 @@ package app
 import (
 	"fmt"
 	"github.com/cosmos/cosmos-sdk/server"
-	v5 "github.com/cybercongress/go-cyber/v5/app/upgrades/v5"
-	"github.com/cybercongress/go-cyber/v5/client/docs"
-	bandwidthkeeper "github.com/cybercongress/go-cyber/v5/x/bandwidth/keeper"
-	cyberbankkeeper "github.com/cybercongress/go-cyber/v5/x/cyberbank/keeper"
-	graphkeeper "github.com/cybercongress/go-cyber/v5/x/graph/keeper"
-	rankkeeper "github.com/cybercongress/go-cyber/v5/x/rank/keeper"
+	v5 "github.com/cybercongress/go-cyber/v6/app/upgrades/v5"
+	v6 "github.com/cybercongress/go-cyber/v6/app/upgrades/v6"
+	"github.com/cybercongress/go-cyber/v6/client/docs"
+	bandwidthkeeper "github.com/cybercongress/go-cyber/v6/x/bandwidth/keeper"
+	cyberbankkeeper "github.com/cybercongress/go-cyber/v6/x/cyberbank/keeper"
+	graphkeeper "github.com/cybercongress/go-cyber/v6/x/graph/keeper"
+	rankkeeper "github.com/cybercongress/go-cyber/v6/x/rank/keeper"
 	"io"
 	"os"
 	"time"
@@ -19,15 +20,15 @@ import (
 	"github.com/cosmos/cosmos-sdk/runtime"
 	"github.com/cosmos/cosmos-sdk/x/auth/posthandler"
 
-	v2 "github.com/cybercongress/go-cyber/v5/app/upgrades/v2"
-	v3 "github.com/cybercongress/go-cyber/v5/app/upgrades/v3"
-	v4 "github.com/cybercongress/go-cyber/v5/app/upgrades/v4"
+	v2 "github.com/cybercongress/go-cyber/v6/app/upgrades/v2"
+	v3 "github.com/cybercongress/go-cyber/v6/app/upgrades/v3"
+	v4 "github.com/cybercongress/go-cyber/v6/app/upgrades/v4"
 
 	"github.com/cosmos/cosmos-sdk/client/grpc/tmservice"
 	ibcclientclient "github.com/cosmos/ibc-go/v7/modules/core/02-client/client"
 
-	"github.com/cybercongress/go-cyber/v5/app/keepers"
-	"github.com/cybercongress/go-cyber/v5/app/upgrades"
+	"github.com/cybercongress/go-cyber/v6/app/keepers"
+	"github.com/cybercongress/go-cyber/v6/app/upgrades"
 
 	dbm "github.com/cometbft/cometbft-db"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -66,7 +67,7 @@ import (
 
 	govclient "github.com/cosmos/cosmos-sdk/x/gov/client"
 
-	"github.com/cybercongress/go-cyber/v5/utils"
+	"github.com/cybercongress/go-cyber/v6/utils"
 
 	runtimeservices "github.com/cosmos/cosmos-sdk/runtime/services"
 )
@@ -81,7 +82,7 @@ var (
 	NodeDir      = ".cyber"
 	Bech32Prefix = "bostrom"
 
-	Upgrades = []upgrades.Upgrade{v2.Upgrade, v3.Upgrade, v4.Upgrade}
+	Upgrades = []upgrades.Upgrade{v2.Upgrade, v3.Upgrade, v4.Upgrade, v6.Upgrade}
 	Forks    = []upgrades.Fork{v5.Fork}
 )
 
@@ -340,7 +341,7 @@ func (app *App) Name() string {
 
 // BeginBlocker application updates every begin block
 func (app *App) BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock) abci.ResponseBeginBlock {
-	BeginBlockForks(ctx, app)
+	//BeginBlockForks(ctx, app)
 	return app.ModuleManager.BeginBlock(ctx, req)
 }
 
@@ -368,7 +369,7 @@ func (app *App) InitChainer(ctx sdk.Context, req abci.RequestInitChain) abci.Res
 	for _, account := range app.AccountKeeper.GetAllAccounts(ctx) {
 		app.CyberbankKeeper.InitializeStakeAmpere(
 			account.GetAccountNumber(),
-			uint64(app.CyberbankKeeper.Proxy.GetAccountTotalStakeAmper(ctx, account.GetAddress())),
+			uint64(app.CyberbankKeeper.Proxy.GetAccountStakeAmperPlusRouted(ctx, account.GetAddress())),
 		)
 	}
 
