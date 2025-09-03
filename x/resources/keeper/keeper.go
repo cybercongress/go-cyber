@@ -87,27 +87,28 @@ func (k Keeper) ConvertResource(
 	neuron sdk.AccAddress,
 	amount sdk.Coin,
 	resource string,
-	length uint64,
+	_ uint64,
 ) (sdk.Coin, error) {
-	periodAvailable := k.CheckAvailablePeriod(ctx, length, resource)
-	if !periodAvailable {
-		return sdk.Coin{}, types.ErrNotAvailablePeriod
-	}
+	maxPeriod := k.GetMaxPeriod(ctx, resource)
 
 	if k.bankKeeper.SpendableCoins(ctx, neuron).AmountOf(ctypes.SCYB).LT(amount.Amount) {
 		return sdk.Coin{}, sdkerrors.ErrInsufficientFunds
 	}
 
-	// comment this for local dev
-	//if uint32(length) < k.GetParams(ctx).MinInvestmintPeriod {
-	//	return sdk.Coin{}, types.ErrNotAvailablePeriod
+	//err := k.AddTimeLockedCoinsToAccount(ctx, neuron, sdk.NewCoins(amount), minPeriod)
+	//if err != nil {
+	//	return sdk.Coin{}, errorsmod.Wrapf(types.ErrTimeLockCoins, err.Error())
 	//}
-
-	err := k.AddTimeLockedCoinsToAccount(ctx, neuron, sdk.NewCoins(amount), int64(length))
+	err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, neuron, types.ResourcesName, sdk.NewCoins(amount))
 	if err != nil {
 		return sdk.Coin{}, errorsmod.Wrapf(types.ErrTimeLockCoins, err.Error())
 	}
-	minted, err := k.Mint(ctx, neuron, amount, resource, length)
+	err = k.bankKeeper.BurnCoins(ctx, types.ResourcesName, sdk.NewCoins(amount))
+	if err != nil {
+		return sdk.Coin{}, errorsmod.Wrapf(types.ErrBurnCoins, err.Error())
+	}
+
+	minted, err := k.Mint(ctx, neuron, amount, resource, maxPeriod)
 	if err != nil {
 		return sdk.Coin{}, errorsmod.Wrapf(types.ErrIssueCoins, err.Error())
 	}
@@ -312,7 +313,7 @@ func (k Keeper) Mint(ctx sdk.Context, recipientAddr sdk.AccAddress, amt sdk.Coin
 		return sdk.Coin{}, errorsmod.Wrapf(types.ErrSendMintedCoins, recipientAddr.String())
 	}
 	// adding converted resources to vesting schedule
-	err = k.AddTimeLockedCoinsToPeriodicVestingAccount(ctx, recipientAddr, sdk.NewCoins(toMint), int64(length), true)
+	err = k.AddTimeLockedCoinsToAccount(ctx, recipientAddr, sdk.NewCoins(toMint), int64(1))
 	if err != nil {
 		return sdk.Coin{}, errorsmod.Wrapf(types.ErrTimeLockCoins, err.Error())
 	}
@@ -389,4 +390,24 @@ func (k Keeper) CheckAvailablePeriod(ctx sdk.Context, length uint64, resource st
 	}
 
 	return length <= availableLength
+}
+
+func (k Keeper) GetMaxPeriod(ctx sdk.Context, resource string) uint64 {
+	var availableLength uint64
+	passed := ctx.BlockHeight()
+	params := k.GetParams(ctx)
+	
+	switch resource {
+	case ctypes.VOLT:
+		halvingVolt := params.HalvingPeriodVoltBlocks
+		doubling := uint32(math.Pow(2, float64(passed/int64(halvingVolt))))
+		availableLength = uint64(doubling * halvingVolt * 6)
+
+	case ctypes.AMPERE:
+		halvingAmpere := params.HalvingPeriodAmpereBlocks
+		doubling := uint32(math.Pow(2, float64(passed/int64(halvingAmpere))))
+		availableLength = uint64(doubling * halvingAmpere * 6)
+	}
+
+	return availableLength
 }
