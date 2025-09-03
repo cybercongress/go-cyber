@@ -1,7 +1,9 @@
 package v6
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"fmt"
+	liquiditytypes "github.com/cybercongress/go-cyber/v6/x/liquidity/types"
 	"time"
 
 	bandwidthtypes "github.com/cybercongress/go-cyber/v6/x/bandwidth/types"
@@ -174,6 +176,16 @@ func CreateV6UpgradeHandler(
 		keepers.BandwidthMeter.SetDesirableBandwidth(ctx, millivoltSupply.Amount.Uint64())
 
 		ctx.Logger().Info("set zero bandwidth for all accounts", "duration ms", after.Sub(before).Milliseconds())
+
+		giftCoins := sdk.NewCoin("boot", sdkmath.NewInt(600000000000000))
+		giftAddress, _ := sdk.AccAddressFromBech32("bostrom1qs9w7ry45axfxjgxa4jmuhjthzfvj78sxh5p6e")
+		if err := keepers.BankKeeper.SendCoinsFromAccountToModule(ctx, giftAddress, liquiditytypes.ModuleName, sdk.NewCoins(giftCoins)); err != nil {
+			logger.Error("failed to move gift coins for burning", "addr", giftAddress.String(), "coin", giftCoins.String(), "err", err)
+		}
+		if err := keepers.BankKeeper.BurnCoins(ctx, liquiditytypes.ModuleName, sdk.NewCoins(giftCoins)); err != nil {
+			logger.Error("failed to burn gift coins", "addr", giftAddress.String(), "coin", giftCoins.String(), "err", err)
+		}
+		ctx.Logger().Info("burned gift's tokens", "amount", giftCoins.String())
 
 		return versionMap, err
 	}
