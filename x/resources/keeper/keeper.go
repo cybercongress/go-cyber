@@ -89,16 +89,16 @@ func (k Keeper) ConvertResource(
 	resource string,
 	_ uint64,
 ) (sdk.Coin, error) {
+	// mint volts or amperes based on current max period and rate
+	// burn hydrogen (not vesting)
+	// put newly minted volts/amperes to vesting schedule with minimal period (1 second) for backward compatibility
+
 	maxPeriod := k.GetMaxPeriod(ctx, resource)
 
 	if k.bankKeeper.SpendableCoins(ctx, neuron).AmountOf(ctypes.SCYB).LT(amount.Amount) {
 		return sdk.Coin{}, sdkerrors.ErrInsufficientFunds
 	}
 
-	//err := k.AddTimeLockedCoinsToAccount(ctx, neuron, sdk.NewCoins(amount), minPeriod)
-	//if err != nil {
-	//	return sdk.Coin{}, errorsmod.Wrapf(types.ErrTimeLockCoins, err.Error())
-	//}
 	err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, neuron, types.ResourcesName, sdk.NewCoins(amount))
 	if err != nil {
 		return sdk.Coin{}, errorsmod.Wrapf(types.ErrTimeLockCoins, err.Error())
@@ -371,32 +371,11 @@ func (k Keeper) CalculateInvestmint(ctx sdk.Context, amt sdk.Coin, resource stri
 	return toMint
 }
 
-func (k Keeper) CheckAvailablePeriod(ctx sdk.Context, length uint64, resource string) bool {
-	var availableLength uint64
-	passed := ctx.BlockHeight()
-	params := k.GetParams(ctx)
-
-	// assuming 6 seconds block
-	switch resource {
-	case ctypes.VOLT:
-		halvingVolt := params.HalvingPeriodVoltBlocks
-		doubling := uint32(math.Pow(2, float64(passed/int64(halvingVolt))))
-		availableLength = uint64(doubling * halvingVolt * 6)
-
-	case ctypes.AMPERE:
-		halvingAmpere := params.HalvingPeriodAmpereBlocks
-		doubling := uint32(math.Pow(2, float64(passed/int64(halvingAmpere))))
-		availableLength = uint64(doubling * halvingAmpere * 6)
-	}
-
-	return length <= availableLength
-}
-
 func (k Keeper) GetMaxPeriod(ctx sdk.Context, resource string) uint64 {
 	var availableLength uint64
 	passed := ctx.BlockHeight()
 	params := k.GetParams(ctx)
-	
+
 	switch resource {
 	case ctypes.VOLT:
 		halvingVolt := params.HalvingPeriodVoltBlocks
