@@ -55,7 +55,7 @@ func (bm *BandwidthMeter) NeuronBandwidth(goCtx context.Context, request *types.
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	neuronBandwidth := bm.GetCurrentAccountBandwidth(ctx, addr)
+	neuronBandwidth := bm.GetCurrentVoltsAccountBandwidth(ctx, addr)
 
 	return &types.QueryNeuronBandwidthResponse{NeuronBandwidth: neuronBandwidth}, nil
 }

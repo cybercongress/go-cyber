@@ -72,12 +72,11 @@ func (k msgServer) Cyberlink(goCtx context.Context, msg *types.MsgCyberlink) (*t
 	// case when programs and autonomous programs cyberlink
 	if k.GetAccount(ctx, addr).GetPubKey() == nil {
 		cost := uint64(k.GetCurrentCreditPrice().MulInt64(int64(len(msg.Links) * 1000)).TruncateInt64())
-		accountBandwidth := k.GetCurrentAccountBandwidth(ctx, addr)
 
 		currentBlockSpentBandwidth := k.GetCurrentBlockSpentBandwidth(ctx)
 		maxBlockBandwidth := k.GetMaxBlockBandwidth(ctx)
 
-		if !accountBandwidth.HasEnoughRemained(cost) {
+		if !k.HasEnoughAccountBandwidthVolt(ctx, cost, addr) {
 			return nil, bandwidthtypes.ErrNotEnoughBandwidth
 		}
 
@@ -85,10 +84,11 @@ func (k msgServer) Cyberlink(goCtx context.Context, msg *types.MsgCyberlink) (*t
 			return nil, bandwidthtypes.ErrExceededMaxBlockBandwidth
 		}
 
-		err = k.ConsumeAccountBandwidth(ctx, accountBandwidth, cost)
+		err = k.BurnAccountBandwidthVolt(ctx, cost, addr)
 		if err != nil {
 			return nil, bandwidthtypes.ErrNotEnoughBandwidth
 		}
+
 		k.AddToBlockBandwidth(ctx, cost)
 	}
 

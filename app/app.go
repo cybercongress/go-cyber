@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/cosmos/cosmos-sdk/server"
 	v5 "github.com/cybercongress/go-cyber/v6/app/upgrades/v5"
+	v6 "github.com/cybercongress/go-cyber/v6/app/upgrades/v6"
 	"github.com/cybercongress/go-cyber/v6/client/docs"
 	bandwidthkeeper "github.com/cybercongress/go-cyber/v6/x/bandwidth/keeper"
 	cyberbankkeeper "github.com/cybercongress/go-cyber/v6/x/cyberbank/keeper"
@@ -81,7 +82,7 @@ var (
 	NodeDir      = ".cyber"
 	Bech32Prefix = "bostrom"
 
-	Upgrades = []upgrades.Upgrade{v2.Upgrade, v3.Upgrade, v4.Upgrade}
+	Upgrades = []upgrades.Upgrade{v2.Upgrade, v3.Upgrade, v4.Upgrade, v6.Upgrade}
 	Forks    = []upgrades.Fork{v5.Fork}
 )
 
@@ -368,7 +369,7 @@ func (app *App) InitChainer(ctx sdk.Context, req abci.RequestInitChain) abci.Res
 	for _, account := range app.AccountKeeper.GetAllAccounts(ctx) {
 		app.CyberbankKeeper.InitializeStakeAmpere(
 			account.GetAccountNumber(),
-			uint64(app.CyberbankKeeper.Proxy.GetAccountTotalStakeAmper(ctx, account.GetAddress())),
+			uint64(app.CyberbankKeeper.Proxy.GetAccountStakeAmperPlusRouted(ctx, account.GetAddress())),
 		)
 	}
 

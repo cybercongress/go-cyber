@@ -7,17 +7,12 @@ import (
 	"github.com/cybercongress/go-cyber/v6/x/bandwidth/types"
 )
 
-func InitGenesis(ctx sdk.Context, bm *BandwidthMeter, ak authkeeper.AccountKeeper, data types.GenesisState) {
+func InitGenesis(ctx sdk.Context, bm *BandwidthMeter, _ authkeeper.AccountKeeper, data types.GenesisState) {
 	if err := bm.SetParams(ctx, data.Params); err != nil {
 		panic(err)
 	}
 
 	bm.currentCreditPrice = bm.GetBandwidthPrice(ctx, data.Params.BasePrice)
-
-	for _, address := range ak.GetAllAccounts(ctx) {
-		accMaxBw := bm.GetAccountMaxBandwidth(ctx, address.GetAddress())
-		bm.SetAccountBandwidth(ctx, types.NewGenesisNeuronBandwidth(address.GetAddress(), accMaxBw))
-	}
 }
 
 func ExportGenesis(ctx sdk.Context, bm *BandwidthMeter) *types.GenesisState {

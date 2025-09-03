@@ -81,7 +81,6 @@ import (
 	liquiditytypes "github.com/cybercongress/go-cyber/v6/x/liquidity/types"
 
 	wasmplugins "github.com/cybercongress/go-cyber/v6/plugins"
-	"github.com/cybercongress/go-cyber/v6/x/bandwidth"
 	bandwidthkeeper "github.com/cybercongress/go-cyber/v6/x/bandwidth/keeper"
 	bandwidthtypes "github.com/cybercongress/go-cyber/v6/x/bandwidth/types"
 	cyberbankkeeper "github.com/cybercongress/go-cyber/v6/x/cyberbank/keeper"
@@ -142,6 +141,7 @@ var maccPerms = map[string][]string{
 	tokenfactorytypes.ModuleName:   {authtypes.Minter, authtypes.Burner},
 	icatypes.ModuleName:            nil,
 	icqtypes.ModuleName:            nil,
+	bandwidthtypes.ModuleName:      {authtypes.Burner},
 }
 
 type AppKeepers struct {
@@ -357,10 +357,6 @@ func NewAppKeepers(
 	appKeepers.StakingKeeper = stakingKeeper
 
 	// Start cyber's keepers configuration
-
-	appKeepers.CyberbankKeeper.Proxy.AddHook(
-		bandwidth.CollectAddressesWithStakeChange(),
-	)
 
 	appKeepers.BandwidthMeter = bandwidthkeeper.NewBandwidthMeter(
 		appCodec,

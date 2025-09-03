@@ -5,5 +5,7 @@ import (
 )
 
 type AccountStakeProvider interface {
-	GetAccountStakePercentageVolt(ctx sdk.Context, address sdk.AccAddress) float64
+	GetAccountStakeVolt(ctx sdk.Context, addr sdk.AccAddress) int64
+	SendCoinsFromAccountToModule(ctx sdk.Context, senderAddr sdk.AccAddress, recipientModule string, amt sdk.Coins) error
+	BurnCoins(ctx sdk.Context, moduleName string, amt sdk.Coins) error
 }

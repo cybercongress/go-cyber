@@ -319,8 +319,6 @@ func (k Keeper) Mint(ctx sdk.Context, recipientAddr sdk.AccAddress, amt sdk.Coin
 
 	if resource == ctypes.VOLT {
 		k.bandwidthMeter.AddToDesirableBandwidth(ctx, toMint.Amount.Uint64())
-		neuronBandwidth := k.bandwidthMeter.GetAccountBandwidth(ctx, recipientAddr)
-		k.bandwidthMeter.ChargeAccountBandwidth(ctx, neuronBandwidth, 1000)
 	}
 
 	return toMint, nil
@@ -335,7 +333,7 @@ func (k Keeper) CalculateInvestmint(ctx sdk.Context, amt sdk.Coin, resource stri
 	case ctypes.VOLT:
 		cycles := sdk.NewDec(int64(length)).QuoInt64(int64(params.BaseInvestmintPeriodVolt))
 		base := sdk.NewDec(amt.Amount.Int64()).QuoInt64(params.BaseInvestmintAmountVolt.Amount.Int64())
-		
+
 		// NOTE out of parametrization, custom code is applied here in order to shift the HALVINGS START 6M BLOCKS LATER but keep base halving parameter same
 		if ctx.BlockHeight() > 15000000 {
 			halving = sdk.NewDecWithPrec(int64(math.Pow(0.5, float64((ctx.BlockHeight()-6000000)/int64(params.HalvingPeriodVoltBlocks)))*10000), 4)

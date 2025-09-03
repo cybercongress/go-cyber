@@ -2,6 +2,7 @@ package v6
 
 import (
 	"fmt"
+	bandwidthtypes "github.com/cybercongress/go-cyber/v6/x/bandwidth/types"
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -20,7 +21,6 @@ func CreateV6UpgradeHandler(
 ) upgradetypes.UpgradeHandler {
 	return func(ctx sdk.Context, _ upgradetypes.Plan, vm module.VersionMap) (module.VersionMap, error) {
 		before := time.Now()
-
 		logger := ctx.Logger().With("upgrade", UpgradeName)
 
 		liquidityParams := keepers.LiquidityKeeper.GetParams(ctx)
@@ -42,12 +42,10 @@ func CreateV6UpgradeHandler(
 			return nil, err
 		}
 		logger.Info(fmt.Sprintf("post migrate version map: %v", versionMap))
-
 		after := time.Now()
 		ctx.Logger().Info("upgrade time", "duration ms", after.Sub(before).Milliseconds())
 
 		before = time.Now()
-
 		// -- burn unvested coins for accounts with periodic vesting accounts
 		// -- reset all vesting accounts to base accounts
 
@@ -233,14 +231,36 @@ func CreateV6UpgradeHandler(
 				logger.Error("failed to burn coins", "addr", addr.String(), "coin", coin.String(), "err", err)
 				continue
 			}
+
 			explosionBurned = explosionBurned.Add(coin)
 			processedAccounts++
 		}
 
 		logger.Info("burn completed", "accounts processed", processedAccounts, "total explosion burned", explosionBurned.String())
-
 		after = time.Now()
 		ctx.Logger().Info("balances fixed", "duration ms", after.Sub(before).Milliseconds())
+
+		before = time.Now()
+		for _, acc := range keepers.AccountKeeper.GetAllAccounts(ctx) {
+			keepers.BandwidthMeter.SetZeroAccountBandwidth(ctx, acc.GetAddress())
+		}
+		params := keepers.BandwidthMeter.GetParams(ctx)
+		err = keepers.BandwidthMeter.SetParams(ctx, bandwidthtypes.Params{
+			BasePrice:         sdk.OneDec(),
+			RecoveryPeriod:    params.RecoveryPeriod,
+			AdjustPricePeriod: params.AdjustPricePeriod,
+			BaseLoad:          sdk.NewDecWithPrec(2, 2),
+			MaxBlockBandwidth: params.MaxBlockBandwidth,
+		})
+		if err != nil {
+			return nil, err
+		}
+		after = time.Now()
+
+		millivoltSupply := keepers.BankKeeper.GetSupply(ctx, "millivolt")
+		keepers.BandwidthMeter.SetDesirableBandwidth(ctx, millivoltSupply.Amount.Uint64())
+
+		ctx.Logger().Info("set zero bandwidth for all accounts", "duration ms", after.Sub(before).Milliseconds())
 
 		return versionMap, err
 	}

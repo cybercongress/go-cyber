@@ -204,12 +204,11 @@ func (dfd DeductFeeBandDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulat
 	}
 
 	txCost := dfd.bandwidthMeter.GetPricedTotalCyberlinksCost(ctx, tx)
-	accountBandwidth := dfd.bandwidthMeter.GetCurrentAccountBandwidth(ctx, deductBandwidthFromAcc.GetAddress())
 
 	currentBlockSpentBandwidth := dfd.bandwidthMeter.GetCurrentBlockSpentBandwidth(ctx)
 	maxBlockBandwidth := dfd.bandwidthMeter.GetMaxBlockBandwidth(ctx)
 
-	if !accountBandwidth.HasEnoughRemained(txCost) {
+	if !dfd.bandwidthMeter.HasEnoughAccountBandwidthVolt(ctx, txCost, deductBandwidthFromAcc.GetAddress()) {
 		return ctx, bandwidthtypes.ErrNotEnoughBandwidth
 	}
 
@@ -219,10 +218,10 @@ func (dfd DeductFeeBandDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulat
 
 	isDeliverTx := !ctx.IsCheckTx() && !ctx.IsReCheckTx() && !simulate
 	if isDeliverTx {
-		//err = dfd.bandwidthMeter.ConsumeAccountBandwidth(ctx, accountBandwidth, txCost)
-		//if err != nil {
-		//	return ctx, err
-		//}
+		err := dfd.bandwidthMeter.BurnAccountBandwidthVolt(ctx, txCost, deductBandwidthFromAcc.GetAddress())
+		if err != nil {
+			return ctx, err
+		}
 		dfd.bandwidthMeter.AddToBlockBandwidth(ctx, txCost)
 	}
 

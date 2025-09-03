@@ -2,8 +2,6 @@ package keeper
 
 import (
 	context "context"
-	"math"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
@@ -121,26 +119,11 @@ func (p Proxy) GetTotalSupplyAmper(ctx sdk.Context) int64 {
 	return p.bk.GetSupply(ctx, ctypes.AMPERE).Amount.Int64()
 }
 
-func (p Proxy) GetAccountStakePercentageVolt(ctx sdk.Context, addr sdk.AccAddress) float64 {
-	a := p.GetAccountTotalStakeVolt(ctx, addr)
-	aFloat := float64(a)
-
-	b := p.GetTotalSupplyVolt(ctx)
-	bFloat := float64(b)
-
-	c := aFloat / bFloat
-
-	if math.IsNaN(c) {
-		return 0
-	}
-	return c
+func (p Proxy) GetAccountStakeVolt(ctx sdk.Context, addr sdk.AccAddress) int64 {
+	return p.bk.GetBalance(ctx, addr, ctypes.VOLT).Amount.Int64()
 }
 
-func (p Proxy) GetAccountTotalStakeVolt(ctx sdk.Context, addr sdk.AccAddress) int64 {
-	return p.bk.GetBalance(ctx, addr, ctypes.VOLT).Amount.Int64() + p.GetRoutedTo(ctx, addr).AmountOf(ctypes.VOLT).Int64()
-}
-
-func (p Proxy) GetAccountTotalStakeAmper(ctx sdk.Context, addr sdk.AccAddress) int64 {
+func (p Proxy) GetAccountStakeAmperPlusRouted(ctx sdk.Context, addr sdk.AccAddress) int64 {
 	return p.bk.GetBalance(ctx, addr, ctypes.AMPERE).Amount.Int64() + p.GetRoutedTo(ctx, addr).AmountOf(ctypes.AMPERE).Int64()
 }
 
